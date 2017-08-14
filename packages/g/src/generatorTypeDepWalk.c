@@ -61,40 +61,8 @@ static corto_genTypeDeclaration* corto_genTypeDeclared(corto_object o, corto_gen
     return decl;
 }
 
-/* Compare two types structurally */
-static corto_bool corto_genTypeCompareStructural(corto_type t1, corto_type t2) {
-    corto_bool result;
-    result = FALSE;
-    if (t1->kind == t2->kind) {
-        switch(t1->kind) {
-        case CORTO_PRIMITIVE:
-            if (corto_primitive(t1)->kind == corto_primitive(t2)->kind) {
-                if (corto_primitive(t1)->width == corto_primitive(t2)->width) {
-                    result = TRUE;
-                }
-            }
-            break;
-        case CORTO_COLLECTION:
-            if (corto_collection(t1)->kind == corto_collection(t2)->kind) {
-                if (corto_collection(t1)->elementType == corto_collection(t2)->elementType) {
-                    if (corto_collection(t1)->max == corto_collection(t2)->max) {
-                        if (corto_collection(t1)->kind != CORTO_MAP) {
-                            result = TRUE;
-                        } else {
-                            if (corto_map(t1)->keyType != corto_map(t2)->keyType) {
-                                result = TRUE;
-                            }
-                        }
-                    }
-                }
-            }
-            break;
-        default:
-            corto_seterr("only primitive and collection types can be compared structurally.");
-            break;
-        }
-    }
-    return result;
+static bool corto_isNamed(corto_object o) {
+    return corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_childof(root_o, o);
 }
 
 /* Find type in parsed-list */
@@ -110,15 +78,15 @@ static corto_bool corto_genTypeIsParsed(corto_object o, corto_genTypeWalk_t* dat
     while(!found && corto_iter_hasNext(&iter)) {
         p = corto_iter_next(&iter);
         /* If object is scoped, it must be matched exactly */
-        if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+        if (corto_isNamed(o)) {
             if (o == p) {
                 found = TRUE;
             }
         /* If object is not scoped (anonymous), it is matched structurally */
         } else {
-            if (!corto_checkAttr(p, CORTO_ATTR_NAMED)) {
+            if (!corto_isNamed(p)) {
                 if (corto_typeof(o) == corto_typeof(p)) {
-                    if (corto_genTypeCompareStructural(o, p)) {
+                    if (corto_compare(o, p) == CORTO_EQ) {
                         found = TRUE;
                     }
                 }
