@@ -71,7 +71,7 @@ typedef int (*corto_loadAction)(corto_string file, int argc, char* argv[], void*
 /** Load a resource.
  * The corto_load function provides a single interface to loading files or 
  * packages into corto. The function accepts any filetype known to corto (types
- * are registered as packages in the corto/ext scope).
+ * are registered as packages in the driver/ext scope).
  *
  * When a provided resource identifier contains a '.', the string after the '.'
  * is treated as a file extension, and `corto_load` will treat the identifier as
@@ -92,7 +92,7 @@ typedef int (*corto_loadAction)(corto_string file, int argc, char* argv[], void*
  * but can also involve loading an XML file or executing a corto script,
  * depending on how the resource type is implemented.
  *
- * Resource types are regular packages located in the `corto/ext` scope. They 
+ * Resource types are regular packages located in the `driver/ext` scope. They 
  * need to call `corto_load_register` in their `cortomain` function to register
  * the resource type handler, which determines how a resource is loaded.
  *
@@ -194,13 +194,13 @@ void* corto_load_sym(
  * invoked when loading a resource of a specified extension.
  * 
  * To load a file of a specified extension, corto will first look in the 
- * `corto/ext` scope if a package with the extension name can be found. If it
+ * `driver/ext` scope if a package with the extension name can be found. If it
  * has found one, it will load the package library as an ordinary package, which
  * means the `cortomain` will be invoked.
  *
  * In the `cortomain` function, the package should call `corto_load_register` to
  * register the load action with corto for the specific extension. If a package
- * in the `corto/ext` scope did not register the extension after running the
+ * in the `driver/ext` scope did not register the extension after running the
  * `cortomain` function, an error will be thrown.
  *
  * The load action specifies how to load a file of a specific extension. For 

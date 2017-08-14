@@ -184,7 +184,7 @@ corto_contentType corto_loadContentType(
     if (!result) {
         corto_dl dl = NULL;
         corto_id packageId;
-        sprintf(packageId, "corto/fmt/%s", packagePtr);
+        sprintf(packageId, "driver/fmt/%s", packagePtr);
 
         result = corto_alloc(sizeof(struct corto_contentType));
         result->name = corto_strdup(packagePtr);

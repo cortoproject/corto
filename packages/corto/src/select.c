@@ -610,7 +610,6 @@ static corto_int16 corto_selectIterMount(
         strcat(rpath, "/");
         strcat(rpath, result->parent);
         corto_cleanpath(rpath, rpath);
-
         corto_pathstr(data->item.parent, path, rpath, "/");
     } else {
         data->item.parent[0] = '\0';

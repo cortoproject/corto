@@ -310,6 +310,8 @@ struct corto_class_s {
     corto_interfaceVectorseq interfaceVector;
     corto_initAction construct;
     corto_destructAction destruct;
+    corto_initAction validate;
+    corto_initAction update;
 };
 
 /*  quantity */

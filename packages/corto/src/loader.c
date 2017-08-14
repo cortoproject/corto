@@ -422,7 +422,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
 
     if (!h) {
         corto_id extPackage;
-        sprintf(extPackage, "corto/ext/%s", ext);
+        sprintf(extPackage, "driver/ext/%s", ext);
         corto_mutexUnlock(&corto_adminLock);
         if (corto_load(extPackage, 0, NULL)) {
             if (!try) {
@@ -439,7 +439,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         h = corto_lookupExt(ext);
         if (!h) {
             corto_seterr(
-                "package 'corto/ext/%s' loaded but extension is not registered", 
+                "package 'driver/ext/%s' loaded but extension is not registered", 
                 ext);
             goto error;
         }

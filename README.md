@@ -119,17 +119,17 @@ bin etc include lib
 ```
 `bin` contains applications, `lib` contains packages, `include` contains include files and `etc` contains all kinds of supporting files. It is not a coïncidence that this structure looks similar to the `/usr/local` directory on Linux. When you install a corto project, files are copied to `/usr/local`.
 
-Files in each of these directories are stored in `corto/0.2`, where `0.2` is your current major and minor corto version. From there the file structure represents the hierarchical organization of the packages. For example, the `corto/fmt/xml` package is stored here:
+Files in each of these directories are stored in `corto/0.2`, where `0.2` is your current major and minor corto version. From there the file structure represents the hierarchical organization of the packages. For example, the `driver/fmt/xml` package is stored here:
 ```
-~/.corto/lib/corto/0.2/corto/fmt/xml/libxml.so
+~/.corto/lib/corto/0.2/driver/fmt/xml/libxml.so
 ```
 Include files for the `xml` package are stored here:
 ```
-~/.corto/include/corto/0.2/corto/fmt/xml
+~/.corto/include/corto/0.2/driver/fmt/xml
 ```
 Corto projects use the fully qualified include path, so that name clashes between packages are prevented. To include the XML project, do:
 ```
-#include <corto/fmt/xml/xml.h>
+#include <driver/fmt/xml/xml.h>
 ```
 Because packages are not stored in a single directory (to prevent name clashes) corto bakes hard-coded paths to packages path into your applications. This ensures that application always uses the right library.
 

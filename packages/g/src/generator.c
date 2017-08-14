@@ -232,7 +232,7 @@ corto_int16 g_load(g_generator g, char* library) {
 
     /* Load library from generator path */
     char* package = NULL;
-    corto_asprintf(&package, "corto/gen/%s", library);
+    corto_asprintf(&package, "driver/gen/%s", library);
     char* lib = corto_locate(package, &g->library, CORTO_LOCATION_LIB);
     if (!lib) {
         corto_seterr("generator '%s' not found: %s", package, corto_lasterr()?corto_lasterr():"");

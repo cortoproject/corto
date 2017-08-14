@@ -19,7 +19,7 @@ ALWAYS_REBUILD = ["src/corto.c", "src/loader.c"]
 # When building a tar for the core, also include the build system
 task :collect do
     verbose(false)
-    buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{CORTO_VERSION}/build"
+    buildPath = "#{ENV['HOME']}/.corto/pack/lib/corto/#{CORTO_VERSION}/corto/build"
     sh "mkdir -p #{buildPath}"
     sh "cp -r #{ENV['CORTO_BUILD']}/* #{buildPath}/"
 end
