@@ -1187,7 +1187,6 @@ void test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
-
 }
 
 void test_MountSubscription_tc_subscribeTwoSingleSameCtx(

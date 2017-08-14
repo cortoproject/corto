@@ -5112,4 +5112,3 @@ void corto_super_destruct(corto_object o) {
     }
 error:;
 }
-

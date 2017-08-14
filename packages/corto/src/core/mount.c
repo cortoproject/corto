@@ -1035,21 +1035,19 @@ void corto_mount_unsubscribeOrUnmount(
         if (mount) --subscription->mountCount;
         if (!subscription->subscriberCount && !subscription->mountCount) {
             corto_ll_remove(this->subscriptions, subscription);
-        } else {
-            subscription = NULL;
         }
     }
 
     corto_unlock(this);
     
     if (subscription) {
-        if (subscribe) {
+        if (subscribe && !subscription->subscriberCount) {
             corto_mount_onUnsubscribe(
                 this, 
                 &subscription->query, 
                 subscription->subscriberCtx);
         }
-        if (mount) {
+        if (mount && !subscription->mountCount) {
             corto_query q_out, *q;
             corto_id parentId;
             if ((q = corto_mount_getQueryForMount(query, &q_out, parentId, subscribe))) {
@@ -1059,8 +1057,10 @@ void corto_mount_unsubscribeOrUnmount(
                     subscription->mountCtx);
             }
         }
-        corto_ptr_deinit(subscription, corto_mountSubscription_o);
-        corto_dealloc(subscription);
+        if (!subscription->subscriberCount && !subscription->mountCount) {
+            corto_ptr_deinit(subscription, corto_mountSubscription_o);
+            corto_dealloc(subscription);
+        }
     }
 }
 
