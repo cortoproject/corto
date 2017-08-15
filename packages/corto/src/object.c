@@ -524,151 +524,43 @@ int corto__adoptSSO(corto_object sso) {
     return !corto_adopt(parent, sso, TRUE);
 }
 
-/* Find the right initializer to call */
-corto_int16 corto_delegateInit(corto_type t, void *o) {
-    corto_function delegate = NULL;
+corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o) {
     corto_int16 result = 0;
-    corto_interface i = NULL;
-
-    corto_assertObject(t);
-
-    delegate = t->init.super.procedure;
-
-    if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) ||
-            (corto_interface(t)->kind == CORTO_STRUCT) ||
-            (corto_interface(t)->kind == CORTO_PROCEDURE))
-        {
-            corto_interface i = corto_interface(t)->base;
-            while(i && !delegate) {
-                delegate = corto_type(i)->init.super.procedure;
-                if (!delegate) {
-                    i = i->base;
-                } else {
-                    break;
-                }
-            }
+    corto_function delegate;
+    if ((delegate = d->super.procedure)) {
+        corto_interface prev = NULL;
+        bool hasBase = (t->kind == CORTO_COMPOSITE) && ((corto_interface)t)->base;
+        if (hasBase) {
+            prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
+            corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, t);
         }
-    }
-
-    if (delegate) {
-        corto_interface prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, i);
         if (delegate->kind == CORTO_PROCEDURE_CDECL) {
             result = ((corto_int16 ___ (*)(corto_object))delegate->fptr)(o);
         } else {
             corto_callb(delegate, &result, (void*[]){&o});
         }
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
+        if (hasBase) corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
     }
-
     return result;
 }
 
-/* Find the right initializer to call */
-void corto_delegateDeinit(corto_type t, void *o) {
-    corto_function delegate = NULL;
-    corto_interface i = NULL;
-
-    corto_assertObject(t);
-
-    delegate = t->deinit.super.procedure;
-
-    if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) ||
-            (corto_interface(t)->kind == CORTO_STRUCT) ||
-            (corto_interface(t)->kind == CORTO_PROCEDURE))
-        {
-            corto_interface i = corto_interface(t)->base;
-            while(i && !delegate) {
-                delegate = corto_type(i)->deinit.super.procedure;
-                if (!delegate) {
-                    i = i->base;
-                } else {
-                    break;
-                }
-            }
+void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_object o) {
+    corto_function delegate;
+    if ((delegate = d->super.procedure)) {
+        corto_interface prev;
+        bool hasBase = (t->kind == CORTO_COMPOSITE) && ((corto_interface)t)->base;
+        if (hasBase) {
+            prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
+            corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, t);
         }
-    }
-
-    if (delegate) {
-        corto_interface prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, i);
         if (delegate->kind == CORTO_PROCEDURE_CDECL) {
             ((void ___ (*)(corto_object))delegate->fptr)(o);
         } else {
             corto_callb(delegate, NULL, (void*[]){&o});
         }
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
-    }
-}
-
-/* Find the right constructor to call */
-static corto_int16 corto_delegateConstruct(corto_type t, corto_object o) {
-    corto_function delegate = NULL;
-    corto_interface i = NULL;
-    corto_int16 result = 0;
-
-    corto_assertObject(t);
-
-    if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) ||
-            (corto_interface(t)->kind == CORTO_PROCEDURE))
-        {
-            i = corto_interface(t);
-            do {
-                delegate = corto_class(i)->construct.super.procedure;
-
-                /* If a constructor has been created but has no implementation,
-                 * skip it. A typical scenario where this happens is in definition
-                 * files, where an instance is created from a type with a
-                 * constructor that is defined in the same file. */
-                if (delegate && (delegate->kind == CORTO_PROCEDURE_STUB)) {
-                    delegate = NULL;
-                }
-            } while(!delegate && (i = i->base));
+        if (hasBase) {
+            corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
         }
-    }
-
-    if (delegate) {
-        corto_interface prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, i);
-        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
-            result = ((corto_int16 ___ (*)(corto_object))delegate->fptr)(o);
-        } else {
-            corto_callb(delegate, &result, (void*[]){&o});
-        }
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
-    }
-
-    return result;
-}
-
-/* Find the right destructor to call */
-static void corto_delegateDestruct(corto_type t, corto_object o) {
-    corto_function delegate = NULL;
-    corto_interface i = NULL;
-
-    corto_assertObject(t);
-
-    if (t->kind == CORTO_COMPOSITE) {
-        if ((corto_interface(t)->kind == CORTO_CLASS) || (corto_interface(t)->kind == CORTO_PROCEDURE)) {
-            i = corto_interface(t);
-            do {
-                delegate = corto_class(i)->destruct.super.procedure;
-            } while(!delegate && (i = i->base));
-        }
-    }
-
-    if (delegate) {
-        corto_interface prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, i);
-        if (delegate->kind == CORTO_PROCEDURE_CDECL) {
-            ((void ___ (*)(corto_object))delegate->fptr)(o);
-        } else {
-            corto_callb(delegate, NULL, (void*[]){&o});
-        }
-        corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
     }
 }
 
@@ -683,7 +575,9 @@ static void corto__destructor(corto_object o) {
     if (corto_checkState(o, CORTO_DEFINED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
 
-        corto_delegateDestruct(t, o);
+        if (corto_instanceof(corto_class_o, t)) {
+            corto_callDestructDelegate(&((corto_class)t)->destruct, t, o);
+        }
 
         _o->align.attrs.state &= ~CORTO_DEFINED;
     } else {
@@ -1768,15 +1662,13 @@ corto_int16 corto_defineDeclared(corto_object o) {
         if (corto_class_instanceof(corto_class_o, t)) {
             /* Call constructor with default attributes */
             corto_attr prev = corto_setAttr(CORTO_ATTR_DEFAULT);
-            result = corto_delegateConstruct(t, o);
+            result = corto_callInitDelegate(&((corto_class)t)->construct, t, o);
             corto_setAttr(prev);
-        } else if (corto_class_instanceof(corto_procedure_o, t)) {
-            result = corto_delegateConstruct(t, o);
         }
     }
 
     if (result) {
-        /* Remove valid state */
+        /* Remove valid state if result is nonzero */
         corto_invalidate(o);
     }
 
@@ -5002,7 +4894,7 @@ corto_int16 corto_init(corto_object o) {
         }
     }
 
-    result = corto_delegateInit(corto_typeof(o), o);
+    result = corto_callInitDelegate(&type->init, type, o);
     corto_benchmark_stop(CORTO_BENCHMARK_INIT);
     return result;
 error:
@@ -5013,7 +4905,7 @@ error:
 corto_int16 corto_deinit(corto_object o) {
     corto_assertObject(o);
     corto_type type = corto_typeof(o);
-    corto_delegateDeinit(corto_typeof(o), o);
+    corto_callDestructDelegate(&type->deinit, type, o);
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
         corto_walk_opt s =
@@ -5053,9 +4945,9 @@ corto_int16 corto_super_init(corto_object o) {
         corto_seterr("can only call corto_super_init from an initializer");
         goto error;
     }
-    corto_interface base = cur->base;
+    corto_type base = (corto_type)cur->base;
     if (base) {
-        return corto_delegateInit(corto_type(base), o);
+        return corto_callInitDelegate(&base->init, (corto_type)base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
@@ -5069,9 +4961,9 @@ int16_t corto_super_deinit(corto_object o) {
         corto_seterr("can only call corto_super_deinit from an deinitializer");
         goto error;
     }
-    corto_interface base = cur->base;
+    corto_type base = (corto_type)cur->base;
     if (base) {
-        corto_delegateDeinit(corto_type(base), o);
+        corto_callDestructDelegate(&base->deinit, base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
@@ -5087,10 +4979,9 @@ corto_int16 corto_super_construct(corto_object o) {
         corto_seterr("can only call corto_super_construct from a constructor");
         goto error;
     }
-
-    corto_interface base = cur->base;
+    corto_class base = (corto_class)cur->base;
     if (base) {
-        return corto_delegateConstruct(corto_type(base), o);
+        return corto_callInitDelegate(&base->construct, (corto_type)base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
@@ -5104,9 +4995,9 @@ void corto_super_destruct(corto_object o) {
         corto_seterr("can only call corto_super_destruct from a destructor");
         goto error;
     }
-    corto_interface base = cur->base;
+    corto_class base = (corto_class)cur->base;
     if (base) {
-        return corto_delegateDestruct(corto_type(base), o);
+        corto_callDestructDelegate(&base->destruct, (corto_type)base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }

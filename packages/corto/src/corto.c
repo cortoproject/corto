@@ -21,6 +21,7 @@
 
 #include "_bootstrap.h"
 #include "lang/_class.h"
+#include "lang/_interface.h"
 #include "_object.h"
 
 #include "corto/corto.h"
@@ -88,6 +89,12 @@ corto_threadKey CORTO_KEY_FLUENT;
 corto_threadKey CORTO_KEY_THREAD_STRING;
 corto_threadKey CORTO_KEY_MOUNT_RESULT;
 corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
+
+/* Delegate object variables */
+corto_member corto_type_init_o = NULL;
+corto_member corto_type_deinit_o = NULL;
+corto_member corto_class_construct_o = NULL;
+corto_member corto_class_destruct_o = NULL;
 
 /* variables that control verbosity of logging functions */
 int8_t CORTO_DEBUG_ENABLED = 0;
@@ -774,7 +781,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_delegate_compatible_),\
     SSO_OP_OBJ(lang_delegate_castable_),\
     SSO_OP_OBJ(lang_delegate_instanceof_),\
-    SSO_OP_OBJ(lang_delegate_construct),\
+    SSO_OP_OBJ(lang_delegate_bind),\
     /* target */\
     SSO_OP_OBJ(lang_target_type),\
     SSO_OP_OBJ(lang_target_construct_),\
@@ -920,17 +927,14 @@ static void corto_createObject(corto_object o) {
     corto__newSSO(o);
 }
 
-void corto_delegateDestruct(corto_type t, corto_object o);
-corto_int16 corto_delegateInit(corto_type t, corto_object o);
-corto_int16 corto_delegateConstruct(corto_type t, corto_object o);
-
 /* Initialization of objects */
 static void corto_initObject(corto_object o) {
     corto_createObject(o);
     corto_walk_opt s =
         corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_walk(&s, o, NULL);
-    corto_delegateInit(corto_typeof(o), o);
+    corto_type t = corto_typeof(o);
+    corto_callInitDelegate(&t->init, t, o);
 }
 
 /* Define object */
@@ -1134,6 +1138,19 @@ int corto_start(char *appName) {
     corto_type(corto_state_o)->size = sizeof(corto_state);
     corto_type(corto_attr_o)->size = sizeof(corto_attr);
 
+    /* Bootstrap offsets of delegates. These are required to pull forward 
+     * delegates from base classes */
+    lang_type_init__o.v.offset = offsetof(struct corto_type_s, init);
+    lang_type_deinit__o.v.offset = offsetof(struct corto_type_s, deinit);
+    lang_class_construct__o.v.offset = offsetof(struct corto_class_s, construct);
+    lang_class_destruct__o.v.offset = offsetof(struct corto_class_s, destruct);
+    
+    /* Assign delegates to global variables */
+    corto_type_init_o = &lang_type_init__o.v;
+    corto_type_deinit_o = &lang_type_deinit__o.v;
+    corto_class_construct_o = &lang_class_construct__o.v;
+    corto_class_destruct_o = &lang_class_destruct__o.v;
+
     /* Initialize builtin scopes */
     corto_initObject(root_o);
     corto_initObject(corto_o);
@@ -1152,6 +1169,22 @@ int corto_start(char *appName) {
 
     corto_int32 i = 0;
     corto_object o;
+
+    /* Because at this point the construct/destruct & init/deinit delegates are
+     * not yet propagated from base classes to sub classes, type construction
+     * can't begin yet. First, delegates need to be properly initialized for
+     * all types. This only affects types that support inheritance, so all
+     * types that inherit from interface. */
+    for (i = 0; (o = types[i].o); i++) {
+        if (corto_instanceof(corto_interface_o, o)) {
+            corto_interface_pullDelegate(o, &lang_type_init__o.v);
+            corto_interface_pullDelegate(o, &lang_type_deinit__o.v);
+            if (corto_instanceof(corto_class_o, o)) {
+                corto_interface_pullDelegate(o, &lang_class_construct__o.v);
+                corto_interface_pullDelegate(o, &lang_class_destruct__o.v);
+            }
+        }
+    }
 
     /* Init objects */
     for (i = 0; (o = types[i].o); i++) corto_initObject(o);

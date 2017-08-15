@@ -237,6 +237,9 @@ corto_int16 ext_corto_expr_free(ext_corto_expr *expr);
 
 corto_procedure corto_function_getProcedureType(corto_function this);
 
+corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o);
+void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_object o);
+    
 extern corto_entityAdmin corto_subscriber_admin;
 extern corto_entityAdmin corto_mount_admin;
 

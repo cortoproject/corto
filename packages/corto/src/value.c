@@ -1138,8 +1138,6 @@ corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
     return result;
 }
 
-corto_int16 corto_delegateInit(corto_type t, void *o);
-
 corto_int16 corto_value_init(corto_value *v) {
     corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
@@ -1148,10 +1146,8 @@ corto_int16 corto_value_init(corto_value *v) {
             return -1;
         }
     }
-    return corto_delegateInit(corto_value_typeof(v), corto_value_ptrof(v));
+    return corto_callInitDelegate(&type->init, type, corto_value_ptrof(v));
 }
-
-void corto_delegateDeinit(corto_type t, void *o);
 
 corto_int16 corto_value_deinit(corto_value *v) {
     corto_type type = corto_value_typeof(v);
@@ -1160,6 +1156,6 @@ corto_int16 corto_value_deinit(corto_value *v) {
             corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
         corto_walk_value(&s, v, NULL);
     }
-    corto_delegateDeinit(corto_value_typeof(v), corto_value_ptrof(v));
+    corto_callDestructDelegate(&type->deinit, type, corto_value_ptrof(v));
     return 0;
 }

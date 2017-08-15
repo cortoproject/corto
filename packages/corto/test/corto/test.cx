@@ -375,7 +375,7 @@ class FooReplicator : mount, hidden :/
 class MethodForwardTest:/
     void func() remote
     invoked: int32, readonly
-    
+
 test/Suite Attributes:/
     void tc_testDefaultSet()
     void tc_testTargetAttr()

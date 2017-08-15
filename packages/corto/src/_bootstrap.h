@@ -1039,7 +1039,7 @@ CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, CORTO_ATTR_DEFAULT, N
     CORTO_OVERRIDABLE_O(lang_delegate, compatible, "(type type)", lang_bool, corto_delegate_compatible_v);
     CORTO_OVERRIDABLE_O(lang_delegate, castable, "(type type)", lang_bool, corto_delegate_compatible_v);
     CORTO_METHOD_O(lang_delegate, instanceof, "(object object)", lang_bool, corto_delegate_instanceof);
-    CORTO_FUNCTION_O(lang_delegate, construct, "(function object)", lang_int16, corto_delegate_construct);
+    CORTO_FUNCTION_O(lang_delegate, bind, "(function object)", lang_int16, corto_delegate_bind);
 
 /* /corto/lang/target */
 CORTO_FW_C(lang, target);

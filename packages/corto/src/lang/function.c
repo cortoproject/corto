@@ -76,7 +76,7 @@ int16_t corto_function_construct(
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
-        if (corto_delegate_construct(this)) {
+        if (corto_delegate_bind(this)) {
             goto error;
         }
     }

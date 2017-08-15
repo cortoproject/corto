@@ -90,6 +90,21 @@ found:
     return FALSE;
 }
 
+/* Pull delegates from base-classes to subclass if undefined */
+void corto_interface_pullDelegate(corto_interface this, corto_member m) {
+    if (corto_instanceof(corto_delegate_o, m->type)) {
+        corto_interface base = this;
+        corto_delegatedata *delegate = NULL;
+        do {
+            delegate = CORTO_OFFSET(base, m->offset);
+        } while (!delegate->procedure && (base = corto_interface(base)->base));
+        if (base && (base != this) && corto_instanceof(corto_parentof(m), base)) {
+            corto_delegatedata *myDelegate = CORTO_OFFSET(this, m->offset);
+            corto_ptr_setref(&myDelegate->procedure, delegate->procedure);     
+        }
+    }
+}
+
 /* Bind methods in scope */
 int corto_interface_walkScope(corto_object o, void* userData) {
     corto_interface this;
@@ -546,6 +561,13 @@ int16_t corto_interface_construct(
     if (!corto_scopeWalk(this, corto_interface_walkScope, this)) {
         goto error;
     }
+
+    /* The reason that these delegates are pulled on lang/interface and not on
+     * lang/type is because pulling delegates forward only makes sense for types
+     * that support inheritance. Inheritance is the highest class in the
+     * type-inheritance hierarchy that supports inheritance. */
+    corto_interface_pullDelegate(this, corto_type_init_o);
+    corto_interface_pullDelegate(this, corto_type_deinit_o);        
 
     return safe_corto_type_construct(this);
 error:

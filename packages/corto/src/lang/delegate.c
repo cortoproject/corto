@@ -46,7 +46,7 @@ bool corto_delegate_compatible_v(
     return result;
 }
 
-int16_t corto_delegate_construct(
+int16_t corto_delegate_bind(
     corto_function object)
 {
     corto_object parent = corto_parentof(object);
