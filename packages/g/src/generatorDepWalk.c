@@ -47,7 +47,7 @@ struct g_depWalk_t  {
 corto_object corto_genDepFindAnonymous(g_depWalk_t data, corto_object o) {
     corto_object result = o;
 
-    if (!corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+    if (!corto_checkAttr(o, CORTO_ATTR_NAMED) || !corto_childof(root_o, o)) {
         if (!data->anonymousObjects) {
             data->anonymousObjects = corto_ll_new();
         }
@@ -89,7 +89,7 @@ corto_int16 corto_genDepReference(corto_walk_opt* s, corto_value* info, void* us
         }
 
         /* Include dependencies on anonymous types */
-        if (!corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+        if (!corto_checkAttr(o, CORTO_ATTR_NAMED) || !corto_childof(root_o, o)) {
             /* Look for equivalent anonymous objects. Since anonymous objects do
              * not have their own identity, they are equal if they have the same
              * value. Therefore, if multiple anonymous objects are found with

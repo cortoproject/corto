@@ -21,30 +21,65 @@
 
 #include "corto/g/g.h"
 
+/* Close file */
+static int g_closeFile(void* o, void* ctx) {
+    g_file file;
+    CORTO_UNUSED(ctx);
+
+    file = o;
+
+    g_fileClose(file);
+
+    return 1;
+}
+
+static void g_reset(g_generator g) {
+    if (g->library) {
+        corto_dlClose(g->library);
+        g->library = NULL;
+    }
+
+    if (g->files) {
+        corto_ll_walk(g->files, g_closeFile, NULL);
+        corto_ll_free(g->files);
+        g->files = NULL;
+    }
+
+    /* Set id-generation to default */
+    g->idKind = CORTO_GENERATOR_ID_DEFAULT;
+    
+    /* Set action-callbacks */
+    g->start_action = NULL;
+    g->id_action = NULL;
+
+    /* No library loaded */
+    g->library = NULL;
+
+    /* Current will be set by object walk */
+    g->current = NULL;
+    g->inWalk = FALSE;
+
+    if (g->objects) {
+        corto_iter it = corto_ll_iter(g->objects);
+        while (corto_iter_hasNext(&it)) {
+            g_object *obj = corto_iter_next(&it);
+            if (obj->parseSelf || obj->parseScope) {
+                g->current = corto_ll_get(g->objects, 0);
+                break;
+            }
+        }
+    }
+}
+
 /* Generator functions */
 g_generator g_new(char* name, char* language) {
     g_generator result;
 
-    result = corto_alloc(sizeof(struct g_generator_s));
-
-    /* List of output directories is initially empty */
-    result->attributes = NULL;
-
-    /* List of files is initially empty */
-    result->files = NULL;
-
-    /* No imports are resolved */
-    result->imports = NULL;
-    result->importsNested = NULL;
-
-    /* Set objects */
-    result->objects = NULL;
+    result = corto_calloc(sizeof(struct g_generator_s));
 
     /* Set name */
     if (name) {
         result->name = corto_strdup(name);
-    } else {
-        result->name = NULL;
     }
 
     if (language) {
@@ -53,21 +88,7 @@ g_generator g_new(char* name, char* language) {
         result->language = corto_strdup("c"); /* Take 'c' as default language */
     }
 
-    /* Set id-generation to default */
-    result->idKind = CORTO_GENERATOR_ID_DEFAULT;
-
-    /* Set action-callbacks */
-    result->start_action = NULL;
-    result->id_action = NULL;
-
-    /* No library loaded */
-    result->library = NULL;
-
-    /* Current will be set by object walk */
-    result->current = NULL;
-    result->inWalk = FALSE;
-
-    result->anonymousObjects = NULL;
+    g_reset(result);
 
     return result;
 }
@@ -230,6 +251,10 @@ char* g_getAttribute(g_generator g, char* key) {
 /* Load generator actions from library */
 corto_int16 g_load(g_generator g, char* library) {
 
+    /* Reset generator to initial state in case this is not the first library
+     * that is processed. */
+    g_reset(g);
+
     /* Load library from generator path */
     char* package = NULL;
     corto_asprintf(&package, "driver/gen/%s", library);
@@ -254,6 +279,7 @@ corto_int16 g_load(g_generator g, char* library) {
 
     corto_dealloc(lib);
     corto_dealloc(package);
+
     return 0;
 error:
     corto_dealloc(package);
@@ -302,18 +328,6 @@ static int g_freeSnippet(void* o, void* ctx) {
     return 1;
 }
 
-/* Close file */
-static int g_closeFile(void* o, void* ctx) {
-    g_file file;
-    CORTO_UNUSED(ctx);
-
-    file = o;
-
-    g_fileClose(file);
-
-    return 1;
-}
-
 static int g_freeAttribute(void* _o, void* ctx) {
     g_attribute* o;
 
@@ -342,21 +356,12 @@ static int g_freeImport(void* _o, void* ctx) {
 
 /* Free generator */
 void g_free(g_generator g) {
-    if (g->library) {
-        corto_dlClose(g->library);
-        g->library = NULL;
-    }
+    g_reset(g);
 
     if (g->objects) {
         corto_ll_walk(g->objects, g_freeObjects, NULL);
         corto_ll_free(g->objects);
         g->objects = NULL;
-    }
-
-    if (g->files) {
-        corto_ll_walk(g->files, g_closeFile, NULL);
-        corto_ll_free(g->files);
-        g->files = NULL;
     }
 
     if (g->attributes) {
@@ -638,11 +643,10 @@ static g_object* g_findObjectIntern(
     corto_bool inclusive)
 {
     corto_iter iter;
-    g_object *result, *t;
+    g_object *result = NULL, *t;
     corto_object parent;
     unsigned int distance, minDistance;
 
-    result = NULL;
     if (g->objects) {
         minDistance = -1;
         iter = corto_ll_iter(g->objects);
@@ -875,6 +879,7 @@ char* g_fullOidExt(g_generator g, corto_object o, corto_id id, g_idKind kind) {
         g_oidTransform(g, o, _id, kind);
     } else {
         corto_uint32 count = 0;
+
         if (!g->anonymousObjects) {
             g->anonymousObjects = corto_ll_new();
         }

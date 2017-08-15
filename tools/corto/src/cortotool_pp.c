@@ -395,52 +395,53 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
 
     /* Load library */
     if (generators) {
+        /* Generator object that holds config & invokes generator libs */
+        g = g_new(name, NULL);
+            
+        /* Generate for all scopes */
+        if (scopes) {
+            if (cortotool_ppParse(g, scopes, TRUE, TRUE)) {
+                goto error;
+            }
+        }
+        if (objects) {
+            if (cortotool_ppParse(g, objects, TRUE, FALSE)) {
+                goto error;
+            }
+        }
+
+        /* Load imports */
+        if (imports) {
+            if (cortotool_ppParseImports(g, imports)) {
+                goto error;
+            }
+        }
+
+        /* Set attributes */
+        if (attributes) {
+            it = corto_ll_iter(attributes);
+            while (corto_iter_hasNext(&it)) {
+                corto_string ptr;
+
+                attr = corto_strdup(corto_iter_next(&it));
+
+                ptr = strchr(attr, '=');
+                if (ptr) {
+                    *ptr = '\0';
+                    g_setAttribute(g, attr, ptr+1);
+                }
+                *ptr = '=';
+                corto_dealloc(attr);
+            }
+        }
+
+        /* Parse for every specified generator */
         while ((lib = corto_ll_takeFirst(generators))) {
 
-            /* Create generator for each provided generator library */
-            g = g_new(name, NULL);
-
-            /* Load interface */
+            /* Load generator package */
             if (g_load(g, lib)) {
                 corto_seterr("corto: pp: %s", corto_lasterr());
                 goto error;
-            }
-
-            /* Generate for all scopes */
-            if (scopes) {
-                if (cortotool_ppParse(g, scopes, TRUE, TRUE)) {
-                    goto error;
-                }
-            }
-            if (objects) {
-                if (cortotool_ppParse(g, objects, TRUE, FALSE)) {
-                    goto error;
-                }
-            }
-
-            /* Load imports */
-            if (imports) {
-                if (cortotool_ppParseImports(g, imports)) {
-                    goto error;
-                }
-            }
-
-            /* Set attributes */
-            if (attributes) {
-                it = corto_ll_iter(attributes);
-                while (corto_iter_hasNext(&it)) {
-                    corto_string ptr;
-
-                    attr = corto_strdup(corto_iter_next(&it));
-
-                    ptr = strchr(attr, '=');
-                    if (ptr) {
-                        *ptr = '\0';
-                        g_setAttribute(g, attr, ptr+1);
-                    }
-                    *ptr = '=';
-                    corto_dealloc(attr);
-                }
             }
 
             /* Start generator */
@@ -450,11 +451,11 @@ corto_int16 cortotool_pp(int argc, char *argv[]) {
                 g_free(g);
                 goto error;
             }
-
-            /* Free generator */
-            g_free(g);
-            g = NULL;
         }
+        
+        /* Free generator */
+        g_free(g);
+        g = NULL;
     }
 
     /* Cleanup application resources */
