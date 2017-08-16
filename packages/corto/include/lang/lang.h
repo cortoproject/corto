@@ -16,6 +16,12 @@
 #define CORTO_TYPE_NEEDS_INIT (2)
 #define CORTO_TYPE_HAS_TARGET (4)
 
+#define CORTO_TYPE_HAS_INIT (8)
+#define CORTO_TYPE_HAS_DEINIT (16)
+#define CORTO_TYPE_HAS_CONSTRUCT (32)
+#define CORTO_TYPE_HAS_DESTRUCT (64)
+#define CORTO_TYPE_HAS_VALIDATE (128)
+#define CORTO_TYPE_HAS_UPDATE (256)
 /* $end */
 
 #include <corto/lang/_type.h>

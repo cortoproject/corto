@@ -80,8 +80,12 @@ int16_t corto_class_construct(
         }
     }
 
-    corto_interface_pullDelegate(corto_interface(this), corto_class_construct_o);
-    corto_interface_pullDelegate(corto_interface(this), corto_class_destruct_o);
+    if (corto_interface_pullDelegate(corto_interface(this), corto_class_construct_o)) {
+        corto_type(this)->flags |= CORTO_TYPE_HAS_CONSTRUCT;
+    }
+    if (corto_interface_pullDelegate(corto_interface(this), corto_class_destruct_o)) {
+        corto_type(this)->flags |= CORTO_TYPE_HAS_DESTRUCT;
+    }
 
     return result;
 }

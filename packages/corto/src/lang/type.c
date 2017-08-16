@@ -108,6 +108,13 @@ int16_t corto_type_construct(
     if (this->kind == CORTO_ANY) {
         this->flags |= CORTO_TYPE_NEEDS_INIT;
     }
+    if (this->init.super.procedure) {
+        this->flags |= CORTO_TYPE_HAS_INIT;
+    }
+    if (this->deinit.super.procedure) {
+        this->flags |= CORTO_TYPE_HAS_DEINIT;
+    }
+
     return 0;
 }
 

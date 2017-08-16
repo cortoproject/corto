@@ -575,7 +575,7 @@ static void corto__destructor(corto_object o) {
     if (corto_checkState(o, CORTO_DEFINED)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
 
-        if (corto_instanceof(corto_class_o, t)) {
+        if (t->flags & CORTO_TYPE_HAS_DESTRUCT) {
             corto_callDestructDelegate(&((corto_class)t)->destruct, t, o);
         }
 
@@ -1616,7 +1616,7 @@ corto_object corto_resume(
 }
 
 /* Resume a declared object */
-corto_bool corto_resumeDeclared(corto_object o) {
+static corto_bool corto_resumeDeclared(corto_object o) {
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__persistent *_p = NULL;
     corto_bool resumed = FALSE;
@@ -1650,33 +1650,30 @@ corto_bool corto_resumeDeclared(corto_object o) {
 }
 
 /* Construct a declared object */
-corto_int16 corto_defineDeclared(corto_object o) {
+static corto_int16 corto_defineDeclared(corto_object o) {
     corto_int16 result = 0;
     corto_type t = corto_typeof(o);
 
-    corto_assertObject(o);
-
     /* Don't invoke constructor if object is not locally owned */
-    if (corto_ownerMatch(corto_ownerof(o), NULL)) {
-        /* If object is instance of a class, call the constructor */
-        if (corto_class_instanceof(corto_class_o, t)) {
+    if (t->flags & CORTO_TYPE_HAS_CONSTRUCT) {
+        if (corto_ownerMatch(corto_ownerof(o), NULL)) {
             /* Call constructor with default attributes */
             corto_attr prev = corto_setAttr(CORTO_ATTR_DEFAULT);
             result = corto_callInitDelegate(&((corto_class)t)->construct, t, o);
             corto_setAttr(prev);
         }
-    }
 
-    if (result) {
-        /* Remove valid state if result is nonzero */
-        corto_invalidate(o);
+        if (result) {
+            /* Remove valid state if result is nonzero */
+            corto_invalidate(o);
+        }
     }
 
     return result;
 }
 
 /* Send DEFINE or RESUME notification for new object */
-corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
+static corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
     _o->align.attrs.state |= CORTO_DEFINED;
@@ -4895,7 +4892,9 @@ corto_int16 corto_init(corto_object o) {
         }
     }
 
-    result = corto_callInitDelegate(&type->init, type, o);
+    if (type->flags & CORTO_TYPE_HAS_INIT) {
+        result = corto_callInitDelegate(&type->init, type, o);
+    }
     corto_benchmark_stop(CORTO_BENCHMARK_INIT);
     return result;
 error:
@@ -4906,7 +4905,10 @@ error:
 corto_int16 corto_deinit(corto_object o) {
     corto_assertObject(o);
     corto_type type = corto_typeof(o);
-    corto_callDestructDelegate(&type->deinit, type, o);
+
+    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
+        corto_callDestructDelegate(&type->deinit, type, o);
+    }
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
         corto_walk_opt s =
@@ -4947,7 +4949,7 @@ corto_int16 corto_super_init(corto_object o) {
         goto error;
     }
     corto_type base = (corto_type)cur->base;
-    if (base) {
+    if (base && base->flags & CORTO_TYPE_HAS_INIT) {
         return corto_callInitDelegate(&base->init, (corto_type)base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
@@ -4963,7 +4965,7 @@ int16_t corto_super_deinit(corto_object o) {
         goto error;
     }
     corto_type base = (corto_type)cur->base;
-    if (base) {
+    if (base && base->flags & CORTO_TYPE_HAS_DEINIT) {
         corto_callDestructDelegate(&base->deinit, base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
@@ -4981,7 +4983,7 @@ corto_int16 corto_super_construct(corto_object o) {
         goto error;
     }
     corto_class base = (corto_class)cur->base;
-    if (base) {
+    if (base && ((corto_type)base)->flags & CORTO_TYPE_HAS_CONSTRUCT) {
         return corto_callInitDelegate(&base->construct, (corto_type)base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
@@ -4997,7 +4999,7 @@ void corto_super_destruct(corto_object o) {
         goto error;
     }
     corto_class base = (corto_class)cur->base;
-    if (base) {
+    if (base && ((corto_type)base)->flags & CORTO_TYPE_HAS_DESTRUCT) {
         corto_callDestructDelegate(&base->destruct, (corto_type)base, o);
     } else {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));

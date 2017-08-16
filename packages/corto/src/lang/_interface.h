@@ -22,7 +22,7 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
 corto_function* corto_vtableLookup(corto_objectseq* vtable, corto_string member, corto_int32* d_out);
 corto_bool corto_vtableInsert(corto_objectseq* vtable, corto_function method);
 corto_objectseq corto_interface_vtableFromBase(corto_interface this);
-void corto_interface_pullDelegate(corto_interface this, corto_member member);
+bool corto_interface_pullDelegate(corto_interface this, corto_member member);
 
 extern corto_member corto_type_init_o;
 extern corto_member corto_type_deinit_o;

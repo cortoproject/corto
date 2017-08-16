@@ -1178,11 +1178,19 @@ int corto_start(char *appName) {
 
     for (i = 0; (o = types[i].o); i++) {
         if (corto_instanceof(corto_interface_o, o)) {
-            corto_interface_pullDelegate(o, &lang_type_init__o.v);
-            corto_interface_pullDelegate(o, &lang_type_deinit__o.v);
+            if (corto_interface_pullDelegate(o, &lang_type_init__o.v)) {
+                ((corto_type)o)->flags |= CORTO_TYPE_HAS_INIT;
+            }
+            if (corto_interface_pullDelegate(o, &lang_type_deinit__o.v)) {
+                ((corto_type)o)->flags |= CORTO_TYPE_HAS_DEINIT;
+            }
             if (corto_instanceof(corto_class_o, o)) {
-                corto_interface_pullDelegate(o, &lang_class_construct__o.v);
-                corto_interface_pullDelegate(o, &lang_class_destruct__o.v);
+                if (corto_interface_pullDelegate(o, &lang_class_construct__o.v)) {
+                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_CONSTRUCT;
+                }
+                if (corto_interface_pullDelegate(o, &lang_class_destruct__o.v)) {
+                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_DESTRUCT;
+                }
             }
         }
     }
