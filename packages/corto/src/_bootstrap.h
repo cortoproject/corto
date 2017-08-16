@@ -443,7 +443,7 @@ CORTO_FWDECL(class, enum);
 CORTO_FWDECL(class, int);
 CORTO_FWDECL(class, float);
 CORTO_FWDECL(class, interface);
-CORTO_FWDECL_CORE(class, invokeEvent);
+CORTO_FWDECL_CORE(struct, invokeEvent);
 CORTO_FWDECL(class, iterator);
 CORTO_FWDECL_SECURE(class, key);
 CORTO_FWDECL(class, leaf);
@@ -1282,7 +1282,7 @@ CORTO_STRUCT_BASE_O(core, subscriberEvent, core_event, NULL, CORTO_DECLARED | CO
     CORTO_METHOD_O(core_subscriberEvent, deinit, "()", lang_void, corto_subscriberEvent_deinit);
 
 /* /corto/lang/invokeEvent */
-CORTO_CLASS_O(core, invokeEvent, core_event, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
+CORTO_STRUCT_BASE_O(core, invokeEvent, core_event, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, NULL, CORTO_NODELEGATE);
     CORTO_REFERENCE_O(core_invokeEvent, mount, core_mount, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, instance, lang_object, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(core_invokeEvent, function, lang_function, CORTO_GLOBAL, CORTO_DEFINED | CORTO_DECLARED, NULL, FALSE);
@@ -1411,8 +1411,8 @@ CORTO_CLASS_O(core, mount, core_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NU
     CORTO_OVERRIDABLE_O(core_mount, onTransactionEnd, "(core/subscriberEventIter events,word ctx)", lang_void, corto_mount_onUnsubscribe_v);
 
 /* /corto/core/router */
-CORTO_FW_ICD(core, router);
-CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_ICD);
+CORTO_FW_IC(core, router);
+CORTO_CLASS_O(core, router, lang_class, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_DEFINED, NULL, CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_METHOD_O(core_router, init, "()", lang_int16, corto_router_init);
     CORTO_METHOD_O(core_router, construct, "()", lang_int16, corto_router_construct);
     CORTO_MEMBER_O(core_router, returnType, lang_type, CORTO_GLOBAL);

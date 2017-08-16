@@ -1175,6 +1175,7 @@ int corto_start(char *appName) {
      * can't begin yet. First, delegates need to be properly initialized for
      * all types. This only affects types that support inheritance, so all
      * types that inherit from interface. */
+
     for (i = 0; (o = types[i].o); i++) {
         if (corto_instanceof(corto_interface_o, o)) {
             corto_interface_pullDelegate(o, &lang_type_init__o.v);

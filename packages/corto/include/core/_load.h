@@ -22,7 +22,6 @@ CORTO_EXPORT extern corto_package corto_o;
 CORTO_EXPORT extern corto_package corto_core_o;
 
 /* Forward declarations of classes */
-CORTO_META_OBJECT(class, invokeEvent);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, application);
 CORTO_META_OBJECT(class, tool);
@@ -67,6 +66,7 @@ CORTO_META_OBJECT(struct, observerEvent);
 CORTO_META_OBJECT(struct, position);
 CORTO_META_OBJECT(struct, sample);
 CORTO_META_OBJECT(struct, subscriberEvent);
+CORTO_META_OBJECT(struct, invokeEvent);
 CORTO_META_OBJECT(struct, time);
 
 CORTO_META_OBJECT(subscriber, mount_on_notify);

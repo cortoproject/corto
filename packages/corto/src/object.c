@@ -1786,8 +1786,9 @@ static corto_object corto_declareChildInternRecursive(
     return result;
 }
 
-corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
-    return corto_declareChildInternRecursive(parent, id, type, FALSE, TRUE, FALSE);
+corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {    
+    corto_object o = corto_declareChildInternRecursive(parent, id, type, FALSE, TRUE, FALSE);
+    return o;
 }
 
 corto_object _corto_declareOrphan(corto_object parent, corto_string id, corto_type type) {

@@ -1,10 +1,7 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
 #include "_object.h"
-
 
 
 /* Not all types that inherit from from function are necessarily procedures. Find
@@ -19,6 +16,9 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
 
     return corto_procedure(t);
 }
+
+int16_t corto_delegate_validate(
+    corto_function object);
 
 int16_t corto_function_construct(
     corto_function this)
@@ -74,12 +74,12 @@ int16_t corto_function_construct(
         }
     }
 
-    /* Bind with interface if possible */
+    /* Validate delegate */
     if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
-        if (corto_delegate_bind(this)) {
+        if (corto_delegate_validate(this)) {
             goto error;
         }
-    }
+    }    
 
     /* Initialize binding-specific data */
     if (corto_callInit(this)) {
@@ -189,6 +189,13 @@ int16_t corto_function_init(
             goto error;
         }
     }
+
+    /* Bind with interface if possible */
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+        if (corto_delegate_bind(this)) {
+            goto error;
+        }
+    }    
 
     corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return 0;

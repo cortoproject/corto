@@ -95,12 +95,21 @@ void corto_interface_pullDelegate(corto_interface this, corto_member m) {
     if (corto_instanceof(corto_delegate_o, m->type)) {
         corto_interface base = this;
         corto_delegatedata *delegate = NULL;
+        
         do {
             delegate = CORTO_OFFSET(base, m->offset);
-        } while (!delegate->procedure && (base = corto_interface(base)->base));
+
+            /* If a constructor has been created but has no implementation,
+             * skip it. A typical scenario where this happens is in definition
+             * files, where an instance is created from a type with a
+             * constructor that is defined in the same file. */
+            if (delegate->procedure && delegate->procedure->kind == CORTO_PROCEDURE_STUB) {
+                delegate = NULL;
+            }
+        } while ((!delegate || !delegate->procedure) && (base = corto_interface(base)->base));
         if (base && (base != this) && corto_instanceof(corto_parentof(m), base)) {
             corto_delegatedata *myDelegate = CORTO_OFFSET(this, m->offset);
-            corto_ptr_setref(&myDelegate->procedure, delegate->procedure);     
+            corto_ptr_setref(&myDelegate->procedure, delegate->procedure); 
         }
     }
 }

@@ -81,7 +81,7 @@ int16_t corto_class_construct(
     }
 
     corto_interface_pullDelegate(corto_interface(this), corto_class_construct_o);
-    corto_interface_pullDelegate(corto_interface(this), corto_class_destruct_o);        
+    corto_interface_pullDelegate(corto_interface(this), corto_class_destruct_o);
 
     return result;
 }
