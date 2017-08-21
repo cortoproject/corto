@@ -41,8 +41,8 @@
   a header comment, such as this one.
 */
 
-#include "corto/object.h"
-#include "corto/rb.h"
+#include <corto/object_store.h>
+#include <corto/rb.h>
 
 #ifdef __cplusplus
 #include <cstddef>
