@@ -1242,7 +1242,8 @@ static corto_object corto_declareChildIntern(
     corto_string id,
     corto_type type,
     corto_bool orphan,
-    corto_bool forceType)
+    corto_bool forceType,
+    corto_bool defineVoid)
 {
     corto_benchmark_start(CORTO_BENCHMARK_DECLARECHILD);
     corto_object o = NULL;
@@ -1399,7 +1400,7 @@ static corto_object corto_declareChildIntern(
             }
 
             /* void objects are instantly defined because they have no value. */
-            if (type->kind == CORTO_VOID) {
+            if (defineVoid && type->kind == CORTO_VOID) {
                 corto_define(o);
             }
         }
@@ -1718,6 +1719,7 @@ static corto_object corto_declareChildInternRecursive(
         char *cur = buf;
         strcpy(buf, id);
         corto_object stack[CORTO_MAX_SCOPE_DEPTH];
+        corto_object firstNonExist = NULL;
         corto_int32 sp = 0;
 
         next = &cur[next - id];
@@ -1726,10 +1728,23 @@ static corto_object corto_declareChildInternRecursive(
 
         do {
             /* Try to resume parent objects first, in case they have another type */
-            if (!(result = corto_find(parent, cur, CORTO_FIND_DEFAULT))) {
+            if (!(result = corto_find(parent, cur, CORTO_FIND_DEFAULT))) {         
                 if (!next || !(result = corto_resume(parent, cur, NULL))) {
                     /* If object was not resumed, declare it */
-                    result = corto_declareChildIntern(parent, cur, type, orphan, next ? FALSE : forceType);
+                    result = corto_declareChildIntern(
+                        parent, 
+                        cur, 
+                        next ? corto_void_o : type, 
+                        orphan, 
+                        next ? FALSE : forceType,
+                        FALSE /* prevent sending DEFINE event for void objects */);
+                    
+                    /* Keep track of first non-existing object. If something
+                     * goes wrong, all objects, starting from this object, must
+                     * be deleted. */
+                    if (!firstNonExist) {
+                        firstNonExist = result;
+                    }
                 }
             } else {
                 corto_release(result);
@@ -1751,17 +1766,23 @@ static corto_object corto_declareChildInternRecursive(
 
             /* First ensure all constructors are successfully called */
             for (i = 0; i < sp; i++) {
-                masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
-                if (corto_defineDeclared(stack[i])) {
-                    result = NULL; /* Signal failure */
-                    break;
+                if (!corto_checkState(stack[i], CORTO_DEFINED)) {
+                    masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
+                    if (corto_defineDeclared(stack[i])) {
+                        result = NULL; /* Signal failure */
+                        break;
+                    }
+                } else {
+                    masks[i] = 0;
                 }
             }
 
             /* Send notifications for all objects */
             if (result) {
                 for (i = 0; i < sp; i++) {
-                    corto_notifyDefined(stack[i], masks[i]);
+                    if (masks[i]) {
+                        corto_notifyDefined(stack[i], masks[i]);
+                    }
                 }
             }
         }
@@ -1769,12 +1790,12 @@ static corto_object corto_declareChildInternRecursive(
         /* If one of the operations failed, delete all objects */
         if (!result) {
             /* Recursively delete objects */
-            if (stack[0]) {
-                corto_delete(stack[0]);
+            if (firstNonExist) {
+                corto_delete(firstNonExist);
             }
         }
     } else {
-        result = corto_declareChildIntern(parent, id, type, orphan, forceType);
+        result = corto_declareChildIntern(parent, id, type, orphan, forceType, TRUE);
         if (create) {
             result = corto_createIntern(result);
         }
@@ -3574,12 +3595,12 @@ corto_object corto_find(corto_object scope, corto_string id, corto_findKind mode
     return corto_lookup_intern(scope, id, mode & CORTO_FIND_RESUME);
 }
 
-corto_bool corto_match(corto_string expr, corto_string str) {
-    struct corto_matchProgram_s matcher;
-    if (corto_matchProgramParseIntern(&matcher, expr, TRUE, TRUE)) {
+corto_bool corto_idmatch(corto_string expr, corto_string str) {
+    struct corto_idmatch_program_s matcher;
+    if (corto_idmatchParseIntern(&matcher, expr, TRUE, TRUE)) {
         goto error;
     }
-    corto_bool result = corto_matchProgram_run(&matcher, str);
+    corto_bool result = corto_idmatch_run(&matcher, str);
     corto_dealloc(matcher.tokens);
     return result;
 error:
@@ -4881,7 +4902,7 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
 corto_int16 corto_init(corto_object o) {
     corto_benchmark_start(CORTO_BENCHMARK_INIT);
     corto_assertObject(o);
-    corto_int16 result;
+    corto_int16 result = 0;
     corto_type type = corto_typeof(o);
 
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
