@@ -1332,7 +1332,7 @@ CORTO_PROCEDURE_O(core, subscriber, FALSE, NULL, core_observer, CORTO_HIDDEN, NU
     CORTO_ALIAS_O(core_subscriber, dispatcher, core_observer_dispatcher, CORTO_GLOBAL);
     CORTO_ALIAS_O(core_subscriber, enabled, core_observer_enabled, CORTO_GLOBAL);
     CORTO_MEMBER_O(core_subscriber, contentTypeHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
-    CORTO_MEMBER_O(core_subscriber, matchProgram, lang_word, CORTO_READONLY|CORTO_LOCAL);
+    CORTO_MEMBER_O(core_subscriber, idmatch, lang_word, CORTO_READONLY|CORTO_LOCAL);
     CORTO_METHOD_O(core_subscriber, init, "()", lang_int16, corto_subscriber_init);
     CORTO_METHOD_O(core_subscriber, deinit, "()", lang_void, corto_subscriber_deinit);
     CORTO_METHOD_O(core_subscriber, construct, "()", lang_int16, corto_subscriber_construct);

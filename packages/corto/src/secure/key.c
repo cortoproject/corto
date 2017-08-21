@@ -102,7 +102,7 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                         continue;
                     }
 
-                    if (lock->expr && *expr && !corto_match(lock->expr, expr)) {
+                    if (lock->expr && *expr && !corto_idmatch(lock->expr, expr)) {
                         continue;
                     }
 

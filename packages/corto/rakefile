@@ -11,10 +11,10 @@ NOCORTO = true
 # that clash with OS headers.
 ADD_OWN_INCLUDE = false
 
-# Rebuild corto.c and loader.c for every artefact to ensure not to link in a
+# Rebuild bootstrap.c and load.c for every artefact to ensure not to link in a
 # cached version of an .o file that contains outdated information about the
 # binary that is being built.
-ALWAYS_REBUILD = ["src/corto.c", "src/loader.c"]
+ALWAYS_REBUILD = ["src/bootstrap.c", "src/load.c"]
 
 # When building a tar for the core, also include the build system
 task :collect do

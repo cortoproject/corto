@@ -19,6 +19,11 @@
  * THE SOFTWARE.
  */
 
+/** @file
+ * @section buffer Corto
+ * @brief Generic corto store functions.
+ */
+
 #ifndef CORTO_H
 #define CORTO_H
 
@@ -37,6 +42,7 @@ typedef corto_equalityKind ___ (*corto_equals_cb)(corto_type _this, const void* 
 typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 
 #include <corto/iter.h>
+#include <corto/idmatch.h>
 #include <corto/ll.h>
 #include <corto/rb.h>
 #include <corto/value.h>
@@ -45,7 +51,7 @@ typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 #include <corto/err.h>
 #include <corto/buffer.h>
 #include <corto/depresolver.h>
-#include <corto/object.h>
+#include <corto/object_store.h>
 #include <corto/ptr.h>
 #include <corto/query.h>
 #include <corto/string_deser.h>
@@ -56,15 +62,72 @@ typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 extern "C" {
 #endif
 
-CORTO_EXPORT int corto_start(char *appName);
-CORTO_EXPORT int corto_stop(void);
-CORTO_EXPORT bool corto_enableload(corto_bool enable);
-CORTO_EXPORT bool corto_autoload(corto_bool autoload);
-CORTO_EXPORT corto_string corto_getBuild(void);
-CORTO_EXPORT corto_string corto_getLibrary(void);
-CORTO_EXPORT corto_bool corto_isbuiltin(corto_object o);
-CORTO_EXPORT void corto_onunload(void(*handler)(void*), void* userData);
-CORTO_EXPORT void corto_onexit(void(*handler)(void*), void* userData);
+/** Start corto
+ * This function will initialize the corto object store. Should only be called
+ * once per process.
+ *
+ * @param appName Name of the application. Used in tracing.
+ * @return 0 if success, nonzero if failed.
+ */
+CORTO_EXPORT 
+int corto_start(
+    char *appName);
+ 
+/** Stop corto
+ * This function deinitializes the corto object store. Should only be called once
+ * per process, and after corto_start.
+ */
+CORTO_EXPORT 
+int corto_stop(void);
+
+/** Mount package data
+ * The package loader mounts corto packages into the corto hierarchy so they can
+ * be discovered with corto_select and resolved with corto_lookup and
+ * corto_resolve.
+ *
+ * @param enable Specifiies whether to enable mounting package data.
+ * @return Previous value.
+ */
+CORTO_EXPORT 
+bool corto_enableload(
+    corto_bool enable);
+
+/** Enable automatic loading of packages
+ * When enabled, an application that is requesting objects from a package will
+ * trigger the package to be loaded into corto automatically.
+ *
+ * @param autoload Specifies whether to enable automatic package loading.
+ * @return Previous value.
+ */
+CORTO_EXPORT 
+bool corto_autoload(
+    corto_bool autoload);
+
+/** Get a unique string that identifies the current corto build.
+ * This function is used to determine whether a package is linked with the
+ * correct corto library before allowing it to be loaded.
+ *
+ * @return String that uniquely identifies the current corto build
+ */ 
+CORTO_EXPORT 
+corto_string corto_getBuild(void);
+
+/** Get filename of corto library that current process links with.
+ * This function can be used to debug scenarios in which a package has a corto
+ * build that does not match the build of the application.
+ *
+ * @return path + filename of the corto library that the application links with.
+ */ 
+CORTO_EXPORT 
+corto_string corto_getLibrary(void);
+
+/** Specify function to be executed when corto exits.
+ *
+ * @param handler Pointer to function to be executed.
+ */ 
+CORTO_EXPORT 
+void corto_onexit(
+    void(*handler)(void*), void* userData);
 
 typedef int (*corto_loadAction)(corto_string file, int argc, char* argv[], void* userData);
 

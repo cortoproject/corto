@@ -252,7 +252,7 @@ int16_t corto_mount_construct(
     } else {
         /* Make it easy to see whether this mount observes a tree, scope or self */
         corto_observer(this)->mask = 
-            corto_match_getScope((corto_matchProgram)corto_subscriber(this)->matchProgram);
+            corto_match_getScope((corto_idmatch_program)corto_subscriber(this)->idmatch);
     }
 
     return ret;

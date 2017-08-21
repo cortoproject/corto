@@ -71,7 +71,7 @@ void corto_loader_addDir(
         while (corto_iter_hasNext(&iter)) {
             corto_string f = corto_iter_next(&iter);
 
-            if (!corto_loader_checkIfAdded(list, f) && corto_match(q->select, f)) {
+            if (!corto_loader_checkIfAdded(list, f) && corto_idmatch(q->select, f)) {
                 struct stat attr;
                 corto_string content = NULL;
 

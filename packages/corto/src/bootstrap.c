@@ -95,6 +95,8 @@ corto_member corto_type_init_o = NULL;
 corto_member corto_type_deinit_o = NULL;
 corto_member corto_class_construct_o = NULL;
 corto_member corto_class_destruct_o = NULL;
+corto_member corto_class_validate_o = NULL;
+corto_member corto_class_update_o = NULL;
 
 /* variables that control verbosity of logging functions */
 int8_t CORTO_DEBUG_ENABLED = 0;
@@ -690,7 +692,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_subscriber_dispatcher),\
     SSO_OP_OBJ(core_subscriber_enabled),\
     SSO_OP_OBJ(core_subscriber_contentTypeHandle),\
-    SSO_OP_OBJ(core_subscriber_matchProgram),\
+    SSO_OP_OBJ(core_subscriber_idmatch),\
     SSO_OP_OBJ(core_subscriber_init_),\
     SSO_OP_OBJ(core_subscriber_deinit_),\
     SSO_OP_OBJ(core_subscriber_construct_),\
@@ -1145,11 +1147,14 @@ int corto_start(char *appName) {
     lang_class_construct__o.v.offset = offsetof(struct corto_class_s, construct);
     lang_class_destruct__o.v.offset = offsetof(struct corto_class_s, destruct);
     
-    /* Assign delegates to global variables */
+    /* Assign delegates to global variables, so they can be used by other code
+     * without having to do expensive lookups */
     corto_type_init_o = &lang_type_init__o.v;
     corto_type_deinit_o = &lang_type_deinit__o.v;
     corto_class_construct_o = &lang_class_construct__o.v;
     corto_class_destruct_o = &lang_class_destruct__o.v;
+    corto_class_validate_o = &lang_class_validate__o.v;
+    corto_class_update_o = &lang_class_update__o.v;
 
     /* Initialize builtin scopes */
     corto_initObject(root_o);
@@ -1167,15 +1172,14 @@ int corto_start(char *appName) {
     corto_defineObject(corto_native_o);
     corto_defineObject(corto_secure_o);
 
-    corto_int32 i = 0;
-    corto_object o;
-
     /* Because at this point the construct/destruct & init/deinit delegates are
      * not yet propagated from base classes to sub classes, type construction
      * can't begin yet. First, delegates need to be properly initialized for
      * all types. This only affects types that support inheritance, so all
      * types that inherit from interface. */
 
+    corto_int32 i = 0;
+    corto_object o;
     for (i = 0; (o = types[i].o); i++) {
         if (corto_instanceof(corto_interface_o, o)) {
             if (corto_interface_pullDelegate(o, &lang_type_init__o.v)) {
@@ -1191,6 +1195,12 @@ int corto_start(char *appName) {
                 if (corto_interface_pullDelegate(o, &lang_class_destruct__o.v)) {
                     ((corto_type)o)->flags |= CORTO_TYPE_HAS_DESTRUCT;
                 }
+                /*if (corto_interface_pullDelegate(o, &lang_class_validate__o.v)) {
+                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_VALIDATE;
+                }
+                if (corto_interface_pullDelegate(o, &lang_class_update__o.v)) {
+                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_UPDATE;
+                }*/
             }
         }
     }

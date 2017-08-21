@@ -19,6 +19,11 @@
  * THE SOFTWARE.
  */
 
+/** @file
+ * @section buffer Buffer API
+ * @brief Utility API for efficient appending to strings.
+ */
+
 #ifndef CORTO_BUFFER_H_
 #define CORTO_BUFFER_H_
 

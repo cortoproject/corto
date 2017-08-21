@@ -21,7 +21,7 @@
 
  #include "_matcher.h"
 
-static char* corto_matchProgramTokenStr(corto_matchProgramToken t) {
+static char* corto_idmatchTokenStr(corto_idmatchToken t) {
     switch(t) {
     case CORTO_MATCHER_TOKEN_NONE: return "none";
     case CORTO_MATCHER_TOKEN_IDENTIFIER: return "identifier";
@@ -38,10 +38,10 @@ static char* corto_matchProgramTokenStr(corto_matchProgramToken t) {
     return NULL;
 }
 
-static int corto_matchProgramValidate(corto_matchProgram data) {
+static int corto_idmatchValidate(corto_idmatch_program data) {
     int op;
 
-    corto_matchProgramToken t = CORTO_MATCHER_TOKEN_NONE, tprev = CORTO_MATCHER_TOKEN_NONE;
+    corto_idmatchToken t = CORTO_MATCHER_TOKEN_NONE, tprev = CORTO_MATCHER_TOKEN_NONE;
     for (op = 0; op < data->size; op++) {
         t = data->ops[op].token;
         switch(t) {
@@ -151,13 +151,13 @@ static int corto_matchProgramValidate(corto_matchProgram data) {
     return 0;
 error:
     corto_seterr("unexpected '%s' after '%s'",
-        corto_matchProgramTokenStr(t),
-        corto_matchProgramTokenStr(tprev));
+        corto_idmatchTokenStr(t),
+        corto_idmatchTokenStr(tprev));
     return -1;
 }
 
-corto_int16 corto_matchProgramParseIntern(
-    corto_matchProgram data,
+corto_int16 corto_idmatchParseIntern(
+    corto_idmatch_program data,
     corto_string expr,
     corto_bool allowScopes,
     corto_bool allowSeparators)
@@ -290,7 +290,7 @@ corto_int16 corto_matchProgramParseIntern(
         }
         data->size = op;
         data->ops[op].token = CORTO_MATCHER_TOKEN_NONE; /* Close with NONE */
-        if (corto_matchProgramValidate(data)) {
+        if (corto_idmatchValidate(data)) {
             data->size = 0;
             goto error;
         }
@@ -301,17 +301,17 @@ error:
     return -1;
 }
 
-corto_matchProgram corto_matchProgram_compile(
+corto_idmatch_program corto_idmatch_compile(
     corto_string expr,
     corto_bool allowScopes,
     corto_bool allowSeparators)
 {
-    corto_matchProgram result = corto_alloc(sizeof(struct corto_matchProgram_s));
+    corto_idmatch_program result = corto_alloc(sizeof(struct corto_idmatch_program_s));
     result->kind = 0;
     result->tokens = NULL;
 
     corto_debug("match: compile expression '%s'", expr);
-    if (corto_matchProgramParseIntern(result, expr, allowScopes, allowSeparators) || !result->size) {
+    if (corto_idmatchParseIntern(result, expr, allowScopes, allowSeparators) || !result->size) {
         if (!result->size) {
             corto_seterr("expression '%s' resulted in empty program", expr);
         }
@@ -357,20 +357,20 @@ error:
     return NULL;
 }
 
-corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements[], corto_matchProgramToken precedence) {
+corto_bool corto_idmatch_runExpr(corto_idmatchOp **op, char **elements[], corto_idmatchToken precedence) {
     corto_bool done = FALSE;
     corto_bool result = TRUE;
     corto_bool right = FALSE;
     corto_bool identifierMatched = FALSE;
-    corto_matchProgramOp *cur;
+    corto_idmatchOp *cur;
     char **start = *elements; // Pointer to array of strings
 
     do {
         /*printf("eval %s [%s => %s] (prec=%s)\n",
-          corto_matchProgramTokenStr((*op)->token),
+          corto_idmatchTokenStr((*op)->token),
           (*elements)[0],
           (*op)->start,
-          corto_matchProgramTokenStr(precedence));*/
+          corto_idmatchTokenStr(precedence));*/
 
         cur = *op; (*op) ++;
 
@@ -392,15 +392,15 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
             break;
         }
         case CORTO_MATCHER_TOKEN_AND:
-            right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_IDENTIFIER);
+            right = corto_idmatch_runExpr(op, elements, CORTO_MATCHER_TOKEN_IDENTIFIER);
             if (result) result = right;
             break;
         case CORTO_MATCHER_TOKEN_OR:
-            right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_AND);
+            right = corto_idmatch_runExpr(op, elements, CORTO_MATCHER_TOKEN_AND);
             if (!result) result = right;
             break;
         case CORTO_MATCHER_TOKEN_NOT:
-            right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_OR);
+            right = corto_idmatch_runExpr(op, elements, CORTO_MATCHER_TOKEN_OR);
             if (result) result = !right;
             break;
         case CORTO_MATCHER_TOKEN_SCOPE:
@@ -410,12 +410,12 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
                 done = TRUE;
                 (*op)++; /* progress op for skipped value */
             } else {
-                right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_NOT);
+                right = corto_idmatch_runExpr(op, elements, CORTO_MATCHER_TOKEN_NOT);
                 if (result) result = right;
             }
             break;
         case CORTO_MATCHER_TOKEN_TREE: {
-            corto_matchProgramOp *opPtr = *op;
+            corto_idmatchOp *opPtr = *op;
             if (identifierMatched) {
                 if (!result) {
                     done = TRUE;
@@ -435,7 +435,7 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
                 do {
                     *elements = elementPtr;
                     *op = opPtr;
-                    right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_SCOPE);
+                    right = corto_idmatch_runExpr(op, elements, CORTO_MATCHER_TOKEN_SCOPE);
                     if (right) {
                         elementFound = *elements;
                     }
@@ -448,7 +448,7 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
         }
         case CORTO_MATCHER_TOKEN_SEPARATOR:
             *(elements) = start;
-            right = corto_matchProgram_runExpr(op, elements, CORTO_MATCHER_TOKEN_TREE);
+            right = corto_idmatch_runExpr(op, elements, CORTO_MATCHER_TOKEN_TREE);
             if (!result) {
                 result = right;
             }
@@ -465,7 +465,7 @@ corto_bool corto_matchProgram_runExpr(corto_matchProgramOp **op, char **elements
     return result;
 }
 
-corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) {
+corto_bool corto_idmatch_run(corto_idmatch_program program, corto_string str) {
     corto_bool result = FALSE;
 
     if (!program->size) {
@@ -474,7 +474,7 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
 
     if (program->kind == 0) {
         char *elements[CORTO_MAX_SCOPE_DEPTH + 1];
-        corto_matchProgramOp *op = program->ops;
+        corto_idmatchOp *op = program->ops;
         char **elem = elements;
         corto_id id;
         strcpy(id, str);
@@ -492,7 +492,7 @@ corto_bool corto_matchProgram_run(corto_matchProgram program, corto_string str) 
         }
         if (!elements[0][0]) elem++;
 
-        result = corto_matchProgram_runExpr(&op, &elem, CORTO_MATCHER_TOKEN_SEPARATOR);
+        result = corto_idmatch_runExpr(&op, &elem, CORTO_MATCHER_TOKEN_SEPARATOR);
         if (result) {
             if (elem != &elements[elementCount - 1]) {
                 /* Not all elements have been matched */
@@ -570,7 +570,7 @@ char* corto_matchParent(char *parent, char *expr) {
     }
 }
 
-void corto_matchProgram_free(corto_matchProgram matcher) {
+void corto_idmatch_free(corto_idmatch_program matcher) {
     if (matcher) {
         if (matcher->tokens) {
             corto_dealloc(matcher->tokens);
@@ -579,7 +579,7 @@ void corto_matchProgram_free(corto_matchProgram matcher) {
     }
 }
 
-corto_eventMask corto_match_getScope(corto_matchProgram program) {
+corto_eventMask corto_match_getScope(corto_idmatch_program program) {
     corto_eventMask result = CORTO_ON_SCOPE;
     corto_int32 op;
     bool quit = false;

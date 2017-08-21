@@ -91,7 +91,7 @@ struct corto_select_data {
     corto_select_segment segments[CORTO_MAX_SCOPE_DEPTH]; /* Scopes to walk (parsed scope) */
     corto_uint32 segment;               /* Scope currently being walked */
 
-    struct corto_matchProgram_s program;   /* Parsed program */
+    struct corto_idmatch_program_s program;   /* Parsed program */
 
     corto_select_frame stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     corto_uint8 sp;
@@ -384,7 +384,7 @@ static corto_bool corto_selectMatch(
         corto_strlower(filterLc);
         corto_strlower(nameLc);
 
-        result = corto_match(filterLc, nameLc);
+        result = corto_idmatch(filterLc, nameLc);
     }
 
     /* Check if there are SINK mounts active for the current scope */
@@ -444,7 +444,7 @@ static corto_bool corto_selectMatch(
 
         /* Filter type */
         if (result && data->typeFilter) {
-            result = corto_match(data->typeFilter, type);
+            result = corto_idmatch(data->typeFilter, type);
         }
     }
 
@@ -822,7 +822,7 @@ static int corto_selectLoadMountWalk(
     /* If type is requested, test whether it matches with the mount type */
     corto_string rType = mount->super.query.type;
     if (data->typeFilter && rType) {
-        if (!corto_match(data->typeFilter, rType)) {
+        if (!corto_idmatch(data->typeFilter, rType)) {
             return 1;
         }
     }
@@ -1289,7 +1289,7 @@ static corto_bool corto_selectNextExpr(corto_select_data *data) {
         data->segment = 0;
 
         if (data->program.tokens) corto_dealloc(data->program.tokens);
-        if (corto_matchProgramParseIntern(&data->program, data->expr, TRUE, FALSE)) {
+        if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
             corto_error("select '%s' failed: %s", data->expr, corto_lasterr());
             goto error;
         }
@@ -1422,7 +1422,7 @@ static corto_resultIter corto_selectPrepareIterator (
     }
     data->exprCurrent = 0;
 
-    if (corto_matchProgramParseIntern(&data->program, data->expr, TRUE, FALSE)) {
+    if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
         corto_seterr("select '%s' failed: %s", data->expr, corto_lasterr());
         goto error;
     }

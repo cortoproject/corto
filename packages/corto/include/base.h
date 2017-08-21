@@ -19,6 +19,11 @@
  * THE SOFTWARE.
  */
 
+/** @file
+ * @section base Corto base platform definitions.
+ * @brief Provide a stable platform/compiler independent set of definitions
+ */
+
 #ifndef CORTO_BASE_H
 #define CORTO_BASE_H
 

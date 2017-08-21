@@ -163,8 +163,8 @@ corto_resultIter test_ListMount_onQuery(
 
     /* Filter items by parent */
     corto_resultIterForeach(iter, e) {
-        if (corto_match(query->from, e.parent)) {
-            if (corto_match(query->select, e.id)) {
+        if (corto_idmatch(query->from, e.parent)) {
+            if (corto_idmatch(query->select, e.id)) {
                 corto_resultAssign(
                     corto_resultListAppendAlloc(data),
                     e.id,

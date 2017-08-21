@@ -28,6 +28,8 @@ extern corto_member corto_type_init_o;
 extern corto_member corto_type_deinit_o;
 extern corto_member corto_class_construct_o;
 extern corto_member corto_class_destruct_o;
+extern corto_member corto_class_validate_o;
+extern corto_member corto_class_update_o;
 
 #ifdef __cplusplus
 }

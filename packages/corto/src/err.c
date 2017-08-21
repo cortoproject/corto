@@ -39,7 +39,7 @@ typedef struct corto_errThreadData {
 struct corto_err_callback {
     corto_err min_level, max_level;
     char *component_filter;
-    corto_matchProgram compiled_component_filter;
+    corto_idmatch_program compiled_component_filter;
     char *auth_token;
     void *ctx;
     corto_err_callback_callback cb;
@@ -188,7 +188,7 @@ corto_err_callback corto_err_callbackRegister(
 
     if (result->component_filter) {
         result->compiled_component_filter = 
-            corto_matchProgram_compile(result->component_filter, TRUE, TRUE);
+            corto_idmatch_compile(result->component_filter, TRUE, TRUE);
         if (!result->compiled_component_filter) {
             corto_seterr("invalid filter: %s", corto_lasterr());
             goto error;
@@ -224,7 +224,7 @@ void corto_err_callbackUnregister(corto_err_callback cb)
 
         if (callback->component_filter) corto_dealloc(callback->component_filter);
         if (callback->auth_token) corto_dealloc(callback->auth_token);
-        if (callback->compiled_component_filter) corto_matchProgram_free(callback->compiled_component_filter);
+        if (callback->compiled_component_filter) corto_idmatch_free(callback->compiled_component_filter);
         corto_dealloc(callback);
     }
 }
@@ -250,7 +250,7 @@ void corto_err_notifyCallkback(
                 corto_buffer_appendstr(&buff, components[i]);
             }
             char *str = corto_buffer_str(&buff);
-            if (!corto_matchProgram_run(callback->compiled_component_filter, str)) {
+            if (!corto_idmatch_run(callback->compiled_component_filter, str)) {
                 filterMatch = FALSE;
             }
             corto_dealloc(str);

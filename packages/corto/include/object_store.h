@@ -21,7 +21,7 @@
 
 /** @file 
  * @section object Object API
- * @brief API for corto objects.
+ * @brief API for the corto object store.
  *
  * Corto objects are application-level entities that populate the corto object
  * store. Application logic is expressed through creating, updating and deleting
@@ -1067,16 +1067,6 @@ void myDispatcher_post(corto_observerEvent *e) {
  * @return 0 if success, -1 if failed.
  */ 
 CORTO_EXPORT int16_t corto_unobserve(corto_observer observer);
-
-/* Match corto expression */
-typedef struct corto_matchProgram_s* corto_matchProgram;
-CORTO_EXPORT bool corto_match(char *expr, char *str);
-CORTO_EXPORT corto_matchProgram corto_matchProgram_compile(char *expr, bool allowScopes, bool allowSeparators);
-CORTO_EXPORT bool corto_matchProgram_run(corto_matchProgram program, char *str);
-CORTO_EXPORT void corto_matchProgram_free(corto_matchProgram matcher);
-/* Match parent of expression. Returns NULL if no match, or ptr to remainder (for corto_match) */
-CORTO_EXPORT char* corto_matchParent(char *parent, char *expr);
-CORTO_EXPORT corto_eventMask corto_match_getScope(corto_matchProgram matcher);
 
 /* Serialize object value to contentType */
 CORTO_EXPORT char *corto_contentof(corto_object o, char *contentType);

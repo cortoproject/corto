@@ -182,7 +182,7 @@ struct corto_subscriber_s {
     corto_query query;
     corto_string contentType;
     uintptr_t contentTypeHandle;
-    uintptr_t matchProgram;
+    uintptr_t idmatch;
 };
 
 /* /corto/core/ownership */

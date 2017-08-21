@@ -205,7 +205,7 @@ corto_int16 corto_notifySubscribersId(
                 }
 
                 corto_benchmark_start(S_B_MATCH);
-                if (!corto_matchProgram_run((corto_matchProgram)s->matchProgram, expr)) {
+                if (!corto_idmatch_run((corto_idmatch_program)s->idmatch, expr)) {
                     continue;
                 }
                 corto_benchmark_stop(S_B_MATCH);
@@ -567,8 +567,8 @@ int16_t corto_subscriber_construct(
         }
     }
 
-    this->matchProgram = (corto_word)corto_matchProgram_compile(this->query.select, TRUE, TRUE);
-    if (!this->matchProgram) {
+    this->idmatch = (corto_word)corto_idmatch_compile(this->query.select, TRUE, TRUE);
+    if (!this->idmatch) {
         goto error;
     }
 
@@ -604,9 +604,9 @@ void corto_subscriber_deinit(
     corto_subscriber this)
 {
 
-    /* Delete matchProgram resources only when subscriber itself is deallocated 
+    /* Delete idmatch resources only when subscriber itself is deallocated 
      * as notifications might still take place when subscriber is deleted. */
-    corto_matchProgram_free((corto_matchProgram)this->matchProgram);
+    corto_idmatch_free((corto_idmatch_program)this->idmatch);
 
 }
 
