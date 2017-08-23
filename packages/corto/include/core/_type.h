@@ -31,7 +31,7 @@ extern "C" {
 #define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
 #define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assertType((corto_type)corto_mountSubscriptionList_o, o))
 #define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
-#define corto_invokeEvent(o) ((corto_invokeEvent)corto_assertType((corto_type)corto_invokeEvent_o, o))
+#define corto_invokeEvent(o) ((corto_invokeEvent*)corto_assertType((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
 #define corto_observerEvent(o) ((corto_observerEvent*)corto_assertType((corto_type)corto_observerEvent_o, o))
@@ -260,9 +260,9 @@ struct corto_mount_s {
 };
 
 /*  /corto/core/invokeEvent */
-typedef struct corto_invokeEvent_s *corto_invokeEvent;
+typedef struct corto_invokeEvent corto_invokeEvent;
 
-struct corto_invokeEvent_s {
+struct corto_invokeEvent {
     corto_event super;
     corto_mount mount;
     corto_object instance;

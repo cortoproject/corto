@@ -855,13 +855,13 @@ CORTO_EXPORT int32_t* _corto_int32Assign(int32_t* _this, int32_t value);
 #define corto_int32Set(_this, value) _this = _this ? _this : (corto_int32*)corto_ptr_new(corto_int32_o); _corto_int32Assign(_this, value)
 
 /* int32seq */
-CORTO_EXPORT corto_int32seq* _corto_int32seqCreate(corto_uint32 length, corto_int32* elements);
+CORTO_EXPORT corto_int32seq* _corto_int32seqCreate(corto_uint32 length, int32_t* elements);
 #define corto_int32seqCreate(length, elements) _corto_int32seqCreate(length, elements)
 #define corto_int32seqCreate_auto(_id, length, elements) corto_int32seq* _id = corto_int32seqCreate(length, elements); (void)_id
-CORTO_EXPORT corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_int32* elements);
+CORTO_EXPORT corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, int32_t* elements);
 #define corto_int32seqCreateChild(_parent, _id, length, elements) _corto_int32seqCreateChild(_parent, _id, length, elements)
 #define corto_int32seqCreateChild_auto(_parent, _id, length, elements) corto_int32seq* _id = corto_int32seqCreateChild(_parent, #_id, length, elements); (void)_id
-CORTO_EXPORT corto_int16 _corto_int32seqUpdate(corto_int32seq* _this, corto_uint32 length, corto_int32* elements);
+CORTO_EXPORT corto_int16 _corto_int32seqUpdate(corto_int32seq* _this, corto_uint32 length, int32_t* elements);
 #define corto_int32seqUpdate(_this, length, elements) _corto_int32seqUpdate(corto_int32seq(_this), length, elements)
 
 CORTO_EXPORT corto_int32seq* _corto_int32seqDeclare(void);
@@ -870,9 +870,9 @@ CORTO_EXPORT corto_int32seq* _corto_int32seqDeclare(void);
 CORTO_EXPORT corto_int32seq* _corto_int32seqDeclareChild(corto_object _parent, corto_string _id);
 #define corto_int32seqDeclareChild(_parent, _id) _corto_int32seqDeclareChild(_parent, _id)
 #define corto_int32seqDeclareChild_auto(_parent, _id) corto_int32seq* _id = corto_int32seqDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, corto_int32* elements);
+CORTO_EXPORT corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, int32_t* elements);
 #define corto_int32seqDefine(_this, length, elements) _corto_int32seqDefine(corto_int32seq(_this), length, elements)
-CORTO_EXPORT corto_int32seq* _corto_int32seqAssign(corto_int32seq* _this, corto_uint32 length, corto_int32* elements);
+CORTO_EXPORT corto_int32seq* _corto_int32seqAssign(corto_int32seq* _this, corto_uint32 length, int32_t* elements);
 #define corto_int32seq__optional_NotSet NULL
 #define corto_int32seq__optional_Set(length, elements) corto_int32seqAssign((corto_int32seq*)corto_ptr_new(corto_int32seq_o)), length, elements)
 #define corto_int32seq__optional_SetCond(cond, length, elements) cond ? corto_int32seqAssign((corto_int32seq*)corto_ptr_new(corto_int32seq_o), length, elements) : NULL
@@ -2180,13 +2180,13 @@ CORTO_EXPORT uintptr_t* _corto_wordAssign(uintptr_t* _this, uintptr_t value);
 #define corto_wordSet(_this, value) _this = _this ? _this : (corto_word*)corto_ptr_new(corto_word_o); _corto_wordAssign(_this, value)
 
 /* wordseq */
-CORTO_EXPORT corto_wordseq* _corto_wordseqCreate(corto_uint32 length, corto_word* elements);
+CORTO_EXPORT corto_wordseq* _corto_wordseqCreate(corto_uint32 length, uintptr_t* elements);
 #define corto_wordseqCreate(length, elements) _corto_wordseqCreate(length, elements)
 #define corto_wordseqCreate_auto(_id, length, elements) corto_wordseq* _id = corto_wordseqCreate(length, elements); (void)_id
-CORTO_EXPORT corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_word* elements);
+CORTO_EXPORT corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, uintptr_t* elements);
 #define corto_wordseqCreateChild(_parent, _id, length, elements) _corto_wordseqCreateChild(_parent, _id, length, elements)
 #define corto_wordseqCreateChild_auto(_parent, _id, length, elements) corto_wordseq* _id = corto_wordseqCreateChild(_parent, #_id, length, elements); (void)_id
-CORTO_EXPORT corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, corto_word* elements);
+CORTO_EXPORT corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements);
 #define corto_wordseqUpdate(_this, length, elements) _corto_wordseqUpdate(corto_wordseq(_this), length, elements)
 
 CORTO_EXPORT corto_wordseq* _corto_wordseqDeclare(void);
@@ -2195,9 +2195,9 @@ CORTO_EXPORT corto_wordseq* _corto_wordseqDeclare(void);
 CORTO_EXPORT corto_wordseq* _corto_wordseqDeclareChild(corto_object _parent, corto_string _id);
 #define corto_wordseqDeclareChild(_parent, _id) _corto_wordseqDeclareChild(_parent, _id)
 #define corto_wordseqDeclareChild_auto(_parent, _id) corto_wordseq* _id = corto_wordseqDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, corto_word* elements);
+CORTO_EXPORT corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements);
 #define corto_wordseqDefine(_this, length, elements) _corto_wordseqDefine(corto_wordseq(_this), length, elements)
-CORTO_EXPORT corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, corto_word* elements);
+CORTO_EXPORT corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements);
 #define corto_wordseq__optional_NotSet NULL
 #define corto_wordseq__optional_Set(length, elements) corto_wordseqAssign((corto_wordseq*)corto_ptr_new(corto_wordseq_o)), length, elements)
 #define corto_wordseq__optional_SetCond(cond, length, elements) cond ? corto_wordseqAssign((corto_wordseq*)corto_ptr_new(corto_wordseq_o), length, elements) : NULL

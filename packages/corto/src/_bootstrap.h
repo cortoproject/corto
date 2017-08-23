@@ -157,35 +157,28 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_DESTRUCT(name) CORTO_DELEGATE(name, destruct)
 
 #define CORTO_I_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
-#define CORTO_I_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}
-#define CORTO_I_PROC(name) {{NULL, NULL}}
-
-#define CORTO_B_TYPE(name) {{NULL, NULL}}
-#define CORTO_B_PROC(name) CORTO_BIND(name)
+#define CORTO_I_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 #define CORTO_C_TYPE(name)
-#define CORTO_C_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}
+#define CORTO_C_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 #define CORTO_IC_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
-#define CORTO_IC_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}
-#define CORTO_IC_PROC(name) CORTO_BIND(name)
+#define CORTO_IC_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 #define CORTO_ICD_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
-#define CORTO_ICD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
+#define CORTO_ICD_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
 #define CORTO_IFCD_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
-#define CORTO_IFCD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
+#define CORTO_IFCD_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
 #define CORTO_IF_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
 #define CORTO_IF_CLASS(name)
 
 #define CORTO_CD_TYPE(name)
-#define CORTO_CD_CLASS(name) CORTO_CONSTRUCT(name), CORTO_DESTRUCT(name)
-#define CORTO_CD_PROC(name)
+#define CORTO_CD_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
 #define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}, {{NULL, NULL}} 
-#define CORTO_NODELEGATE_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}
-#define CORTO_NODELEGATE_PROC(name) {{NULL, NULL}}
+#define CORTO_NODELEGATE_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 /* type */
 #define CORTO_TYPE_V(parent, name, kind, reference, attr, scopeType, scopeTypeKind, defaultType, defaultProcedureType, DELEGATE) \
@@ -851,7 +844,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_MEMBER_O(lang_type, reference, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_type, attr, lang_attr, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_type, options, lang_typeOptions, CORTO_HIDDEN);
-    CORTO_MEMBER_O(lang_type, flags, lang_uint8, CORTO_PRIVATE | CORTO_LOCAL);
+    CORTO_MEMBER_O(lang_type, flags, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, size, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, metaprocedures, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
@@ -1015,9 +1008,11 @@ CORTO_CLASS_O(lang, class, lang_struct, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_MEMBER_O(lang_class, implements, lang_interfaceseq, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_class, interfaceVector, lang_interfaceVectorseq, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, construct, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, define, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, validate, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, update, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, update, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_class, destruct, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, delete, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_METHOD_O(lang_class, init, "()", lang_int16, corto_class_init);
     CORTO_METHOD_O(lang_class, construct, "()", lang_int16, corto_class_construct);
     CORTO_METHOD_O(lang_class, destruct, "()", lang_void, corto_class_destruct);

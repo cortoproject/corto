@@ -88,22 +88,22 @@ corto_time _corto_frame_getTime(
  * insertion of type-safe casts */
 CORTO_EXPORT
 void _corto_invokeEvent_handle_v(
-    corto_invokeEvent _this);
+    corto_invokeEvent* _this);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
-#define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(corto_invokeEvent(_this))
+#define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
 #else
 #define corto_invokeEvent_handle_v _corto_invokeEvent_handle_v
 #endif
 
 /* explicit type-safe macro */
-#define safe_corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(corto_invokeEvent(_this))
+#define safe_corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
 
-#define corto_invokeEvent_handle(_this) _corto_invokeEvent_handle(corto_invokeEvent(_this))
+#define corto_invokeEvent_handle(_this) _corto_invokeEvent_handle(_this)
 CORTO_EXPORT
 void _corto_invokeEvent_handle(
-    corto_invokeEvent _this);
+    corto_invokeEvent* _this);
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */

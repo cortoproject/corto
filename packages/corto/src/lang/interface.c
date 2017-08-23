@@ -92,8 +92,9 @@ found:
 
 /* Pull delegates from base-classes to subclass if undefined */
 bool corto_interface_pullDelegate(corto_interface this, corto_member m) {
-    corto_delegatedata *myDelegate = CORTO_OFFSET(this, m->offset);    
-    if (corto_instanceof(corto_delegate_o, m->type)) {
+    corto_delegatedata *myDelegate = CORTO_OFFSET(this, m->offset);
+        
+    if (corto_instanceof(corto_delegate_o, m->type) && corto_instanceof(corto_parentof(m), this)) {
         corto_interface base = this;
         corto_delegatedata *delegate = NULL;
         
@@ -108,6 +109,7 @@ bool corto_interface_pullDelegate(corto_interface this, corto_member m) {
                 delegate = NULL;
             }
         } while ((!delegate || !delegate->procedure) && (base = corto_interface(base)->base));
+
         if (base && (base != this) && corto_instanceof(corto_parentof(m), base)) {
             corto_ptr_setref(&myDelegate->procedure, delegate->procedure); 
         }

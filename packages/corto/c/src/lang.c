@@ -2676,7 +2676,7 @@ int32_t* _corto_int32Assign(int32_t* _this, int32_t value) {
     return _this;
 }
 
-corto_int32seq* _corto_int32seqCreate(corto_uint32 length, corto_int32* elements) {
+corto_int32seq* _corto_int32seqCreate(corto_uint32 length, int32_t* elements) {
     corto_int32seq* _this;
     _this = (corto_int32seq*)corto_declare(corto_int32seq_o);
     if (!_this) {
@@ -2696,7 +2696,7 @@ corto_int32seq* _corto_int32seqCreate(corto_uint32 length, corto_int32* elements
     return _this;
 }
 
-corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_int32* elements) {
+corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, int32_t* elements) {
     corto_int32seq* _this;
     _this = (corto_int32seq*)corto_declareChild(_parent, _id, corto_int32seq_o);
     if (!_this) {
@@ -2716,7 +2716,7 @@ corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _i
     return _this;
 }
 
-corto_int16 _corto_int32seqUpdate(corto_int32seq* _this, corto_uint32 length, corto_int32* elements) {
+corto_int16 _corto_int32seqUpdate(corto_int32seq* _this, corto_uint32 length, int32_t* elements) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -2757,7 +2757,7 @@ corto_int32seq* _corto_int32seqDeclareChild(corto_object _parent, corto_string _
     return _this;
 }
 
-corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, corto_int32* elements) {
+corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, int32_t* elements) {
     CORTO_UNUSED(_this);
     corto_int32seqSize(_this, length);
     corto_uint32 i = 0;
@@ -2767,7 +2767,7 @@ corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, co
     return corto_define(_this);
 }
 
-corto_int32seq* _corto_int32seqAssign(corto_int32seq* _this, corto_uint32 length, corto_int32* elements) {
+corto_int32seq* _corto_int32seqAssign(corto_int32seq* _this, corto_uint32 length, int32_t* elements) {
     CORTO_UNUSED(_this);
     corto_int32seqSize(_this, length);
     corto_uint32 i = 0;
@@ -7094,7 +7094,7 @@ uintptr_t* _corto_wordAssign(uintptr_t* _this, uintptr_t value) {
     return _this;
 }
 
-corto_wordseq* _corto_wordseqCreate(corto_uint32 length, corto_word* elements) {
+corto_wordseq* _corto_wordseqCreate(corto_uint32 length, uintptr_t* elements) {
     corto_wordseq* _this;
     _this = (corto_wordseq*)corto_declare(corto_wordseq_o);
     if (!_this) {
@@ -7114,7 +7114,7 @@ corto_wordseq* _corto_wordseqCreate(corto_uint32 length, corto_word* elements) {
     return _this;
 }
 
-corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_word* elements) {
+corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, uintptr_t* elements) {
     corto_wordseq* _this;
     _this = (corto_wordseq*)corto_declareChild(_parent, _id, corto_wordseq_o);
     if (!_this) {
@@ -7134,7 +7134,7 @@ corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _id,
     return _this;
 }
 
-corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, corto_word* elements) {
+corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -7175,7 +7175,7 @@ corto_wordseq* _corto_wordseqDeclareChild(corto_object _parent, corto_string _id
     return _this;
 }
 
-corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, corto_word* elements) {
+corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements) {
     CORTO_UNUSED(_this);
     corto_wordseqSize(_this, length);
     corto_uint32 i = 0;
@@ -7185,7 +7185,7 @@ corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, cort
     return corto_define(_this);
 }
 
-corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, corto_word* elements) {
+corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements) {
     CORTO_UNUSED(_this);
     corto_wordseqSize(_this, length);
     corto_uint32 i = 0;

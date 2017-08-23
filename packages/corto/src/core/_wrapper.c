@@ -33,7 +33,7 @@ void _corto_dispatcher_post(
     }
 }
 void _corto_invokeEvent_handle(
-    corto_invokeEvent _this)
+    corto_invokeEvent* _this)
 
 {
     static corto_uint32 _methodId;

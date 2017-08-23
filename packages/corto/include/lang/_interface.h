@@ -386,6 +386,22 @@ int16_t _corto_default_construct(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
+int16_t _corto_delegate_bind(
+    corto_function object);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
+#else
+#define corto_delegate_bind _corto_delegate_bind
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
 bool _corto_delegate_castable_v(
     corto_delegate _this,
     corto_type type);
@@ -428,22 +444,6 @@ CORTO_EXPORT
 bool _corto_delegate_compatible(
     corto_delegate _this,
     corto_type type);
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-int16_t _corto_delegate_bind(
-    corto_function object);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
-#else
-#define corto_delegate_bind _corto_delegate_bind
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */

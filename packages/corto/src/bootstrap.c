@@ -94,7 +94,9 @@ corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
 corto_member corto_type_init_o = NULL;
 corto_member corto_type_deinit_o = NULL;
 corto_member corto_class_construct_o = NULL;
+corto_member corto_class_define_o = NULL;
 corto_member corto_class_destruct_o = NULL;
+corto_member corto_class_delete_o = NULL;
 corto_member corto_class_validate_o = NULL;
 corto_member corto_class_update_o = NULL;
 
@@ -248,7 +250,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(core_, event),\
     SSO_OP_VALUE(core_, observerEvent),\
     SSO_OP_VALUE(core_, subscriberEvent),\
-    SSO_OP_CLASS(core_, invokeEvent),\
+    SSO_OP_VALUE(core_, invokeEvent),\
     SSO_OP_CLASS(lang_, binary),\
     SSO_OP_CLASS(lang_, boolean),\
     SSO_OP_CLASS(lang_, character),\
@@ -644,9 +646,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_class_implements),\
     SSO_OP_OBJ(lang_class_interfaceVector),\
     SSO_OP_OBJ(lang_class_construct),\
-    SSO_OP_OBJ(lang_class_destruct),\
+    SSO_OP_OBJ(lang_class_define),\
     SSO_OP_OBJ(lang_class_validate),\
     SSO_OP_OBJ(lang_class_update),\
+    SSO_OP_OBJ(lang_class_destruct),\
+    SSO_OP_OBJ(lang_class_delete),\
     SSO_OP_OBJ(lang_class_init_),\
     SSO_OP_OBJ(lang_class_instanceof_),\
     SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
@@ -1152,7 +1156,9 @@ int corto_start(char *appName) {
     corto_type_init_o = &lang_type_init__o.v;
     corto_type_deinit_o = &lang_type_deinit__o.v;
     corto_class_construct_o = &lang_class_construct__o.v;
+    corto_class_define_o = &lang_class_define__o.v;
     corto_class_destruct_o = &lang_class_destruct__o.v;
+    corto_class_delete_o = &lang_class_delete__o.v;
     corto_class_validate_o = &lang_class_validate__o.v;
     corto_class_update_o = &lang_class_update__o.v;
 

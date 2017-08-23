@@ -2178,7 +2178,6 @@ void test_Event_tc_postponeListenSilence(
     ret = corto_int32Update(observable, 20);
     test_assert(ret == 0);
     test_assertint(*instance, 0);
-
 }
 
 void test_Event_tc_updateUndefined(

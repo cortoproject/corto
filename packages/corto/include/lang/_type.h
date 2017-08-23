@@ -18,9 +18,8 @@ extern "C" {
 #define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
 #define corto_state(o) ((corto_state*)corto_assertType((corto_type)corto_state_o, o))
 #define corto_typeOptions(o) ((corto_typeOptions*)corto_assertType((corto_type)corto_typeOptions_o, o))
-#define corto_uint8(o) ((uint8_t*)corto_assertType((corto_type)corto_uint8_o, o))
-#define corto_uint32(o) ((uint32_t*)corto_assertType((corto_type)corto_uint32_o, o))
 #define corto_uint16(o) ((uint16_t*)corto_assertType((corto_type)corto_uint16_o, o))
+#define corto_uint32(o) ((uint32_t*)corto_assertType((corto_type)corto_uint32_o, o))
 #define corto_object(o) ((corto_object)o)
 #define corto_objectseq(o) ((corto_objectseq*)corto_assertType((corto_type)corto_objectseq_o, o))
 #define corto_string(o) ((corto_string*)corto_assertType((corto_type)corto_string_o, o))
@@ -53,6 +52,7 @@ extern "C" {
 #define corto_array(o) ((corto_array)corto_assertType((corto_type)corto_array_o, o))
 #define corto_primitiveKind(o) ((corto_primitiveKind*)corto_assertType((corto_type)corto_primitiveKind_o, o))
 #define corto_width(o) ((corto_width*)corto_assertType((corto_type)corto_width_o, o))
+#define corto_uint8(o) ((uint8_t*)corto_assertType((corto_type)corto_uint8_o, o))
 #define corto_primitive(o) ((corto_primitive)corto_assertType((corto_type)corto_primitive_o, o))
 #define corto_binary(o) ((corto_binary)corto_assertType((corto_type)corto_binary_o, o))
 #define corto_enum(o) ((corto_enum)corto_assertType((corto_type)corto_enum_o, o))
@@ -145,14 +145,11 @@ struct corto_typeOptions {
     corto_type defaultProcedureType;
 };
 
-/* uint8 */
-typedef uint8_t corto_uint8;
+/* uint16 */
+typedef uint16_t corto_uint16;
 
 /* uint32 */
 typedef uint32_t corto_uint32;
-
-/* uint16 */
-typedef uint16_t corto_uint16;
 
 /* object */
 typedef void *corto_object;
@@ -234,7 +231,7 @@ struct corto_type_s {
     bool reference;
     corto_attr attr;
     corto_typeOptions options;
-    uint8_t flags;
+    uint16_t flags;
     uint32_t size;
     uint16_t alignment;
     corto_objectseq metaprocedures;
@@ -309,9 +306,11 @@ struct corto_class_s {
     corto_interfaceseq implements;
     corto_interfaceVectorseq interfaceVector;
     corto_initAction construct;
-    corto_destructAction destruct;
+    corto_destructAction define;
     corto_initAction validate;
-    corto_initAction update;
+    corto_destructAction update;
+    corto_destructAction destruct;
+    corto_destructAction _delete;
 };
 
 /*  quantity */
@@ -406,6 +405,9 @@ typedef enum corto_width {
     CORTO_WIDTH_64 = 3,
     CORTO_WIDTH_WORD = 4
 } corto_width;
+
+/* uint8 */
+typedef uint8_t corto_uint8;
 
 /*  primitive */
 typedef struct corto_primitive_s *corto_primitive;
