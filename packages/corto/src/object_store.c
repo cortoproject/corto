@@ -1693,6 +1693,11 @@ static corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
      * orphaned objects (that don't have CORTO_DECLARED). */
     if (_o->align.attrs.state & CORTO_DECLARED) {
         corto_notify(o, mask);
+
+        corto_type t = corto_typeof(o);
+        if ((t->flags & CORTO_TYPE_HAS_DEFINE)) {
+            corto_callDestructDelegate(&((corto_class)t)->define, t, o);
+        }
     }
 
     return 0;
@@ -1910,11 +1915,19 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("destruct", o, NULL);
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
 
+        bool defined = corto_checkState(o, CORTO_DEFINED);
+
+        /* Call destructor before marking object state as destructed */
+        if (defined && corto_owned(o)) {
+            corto__destructor(o);            
+        }
+
         /* From here, object is marked as destructed. */
         _o->align.attrs.state |= CORTO_DESTRUCTED;
 
         /* Only do the following steps if the object is defined */
-        if (corto_checkState(o, CORTO_DEFINED)) {
+        if (defined) {
+            corto_type t = corto_typeof(o);
 
             /* Only send delete notification when object is being deleted, not
              * when object is being suspended. */
@@ -1924,15 +1937,17 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
                 }
                 if (corto_checkState(o, CORTO_DECLARED)) {
                     corto_notify(o, CORTO_ON_DELETE);
+                    if (t->flags & CORTO_TYPE_HAS_DELETE) {
+                        corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
+                    }
                 }
             } else if (corto_checkState(o, CORTO_DECLARED)) {
                 corto_notify(o, CORTO_ON_SUSPEND);
+                if (t->flags & CORTO_TYPE_HAS_DELETE) {
+                    corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
+                }
             }
 
-            /* Call object destructor */
-            if (corto_owned(o)) {
-                corto__destructor(o);
-            }
             if (owner && corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
                 corto_release(owner);
             }

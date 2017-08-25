@@ -436,6 +436,13 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     corto_assertObject(observable);
     corto_object *parent;
 
+    corto_type t = corto_typeof(observable);
+    if (mask == CORTO_ON_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
+        if (corto_callInitDelegate(&((corto_class)t)->validate, t, observable)) {
+            goto error;
+        }
+    }
+
     corto_bool declared = corto_checkState(observable, CORTO_DECLARED);
     int depth = 0;
     corto__object *__o = CORTO_OFFSET(observable, -sizeof(corto__object));
@@ -506,6 +513,10 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
 
     if (corto_notifySubscribers(mask, observable)) {
         goto error;
+    }
+
+    if (mask == CORTO_ON_UPDATE && (t->flags & CORTO_TYPE_HAS_UPDATE)) {
+        corto_callDestructDelegate(&((corto_class)t)->update, t, observable);
     }
 
     return 0;
@@ -822,6 +833,12 @@ int16_t corto_observer_observe(
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
     if (!(this->mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {
         this->mask |= CORTO_ON_SELF;
+    }
+
+    if (this->mask == CORTO_ON_SCOPE || this->mask == CORTO_ON_TREE) {
+        this->mask |= 
+            CORTO_ON_DECLARE | CORTO_ON_DEFINE | CORTO_ON_UPDATE | 
+            CORTO_ON_DELETE | CORTO_ON_RESUME | CORTO_ON_SUSPEND;
     }
 
     /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */

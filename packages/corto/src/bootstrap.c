@@ -1149,8 +1149,12 @@ int corto_start(char *appName) {
     lang_type_init__o.v.offset = offsetof(struct corto_type_s, init);
     lang_type_deinit__o.v.offset = offsetof(struct corto_type_s, deinit);
     lang_class_construct__o.v.offset = offsetof(struct corto_class_s, construct);
+    lang_class_define__o.v.offset = offsetof(struct corto_class_s, define);
     lang_class_destruct__o.v.offset = offsetof(struct corto_class_s, destruct);
-    
+    lang_class_delete__o.v.offset = offsetof(struct corto_class_s, _delete);
+    lang_class_update__o.v.offset = offsetof(struct corto_class_s, update);
+    lang_class_validate__o.v.offset = offsetof(struct corto_class_s, validate);
+
     /* Assign delegates to global variables, so they can be used by other code
      * without having to do expensive lookups */
     corto_type_init_o = &lang_type_init__o.v;
@@ -1201,12 +1205,8 @@ int corto_start(char *appName) {
                 if (corto_interface_pullDelegate(o, &lang_class_destruct__o.v)) {
                     ((corto_type)o)->flags |= CORTO_TYPE_HAS_DESTRUCT;
                 }
-                /*if (corto_interface_pullDelegate(o, &lang_class_validate__o.v)) {
-                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_VALIDATE;
-                }
-                if (corto_interface_pullDelegate(o, &lang_class_update__o.v)) {
-                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_UPDATE;
-                }*/
+
+                /* Other delegates are not relevant for construction of types */
             }
         }
     }
