@@ -20,8 +20,8 @@ tree, operating system abstractions and so on.
 
 The `c` directory contains generated code from the corto builtin types that make
 it easier to work with them. Because this generated code is quite big, it is
-stored in a separate package, so your application can choose for itself whether
-to make use of it or not.
+stored in a separate package, so each application can decide for itself whether
+to make use of the generated code or not.
 
 ## Files
 An overview of the files, and what they do:
