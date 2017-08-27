@@ -62,11 +62,18 @@ struct corto_contentType {
 corto_contentType corto_loadContentType(corto_string contentType);
 
 typedef struct corto__attr {
+    /* attributes */
     unsigned scope:1;
     unsigned write:1;
     unsigned observable:1;
     unsigned persistent:1;
-    unsigned state:4;
+
+    /* built-in attributes */
+    unsigned builtin:1;
+    unsigned orphan:1;
+
+    /* state */
+    unsigned state: 2;
 }corto__attr;
 
 struct corto__object;

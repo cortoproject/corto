@@ -483,10 +483,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_operatorKind_SHIFT_RIGHT),\
     SSO_OP_OBJ(core_operatorKind_REF),\
     /* state */\
-    SSO_OP_OBJ(lang_state_OBJECT_IS_VALID),\
-    SSO_OP_OBJ(lang_state_DECLARED),\
     SSO_OP_OBJ(lang_state_VALID),\
     SSO_OP_OBJ(lang_state_DELETED),\
+    SSO_OP_OBJ(lang_state_DECLARED),\
     /* attr */\
     SSO_OP_OBJ(lang_attr_ATTR_NAMED),\
     SSO_OP_OBJ(lang_attr_ATTR_WRITABLE),\
@@ -1413,15 +1412,6 @@ corto_string corto_getLibrary(void) {
 
 #define CORTO_CHECKBUILTIN_ARG(builtinobj, n)\
     if (o == builtinobj) return TRUE;
-
-corto_bool corto_isbuiltin(corto_object o) {
-    if (o == root_o) return TRUE;
-    if (o == corto_o) return TRUE;
-    if (o == corto_lang_o) return TRUE;
-    //SSO_OP_TYPE(CORTO_CHECKBUILTIN_ARG);
-    //SSO_OP_OBJECT(CORTO_CHECKBUILTIN);
-    return FALSE;
-}
 
 bool corto_autoload(corto_bool autoload) {
     bool prev = false;

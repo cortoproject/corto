@@ -58,36 +58,6 @@ void corto_declaredAdminFree(void *admin) {
     }
 }
 
-corto_bool corto_isBuiltin(corto_object o) {
-    corto_assertObject(o);
-    if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
-        if (o == root_o ||
-            o == corto_o ||
-            o == corto_lang_o ||
-            o == corto_core_o ||
-            o == corto_native_o)
-        {
-            return TRUE;
-        } else
-        {
-            corto_object p = corto_parentof(o);
-            if (p == corto_lang_o || p == corto_core_o || p == corto_native_o)
-            {
-                return TRUE;
-            } else
-            {
-                while(p) {
-                    p = corto_parentof(p);
-                    if (p == corto_lang_o || p == corto_core_o || p == corto_native_o) {
-                        return TRUE;
-                    }
-                }
-            }
-        }
-    }
-    return FALSE;
-}
-
 corto_bool corto_declaredAdminCheck(corto_object o) {
     corto_assertObject(o);
     corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
@@ -326,7 +296,7 @@ static void corto__deinitScope(corto_object o) {
         "corto__deinitScope: called on non-scoped object <%p>.", o);
 
     /* Free parent */
-    if (scope->parent && corto_checkState(o, CORTO_DECLARED)) {
+    if (scope->parent && !corto_isorphan(o)) {
         corto_release(scope->parent);
     }
     scope->parent = NULL;
@@ -719,13 +689,6 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
 #define corto_memtrace(oper, o, context)
 #endif
 
-/* Match a state exclusively:
- *                CORTO_DECLARED - CORTO_DECLARED | CORTO_VALID
- *  CORTO_DECLARED        X
- *  CORTO_VALID                       X
- *  CORTO_DECLARED |      X             X
- *     CORTO_VALID
- */
 static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     corto_uint8 ostate;
     corto__object* _o;
@@ -737,6 +700,8 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     ostate = _o->align.attrs.state;
     if (ostate & CORTO_VALID) {
         ostate = CORTO_VALID;
+    } else {
+        ostate = CORTO_DECLARED;
     }
 
     return ostate & state;
@@ -828,7 +793,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                     !corto__checkStateXOR(parent, childType->options.parentState))
                 {
                     corto_uint32 childState = childType->options.parentState;
-                    corto_uint32 parentState = _parent->align.attrs.state;
+                    corto_uint32 parentState = corto_stateof(parent);
                     char *parentStateStr = corto_ptr_str(&parentState, corto_state_o, 0);
                     char *childStateStr = corto_ptr_str(&childState, corto_state_o, 0);
                     corto_seterr("parent '%s' is %s, must be %s",
@@ -1138,11 +1103,7 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
             o->align.attrs.persistent = TRUE;
         }
 
-        /* Initial state of an object is DECLARED. The DECLARED state indicates
-         * that the object has been added to a scope and a CORTO_ON_DECLARE
-         * event has been generated. Orphaned objects do not have the 
-         * CORTO_DECLARED flag. */
-        o->align.attrs.state = CORTO_DECLARED;
+        o->align.attrs.orphan = orphan;
 
         corto_claim(type);
 
@@ -1670,8 +1631,8 @@ static corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
     corto_observerDelayedAdminDefine(o);
 
     /* Notify observers of defined object, don't generate DEFINED event for
-     * orphaned objects (that don't have CORTO_DECLARED). */
-    if (_o->align.attrs.state & CORTO_DECLARED) {
+     * orphaned objects. */
+    if (!_o->align.attrs.orphan) {
         corto_notify(o, mask);
 
         corto_type t = corto_typeof(o);
@@ -1852,8 +1813,8 @@ corto_int16 corto_define(corto_object o) {
 
     /* Only define undefined objects */
     if (!corto_checkState(o, CORTO_VALID)) {
-        if (corto_childof(root_o, o) && !corto_isBuiltin(o)) {
-            if (!corto_declaredAdminCheck(o) && corto_checkState(o, CORTO_DECLARED)) {
+        if (corto_childof(root_o, o) && !corto_isbuiltin(o)) {
+            if (!corto_declaredAdminCheck(o) && !corto_isorphan(o)) {
                 corto_seterr("corto: cannot define object '%s' because it was not declared in same thread",
                   corto_fullpath(NULL, o));
                 goto error;
@@ -1895,7 +1856,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
 
     /* Treat builtin objects separately. They cannot be destructed regularly
      * because they aren't allocated on heap */
-    if (corto_isBuiltin(o)) {
+    if (corto_isbuiltin(o)) {
         if (!corto_checkState(o, CORTO_DELETED)) {
             _o->align.attrs.state |= CORTO_DELETED;
         }
@@ -1926,17 +1887,17 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
 
             /* Only send delete notification when object is being deleted, not
              * when object is being suspended. */
-            if (delete) {
-                if (corto_checkState(o, CORTO_DECLARED)) {
+            if (!corto_isorphan(o)) {            
+                if (delete) {
                     corto_notify(o, CORTO_ON_DELETE);
                     if (t->flags & CORTO_TYPE_HAS_DELETE) {
                         corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
                     }
-                }
-            } else if (corto_checkState(o, CORTO_DECLARED)) {
-                corto_notify(o, CORTO_ON_SUSPEND);
-                if (t->flags & CORTO_TYPE_HAS_DELETE) {
-                    corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
+                } else {
+                    corto_notify(o, CORTO_ON_SUSPEND);
+                    if (t->flags & CORTO_TYPE_HAS_DELETE) {
+                        corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
+                    }
                 }
             }
 
@@ -1963,7 +1924,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         }
 
         /* Deinit scope */
-        if (corto_checkAttr(o, CORTO_ATTR_NAMED) && corto_checkState(o, CORTO_DECLARED)) {
+        if (corto_checkAttr(o, CORTO_ATTR_NAMED) && !corto_isorphan(o)) {
             corto__orphan(o);
         } else {
             /* Remove from anonymous cache */
@@ -2207,6 +2168,9 @@ corto_state corto_stateof(corto_object o) {
     corto__object* _o;
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto_int8 state = _o->align.attrs.state;
+    if (!_o->align.attrs.orphan) {
+        state |= CORTO_DECLARED;
+    }
     return state;
 }
 
@@ -2325,16 +2289,17 @@ error:
     return NULL;
 }
 
-
-/* Check for a state */
 bool corto_checkState(corto_object o, corto_state state) {
     corto__object* _o;
     corto_assertObject(o);
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    return (_o->align.attrs.state & state) == state;
+    corto_state ostate = _o->align.attrs.state;
+    if (!_o->align.attrs.orphan) {
+        ostate |= CORTO_DECLARED;
+    }
+    return (ostate & state) == state;
 }
 
-/* Check for an attribute */
 bool corto_checkAttr(corto_object o, corto_attr attr) {
     corto_bool result;
     corto__object* _o;
@@ -2357,6 +2322,20 @@ bool corto_checkAttr(corto_object o, corto_attr attr) {
         if (!_o->align.attrs.persistent) result = FALSE;
     }
     return result;
+}
+
+bool corto_isorphan(corto_object o) {
+    corto__object* _o;
+    corto_assertObject(o);
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    return _o->align.attrs.orphan;    
+}
+
+bool corto_isbuiltin(corto_object o) {
+    corto__object* _o;
+    corto_assertObject(o);
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    return _o->align.attrs.builtin;    
 }
 
 corto_object _corto_assertType(corto_type type, corto_object o) {
@@ -3299,9 +3278,9 @@ corto_object corto_ownerof(corto_object o) {
     corto__persistent* persistent;
     corto_object result = NULL;
 
-    if (!corto_checkState(o, CORTO_DECLARED) && corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+    if (corto_isorphan(o)) {
         o = corto_parentof(o);
-        while (o && !corto_checkState(o, CORTO_DECLARED)) {
+        while (o && corto_isorphan(o)) {
             o = corto_parentof(o);
         }
     }
@@ -3351,9 +3330,9 @@ static corto_bool corto_ownerMatch(corto_object owner, corto_object current) {
 corto_bool corto_owned(corto_object o) {
     corto_assertObject(o);
 
-    /* If object is not persistent, and it is not declared (orphans)
+    /* If object is not persistent, and it is not an orphan
      * the application is free to do with the object what it wants. */
-    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT) && corto_checkState(o, CORTO_DECLARED)) {
+    if (!corto_checkAttr(o, CORTO_ATTR_PERSISTENT) && !corto_isorphan(o)) {
         return TRUE;
     }
 

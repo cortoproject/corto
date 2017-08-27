@@ -524,6 +524,28 @@ bool corto_checkAttr(
     corto_object o, 
     corto_attr attr);
 
+/** Check if an object is an orphan.
+ * Orphans are objects that not registered with their parents.
+ *
+ * @param o The object to check
+ * @return true if the object is an orphan.
+ * @see isbuiltin corto_checkState corto_checkAttr
+ */
+CORTO_EXPORT 
+bool corto_isorphan(
+    corto_object o);
+
+/** Check if an object is a builtin object.
+ * Builtin objects are part of the corto runtime and are not located on the heap.
+ *
+ * @param o The object to check
+ * @return true if the object is builtin.
+ * @see isorphan corto_checkState corto_checkAttr
+ */
+CORTO_EXPORT 
+bool corto_isbuiltin(
+    corto_object o);
+
 /** The current reference count of the object.
  * This function should be used with caution, as it introduces dependencies on
  * the underlying garbage collection mechanism. A valid use for this function

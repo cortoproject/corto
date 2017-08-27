@@ -1264,7 +1264,7 @@ void test_ObjectMgmt_tc_declareOrphan(
     test_assertstr(corto_idof(i), "i");
     test_assert(corto_parentof(i) == root_o);
     test_assert(corto_childof(root_o, i));
-    test_assert(!corto_isBuiltin(i));
+    test_assert(!corto_isbuiltin(i));
     ret = corto_define(i);
     test_assert(ret == 0);
 

@@ -127,9 +127,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #else
 #define CORTO_ADD_MAGIC
 #endif
-#define CORTO_ATTR_SSOO {{1, 0, 1, 0, CORTO_DECLARED}}
-#define CORTO_ATTR_SSO {{1, 0, 0, 0, CORTO_DECLARED}}
-#define CORTO_ATTR_SO {{0, 0, 0, 0, CORTO_DECLARED}}
+#define CORTO_ATTR_SSOO {{1, 0, 1, 0, 1, 0, 0}}
+#define CORTO_ATTR_SSO {{1, 0, 0, 0, 1, 0, 0}}
+#define CORTO_ATTR_SO {{0, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}
 #define CORTO_PACKAGE_V(parent, name, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&core_package__o.v}}, {uri}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
@@ -763,10 +763,9 @@ CORTO_ENUM_O(secure, actionKind);
     CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_DELETE);
 
 CORTO_BITMASK_O(lang, state);
-    CORTO_CONSTANT_O(lang_state, OBJECT_IS_VALID);
-    CORTO_CONSTANT_O(lang_state, DECLARED);
     CORTO_CONSTANT_O(lang_state, VALID);
     CORTO_CONSTANT_O(lang_state, DELETED);
+    CORTO_CONSTANT_O(lang_state, DECLARED);
 
 CORTO_BITMASK_O(lang, attr);
     CORTO_CONSTANT_O(lang_attr, ATTR_NAMED);

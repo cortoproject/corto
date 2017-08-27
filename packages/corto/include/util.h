@@ -203,9 +203,6 @@ CORTO_EXPORT int corto_vasprintf (char **str, const char *fmt, va_list args);
 /* Replace substring in string */
 CORTO_EXPORT char* corto_replace(char *s, char *old, char *_new);
 
-/* Is object a builtin object */
-CORTO_EXPORT corto_bool corto_isbuiltin(corto_object o);
-
 #ifdef __cplusplus
 }
 #endif

@@ -443,7 +443,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
         }
     }
 
-    corto_bool declared = corto_checkState(observable, CORTO_DECLARED);
+    corto_bool isOrphan = corto_isorphan(observable);
     int depth = 0;
     corto__object *__o = CORTO_OFFSET(observable, -sizeof(corto__object));
     corto__observable *_o = NULL;
@@ -487,7 +487,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
           corto__objectObservable(CORTO_OFFSET(parent, -sizeof(corto__object)));
 
         if (_parent) {
-            if (declared) {
+            if (!isOrphan) {
                 corto__observer** observers = corto_observersPush(admin, &_parent->onChildArray);
                 if (observers) {
                     corto_notifyObserversIntern(observers, observable, mask, depth);
@@ -505,10 +505,10 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
                 }
             }
         }
-        if (declared) {
+        if (!isOrphan) {
             depth++;
         }
-        declared = corto_checkState(parent, CORTO_DECLARED);
+        isOrphan = corto_isorphan(parent);
     }
 
     if (corto_notifySubscribers(mask, observable)) {

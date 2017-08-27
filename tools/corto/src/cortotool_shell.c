@@ -119,21 +119,12 @@ static void cxsh_prompt(int enableColors, corto_id prompt) {
 /* Translate object state to string */
 static char* cxsh_stateStr(corto_object o, char* buff) {
     buff[0] = '\0';
-    corto_int8 appended = 0;
 
     /* Get state */
-    if (corto_checkState(o, CORTO_DECLARED)) {
-        if (appended) {
-            strcat(buff, "|");
-        }
-        strcat(buff, "DCL");
-        appended++;
-    }
     if (corto_checkState(o, CORTO_VALID)) {
-        if (appended) {
-            strcat(buff, "|");
-        }
-        strcat(buff, "V");
+        strcpy(buff, "valid");
+    } else {
+        strcpy(buff, "invalid");
     }
 
     return buff;
@@ -146,30 +137,37 @@ static char* cxsh_attrStr(corto_object o, char* buff) {
 
     first = TRUE;
     if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
-        strcat(buff, "S");
+        strcat(buff, "named");
         first = FALSE;
     }
     if (corto_checkAttr(o, CORTO_ATTR_WRITABLE)) {
         if (!first) {
-            strcat(buff, "|W");
+            strcat(buff, "|writable");
         } else {
-            strcat(buff, "W");
+            strcat(buff, "writable");
             first = FALSE;
         }
     }
     if (corto_checkAttr(o, CORTO_ATTR_OBSERVABLE)) {
         if (!first) {
-            strcat(buff, "|O");
+            strcat(buff, "|observable");
         } else {
-            strcat(buff, "O");
+            strcat(buff, "observable");
             first = FALSE;
         }
     }
     if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
         if (!first) {
-            strcat(buff, "|P");
+            strcat(buff, "|persistent");
         } else {
-            strcat(buff, "P");
+            strcat(buff, "persistent");
+        }
+    }
+    if (corto_isbuiltin(o)) {
+        if (!first) {
+            strcat(buff, "|builtin");
+        } else {
+            strcat(buff, "builtin");
         }
     }
 
