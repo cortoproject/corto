@@ -455,12 +455,12 @@ corto_void onCreateNested(corto_observerEvent *e)
 {
     test_EventCount *counter = e->instance;
 
-    if (e->event & CORTO_ON_DECLARE) counter->declareCount++;
-    if (e->event & CORTO_ON_DEFINE) counter->defineCount++;
-    if (e->event & CORTO_ON_UPDATE) counter->updateCount++;
-    if (e->event & CORTO_ON_DELETE) counter->deleteCount++;
-    if (e->event & CORTO_ON_RESUME) counter->resumeCount++;
-    if (e->event & CORTO_ON_SUSPEND) counter->suspendCount++;
+    if (e->event & CORTO_DECLARE) counter->declareCount++;
+    if (e->event & CORTO_DEFINE) counter->defineCount++;
+    if (e->event & CORTO_UPDATE) counter->updateCount++;
+    if (e->event & CORTO_DELETE) counter->deleteCount++;
+    if (e->event & CORTO_RESUME) counter->resumeCount++;
+    if (e->event & CORTO_SUSPEND) counter->suspendCount++;
 }
 
 void test_ObjectMgmt_tc_createNested(
@@ -1084,12 +1084,12 @@ corto_void onDeclareNested(corto_observerEvent *e)
 {
     test_EventCount *counter = e->instance;
 
-    if (e->event & CORTO_ON_DECLARE) counter->declareCount++;
-    if (e->event & CORTO_ON_DEFINE) counter->defineCount++;
-    if (e->event & CORTO_ON_UPDATE) counter->updateCount++;
-    if (e->event & CORTO_ON_DELETE) counter->deleteCount++;
-    if (e->event & CORTO_ON_RESUME) counter->resumeCount++;
-    if (e->event & CORTO_ON_SUSPEND) counter->suspendCount++;
+    if (e->event & CORTO_DECLARE) counter->declareCount++;
+    if (e->event & CORTO_DEFINE) counter->defineCount++;
+    if (e->event & CORTO_UPDATE) counter->updateCount++;
+    if (e->event & CORTO_DELETE) counter->deleteCount++;
+    if (e->event & CORTO_RESUME) counter->resumeCount++;
+    if (e->event & CORTO_SUSPEND) counter->suspendCount++;
 }
 
 void test_ObjectMgmt_tc_declareNested(

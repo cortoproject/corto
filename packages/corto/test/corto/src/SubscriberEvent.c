@@ -184,7 +184,7 @@ void test_SubscriberEvent_tc_onDefine(
     test_assertint(this->st->countDefine, 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -193,7 +193,7 @@ void test_SubscriberEvent_tc_onDefine(
     test_assertint(this->st->countDefine, 3);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -206,7 +206,7 @@ void test_SubscriberEvent_tc_onDefine(
     test_assertint(this->st->countDefine, 4);
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -235,7 +235,7 @@ void test_SubscriberEvent_tc_onDefineScope(
     test_assert(this->st->countDefineScope == 1);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onScope_o));
     test_SubscriberTest_clear(this->st);
 
@@ -244,7 +244,7 @@ void test_SubscriberEvent_tc_onDefineScope(
     test_assert(this->st->countDefineScope == 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onScope_o));
     test_SubscriberTest_clear(this->st);
 
@@ -324,7 +324,7 @@ void test_SubscriberEvent_tc_onDefineTree(
     test_assert(this->st->countDefineTree == 1);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onTree_o));
     test_SubscriberTest_clear(this->st);
 
@@ -333,7 +333,7 @@ void test_SubscriberEvent_tc_onDefineTree(
     test_assert(this->st->countDefineTree == 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onTree_o));
     test_SubscriberTest_clear(this->st);
 
@@ -347,7 +347,7 @@ void test_SubscriberEvent_tc_onDefineTree(
     test_assert(this->st->countDefineTree == 3);
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
-    test_assert(this->st->lastMask & CORTO_ON_DEFINE);
+    test_assert(this->st->lastMask & CORTO_DEFINE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onTree_o));
     test_SubscriberTest_clear(this->st);
 
@@ -370,7 +370,7 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assertint(this->st->countUpdate, 1);
     test_assertstr(this->st->lastParent, "..");
     test_assertstr(this->st->lastId, "testScope");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -391,7 +391,7 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assertint(this->st->countUpdate, 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -408,7 +408,7 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assertint(this->st->countUpdate, 3);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -429,7 +429,7 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assertint(this->st->countUpdate, 4);
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -468,7 +468,7 @@ void test_SubscriberEvent_tc_onUpdateScope(
     test_assertint(this->st->countUpdateScope, 1);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -485,7 +485,7 @@ void test_SubscriberEvent_tc_onUpdateScope(
     test_assertint(this->st->countUpdateScope, 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -506,7 +506,7 @@ void test_SubscriberEvent_tc_onUpdateScope(
     test_assertint(this->st->countUpdateScope, 2);
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -529,7 +529,7 @@ void test_SubscriberEvent_tc_onUpdateSelf(
     test_assertint(this->st->countUpdateSelf, 1);
     test_assertstr(this->st->lastParent, "..");
     test_assertstr(this->st->lastId, "testScope");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -612,7 +612,7 @@ void test_SubscriberEvent_tc_onUpdateTree(
     test_assertint(this->st->countUpdateTree, 1);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "o");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -629,7 +629,7 @@ void test_SubscriberEvent_tc_onUpdateTree(
     test_assertint(this->st->countUpdateTree, 2);
     test_assertstr(this->st->lastParent, ".");
     test_assertstr(this->st->lastId, "p");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 
@@ -650,7 +650,7 @@ void test_SubscriberEvent_tc_onUpdateTree(
     test_assertint(this->st->countUpdateTree, 3);
     test_assertstr(this->st->lastParent, "p");
     test_assertstr(this->st->lastId, "q");
-    test_assert(this->st->lastMask & CORTO_ON_UPDATE);
+    test_assert(this->st->lastMask & CORTO_UPDATE);
     test_assert(corto_ll_hasObject(this->st->triggered, test_SubscriberTest_onAll_o));
     test_SubscriberTest_clear(this->st);
 

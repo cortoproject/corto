@@ -2129,7 +2129,7 @@ void test_Event_tc_postponeListenForUndefined(
     corto_int32 *observable = corto_int32CreateChild(root_o, "observable", 0);
     corto_int32 *instance = corto_int32Declare();
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, observable)
+    corto_observer observer = corto_observe(CORTO_UPDATE, observable)
       .instance(instance)
       .callback(test_Event_tc_postponeListenForUndefinedCallback);
 
@@ -2159,7 +2159,7 @@ void test_Event_tc_postponeListenSilence(
     corto_int32 *observable = corto_int32CreateChild(root_o, "observable", 0);
     corto_int32 *instance = corto_int32Declare();
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, observable)
+    corto_observer observer = corto_observe(CORTO_UPDATE, observable)
       .instance(instance)
       .callback(test_Event_tc_postponeListenForUndefinedCallback);
     test_assert(observer != NULL);

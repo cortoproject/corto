@@ -28,7 +28,7 @@ void test_Observers_tc_dispatchObserver(
     test_assert(d != NULL);
 
     test_assert(o != NULL);
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, o)
       .dispatcher(d)
       .instance(this)
       .callback(dispatchObserver_onUpdate);
@@ -37,7 +37,7 @@ void test_Observers_tc_dispatchObserver(
     test_assert(corto_update(o) == 0);
 
     test_assert(d->called == TRUE);
-    test_assert(this->mask == CORTO_ON_UPDATE);
+    test_assert(this->mask == CORTO_UPDATE);
     test_assert(this->observable == o);
     test_assert(this->observer == observer);
 
@@ -69,7 +69,7 @@ void test_Observers_tc_notifyReadDenied(
     corto_object o = corto_createChild(root_o, "o", corto_void_o);
     test_assert(o != NULL);
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, o)
       .instance(this)
       .callback(notifyReadDenied_onUpdate);
     test_assert(observer != NULL);
@@ -106,7 +106,7 @@ void test_Observers_tc_notifyUpdateDenied(
     corto_object o = corto_createChild(root_o, "o", corto_void_o);
     test_assert(o != NULL);
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, o)
       .callback(NULL);
     test_assert(observer != NULL);
 
@@ -132,7 +132,7 @@ void test_Observers_tc_notifyUpdateDenied(
 void test_Observers_tc_notObserving(
     test_Observers this)
 {
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
 
@@ -146,7 +146,7 @@ void test_Observers_tc_notObserving(
 void tc_observeAlignCallbackSelf(corto_observerEvent *e) {
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "o");
-    test_assert(e->event == CORTO_ON_DEFINE);
+    test_assert(e->event == CORTO_DEFINE);
 }
 
 void test_Observers_tc_observeAlignSelf(
@@ -154,7 +154,7 @@ void test_Observers_tc_observeAlignSelf(
 {
     corto_object o = corto_createChild(root_o, "o", corto_void_o);
 
-    corto_observer observer = corto_observe(CORTO_ON_DEFINE|CORTO_ON_INVALIDATE, o)
+    corto_observer observer = corto_observe(CORTO_DEFINE|CORTO_INVALIDATE, o)
       .callback(tc_observeAlignCallbackSelf);
     test_assert(observer != NULL);
 
@@ -168,7 +168,7 @@ void tc_observeAlignCallbackType(corto_observerEvent *e) {
     test_Observers this = e->instance;
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "p");
-    test_assert(e->event == CORTO_ON_DEFINE);
+    test_assert(e->event == CORTO_DEFINE);
     corto_ptr_setref(&this->observable, e->data);
 }
 
@@ -179,7 +179,7 @@ void test_Observers_tc_observeAlignType(
     corto_object p = corto_createChild(root_o, "p", corto_float32_o);
     corto_object q = corto_createChild(root_o, "q", corto_string_o);
 
-    corto_observer observer = corto_observe(CORTO_ON_DEFINE|CORTO_ON_SCOPE, root_o)
+    corto_observer observer = corto_observe(CORTO_DEFINE|CORTO_ON_SCOPE, root_o)
       .type("float32")
       .instance(this)
       .callback(tc_observeAlignCallbackType);
@@ -201,7 +201,7 @@ void test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     test_assert(o != NULL);
 
     test_assert(o != NULL);
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE | CORTO_ON_SCOPE, o)
+    corto_observer observer = corto_observe(CORTO_UPDATE | CORTO_ON_SCOPE, o)
       .callback(NULL);
     test_assert(observer == NULL);
     test_assertstr(corto_lasterr(), "invalid nested subscription, observable is not scoped");
@@ -218,7 +218,7 @@ void test_Observers_tc_observerMissingObservable(
     test_assert(o != NULL);
 
     test_assert(o != NULL);
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, NULL)
+    corto_observer observer = corto_observe(CORTO_UPDATE, NULL)
       .callback(NULL);
     test_assert(observer == NULL);
     test_assertstr(corto_lasterr(), "no observable provided for observer");
@@ -248,7 +248,7 @@ void test_Observers_tc_observeTypeFilter(
     corto_object o2 = corto_createChild(testRoot, "o2", corto_int32_o);
     test_assert(o2 != NULL);
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, testRoot)
+    corto_observer observer = corto_observe(CORTO_UPDATE|CORTO_ON_SCOPE, testRoot)
       .type("int32")
       .instance(this)
       .callback(observeTypeFilter_onUpdate);
@@ -260,7 +260,7 @@ void test_Observers_tc_observeTypeFilter(
     test_assert(this->observer == NULL);
 
     test_assert(corto_update(o2) == 0);
-    test_assert(this->mask == CORTO_ON_UPDATE);
+    test_assert(this->mask == CORTO_UPDATE);
     test_assert(this->observable == o2);
     test_assert(this->observer == observer);
 
@@ -273,7 +273,7 @@ void test_Observers_tc_observeTypeFilterNotAType(
     test_Observers this)
 {
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE|CORTO_ON_SCOPE, root_o)
       .type("/corto")
       .callback(NULL);
     test_assert(observer == NULL);
@@ -285,7 +285,7 @@ void test_Observers_tc_observeTypeFilterUnresolved(
     test_Observers this)
 {
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE|CORTO_ON_SCOPE, root_o)
       .type("/doesnotexist")
       .callback(NULL);
     test_assert(observer == NULL);
@@ -311,7 +311,7 @@ void test_Observers_tc_observeWithMultipleInstances(
     corto_object instance1 = corto_create(corto_void_o);
     corto_object instance2 = corto_create(corto_void_o);
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, o)
       .instance(this) // Callback can access this through observer object
       .disabled()
       .callback(observeWithMultipleInstances_onUpdate);
@@ -323,7 +323,7 @@ void test_Observers_tc_observeWithMultipleInstances(
 
     test_assert(corto_update(o) == 0);
     test_assert(this->count == 2);
-    test_assert(this->mask == CORTO_ON_UPDATE);
+    test_assert(this->mask == CORTO_UPDATE);
     test_assert(this->observable == o);
     test_assert(this->observer == observer);
 
@@ -340,7 +340,7 @@ void test_Observers_tc_observeWithMultipleInstances(
 void test_Observers_tc_observing(
     test_Observers this)
 {
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
 
@@ -353,7 +353,7 @@ void test_Observers_tc_observing(
 void test_Observers_tc_observingDisabled(
     test_Observers this)
 {
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .disabled()
       .callback(NULL);
     test_assert(observer != NULL);
@@ -370,7 +370,7 @@ void test_Observers_tc_observingMultipleInstances(
     corto_object instance1 = corto_create(corto_void_o);
     corto_object instance2 = corto_create(corto_void_o);
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .disabled()
       .callback(NULL);
     test_assert(observer != NULL);
@@ -396,7 +396,7 @@ void test_Observers_tc_observingMultipleInstances(
 void test_Observers_tc_observingScope(
     test_Observers this)
 {
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_SCOPE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE|CORTO_ON_SCOPE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
 
@@ -411,7 +411,7 @@ void test_Observers_tc_observingSingleInstance(
 {
     corto_object instance = corto_create(corto_void_o);
 
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .instance(instance)
       .callback(NULL);
     test_assert(observer != NULL);
@@ -426,7 +426,7 @@ void test_Observers_tc_observingSingleInstance(
 void test_Observers_tc_observingTree(
     test_Observers this)
 {
-    corto_observer observer = corto_observe(CORTO_ON_UPDATE|CORTO_ON_TREE, root_o)
+    corto_observer observer = corto_observe(CORTO_UPDATE|CORTO_ON_TREE, root_o)
       .callback(NULL);
     test_assert(observer != NULL);
 

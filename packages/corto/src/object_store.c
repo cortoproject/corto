@@ -1340,7 +1340,7 @@ static corto_object corto_declareChildIntern(
 
             /* Notify parent of new object */
             if (!orphan) {
-                corto_notify(o, CORTO_ON_DECLARE);
+                corto_notify(o, CORTO_DECLARE);
             } else {
                 /* Orphaned objects don't generate DECLARE and DEFINE events. To
                  * indicate that an object is orphaned, the DECLARE flag is removed. */
@@ -1714,7 +1714,7 @@ static corto_object corto_declareChildInternRecursive(
                 /* First ensure all constructors are successfully called */
                 for (i = 0; i < sp; i++) {
                     if (!corto_checkState(stack[i], CORTO_VALID)) {
-                        masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
+                        masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_RESUME : CORTO_DEFINE;
                         if (corto_defineDeclared(stack[i])) {
                             result = NULL; /* Signal failure */
                             break;
@@ -1824,7 +1824,7 @@ corto_int16 corto_define(corto_object o) {
         corto_bool resumed = corto_resumeDeclared(o);
         result = corto_defineDeclared(o);
         if (!result) {
-            result = corto_notifyDefined(o, resumed ? CORTO_ON_RESUME : CORTO_ON_DEFINE);
+            result = corto_notifyDefined(o, resumed ? CORTO_RESUME : CORTO_DEFINE);
         }
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("define", o, NULL);
     }
@@ -1889,12 +1889,12 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
              * when object is being suspended. */
             if (!corto_isorphan(o)) {            
                 if (delete) {
-                    corto_notify(o, CORTO_ON_DELETE);
+                    corto_notify(o, CORTO_DELETE);
                     if (t->flags & CORTO_TYPE_HAS_DELETE) {
                         corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
                     }
                 } else {
-                    corto_notify(o, CORTO_ON_SUSPEND);
+                    corto_notify(o, CORTO_SUSPEND);
                     if (t->flags & CORTO_TYPE_HAS_DELETE) {
                         corto_callDestructDelegate(&((corto_class)t)->_delete, t, o);
                     }
@@ -2144,7 +2144,7 @@ corto_int16 corto_invalidate(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     _o->align.attrs.state &= ~CORTO_VALID;
     /* Notify observers */
-    return corto_notify(o, CORTO_ON_INVALIDATE);
+    return corto_notify(o, CORTO_INVALIDATE);
 }
 
 /* Get type */
@@ -3621,8 +3621,8 @@ corto_int16 corto_publish(
 
     if (o) {
         switch(event) {
-        case CORTO_ON_DEFINE:
-        case CORTO_ON_UPDATE:
+        case CORTO_DEFINE:
+        case CORTO_UPDATE:
             if (corto_typeof(o)->kind != CORTO_VOID) {
                 if (!(result = corto_updateBegin(o))) {
                     if ((result = corto_fromcontent(o, contentType, content))) {
@@ -3635,7 +3635,7 @@ corto_int16 corto_publish(
                 corto_update(o);
             }
             break;
-        case CORTO_ON_DELETE:
+        case CORTO_DELETE:
             result = corto_delete(o);
             break;
         }
@@ -3658,7 +3658,7 @@ corto_int16 corto_update(corto_object o) {
     corto_assertObject(o);
 
     corto_int16 result = 0;
-    corto_eventMask mask = CORTO_ON_UPDATE;
+    corto_eventMask mask = CORTO_UPDATE;
 
     if (!corto_owned(o) && (corto_typeof(corto_typeof(o)) != (corto_type)corto_target_o)) {
         corto_seterr("object not owned by thread");
@@ -3670,25 +3670,25 @@ corto_int16 corto_update(corto_object o) {
             goto error;
         }
         if (!corto_checkState(o, CORTO_VALID)) {
-            mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
+            mask |= corto_resumeDeclared(o) ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
                 result = corto_notifyDefined(o, mask);
             }
         } else {
-            if (corto_notifySecured(o, CORTO_ON_UPDATE)) {
+            if (corto_notifySecured(o, CORTO_UPDATE)) {
                 goto error;
             }
         }
     } else {
         if (!corto_checkState(o, CORTO_VALID)) {
-            mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
+            mask |= corto_resumeDeclared(o) ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
                 result = corto_notifyDefined(o, mask);
             }
         } else {
-            if (corto_notify(o, CORTO_ON_UPDATE)) {
+            if (corto_notify(o, CORTO_UPDATE)) {
                 goto error;
             }
         }
@@ -3786,10 +3786,10 @@ corto_int16 corto_updateEnd(corto_object observable) {
             (corto_mount(owner)->policy.ownership == CORTO_LOCAL_OWNER))
         {
             /* If not defined, and owner is a SINK, object is resumed */
-            mask |= CORTO_ON_RESUME;
+            mask |= CORTO_RESUME;
         } else
         {
-            mask |= CORTO_ON_DEFINE;
+            mask |= CORTO_DEFINE;
         }
 
         result = corto_defineDeclared(observable);
@@ -3798,11 +3798,11 @@ corto_int16 corto_updateEnd(corto_object observable) {
         }
     } else {
         if (corto_secured()) {
-            if (corto_notifySecured(observable, CORTO_ON_UPDATE)) {
+            if (corto_notifySecured(observable, CORTO_UPDATE)) {
                 goto error;
             }
         } else {
-            if (corto_notify(observable, CORTO_ON_UPDATE)) {
+            if (corto_notify(observable, CORTO_UPDATE)) {
                 goto error;
             }
         }

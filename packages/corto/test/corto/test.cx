@@ -689,7 +689,7 @@ test/Suite Ownership:/
     void tc_ownedMountMount()
     void tc_ownedMountMountSame()
 
-    observer onDelete: ON_DELETE
+    observer onDelete: DELETE
 
 // Generate fully scoped names
 test/Suite Fullname:/
@@ -1011,46 +1011,46 @@ class EventTest:/
     int16 construct()
     void destruct()
 
-    observer onDeclare:      ON_DECLARE|ON_SELF|ON_TREE
-    observer onDeclareSelf:  ON_DECLARE
-    observer onDeclareScope: ON_DECLARE|ON_SCOPE
-    observer onDeclareTree:  ON_DECLARE|ON_TREE
+    observer onDeclare:      DECLARE|ON_SELF|ON_TREE
+    observer onDeclareSelf:  DECLARE
+    observer onDeclareScope: DECLARE|ON_SCOPE
+    observer onDeclareTree:  DECLARE|ON_TREE
     countDeclare: uint32, readonly
     countDeclareSelf: uint32, readonly
     countDeclareScope: uint32, readonly
     countDeclareTree: uint32, readonly
 
-    observer onDefine:       ON_DEFINE|ON_SELF|ON_TREE
-    observer onDefineSelf:   ON_DEFINE
-    observer onDefineScope:  ON_DEFINE|ON_SCOPE
-    observer onDefineTree:   ON_DEFINE|ON_TREE
+    observer onDefine:       DEFINE|ON_SELF|ON_TREE
+    observer onDefineSelf:   DEFINE
+    observer onDefineScope:  DEFINE|ON_SCOPE
+    observer onDefineTree:   DEFINE|ON_TREE
     countDefine: uint32, readonly
     countDefineSelf: uint32, readonly
     countDefineScope: uint32, readonly
     countDefineTree: uint32, readonly
 
-    observer onUpdate:       ON_UPDATE|ON_SELF|ON_TREE
-    observer onUpdateSelf:   ON_UPDATE
-    observer onUpdateScope:  ON_UPDATE|ON_SCOPE
-    observer onUpdateTree:   ON_UPDATE|ON_TREE
+    observer onUpdate:       UPDATE|ON_SELF|ON_TREE
+    observer onUpdateSelf:   UPDATE
+    observer onUpdateScope:  UPDATE|ON_SCOPE
+    observer onUpdateTree:   UPDATE|ON_TREE
     countUpdate: uint32, readonly
     countUpdateSelf: uint32, readonly
     countUpdateScope: uint32, readonly
     countUpdateTree: uint32, readonly
 
-    observer onDelete:       ON_DELETE|ON_SELF|ON_TREE
-    observer onDeleteSelf:   ON_DELETE
-    observer onDeleteScope:  ON_DELETE|ON_SCOPE
-    observer onDeleteTree:   ON_DELETE|ON_TREE
+    observer onDelete:       DELETE|ON_SELF|ON_TREE
+    observer onDeleteSelf:   DELETE
+    observer onDeleteScope:  DELETE|ON_SCOPE
+    observer onDeleteTree:   DELETE|ON_TREE
     countDelete: uint32, readonly
     countDeleteSelf: uint32, readonly
     countDeleteScope: uint32, readonly
     countDeleteTree: uint32, readonly
 
-    observer onUpdateDefine:       ON_UPDATE|ON_DEFINE|ON_SELF|ON_TREE
-    observer onUpdateDefineSelf:   ON_UPDATE|ON_DEFINE
-    observer onUpdateDefineScope:  ON_UPDATE|ON_DEFINE|ON_SCOPE
-    observer onUpdateDefineTree:   ON_UPDATE|ON_DEFINE|ON_TREE
+    observer onUpdateDefine:       UPDATE|DEFINE|ON_SELF|ON_TREE
+    observer onUpdateDefineSelf:   UPDATE|DEFINE
+    observer onUpdateDefineScope:  UPDATE|DEFINE|ON_SCOPE
+    observer onUpdateDefineTree:   UPDATE|DEFINE|ON_TREE
     countUpdateDefine: uint32, readonly
     countUpdateDefineSelf: uint32, readonly
     countUpdateDefineScope: uint32, readonly

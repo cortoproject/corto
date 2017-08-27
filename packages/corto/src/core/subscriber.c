@@ -116,7 +116,7 @@ corto_int16 corto_notifySubscribersId(
     }
 
     /* Subscribers only receive data events */
-    if (!(mask & (CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE))) {
+    if (!(mask & (CORTO_DEFINE|CORTO_UPDATE|CORTO_DELETE))) {
         return 0;
     }
 
@@ -681,7 +681,7 @@ int16_t corto_subscriber_subscribe(
     /* Align subscriber */
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
-        corto_subscriber_invoke(instance, CORTO_ON_DEFINE, r, this);
+        corto_subscriber_invoke(instance, CORTO_DEFINE, r, this);
     }
 
     return 0;

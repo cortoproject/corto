@@ -66,13 +66,13 @@ void test_SubscriberTest_onAll(
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
-    if (e->event & CORTO_ON_DECLARE) {
+    if (e->event & CORTO_DECLARE) {
         this->countDeclare ++;
     }
-    if (e->event & CORTO_ON_DEFINE) {
+    if (e->event & CORTO_DEFINE) {
         this->countDefine ++;
     }
-    if (e->event & CORTO_ON_UPDATE) {
+    if (e->event & CORTO_UPDATE) {
         this->countUpdate ++;
     }
 
@@ -84,13 +84,13 @@ void test_SubscriberTest_onScope(
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
-    if (e->event & CORTO_ON_DECLARE) {
+    if (e->event & CORTO_DECLARE) {
         this->countDeclareScope ++;
     }
-    if (e->event & CORTO_ON_DEFINE) {
+    if (e->event & CORTO_DEFINE) {
         this->countDefineScope ++;
     }
-    if (e->event & CORTO_ON_UPDATE) {
+    if (e->event & CORTO_UPDATE) {
         this->countUpdateScope ++;
     }
 
@@ -102,13 +102,13 @@ void test_SubscriberTest_onSelf(
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
-    if (e->event & CORTO_ON_DECLARE) {
+    if (e->event & CORTO_DECLARE) {
         this->countDeclareSelf ++;
     }
-    if (e->event & CORTO_ON_DEFINE) {
+    if (e->event & CORTO_DEFINE) {
         this->countDefineSelf ++;
     }
-    if (e->event & CORTO_ON_UPDATE) {
+    if (e->event & CORTO_UPDATE) {
         this->countUpdateSelf ++;
     }
 
@@ -120,13 +120,13 @@ void test_SubscriberTest_onTree(
 
     test_SubscriberTest this = e->instance;
     test_SubscriberTest_setMembers(e);
-    if (e->event & CORTO_ON_DECLARE) {
+    if (e->event & CORTO_DECLARE) {
         this->countDeclareTree ++;
     }
-    if (e->event & CORTO_ON_DEFINE) {
+    if (e->event & CORTO_DEFINE) {
         this->countDefineTree ++;
     }
-    if (e->event & CORTO_ON_UPDATE) {
+    if (e->event & CORTO_UPDATE) {
         this->countUpdateTree ++;
     }
 

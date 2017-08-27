@@ -326,12 +326,12 @@ test/Suite ResumeSink:/
     void tc_resumeNestedFromMultiple()
     void tc_cleanupParentFromResumedChild()
 
-    observer onDeclare: on_declare | on_tree
-    observer onDefine: on_define | on_tree
-    observer onUpdate: on_update | on_tree
-    observer onDelete: on_delete | on_tree
-    observer onResume: on_resume | on_tree
-    observer onSuspend: on_suspend | on_tree
+    observer onDeclare: declare | on_tree
+    observer onDefine: define | on_tree
+    observer onUpdate: update | on_tree
+    observer onDelete: delete | on_tree
+    observer onResume: resume | on_tree
+    observer onSuspend: suspend | on_tree
 
     declared, defined, updated, deleted, resumed, suspended: int8
 
@@ -354,12 +354,12 @@ test/Suite AutoResumeSink:/
     void tc_resolveNested1NotExist()
     void tc_resolveNested2NotExist()
 
-    observer onDeclare: on_declare | on_tree
-    observer onDefine: on_define | on_tree
-    observer onUpdate: on_update | on_tree
-    observer onDelete: on_delete | on_tree
-    observer onResume: on_resume | on_tree
-    observer onSuspend: on_suspend | on_tree
+    observer onDeclare: declare | on_tree
+    observer onDefine: define | on_tree
+    observer onUpdate: update | on_tree
+    observer onDelete: delete | on_tree
+    observer onResume: resume | on_tree
+    observer onSuspend: suspend | on_tree
 
     declared, defined, updated, deleted, resumed, suspended: int8
 

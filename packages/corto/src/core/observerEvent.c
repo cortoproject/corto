@@ -16,7 +16,7 @@ void corto_observerEvent_handle(
     corto_observerEvent *this = (corto_observerEvent*)e;
     corto_bool lockRequired =
       (this->thread != corto_threadSelf()) &&
-      !(this->event & CORTO_ON_DELETE);
+      !(this->event & CORTO_DELETE);
 
     /* Don't readlock event for DELETE events */
     if (!lockRequired || !corto_readBegin(this->data)) {

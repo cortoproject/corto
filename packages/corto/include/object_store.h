@@ -1015,13 +1015,13 @@ typedef struct corto_observe__fluent {
 @verbatim
 Flag | Value | Kind | Description
 -----|-------|------|------------
-CORTO_ON_DECLARE    | 0x1    | infra | Observe objects being forward declared.
-CORTO_ON_DEFINE     | 0x2    | data  | Observe objects being defined.
-CORTO_ON_DELETE     | 0x4    | data  | Observe objects being deleted.
-CORTO_ON_INVALIDATE | 0x8    | data  | Observe objects being invalidated.
-CORTO_ON_UPDATE     | 0x10   | data  | Observe objects being updated.
-CORTO_ON_RESUME     | 0x20   | infra | Observe objects being resumed.
-CORTO_ON_SUSPEND    | 0x40   | infra | Observe objects being suspended.
+CORTO_DECLARE    | 0x1    | infra | Observe objects being forward declared.
+CORTO_DEFINE     | 0x2    | data  | Observe objects being defined.
+CORTO_DELETE     | 0x4    | data  | Observe objects being deleted.
+CORTO_INVALIDATE | 0x8    | data  | Observe objects being invalidated.
+CORTO_UPDATE     | 0x10   | data  | Observe objects being updated.
+CORTO_RESUME     | 0x20   | infra | Observe objects being resumed.
+CORTO_SUSPEND    | 0x40   | infra | Observe objects being suspended.
 CORTO_ON_SELF       | 0x80   | scope | Observe a single object.
 CORTO_ON_SCOPE      | 0x100  | scope | Observe children of an object.
 CORTO_ON_TREE       | 0x200  | scope | Observe children of an object recursively.

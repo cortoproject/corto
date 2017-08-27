@@ -113,13 +113,13 @@ struct corto_event {
 
 /* /corto/core/eventMask */
 typedef uint32_t corto_eventMask;
-    #define CORTO_ON_DECLARE (0x1)
-    #define CORTO_ON_DEFINE (0x2)
-    #define CORTO_ON_DELETE (0x4)
-    #define CORTO_ON_INVALIDATE (0x8)
-    #define CORTO_ON_UPDATE (0x10)
-    #define CORTO_ON_RESUME (0x20)
-    #define CORTO_ON_SUSPEND (0x40)
+    #define CORTO_DECLARE (0x1)
+    #define CORTO_DEFINE (0x2)
+    #define CORTO_DELETE (0x4)
+    #define CORTO_INVALIDATE (0x8)
+    #define CORTO_UPDATE (0x10)
+    #define CORTO_RESUME (0x20)
+    #define CORTO_SUSPEND (0x40)
     #define CORTO_ON_SELF (0x80)
     #define CORTO_ON_SCOPE (0x100)
     #define CORTO_ON_TREE (0x200)
@@ -194,14 +194,14 @@ typedef enum corto_ownership {
 
 /* /corto/core/mountMask */
 typedef uint32_t corto_mountMask;
-    #define CORTO_QUERY (0x1)
-    #define CORTO_HISTORY_QUERY (0x2)
-    #define CORTO_NOTIFY (0x4)
-    #define CORTO_BATCH_NOTIFY (0x8)
-    #define CORTO_SUBSCRIBE (0x10)
-    #define CORTO_MOUNT (0x20)
-    #define CORTO_RESUME (0x40)
-    #define CORTO_INVOKE (0x80)
+    #define CORTO_MOUNT_QUERY (0x1)
+    #define CORTO_MOUNT_HISTORY_QUERY (0x2)
+    #define CORTO_MOUNT_NOTIFY (0x4)
+    #define CORTO_MOUNT_BATCH_NOTIFY (0x8)
+    #define CORTO_MOUNT_SUBSCRIBE (0x10)
+    #define CORTO_MOUNT_MOUNT (0x20)
+    #define CORTO_MOUNT_RESUME (0x40)
+    #define CORTO_MOUNT_INVOKE (0x80)
 
 /*  /corto/core/mountPolicy */
 typedef struct corto_mountPolicy corto_mountPolicy;

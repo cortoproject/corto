@@ -47,14 +47,14 @@ void corto_mount_notify(corto_subscriberEvent *e) {
     corto_result *r = &e->data;
 
     if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
-        if (this->policy.mask & CORTO_NOTIFY) {
+        if (this->policy.mask & CORTO_MOUNT_NOTIFY) {
             corto_mount_onNotify(this, e);
         }
 
         switch(event) {
-        case CORTO_ON_DEFINE: 
+        case CORTO_DEFINE: 
             this->sent.updates ++;
-            if (this->policy.mask & CORTO_MOUNT) {
+            if (this->policy.mask & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
                     .from = e->data.parent
@@ -64,12 +64,12 @@ void corto_mount_notify(corto_subscriberEvent *e) {
                 }
             }
             break;
-        case CORTO_ON_UPDATE: 
+        case CORTO_UPDATE: 
             this->sent.updates ++; 
             break;
-        case CORTO_ON_DELETE: 
+        case CORTO_DELETE: 
             this->sent.deletes ++; 
-            if (this->policy.mask & CORTO_MOUNT) {
+            if (this->policy.mask & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
                     .from = e->data.parent
@@ -188,27 +188,27 @@ int16_t corto_mount_construct(
     /* Disable flags if mount does not implement method. This allows the rest of
      * the code to check for just the flags, instead of looking up the method. */
     if (!corto_mount_hasMethod(this, "onHistoryQuery")) {
-        this->policy.mask &= ~CORTO_HISTORY_QUERY;
+        this->policy.mask &= ~CORTO_MOUNT_HISTORY_QUERY;
     }
 
     if (!corto_mount_hasMethod(this, "onNotify")) {
-        this->policy.mask &= ~CORTO_NOTIFY;
+        this->policy.mask &= ~CORTO_MOUNT_NOTIFY;
     }
 
     if (!corto_mount_hasMethod(this, "onBatchNotify")) {
-        this->policy.mask &= ~CORTO_BATCH_NOTIFY;
+        this->policy.mask &= ~CORTO_MOUNT_BATCH_NOTIFY;
     }
 
     if (!corto_mount_hasMethod(this, "onInvoke")) {
-        this->policy.mask &= ~CORTO_INVOKE;
+        this->policy.mask &= ~CORTO_MOUNT_INVOKE;
     }
 
     if (!corto_mount_hasMethod(this, "onSubscribe")) {
-        this->policy.mask &= ~CORTO_SUBSCRIBE;
+        this->policy.mask &= ~CORTO_MOUNT_SUBSCRIBE;
     }
 
     if (!corto_mount_hasMethod(this, "onMount")) {
-        this->policy.mask &= ~CORTO_MOUNT;
+        this->policy.mask &= ~CORTO_MOUNT_MOUNT;
     }
 
     /* Set the callback function */
@@ -217,12 +217,12 @@ int16_t corto_mount_construct(
     corto_ptr_setref(&corto_observer(this)->instance, this);
     corto_ptr_setref(&corto_observer(this)->dispatcher, dispatcher);
     /* Enable subscriber only when mount implements onNotify */
-    if (this->policy.mask & CORTO_NOTIFY || this->policy.mask & CORTO_MOUNT) {
+    if (this->policy.mask & CORTO_MOUNT_NOTIFY || this->policy.mask & CORTO_MOUNT_MOUNT) {
         corto_observer(this)->enabled = TRUE;
     }
 
     corto_observer(this)->mask |=
-      CORTO_ON_DECLARE|CORTO_ON_DEFINE|CORTO_ON_UPDATE|CORTO_ON_DELETE;
+      CORTO_DECLARE|CORTO_DEFINE|CORTO_UPDATE|CORTO_DELETE;
     if (!s->query.select) {
         corto_ptr_setstr(&s->query.select, "//");
     }
@@ -238,7 +238,7 @@ int16_t corto_mount_construct(
     corto_entityAdmin_add(&corto_mount_admin, s->query.from, this, this);
     
     /* If mount is interested in subscriptions, align from existing subscribers */
-    if (this->policy.mask & (CORTO_SUBSCRIBE|CORTO_MOUNT))
+    if (this->policy.mask & (CORTO_MOUNT_SUBSCRIBE|CORTO_MOUNT_MOUNT))
     {
         if (corto_mount_alignSubscriptions(this)) {
             goto error;
@@ -300,35 +300,35 @@ int16_t corto_mount_init(
     this->policy.ownership = CORTO_REMOTE_OWNER;
 
     /* Mount doesn't need to implement a resume callback to resume objects */
-    this->policy.mask |= CORTO_RESUME;
+    this->policy.mask |= CORTO_MOUNT_RESUME;
 
     /* Enable default flags based on which methods are implemented */
     if (corto_mount_hasMethod(this, "onQuery")) {
-        this->policy.mask |= CORTO_QUERY;
+        this->policy.mask |= CORTO_MOUNT_QUERY;
     }
 
     if (corto_mount_hasMethod(this, "onHistoryQuery")) {
-        this->policy.mask |= CORTO_HISTORY_QUERY;
+        this->policy.mask |= CORTO_MOUNT_HISTORY_QUERY;
     }
 
     if (corto_mount_hasMethod(this, "onNotify")) {
-        this->policy.mask |= CORTO_NOTIFY;
+        this->policy.mask |= CORTO_MOUNT_NOTIFY;
     }
 
     if (corto_mount_hasMethod(this, "onBatchNotify")) {
-        this->policy.mask |= CORTO_BATCH_NOTIFY;
+        this->policy.mask |= CORTO_MOUNT_BATCH_NOTIFY;
     }
 
     if (corto_mount_hasMethod(this, "onInvoke")) {
-        this->policy.mask |= CORTO_INVOKE;
+        this->policy.mask |= CORTO_MOUNT_INVOKE;
     }
 
     if (corto_mount_hasMethod(this, "onSubscribe")) {
-        this->policy.mask |= CORTO_SUBSCRIBE;
+        this->policy.mask |= CORTO_MOUNT_SUBSCRIBE;
     }
 
     if (corto_mount_hasMethod(this, "onMount")) {
-        this->policy.mask |= CORTO_MOUNT;
+        this->policy.mask |= CORTO_MOUNT_MOUNT;
     }
 
     this->policy.sampleRate = 0;
@@ -523,9 +523,9 @@ void corto_mount_post(
          * if so, replace event with latest update. */
         if ((e2 = corto_mount_findEvent(this, corto_subscriberEvent(e)))) {
             corto_ll_replace(this->events, e2, e);
-            if (e2->event & CORTO_ON_DECLARE) this->sentDiscarded.declares++;
-            if (e2->event & (CORTO_ON_DEFINE | CORTO_ON_UPDATE)) this->sentDiscarded.updates++;
-            if (e2->event & CORTO_ON_DELETE) this->sentDiscarded.deletes++;
+            if (e2->event & CORTO_DECLARE) this->sentDiscarded.declares++;
+            if (e2->event & (CORTO_DEFINE | CORTO_UPDATE)) this->sentDiscarded.updates++;
+            if (e2->event & CORTO_DELETE) this->sentDiscarded.deletes++;
             corto_assert(corto_release(e2) == 0);
         } else {
             corto_ll_append(this->events, e);
@@ -882,10 +882,10 @@ void corto_mount_subscribeOrMount(
     corto_mountSubscription *subscription = NULL, *placeHolder = NULL;
     bool found = FALSE;
 
-    if (subscribe && !(this->policy.mask & CORTO_SUBSCRIBE)) {
+    if (subscribe && !(this->policy.mask & CORTO_MOUNT_SUBSCRIBE)) {
         subscribe = false;
     }
-    if (mount && !(this->policy.mask & CORTO_MOUNT)) {
+    if (mount && !(this->policy.mask & CORTO_MOUNT_MOUNT)) {
         mount = false;
     }
 
@@ -1017,10 +1017,10 @@ void corto_mount_unsubscribeOrUnmount(
     corto_mountSubscription *subscription = NULL;
     corto_bool found = FALSE;
 
-    if (subscribe && !(this->policy.mask & CORTO_SUBSCRIBE)) {
+    if (subscribe && !(this->policy.mask & CORTO_MOUNT_SUBSCRIBE)) {
         subscribe = false;
     }
-    if (mount && !(this->policy.mask & CORTO_MOUNT)) {
+    if (mount && !(this->policy.mask & CORTO_MOUNT_MOUNT)) {
         mount = false;
     }
     if (!subscribe && !mount) {

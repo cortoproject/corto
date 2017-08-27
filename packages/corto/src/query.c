@@ -814,7 +814,7 @@ static int corto_selectLoadMountWalk(
     /* If historical data is requested, only load historians and don't request 
      * ordinary data from historians. */
     if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
-        if (!(mount->policy.mask & CORTO_HISTORY_QUERY)) {
+        if (!(mount->policy.mask & CORTO_MOUNT_HISTORY_QUERY)) {
             return 1;
         }
     }

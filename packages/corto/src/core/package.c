@@ -31,7 +31,7 @@ int16_t corto_package_construct(
 
         /* Load package after object has been defined. Create one-shot observer to
          * trigger on DEFINE event */
-        if (!corto_observe(CORTO_ON_RESUME|CORTO_ON_SELF, this)
+        if (!corto_observe(CORTO_RESUME|CORTO_ON_SELF, this)
             .instance(this)
             .callback(corto_package_onDefine)) 
         {

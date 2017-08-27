@@ -425,14 +425,14 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_ownership_LOCAL_OWNER),\
     SSO_OP_OBJ(core_ownership_CACHE_OWNER),\
     /* readWrite */\
-    SSO_OP_OBJ(core_mountMask_QUERY),\
-    SSO_OP_OBJ(core_mountMask_HISTORY_QUERY),\
-    SSO_OP_OBJ(core_mountMask_NOTIFY),\
-    SSO_OP_OBJ(core_mountMask_BATCH_NOTIFY),\
-    SSO_OP_OBJ(core_mountMask_SUBSCRIBE),\
-    SSO_OP_OBJ(core_mountMask_MOUNT),\
-    SSO_OP_OBJ(core_mountMask_RESUME),\
-    SSO_OP_OBJ(core_mountMask_INVOKE),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_QUERY),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_HISTORY_QUERY),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_NOTIFY),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_BATCH_NOTIFY),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_SUBSCRIBE),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_MOUNT),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_RESUME),\
+    SSO_OP_OBJ(core_mountMask_MOUNT_INVOKE),\
     /* frameKind */\
     SSO_OP_OBJ(core_frameKind_FRAME_NOW),\
     SSO_OP_OBJ(core_frameKind_FRAME_TIME),\
@@ -493,13 +493,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_attr_ATTR_PERSISTENT),\
     SSO_OP_OBJ(lang_attr_ATTR_DEFAULT),\
     /* eventKind */\
-    SSO_OP_OBJ(core_eventMask_ON_DECLARE),\
-    SSO_OP_OBJ(core_eventMask_ON_DEFINE),\
-    SSO_OP_OBJ(core_eventMask_ON_DELETE),\
-    SSO_OP_OBJ(core_eventMask_ON_INVALIDATE),\
-    SSO_OP_OBJ(core_eventMask_ON_UPDATE),\
-    SSO_OP_OBJ(core_eventMask_ON_RESUME),\
-    SSO_OP_OBJ(core_eventMask_ON_SUSPEND),\
+    SSO_OP_OBJ(core_eventMask_DECLARE),\
+    SSO_OP_OBJ(core_eventMask_DEFINE),\
+    SSO_OP_OBJ(core_eventMask_DELETE),\
+    SSO_OP_OBJ(core_eventMask_INVALIDATE),\
+    SSO_OP_OBJ(core_eventMask_UPDATE),\
+    SSO_OP_OBJ(core_eventMask_RESUME),\
+    SSO_OP_OBJ(core_eventMask_SUSPEND),\
     SSO_OP_OBJ(core_eventMask_ON_SELF),\
     SSO_OP_OBJ(core_eventMask_ON_SCOPE),\
     SSO_OP_OBJ(core_eventMask_ON_TREE),\

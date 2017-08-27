@@ -315,12 +315,12 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
 
     if (corto_subscriber_admin.count && corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
         if (observerMask & CORTO_ON_TREE) {
-            if (mask == CORTO_ON_DEFINE) {
+            if (mask == CORTO_DEFINE) {
                 corto_id id;
                 corto_fullpath(id, observable);
                 strcat(id, "/");
                 corto_updateSubscriptionById(id);
-            } else if (mask == CORTO_ON_DELETE) {
+            } else if (mask == CORTO_DELETE) {
                 corto_id id;
                 corto_fullpath(id, observable);
                 corto_select("//").from(id).unsubscribe();
@@ -437,7 +437,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     corto_object *parent;
 
     corto_type t = corto_typeof(observable);
-    if (mask == CORTO_ON_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
+    if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
         if (corto_callInitDelegate(&((corto_class)t)->validate, t, observable)) {
             goto error;
         }
@@ -456,13 +456,13 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     if ((owner = corto_getOwner())) {
         if (corto_instanceof(corto_mount_o, owner)) {
             corto_mount m = owner;
-            if (mask & CORTO_ON_DECLARE) {
+            if (mask & CORTO_DECLARE) {
                 m->received.declares ++;
             }
-            if (mask & (CORTO_ON_UPDATE | CORTO_ON_DEFINE)) {
+            if (mask & (CORTO_UPDATE | CORTO_DEFINE)) {
                 m->received.updates ++;
             }
-            if (mask & CORTO_ON_DELETE) {
+            if (mask & CORTO_DELETE) {
                 m->received.deletes ++;
             }
         }
@@ -515,7 +515,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
         goto error;
     }
 
-    if (mask == CORTO_ON_UPDATE && (t->flags & CORTO_TYPE_HAS_UPDATE)) {
+    if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_UPDATE)) {
         corto_callDestructDelegate(&((corto_class)t)->update, t, observable);
     }
 
@@ -548,17 +548,17 @@ int corto_observerAlignScope(corto_object o, void *userData) {
     corto_observerAlignData *data = userData;
 
     if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
-        if ((data->mask & CORTO_ON_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
+        if ((data->mask & CORTO_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
         {
-            corto_notifyObserver(data->observer, o, o, CORTO_ON_DECLARE, data->depth);
+            corto_notifyObserver(data->observer, o, o, CORTO_DECLARE, data->depth);
         }
     }
 
     if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
-        if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
+        if ((data->mask & CORTO_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
             corto_checkState(o, CORTO_VALID))
         {
-            corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
+            corto_notifyObserver(data->observer, o, o, CORTO_DEFINE, data->depth);
         }
     }
 
@@ -592,15 +592,15 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     walkData.depth = 0;
 
     if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
-        if ((mask & CORTO_ON_DECLARE) && (mask & CORTO_ON_SELF))
+        if ((mask & CORTO_DECLARE) && (mask & CORTO_ON_SELF))
         {
-            corto_notifyObserver(observer, observable, observable, CORTO_ON_DECLARE, 0);
+            corto_notifyObserver(observer, observable, observable, CORTO_DECLARE, 0);
         }
 
-        if ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) &&
+        if ((mask & CORTO_DEFINE) && (mask & CORTO_ON_SELF) &&
             corto_checkState(observable, CORTO_VALID))
         {
-            corto_notifyObserver(observer, observable, observable, CORTO_ON_DEFINE, 0);
+            corto_notifyObserver(observer, observable, observable, CORTO_DEFINE, 0);
         }
     }
 
@@ -837,8 +837,8 @@ int16_t corto_observer_observe(
 
     if (this->mask == CORTO_ON_SCOPE || this->mask == CORTO_ON_TREE) {
         this->mask |= 
-            CORTO_ON_DECLARE | CORTO_ON_DEFINE | CORTO_ON_UPDATE | 
-            CORTO_ON_DELETE | CORTO_ON_RESUME | CORTO_ON_SUSPEND;
+            CORTO_DECLARE | CORTO_DEFINE | CORTO_UPDATE | 
+            CORTO_DELETE | CORTO_RESUME | CORTO_SUSPEND;
     }
 
     /* Check if mask specifies either VALUE or METAVALUE, if not enable VALUE */
@@ -904,10 +904,10 @@ int16_t corto_observer_observe(
                 mask & CORTO_ON_SELF ? " self" : "",
                 mask & CORTO_ON_SCOPE ? " scope" : "",
                 mask & CORTO_ON_TREE ? " tree" : "",
-                mask & CORTO_ON_DECLARE ? " declare" : "",
-                mask & CORTO_ON_DEFINE ? " define" : "",
-                mask & CORTO_ON_UPDATE ? " update" : "",
-                mask & CORTO_ON_DELETE ? " delete" : "");
+                mask & CORTO_DECLARE ? " declare" : "",
+                mask & CORTO_DEFINE ? " define" : "",
+                mask & CORTO_UPDATE ? " update" : "",
+                mask & CORTO_DELETE ? " delete" : "");
           }
 #endif
         goto postponed;
@@ -925,10 +925,10 @@ int16_t corto_observer_observe(
                 mask & CORTO_ON_SELF ? " self" : "",
                 mask & CORTO_ON_SCOPE ? " scope" : "",
                 mask & CORTO_ON_TREE ? " tree" : "",
-                mask & CORTO_ON_DECLARE ? " declare" : "",
-                mask & CORTO_ON_DEFINE ? " define" : "",
-                mask & CORTO_ON_UPDATE ? " update" : "",
-                mask & CORTO_ON_DELETE ? " delete" : "");
+                mask & CORTO_DECLARE ? " declare" : "",
+                mask & CORTO_DEFINE ? " define" : "",
+                mask & CORTO_UPDATE ? " update" : "",
+                mask & CORTO_DELETE ? " delete" : "");
         }
     #endif
 
@@ -995,7 +995,7 @@ int16_t corto_observer_observe(
     } else {
         /* If observer is subscribed to declare/define events, align observer
          * with existing */
-        if ((mask & CORTO_ON_DECLARE) || (mask & CORTO_ON_DEFINE)) {
+        if ((mask & CORTO_DECLARE) || (mask & CORTO_DEFINE)) {
             corto_observerAlign(observable, _observerData, mask);
         }
 

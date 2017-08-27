@@ -32,7 +32,7 @@ void subscribeAlignSelf(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     test_assertstr(e->data.id, "o");
-    test_assert(e->event == CORTO_ON_DEFINE);
+    test_assert(e->event == CORTO_DEFINE);
     this->triggered = TRUE;
 }
 
@@ -55,7 +55,7 @@ void subscribeAlignType(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
     test_assertstr(e->data.id, "p");
-    test_assert(e->event == CORTO_ON_DEFINE);
+    test_assert(e->event == CORTO_DEFINE);
     this->triggered = TRUE;
 }
 
@@ -360,7 +360,7 @@ void test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
 
     test_assert(s != NULL);
 
-    test_assert(corto_publish(CORTO_ON_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
+    test_assert(corto_publish(CORTO_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
 
     test_assert(this->triggered == TRUE);
 
@@ -383,7 +383,7 @@ void test_Subscribe_tc_subscribeInvertCaseFromPublish(
 
     test_assert(s != NULL);
 
-    test_assert(corto_publish(CORTO_ON_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
+    test_assert(corto_publish(CORTO_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
 
     test_assert(this->triggered == TRUE);
 
@@ -434,7 +434,7 @@ void test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
 
     test_assert(s != NULL);
 
-    test_assert(corto_publish(CORTO_ON_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
+    test_assert(corto_publish(CORTO_UPDATE, "/a/xyz", "void", NULL, 0) == 0);
 
     test_assert(this->triggered == TRUE);
 
@@ -550,10 +550,10 @@ void test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
         .callback(MultiDifferentParentVirtual3);
 
     /* Publish foo object in data (triggers subscribers) */
-    corto_publish(CORTO_ON_DEFINE, "data/foo", "void", NULL, 0);
+    corto_publish(CORTO_DEFINE, "data/foo", "void", NULL, 0);
     test_assertint(this->triggered, 4);
 
-    corto_publish(CORTO_ON_DEFINE, "/data/foo", "void", NULL, 0);
+    corto_publish(CORTO_DEFINE, "/data/foo", "void", NULL, 0);
     test_assertint(this->triggered, 8);
 
     test_assert(corto_delete(s0) == 0);
@@ -576,7 +576,7 @@ void test_Subscribe_tc_subscribeNestedIdFromRoot(
       .instance(this)
       .callback(tc_subscribeNestedIdFromRootOnUpdate);
 
-    test_assert(corto_publish(CORTO_ON_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
+    test_assert(corto_publish(CORTO_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
 
     test_assert(this->triggered == TRUE);
 
@@ -596,7 +596,7 @@ void test_Subscribe_tc_subscribeNestedScopeFromRoot(
     corto_subscriber s = corto_subscribe("A/*").from("/")
       .instance(this)
       .callback(tc_subscribeNestedScopeFromRootOnUpdate);
-    test_assert(corto_publish(CORTO_ON_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
+    test_assert(corto_publish(CORTO_UPDATE, "/A/XYZ", "void", NULL, 0) == 0);
     test_assert(this->triggered == TRUE);
     test_assert(corto_delete(s) == 0);
 }
@@ -647,7 +647,7 @@ void test_Subscribe_tc_subscribePartialMatchingParent(
 
     test_assert(this->triggered == FALSE);
 
-    test_assert(corto_publish(CORTO_ON_UPDATE, "/foobar", "void", NULL, 0) == 0);
+    test_assert(corto_publish(CORTO_UPDATE, "/foobar", "void", NULL, 0) == 0);
 
     test_assert(this->triggered == FALSE);
 
