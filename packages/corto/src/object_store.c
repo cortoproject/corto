@@ -756,12 +756,6 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
     _child = CORTO_OFFSET(child, -sizeof(corto__object));
     childType = corto_typeof(child);
 
-    /* Parent must be a valid object */
-    if (!corto_checkState(parent, CORTO_VALID)) {
-        corto_seterr("parent is invalid");
-        goto error;
-    }
-
     /* Obtain pointers to scope of parent and child */
     p_scope = corto__objectScope(_parent);
     if (p_scope) {
@@ -875,7 +869,6 @@ err_invalid_parent_leaf:
     corto_rb_remove(p_scope->scope, c_scope->id);
 err_existing:
     corto_rwmutexUnlock(&p_scope->align.scopeLock);
-error:
     return NULL;
 }
 
@@ -1145,7 +1138,10 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
             o->align.attrs.persistent = TRUE;
         }
 
-        /* Initially, an object is valid and declared */
+        /* Initial state of an object is DECLARED. The DECLARED state indicates
+         * that the object has been added to a scope and a CORTO_ON_DECLARE
+         * event has been generated. Orphaned objects do not have the 
+         * CORTO_DECLARED flag. */
         o->align.attrs.state = CORTO_DECLARED;
 
         corto_claim(type);
@@ -1157,17 +1153,13 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
                 /* Initialze scope-part of object */
                 if (!corto__initScope(CORTO_OFFSET(o, sizeof(corto__object)), NULL, NULL, TRUE, FALSE)) {
                     goto error_init;
-                } else {
-                    o->align.attrs.state |= CORTO_VALID;
                 }
             }
         }
 
         /* Call framework initializer */
         if (!(attrs & CORTO_ATTR_NAMED)) {
-            if (!corto_init(CORTO_OFFSET(o, sizeof(corto__object)))) {
-                o->align.attrs.state |= CORTO_VALID;
-            } else {
+            if (corto_init(CORTO_OFFSET(o, sizeof(corto__object)))) {
                 goto error_init;
             }
 
@@ -1303,12 +1295,7 @@ static corto_object corto_declareChildIntern(
 
             /* Initialize object parameters. */
             if ((o_ret = corto__initScope(o, id, parent, orphan, forceType))) {
-
-                if (o_ret == o) {
-                    /* Initially, an object is valid and declared */
-                    _o->align.attrs.state |= CORTO_VALID;
-
-                } else {
+                if (o_ret != o) {
                     corto_release(type);
                     corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
                     o = o_ret;
@@ -1396,12 +1383,18 @@ static corto_object corto_declareChildIntern(
             } else {
                 /* Orphaned objects don't generate DECLARE and DEFINE events. To
                  * indicate that an object is orphaned, the DECLARE flag is removed. */
-                _o->align.attrs.state = CORTO_VALID;
+                _o->align.attrs.state = 0;
             }
 
-            /* void objects are instantly defined because they have no value. */
-            if (defineVoid && type->kind == CORTO_VOID) {
-                corto_define(o);
+            /* void objects are instantly defined because they have no value */
+            if (type->kind == CORTO_VOID) {
+                if (defineVoid) {
+                    int rc = corto_define(o);
+                    corto_assert(rc == 0, "void objects should not fail to define");
+                } else {
+                    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+                    _o->align.attrs.state |= CORTO_VALID;
+                }
             }
         }
     } while (retry);
@@ -1429,9 +1422,7 @@ owner_error:
 }
 
 static corto_object corto_createIntern(corto_object result) {
-    if (result &&
-        corto_checkState(result, CORTO_VALID) &&
-        !corto_checkState(result, CORTO_DEFINED))
+    if (result && !corto_checkState(result, CORTO_DEFINED))
     {
         if (corto_define(result)) {
             corto_delete(result);
@@ -1654,6 +1645,7 @@ static corto_bool corto_resumeDeclared(corto_object o) {
 static corto_int16 corto_defineDeclared(corto_object o) {
     corto_int16 result = 0;
     corto_type t = corto_typeof(o);
+    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));        
 
     /* Don't invoke constructor if object is not locally owned */
     if (t->flags & CORTO_TYPE_HAS_CONSTRUCT) {
@@ -1664,10 +1656,14 @@ static corto_int16 corto_defineDeclared(corto_object o) {
             corto_setAttr(prev);
         }
 
-        if (result) {
-            /* Remove valid state if result is nonzero */
-            corto_invalidate(o);
+        if (!result) {
+            /* Add valid state if constructor returned ok */
+            _o->align.attrs.state |= CORTO_VALID;
+        } else {
+            _o->align.attrs.state &= ~CORTO_VALID;       
         }
+    } else {
+        _o->align.attrs.state |= CORTO_VALID;
     }
 
     return result;
@@ -1678,9 +1674,6 @@ static corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
     _o->align.attrs.state |= CORTO_DEFINED;
-    if (!corto_checkState(o, CORTO_VALID)) {
-        _o->align.attrs.state |= CORTO_VALID;
-    }
 
     if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         corto_declaredAdminRemove(o);
@@ -1862,7 +1855,7 @@ corto_int16 corto_define(corto_object o) {
     /* Only define undefined objects */
     if (!corto_checkState(o, CORTO_DEFINED) || !corto_checkState(o, CORTO_VALID)) {
         if (corto_childof(root_o, o) && !corto_isBuiltin(o)) {
-            if (!corto_declaredAdminCheck(o) && corto_checkState(o, CORTO_VALID)) {
+            if (!corto_declaredAdminCheck(o) && corto_checkState(o, CORTO_DECLARED)) {
                 corto_seterr("corto: cannot define object '%s' because it was not declared in same thread",
                   corto_fullpath(NULL, o));
                 goto error;
@@ -4492,11 +4485,6 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
     corto_int32 i = 0, d = 0;
     corto_id offeredBuffer;
     char *offered;
-
-    /* Validate if function object is valid */
-    if (!corto_checkState(object, CORTO_VALID)) {
-        goto error;
-    }
 
     /* Obtain offered singature */
     if (!(offered = corto_signature(object, offeredBuffer))) {

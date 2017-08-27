@@ -364,6 +364,33 @@ class MethodForwardTest:/
     void func() remote
     invoked: int32, readonly
 
+bitmask Hooks:/
+    INIT_CALLED
+    CONSTRUCT_CALLED
+    DEFINE_CALLED
+    VALIDATE_CALLED
+    UPDATE_CALLED
+    DESTRUCT_CALLED
+    DELETE_CALLED
+    DEINIT_CALLED
+
+// Split administration of called hooks from object so it is possible to track
+// if deinit was called
+class LifecycleAdmin:/
+    hooksCalled: Hooks
+
+class LifecycleTest:/
+    admin: LifecycleAdmin
+    constructFail,validateFail: bool
+    int16 init()
+    int16 construct()
+    void define()
+    int16 validate()
+    void update()
+    void destruct()
+    void delete()
+    void deinit()
+
 test/Suite Attributes:/
     void tc_testDefaultSet()
     void tc_testTargetAttr()
@@ -479,6 +506,11 @@ test/Suite ObjectMgmt:/
     void tc_declareNestedFirstExists()
     void tc_declareNestedSecondExists()
     void tc_declareNestedLastExists()
+
+    void tc_lifecycle()
+    void tc_lifecycleInitFail()
+    void tc_lifecycleConstructFail()
+    void tc_lifecycleValidateFail()
 
     void tc_nameof()
     void tc_nameofOverride()

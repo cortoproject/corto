@@ -13,7 +13,6 @@ void test_ObjectMgmt_setup(
 void test_ObjectMgmt_tc_createChildFoo(
     test_ObjectMgmt this)
 {
-
     test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
@@ -253,11 +252,11 @@ void test_ObjectMgmt_tc_createChildParentStateErr(
     test_assert(!corto_checkState(o, CORTO_DEFINED));
 
     corto_object p = corto_createChild(o, "p", test_DefinedParent_o);
-    test_assert(!strcmp(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED"));
+    test_assertstr(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be DEFINED");
     test_assert(p == NULL);
 
     corto_object q = test_DefinedParentCreateChild(o, "q", 0);
-    test_assert(!strcmp(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED"));
+    test_assertstr(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be DEFINED");
     test_assert(q == NULL);
 
     corto_delete(o);
@@ -696,7 +695,7 @@ void test_ObjectMgmt_tc_declareChildFoo(
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
     test_assert(corto_typeof(o) == (corto_type)test_Foo_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -733,7 +732,7 @@ void test_ObjectMgmt_tc_declareChildFooAttr0(
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
     test_assert(corto_typeof(o) == (corto_type)test_Foo_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -779,7 +778,7 @@ void test_ObjectMgmt_tc_declareChildInt(
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -812,7 +811,7 @@ void test_ObjectMgmt_tc_declareChildIntAttr0(
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -876,11 +875,11 @@ void test_ObjectMgmt_tc_declareChildParentStateErr(
 
     corto_object p = corto_declareChild(o, "p", test_DefinedParent_o);
     test_assert(p == NULL);
-    test_assertstr(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED");
+    test_assertstr(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be DEFINED");
 
     corto_object q = test_DefinedParentDeclareChild(o, "q");
     test_assert(q == NULL);
-    test_assertstr(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is VALID|DECLARED, must be DEFINED");
+    test_assertstr(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be DEFINED");
 
     corto_delete(o);
 
@@ -998,7 +997,7 @@ void test_ObjectMgmt_tc_declareFoo(
     test_Foo o = corto_declare(test_Foo_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == (corto_type)test_Foo_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(!corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -1026,7 +1025,7 @@ void test_ObjectMgmt_tc_declareFooAttr0(
     test_Foo o = corto_declare(test_Foo_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == (corto_type)test_Foo_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(!corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -1043,8 +1042,6 @@ void test_ObjectMgmt_tc_declareFooAttr0(
     test_assert(*test_initCalled_o == 1);
     test_assert(*test_constructCalled_o == 0);
     test_assert(*test_destructCalled_o == 0);
-
-
 }
 
 void test_ObjectMgmt_tc_declareInitFail(
@@ -1064,7 +1061,7 @@ void test_ObjectMgmt_tc_declareInt(
     corto_object o = corto_declare(corto_int32_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(!corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -1078,12 +1075,11 @@ void test_ObjectMgmt_tc_declareInt(
 void test_ObjectMgmt_tc_declareIntAttr0(
     test_ObjectMgmt this)
 {
-
     corto_setAttr(0);
     corto_object o = corto_declare(corto_int32_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
-    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_DEFINED));
     test_assert(!corto_checkAttr(o, CORTO_ATTR_NAMED));
@@ -1097,7 +1093,6 @@ void test_ObjectMgmt_tc_declareIntAttr0(
 void test_ObjectMgmt_tc_declareInvalidType(
     test_ObjectMgmt this)
 {
-
     corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
@@ -1149,7 +1144,7 @@ void test_ObjectMgmt_tc_declareNested(
     test_assert(c != NULL);
     test_assert(corto_typeof(c) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(c), "c");
-    test_assert(corto_checkState(c, CORTO_VALID));
+    test_assert(!corto_checkState(c, CORTO_VALID));
     test_assert(corto_checkState(c, CORTO_DECLARED));
     test_assert(!corto_checkState(c, CORTO_DEFINED));
 
@@ -2112,7 +2107,7 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
     test_assert(c != NULL);
     test_assert(corto_typeof(c) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(c), "c");
-    test_assert(corto_checkState(c, CORTO_VALID));
+    test_assert(!corto_checkState(c, CORTO_VALID));
     test_assert(corto_checkState(c, CORTO_DECLARED));
     test_assert(!corto_checkState(c, CORTO_DEFINED));
 
@@ -2174,7 +2169,7 @@ void test_ObjectMgmt_tc_declareNestedLastExists(
     test_assert(c != NULL);
     test_assert(corto_typeof(c) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(c), "c");
-    test_assert(corto_checkState(c, CORTO_VALID));
+    test_assert(!corto_checkState(c, CORTO_VALID));
     test_assert(corto_checkState(c, CORTO_DECLARED));
     test_assert(!corto_checkState(c, CORTO_DEFINED));
 
@@ -2183,7 +2178,7 @@ void test_ObjectMgmt_tc_declareNestedLastExists(
     test_assert(corto_parentof(c) == b);
     test_assert(corto_typeof(b) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(b), "b");
-    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(!corto_checkState(b, CORTO_VALID));
     test_assert(corto_checkState(b, CORTO_DECLARED));
     test_assert(!corto_checkState(b, CORTO_DEFINED));
 
@@ -2192,7 +2187,7 @@ void test_ObjectMgmt_tc_declareNestedLastExists(
     test_assert(corto_parentof(b) == a);
     test_assert(corto_typeof(a) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(a), "a");
-    test_assert(corto_checkState(a, CORTO_VALID));
+    test_assert(!corto_checkState(a, CORTO_VALID));
     test_assert(corto_checkState(a, CORTO_DECLARED));
     test_assert(!corto_checkState(a, CORTO_DEFINED));
 
@@ -2232,7 +2227,7 @@ void test_ObjectMgmt_tc_declareNestedSecondExists(
     test_assert(c != NULL);
     test_assert(corto_typeof(c) == corto_type(corto_int32_o));
     test_assertstr(corto_idof(c), "c");
-    test_assert(corto_checkState(c, CORTO_VALID));
+    test_assert(!corto_checkState(c, CORTO_VALID));
     test_assert(corto_checkState(c, CORTO_DECLARED));
     test_assert(!corto_checkState(c, CORTO_DEFINED));
 
@@ -2241,7 +2236,7 @@ void test_ObjectMgmt_tc_declareNestedSecondExists(
     test_assert(corto_parentof(c) == b);
     test_assert(corto_typeof(b) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(b), "b");
-    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(!corto_checkState(b, CORTO_VALID));
     test_assert(corto_checkState(b, CORTO_DECLARED));
     test_assert(!corto_checkState(b, CORTO_DEFINED));
 
@@ -2250,7 +2245,7 @@ void test_ObjectMgmt_tc_declareNestedSecondExists(
     test_assert(corto_parentof(b) == a);
     test_assert(corto_typeof(a) == corto_type(corto_float32_o));
     test_assertstr(corto_idof(a), "a");
-    test_assert(corto_checkState(a, CORTO_VALID));
+    test_assert(!corto_checkState(a, CORTO_VALID));
     test_assert(corto_checkState(a, CORTO_DECLARED));
     test_assert(!corto_checkState(a, CORTO_DEFINED));
 
@@ -2262,3 +2257,64 @@ void test_ObjectMgmt_tc_declareNestedSecondExists(
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 }
+
+void test_ObjectMgmt_tc_lifecycle(
+    test_ObjectMgmt this)
+{
+    test_LifecycleTest o = corto_declareChild(root_o, "data/lt", test_LifecycleTest_o);
+    test_assert(o != NULL);
+    test_assert(o->admin != NULL);
+    
+    // Separate object keeps track of called callbacks so it is possible to track
+    // calling deinit
+    test_LifecycleAdmin a = o->admin;
+    corto_claim(a);
+
+    test_assertint(a->hooksCalled, TEST_INIT_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED);
+
+    /* Claim object, so difference between delete and release can be tested */
+    corto_claim(o);
+
+    test_assert(corto_define(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+    
+    test_assert(corto_update(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+    
+    test_assert(corto_delete(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DESTRUCTED);
+
+    corto_release(o);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
+
+    test_assert(corto_delete(a) == 0);
+}
+
+void test_ObjectMgmt_tc_lifecycleConstructFail(
+    test_ObjectMgmt this)
+{
+    /* Insert implementation */
+}
+
+void test_ObjectMgmt_tc_lifecycleInitFail(
+    test_ObjectMgmt this)
+{
+    /* Insert implementation */
+}
+
+void test_ObjectMgmt_tc_lifecycleValidateFail(
+    test_ObjectMgmt this)
+{
+    /* Insert implementation */
+}
+
