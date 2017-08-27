@@ -12,7 +12,7 @@ corto_native_type _corto_native_typeCreate(corto_string name) {
     if (!_this) {
         return NULL;
     }
-    if (!corto_checkState(_this, CORTO_DEFINED)) {
+    if (!corto_checkState(_this, CORTO_VALID)) {
         corto_ptr_setstr(&((corto_native_type)_this)->name, name);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -28,7 +28,7 @@ corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_stri
     if (!_this) {
         return NULL;
     }
-    if (!corto_checkState(_this, CORTO_DEFINED)) {
+    if (!corto_checkState(_this, CORTO_VALID)) {
         corto_ptr_setstr(&((corto_native_type)_this)->name, name);
         if (corto_define(_this)) {
             corto_release(_this);

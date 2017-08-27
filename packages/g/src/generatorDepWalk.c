@@ -126,21 +126,21 @@ corto_int16 corto_genDepReference(corto_walk_opt* s, corto_value* info, void* us
 
                 if (!*result) {
                     switch(state) {
-                    case CORTO_DECLARED | CORTO_DEFINED:
-                        state = CORTO_DEFINED;
+                    case CORTO_DECLARED | CORTO_VALID:
+                        state = CORTO_VALID;
                         break;
                     case CORTO_DECLARED:
-                        state = CORTO_DEFINED;
+                        state = CORTO_VALID;
                         break;
-                    case CORTO_DEFINED:
+                    case CORTO_VALID:
                         state = CORTO_DECLARED;
                         break;
                     }
                 }
             }
-            corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, state);
+            corto_depresolver_depend(data->data->resolver, data->o, CORTO_VALID, o, state);
         } else {
-            corto_depresolver_depend(data->data->resolver, data->o, CORTO_DEFINED, o, CORTO_DEFINED);
+            corto_depresolver_depend(data->data->resolver, data->o, CORTO_VALID, o, CORTO_VALID);
         }
     }
 
@@ -171,7 +171,7 @@ static int corto_genDepBuildProc(corto_function f, struct g_depWalk_t* data) {
         t = f->parameters.buffer[i].type;
         if (g_mustParse(data->data->g, t)) {
             t = corto_genDepFindAnonymous(data, t);
-            corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_DEFINED); /* The type must be at least declared when the function is declared. */
+            corto_depresolver_depend(data->data->resolver, f, CORTO_DECLARED, t, CORTO_DECLARED | CORTO_VALID); /* The type must be at least declared when the function is declared. */
         }
     }
 
@@ -205,7 +205,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
         /* Insert type-dependency: object can be declared only after it's type is defined. */
         if (g_mustParse(data->g, corto_typeof(o))) {
             corto_type t = corto_genDepFindAnonymous(&walkData, corto_typeof(o));
-            corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, t, CORTO_DEFINED);
+            corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, t, CORTO_VALID);
         }
 
         /* TODO: this is not nice */
@@ -214,7 +214,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
             if (corto_typeof(o) != corto_type(corto_function_o)) {
                 if (corto_class_instanceof(corto_class_o, parent) && corto_interface(parent)->base) {
                     if (g_mustParse(data->g, corto_interface(parent)->base)) {
-                        corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, corto_interface(parent)->base, CORTO_DEFINED);
+                        corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, corto_interface(parent)->base, CORTO_VALID);
                     }
                 }
             }
@@ -232,7 +232,7 @@ int corto_genDepBuildAction(corto_object o, void* userData) {
 
                 corto_depresolver_depend(data->resolver, o, CORTO_DECLARED, parent, parentState);
                 if (parentState == CORTO_DECLARED) {
-                    corto_depresolver_depend(data->resolver, parent, CORTO_DEFINED, o, CORTO_DEFINED);
+                    corto_depresolver_depend(data->resolver, parent, CORTO_VALID, o, CORTO_VALID);
                 }
             }
         }

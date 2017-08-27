@@ -556,7 +556,7 @@ int corto_observerAlignScope(corto_object o, void *userData) {
 
     if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
         if ((data->mask & CORTO_ON_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
-            corto_checkState(o, CORTO_DEFINED))
+            corto_checkState(o, CORTO_VALID))
         {
             corto_notifyObserver(data->observer, o, o, CORTO_ON_DEFINE, data->depth);
         }
@@ -598,7 +598,7 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
         }
 
         if ((mask & CORTO_ON_DEFINE) && (mask & CORTO_ON_SELF) &&
-            corto_checkState(observable, CORTO_DEFINED))
+            corto_checkState(observable, CORTO_VALID))
         {
             corto_notifyObserver(observer, observable, observable, CORTO_ON_DEFINE, 0);
         }
@@ -889,7 +889,7 @@ int16_t corto_observer_observe(
     }
 
     /* If instance has not yet been defined, postpone listen */
-    if (instance && !corto_checkState(instance, CORTO_DEFINED)) {
+    if (instance && !corto_checkState(instance, CORTO_VALID)) {
         corto_observerDelayedAdminAdd(
             instance,
             this,
@@ -1126,7 +1126,7 @@ int16_t corto_observer_unobserve(
     }
 
     /* If instance has not yet been defined, undo delayed listen */
-    if (instance && !corto_checkState(instance, CORTO_DEFINED)) {
+    if (instance && !corto_checkState(instance, CORTO_VALID)) {
         corto_observerDelayedAdminRemove(
             instance,
             this
@@ -1136,7 +1136,7 @@ int16_t corto_observer_unobserve(
 
     /* Observers don't necessarily take a refcount on their observables, and if
      * the observable has already been destructed, it has already been silenced. */
-    if (corto_checkState(observable, CORTO_DESTRUCTED)) {
+    if (corto_checkState(observable, CORTO_DELETED)) {
         goto ignore;
     }
 

@@ -327,7 +327,7 @@ struct corto_subscribe__fluent corto_subscribe(
 @verbatim
 ```c
 void myDispatcher_post(corto_subscriberEvent *e) {
-    if (!corto_checkState(e->subscriber, CORTO_DESTRUCTED)) {
+    if (!corto_checkState(e->subscriber, CORTO_DELETED)) {
         corto_event_handle(e);
     } else {
         // Do nothing

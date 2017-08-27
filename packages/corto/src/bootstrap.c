@@ -483,10 +483,10 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(core_operatorKind_SHIFT_RIGHT),\
     SSO_OP_OBJ(core_operatorKind_REF),\
     /* state */\
-    SSO_OP_OBJ(lang_state_VALID),\
+    SSO_OP_OBJ(lang_state_OBJECT_IS_VALID),\
     SSO_OP_OBJ(lang_state_DECLARED),\
-    SSO_OP_OBJ(lang_state_DEFINED),\
-    SSO_OP_OBJ(lang_state_DESTRUCTED),\
+    SSO_OP_OBJ(lang_state_VALID),\
+    SSO_OP_OBJ(lang_state_DELETED),\
     /* attr */\
     SSO_OP_OBJ(lang_attr_ATTR_NAMED),\
     SSO_OP_OBJ(lang_attr_ATTR_WRITABLE),\

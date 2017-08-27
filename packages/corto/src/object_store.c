@@ -572,14 +572,14 @@ static void corto__destructor(corto_object o) {
     corto_assertObject(o);
 
     t = corto_typeof(o);
-    if (corto_checkState(o, CORTO_DEFINED)) {
+    if (corto_checkState(o, CORTO_VALID)) {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
 
         if (t->flags & CORTO_TYPE_HAS_DESTRUCT) {
             corto_callDestructDelegate(&((corto_class)t)->destruct, t, o);
         }
 
-        _o->align.attrs.state &= ~CORTO_DEFINED;
+        _o->align.attrs.state &= ~CORTO_VALID;
     } else {
         corto_critical("%s/destruct: object '%s' is not defined",
             corto_fullpath(NULL, t), corto_fullpath(NULL, o));
@@ -689,7 +689,7 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
             oper,
             path,
             corto_countof(o),
-            corto_checkState(o, CORTO_DESTRUCTED));
+            corto_checkState(o, CORTO_DELETED));
 
         if (context) {
             printf("    %s\n", context);
@@ -720,11 +720,11 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
 #endif
 
 /* Match a state exclusively:
- *                CORTO_DECLARED - CORTO_DECLARED | CORTO_DEFINED
+ *                CORTO_DECLARED - CORTO_DECLARED | CORTO_VALID
  *  CORTO_DECLARED        X
- *  CORTO_DEFINED                       X
+ *  CORTO_VALID                       X
  *  CORTO_DECLARED |      X             X
- *     CORTO_DEFINED
+ *     CORTO_VALID
  */
 static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     corto_uint8 ostate;
@@ -735,8 +735,8 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
 
     ostate = _o->align.attrs.state;
-    if (ostate & CORTO_DEFINED) {
-        ostate = CORTO_DEFINED;
+    if (ostate & CORTO_VALID) {
+        ostate = CORTO_VALID;
     }
 
     return ostate & state;
@@ -1054,7 +1054,7 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
     }
 
     /* Type must be valid and defined */
-    if (!corto_checkState(type, CORTO_VALID | CORTO_DEFINED)) {
+    if (!corto_checkState(type, CORTO_VALID)) {
         corto_seterr("type '%s' is not valid/defined", corto_fullpath(NULL, type));
         goto error;
     }
@@ -1326,14 +1326,14 @@ static corto_object corto_declareChildIntern(
 
                     /* If the object just has been declared and not by this thread,
                      * block until the object becomes either defined or destructed */
-                    if (!corto_checkState(o, CORTO_DEFINED) && !corto_checkState(o, CORTO_DESTRUCTED)) {
+                    if (!corto_checkState(o, CORTO_VALID) && !corto_checkState(o, CORTO_DELETED)) {
                         if (!corto_declaredAdminCheck(o)) {
                             corto_debug(
                               "corto: declareChild: %s declared in other thread, waiting",
                               id);
 
                             corto_readBegin(o);
-                            corto_bool destructed = corto_checkState(o, CORTO_DESTRUCTED);
+                            corto_bool destructed = corto_checkState(o, CORTO_DELETED);
                             corto_readEnd(o);
 
                             corto_debug(
@@ -1386,14 +1386,11 @@ static corto_object corto_declareChildIntern(
                 _o->align.attrs.state = 0;
             }
 
-            /* void objects are instantly defined because they have no value */
+            /* void objects are instantly valid because they have no value */
             if (type->kind == CORTO_VOID) {
                 if (defineVoid) {
                     int rc = corto_define(o);
                     corto_assert(rc == 0, "void objects should not fail to define");
-                } else {
-                    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
-                    _o->align.attrs.state |= CORTO_VALID;
                 }
             }
         }
@@ -1422,7 +1419,7 @@ owner_error:
 }
 
 static corto_object corto_createIntern(corto_object result) {
-    if (result && !corto_checkState(result, CORTO_DEFINED))
+    if (result && !corto_checkState(result, CORTO_VALID))
     {
         if (corto_define(result)) {
             corto_delete(result);
@@ -1645,7 +1642,6 @@ static corto_bool corto_resumeDeclared(corto_object o) {
 static corto_int16 corto_defineDeclared(corto_object o) {
     corto_int16 result = 0;
     corto_type t = corto_typeof(o);
-    corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));        
 
     /* Don't invoke constructor if object is not locally owned */
     if (t->flags & CORTO_TYPE_HAS_CONSTRUCT) {
@@ -1655,15 +1651,6 @@ static corto_int16 corto_defineDeclared(corto_object o) {
             result = corto_callInitDelegate(&((corto_class)t)->construct, t, o);
             corto_setAttr(prev);
         }
-
-        if (!result) {
-            /* Add valid state if constructor returned ok */
-            _o->align.attrs.state |= CORTO_VALID;
-        } else {
-            _o->align.attrs.state &= ~CORTO_VALID;       
-        }
-    } else {
-        _o->align.attrs.state |= CORTO_VALID;
     }
 
     return result;
@@ -1673,7 +1660,7 @@ static corto_int16 corto_defineDeclared(corto_object o) {
 static corto_int16 corto_notifyDefined(corto_object o, corto_eventMask mask) {
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
-    _o->align.attrs.state |= CORTO_DEFINED;
+    _o->align.attrs.state |= CORTO_VALID;
 
     if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         corto_declaredAdminRemove(o);
@@ -1735,7 +1722,7 @@ static corto_object corto_declareChildInternRecursive(
                         next ? corto_void_o : type, 
                         orphan, 
                         next ? FALSE : forceType,
-                        FALSE /* prevent sending DEFINE event for void objects */);
+                        FALSE /* prevent sending VALID event for void objects */);
                     
                     /* Keep track of first non-existing object. If something
                      * goes wrong, all objects, starting from this object, must
@@ -1758,28 +1745,39 @@ static corto_object corto_declareChildInternRecursive(
             }
         } while (result && cur);
 
-        if (create && result) {
-            corto_int32 i;
-            corto_eventMask masks[CORTO_MAX_SCOPE_DEPTH];
+        int i;
+        if (result) {
+            if (create) {
+                corto_eventMask masks[CORTO_MAX_SCOPE_DEPTH];
 
-            /* First ensure all constructors are successfully called */
-            for (i = 0; i < sp; i++) {
-                if (!corto_checkState(stack[i], CORTO_DEFINED)) {
-                    masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
-                    if (corto_defineDeclared(stack[i])) {
-                        result = NULL; /* Signal failure */
-                        break;
-                    }
-                } else {
-                    masks[i] = 0;
-                }
-            }
-
-            /* Send notifications for all objects */
-            if (result) {
+                /* First ensure all constructors are successfully called */
                 for (i = 0; i < sp; i++) {
-                    if (masks[i]) {
-                        corto_notifyDefined(stack[i], masks[i]);
+                    if (!corto_checkState(stack[i], CORTO_VALID)) {
+                        masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
+                        if (corto_defineDeclared(stack[i])) {
+                            result = NULL; /* Signal failure */
+                            break;
+                        }
+                    } else {
+                        masks[i] = 0;
+                    }
+                }
+
+                /* Send notifications for all objects */
+                if (result) {
+                    for (i = 0; i < sp; i++) {
+                        if (masks[i]) {
+                            corto_notifyDefined(stack[i], masks[i]);
+                        }
+                    }
+                }
+
+            /* If all objects were successfully initialized but no define is
+             * required, ensure that all void objects are defined */
+            } else {
+                for (i = 0; i < sp; i++) {
+                    if (corto_typeof(stack[i])->kind == CORTO_VOID && !corto_typeof(stack[i])->reference) {
+                        corto_define(stack[i]);
                     }
                 }
             }
@@ -1853,7 +1851,7 @@ corto_int16 corto_define(corto_object o) {
     }
 
     /* Only define undefined objects */
-    if (!corto_checkState(o, CORTO_DEFINED) || !corto_checkState(o, CORTO_VALID)) {
+    if (!corto_checkState(o, CORTO_VALID)) {
         if (corto_childof(root_o, o) && !corto_isBuiltin(o)) {
             if (!corto_declaredAdminCheck(o) && corto_checkState(o, CORTO_DECLARED)) {
                 corto_seterr("corto: cannot define object '%s' because it was not declared in same thread",
@@ -1898,17 +1896,17 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
     /* Treat builtin objects separately. They cannot be destructed regularly
      * because they aren't allocated on heap */
     if (corto_isBuiltin(o)) {
-        if (!corto_checkState(o, CORTO_DESTRUCTED)) {
-            _o->align.attrs.state |= CORTO_DESTRUCTED;
+        if (!corto_checkState(o, CORTO_DELETED)) {
+            _o->align.attrs.state |= CORTO_DELETED;
         }
         return TRUE;
     }
 
-    if (!corto_checkState(o, CORTO_DESTRUCTED)) {
+    if (!corto_checkState(o, CORTO_DELETED)) {
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("destruct", o, NULL);
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
 
-        bool defined = corto_checkState(o, CORTO_DEFINED);
+        bool defined = corto_checkState(o, CORTO_VALID);
 
         /* Call destructor before marking object state as destructed */
         if (defined && corto_owned(o)) {
@@ -1916,7 +1914,11 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         }
 
         /* From here, object is marked as destructed. */
-        _o->align.attrs.state |= CORTO_DESTRUCTED;
+        _o->align.attrs.state |= CORTO_DELETED;
+
+        if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+            corto_drop(o, delete);
+        }
 
         /* Only do the following steps if the object is defined */
         if (defined) {
@@ -1925,9 +1927,6 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             /* Only send delete notification when object is being deleted, not
              * when object is being suspended. */
             if (delete) {
-                if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
-                    corto_drop(o, delete);
-                }
                 if (corto_checkState(o, CORTO_DECLARED)) {
                     corto_notify(o, CORTO_ON_DELETE);
                     if (t->flags & CORTO_TYPE_HAS_DELETE) {
@@ -3362,7 +3361,7 @@ corto_bool corto_owned(corto_object o) {
     corto_object current = corto_getOwner();
     corto_bool result = FALSE;
 
-    if (!corto_checkState(o, CORTO_DEFINED)) {
+    if (!corto_checkState(o, CORTO_VALID)) {
         /* If object is not DEFINED it is not owned yet, and it's fair game */
         result = TRUE;
     } else {
@@ -3691,7 +3690,7 @@ corto_int16 corto_update(corto_object o) {
         if (!corto_authorized(o, CORTO_SECURE_ACTION_UPDATE)) {
             goto error;
         }
-        if (!corto_checkState(o, CORTO_DEFINED)) {
+        if (!corto_checkState(o, CORTO_VALID)) {
             mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
@@ -3703,7 +3702,7 @@ corto_int16 corto_update(corto_object o) {
             }
         }
     } else {
-        if (!corto_checkState(o, CORTO_DEFINED)) {
+        if (!corto_checkState(o, CORTO_VALID)) {
             mask |= corto_resumeDeclared(o) ? CORTO_ON_RESUME : CORTO_ON_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
@@ -3730,7 +3729,7 @@ corto_int16 corto_updateBegin(corto_object o) {
         goto error;
     }
 
-    if (!corto_checkState(o, CORTO_DEFINED)) {
+    if (!corto_checkState(o, CORTO_VALID)) {
         corto_resumeDeclared(o);
     }
 
@@ -3740,13 +3739,13 @@ corto_int16 corto_updateBegin(corto_object o) {
         goto error;
     }
 
-    if (!corto_checkState(o, CORTO_DEFINED) && !corto_declaredAdminCheck(o)) {
+    if (!corto_checkState(o, CORTO_VALID) && !corto_declaredAdminCheck(o)) {
         corto_seterr("updateBegin: cannot update '%s', object is being defined by other thread",
             corto_fullpath(NULL, o));
         goto error;
     }
 
-    if (corto_checkState(o, CORTO_DEFINED)) {
+    if (corto_checkState(o, CORTO_VALID)) {
         corto__writable* _wr = corto__objectWritable(CORTO_OFFSET(o, -sizeof(corto__object)));
         if (_wr) {
             if (corto_rwmutexWrite(&_wr->align.lock)) {
@@ -3800,7 +3799,7 @@ corto_int16 corto_updateEnd(corto_object observable) {
     corto_int16 result = 0;
     corto_bool defined = TRUE;
 
-    if (!corto_checkState(observable, CORTO_DEFINED)) {
+    if (!corto_checkState(observable, CORTO_VALID)) {
         corto_object owner = corto_ownerof(observable);
         defined = FALSE;
         corto_eventMask mask = 0;
@@ -4353,7 +4352,7 @@ static corto_uint32 corto_overloadParamCompare(
     }
 
     /* Match type compatibility */
-    if (corto_checkState(o_type, CORTO_DEFINED) && (corto_checkState(r_type, CORTO_DEFINED))) {
+    if (corto_checkState(o_type, CORTO_VALID) && (corto_checkState(r_type, CORTO_VALID))) {
         if (o_type == r_type) {
             goto match;
         }

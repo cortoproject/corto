@@ -122,10 +122,6 @@ static char* cxsh_stateStr(corto_object o, char* buff) {
     corto_int8 appended = 0;
 
     /* Get state */
-    if (corto_checkState(o, CORTO_VALID)) {
-       strcpy(buff, "V");
-       appended++;
-    }
     if (corto_checkState(o, CORTO_DECLARED)) {
         if (appended) {
             strcat(buff, "|");
@@ -133,11 +129,11 @@ static char* cxsh_stateStr(corto_object o, char* buff) {
         strcat(buff, "DCL");
         appended++;
     }
-    if (corto_checkState(o, CORTO_DEFINED)) {
+    if (corto_checkState(o, CORTO_VALID)) {
         if (appended) {
             strcat(buff, "|");
         }
-        strcat(buff, "DEF");
+        strcat(buff, "V");
     }
 
     return buff;
@@ -439,7 +435,7 @@ static int cxsh_show(char* object) {
             if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
                 corto_object owner = corto_ownerof(o);
 
-                if (corto_checkState(o, CORTO_DEFINED)) {
+                if (corto_checkState(o, CORTO_VALID)) {
                     printf("%sowner:%s        %s%s\n",
                         INTERFACE_COLOR,
                         OBJECT_COLOR,
@@ -483,7 +479,7 @@ static int cxsh_show(char* object) {
         }
 
         if (o) {
-            if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_DEFINED)) {
+            if (corto_class_instanceof(corto_type_o, o) && corto_checkState(o, CORTO_VALID)) {
                 s.access = CORTO_LOCAL | CORTO_READONLY | CORTO_PRIVATE | CORTO_HIDDEN;
                 s.accessKind = CORTO_NOT;
                 s.aliasAction = CORTO_WALK_ALIAS_FOLLOW;

@@ -363,7 +363,7 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
 
     /* Check if object is valid */
     if (!corto_checkState(o, CORTO_VALID)) {
-        corto_seterr("%s has invalid objects (%s).",
+        corto_seterr("%s has undefined objects (%s)",
             corto_fullpath(NULL, g_getCurrent(data->g)),
             corto_fullpath(NULL, o));
         return 1;
@@ -381,7 +381,7 @@ static int corto_genTypeParse(corto_object o, corto_bool allowDeclared, corto_bo
         corto_genTypeProcedureDependencies(corto_function(o), data);
     } else
     /* Check if object is defined - declared objects are allowed only for procedure objects. */
-    if (corto_instanceof(corto_type_o, o) && !corto_checkState(o, CORTO_DEFINED)) {
+    if (corto_instanceof(corto_type_o, o) && !corto_checkState(o, CORTO_VALID)) {
         corto_seterr("%s has undefined objects (%s).",
             corto_fullpath(NULL, g_getCurrent(data->g)),
             corto_fullpath(NULL, o));

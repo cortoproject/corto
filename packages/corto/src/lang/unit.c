@@ -56,7 +56,7 @@ int16_t corto_unit_construct(
     /* Setup the constructor */
     corto_function constructor = corto_declareChild(this, "construct()", corto_method_o);
         if (!constructor) goto error;
-        if (constructor && corto_checkState(constructor, CORTO_DEFINED)) {
+        if (constructor && corto_checkState(constructor, CORTO_VALID)) {
             corto_seterr("unit '%s' has illegal custom-defined constructor", corto_fullpath(NULL, this));
             goto error;
         }

@@ -246,7 +246,7 @@ repeat:
     }
 
     /* If object is not defined and not declared by this thread, don't return */
-    if (o && !corto_checkState(o, CORTO_DEFINED) && !corto_declaredAdminCheck(o)) {
+    if (o && !corto_checkState(o, CORTO_VALID) && !corto_declaredAdminCheck(o)) {
         corto_debug(
             "corto: resolved undefined object '%s' is declared by another thread (%d)",
             corto_fullpath(NULL, o), corto_declaredAdminCheck(o));

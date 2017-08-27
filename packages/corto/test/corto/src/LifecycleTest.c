@@ -15,7 +15,7 @@ void test_LifecycleTest_define(
     test_LifecycleTest this)
 {
     test_assert(this->admin != NULL);        
-    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED));   
+    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID));   
     test_assertint(this->admin->hooksCalled, TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED);    
     this->admin->hooksCalled |= TEST_DEFINE_CALLED;
 }
@@ -24,7 +24,7 @@ void test_LifecycleTest_delete(
     test_LifecycleTest this)
 {
     test_assert(this->admin != NULL);
-    test_assertint(corto_stateof(this), (CORTO_DECLARED|CORTO_VALID|CORTO_DESTRUCTED));
+    test_assertint(corto_stateof(this), (CORTO_DECLARED|CORTO_DELETED));
     test_assertint(this->admin->hooksCalled, 
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|
         TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|TEST_DESTRUCT_CALLED);    
@@ -36,7 +36,7 @@ void test_LifecycleTest_destruct(
     test_LifecycleTest this)
 {
     test_assert(this->admin != NULL);
-    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED));
+    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID));
     test_assertint(this->admin->hooksCalled, 
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);   
     
@@ -59,7 +59,7 @@ void test_LifecycleTest_update(
     test_LifecycleTest this)
 {
     test_assert(this->admin != NULL);
-    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED));
+    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID));
     test_assertint(this->admin->hooksCalled, 
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED);    
 
@@ -70,7 +70,7 @@ int16_t test_LifecycleTest_validate(
     test_LifecycleTest this)
 {
     test_assert(this->admin != NULL);
-    test_assertint(corto_stateof(this), (CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED));
+    test_assertint(corto_stateof(this), (CORTO_DECLARED|CORTO_VALID));
     test_assertint(this->admin->hooksCalled, 
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);      
 
@@ -82,7 +82,7 @@ void test_LifecycleTest_deinit(
     test_LifecycleTest this)
 {
     test_assert(this->admin != NULL);    
-    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_VALID|CORTO_DESTRUCTED));    
+    test_assert(corto_stateof(this) == (CORTO_DECLARED|CORTO_DELETED));    
     test_assertint(this->admin->hooksCalled, 
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|
         TEST_UPDATE_CALLED|TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);   

@@ -893,7 +893,7 @@ void corto_mount_subscribeOrMount(
         return;
     }
 
-    if (corto_checkState(this, CORTO_DEFINED)) corto_lock(this);
+    if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
     subscription = corto_mount_findSubscription(this, query, &found);
     
     if (subscription) {
@@ -917,7 +917,7 @@ void corto_mount_subscribeOrMount(
         corto_ll_append(this->subscriptions, placeHolder);
     }
 
-    if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
+    if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
     
     /* Process callback outside of lock */
     if (!found && (!subscription || 
@@ -949,7 +949,7 @@ void corto_mount_subscribeOrMount(
      * subscription */
     if ((subCtx && (!subscription || (subscription->subscriberCtx != subCtx))) ||
         (mntCtx && (!subscription || (subscription->mountCtx != mntCtx)))) {
-        if (corto_checkState(this, CORTO_DEFINED)) corto_lock(this);
+        if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
         /* If a new subscription is required, undo increase of refcount of the
          * subscription that was found */
         if (subscription) {
@@ -978,26 +978,26 @@ void corto_mount_subscribeOrMount(
 
         if (subscribe) subscription->subscriberCtx = subCtx;
         if (mount) subscription->mountCtx = mntCtx;
-        if (corto_checkState(this, CORTO_DEFINED))  corto_unlock(this);
+        if (corto_checkState(this, CORTO_VALID))  corto_unlock(this);
     } else if ((subCtx || mntCtx) && !found && subscription) {
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'select' parameter of the
          * subscription is meaningless, so to avoid confusion set it to '*' 
          */
-        if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
+        if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
         corto_ptr_setstr(&subscription->query.select, "*");
         /* Doesn't count as new subscription, so undo increase in refcount */
         if (subCtx) subscription->subscriberCount --;
         if (mntCtx) subscription->mountCount --;
-        if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
+        if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
     /* If placeholder was added & no (new) subscription is created, remove the
      * placeholder from the list */
     } else if (placeHolder) {
-        if (corto_checkState(this, CORTO_DEFINED))  corto_lock(this);
+        if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
         corto_ll_remove(this->subscriptions, placeHolder);
         corto_ptr_free(placeHolder, corto_mountSubscription_o);
-        if (corto_checkState(this, CORTO_DEFINED)) corto_unlock(this);
+        if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
     }
 }
 

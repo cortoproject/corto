@@ -138,7 +138,7 @@ int16_t corto_type_init(
     corto_type this)
 {
     if (!this->options.parentState) {
-        this->options.parentState = CORTO_DECLARED | CORTO_DEFINED;
+        this->options.parentState = CORTO_DECLARED | CORTO_VALID;
     }
     if (!this->attr) {
         this->attr = CORTO_ATTR_DEFAULT;

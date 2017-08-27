@@ -52,9 +52,9 @@ int16_t corto_member_init(
             }
 
             /* Set default member-modifiers - not during bootstrap */
-            if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
+            if (corto_checkState(corto_type_o, CORTO_VALID)) {
                 this->modifiers = CORTO_GLOBAL;
-                this->state = CORTO_DECLARED | CORTO_DEFINED;
+                this->state = CORTO_DECLARED | CORTO_VALID;
             }
         } else {
             corto_seterr(

@@ -228,7 +228,7 @@ union unionTypes: test/TypeKind::
 struct VoidParent: options={parentType=void}:/
     foo: int32
 
-struct DefinedParent: options={parentState=defined} :/
+struct DefinedParent: options={parentState=valid} :/
     foo: int32
 
 struct DeclaredParent: options={parentState=declared}:/

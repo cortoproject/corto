@@ -130,10 +130,10 @@ typedef struct corto_type_s *corto_type;
 
 /* state */
 typedef uint32_t corto_state;
-    #define CORTO_VALID (0x1)
+    #define CORTO_OBJECT_IS_VALID (0x1)
     #define CORTO_DECLARED (0x2)
-    #define CORTO_DEFINED (0x4)
-    #define CORTO_DESTRUCTED (0x8)
+    #define CORTO_VALID (0x4)
+    #define CORTO_DELETED (0x8)
 
 /*  typeOptions */
 typedef struct corto_typeOptions corto_typeOptions;

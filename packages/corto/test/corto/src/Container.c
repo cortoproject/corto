@@ -12,18 +12,18 @@ void test_Container_tc_anonymousContainer(
     test_assert(corto_typeof(o) == corto_type(test_ContainerNestedLeaf_o));
     test_assert(corto_checkAttr(o, CORTO_ATTR_NAMED) == true);
     test_assertint(corto_scopeSize(o), 1);
-    test_assert(!corto_checkState(o, CORTO_DEFINED));
+    test_assert(!corto_checkState(o, CORTO_VALID));
 
     corto_object leaf = corto_lookup(o, "ChildLeaf");
     test_assert(leaf != NULL);
     test_assert(corto_typeof(leaf) == corto_type(test_ContainerNestedLeaf_ChildLeaf_o));
     test_assertint(corto_scopeSize(leaf), 0);
-    test_assert(!corto_checkState(o, CORTO_DEFINED));
+    test_assert(!corto_checkState(o, CORTO_VALID));
 
     test_assert(corto_define(o) == 0);
     test_assertint(corto_scopeSize(o), 1);
-    test_assert(corto_checkState(o, CORTO_DEFINED));
-    test_assert(corto_checkState(leaf, CORTO_DEFINED));
+    test_assert(corto_checkState(o, CORTO_VALID));
+    test_assert(corto_checkState(leaf, CORTO_VALID));
 
     test_assert(corto_release(leaf) == 1);
     test_assert(corto_delete(o) == 0);
@@ -45,35 +45,35 @@ void test_Container_tc_complexContainer(
     corto_object wheel = corto_lookup(car, "Wheel");
     test_assert(wheel != NULL);
     test_assert(corto_typeof(wheel) == corto_type(corto_tableinstance_o));
-    test_assert(!corto_checkState(wheel, CORTO_DEFINED));
+    test_assert(!corto_checkState(wheel, CORTO_VALID));
     test_assertint(corto_scopeSize(wheel), 0);
 
     corto_object engine = corto_lookup(car, "Engine");
     test_assert(engine != NULL);
     test_assert(corto_typeof(engine) == corto_type(test_Car_Engine_o));
-    test_assert(!corto_checkState(engine, CORTO_DEFINED));
+    test_assert(!corto_checkState(engine, CORTO_VALID));
     test_assertint(corto_scopeSize(engine), 0);
 
     test_Car_Wheel wheel1 = corto_declareChild(wheel, "FrontLeft", test_Car_Wheel_o);
     test_assert(wheel1 != NULL);
     test_assert(corto_typeof(wheel1) == corto_type(test_Car_Wheel_o));
-    test_assert(!corto_checkState(wheel1, CORTO_DEFINED));
+    test_assert(!corto_checkState(wheel1, CORTO_VALID));
     test_assertint(wheel1->location, Test_FrontLeft);
     test_assertint(corto_scopeSize(wheel1), 1);
 
     test_Car_Wheel tire1 = corto_lookup(wheel1, "Tire");
     test_assert(tire1 != NULL);
     test_assert(corto_typeof(tire1) == corto_type(test_Car_Wheel_Tire_o));
-    test_assert(!corto_checkState(tire1, CORTO_DEFINED));
+    test_assert(!corto_checkState(tire1, CORTO_VALID));
     test_assertint(corto_scopeSize(tire1), 0);
 
     test_assert(corto_define(car) == 0);
     test_assertint(corto_scopeSize(o), 2);
 
-    test_assert(corto_checkState(wheel, CORTO_DEFINED));
-    test_assert(corto_checkState(wheel1, CORTO_DEFINED));
-    test_assert(corto_checkState(tire1, CORTO_DEFINED));
-    test_assert(corto_checkState(engine, CORTO_DEFINED));
+    test_assert(corto_checkState(wheel, CORTO_VALID));
+    test_assert(corto_checkState(wheel1, CORTO_VALID));
+    test_assert(corto_checkState(tire1, CORTO_VALID));
+    test_assert(corto_checkState(engine, CORTO_VALID));
 
     test_assert(corto_delete(o) == 0);
 
@@ -108,7 +108,7 @@ void test_Container_tc_containerNestedContainer(
     corto_object child = corto_lookup(o, "ChildContainer");
     test_assert(child != NULL);
     test_assert(corto_typeof(child) == corto_type(test_ContainerNestedContainer_ChildContainer_o));
-    test_assert(!corto_checkState(child, CORTO_DEFINED));
+    test_assert(!corto_checkState(child, CORTO_VALID));
 
     /* Test if members of container are properly generated */
     test_ContainerNestedContainer container = test_ContainerNestedContainer(o);
@@ -125,7 +125,7 @@ void test_Container_tc_containerNestedContainer(
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
 
-    test_assert(corto_checkState(child, CORTO_DEFINED));
+    test_assert(corto_checkState(child, CORTO_VALID));
 
     test_assert(corto_delete(o) == 0);
 
@@ -142,7 +142,7 @@ void test_Container_tc_containerNestedLeaf(
     corto_object child = corto_lookup(o, "ChildLeaf");
     test_assert(child != NULL);
     test_assert(corto_typeof(child) == corto_type(test_ContainerNestedLeaf_ChildLeaf_o));
-    test_assert(!corto_checkState(child, CORTO_DEFINED));
+    test_assert(!corto_checkState(child, CORTO_VALID));
 
     /* Test if members of container are properly generated */
     test_ContainerNestedLeaf container = test_ContainerNestedLeaf(o);
@@ -159,7 +159,7 @@ void test_Container_tc_containerNestedLeaf(
     corto_release(child);
     test_assertint(corto_scopeSize(o), 1);
 
-    test_assert(corto_checkState(child, CORTO_DEFINED));
+    test_assert(corto_checkState(child, CORTO_VALID));
 
     test_assert(corto_delete(o) == 0);
 
@@ -176,7 +176,7 @@ void test_Container_tc_containerNestedTable(
     corto_object child = corto_lookup(o, "ChildTable");
     test_assert(child != NULL);
     test_assert(corto_typeof(child) == corto_type(corto_tableinstance_o));
-    test_assert(!corto_checkState(child, CORTO_DEFINED));
+    test_assert(!corto_checkState(child, CORTO_VALID));
 
     corto_tableinstance childTable = corto_tableinstance(child);
     test_assert(childTable->type == corto_struct(test_ContainerNestedTable_ChildTable_o));
@@ -190,7 +190,7 @@ void test_Container_tc_containerNestedTable(
     test_assert(corto_define(container) == 0);
     test_assertint(corto_scopeSize(o), 1);
 
-    test_assert(corto_checkState(child, CORTO_DEFINED));
+    test_assert(corto_checkState(child, CORTO_VALID));
 
     test_assert(corto_delete(o) == 0);
 
@@ -291,19 +291,19 @@ void test_Container_tc_tableNested(
     test_TableSingleKey record = corto_declareChild(o, "1", test_TableNested_o);
     test_assert(record != NULL);
     test_assertint(corto_scopeSize(record), 1);
-    test_assert(!corto_checkState(record, CORTO_DEFINED));
+    test_assert(!corto_checkState(record, CORTO_VALID));
     test_assertint(record->id, 1);
 
     corto_tableinstance nested = corto_lookup(record, "ChildTable");
     test_assert(nested != NULL);
     test_assert(corto_typeof(nested) == corto_type(corto_tableinstance_o));
-    test_assert(!corto_checkState(nested, CORTO_DEFINED));
+    test_assert(!corto_checkState(nested, CORTO_VALID));
     test_assertint(corto_scopeSize(nested), 0);
 
     test_assert(corto_define(o) == 0);
 
-    test_assert(corto_checkState(record, CORTO_DEFINED));
-    test_assert(corto_checkState(nested, CORTO_DEFINED));
+    test_assert(corto_checkState(record, CORTO_VALID));
+    test_assert(corto_checkState(nested, CORTO_VALID));
 
     test_assert(corto_delete(o) == 0);
 
@@ -326,13 +326,13 @@ void test_Container_tc_tableNestedContainer(
 
     corto_object child = corto_lookup(record, "ChildContainer");
     test_assert(child != NULL);
-    test_assert(!corto_checkState(child, CORTO_DEFINED));
+    test_assert(!corto_checkState(child, CORTO_VALID));
     test_assert(corto_typeof(child) == corto_type(test_TableNestedContainer_ChildContainer_o));
 
     test_assert(corto_define(record) == 0);
     test_assertint(corto_scopeSize(record), 1);
 
-    test_assert(corto_checkState(child, CORTO_DEFINED));
+    test_assert(corto_checkState(child, CORTO_VALID));
     corto_release(child);
 
     test_assert(corto_delete(o) == 0);
@@ -356,19 +356,19 @@ void test_Container_tc_tableNestedLeafs(
 
     corto_object child1 = corto_lookup(record, "ChildLeaf1");
     test_assert(child1 != NULL);
-    test_assert(!corto_checkState(child1, CORTO_DEFINED));
+    test_assert(!corto_checkState(child1, CORTO_VALID));
     test_assert(corto_typeof(child1) == corto_type(test_TableNestedLeafs_ChildLeaf1_o));
 
     corto_object child2 = corto_lookup(record, "ChildLeaf2");
     test_assert(child2 != NULL);
-    test_assert(!corto_checkState(child2, CORTO_DEFINED));
+    test_assert(!corto_checkState(child2, CORTO_VALID));
     test_assert(corto_typeof(child2) == corto_type(test_TableNestedLeafs_ChildLeaf2_o));
 
     test_assert(corto_define(record) == 0);
     test_assertint(corto_scopeSize(record), 2);
 
-    test_assert(corto_checkState(child1, CORTO_DEFINED));
-    test_assert(corto_checkState(child2, CORTO_DEFINED));
+    test_assert(corto_checkState(child1, CORTO_VALID));
+    test_assert(corto_checkState(child2, CORTO_VALID));
     corto_release(child1);
     corto_release(child2);
 

@@ -157,7 +157,7 @@ static int g_itemResolveDependency(void* o, void* userData) {
                 corto_ll_insert(data->toPrint, dep->item);
             }
             break;
-        case CORTO_DEFINED:
+        case CORTO_VALID:
             dep->item->defineCount--;
 
             corto_assert(dep->item->defineCount >= 0, "negative defineCount for item '%s'.", corto_idof(dep->item->o));
@@ -422,7 +422,7 @@ void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind,
         case CORTO_DECLARED:
             dependent->declareCount++;
             break;
-        case CORTO_DEFINED:
+        case CORTO_VALID:
             dependent->defineCount++;
             break;
         default:
@@ -438,10 +438,10 @@ void corto_depresolver_depend(corto_depresolver this, void* o, corto_state kind,
             }
             corto_ll_insert(dependency->onDeclared, dep);
             break;
-        case CORTO_DECLARED | CORTO_DEFINED:
+        case CORTO_DECLARED | CORTO_VALID:
             dep->weak = TRUE;
             /* no break */
-        case CORTO_DEFINED:
+        case CORTO_VALID:
             if (!dependency->onDefined) {
                 dependency->onDefined = corto_ll_new();
             }

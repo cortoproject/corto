@@ -1054,7 +1054,7 @@ struct corto_observe__fluent corto_observe(
 @verbatim
 ```c
 void myDispatcher_post(corto_observerEvent *e) {
-    if (!corto_checkState(e->observer, CORTO_DESTRUCTED)) {
+    if (!corto_checkState(e->observer, CORTO_DELETED)) {
         corto_event_handle(e);
     } else {
         // Do nothing

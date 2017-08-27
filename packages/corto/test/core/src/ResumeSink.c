@@ -130,7 +130,7 @@ void test_ResumeSink_tc_define(
     test_assert(corto_parentof(o) == mount);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(this->declared, 1);
@@ -272,7 +272,7 @@ void test_ResumeSink_tc_defineNested1(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(this->declared, 2);
@@ -381,7 +381,7 @@ void test_ResumeSink_tc_defineNested2(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(this->declared, 3);
@@ -453,7 +453,7 @@ void test_ResumeSink_tc_lookup(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
@@ -506,7 +506,7 @@ void test_ResumeSink_tc_lookupFromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
@@ -605,7 +605,7 @@ void test_ResumeSink_tc_lookupNested1(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
@@ -658,7 +658,7 @@ void test_ResumeSink_tc_lookupNested1FromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
@@ -755,7 +755,7 @@ void test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
@@ -862,7 +862,7 @@ void test_ResumeSink_tc_lookupNested2(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
@@ -915,7 +915,7 @@ void test_ResumeSink_tc_lookupNested2FromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
@@ -1029,7 +1029,7 @@ void test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
@@ -1181,7 +1181,7 @@ void test_ResumeSink_tc_resolve(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_checkState(o, CORTO_VALID));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
@@ -1234,7 +1234,7 @@ void test_ResumeSink_tc_resolveFromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
@@ -1334,7 +1334,7 @@ void test_ResumeSink_tc_resolveNested1(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
@@ -1387,7 +1387,7 @@ void test_ResumeSink_tc_resolveNested1FromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
@@ -1484,7 +1484,7 @@ void test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
@@ -1592,7 +1592,7 @@ void test_ResumeSink_tc_resolveNested2(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
@@ -1645,7 +1645,7 @@ void test_ResumeSink_tc_resolveNested2FromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
@@ -1759,7 +1759,7 @@ void test_ResumeSink_tc_resolveNested2FromObjectFromMount(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_DEFINED | CORTO_DECLARED));
+    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);

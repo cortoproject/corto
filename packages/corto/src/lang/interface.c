@@ -366,7 +366,7 @@ static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, c
                 /* Perform a stricter check during bootstrap. This is because the corto_type_compatible method
                  * is not yet available during bootstrap, because the vtable of type is not yet final, resulting
                  * in unstable methodId's. */
-                if (!corto_checkState(corto_type_o, CORTO_DEFINED)) { /* If lang::type is not yet defined, we're still bootstrapping. */
+                if (!corto_checkState(corto_type_o, CORTO_VALID)) { /* If lang::type is not yet defined, we're still bootstrapping. */
                     if (p1 != p2) {
                         if (!(p1 == corto_object_o) && (p2->reference)) {
                             corto_seterr("bootstrap failure: types of parameters '%s' and '%s' are not compatible.",
@@ -716,7 +716,7 @@ uint32_t corto_interface_resolveMethodId(
 
     result = 0;
 
-    if (!corto_checkState(this, CORTO_DEFINED)) {
+    if (!corto_checkState(this, CORTO_VALID)) {
         corto_seterr(
             "cannot resolve methodId for method '%s' from undefined interface '%s'",
             name,

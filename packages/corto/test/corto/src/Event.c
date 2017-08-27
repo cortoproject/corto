@@ -2194,11 +2194,11 @@ void test_Event_tc_updateUndefined(
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 0);
     test_assert(this->et->countDefine == 1);
-    test_assert(!corto_checkState(o, CORTO_DEFINED));
+    test_assert(!corto_checkState(o, CORTO_VALID));
 
     ret = corto_updateEnd(o);
     test_assert(ret == 0);
-    test_assert(corto_checkState(o, CORTO_DEFINED));
+    test_assert(corto_checkState(o, CORTO_VALID));
     test_assert(this->et->countUpdate == 0);
     test_assert(this->et->countDefine == 2);
 

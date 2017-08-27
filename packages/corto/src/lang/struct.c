@@ -194,7 +194,7 @@ int16_t corto_struct_init(
     corto_struct this)
 {
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
-    if (corto_checkState(corto_type_o, CORTO_DEFINED)) {
+    if (corto_checkState(corto_type_o, CORTO_VALID)) {
         this->baseAccess = CORTO_GLOBAL;
     }
 

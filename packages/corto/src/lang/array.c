@@ -25,7 +25,7 @@ int16_t corto_array_construct(
     }
 
     /* Arrays can only be defined when their elementType is also defined. */
-   if (!corto_checkState((corto_collection(this)->elementType), CORTO_DEFINED)) {
+   if (!corto_checkState((corto_collection(this)->elementType), CORTO_VALID)) {
        if (!(corto_instanceof(corto_type(corto_type_o), corto_collection(this)->elementType) && corto_type(corto_collection(this)->elementType)->reference)) {
             corto_seterr(
                 "elementType '%s' is not defined",
