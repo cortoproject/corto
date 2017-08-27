@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
                     }
                 }
             }
-        } else {
+        } else if (argc == 1) {
             /* Run default command */
             if ((result = runCommand("default", 0, NULL))) {
                 corto_lasterr();
