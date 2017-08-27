@@ -18,9 +18,7 @@ INCLUDE << "include"
 # tool to find packages, however, this rakefile is used to build the corto tool.
 # USE_PACKAGE << "corto"
 LINK <<
-  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/corto" <<
-  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/g/g" <<
-  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/argparse/argparse"
+  "#{CORTO_TARGET}/lib/corto/#{CORTO_VERSION}/corto/corto"
 
 require "#{ENV['CORTO_BUILD']}/artefact"
 require "#{ENV['CORTO_BUILD']}/subrake"

@@ -295,6 +295,8 @@ static corto_bool corto_checkLibrary(corto_string fileName, corto_string *build_
 static int corto_load_fromDl(corto_dl dl, char *fileName, int argc, char *argv[]) {
     int (*proc)(int argc, char* argv[]);
 
+    corto_assert(fileName != NULL, "NULL passed to corto_load_fromDl");
+
     corto_debug("loader: invoke cortomain of '%s' with %d arguments", fileName, argc);
 
     /* Lookup main function */
@@ -343,6 +345,8 @@ static int corto_loadLibrary(corto_string fileName, corto_bool validated, corto_
     corto_dl dl = NULL;
     corto_string build = NULL;
 
+    corto_assert(fileName != NULL, "NULL passed to corto_loadLibrary");
+
     corto_seterr(NULL);
     if (!validated) {
         dl = corto_load_validLibrary(fileName, &build);
@@ -386,7 +390,7 @@ int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *dat
 }
 
 /* Load a package */
-int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, corto_bool ignoreRecursive) {
+int corto_loadIntern(corto_string str, int argc, char* argv[], bool try, bool ignoreRecursive, bool alwaysRun) {
     corto_char ext[16];
     struct corto_fileHandler* h;
     int result = -1;
@@ -406,9 +410,14 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
                 corto_sleep(1, 0);
             }
 
+            if (alwaysRun) {
+                result = corto_load_fromDl(lib->library, lib->filename, argc, argv);
+            }
+
             goto loaded;
         }
     }
+
     corto_mutexUnlock(&corto_adminLock);
 
     /* Get extension from filename */
@@ -450,13 +459,17 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool try, c
         lib = corto_loadedAdminAdd(str);
         corto_mutexUnlock(&corto_adminLock);
         result = h->load(str, argc, argv, h->userData);
-    } else {
+    } else if (lib->filename) {
         if (lib->loading == corto_threadSelf()) {
             goto recursive;
         }
         corto_mutexUnlock(&corto_adminLock);
         lib->loading = corto_threadSelf();
         result = corto_loadLibrary(lib->filename, TRUE, &lib->library, argc, argv);
+    } else {
+        corto_mutexUnlock(&corto_adminLock);
+        corto_seterr("'%s' is not a loadable package", lib->name);
+        result = -1;
     }
     
     corto_mutexLock(&corto_adminLock);
@@ -494,12 +507,17 @@ loaded:
 
 /* Load a package */
 int corto_load(corto_string str, int argc, char* argv[]) {
-    return corto_loadIntern(str, argc, argv, FALSE, FALSE);
+    return corto_loadIntern(str, argc, argv, FALSE, FALSE, FALSE);
+}
+
+/* Run a package */
+int corto_run(corto_string str, int argc, char* argv[]) {
+    return corto_loadIntern(str, argc, argv, FALSE, FALSE, TRUE);
 }
 
 /* Try loading a package */
 int corto_load_try(corto_string str, int argc, char* argv[]) {
-    return corto_loadIntern(str, argc, argv, TRUE, FALSE);
+    return corto_loadIntern(str, argc, argv, TRUE, FALSE, FALSE);
 }
 
 #ifndef CORTO_REDIS

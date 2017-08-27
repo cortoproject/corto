@@ -169,8 +169,23 @@ CORTO_EXPORT
 int corto_load(
     char *identifier, 
     int argc, 
-    char* argv[]);
+    char *argv[]);
 
+/** Execute a resource.
+ * The same as corto_load, but with the difference that each time corto_run is
+ * ran, the cortomain routine (or equivalent) of the resource is invoked.
+ *
+ * @param identifier The resource identifier (either a file or a package)
+ * @param argc The number of arguments to pass to the resource
+ * @param argv The arguments to pass to the resource (array must be NULL terminated).
+ * @return Zero if success, nonzero if failed.
+ * @see corto_locate corto_load_register
+ */
+CORTO_EXPORT
+int corto_run(
+    char *identifier,
+    int argc,
+    char *argv[]);
 
 typedef enum corto_load_locateKind {
     CORTO_LOCATION_ENV,
