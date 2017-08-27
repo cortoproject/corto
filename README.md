@@ -49,10 +49,14 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 We use [SemVer](http://semver.org/) for versioning.
 
 ## Authors
-* **Sander Mertens** - *Initial work*
+* [**Sander Mertens**](https://github.com/SanderMertens) - *Initial work*
 
 See also the list of [contributors](https://github.com/cortoproject/corto/contributors) who participated in this project.
 
 ## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+## Acknowledgments
+* [**Johnny Lee Othon**](https://github.com/jleeothon) - First one crazy enough to try this project out, and the origin of many, **many** features and improvements.
+* [**Alex Hendren**](https://github.com/ahendren) - Where to even begin.
+* [**Roberto Flores**](https://github.com/rfloresx) - Probably the most experienced corto developer worldwide. Even better at finding bugs.
