@@ -1,6 +1,6 @@
 # Corto Runtime
 This is the source code of the corto runtime library. In theory, this is all 
-your application needs to use corto!
+your application needs to link with to use corto!
 
 ## Code organization
 In the `src` and `include` you will find a few different directories. Here's 
