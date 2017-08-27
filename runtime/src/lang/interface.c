@@ -3,8 +3,8 @@
 #include <corto/corto.h>
 
 
-#include "_interface.h"
-#include "_sequence.h"
+#include "interface.h"
+#include "sequence.h"
 
 corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     corto_interface base;

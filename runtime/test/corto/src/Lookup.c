@@ -119,7 +119,7 @@ void test_Lookup_tc_lookupIdFromScope(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(corto_core_o, "mount");
+    corto_object o = corto_lookup(corto_vstore_o, "mount");
     test_assert(o != NULL);
     test_assert(o != corto_word_o);
 
@@ -145,7 +145,7 @@ void test_Lookup_tc_lookupNested2FromNull(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(NULL, "corto/core/mount");
+    corto_object o = corto_lookup(NULL, "corto/vstore/mount");
     test_assert(o != NULL);
     test_assert(o == corto_mount_o);
 
@@ -155,7 +155,7 @@ void test_Lookup_tc_lookupNested2FromRoot(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(root_o, "corto/core/mount");
+    corto_object o = corto_lookup(root_o, "corto/vstore/mount");
     test_assert(o != NULL);
     test_assert(o == corto_mount_o);
 
@@ -182,9 +182,9 @@ void test_Lookup_tc_lookupNestedFromNull(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(NULL, "corto/core");
+    corto_object o = corto_lookup(NULL, "corto/vstore");
     test_assert(o != NULL);
-    test_assert(o == corto_core_o);
+    test_assert(o == corto_vstore_o);
 
 }
 
@@ -192,9 +192,9 @@ void test_Lookup_tc_lookupNestedFromRoot(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(root_o, "corto/core");
+    corto_object o = corto_lookup(root_o, "corto/vstore");
     test_assert(o != NULL);
-    test_assert(o == corto_core_o);
+    test_assert(o == corto_vstore_o);
 
 }
 
@@ -202,7 +202,7 @@ void test_Lookup_tc_lookupNestedFromScope(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(corto_o, "core/mount");
+    corto_object o = corto_lookup(corto_o, "vstore/mount");
     test_assert(o != NULL);
     test_assert(o == corto_mount_o);
 
@@ -394,8 +394,8 @@ void test_Lookup_tc_lookupThisAfterExpr(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(NULL, "corto/core/.");
-    test_assert(o == corto_core_o);
+    corto_object o = corto_lookup(NULL, "corto/vstore/.");
+    test_assert(o == corto_vstore_o);
     corto_release(o);
 
 }
@@ -404,7 +404,7 @@ void test_Lookup_tc_lookupThisBeforeExpr(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(corto_core_o, "./mount");
+    corto_object o = corto_lookup(corto_vstore_o, "./mount");
     test_assert(o == corto_mount_o);
     corto_release(o);
 
@@ -414,7 +414,7 @@ void test_Lookup_tc_lookupThisInExpr(
     test_Lookup this)
 {
 
-    corto_object o = corto_lookup(corto_o, "core/./mount");
+    corto_object o = corto_lookup(corto_o, "vstore/./mount");
     test_assert(o == corto_mount_o);
     corto_release(o);
 

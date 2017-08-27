@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
 
 extern corto_threadKey CORTO_KEY_THREAD_STRING;
 
@@ -117,7 +117,7 @@ corto_bool corto_isBuiltinPackage(corto_object o) {
     return (o == root_o) ||
            (o == corto_o) ||
            (o == corto_lang_o) ||
-           (o == corto_core_o) ||
+           (o == corto_vstore_o) ||
            (o == corto_native_o) ||
            (o == corto_secure_o);
 }

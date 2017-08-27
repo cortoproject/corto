@@ -14,7 +14,7 @@ ADD_OWN_INCLUDE = false
 # Rebuild bootstrap.c and load.c for every artefact to ensure not to link in a
 # cached version of an .o file that contains outdated information about the
 # binary that is being built.
-ALWAYS_REBUILD = ["src/bootstrap.c", "src/load.c"]
+ALWAYS_REBUILD = ["src/store/bootstrap.c", "src/store/load.c"]
 
 # When building a tar for the core, also include the build system
 task :collect do

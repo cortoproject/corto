@@ -23,19 +23,13 @@ void test_SelectSink_tc_selectLoaderCortoScope(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("/").from("corto").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("/").from("corto").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "r");
-    test_assertstr(r->parent, ".");
-        
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
-    test_assert(r != NULL);
-    test_assertstr(r->id, "core");
     test_assertstr(r->parent, ".");
 
     test_assert(corto_iter_hasNext(&it));
@@ -56,6 +50,12 @@ void test_SelectSink_tc_selectLoaderCortoScope(
     test_assertstr(r->id, "secure");
     test_assertstr(r->parent, ".");
 
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "vstore");
+    test_assertstr(r->parent, ".");
+
     test_assert(!corto_iter_hasNext(&it));
 
     test_assert(corto_delete(m) == 0);
@@ -71,7 +71,7 @@ void test_SelectSink_tc_selectLoaderCortoSingle(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("r").from("corto").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("r").from("corto").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -95,7 +95,7 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("//").from("corto").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("//").from("corto").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -113,12 +113,6 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
-    test_assertstr(r->id, "core");
-    test_assertstr(r->parent, ".");
-
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
-    test_assert(r != NULL);
     test_assertstr(r->id, "lang");
     test_assertstr(r->parent, ".");
 
@@ -132,6 +126,12 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "vstore");
     test_assertstr(r->parent, ".");
 
     test_assert(!corto_iter_hasNext(&it));
@@ -150,19 +150,13 @@ void test_SelectSink_tc_selectLoaderNestedScope(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("corto/").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("corto/").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "r");
-    test_assertstr(r->parent, "/corto");
-
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
-    test_assert(r != NULL);
-    test_assertstr(r->id, "core");
     test_assertstr(r->parent, "/corto");
 
     test_assert(corto_iter_hasNext(&it));
@@ -183,6 +177,12 @@ void test_SelectSink_tc_selectLoaderNestedScope(
     test_assertstr(r->id, "secure");
     test_assertstr(r->parent, "/corto");
 
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "vstore");
+    test_assertstr(r->parent, "/corto");
+
     test_assert(!corto_iter_hasNext(&it));
 
     test_assert(corto_delete(m) == 0);
@@ -198,7 +198,7 @@ void test_SelectSink_tc_selectLoaderNestedSingle(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("corto/native").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("corto/native").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -222,7 +222,7 @@ void test_SelectSink_tc_selectLoaderNestedSingleVirtual(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("corto/r").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("corto/r").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -246,7 +246,7 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("corto//").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("corto//").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -260,12 +260,6 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     test_assert(r != NULL);
     test_assertstr(r->id, "u");
     test_assertstr(r->parent, "/corto/r");
-
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
-    test_assert(r != NULL);
-    test_assertstr(r->id, "core");
-    test_assertstr(r->parent, "/corto");
 
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
@@ -285,6 +279,12 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     test_assertstr(r->id, "secure");
     test_assertstr(r->parent, "/corto");
 
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "vstore");
+    test_assertstr(r->parent, "/corto");
+
     test_assert(!corto_iter_hasNext(&it));
 
     test_assert(corto_delete(m) == 0);
@@ -300,7 +300,7 @@ void test_SelectSink_tc_selectLoaderRootScope(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("/").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("/").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -329,7 +329,7 @@ void test_SelectSink_tc_selectLoaderRootSingle(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("p").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("p").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -353,7 +353,7 @@ void test_SelectSink_tc_selectLoaderRootTree(
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
     corto_iter it;
-    test_assert(corto_select("//").type("/corto/core/package").iter(&it) == 0);
+    test_assert(corto_select("//").type("/corto/vstore/package").iter(&it) == 0);
 
     corto_result *r;
     test_assert(corto_iter_hasNext(&it));
@@ -361,12 +361,6 @@ void test_SelectSink_tc_selectLoaderRootTree(
     test_assert(r != NULL);
     test_assertstr(r->id, "corto");
     test_assertstr(r->parent, "");
-
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
-    test_assert(r != NULL);
-    test_assertstr(r->id, "core");
-    test_assertstr(r->parent, "/corto");
 
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
@@ -384,6 +378,12 @@ void test_SelectSink_tc_selectLoaderRootTree(
     r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "secure");
+    test_assertstr(r->parent, "/corto");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "vstore");
     test_assertstr(r->parent, "/corto");
 
     test_assert(corto_iter_hasNext(&it));
@@ -731,7 +731,7 @@ void test_SelectSink_tc_selectSingleTypeFilter(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "native");
     test_assertstr(result->parent, "/corto");
-    test_assertstr(result->type, "/corto/core/package");
+    test_assertstr(result->type, "/corto/vstore/package");
 
 }
 

@@ -2,8 +2,7 @@
 
 #include <corto/corto.h>
 
-
-#include "_interface.h"
+#include "interface.h"
 
 int16_t corto_member_construct(
     corto_member this)

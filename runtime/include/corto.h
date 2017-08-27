@@ -31,7 +31,7 @@
 #include <corto/base.h>
 
 #include <corto/lang/lang.h>
-#include <corto/core/core.h>
+#include <corto/vstore/vstore.h>
 #include <corto/native/native.h>
 #include <corto/secure/secure.h>
 
@@ -42,21 +42,15 @@ typedef corto_equalityKind ___ (*corto_equals_cb)(corto_type _this, const void* 
 typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 
 #include <corto/iter.h>
-#include <corto/idmatch.h>
 #include <corto/ll.h>
 #include <corto/rb.h>
-#include <corto/value.h>
-#include <corto/walk.h>
 #include <corto/os.h>
 #include <corto/err.h>
 #include <corto/buffer.h>
-#include <corto/depresolver.h>
-#include <corto/object_store.h>
-#include <corto/ptr.h>
-#include <corto/query.h>
-#include <corto/string_deser.h>
-#include <corto/string_ser.h>
 #include <corto/util.h>
+
+#include <corto/store/store.h>
+#include <corto/vstore/vstore.h>
 
 #ifdef __cplusplus
 extern "C" {

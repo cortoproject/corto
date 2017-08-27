@@ -3,7 +3,7 @@
 #include <corto/corto.h>
 
 
-#include "_interface.h"
+#include "interface.h"
 
 corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure) {
     corto_function* f;

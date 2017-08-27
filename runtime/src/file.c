@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
 
 /* Load all contents from file, close file afterwards, return contents */
 char* corto_fileLoad(const char* filename) {

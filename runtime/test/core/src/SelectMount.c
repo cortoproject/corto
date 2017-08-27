@@ -32,7 +32,7 @@ void test_SelectMount_tc_selectGrandparentFromVirtualScope(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "");
     test_assertstr(result->parent, "../..");
-    test_assertstr(result->type, "/corto/core/package");
+    test_assertstr(result->type, "/corto/vstore/package");
 
     test_assert(!corto_iter_hasNext(&iter));
 
@@ -225,7 +225,7 @@ void test_SelectMount_tc_selectParentFromScope(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "");
     test_assertstr(result->parent, "..");
-    test_assertstr(result->type, "/corto/core/package");
+    test_assertstr(result->type, "/corto/vstore/package");
 
     test_assert(!corto_iter_hasNext(&iter));
 

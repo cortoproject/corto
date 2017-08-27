@@ -6,7 +6,7 @@
 #ifndef TEST_TREESINKREPLICATOR_H
 #define TEST_TREESINKREPLICATOR_H
 
-#include "corto/corto.h"
+#include <corto/corto.h>
 #include "_type.h"
 #include "_api.h"
 #include "_load.h"
