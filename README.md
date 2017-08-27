@@ -1,144 +1,58 @@
+# Corto
+Corto is a developer-friendly and super extensible framework for building a virtual version of the real world (or a fake one, we don't mind). In corto you first design what your world looks like, and then populate it with real data. We slapped a single, unified API on top of all that data, so you (aka 'the software engineer') never have to worry about where that data came from!
+
+Because there is likely more data in the world than your computer can process at once, corto has a smart design where it only loads the data you need in memory. You can have petabytes of data at your fingertips, and never spend more than 70Kb in footprint!
 
 Linux/OSX | Windows | Coverity
 ----------|---------|---------
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | [![Build status](https://ci.appveyor.com/api/projects/status/549itmv72ut0ia51?svg=true)](https://ci.appveyor.com/project/SanderMertens/corto) | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
 
+## Getting Started
+These instructions will get the project up and running on your local machine for development and testing purposes. Check out the deployment section for notes on how to deploy corto to a live system.
 
+### Prerequisites
+A Linux or macOS system with `curl` installed. That's all!
 
-# Background
-Integrating different products and technologies is often an expensive part of product development, and can slow down innovation. Sometimes it is a bump in the road, and sometimes it is a 4000ft mountain that must be climbed. There are companies that make lots of money from selling products that solve the integration problem.
-
-We believe time and money are better spent on innovation, not integration, and that the only way to reduce the cost of integration is large-scale collaboration. To kickstart this collaboration we need an independent, open source, liberally licensed framework that offers a structured approach to 1) sharing projects and 2) sharing data between projects.
-
-That is why, for the past 5 years, we have been working on Corto.
-
-# What is Corto
-Corto (corto /‘korto/ adjective, Spanish. 1 short in length or duration) is a library that provides:
-
-1. a connector framework for connecting any kind of data (realtime or at rest) and
-2. a simple application-facing API to interact with this data and
-3. a package management framework for sharing corto applications and packages
-
-The small footprint of Corto makes it a handy building block in IoT systems where you can run it on small devices. The library is optimized to be very fast (~30 **nanoseconds** event latency) and to enable working with large datasets in resource-constrained environments. Corto never loads more data in memory than the application needs.
-
-People have used Corto to forward data from one technology to another (for example, MQTT to InfluxDB), as a data integration platform in industrial automation systems, and even as a low-footprint web backend.
-
-This repository contains the core library of corto and the corto tool. The corto tool is like your swiss army knife when using Corto. It helps you create, build, debug, test and install corto projects, and a whole lot more.
-
-Corto has been validated on the following platforms:
- * Ubuntu 14.04 (32/64 bit)
- * OS X 10.10.2 (64 bit)
- * Yocto 2.1 (32 bit)
-
-Make sure to also explore the other repositories in the cortoproject organization:
-
-The `cortoproject/web` project in particular is worth checking out. It automatically adds web connectivity to your applications, like a REST interface and websockets.
-
-The `cortoproject/admin` project is a very handy web-application that allows you to browse through the data that is connected to Corto. Make sure to also install `cortoproject/web` if you want to use admin.
-
-## Building Corto
-Corto uses rake (https://en.wikipedia.org/wiki/Rake_(software) for building, which is a platform-independent, ruby based buildsystem written by Jim Weirich. Before building corto, make sure to have rake installed. To build the latest version, use the following commands (on Ubuntu):
+### Installing
+Installing the corto development environment is simple. Just run this command to install corto to `/usr/local`:
 ```
-sudo apt-get install rake libffi-dev
-git clone https://github.com/cortoproject/corto
-cd corto
-source configure
-rake
+curl https://corto.io/install-dev-src | sh
 ```
+If you'd rather not install to `/usr/local` but to a location of your own choosing, run this:
+```
+curl https://corto.io/build-dev-src | sh
+```
+This command downloads the source code to `{current working directory}/corto-src`.
 
-This will build the core API and corto tool. The core API is typically used for writing connectors and generic tools. All other APIs are built on top of the core API.
+The development environment contains the corto runtime, development tools and some goodies to get you started quickly. When you want to actually deploy an application, know that you can strip most of these packages from your deployment! Also note that these commands build a `development` version. Development versions are slow because they enable lots of checking. To install a `release` version, just replace `dev` by `release`!
 
-## Building development add-ons
-The following packages are useful when you want to do corto application development (all packages are in the cortoproject organization):
- * c-binding
- * json
- * xml
- * corto-language
- * test
+### Running the tests
+To make sure that corto is running smoothly on your system, it is always a good idea to run the tests. To run them, you need a local copy of the corto runtime repository. Running these commands in sequence will run the corto runtime testsuites:
 
-These packages are only required during development, and you do not need them when you are distributing your application. The `c-binding` API contains code generators that take as input a datamodel, which can be specified in either `xml` or the native corto definition language (`corto-language`). The `test` package contains a testframework for testing corto projects.
+```
+curl https://corto.io/build-dev-src | sh
+cd corto-src/corto
+corto test
+```
+Don't worry if you see some `missing implementation` messages. This just means we have some work ahead of us. What is important is that after the test run, you see a message that says that everything is ok!
 
-The following libraries are required for these packages:
- * libxml2-dev
- * flex
- * bison
+If the tests fail, please submit a bug report (check out [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426)). 
 
-To build the latest versions of these packages, do (on Ubuntu):
-```
-sudo apt-get install libxml2-dev flex bison
-git clone https://github.com/cortoproject/c-binding
-git clone https://github.com/cortoproject/json
-git clone https://github.com/cortoproject/xml
-git clone https://github.com/cortoproject/corto-language
-git clone https://github.com/cortoproject/test
-corto build c-binding json
-corto build xml corto-language test
-```
-The `corto build` tool is a front-end for the rake-based buildsystem. The buildsystem automates many tasks like code generation, dependencies between packages and installation of binaries. 
+## Built With
+* [rake](https://github.com/ruby/rake) - The bedrock of our buildsystem
+* [libffi](https://github.com/libffi/libffi) - We harness the powerful magic of libffi to call functions dynamically
 
-## Creating a project
-To create a new project, use the following command:
-```
-corto create MyApp
-```
-Subsequently, you can run this project by typing (it will build automatically):
-```
-corto run MyApp
-```
+## Contributing
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Creating a package
-Creating a package is similar to creating an application. To create a new package, use the following command:
-```
-corto create package mypackage
-```
-Notice that the package has been created with a `mypackage.cx` file. This file will contain the datamodel for the package in the native corto language. Here is an example datamodel:
-```
-#package /mypackage
+## Versioning
+We use [SemVer](http://semver.org/) for versioning.
 
-class WeatherStation::
-    temperature: float64
-    pressure: float64
-    precipitation: float64
-```
-When you change the `mypackage.cx` file, simply use `corto build mypackage` to generate code from the updated definition and rebuild the project. Corto generates a simple CRUD API to interact with data in a corto system.  Here is a small C application that uses the generated code from the example datamodel:
+## Authors
+* **Sander Mertens** - *Initial work*
 
-```c
-// Create a new weatherstation instance
-mypackage_WeatherStation ws = mypackage_WeatherStationCreateChild(root_o, "ws", 65.0, 500.0, 0.5);
+See also the list of [contributors](https://github.com/cortoproject/corto/contributors) who participated in this project.
 
-// Update the instance with new sensor readings
-mypackage_WeatherStationUpdate(ws, 67, 600, 0.5);
-```
+## License
 
-## Package management
-Corto has a plugin-architecture with add-ons stored in a hierarchically organized package repository. Corto stores packages in well-defined locations, so you can load packages by their logical name, instead of some path to a file. This makes it easier to share packages and their dependencies across operating systems.
-
-Packages are stored in `~/.corto`, where `~` is your home directory. Inside you will find the following subdirectories:
-```
-bin etc include lib
-```
-`bin` contains applications, `lib` contains packages, `include` contains include files and `etc` contains all kinds of supporting files. It is not a coïncidence that this structure looks similar to the `/usr/local` directory on Linux. When you install a corto project, files are copied to `/usr/local`.
-
-Files in each of these directories are stored in `corto/0.2`, where `0.2` is your current major and minor corto version. From there the file structure represents the hierarchical organization of the packages. For example, the `driver/fmt/xml` package is stored here:
-```
-~/.corto/lib/corto/0.2/driver/fmt/xml/libxml.so
-```
-Include files for the `xml` package are stored here:
-```
-~/.corto/include/corto/0.2/driver/fmt/xml
-```
-Corto projects use the fully qualified include path, so that name clashes between packages are prevented. To include the XML project, do:
-```
-#include <driver/fmt/xml/xml.h>
-```
-Because packages are not stored in a single directory (to prevent name clashes) corto bakes hard-coded paths to packages path into your applications. This ensures that application always uses the right library.
-
-Sometimes these hardcoded paths can be inconvenient, for example when you want to put corto libraries in another project. For this purpose, the corto buildsystem also builds a binary that does not hardcoded paths, and you can easily embed in other projects. The buildsystem will tell you where it stores this binary.
-
-## Code generation
-Corto can translate a language-independent description of a datamodel into a target programming language. The corto library has an comprehensive framework for describing types, and from these types code can be generated. At this point the only well-supported language is `C`, with `C++` and `python` bindings underway.
-
-Corto generates code by running the corto preprocessor, which is part of the corto tool. The buildsystem calls corto pp automatically when you have a definition file in your project that has the same name as your project. For example, the `foo` project can have a `foo.cx` definition file that contains the datamodel.
-
-When you want to use corto code generation, just put a definition file in your project, and build it with `corto build`.
- 
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
