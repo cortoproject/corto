@@ -2,9 +2,8 @@
 
 #include <corto/corto.h>
 
-
-#include "_enum.h"
-#include "_bitmask.h"
+#include "enum.h"
+#include "bitmask.h"
 
 int16_t corto_constant_init(
     int32_t* this)

@@ -9,7 +9,7 @@
 #define CORTO_SECURE_META_H_
 
 #include "corto/lang/_type.h"
-#include "corto/core/_type.h"
+#include "corto/vstore/_type.h"
 
 #ifdef __cplusplus
 extern "C" {

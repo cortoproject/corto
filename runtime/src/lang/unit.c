@@ -2,8 +2,7 @@
 
 #include <corto/corto.h>
 
-
-#include <src/_object.h>
+#include <src/store/object.h>
 
 corto_int16 corto_unitinstance_construct(corto_object this) {
     corto_interface base = corto_interface(corto_typeof(this));

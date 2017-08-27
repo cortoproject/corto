@@ -7,7 +7,7 @@ int16_t test_LoaderSimulatorMount_construct(
 {
     corto_ptr_setstr(&corto_subscriber(this)->query.select, "//*");
     corto_ptr_setstr(&corto_subscriber(this)->query.from, "/");
-    corto_ptr_setstr(&corto_subscriber(this)->query.type, "/corto/core/package");
+    corto_ptr_setstr(&corto_subscriber(this)->query.type, "/corto/vstore/package");
     corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
@@ -17,7 +17,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "corto",
         NULL,
         ".",
-        "/corto/core/package",
+        "/corto/vstore/package",
         0,
         CORTO_RESULT_HIDDEN
     );
@@ -27,7 +27,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "p",
         NULL,
         ".",
-        "/corto/core/package",
+        "/corto/vstore/package",
         0,
         FALSE
     );
@@ -37,7 +37,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "q",
         NULL,
         "p",
-        "/corto/core/package",
+        "/corto/vstore/package",
         0,
         FALSE
     );
@@ -47,7 +47,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "r",
         NULL,
         "corto",
-        "/corto/core/package",
+        "/corto/vstore/package",
         0,
         FALSE
     );
@@ -57,7 +57,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "u",
         NULL,
         "corto/r",
-        "/corto/core/package",
+        "/corto/vstore/package",
         0,
         FALSE
     );

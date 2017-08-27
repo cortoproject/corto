@@ -3,8 +3,8 @@
 #include <corto/corto.h>
 
 
-#include "_interface.h"
-#include "_class.h"
+#include "interface.h"
+#include "class.h"
 
 int16_t corto_union_construct(
     corto_union this)

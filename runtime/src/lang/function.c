@@ -1,7 +1,7 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-#include "_object.h"
+#include "src/store/object.h"
 
 
 /* Not all types that inherit from from function are necessarily procedures. Find

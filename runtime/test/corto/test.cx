@@ -1128,7 +1128,7 @@ test/Suite Event:/
 
 // Dispatcher class
 class ObserverDispatcher: implements={dispatcher}:/
-    void post(core/event e)
+    void post(vstore/event e)
     called: bool
 
 // Observer tests
@@ -1153,9 +1153,9 @@ test/Suite Observers:/
     void tc_observeAlignSelf()
     void tc_observeAlignType()
 
-    mask: core/eventMask, private
+    mask: vstore/eventMask, private
     observable: object, private
-    observer: core/observer, private
+    observer: vstore/observer, private
     count: int32
 
 // Event test support type
@@ -1214,7 +1214,7 @@ test/Suite Subscribe:/
     subscriber noInitialSep: query={select="*" from="testScope"}
     triggered: uint8
     owner: object
-    result: core/result
+    result: vstore/result
     void tc_noInitialSep()
     void tc_subscribeInvertCase()
     void tc_subscribeInvertCaseFilter()

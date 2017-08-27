@@ -2,8 +2,7 @@
 
 #include <corto/corto.h>
 
-
-#include "_enum.h"
+#include "enum.h"
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_VALID)) {

@@ -3,8 +3,8 @@
 #include <corto/corto.h>
 
 
-#include "_interface.h"
-#include "_class.h"
+#include "interface.h"
+#include "class.h"
 
 bool corto_struct_castable_v(
     corto_struct this,

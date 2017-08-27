@@ -177,7 +177,7 @@ void test_Resolver_tc_resolveIdFromScope(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(corto_core_o, "mount");
+    corto_object o = corto_resolve(corto_vstore_o, "mount");
     test_assert(o != NULL);
     test_assert(o != corto_word_o);
 
@@ -199,7 +199,7 @@ void test_Resolver_tc_resolveNested2FromNull(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(NULL, "corto/core/mount");
+    corto_object o = corto_resolve(NULL, "corto/vstore/mount");
     test_assert(o != NULL);
     test_assert(o == corto_mount_o);
 
@@ -209,7 +209,7 @@ void test_Resolver_tc_resolveNested2FromRoot(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(root_o, "corto/core/mount");
+    corto_object o = corto_resolve(root_o, "corto/vstore/mount");
     test_assert(o != NULL);
     test_assert(o == corto_mount_o);
 
@@ -236,9 +236,9 @@ void test_Resolver_tc_resolveNestedFromNull(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(NULL, "corto/core");
+    corto_object o = corto_resolve(NULL, "corto/vstore");
     test_assert(o != NULL);
-    test_assert(o == corto_core_o);
+    test_assert(o == corto_vstore_o);
 
 }
 
@@ -246,9 +246,9 @@ void test_Resolver_tc_resolveNestedFromRoot(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(root_o, "corto/core");
+    corto_object o = corto_resolve(root_o, "corto/vstore");
     test_assert(o != NULL);
-    test_assert(o == corto_core_o);
+    test_assert(o == corto_vstore_o);
 
 }
 
@@ -256,7 +256,7 @@ void test_Resolver_tc_resolveNestedFromScope(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(corto_o, "core/mount");
+    corto_object o = corto_resolve(corto_o, "vstore/mount");
     test_assert(o != NULL);
     test_assert(o == corto_mount_o);
 
@@ -467,8 +467,8 @@ void test_Resolver_tc_resolveThisAfterExpr(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(NULL, "corto/core/.");
-    test_assert(o == corto_core_o);
+    corto_object o = corto_resolve(NULL, "corto/vstore/.");
+    test_assert(o == corto_vstore_o);
     corto_release(o);
 
 }
@@ -477,7 +477,7 @@ void test_Resolver_tc_resolveThisBeforeExpr(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(corto_core_o, "./mount");
+    corto_object o = corto_resolve(corto_vstore_o, "./mount");
     test_assert(o == corto_mount_o);
     corto_release(o);
 
@@ -487,7 +487,7 @@ void test_Resolver_tc_resolveThisInExpr(
     test_Resolver this)
 {
 
-    corto_object o = corto_resolve(corto_o, "core/./mount");
+    corto_object o = corto_resolve(corto_o, "vstore/./mount");
     test_assert(o == corto_mount_o);
     corto_release(o);
 

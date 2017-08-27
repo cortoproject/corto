@@ -2,8 +2,7 @@
 
 #include <corto/corto.h>
 
-
-#include "_bitmask.h"
+#include "bitmask.h"
 
 corto_int16 corto__bitmask_bindConstant(corto_bitmask this, corto_constant* c) {
     if (corto_checkState(corto_type_o, CORTO_VALID)) {

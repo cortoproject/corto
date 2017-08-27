@@ -2,8 +2,7 @@
 
 #include <corto/corto.h>
 
-
-#include "_interface.h"
+#include "interface.h"
 
 /* Check interfaces */
 static corto_bool corto_class_checkInterfaceCompatibility(

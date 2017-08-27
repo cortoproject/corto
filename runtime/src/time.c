@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
 
 /* Sleep */
 void corto_sleep(unsigned int sec, unsigned int nanosec) {

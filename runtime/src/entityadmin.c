@@ -20,7 +20,7 @@
  */
 
 #include "entityadmin.h"
-#include "_object.h"
+#include "store/object.h"
 
 /* Free all entityscriptoins, but do not free corto_entityAdmin itself so
  * it can be reused when a thread needs to copy global entities */

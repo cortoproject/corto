@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include "corto/corto.h"
+#include <corto/corto.h>
 
 static corto_threadKey corto_errKey = 0;
 extern corto_mutex_s corto_adminLock;
