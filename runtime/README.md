@@ -1,6 +1,6 @@
 # Corto Runtime
 This is the source code of the corto runtime library. In theory, this is all 
-your application needs to link with to use corto!
+your application needs to link with to use corto! This code will be compiled to `$CORTO_TARGET/lib/corto/$CORTO_VERSION/corto/libcorto.so`.
 
 ## Code organization
 In the `src` and `include` you will find a few different directories. Here's 
