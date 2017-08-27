@@ -2303,18 +2303,114 @@ void test_ObjectMgmt_tc_lifecycle(
 void test_ObjectMgmt_tc_lifecycleConstructFail(
     test_ObjectMgmt this)
 {
-    /* Insert implementation */
+    test_LifecycleTest o = corto_declareChild(root_o, "data/lt", test_LifecycleTest_o);
+    test_assert(o != NULL);
+    test_assert(o->admin != NULL);
+
+    o->constructFail = true;
+    
+    // Separate object keeps track of called callbacks so it is possible to track
+    // calling deinit
+    test_LifecycleAdmin a = o->admin;
+    corto_claim(a);
+
+    test_assertint(a->hooksCalled, TEST_INIT_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED);
+
+    /* Claim object, so difference between delete and release can be tested */
+    corto_claim(o);
+
+    test_assert(corto_define(o) != 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED);
+    
+    o->constructFail = false;
+
+    /* Reset hooksCalled for next test */
+    a->hooksCalled = TEST_INIT_CALLED;
+
+    test_assert(corto_define(o) == 0);
+    test_assertint(a->hooksCalled,
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+
+    test_assert(corto_update(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+
+    test_assert(corto_delete(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DESTRUCTED);
+
+    corto_release(o);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
+
+    test_assert(corto_delete(a) == 0);
 }
 
 void test_ObjectMgmt_tc_lifecycleInitFail(
     test_ObjectMgmt this)
 {
-    /* Insert implementation */
+    test_LifecycleTest o = corto_declareChild(root_o, "data/fail", test_LifecycleTest_o);
+    test_assert(o == NULL);
+    test_assertstr(corto_lasterr(), "init for 'fail' of '/test/LifecycleTest' failed: /test/LifecycleTest/init failed");
 }
 
 void test_ObjectMgmt_tc_lifecycleValidateFail(
     test_ObjectMgmt this)
 {
-    /* Insert implementation */
+    test_LifecycleTest o = corto_declareChild(root_o, "data/lt", test_LifecycleTest_o);
+    test_assert(o != NULL);
+    test_assert(o->admin != NULL);
+    
+    // Separate object keeps track of called callbacks so it is possible to track
+    // calling deinit
+    test_LifecycleAdmin a = o->admin;
+    corto_claim(a);
+
+    test_assertint(a->hooksCalled, TEST_INIT_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED);
+
+    /* Claim object, so difference between delete and release can be tested */
+    corto_claim(o);
+
+    o->validateFail = true;
+
+    test_assert(corto_define(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+    
+    test_assert(corto_update(o) != 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+    
+    a->hooksCalled = TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED;
+    o->validateFail = false;
+
+    test_assert(corto_update(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DEFINED);
+
+    test_assert(corto_delete(o) == 0);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID|CORTO_DESTRUCTED);
+
+    corto_release(o);
+    test_assertint(a->hooksCalled, 
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
+
+    test_assert(corto_delete(a) == 0);
 }
 
