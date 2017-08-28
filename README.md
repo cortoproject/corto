@@ -61,4 +61,4 @@ The following people need a callout as corto would be nowhere near where it is t
 * [**Johnny Lee Othon**](https://github.com/jleeothon) - *First one crazy enough to try out corto. Origin of many, **many** features and improvements*
 * [**Alex Hendren**](https://github.com/ahendren) - *Early adopter and evangelist (in the broadest sense of the word)*
 * [**Roberto Flores**](https://github.com/rfloresx) - *Probably the most experienced corto developer worldwide. Even better at finding bugs*
-* [** Spiros Motsenigos **] - *Corto's godfather. Invented the name! Pushed corto to greater heights with his boundless enthusiasm*
+* **Spiros Motsenigos** - *Corto's godfather. Invented the name! Pushed corto to greater heights with his boundless enthusiasm*
