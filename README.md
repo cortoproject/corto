@@ -22,7 +22,7 @@ curl https://corto.io/install-dev-src | sh
 ```
 If you'd rather not install to `/usr/local` but to a location of your own choosing, run this:
 ```
-curl https://corto.io/build-dev-src | sh
+curl https://corto.io/build-dev | sh
 ```
 This command downloads the source code to `{current working directory}/corto-src`.
 
