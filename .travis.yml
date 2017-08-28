@@ -28,27 +28,10 @@ addons:
     branch_pattern: coverity_scan
 
 install:
+  - curl https://corto.io/ci-dev | sh
+  - cd corto-src/corto
+  - source configure
   - cd ..
-  - mkdir projects
-  - mv corto projects/corto
-  - cd projects
-  - git clone https://github.com/cortoproject/c-binding.git
-  - git clone https://github.com/cortoproject/json.git
-  - git clone https://github.com/cortoproject/xml.git
-  - git clone https://github.com/cortoproject/vm.git
-  - git clone https://github.com/cortoproject/ic.git
-  - git clone https://github.com/cortoproject/corto-language.git
-  - git clone https://github.com/cortoproject/test.git
-  - function hashes() { for g in `find . -name .git` ; do d=$(basename $(dirname $g)); h=$(git --git-dir $g rev-parse HEAD) ; echo -e "$d\t$h"; done } ; hashes | column -t | sort
-  - source corto/configure
-  - cd corto && rake && cd -
-  - cd c-binding && rake && cd -
-  - cd json && rake && cd -
-  - corto build xml
-  - corto build vm
-  - corto build ic
-  - corto build corto-language
-  - corto build test
 
 script:
   - cd corto && corto test && cd -
