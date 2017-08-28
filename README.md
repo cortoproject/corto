@@ -62,3 +62,5 @@ The following people need a callout as corto would be nowhere near where it is t
 * [**Alex Hendren**](https://github.com/ahendren) - *Early adopter and evangelist (in the broadest sense of the word)*
 * [**Roberto Flores**](https://github.com/rfloresx) - *Probably the most experienced corto developer worldwide. Even better at finding bugs*
 * **Spiros Motsenigos** - *Invented the name! Pushed corto to greater heights with boundless enthusiasm*
+* **Luke Peng** - *Reliable source of (sometimes painful) reminders it is not just about the code*
+* **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice for all of them*
