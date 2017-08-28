@@ -51,7 +51,7 @@ virtual store. They are called "mounts" because of their similarity to UNIX moun
 except that:
 
 * corto mounts mount structured data, not unstructured files
-* corto mounts can provide realime updates
+* corto mounts can provide realtime updates
 * corto mounts can spawn other mounts dynamically
 
 They are similar in that they:
