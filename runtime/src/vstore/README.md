@@ -255,7 +255,7 @@ In this file, add the following JSON:
 {
     "id": "config/MyCustomMount",
     "type": "MyMount/CustomMount",
-    "value" {
+    "value": {
         "contentType": "text/json"
         "query": {
             "from": "/foo"
