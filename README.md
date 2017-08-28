@@ -32,7 +32,7 @@ The development environment contains the corto runtime, development tools and so
 To make sure that corto is running smoothly on your system, it is always a good idea to run the tests. To run them, you need a local copy of the corto runtime repository. Running these commands in sequence will run the corto runtime testsuites:
 
 ```
-curl https://corto.io/build-dev-src | sh
+curl https://corto.io/build-dev | sh
 cd corto-src/corto
 corto test
 ```
