@@ -9,9 +9,9 @@ Note that we try to be responsive, but somtimes other things take priority and f
 Once you have created a fix, create a pull request for it. Ensure that at least the corto CI builds are running and that there are no conflicts, otherwise we can't merge! See the README.md on how to run the tests on the core repository. Your PR has to be reviewed and approved by at least one person in order to be merged. Always create an issue first, as we may want to have some discussion first on how the bug should be fixed.
 
 ## Feature requests
-If you'd like a new feature in corto, always create an issue first. In the issue description, describe in detail the problem you are trying to solve, and are not able to solve right now. This way, other people can get involved in discussing potential alternatives, or perhaps even come up with an alternative way in which it can already be solved! If you have an idea on how to implement the feature, also document that in detail.
+If you'd like a new feature in corto, always create an issue first. In the issue description, describe in detail the problem you are trying to solve, and are not able to solve right now. This way, other people can get involved in discussing potential alternatives, or perhaps even come up with an way in which it can already be done! If you have an idea on how to implement the feature, also document that in detail.
 
-Even more so than for bugs, we love PRs for feature requests! We'd especially encourage you to implement smaller features yourself, as this is is probably much faster than waiting for one of the maintainers to do it ;-)
+Even more so than for bugs, we love PRs for feature requests! We'd especially encourage you to implement smaller features yourself, as this is is probably much faster than waiting for one of the maintainers to do it ;-). As with bugs, have at least one person review the PR, make sure it passes all tests and has no merge conflicts.
 
 ## Be nice
 Sometimes discussions can get heated and that's normal. Stay corteous and respectful, and take a look at our [code of conduct](CODE_OF_CONDUCT.md). And have some fun while doing it, we sure do!
