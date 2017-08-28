@@ -40,6 +40,12 @@ Don't worry if you see some `missing implementation` messages. This just means w
 
 If the tests fail, please submit a bug report (check out [CONTRIBUTING.md](CONTRIBUTING.md)). 
 
+### Deployment
+If you are deploying corto, you will want to use a release version of the code. Release versions are smaller, have less checking and as such have much better performance. To install a release version of the code, do:
+```
+curl https://corto.io/install-release-src | sh
+```
+
 ## Built With
 * [rake](https://github.com/ruby/rake) - The bedrock of our buildsystem
 * [libffi](https://github.com/libffi/libffi) - We harness the powerful magic of libffi to call functions dynamically
