@@ -249,7 +249,7 @@ def get_library_name(hardcodedPaths, link, directory, basename, prefix, ext)
 end
 
 def get_artefact_name(hardcodedPaths)
-  result = get_library_name(hardcodedPaths, FALSE, TARGETDIR, ARTEFACT, ARTEFACT_PREFIX, ARTEFACT_EXT)
+  result = get_library_name(hardcodedPaths, false, TARGETDIR, ARTEFACT, ARTEFACT_PREFIX, ARTEFACT_EXT)
 end
 
 # Build artefact
@@ -267,9 +267,9 @@ def build_target(hardcodedPaths)
   # bit of magic to ensure that the executable can find the shared object.
   linked = LINK.map do |l|
     l = corto_replace(l)
-    lib = get_library_name(hardcodedPaths, TRUE, File.dirname(l), File.basename(l), "lib", "so")
+    lib = get_library_name(hardcodedPaths, true, File.dirname(l), File.basename(l), "lib", "so")
     if hardcodedPaths and (not File.exists? lib) and (CORTO_OS == "Darwin") then
-      lib = get_library_name(hardcodedPaths, TRUE, File.dirname(l), File.basename(l), "lib", "dylib")
+      lib = get_library_name(hardcodedPaths, true, File.dirname(l), File.basename(l), "lib", "dylib")
       if (not File.exists? lib) then
         abort "\033[1;31mcorto:\033[0;49m #{l} not found"
       end
@@ -381,7 +381,7 @@ def build()
         if $redis_dependencies_resolved then
           build_target(false)
           if ENV['silent'] != "true" then
-            msg "rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(FALSE))}"
+            msg "rds #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(false))}"
           end
         else
           msg "rds #{C_WARNING}missing dependencies, skipping"
@@ -396,7 +396,7 @@ def build()
       else
         artefact = "app"
       end
-      msg "#{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(TRUE))}"
+      msg "#{artefact} #{C_BOLD}#{relative_path(ENV['CORTO_TARGET'], get_artefact_name(true))}"
     end
   end
 end
@@ -464,10 +464,10 @@ def loadPackageConfigs()
   # Check if link objects are available for building redistributables
   if $redis_dependencies_resolved and ENV['redistr'] != "false" then
     LINK.each do |p|
-      lib = get_library_name(FALSE, FALSE, File.dirname(p), File.basename(p), "lib", "so");
+      lib = get_library_name(false, false, File.dirname(p), File.basename(p), "lib", "so");
       if not File.exists? lib then
         if CORTO_OS == "Darwin" then
-          lib = get_library_name(FALSE, FALSE, File.dirname(p), File.basename(p), "lib", "dylib");
+          lib = get_library_name(false, false, File.dirname(p), File.basename(p), "lib", "dylib");
           if not File.exists? lib then
             $redis_dependencies_resolved = false;
             warn "no redistributable version of #{p} found"
@@ -567,7 +567,7 @@ task :runtest do
   verbose(VERBOSE)
   TEST = true
   cmd "rake"
-  command = "corto -l #{get_artefact_name(TRUE)} #{ENV['testcase']}"
+  command = "corto -l #{get_artefact_name(true)} #{ENV['testcase']}"
   begin
     sh command
   rescue
