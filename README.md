@@ -38,14 +38,14 @@ corto test
 ```
 Don't worry if you see some `missing implementation` messages. This just means we have some work ahead of us. What is important is that after the test run, you see a message that says that everything is ok!
 
-If the tests fail, please submit a bug report (check out [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426)). 
+If the tests fail, please submit a bug report (check out [CONTRIBUTING.md](CONTRIBUTING.md)). 
 
 ## Built With
 * [rake](https://github.com/ruby/rake) - The bedrock of our buildsystem
 * [libffi](https://github.com/libffi/libffi) - We harness the powerful magic of libffi to call functions dynamically
 
 ## Contributing
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute, and the process for submitting pull requests to us. Also please follow our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) so that everything remains civilized!
 
 ## Versioning
 We use [SemVer](http://semver.org/) for versioning.
