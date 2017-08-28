@@ -3,6 +3,8 @@ Corto is a developer-friendly and super extensible framework for building a virt
 
 Because there is likely more data in the world than your computer can process at once, corto has a smart design where it only loads the data you need in memory. You can have petabytes of data at your fingertips, and never spend more than 70Kb in footprint!
 
+If any of these is not green, somebody is not sleeping well.
+
 Linux/OSX | Windows | Coverity
 ----------|---------|---------
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | [![Build status](https://ci.appveyor.com/api/projects/status/549itmv72ut0ia51?svg=true)](https://ci.appveyor.com/project/SanderMertens/corto) | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
@@ -62,5 +64,6 @@ The following people need a callout as corto would be nowhere near where it is w
 * [**Alex Hendren**](https://github.com/ahendren) - *Early adopter and evangelist (in the broadest sense of the word)*
 * [**Roberto Flores**](https://github.com/rfloresx) - *Probably the most experienced corto developer worldwide. Even better at finding bugs*
 * **Spiros Motsenigos** - *Invented the name! Pushed corto to greater heights with boundless enthusiasm*
-* **Luke Peng** - *Reliable source of (sometimes painful) reminders it is not just about the code*
-* **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice for all of them*
+* **Nathan Petkus** - *True™ corto believer. Perpetually in the business of rallying good people for the good cause*
+* **Luke Peng** - *Reliable source of (sometimes painful) reminders that it is not just about the code*
+* **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice on all of them*
