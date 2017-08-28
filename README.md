@@ -3,6 +3,8 @@ Corto is a developer-friendly and super extensible framework for building a virt
 
 Because there is likely more data in the world than your computer can process at once, corto has a smart design where it only loads the data you need in memory. You can have petabytes of data at your fingertips, and never spend more than 70Kb in footprint!
 
+If any of these is not green, somebody is not sleeping well.
+
 Linux/OSX | Windows | Coverity
 ----------|---------|---------
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | [![Build status](https://ci.appveyor.com/api/projects/status/549itmv72ut0ia51?svg=true)](https://ci.appveyor.com/project/SanderMertens/corto) | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
@@ -53,11 +55,16 @@ We use [SemVer](http://semver.org/) for versioning.
 
 See also the list of [contributors](https://github.com/cortoproject/corto/contributors) who participated in this project.
 
-## License
+## Legal stuff
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
-The following people need a callout as corto would be nowhere near where it is today without their unwavering support and dedication:
-* [**Johnny Lee Othon**](https://github.com/jleeothon) - *First one crazy enough to try out corto. Origin of many, **many** features and improvements.*
-* [**Alex Hendren**](https://github.com/ahendren) - *Where to even begin.*
-* [**Roberto Flores**](https://github.com/rfloresx) - *Probably the most experienced corto developer worldwide. Even better at finding bugs.*
+The following people (in chronological order of appearance) need a callout as corto would be nowhere near where it is without their unwavering support and dedication:
+* **Spiros Motsenigos** - *Invented the name! Pushed corto to greater heights with boundless enthusiasm*
+* [**Johnny Lee Othon**](https://github.com/jleeothon) - *First one crazy enough to try out corto. Origin of many, **many** features and improvements*
+* [**Alex Hendren**](https://github.com/ahendren) - *Early adopter and evangelist (in the broadest sense of the word)*
+* [**Roberto Flores**](https://github.com/rfloresx) - *Probably the most experienced corto developer worldwide. Even better at finding bugs*
+* **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice on all of them*
+* **Nathan Petkus** - *True™ corto believer. Perpetually in the business of rallying good people for the good cause*
+* **Luke Peng** - *Reliable source of (sometimes painful) reminders that it is not just about the code*
+

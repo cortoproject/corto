@@ -117,7 +117,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 #define CORTO_FWDECL_SSO(type, name) sso_##type name##__o
 #define CORTO_FWDECL(type, name) CORTO_FWDECL_SSO(type, lang_##name); corto_##type corto_##name##_o = &lang_##name##__o.v
-#define CORTO_FWDECL_CORE(type, name) CORTO_FWDECL_SSO(type, vstore_##name); corto_##type corto_##name##_o = &vstore_##name##__o.v
+#define CORTO_FWDECL_VSTORE(type, name) CORTO_FWDECL_SSO(type, vstore_##name); corto_##type corto_##name##_o = &vstore_##name##__o.v
 #define CORTO_FWDECL_NATIVE(type, name) CORTO_FWDECL_SSO(type, native_##name); corto_##type corto_native_##name##_o = &native_##name##__o.v
 #define CORTO_FWDECL_SECURE(type, name) CORTO_FWDECL_SSO(type, secure_##name); corto_##type corto_secure_##name##_o = &secure_##name##__o.v
 
@@ -419,7 +419,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* Forward declarations of classes */
 CORTO_FWDECL(class, alias);
-CORTO_FWDECL_CORE(class, application);
+CORTO_FWDECL_VSTORE(class, application);
 CORTO_FWDECL(class, array);
 CORTO_FWDECL(class, binary);
 CORTO_FWDECL(class, bitmask);
@@ -436,26 +436,26 @@ CORTO_FWDECL(class, enum);
 CORTO_FWDECL(class, int);
 CORTO_FWDECL(class, float);
 CORTO_FWDECL(class, interface);
-CORTO_FWDECL_CORE(struct, invokeEvent);
+CORTO_FWDECL_VSTORE(struct, invokeEvent);
 CORTO_FWDECL(class, iterator);
 CORTO_FWDECL_SECURE(class, key);
 CORTO_FWDECL(class, leaf);
 CORTO_FWDECL(class, list);
-CORTO_FWDECL_CORE(class, loader);
+CORTO_FWDECL_VSTORE(class, loader);
 CORTO_FWDECL_SECURE(class, lock);
 CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
-CORTO_FWDECL_CORE(class, mount);
-CORTO_FWDECL_CORE(class, notifyEvent);
-CORTO_FWDECL_CORE(class, package);
+CORTO_FWDECL_VSTORE(class, mount);
+CORTO_FWDECL_VSTORE(class, notifyEvent);
+CORTO_FWDECL_VSTORE(class, package);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
 CORTO_FWDECL(class, quantity);
-CORTO_FWDECL_CORE(class, router);
-CORTO_FWDECL_CORE(class, routerimpl);
+CORTO_FWDECL_VSTORE(class, router);
+CORTO_FWDECL_VSTORE(class, routerimpl);
 CORTO_FWDECL(class, table);
 CORTO_FWDECL(class, tableinstance);
-CORTO_FWDECL_CORE(class, tool);
+CORTO_FWDECL_VSTORE(class, tool);
 CORTO_FWDECL(class, unit);
 
 CORTO_FWDECL(class, sequence);
@@ -467,23 +467,23 @@ CORTO_FWDECL(class, type);
 CORTO_FWDECL(class, uint);
 CORTO_FWDECL_NATIVE(class, type);
 
-CORTO_FWDECL_CORE(struct, event);
+CORTO_FWDECL_VSTORE(struct, event);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
 CORTO_FWDECL(struct, typeOptions);
-CORTO_FWDECL_CORE(struct, frame);
-CORTO_FWDECL_CORE(struct, query);
-CORTO_FWDECL_CORE(struct, mountStats);
-CORTO_FWDECL_CORE(struct, mountPolicy);
-CORTO_FWDECL_CORE(struct, mountSubscription);
-CORTO_FWDECL_CORE(struct, observerEvent);
-CORTO_FWDECL_CORE(struct, result);
-CORTO_FWDECL_CORE(struct, sample);
-CORTO_FWDECL_CORE(struct, subscriberEvent);
+CORTO_FWDECL_VSTORE(struct, frame);
+CORTO_FWDECL_VSTORE(struct, query);
+CORTO_FWDECL_VSTORE(struct, mountStats);
+CORTO_FWDECL_VSTORE(struct, mountPolicy);
+CORTO_FWDECL_VSTORE(struct, mountSubscription);
+CORTO_FWDECL_VSTORE(struct, observerEvent);
+CORTO_FWDECL_VSTORE(struct, result);
+CORTO_FWDECL_VSTORE(struct, sample);
+CORTO_FWDECL_VSTORE(struct, subscriberEvent);
 
 /* Abstract classes */
-CORTO_FWDECL_CORE(interface, dispatcher);
+CORTO_FWDECL_VSTORE(interface, dispatcher);
 
 CORTO_FWDECL(binary, octet);
 CORTO_FWDECL(binary, word);
@@ -509,10 +509,10 @@ static CORTO_FWDECL(type, void);
 CORTO_FWDECL(procedure, function);
 CORTO_FWDECL(procedure, metaprocedure);
 CORTO_FWDECL(procedure, method);
-CORTO_FWDECL_CORE(procedure, remote);
-CORTO_FWDECL_CORE(procedure, observer);
-CORTO_FWDECL_CORE(procedure, subscriber);
-CORTO_FWDECL_CORE(procedure, route);
+CORTO_FWDECL_VSTORE(procedure, remote);
+CORTO_FWDECL_VSTORE(procedure, observer);
+CORTO_FWDECL_VSTORE(procedure, subscriber);
+CORTO_FWDECL_VSTORE(procedure, route);
 CORTO_FWDECL(procedure, override);
 CORTO_FWDECL(procedure, overridable);
 
@@ -524,17 +524,17 @@ CORTO_FWDECL(enum, primitiveKind);
 CORTO_FWDECL(enum, procedureKind);
 CORTO_FWDECL(enum, typeKind);
 CORTO_FWDECL(enum, width);
-CORTO_FWDECL_CORE(enum, frameKind);
-CORTO_FWDECL_CORE(enum, ownership);
-CORTO_FWDECL_CORE(enum, operatorKind);
+CORTO_FWDECL_VSTORE(enum, frameKind);
+CORTO_FWDECL_VSTORE(enum, ownership);
+CORTO_FWDECL_VSTORE(enum, operatorKind);
 CORTO_FWDECL_SECURE(enum, accessKind);
 CORTO_FWDECL_SECURE(enum, actionKind);
 
 CORTO_FWDECL(bitmask, attr);
-CORTO_FWDECL_CORE(bitmask, eventMask);
+CORTO_FWDECL_VSTORE(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifier);
-CORTO_FWDECL_CORE(bitmask, mountMask);
-CORTO_FWDECL_CORE(bitmask, resultMask);
+CORTO_FWDECL_VSTORE(bitmask, mountMask);
+CORTO_FWDECL_VSTORE(bitmask, resultMask);
 CORTO_FWDECL(bitmask, state);
 
 CORTO_FWDECL(sequence, interfaceseq);
@@ -545,25 +545,25 @@ CORTO_FWDECL(sequence, parameterseq);
 CORTO_FWDECL(sequence, stringseq);
 CORTO_FWDECL(sequence, wordseq);
 
-CORTO_FWDECL_CORE(list, resultList);
+CORTO_FWDECL_VSTORE(list, resultList);
 CORTO_FWDECL(list, objectlist);
 CORTO_FWDECL(list, stringlist);
-CORTO_FWDECL_CORE(list, mountSubscriptionList);
+CORTO_FWDECL_VSTORE(list, mountSubscriptionList);
 
 CORTO_FWDECL(delegate, destructAction);
 CORTO_FWDECL(delegate, initAction);
 CORTO_FWDECL(delegate, nameAction);
-CORTO_FWDECL_CORE(delegate, handleAction);
+CORTO_FWDECL_VSTORE(delegate, handleAction);
 
-CORTO_FWDECL_CORE(iterator, resultIter);
-CORTO_FWDECL_CORE(iterator, subscriberEventIter);
-CORTO_FWDECL_CORE(iterator, objectIter);
-CORTO_FWDECL_CORE(iterator, sampleIter);
+CORTO_FWDECL_VSTORE(iterator, resultIter);
+CORTO_FWDECL_VSTORE(iterator, subscriberEventIter);
+CORTO_FWDECL_VSTORE(iterator, objectIter);
+CORTO_FWDECL_VSTORE(iterator, sampleIter);
 
-CORTO_FWDECL_CORE(struct, time);
+CORTO_FWDECL_VSTORE(struct, time);
 
-CORTO_FWDECL_CORE(function, observerEvent_handle);
-CORTO_FWDECL_CORE(function, subscriberEvent_handle);
+CORTO_FWDECL_VSTORE(function, observerEvent_handle);
+CORTO_FWDECL_VSTORE(function, subscriberEvent_handle);
 
 /* database root */
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
