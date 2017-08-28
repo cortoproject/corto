@@ -238,12 +238,13 @@ void MyMount_CustomMount_onNotify(corto_subscriberEvent *e) {
     );
 }
 ```
-This is not massively impressive, as we are not actually writing any data. 
-Suppose we want to store data in JSON, what code do we have to add to the 
-`onNotify` method that serializes the object data to JSON?
+This is not massively impressive, as we are not actually writing the value of
+the object, only the metadata. Suppose we want to store the value of the object
+serialied to JSON, what code do we have to add to the `onNotify` method that 
+serializes the object data to JSON?
 
 ##### A dirty little secret about mounts
-The answer is: no code at all. Mounts *inherit from subscribers*. Because they
+The answer is: not much. Mounts *inherit from subscribers*. Because they
 inherit from subscribers, they also inherit the capability to specify a contentType.
 Lets instantiate our mount, and specify a contentType using a configuration file.
 Create a file called `config.json`:
@@ -264,7 +265,8 @@ In this file, add the following JSON:
 }
 ```
 Note the `query` member, which specifies the mount point. This is yet another
-clue that the mount class actually inherits from the subscriber class.
+clue that the mount class actually inherits from the subscriber class. Indeed,
+mounts use the subscriber query to subscribe for data in the virtual store.
 
 Now, add this line to the main function in `MyMount/src/MyMount.c`:
 ```c
