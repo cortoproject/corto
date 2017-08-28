@@ -156,7 +156,7 @@ In addition to predicates that describe what kind of data to match, a query
 can also contain information about how the data should be formatted. This can
 be specified with the `contentType` function, like this:
 
-```
+```c
 corto_select("*").from("/foo").contentType("text/json").iter(it);
 ```
 All results returned by this query will be formatted as JSON. This allows an
@@ -167,17 +167,17 @@ source, in which case corto is intelligent enough to just pass through the
 serialized data.
 
 Specifiying a contentType also works for subscribers:
-```
+```c
 corto_subscribe("*").from("/foo").contentType("text/json").callback(cb);
 ```
 
 The serialized value can be obtained like this (assuming `r` is the `corto_result`):
-```
+```c
 printf("value = %s\n", corto_result_getText(r));
 ```
 
 or for subscribers:
-```
+```c
 printf("value = %s\n", corto_result_getText(&e->data));
 ```
 
@@ -229,7 +229,7 @@ corto build
 We now have a file `MyMount/src/CustomMount.c` which contains an empty function
 body for `MyMount_CustomMount_onNotify`. Assuming we have a function called
 `writeData` that stores data in some kind of external storage, we can now do:
-```
+```c
 void MyMount_CustomMount_onNotify(corto_subscriberEvent *e) {
     writeData(
         e->data.id,
