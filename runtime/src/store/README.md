@@ -48,7 +48,7 @@ reduces the amount of setup code to a minimum.
 Still, quite a bit of code has to be written in order to add an object to the
 core. This section guides you through it.
 
-Generally you will not need this functionality unless the maintainers of this project
+Generally you will not need this information unless the maintainers of this project
 have been part of some kind of tragic accident, or you've crossed off everything 
 from your bucket list and are looking for a new challenge.
 
