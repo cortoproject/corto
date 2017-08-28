@@ -59,11 +59,12 @@ See also the list of [contributors](https://github.com/cortoproject/corto/contri
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
-The following people need a callout as corto would be nowhere near where it is without their unwavering support and dedication:
+The following people (in chronological order of appearance) need a callout as corto would be nowhere near where it is without their unwavering support and dedication:
+* **Spiros Motsenigos** - *Invented the name! Pushed corto to greater heights with boundless enthusiasm*
 * [**Johnny Lee Othon**](https://github.com/jleeothon) - *First one crazy enough to try out corto. Origin of many, **many** features and improvements*
 * [**Alex Hendren**](https://github.com/ahendren) - *Early adopter and evangelist (in the broadest sense of the word)*
 * [**Roberto Flores**](https://github.com/rfloresx) - *Probably the most experienced corto developer worldwide. Even better at finding bugs*
-* **Spiros Motsenigos** - *Invented the name! Pushed corto to greater heights with boundless enthusiasm*
+* **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice on all of them*
 * **Nathan Petkus** - *True™ corto believer. Perpetually in the business of rallying good people for the good cause*
 * **Luke Peng** - *Reliable source of (sometimes painful) reminders that it is not just about the code*
-* **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice on all of them*
+
