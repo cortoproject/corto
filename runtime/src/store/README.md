@@ -6,7 +6,7 @@ user needs an object in his application, it is loaded from the virtual store and
 stored into the object store.
 
 Objects are strongly typed (they cannot change type after creation). The types
-with which to create the objects can be found in the [typesystem](runtime/src/lang).
+with which to create the objects can be found in the [typesystem](../../src/lang).
 
 ## Files
 An overview of the files, and what they do:
@@ -47,6 +47,10 @@ reduces the amount of setup code to a minimum.
 
 Still, quite a bit of code has to be written in order to add an object to the
 core. This section guides you through it.
+
+Generally you will not need this functionality unless the maintainers of this project
+have been part of some kind of tragic accident, or you've crossed off everything 
+from your bucket list and are looking for a new challenge.
 
 ### 1. Adding a new type
 New types are first defined in the `bootstrap.h` file. This file is quite large,
