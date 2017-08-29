@@ -221,6 +221,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(vstore_, subscriberEventIter),\
     SSO_OP_VALUE(vstore_, result),\
     SSO_OP_VALUE(vstore_, mountStats),\
+    SSO_OP_VALUE(vstore_, queuePolicy),\
     SSO_OP_VALUE(vstore_, mountPolicy),\
     SSO_OP_VALUE(lang_, delegatedata),\
     SSO_OP_VOID(vstore_, dispatcher),\
@@ -428,6 +429,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mountMask_MOUNT_QUERY),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_HISTORY_QUERY),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_NOTIFY),\
+    SSO_OP_OBJ(vstore_mountMask_MOUNT_HISTORY_BATCH_NOTIFY),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_BATCH_NOTIFY),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_SUBSCRIBE),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_MOUNT),\
@@ -665,10 +667,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mountStats_declares),\
     SSO_OP_OBJ(vstore_mountStats_updates),\
     SSO_OP_OBJ(vstore_mountStats_deletes),\
-    /* ownership */\
+    /* queuePolicy */\
+    SSO_OP_OBJ(vstore_queuePolicy_max),\
+    /* mountPolicy */\
     SSO_OP_OBJ(vstore_mountPolicy_ownership),\
     SSO_OP_OBJ(vstore_mountPolicy_mask),\
     SSO_OP_OBJ(vstore_mountPolicy_sampleRate),\
+    SSO_OP_OBJ(vstore_mountPolicy_queue),\
     SSO_OP_OBJ(vstore_mountPolicy_expiryTime),\
     /* mountSubscription */\
     SSO_OP_OBJ(vstore_mountSubscription_query),\
@@ -730,6 +735,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mount_sentDiscarded),\
     SSO_OP_OBJ(vstore_mount_subscriptions),\
     SSO_OP_OBJ(vstore_mount_events),\
+    SSO_OP_OBJ(vstore_mount_historicalEvents),\
+    SSO_OP_OBJ(vstore_mount_lastPoll),\
+    SSO_OP_OBJ(vstore_mount_lastPost),\
+    SSO_OP_OBJ(vstore_mount_lastSleep),\
+    SSO_OP_OBJ(vstore_mount_dueSleep),\
+    SSO_OP_OBJ(vstore_mount_lastQueueSize),\
     SSO_OP_OBJ(vstore_mount_passThrough),\
     SSO_OP_OBJ(vstore_mount_explicitResume),\
     SSO_OP_OBJ(vstore_mount_thread),\
@@ -754,6 +765,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mount_onPoll_),\
     SSO_OP_OBJ(vstore_mount_onNotify_),\
     SSO_OP_OBJ(vstore_mount_onBatchNotify_),\
+    SSO_OP_OBJ(vstore_mount_onHistoryBatchNotify_),\
     SSO_OP_OBJ(vstore_mount_onInvoke_),\
     SSO_OP_OBJ(vstore_mount_onId_),\
     SSO_OP_OBJ(vstore_mount_onQuery_),\

@@ -1,4 +1,4 @@
-/* core.c
+/* vstore.c
  *
  * API convenience functions for C-language.
  * This file contains generated code. Do not modify!
@@ -1872,8 +1872,6 @@ corto_package _corto_packageAssign(corto_package _this) {
     CORTO_UNUSED(_this);
     return _this;
 }
-
-
 
 corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd) {
     corto_query* _this;

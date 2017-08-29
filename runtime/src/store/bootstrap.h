@@ -475,6 +475,7 @@ CORTO_FWDECL(struct, typeOptions);
 CORTO_FWDECL_VSTORE(struct, frame);
 CORTO_FWDECL_VSTORE(struct, query);
 CORTO_FWDECL_VSTORE(struct, mountStats);
+CORTO_FWDECL_VSTORE(struct, queuePolicy);
 CORTO_FWDECL_VSTORE(struct, mountPolicy);
 CORTO_FWDECL_VSTORE(struct, mountSubscription);
 CORTO_FWDECL_VSTORE(struct, observerEvent);
@@ -737,6 +738,7 @@ CORTO_BITMASK_O(vstore, mountMask);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_HISTORY_QUERY);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_NOTIFY);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_BATCH_NOTIFY);
+    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_HISTORY_BATCH_NOTIFY);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_SUBSCRIBE);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_MOUNT);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_RESUME);
@@ -1319,11 +1321,16 @@ CORTO_STRUCT_O(vstore, mountStats, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NUL
     CORTO_MEMBER_O(vstore_mountStats, updates, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountStats, deletes, lang_uint64, CORTO_GLOBAL);
 
+/* /corto/vstore/queuePolicy */
+CORTO_STRUCT_O(vstore, queuePolicy, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
+    CORTO_MEMBER_O(vstore_queuePolicy, max, lang_uint32, CORTO_GLOBAL);
+
 /* /corto/vstore/mountPolicy */
 CORTO_STRUCT_O(vstore, mountPolicy, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
     CORTO_MEMBER_O(vstore_mountPolicy, ownership, vstore_ownership, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, mask, vstore_mountMask, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mountPolicy, queue, vstore_queuePolicy, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, expiryTime, lang_uint64, CORTO_GLOBAL);
 
 /* /corto/vstore/mountSubscription */
@@ -1347,6 +1354,12 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_MEMBER_O(vstore_mount, sentDiscarded, vstore_mountStats, CORTO_READONLY);
     CORTO_MEMBER_O(vstore_mount, subscriptions, vstore_mountSubscriptionList, CORTO_READONLY);
     CORTO_MEMBER_O(vstore_mount, events, lang_objectlist, CORTO_PRIVATE);
+    CORTO_MEMBER_O(vstore_mount, historicalEvents, lang_objectlist, CORTO_PRIVATE);
+    CORTO_MEMBER_O(vstore_mount, lastPoll, vstore_time, CORTO_PRIVATE);
+    CORTO_MEMBER_O(vstore_mount, lastPost, vstore_time, CORTO_PRIVATE);
+    CORTO_MEMBER_O(vstore_mount, lastSleep, vstore_time, CORTO_PRIVATE);
+    CORTO_MEMBER_O(vstore_mount, dueSleep, vstore_time, CORTO_PRIVATE);
+    CORTO_MEMBER_O(vstore_mount, lastQueueSize, lang_uint32, CORTO_PRIVATE);
     CORTO_MEMBER_O(vstore_mount, passThrough, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(vstore_mount, explicitResume, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(vstore_mount, thread, lang_word, CORTO_PRIVATE);
@@ -1375,7 +1388,8 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_OVERRIDABLE_O(vstore_mount, onHistoryQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onHistoryQuery_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onResume, "(string parent,string name,object object)", lang_object, corto_mount_onResume_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onNotify, "(vstore/subscriberEvent event)", lang_void, corto_mount_onNotify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onBatchNotify, "(vstore/subscriberEventIter data)", lang_void, corto_mount_onBatchNotify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, onBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, onHistoryBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onSubscribe, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_onSubscribe_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onUnsubscribe, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_onUnsubscribe_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onMount, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_onMount_v);

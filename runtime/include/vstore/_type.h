@@ -195,11 +195,19 @@ typedef uint32_t corto_mountMask;
     #define CORTO_MOUNT_QUERY (0x1)
     #define CORTO_MOUNT_HISTORY_QUERY (0x2)
     #define CORTO_MOUNT_NOTIFY (0x4)
-    #define CORTO_MOUNT_BATCH_NOTIFY (0x8)
-    #define CORTO_MOUNT_SUBSCRIBE (0x10)
-    #define CORTO_MOUNT_MOUNT (0x20)
-    #define CORTO_MOUNT_RESUME (0x40)
-    #define CORTO_MOUNT_INVOKE (0x80)
+    #define CORTO_MOUNT_HISTORY_BATCH_NOTIFY (0x8)
+    #define CORTO_MOUNT_BATCH_NOTIFY (0x10)
+    #define CORTO_MOUNT_SUBSCRIBE (0x20)
+    #define CORTO_MOUNT_MOUNT (0x40)
+    #define CORTO_MOUNT_RESUME (0x80)
+    #define CORTO_MOUNT_INVOKE (0x100)
+
+/*  /corto/vstore/queuePolicy */
+typedef struct corto_queuePolicy corto_queuePolicy;
+
+struct corto_queuePolicy {
+    uint32_t max;
+};
 
 /*  /corto/vstore/mountPolicy */
 typedef struct corto_mountPolicy corto_mountPolicy;
@@ -208,6 +216,7 @@ struct corto_mountPolicy {
     corto_ownership ownership;
     corto_mountMask mask;
     double sampleRate;
+    corto_queuePolicy queue;
     uint64_t expiryTime;
 };
 
@@ -236,6 +245,14 @@ struct corto_mountSubscription {
 typedef corto_ll corto_mountSubscriptionList;
 #endif
 
+/*  /corto/vstore/time */
+typedef struct corto_time corto_time;
+
+struct corto_time {
+    int32_t sec;
+    uint32_t nanosec;
+};
+
 /*  /corto/vstore/mount */
 typedef struct corto_mount_s *corto_mount;
 
@@ -249,6 +266,12 @@ struct corto_mount_s {
     corto_mountStats sentDiscarded;
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
+    corto_objectlist historicalEvents;
+    corto_time lastPoll;
+    corto_time lastPost;
+    corto_time lastSleep;
+    corto_time dueSleep;
+    uint32_t lastQueueSize;
     bool passThrough;
     bool explicitResume;
     uintptr_t thread;
@@ -339,14 +362,6 @@ struct corto_remote_s {
 typedef uint32_t corto_resultMask;
     #define CORTO_RESULT_LEAF (0x1)
     #define CORTO_RESULT_HIDDEN (0x2)
-
-/*  /corto/vstore/time */
-typedef struct corto_time corto_time;
-
-struct corto_time {
-    int32_t sec;
-    uint32_t nanosec;
-};
 
 /*  /corto/vstore/sample */
 typedef struct corto_sample corto_sample;

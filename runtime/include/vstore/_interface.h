@@ -248,23 +248,46 @@ void _corto_mount_invoke(
 CORTO_EXPORT
 void _corto_mount_onBatchNotify_v(
     corto_mount _this,
-    corto_subscriberEventIter data);
+    corto_subscriberEventIter events);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
-#define corto_mount_onBatchNotify_v(_this, data) _corto_mount_onBatchNotify_v(corto_mount(_this), data)
+#define corto_mount_onBatchNotify_v(_this, events) _corto_mount_onBatchNotify_v(corto_mount(_this), events)
 #else
 #define corto_mount_onBatchNotify_v _corto_mount_onBatchNotify_v
 #endif
 
 /* explicit type-safe macro */
-#define safe_corto_mount_onBatchNotify_v(_this, data) _corto_mount_onBatchNotify_v(corto_mount(_this), data)
+#define safe_corto_mount_onBatchNotify_v(_this, events) _corto_mount_onBatchNotify_v(corto_mount(_this), events)
 
-#define corto_mount_onBatchNotify(_this, data) _corto_mount_onBatchNotify(corto_mount(_this), data)
+#define corto_mount_onBatchNotify(_this, events) _corto_mount_onBatchNotify(corto_mount(_this), events)
 CORTO_EXPORT
 void _corto_mount_onBatchNotify(
     corto_mount _this,
-    corto_subscriberEventIter data);
+    corto_subscriberEventIter events);
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
+void _corto_mount_onHistoryBatchNotify_v(
+    corto_mount _this,
+    corto_subscriberEventIter events);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_mount_onHistoryBatchNotify_v(_this, events) _corto_mount_onHistoryBatchNotify_v(corto_mount(_this), events)
+#else
+#define corto_mount_onHistoryBatchNotify_v _corto_mount_onHistoryBatchNotify_v
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_mount_onHistoryBatchNotify_v(_this, events) _corto_mount_onHistoryBatchNotify_v(corto_mount(_this), events)
+
+#define corto_mount_onHistoryBatchNotify(_this, events) _corto_mount_onHistoryBatchNotify(corto_mount(_this), events)
+CORTO_EXPORT
+void _corto_mount_onHistoryBatchNotify(
+    corto_mount _this,
+    corto_subscriberEventIter events);
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */

@@ -1,4 +1,4 @@
-/* core.h
+/* vstore.h
  *
  * API convenience functions for C-language.
  * This file contains generated code. Do not modify!
