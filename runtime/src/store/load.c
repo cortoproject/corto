@@ -162,6 +162,7 @@ int corto_load_register(corto_string ext, corto_loadAction handler, void* userDa
             fileHandlers = corto_ll_new();
         }
 
+        corto_trace("load: registered extension '%s'", ext);
         corto_ll_append(fileHandlers, h);
     }
     corto_mutexUnlock(&corto_adminLock);
@@ -450,6 +451,7 @@ int corto_loadIntern(corto_string str, int argc, char* argv[], bool try, bool ig
             corto_seterr(
                 "package 'driver/ext/%s' loaded but extension is not registered", 
                 ext);
+            corto_mutexUnlock(&corto_adminLock);
             goto error;
         }
     }
