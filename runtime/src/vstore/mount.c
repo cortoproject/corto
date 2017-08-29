@@ -48,7 +48,11 @@ void* corto_mount_thread(void* arg) {
         if (sleep.sec >= 0) {
             corto_sleep(sleep.sec, sleep.nanosec);
         } else {
-            corto_warning("processing events took longer than sampleRate interval");
+            sleep = corto_timeSub(current, next);
+            corto_warning(
+                "processing events took [%d.%.9d] longer than sampleRate interval",
+                sleep.sec, sleep.nanosec);
+            corto_timeGet(&next);
         }
         next = corto_timeAdd(next, interval);
     }
