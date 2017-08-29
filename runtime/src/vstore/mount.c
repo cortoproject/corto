@@ -23,10 +23,10 @@ void corto_mount_unsubscribeOrUnmount(
 static corto_time corto_mount_doubleToTime(double frequency) {
     corto_time result;
 
-    result.sec = 1.0 / frequency;
+    result.sec = frequency;
     frequency -= result.sec;
     if (frequency >= 0) {
-        result.nanosec = (1.0 / frequency) * 1000000000.0;
+        result.nanosec = frequency * 1000000000.0;
     }
 
     return result;
@@ -35,11 +35,22 @@ static corto_time corto_mount_doubleToTime(double frequency) {
 void* corto_mount_thread(void* arg) {
     corto_mount this = arg;
     corto_float64 frequency = this->policy.sampleRate;
-    corto_time sleepTime = corto_mount_doubleToTime(1.0 / frequency);
+    corto_time interval = corto_mount_doubleToTime(1.0 / frequency);
+    corto_time next, current, sleep;
+
+    corto_timeGet(&next);
+    next = corto_timeAdd(next, interval);
 
     while (!this->quit) {
         corto_mount_onPoll(this);
-        corto_sleep(sleepTime.sec, sleepTime.nanosec);
+        corto_timeGet(&current);
+        sleep = corto_timeSub(next, current);
+        if (sleep.sec >= 0) {
+            corto_sleep(sleep.sec, sleep.nanosec);
+        } else {
+            corto_warning("processing events took longer than sampleRate interval");
+        }
+        next = corto_timeAdd(next, interval);
     }
 
     return NULL;
@@ -408,6 +419,7 @@ void corto_mount_onPoll_v(
 
     /* Collect events */
     corto_lock(this);
+    corto_timeGet(&this->lastPoll);    
     this->lastQueueSize = 0;
     if (corto_ll_size(this->events)) {
         events = corto_ll_new();
@@ -421,7 +433,6 @@ void corto_mount_onPoll_v(
             corto_ll_append(historicalEvents, e);
         }
     }
-    corto_timeGet(&this->lastPoll);
     corto_unlock(this);
 
     /* If batching is enabled, call onBatchNotify */ 
@@ -434,6 +445,7 @@ void corto_mount_onPoll_v(
     if (historicalEvents && this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(historicalEvents);
         corto_mount_onHistoryBatchNotify(this, it);
+
         it = corto_ll_iter(historicalEvents);
         while (corto_iter_hasNext(&it)) {
             corto_event *e = corto_iter_next(&it);
@@ -446,7 +458,7 @@ void corto_mount_onPoll_v(
     if (events) {
         while ((e = corto_ll_takeFirst(events))) {
             corto_event_handle(e);
-            corto_assert(corto_release(e) == 0);
+            corto_assert(corto_release(e) == 0, "event is leaking");
         }
         corto_ll_free(events);   
     }
@@ -559,6 +571,7 @@ void corto_mount_post(
     int size = 0;
     corto_time lastPoll = {0, 0};
     int lastQueueSize = 0;
+    bool addedToHistory = false;
 
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
@@ -576,8 +589,8 @@ void corto_mount_post(
 
             if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 corto_ll_append(this->historicalEvents, e);
-                corto_claim(e);
                 size = corto_ll_size(this->historicalEvents);
+                addedToHistory = true;
             }
 
             if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
@@ -591,6 +604,9 @@ void corto_mount_post(
                     corto_assert(corto_release(e2) == 0);
                 } else {
                     corto_ll_append(this->events, e);
+                }
+                if (addedToHistory) {
+                    corto_claim(e);
                 }
 
                 if (!size) {
@@ -608,11 +624,15 @@ void corto_mount_post(
     /* collectCount determines how often the algorithm will evaluate the delay
      * required for throttling. Because calculating delay requires getting the
      * current time, this would be too expensive to do for every event. Instead
-     * it is only done at each (queue.max / 10)th sample. This recognizes that
-     * for a low max, we need to do more calculations per sample, in order to 
-     * not lose too much accuracy. */
+     * it is determined adaptively. A risk is that this thread is very busy, and
+     * is keeping the poll thread from being scheduled in. To ensure that this
+     * is kept to a minimum, checking is done more often towards the end of a 
+     * cycle. If this thread notices time has moved past last poll time + 1 / Sr
+     * it should stop until the poll thread has been scheduled in again. */
+
     int collectCount = (this->policy.queue.max / 10);
     if (collectCount < 2) collectCount = 2;
+    if (collectCount > 10) collectCount = 10;
 
     /** Throttling algorithm that spreads delays evenly between events.
      * A simple throttling algorithm would block a publisher once the queue.max
@@ -643,6 +663,7 @@ void corto_mount_post(
      * The algorithm parameters are reset at the beginning of each poll cycle,
      * so that it can adapt fast to changing behavior of the application. 
      */
+
     if (size > collectCount && size < this->policy.queue.max) {
 
         /* Retrieve time every collectCount samples */
@@ -652,7 +673,6 @@ void corto_mount_post(
             /* Calculate total available time per period */
             corto_time totalTime = corto_mount_doubleToTime(1.0 / this->policy.sampleRate);
 
-            /* Calculate time into current period */
             corto_time spent = lastPoll.sec 
                 ? corto_timeSub(this->lastPost, lastPoll)
                 : (corto_time){0, 0}
@@ -673,8 +693,14 @@ void corto_mount_post(
                      * sample for error margin so that in a stable system
                      * each poll cycle receives exactly the max queue size. */
                     double timePerSample = 
-                        ((double)this->policy.queue.max - (double)size + 1) / corto_timeToDouble(budget);
+                        corto_timeToDouble(budget) / ((double)this->policy.queue.max - (double)size + collectCount);
 
+                    /*printf("sleep: %d.%.9d budget=[%d.%.9d] spent=[%d.%.9d] size=%d timePerSample=%f\n", 
+                        this->lastSleep.sec, this->lastSleep.nanosec,
+                        budget.sec, budget.nanosec,
+                        spent.sec, spent.nanosec,
+                        size,
+                        timePerSample);*/
                     this->lastSleep = corto_mount_doubleToTime(timePerSample);
                     this->dueSleep = (corto_time){0, 0};
                 } else {
@@ -683,10 +709,17 @@ void corto_mount_post(
                 }
             } else {
                 /* If time spent in current period exceeds total period time, 
-                 * the OS scheduler is lagging. In that case, either block or
-                 * write at max speed (if not yet reached event max). */
+                 * the OS scheduler is lagging. In that case block, as it might
+                 * be this thread that is holding up the poll thread. */
+                do {
+                    corto_sleep(0, 1000000);
+                } while ((lastPoll.nanosec == this->lastPoll.nanosec) || 
+                         (lastPoll.nanosec == this->lastPoll.nanosec));
+
                 this->lastSleep.sec = 0;
                 this->lastSleep.nanosec = 0;
+                this->dueSleep.sec = 0;
+                this->dueSleep.nanosec = 0;                
             }
             this->lastQueueSize = size; 
         }

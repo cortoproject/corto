@@ -46,9 +46,6 @@ extern int CORTO_BENCHMARK_INIT;
 extern int CORTO_BENCHMARK_DEFINE;
 extern int CORTO_BENCHMARK_DELETE;
 
-/* Lists all the anonymous objects in use. Used by the garbage collector. */
-corto_ll corto_anonymousObjects = NULL;
-
 int16_t corto_init(corto_object o);
 int16_t corto_deinit(corto_object o);
 
@@ -1124,14 +1121,6 @@ static corto_object corto_declareIntern(corto_type type, corto_bool orphan) {
                 goto error_init;
             }
 
-            /* Add object to anonymous cache */
-            corto_mutexLock(&corto_adminLock);
-            if (!corto_anonymousObjects) {
-                corto_anonymousObjects = corto_ll_new();
-            }
-            corto_ll_insert(corto_anonymousObjects, CORTO_OFFSET(o, sizeof(corto__object)));
-            corto_mutexUnlock(&corto_adminLock);
-
             /* void objects are instantly defined because they have no value. */
             if (type->kind == CORTO_VOID) {
                 corto_define(CORTO_OFFSET(o, sizeof(corto__object)));
@@ -1843,11 +1832,10 @@ error_container:
 }
 
 corto_bool corto_destruct(corto_object o, corto_bool delete) {
-    corto_benchmark_start(CORTO_BENCHMARK_DELETE);
-
     corto__object* _o;
-    corto_bool result = TRUE;
+    bool result = TRUE;
     corto_object owner = corto_ownerof(o);
+    bool named = corto_checkAttr(o, CORTO_ATTR_NAMED);
 
     corto_assertObject(o);
 
@@ -1863,6 +1851,8 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         return TRUE;
     }
 
+    corto_benchmark_start(CORTO_BENCHMARK_DELETE);
+
     if (!corto_checkState(o, CORTO_DELETED)) {
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("destruct", o, NULL);
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
@@ -1877,7 +1867,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         /* From here, object is marked as destructed. */
         _o->align.attrs.state |= CORTO_DELETED;
 
-        if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+        if (named) {
             corto_drop(o, delete);
         }
 
@@ -1906,7 +1896,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
             }
         } else {
             /* If object wasn't defined, remove it from the declared admin */
-            if (corto_checkAttr(o, CORTO_ATTR_NAMED) && !corto_declaredAdminRemove(o)) {
+            if (named && !corto_declaredAdminRemove(o)) {
                 /* Throw a warning only if deleting the object. If this is not a
                  * delete, then the object was released, which may be done by
                  * anyone. */
@@ -1924,13 +1914,8 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
         }
 
         /* Deinit scope */
-        if (corto_checkAttr(o, CORTO_ATTR_NAMED) && !corto_isorphan(o)) {
+        if (named && !corto_isorphan(o)) {
             corto__orphan(o);
-        } else {
-            /* Remove from anonymous cache */
-            corto_mutexLock(&corto_adminLock);
-            corto_ll_remove(corto_anonymousObjects, o);
-            corto_mutexUnlock(&corto_adminLock);
         }
 
         /* Indicate that object has been destructed */
@@ -1970,7 +1955,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
          * object is referenced, since that may indicate that there can be
          * iterators active on the tree. Iterators need the tree object to
          * figure out whether mutations have happened. */
-        if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+        if (named) {
             /* Deinit scope not before refcount goes to zero. The data in the scope
              * administration is required to determine whether this object is
              * a builtin object. */

@@ -82,12 +82,16 @@ static corto_int16 corto_subscriber_invoke(
     } else {
         corto_attr oldAttr = corto_setAttr(0);
         corto_subscriberEvent *event = corto_declare(corto_subscriberEvent_o);
+
         corto_setAttr(oldAttr);
         corto_ptr_setref(&event->subscriber, s);
         corto_ptr_setref(&event->instance, instance);
         corto_ptr_setref(&event->source, NULL);
         event->event = mask;
-        corto_ptr_copy(&event->data, corto_result_o, r);
+        corto_ptr_setstr(&event->data.id, r->id);
+        corto_ptr_setstr(&event->data.type, r->type);
+        corto_ptr_setstr(&event->data.parent, r->parent);
+
         if (r->value) {
             event->data.value =
               ((corto_contentType)s->contentTypeHandle)->copy(r->value);
