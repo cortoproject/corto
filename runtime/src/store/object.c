@@ -4331,10 +4331,11 @@ static corto_uint32 corto_overloadParamCompare(
     }
 
     /* Match type compatibility */
+    if (o_type == r_type) {
+        goto match;
+    }
+
     if (corto_checkState(o_type, CORTO_VALID) && (corto_checkState(r_type, CORTO_VALID))) {
-        if (o_type == r_type) {
-            goto match;
-        }
 
         /* If an interface, increase distance for each level in inheritance tree  */
         if ((o_type->kind == CORTO_COMPOSITE) && (r_type->kind == CORTO_COMPOSITE)) {
@@ -4358,14 +4359,17 @@ static corto_uint32 corto_overloadParamCompare(
             } else {
                 d++;
             }
+
         /* If the requested type is a (forced) reference check if treating it as a generic
          * reference would result in a match - this is for example useful when casting from
          * references to a boolean or string type */
         } else if (r_forceReference && !corto_type_compatible(o_type, corto_object_o)) {
             d++;
+
         /* If types are not compatible, they won't match */
         } else if (!corto_type_compatible(o_type, r_type)) {
             goto nomatch;
+            
         /* Types are compatible. Increase d by one if types are of a different primitive
          * kind. */
         } else if ((o_type->kind == CORTO_PRIMITIVE) && (r_type->kind == CORTO_PRIMITIVE)) {
