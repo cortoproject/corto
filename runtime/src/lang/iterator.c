@@ -18,7 +18,13 @@ bool corto_iterator_compatible_v(
         if (corto_collection(type)->elementType == this->elementType) {
             result = TRUE;
         }
+    } else if (type->kind == CORTO_ITERATOR) {
+        if (this->elementType == corto_iterator(type)->elementType) {
+            result = TRUE;
+        }
     }
+
+
     return result;
 }
 
