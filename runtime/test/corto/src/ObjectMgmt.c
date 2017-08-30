@@ -1312,12 +1312,11 @@ void test_ObjectMgmt_tc_declareScoped(
     *(corto_int32*)CORTO_OFFSET(p, y->offset) = 20;
     test_assertstr("{10,20}", corto_contentof(p, "text/corto"));
 
-    ret = corto_delete(s);
+    ret = corto_delete(p);
     test_assert(ret == 0);
 
     ret = corto_delete(s);
     test_assert(ret == 0);
-
 }
 
 void test_ObjectMgmt_tc_declareVoid(

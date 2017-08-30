@@ -1,11 +1,9 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
+#include "src/store/object.h"
 #include "interface.h"
 #include "class.h"
-
 bool corto_struct_castable_v(
     corto_struct this,
     corto_type type)
@@ -35,6 +33,7 @@ bool corto_struct_compatible_v(
             }while(e && (e != corto_interface(this)));
             result = (e == (corto_interface)this);
         }
+
     } else {
         result = TRUE;
     }
@@ -58,6 +57,7 @@ int16_t corto_struct_construct(
         if (!m) {
             corto_critical("failed to declare dummy member (%s)", corto_lasterr());
         }
+
         corto_ptr_setref(&m->type, corto_int8_o);
         m->modifiers = CORTO_PRIVATE|CORTO_LOCAL;
         corto_define(m);
@@ -77,11 +77,11 @@ int16_t corto_struct_construct(
                 corto_lasterr());
             goto error;
         }
+
     }
 
     /* Check if struct inherits from another struct */
     base = (corto_struct)corto_interface(this)->base;
-
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
@@ -94,22 +94,24 @@ int16_t corto_struct_construct(
             if (alignment < corto_type(base)->alignment) {
                 alignment = corto_type(base)->alignment;
             }
+
         }
+
     }
 
     /* Set alignment of self */
     corto_type(this)->alignment = alignment;
-
     /* Get size of base-class */
     if (base) {
         size = corto_type(base)->size;
-
         if (corto_type(base)->flags & CORTO_TYPE_HAS_RESOURCES) {
             corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
         }
+
         if (corto_type(base)->flags & CORTO_TYPE_NEEDS_INIT) {
             corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
         }
+
     }
 
     /* Calculate size of self */
@@ -121,11 +123,11 @@ int16_t corto_struct_construct(
                 corto_lasterr());
             goto error;
         }
+
     }
 
     /* Set size of self */
     corto_type(this)->size = size;
-
     if (this->keys.length != 0) {
         /* If a keylist was provided, test if members have been added and ensure
          * the KEY modifier is enabled */
@@ -157,9 +159,9 @@ int16_t corto_struct_construct(
             this->keycache.buffer[this->keycache.length] = m;
             corto_claim(m);
             this->keycache.length ++;
-
             corto_release(o);
         }
+
     } else {
         /* If no keylist was provided, walk over members and add keys to the
          * list automatically based on order of occurrence. */
@@ -174,7 +176,6 @@ int16_t corto_struct_construct(
                 this->keys.buffer[this->keys.length] = 
                     corto_strdup(corto_idof(m));
                 this->keys.length ++;
-
                 this->keycache.buffer = 
                     corto_realloc(this->keycache.buffer, 
                         sizeof(corto_object) * (this->keycache.length + 1));
@@ -182,9 +183,13 @@ int16_t corto_struct_construct(
                 corto_claim(m);
                 this->keycache.length ++;   
             }
+
         }
+
     }
 
+    /* Create instruction sequence for freeing instances of this type */
+    freeops_create(NULL, (corto_type)this);
     return safe_corto_interface_construct(this);
 error:
     return -1;
@@ -204,7 +209,6 @@ int16_t corto_struct_init(
 
     ((corto_interface)this)->kind = CORTO_STRUCT;
     ((corto_type)this)->reference = FALSE;
-
     return 0;
 error:
     return -1;
@@ -222,7 +226,12 @@ corto_member corto_struct_resolveMember_v(
     do {
         m = corto_interface_resolveMember_v(corto_interface(base), name);
     }while(!m && (base=corto_interface(base)->base));
-
     return m;
+}
+
+void corto_struct_destruct(
+    corto_struct this)
+{
+    freeops_delete(this);
 }
 

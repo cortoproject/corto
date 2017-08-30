@@ -947,7 +947,7 @@ corto_mountMask* _corto_mountMaskAssign(corto_mountMask* _this, corto_mountMask 
     return _this;
 }
 
-corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, uint64_t expiryTime) {
+corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
     corto_mountPolicy* _this;
     _this = (corto_mountPolicy*)corto_declare(corto_mountPolicy_o);
     if (!_this) {
@@ -957,6 +957,9 @@ corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mou
         ((corto_mountPolicy*)_this)->ownership = ownership;
         ((corto_mountPolicy*)_this)->mask = mask;
         ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
+        if (queue) {
+            corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
+        }
         ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
         if (corto_define(_this)) {
             corto_release(_this);
@@ -966,7 +969,7 @@ corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mou
     return _this;
 }
 
-corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, uint64_t expiryTime) {
+corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
     corto_mountPolicy* _this;
     _this = (corto_mountPolicy*)corto_declareChild(_parent, _id, corto_mountPolicy_o);
     if (!_this) {
@@ -976,6 +979,9 @@ corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_str
         ((corto_mountPolicy*)_this)->ownership = ownership;
         ((corto_mountPolicy*)_this)->mask = mask;
         ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
+        if (queue) {
+            corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
+        }
         ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
         if (corto_define(_this)) {
             corto_release(_this);
@@ -985,18 +991,24 @@ corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_str
     return _this;
 }
 
-corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, uint64_t expiryTime) {
+corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
     CORTO_UNUSED(_this);
     if (!corto_updateBegin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->ownership = ownership;
             ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->mask = mask;
             ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->sampleRate = sampleRate;
+            if (queue) {
+                corto_ptr_copy(&((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->queue, corto_queuePolicy_o, queue);
+            }
             ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->expiryTime = expiryTime;
         } else {
             ((corto_mountPolicy*)_this)->ownership = ownership;
             ((corto_mountPolicy*)_this)->mask = mask;
             ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
+            if (queue) {
+                corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
+            }
             ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
         }
         corto_updateEnd(_this);
@@ -1024,20 +1036,26 @@ corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, corto_st
     return _this;
 }
 
-corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, uint64_t expiryTime) {
+corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
     CORTO_UNUSED(_this);
     ((corto_mountPolicy*)_this)->ownership = ownership;
     ((corto_mountPolicy*)_this)->mask = mask;
     ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
+    if (queue) {
+        corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
+    }
     ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
     return corto_define(_this);
 }
 
-corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, uint64_t expiryTime) {
+corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
     CORTO_UNUSED(_this);
     ((corto_mountPolicy*)_this)->ownership = ownership;
     ((corto_mountPolicy*)_this)->mask = mask;
     ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
+    if (queue) {
+        corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
+    }
     ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
     return _this;
 }
@@ -2019,6 +2037,83 @@ corto_query* _corto_queryAssign(corto_query* _this, corto_string select, corto_s
     if (timeEnd) {
         corto_ptr_copy(&((corto_query*)_this)->timeEnd, corto_frame_o, timeEnd);
     }
+    return _this;
+}
+
+corto_queuePolicy* _corto_queuePolicyCreate(uint32_t max) {
+    corto_queuePolicy* _this;
+    _this = (corto_queuePolicy*)corto_declare(corto_queuePolicy_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        ((corto_queuePolicy*)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_queuePolicy* _corto_queuePolicyCreateChild(corto_object _parent, corto_string _id, uint32_t max) {
+    corto_queuePolicy* _this;
+    _this = (corto_queuePolicy*)corto_declareChild(_parent, _id, corto_queuePolicy_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        ((corto_queuePolicy*)_this)->max = max;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_queuePolicyUpdate(corto_queuePolicy* _this, uint32_t max) {
+    CORTO_UNUSED(_this);
+    if (!corto_updateBegin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            ((corto_queuePolicy*)((corto_queuePolicy*)CORTO_OFFSET(_this, ((corto_type)corto_queuePolicy_o)->size)))->max = max;
+        } else {
+            ((corto_queuePolicy*)_this)->max = max;
+        }
+        corto_updateEnd(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_queuePolicy* _corto_queuePolicyDeclare(void) {
+    corto_queuePolicy* _this;
+    _this = (corto_queuePolicy*)corto_declare(corto_queuePolicy_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_queuePolicy* _corto_queuePolicyDeclareChild(corto_object _parent, corto_string _id) {
+    corto_queuePolicy* _this;
+    _this = (corto_queuePolicy*)corto_declareChild(_parent, _id, corto_queuePolicy_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_queuePolicyDefine(corto_queuePolicy* _this, uint32_t max) {
+    CORTO_UNUSED(_this);
+    ((corto_queuePolicy*)_this)->max = max;
+    return corto_define(_this);
+}
+
+corto_queuePolicy* _corto_queuePolicyAssign(corto_queuePolicy* _this, uint32_t max) {
+    CORTO_UNUSED(_this);
+    ((corto_queuePolicy*)_this)->max = max;
     return _this;
 }
 

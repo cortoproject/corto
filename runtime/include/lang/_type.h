@@ -283,6 +283,7 @@ struct corto_struct_s {
     corto_modifier baseAccess;
     corto_stringseq keys;
     corto_objectseq keycache;
+    uintptr_t freeops;
 };
 
 typedef struct corto_interfaceseq {uint32_t length; corto_interface *buffer;} corto_interfaceseq;

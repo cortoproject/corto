@@ -4902,9 +4902,7 @@ corto_int16 corto_deinit(corto_object o) {
     }
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        corto_walk_opt s =
-            corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        corto_walk(&s, o, NULL);
+        freeops_ptr_free(type, o);
     }
 
     return 0;

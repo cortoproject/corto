@@ -604,6 +604,7 @@ void corto_interface_destruct(
     if (this->members.buffer) {
         corto_dealloc(this->members.buffer);
         this->members.buffer = NULL;
+        this->members.length = 0;
     }
 
     /* Free methods */
@@ -614,6 +615,7 @@ void corto_interface_destruct(
     if (this->methods.buffer) {
         corto_dealloc(this->methods.buffer);
         this->methods.buffer = NULL;
+        this->methods.length = 0;
     }
 
     corto_type_destruct(corto_type(this));

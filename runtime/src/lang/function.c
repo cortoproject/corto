@@ -108,6 +108,7 @@ void corto_function_destruct(
 
     corto_dealloc(this->parameters.buffer);
     this->parameters.buffer = NULL;
+    this->parameters.length = 0;
 }
 
 

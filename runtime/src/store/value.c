@@ -25,7 +25,6 @@
 #include "compare_ser.h"
 #include "copy_ser.h"
 #include "init_ser.h"
-#include "memory_ser.h"
 
 corto_type corto_value_typeof(corto_value* val) {
     corto_type result;
@@ -1152,9 +1151,7 @@ corto_int16 corto_value_init(corto_value *v) {
 corto_int16 corto_value_deinit(corto_value *v) {
     corto_type type = corto_value_typeof(v);
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        corto_walk_opt s =
-            corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        corto_walk_value(&s, v, NULL);
+        freeops_ptr_free(type, corto_value_ptrof(v));
     }
     corto_callDestructDelegate(&type->deinit, type, corto_value_ptrof(v));
     return 0;

@@ -20,6 +20,7 @@
  */
 
 #include <corto/corto.h>
+#include "store/object.h"
 
 #define get(list, index) corto_ll_get(list, index)
 #define walk(list, cb, ctx) corto_ll_walk(list, cb, ctx)
@@ -29,18 +30,6 @@
 #define hasNext(iter) corto_ll_iterHasNext(&iter)
 #define insert(iter, data) corto_ll_iterInsert(&iter, data)
 #define set(iter) corto_ll_iterSet(&iter)
-
-typedef struct corto_ll_node_s {
-    void* data;
-    corto_ll_node next;
-    corto_ll_node prev;
-} corto_ll_node_s;
-
-typedef struct corto_ll_s {
-    corto_ll_node first;
-    corto_ll_node last;
-    unsigned int size;
-} corto_ll_s;
 
 #define corto_iterData(iter) ((corto_ll_iter_s*)(iter).ctx)
 

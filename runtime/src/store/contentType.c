@@ -66,10 +66,7 @@ static void corto_contentType_ptr_release(corto_word ptr) {
         corto_type t = corto_type(*(corto_type*)CORTO_OFFSET(ptr, -sizeof(corto_type)));
 
         if (t->flags & CORTO_TYPE_HAS_RESOURCES) {
-            corto_value v = corto_value_mem((void*)ptr, t);
-            corto_walk_opt s =
-                corto_ser_freeResources(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-            corto_walk_value(&s, &v, NULL);
+            freeops_ptr_free(t, (void*)ptr);
         }
 
         corto_dealloc(CORTO_OFFSET(ptr, -sizeof(corto_type)));

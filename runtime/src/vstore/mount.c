@@ -588,7 +588,8 @@ void corto_mount_post(
 
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
-    if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY | CORTO_MOUNT_HISTORY_BATCH_NOTIFY)) {
+    if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY | CORTO_MOUNT_HISTORY_BATCH_NOTIFY)) 
+    {
         if (this->policy.sampleRate) 
         {
             corto_subscriberEvent *e2;
@@ -646,8 +647,6 @@ void corto_mount_post(
     int collectCount = (this->policy.queue.max / 10);
     if (collectCount < 2) collectCount = 2;
     if (collectCount > 10) collectCount = 10;
-
-    collectCount = 1;
 
     /** Throttling algorithm that spreads delays evenly between events.
      * A simple throttling algorithm would block a publisher once the queue.max

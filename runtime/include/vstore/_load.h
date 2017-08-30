@@ -27,6 +27,7 @@ CORTO_META_OBJECT(class, application);
 CORTO_META_OBJECT(class, tool);
 CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
+CORTO_META_OBJECT(struct, queuePolicy);
 CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(struct, mountStats);
 CORTO_META_OBJECT(struct, mountPolicy);

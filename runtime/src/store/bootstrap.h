@@ -974,18 +974,20 @@ CORTO_CLASS_O(lang, bitmask, lang_enum, CORTO_LOCAL | CORTO_READONLY, CORTO_ATTR
     CORTO_METHOD_O(lang_bitmask, init, "()", lang_int16, corto_bitmask_init);
 
 /* /corto/lang/struct */
-CORTO_FW_IC(lang, struct);
-CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_NAMED, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
+CORTO_FW_ICD(lang, struct);
+CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_NAMED, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_ICD);
     CORTO_ALIAS_O (lang_struct, base, lang_interface_base, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_struct, baseAccess, lang_modifier, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_struct, keys, lang_stringseq, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_struct, keycache, lang_objectseq, CORTO_PRIVATE | CORTO_LOCAL);
+    CORTO_MEMBER_O(lang_struct, freeops, lang_word, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_OVERRIDABLE_O(lang_struct, compatible, "(type type)", lang_bool, corto_struct_compatible_v);
     CORTO_OVERRIDABLE_O(lang_struct, castable, "(type type)", lang_bool, corto_struct_castable_v);
     CORTO_OVERRIDABLE_O(lang_struct, resolveMember, "(string name)", lang_member, corto_struct_resolveMember_v);
     CORTO_METHOD_O(lang_struct, init, "()", lang_int16, corto_struct_init);
     CORTO_METHOD_O(lang_struct, construct, "()", lang_int16, corto_struct_construct);
-
+    CORTO_METHOD_O(lang_struct, destruct, "()", lang_void, corto_struct_destruct);
+    
 /* /corto/lang/union */
 CORTO_FW_IC(lang, union);
 CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_case), CORTO_TYPE_ID(lang_method), CORTO_IC);

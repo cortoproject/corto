@@ -1313,6 +1313,22 @@ int16_t _corto_struct_construct(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
+void _corto_struct_destruct(
+    corto_struct _this);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_struct_destruct(_this) _corto_struct_destruct(corto_struct(_this))
+#else
+#define corto_struct_destruct _corto_struct_destruct
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_struct_destruct(_this) _corto_struct_destruct(corto_struct(_this))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
 int16_t _corto_struct_init(
     corto_struct _this);
 

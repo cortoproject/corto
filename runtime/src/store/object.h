@@ -179,6 +179,18 @@ typedef struct corto_augment_olsData_t {
     corto_string id;
 } corto_augment_olsData_t;
 
+typedef struct corto_ll_node_s {
+    void* data;
+    corto_ll_node next;
+    corto_ll_node prev;
+} corto_ll_node_s;
+
+typedef struct corto_ll_s {
+    corto_ll_node first;
+    corto_ll_node last;
+    unsigned int size;
+} corto_ll_s;
+
 /* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
 corto_int16 corto__freeSSO(corto_object sso);
@@ -250,6 +262,12 @@ void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_obj
     
 extern corto_entityAdmin corto_subscriber_admin;
 extern corto_entityAdmin corto_mount_admin;
+
+typedef struct freeops freeops;
+
+void freeops_ptr_free(corto_type t, void *ptr);
+void freeops_create(freeops *r, corto_type type);
+void freeops_delete(corto_struct t);
 
 #ifdef __cplusplus
 }
