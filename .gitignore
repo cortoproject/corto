@@ -42,3 +42,5 @@ packages/corto/lib/everywhere/fmt/json/build.rb
 packages/corto/lib/everywhere/fmt/xml/build.rb
 
 .corto/_load.c
+
+.vscode/settings.json
