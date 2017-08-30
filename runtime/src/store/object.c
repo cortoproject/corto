@@ -3626,10 +3626,8 @@ corto_int16 corto_publish(
         }
         corto_release(o);
     } else {
-        corto_id buffer;
-        strcpy(buffer, id);
         if (corto_notifySubscribersId(
-          event, buffer, type, contentType, (corto_word)content))
+          event, id, type, contentType, (corto_word)content))
         {
             result = -1;
         }

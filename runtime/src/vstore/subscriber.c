@@ -5,6 +5,7 @@
 
 #include "entityadmin.h"
 #include "src/store/object.h"
+#include "idmatch.h"
 
 extern corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;
 extern corto_threadKey CORTO_KEY_FLUENT;
@@ -80,10 +81,8 @@ static corto_int16 corto_subscriber_invoke(
             corto_callb((corto_function)s, NULL, args);
         }
     } else {
-        corto_attr oldAttr = corto_setAttr(0);
         corto_subscriberEvent *event = corto_declare(corto_subscriberEvent_o);
-
-        corto_setAttr(oldAttr);
+        
         corto_ptr_setref(&event->subscriber, s);
         corto_ptr_setref(&event->instance, instance);
         corto_ptr_setref(&event->source, NULL);
@@ -106,6 +105,96 @@ static corto_int16 corto_subscriber_invoke(
     return 0;
 error:
     return -1;
+}
+
+static char tochar(char *to, char *ptr, int len) {
+    if (len > 0) {
+        if (ptr - to < len) {
+            return ptr[0];
+        } else {
+            return '\0';
+        }
+    } else {
+        return ptr[0];
+    }
+}
+
+#define tch tochar(to, tptr, tolen)
+
+/* Function returns the 'to' path relative to 'from', and ensures that the
+ * output can be used in an "out + / + id" expression to reconstruct a correct
+ * full path to an object. */
+static void corto_pathstr_optimized(
+    char *out,
+    char *from,
+    char *to,
+    int tolen)
+{
+    char *outptr = out, *firstid = out;
+
+    /* If 'from' is empty, and 'to' contains a path to an object other than
+     * root, construct a 'from' that includes the root, so that a user can do
+     * out + '/' + id to create the full path. If 'to' is pointing to root, do
+     * not append root, as out + '/' + id would then result in a double '/' */
+    if (!from || !from[0]) {
+        bool to_isRoot = to && (to[0] == '/') && !to[1];
+        if (!to_isRoot) {
+            (outptr ++)[0] = '/';
+            firstid++;
+        } else {
+            /* If to is root, and from is empty return an empty string */
+            (outptr++)[0] = '\0';
+            return;
+        }
+    }
+
+    char *fptr = from ? from[0] == '/' ? &from[1] : from : "";
+    char *tptr = to ? to[0] == '/' ? &to[1] : to : "";
+
+    /* First, move ptrs until paths diverge */
+    while (fptr[0] && (fptr[0] == tch)) {
+        fptr ++;
+        tptr ++;
+    }
+    
+    /* Check if paths are equal */
+    if (!fptr[0] && !tch) {
+        bool from_isRoot = from && (from[0] == '/') && !from[1];            
+        if (from_isRoot) {
+            /* If both from and to point to the root, return an empty string.
+             * This ensures that a user can always do parent + / + id in order
+             * to build a full path */
+            (outptr++)[0] = '\0';
+        } else {
+            (outptr++)[0] = '.';
+        }
+    } else if (fptr[0]){
+        /* Next, for every identifier in 'from', add '..' */
+        while (fptr[0]) {
+            if (fptr[0] == '/') {
+                if (outptr != firstid) (outptr++)[0] = '/';
+                (outptr++)[0] = '.';
+                (outptr++)[0] = '.';
+            }
+            fptr ++;
+        }
+        /* Add '..' for last identifier */
+        if (outptr != firstid) (outptr++)[0] = '/';
+        (outptr++)[0] = '.';
+        (outptr++)[0] = '.';
+    }
+
+    /* Finally, append remaining elements from to */
+    if (tch) {
+        if (tch == '/') tptr ++;
+        if (outptr != firstid) (outptr++)[0] = '/';
+        do {
+            (outptr++)[0] = tch;
+            tptr ++;
+        } while (tch);
+    }
+    outptr[0] = '\0';
+    //printf("from=%s, to=%s, out=%s\n", from, to, out);
 }
 
 corto_int16 corto_notifySubscribersId(
@@ -167,6 +256,11 @@ corto_int16 corto_notifySubscribersId(
         parent = "/corto/lang";
     }
 
+    int sepLength = sep
+        ? sep - path
+        : 0
+        ;
+
     corto_int16 depth = corto_entityAdmin_getDepthFromId(path);
     corto_benchmark_stop(S_B_INIT);
 
@@ -208,11 +302,20 @@ corto_int16 corto_notifySubscribersId(
                     continue;
                 }
 
-                corto_benchmark_start(S_B_MATCH);
-                if (!corto_idmatch_run((corto_idmatch_program)s->idmatch, expr)) {
+                /* Id match program kind 3 is '*'. Because we already gathered
+                 * some information about the identifier, it is faster to
+                 * evaluate this simple expression here. */
+                corto_idmatch_program match = (corto_idmatch_program)s->idmatch;
+                if (match->kind != 3) {
+                    corto_benchmark_start(S_B_MATCH);
+                    if (!corto_idmatch_run(match, expr)) {
+                        corto_benchmark_stop(S_B_MATCH);                    
+                        continue;
+                    }
+                    corto_benchmark_stop(S_B_MATCH);
+                } else if ((sep > expr) || expr[0] == '.') {
                     continue;
                 }
-                corto_benchmark_stop(S_B_MATCH);
 
                 /* If subscriber requests content, convert to subscriber contentType */
                 if (s->contentType && contentType && !strcmp(s->contentType, contentType)) {
@@ -270,33 +373,14 @@ corto_int16 corto_notifySubscribersId(
                 char *parentPtr = relativeParent;
                 if (!relativeParentSet) {
                     corto_benchmark_start(S_B_PATHID);
-                    if (sep) *sep = '\0';
-                    corto_id fromElem, toElem;
-                    char *fromElemPtr = fromElem;
-
-                    if (subPerParent->parent && subPerParent->parent[1]) {
-                        strcpy(fromElem, subPerParent->parent);
-                    } else {
-                        fromElemPtr = NULL;
+                    char *fromptr = subPerParent->parent;
+                    /* If 'from' is '/', move up one character, This ensures that
+                     * the same relativeParent buffer can be used for subscribers
+                     * that start their from with and without '/'. */
+                    if (!fromptr[1]) {
+                        fromptr ++;
                     }
-
-                    if (fromElemPtr && fromElemPtr[0]) {
-                        if (parent[1] && parent[0] == '/') {
-                            strcpy(toElem, &parent[1]);
-                        } else {
-                            strcpy(toElem, parent);
-                        }
-                    } else {
-                        if (parent[1] || parent[0] != '/') {
-                            toElem[0] = '/';
-                            strcpy(&toElem[1], parent);
-                        } else {
-                            strcpy(toElem, parent);
-                        }
-                    }
-
-                    /* pathstr modifies from & to buffers */
-                    corto_pathstr(relativeParent, fromElemPtr, toElem, "/");
+                    corto_pathstr_optimized(relativeParent, fromptr, parent, sepLength);
                     corto_benchmark_stop(S_B_PATHID);
                     relativeParentSet = TRUE;
                 }
@@ -326,8 +410,6 @@ corto_int16 corto_notifySubscribersId(
                 corto_benchmark_start(S_B_INVOKE);
                 corto_subscriber_invoke(instance, mask, &r, s);
                 corto_benchmark_stop(S_B_INVOKE);
-
-                if (sep) *sep = '/';
             }
         }
     } while (--depth >= 0);
@@ -363,7 +445,6 @@ corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
 
     if (corto_subscriber_admin.count && corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         corto_id path, type;
-        corto_fullpath(path, o);
 
         result = corto_notifySubscribersId(
           mask,

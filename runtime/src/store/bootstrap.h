@@ -289,9 +289,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
     {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_NOBASE_V(parent, name, CORTO_STRUCT, FALSE, CORTO_ATTR_DEFAULT, scopeType, scopeStateKind, defaultType, defaultProcedureType, CORTO_NODELEGATE)}
 
 /* struct object */
-#define CORTO_STRUCT_BASE_O(parent, name, base, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE)\
+#define CORTO_STRUCT_BASE_O(parent, name, base, attr, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE)\
     sso_struct parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_V(parent, name, CORTO_STRUCT, base, CORTO_GLOBAL, FALSE, CORTO_ATTR_DEFAULT, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE)}
+    {CORTO_SSO_V(parent, #name, lang_struct), CORTO_STRUCT_V(parent, name, CORTO_STRUCT, base, CORTO_GLOBAL, FALSE, attr, scopeType, scopeStateKind, defaultType, defaultProcedureType, DELEGATE)}
 
 /* interface object */
 #define CORTO_INTERFACE_O(parent, name)\
@@ -1234,7 +1234,7 @@ CORTO_STRUCT_O(vstore, event, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
 
 /* /corto/lang/observerEvent */
 CORTO_FW_IF(vstore, observerEvent);
-CORTO_STRUCT_BASE_O(vstore, observerEvent, vstore_event, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
+CORTO_STRUCT_BASE_O(vstore, observerEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
     CORTO_REFERENCE_O(vstore_observerEvent, observer, vstore_observer, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(vstore_observerEvent, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(vstore_observerEvent, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
@@ -1247,7 +1247,7 @@ CORTO_STRUCT_BASE_O(vstore, observerEvent, vstore_event, NULL, CORTO_DECLARED | 
 
 /* /corto/lang/subscriberEvent */
 CORTO_FW_IF(vstore, subscriberEvent);
-CORTO_STRUCT_BASE_O(vstore, subscriberEvent, vstore_event, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
+CORTO_STRUCT_BASE_O(vstore, subscriberEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
     CORTO_REFERENCE_O(vstore_subscriberEvent, subscriber, vstore_subscriber, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(vstore_subscriberEvent, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(vstore_subscriberEvent, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
@@ -1259,7 +1259,7 @@ CORTO_STRUCT_BASE_O(vstore, subscriberEvent, vstore_event, NULL, CORTO_DECLARED 
     CORTO_METHOD_O(vstore_subscriberEvent, deinit, "()", lang_void, corto_subscriberEvent_deinit);
 
 /* /corto/lang/invokeEvent */
-CORTO_STRUCT_BASE_O(vstore, invokeEvent, vstore_event, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
+CORTO_STRUCT_BASE_O(vstore, invokeEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
     CORTO_REFERENCE_O(vstore_invokeEvent, mount, vstore_mount, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(vstore_invokeEvent, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);
     CORTO_REFERENCE_O(vstore_invokeEvent, function, lang_function, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL, FALSE);

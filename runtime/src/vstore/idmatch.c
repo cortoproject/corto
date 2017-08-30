@@ -508,7 +508,7 @@ corto_bool corto_idmatch_run(corto_idmatch_program program, corto_string str) {
         /* Match any identifier in scope */
         char *ptr = str;
         if (ptr[0] == '/') ptr ++;
-        if (!strcmp(ptr, ".")) {
+        if (ptr[0] == '.' && !ptr) {
             result = FALSE;
         } else if (!strchr(ptr, '/')) {
             result = TRUE;

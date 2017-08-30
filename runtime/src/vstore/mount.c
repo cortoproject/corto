@@ -36,7 +36,7 @@ void* corto_mount_thread(void* arg) {
     corto_mount this = arg;
     corto_float64 frequency = this->policy.sampleRate;
     corto_time interval = corto_mount_doubleToTime(1.0 / frequency);
-    corto_time next, current, sleep, lastSleep;
+    corto_time next, current, sleep = {0, 0}, lastSleep = {0, 0};
 
     corto_timeGet(&next);
     next = corto_timeAdd(next, interval);
@@ -47,11 +47,12 @@ void* corto_mount_thread(void* arg) {
         
         lastSleep = sleep;
         sleep = corto_timeSub(next, current);
-
-        /* Attempt to limit the amount of oscillation in a fully loaded system */
-        if (corto_time_compare(lastSleep, sleep) == CORTO_LT) {
-            double tmp = (corto_timeToDouble(sleep) + corto_timeToDouble(lastSleep)) / 2;
-            sleep = corto_mount_doubleToTime(tmp);
+        if (lastSleep.sec || lastSleep.nanosec) {
+            /* Attempt to limit the amount of oscillation in a fully loaded system */
+            if (corto_time_compare(lastSleep, sleep) == CORTO_LT) {
+                double tmp = (corto_timeToDouble(sleep) + corto_timeToDouble(lastSleep)) / 2;
+                sleep = corto_mount_doubleToTime(tmp);
+            }
         }
 
         if (sleep.sec >= 0) {
@@ -432,6 +433,7 @@ void corto_mount_onPoll_v(
 
     /* Collect events */
     corto_lock(this);
+    
     corto_timeGet(&this->lastPoll);    
     this->lastQueueSize = 0;
     if (corto_ll_size(this->events)) {
@@ -477,86 +479,6 @@ void corto_mount_onPoll_v(
     }
 }
 
-corto_resultIter corto_mount_onQuery_v(
-    corto_mount this,
-    corto_query *query)
-{
-    corto_resultIter result;
-    CORTO_UNUSED(this);
-    memset(&result, 0, sizeof(corto_iter));
-
-    if (corto_instanceof(corto_routerimpl_o, corto_typeof(this))) {
-        corto_id routerRequest;
-        corto_any routerResult = {corto_type(corto_resultIter_o), &result};
-        corto_any routerParam = {corto_type(corto_query_o), query};
-        sprintf(routerRequest, "%s/%s", query->from, query->select);
-        corto_cleanpath(routerRequest, routerRequest);
-        if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
-            corto_warning("%s", corto_lasterr());
-        }
-
-    }
-
-    return result;
-}
-
-corto_object corto_mount_onResume_v(
-    corto_mount this,
-    corto_string parent,
-    corto_string name,
-    corto_object object)
-{
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(parent);
-    CORTO_UNUSED(name);
-    CORTO_UNUSED(object);
-
-    return NULL;
-}
-
-uintptr_t corto_mount_onSubscribe_v(
-    corto_mount this,
-    corto_query *query,
-    uintptr_t ctx)
-{
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(query);
-    CORTO_UNUSED(ctx);
-
-    return 0;
-}
-
-uintptr_t corto_mount_onTransactionBegin_v(
-    corto_mount this)
-{
-
-    CORTO_UNUSED(this);
-    return 0;
-}
-
-void corto_mount_onTransactionEnd_v(
-    corto_mount this,
-    corto_subscriberEventIter events,
-    uintptr_t ctx)
-{
-
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(events);
-    CORTO_UNUSED(ctx);
-
-}
-
-void corto_mount_onUnsubscribe_v(
-    corto_mount this,
-    corto_query *query,
-    uintptr_t ctx)
-{
-    CORTO_UNUSED(this);
-    CORTO_UNUSED(query);
-    CORTO_UNUSED(ctx);
-
-}
-
 static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subscriberEvent *e) {
     corto_iter iter = corto_ll_iter(this->events);
     corto_subscriberEvent *e2;
@@ -573,9 +495,6 @@ static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subs
 
     return NULL;
 }
-
-#define MOUNT_QUEUE_THRESHOLD 10000
-#define MOUNT_QUEUE_THRESHOLD_SLEEP 1000000
 
 void corto_mount_post(
     corto_mount this,
@@ -633,6 +552,11 @@ void corto_mount_post(
             corto_event_handle(e);
             corto_assert(corto_release(e) == 0);
         }
+    }
+
+    /* If queue.max is not specified, don't throttle */
+    if (!this->policy.queue.max) {
+        return;
     }
 
     /* collectCount determines how often the algorithm will evaluate the delay
@@ -760,6 +684,86 @@ void corto_mount_post(
             corto_unlock(this);
         } while (size == this->policy.queue.max);
     }
+}
+
+corto_resultIter corto_mount_onQuery_v(
+    corto_mount this,
+    corto_query *query)
+{
+    corto_resultIter result;
+    CORTO_UNUSED(this);
+    memset(&result, 0, sizeof(corto_iter));
+
+    if (corto_instanceof(corto_routerimpl_o, corto_typeof(this))) {
+        corto_id routerRequest;
+        corto_any routerResult = {corto_type(corto_resultIter_o), &result};
+        corto_any routerParam = {corto_type(corto_query_o), query};
+        sprintf(routerRequest, "%s/%s", query->from, query->select);
+        corto_cleanpath(routerRequest, routerRequest);
+        if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
+            corto_warning("%s", corto_lasterr());
+        }
+
+    }
+
+    return result;
+}
+
+corto_object corto_mount_onResume_v(
+    corto_mount this,
+    corto_string parent,
+    corto_string name,
+    corto_object object)
+{
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(parent);
+    CORTO_UNUSED(name);
+    CORTO_UNUSED(object);
+
+    return NULL;
+}
+
+uintptr_t corto_mount_onSubscribe_v(
+    corto_mount this,
+    corto_query *query,
+    uintptr_t ctx)
+{
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(query);
+    CORTO_UNUSED(ctx);
+
+    return 0;
+}
+
+uintptr_t corto_mount_onTransactionBegin_v(
+    corto_mount this)
+{
+
+    CORTO_UNUSED(this);
+    return 0;
+}
+
+void corto_mount_onTransactionEnd_v(
+    corto_mount this,
+    corto_subscriberEventIter events,
+    uintptr_t ctx)
+{
+
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(events);
+    CORTO_UNUSED(ctx);
+
+}
+
+void corto_mount_onUnsubscribe_v(
+    corto_mount this,
+    corto_query *query,
+    uintptr_t ctx)
+{
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(query);
+    CORTO_UNUSED(ctx);
+
 }
 
 void corto_mount_publish(
