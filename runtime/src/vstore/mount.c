@@ -36,7 +36,7 @@ void* corto_mount_thread(void* arg) {
     corto_mount this = arg;
     corto_float64 frequency = this->policy.sampleRate;
     corto_time interval = corto_mount_doubleToTime(1.0 / frequency);
-    corto_time next, current, sleep;
+    corto_time next, current, sleep, lastSleep;
 
     corto_timeGet(&next);
     next = corto_timeAdd(next, interval);
@@ -44,7 +44,16 @@ void* corto_mount_thread(void* arg) {
     while (!this->quit) {
         corto_mount_onPoll(this);
         corto_timeGet(&current);
+        
+        lastSleep = sleep;
         sleep = corto_timeSub(next, current);
+
+        /* Attempt to limit the amount of oscillation in a fully loaded system */
+        if (corto_time_compare(lastSleep, sleep) == CORTO_LT) {
+            double tmp = (corto_timeToDouble(sleep) + corto_timeToDouble(lastSleep)) / 2;
+            sleep = corto_mount_doubleToTime(tmp);
+        }
+
         if (sleep.sec >= 0) {
             corto_sleep(sleep.sec, sleep.nanosec);
         } else {
@@ -638,6 +647,8 @@ void corto_mount_post(
     if (collectCount < 2) collectCount = 2;
     if (collectCount > 10) collectCount = 10;
 
+    collectCount = 1;
+
     /** Throttling algorithm that spreads delays evenly between events.
      * A simple throttling algorithm would block a publisher once the queue.max
      * has been reached. That is undesirable, because that way there would be
@@ -719,7 +730,6 @@ void corto_mount_post(
                     corto_sleep(0, 1000000);
                 } while ((lastPoll.nanosec == this->lastPoll.nanosec) || 
                          (lastPoll.nanosec == this->lastPoll.nanosec));
-
                 this->lastSleep.sec = 0;
                 this->lastSleep.nanosec = 0;
                 this->dueSleep.sec = 0;
