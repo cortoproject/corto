@@ -62,9 +62,10 @@ static void printUsage(void) {
     printf("  -h,--help                  Display this usage information\n");
     printf("\n");
     printf("  version and logo:\n");
-    printf("  -v                         Display current version\n");
+    printf("  --patch                    Display major.minor.patch version\n");    
     printf("  --minor                    Display major.minor version\n");
     printf("  --major                    Display major version\n");
+    printf("  -v                         Same as --patch\n");    
     printf("  --version                  Display current version and build\n");
     printf("  --logo                     Display logo\n");
     printf("\n");
@@ -106,11 +107,11 @@ static bool keep_alive = false;
 static bool mute = false;
 
 static void printVersion(bool minor, bool patch) {
-    if (minor) {
-        printf("%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
-    } else
     if (patch) {
-        printf("%s.%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, CORTO_VERSION_PATCH);        
+        printf("%s.%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, CORTO_VERSION_PATCH);    
+    } else
+    if (minor) {
+        printf("%s.%s\n", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);        
     } else {
         printf("%s\n", CORTO_VERSION_MAJOR);                
     }
@@ -134,6 +135,7 @@ static int parseGenericArgs(int argc, char *argv[]) {
             PARSE_OPTION('l', "load", load = true; i ++; break);
             PARSE_OPTION('a', "keep-alive", keep_alive = true);
             PARSE_OPTION('v', NULL, printVersion(true, true));
+            PARSE_OPTION(0, "patch", printVersion(true, true));
             PARSE_OPTION(0, "minor", printVersion(true, false));
             PARSE_OPTION(0, "major", printVersion(false, false));
             PARSE_OPTION(0, "version", printLongVersion());
