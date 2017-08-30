@@ -323,15 +323,16 @@ static int corto_load_fromDl(corto_dl dl, char *fileName, int argc, char *argv[]
     }
 
     /* Add library to libraries list */
-    corto_mutexLock (&corto_adminLock);
-    if (!libraries) {
-        libraries = corto_ll_new();
+    corto_mutexLock (&corto_adminLock);    
+    if (!libraries || !corto_ll_hasObject(libraries, dl)) {
+        if (!libraries) {
+            libraries = corto_ll_new();
+        }
+
+        corto_ll_insert(libraries, dl);
+        corto_debug("loader: loaded '%s'", fileName);        
     }
-
-    corto_ll_insert(libraries, dl);
     corto_mutexUnlock (&corto_adminLock);
-
-    corto_debug("loader: loaded '%s'", fileName);
 
     return 0;
 error:
