@@ -93,7 +93,6 @@ void test_SubscriberTest_onScope(
     if (e->event & CORTO_UPDATE) {
         this->countUpdateScope ++;
     }
-
 }
 
 void test_SubscriberTest_onSelf(

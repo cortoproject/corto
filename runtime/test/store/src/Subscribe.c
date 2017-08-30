@@ -106,7 +106,6 @@ void test_Subscribe_tc_subscribeFromEmpty(
 
     test_assert(corto_delete(s) == 0);
     test_assert(corto_delete(a) == 0);
-
 }
 
 void test_Subscribe_tc_subscribeFromImplicit(
