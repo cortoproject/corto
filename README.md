@@ -7,7 +7,7 @@ If any of these is not green, somebody is not sleeping well.
 
 Linux/OSX | Windows | Coverity
 ----------|---------|---------
-[![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | [![Build status](https://ci.appveyor.com/api/projects/status/549itmv72ut0ia51?svg=true)](https://ci.appveyor.com/project/SanderMertens/corto) | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
+[![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | not yet available | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
 
 ## Getting Started
 These instructions will get the project up and running on your local machine for development and testing purposes. Check out the deployment section for notes on how to deploy corto to a live system.
