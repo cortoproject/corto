@@ -1,6 +1,8 @@
 #include <corto/corto.h>
 #include "object.h"
 
+// #define DEBUG_FREEOPS
+
 /* Instruction kinds of freeops program */
 typedef enum freeops_kind {
     FREEOPS_STRING,
@@ -30,6 +32,9 @@ typedef struct freeops_op {
     uint16_t offset;
     uint32_t count;
     corto_type subtype;
+#ifdef DEBUG_FREEOPS
+    corto_member member;
+#endif    
 } freeops_op;
 
 /* freeops program (Free Operations) */
@@ -37,9 +42,11 @@ struct freeops {
     freeops_op *ops;
     uint32_t size;
     uint32_t opcount;
+#ifdef DEBUG_FREEOPS
+    corto_type type;
+#endif    
 };
 
-//#define DEBUG_FREEOPS
 #ifdef DEBUG_FREEOPS
 static char* freeops_tostr(freeops_kind kind) {
     switch(kind) {
@@ -98,6 +105,9 @@ static int16_t freeops_primitive(corto_walk_opt *s, corto_value *info, void *ctx
         op->kind = FREEOPS_STRING;
         op->offset = freeops_computeOffset(info);
         op->subtype = NULL;
+#ifdef DEBUG_FREEOPS
+        op->member = info->is.member.t;
+#endif        
     }
     return 0;
 }
@@ -111,7 +121,9 @@ static int16_t freeops_reference(corto_walk_opt *s, corto_value *info, void *ctx
     op->kind = FREEOPS_REF;
     op->offset = freeops_computeOffset(info);
     op->subtype = NULL;
-
+#ifdef DEBUG_FREEOPS
+    op->member = info->is.member.t;
+#endif    
     return 0;
 }
 
@@ -196,6 +208,9 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
         if (op) {
             op->offset = freeops_computeOffset(info);
             op->subtype = elementType;
+#ifdef DEBUG_FREEOPS
+            op->member = info->is.member.t;
+#endif                
         }
     }
 
@@ -213,11 +228,17 @@ static int16_t freeops_member(corto_walk_opt *s, corto_value *info, void *ctx) {
         op->kind = FREEOPS_REF;
         op->offset = freeops_computeOffset(info);
         op->subtype = m->type;
+#ifdef DEBUG_FREEOPS
+        op->member = info->is.member.t;
+#endif    
     } else if (m->type->kind == CORTO_COMPOSITE && corto_interface(m->type)->kind == CORTO_UNION) {
         freeops_op* op = freeops_add(r);
         op->kind = FREEOPS_UNION;
         op->offset = freeops_computeOffset(info);
         op->subtype = m->type;
+#ifdef DEBUG_FREEOPS
+        op->member = info->is.member.t;
+#endif            
     } else {
         corto_walk_value(s, info, ctx);
     }
@@ -234,6 +255,7 @@ void freeops_create(freeops *r, corto_type type) {
     s.access = 0;
     s.accessKind = CORTO_NOT;
     s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;    
     s.program[CORTO_PRIMITIVE] = freeops_primitive;
     s.program[CORTO_COLLECTION] = freeops_collection;
     s.metaprogram[CORTO_MEMBER] = freeops_member;
@@ -246,6 +268,10 @@ void freeops_create(freeops *r, corto_type type) {
         ;
 
     corto_metawalk(&s, type, result);
+
+#ifdef DEBUG_FREEOPS
+    result->type = type;
+#endif    
 
     if (!r) ((corto_struct)type)->freeops = (uintptr_t)result;
 }
@@ -323,11 +349,15 @@ static void freeops_run(freeops *r, void *v) {
     int i, size, count;
     void *aptr, *elem, *end, *deref;
     dummySeq *seq;
+
+#ifdef DEBUG_FREEOPS    
+    printf(">> free %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
+#endif
     for (i = 0; i < r->opcount; i++) {
         freeops_op* op = &r->ops[i];
         void *ptr = CORTO_OFFSET(v, op->offset);
 #ifdef DEBUG_FREEOPS
-        printf("%s: v = %p, offset = %d, ptr = %p [%s]\n", freeops_tostr(op->kind), v, op->offset, ptr, corto_fullpath(NULL, op->subtype));
+        printf("%s: v = %p, offset = %d, ptr = %p [%s], member = %s\n", freeops_tostr(op->kind), v, op->offset, ptr, corto_fullpath(NULL, op->subtype), corto_fullpath(NULL, op->member));
 #endif
 
         switch(op->kind) {
@@ -366,6 +396,10 @@ static void freeops_run(freeops *r, void *v) {
             break;
         }
     }
+
+#ifdef DEBUG_FREEOPS    
+    printf("<< done with %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
+#endif
 }
 
 /* Free a value */
