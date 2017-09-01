@@ -650,10 +650,10 @@ void test_Ownership_tc_updateNotOwnedTarget(
     test_assert(old == r);
 
     /* Update doesn't fail because type contains target member */
-    corto_int16 result = corto_updateBegin(o);
+    corto_int16 result = corto_update_begin(o);
     test_assert(result == 0);
 
-    result = corto_updateEnd(o);
+    result = corto_update_end(o);
     test_assert(result == 0);
 
     corto_setOwner(r);

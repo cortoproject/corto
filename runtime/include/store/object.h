@@ -299,7 +299,7 @@ int16_t corto_delete(
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 
@@ -308,18 +308,18 @@ int16_t corto_update(
 
 /** Start updating an object.
  * This function locks the object for thread-safe updating. No event is emitted 
- * yet. This function must be followed up by corto_updateEnd or corto_updateCancel.
+ * yet. This function must be followed up by corto_update_end or corto_update_cancel.
  *
  * This function fails if the current context does not own the object or if the
  * object passed to was not created with ATTR_OBSERVABLE.
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 
-int16_t corto_updateBegin(
+int16_t corto_update_begin(
     corto_object o);
 
 /** Try start updating an object.
@@ -333,17 +333,17 @@ int16_t corto_updateBegin(
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 
-int16_t corto_updateTry(
+int16_t corto_update_try(
     corto_object o);
 
 /** Update an object.
  * This function emits an ON_UPDATE event and must be called after either 
- * a successful call to corto_updateBegin or corto_updateTry. If the function is
- * called without first calling corto_updateBegin or corto_updateTry the behavior
+ * a successful call to corto_update_begin or corto_update_try. If the function is
+ * called without first calling corto_update_begin or corto_update_try the behavior
  * is undefined. The function will unlock the object.
  *
  * This function behaves like corto_define when the object is not yet defined, 
@@ -352,11 +352,11 @@ int16_t corto_updateTry(
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 
-int16_t corto_updateEnd(
+int16_t corto_update_end(
     corto_object o);
 
 /** Cancel updating an object.
@@ -365,11 +365,11 @@ int16_t corto_updateEnd(
  *
  * @param o The object for which the update must be cancelled.
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 
-int16_t corto_updateCancel(
+int16_t corto_update_cancel(
     corto_object o);
 
 /** Invalidate an object.
@@ -381,7 +381,7 @@ int16_t corto_updateCancel(
  *
  * @param o The object to be invalidated
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 
@@ -1151,6 +1151,13 @@ CORTO_EXPORT bool corto_secured(void);
 #define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
 #define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
+
+/* Backwards compatibility macro's */
+#define corto_updateBegin corto_update_begin
+#define corto_updateTry corto_update_try
+#define corto_updateCancel corto_update_cancel
+#define corto_updateEnd corto_update_end
+
 
 #ifdef __cplusplus
 }

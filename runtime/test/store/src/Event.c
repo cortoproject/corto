@@ -73,10 +73,10 @@ void test_Event_tc_onDeclareOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeclare == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclare == 1);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclare == 1);
 
@@ -180,10 +180,10 @@ void test_Event_tc_onDeclareScopeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclareScope == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclareScope == 0);
 
@@ -243,10 +243,10 @@ void test_Event_tc_onDeclareSelfOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareSelf == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclareSelf == 1);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclareSelf == 1);
 
@@ -357,10 +357,10 @@ void test_Event_tc_onDeclareTreeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclareTree == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeclareTree == 0);
 
@@ -424,10 +424,10 @@ void test_Event_tc_onDefineOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDefine == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefine == 1);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefine == 1);
 
@@ -534,10 +534,10 @@ void test_Event_tc_onDefineScopeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDefineScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefineScope == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefineScope == 0);
 
@@ -596,10 +596,10 @@ void test_Event_tc_onDefineSelfOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDefineSelf == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefineSelf == 1);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefineSelf == 1);
 
@@ -710,10 +710,10 @@ void test_Event_tc_onDefineTreeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDefineTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefineTree == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDefineTree == 0);
 
@@ -773,10 +773,10 @@ void test_Event_tc_onDeleteOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDelete == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDelete == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDelete == 0);
 
@@ -877,10 +877,10 @@ void test_Event_tc_onDeleteScopeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeleteScope == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeleteScope == 0);
 
@@ -940,10 +940,10 @@ void test_Event_tc_onDeleteSelfOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteSelf == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeleteSelf == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeleteSelf == 0);
 
@@ -1044,10 +1044,10 @@ void test_Event_tc_onDeleteTreeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeleteTree == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countDeleteTree == 0);
 
@@ -1078,11 +1078,11 @@ void test_Event_tc_onUpdate(
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1092,11 +1092,11 @@ void test_Event_tc_onUpdate(
     test_assert(p != NULL);
     test_assert(this->et->countUpdate == 2);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 2);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 3);
     test_assert(this->et->lastThis == this->et);
@@ -1110,11 +1110,11 @@ void test_Event_tc_onUpdate(
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 3);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 3);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 4);
     test_assert(this->et->lastThis == this->et);
@@ -1148,11 +1148,11 @@ void test_Event_tc_onUpdateDefine(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 3);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 3);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 4);
     test_assert(this->et->lastThis == this->et);
@@ -1162,11 +1162,11 @@ void test_Event_tc_onUpdateDefine(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefine == 5);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 5);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 6);
     test_assert(this->et->lastThis == this->et);
@@ -1180,11 +1180,11 @@ void test_Event_tc_onUpdateDefine(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 7);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 7);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 8);
     test_assert(this->et->lastThis == this->et);
@@ -1212,10 +1212,10 @@ void test_Event_tc_onUpdateDefineOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 1);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefine == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1246,11 +1246,11 @@ void test_Event_tc_onUpdateDefineScope(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1260,11 +1260,11 @@ void test_Event_tc_onUpdateDefineScope(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineScope == 3);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 3);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
     test_assert(this->et->lastThis == this->et);
@@ -1278,11 +1278,11 @@ void test_Event_tc_onUpdateDefineScope(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
 
@@ -1314,11 +1314,11 @@ void test_Event_tc_onUpdateDefineScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1329,11 +1329,11 @@ void test_Event_tc_onUpdateDefineScopeNotObservable(
     test_assert(this->et->countUpdateDefineScope == 3);
     test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 3);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
     test_assert(this->et->lastThis == this->et);
@@ -1348,11 +1348,11 @@ void test_Event_tc_onUpdateDefineScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 4);
 
@@ -1380,10 +1380,10 @@ void test_Event_tc_onUpdateDefineScopeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 0);
 
@@ -1414,11 +1414,11 @@ void test_Event_tc_onUpdateDefineSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
@@ -1426,11 +1426,11 @@ void test_Event_tc_onUpdateDefineSelf(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
@@ -1442,11 +1442,11 @@ void test_Event_tc_onUpdateDefineSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
@@ -1472,10 +1472,10 @@ void test_Event_tc_onUpdateDefineSelfOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 1);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1506,11 +1506,11 @@ void test_Event_tc_onUpdateDefineTree(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1520,11 +1520,11 @@ void test_Event_tc_onUpdateDefineTree(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineTree == 3);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 3);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 4);
     test_assert(this->et->lastThis == this->et);
@@ -1538,11 +1538,11 @@ void test_Event_tc_onUpdateDefineTree(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 5);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 5);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 6);
     test_assert(this->et->lastThis == this->et);
@@ -1576,11 +1576,11 @@ void test_Event_tc_onUpdateDefineTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1591,11 +1591,11 @@ void test_Event_tc_onUpdateDefineTreeNotObservable(
     test_assert(this->et->countUpdateDefineTree == 3);
     test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 3);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 4);
     test_assert(this->et->lastThis == this->et);
@@ -1610,11 +1610,11 @@ void test_Event_tc_onUpdateDefineTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 5);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 5);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 6);
     test_assert(this->et->lastThis == this->et);
@@ -1644,10 +1644,10 @@ void test_Event_tc_onUpdateDefineTreeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 0);
 
@@ -1672,10 +1672,10 @@ void test_Event_tc_onUpdateOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 1);
     test_assert(this->et->lastThis == this->et);
@@ -1706,11 +1706,11 @@ void test_Event_tc_onUpdateScope(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 1);
     test_assert(this->et->lastThis == this->et);
@@ -1720,11 +1720,11 @@ void test_Event_tc_onUpdateScope(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateScope == 1);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1738,11 +1738,11 @@ void test_Event_tc_onUpdateScope(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
@@ -1774,11 +1774,11 @@ void test_Event_tc_onUpdateScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 1);
     test_assert(this->et->lastThis == this->et);
@@ -1789,11 +1789,11 @@ void test_Event_tc_onUpdateScopeNotObservable(
     test_assert(this->et->countUpdateScope == 1);
     test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1808,11 +1808,11 @@ void test_Event_tc_onUpdateScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 2);
 
@@ -1840,10 +1840,10 @@ void test_Event_tc_onUpdateScopeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
@@ -1874,11 +1874,11 @@ void test_Event_tc_onUpdateSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -1886,11 +1886,11 @@ void test_Event_tc_onUpdateSelf(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -1902,11 +1902,11 @@ void test_Event_tc_onUpdateSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -1932,10 +1932,10 @@ void test_Event_tc_onUpdateSelfOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
     test_assert(this->et->lastThis == this->et);
@@ -1966,11 +1966,11 @@ void test_Event_tc_onUpdateTree(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 1);
     test_assert(this->et->lastThis == this->et);
@@ -1980,11 +1980,11 @@ void test_Event_tc_onUpdateTree(
     test_assert(p != NULL);
     test_assert(this->et->countUpdateTree == 1);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
     test_assert(this->et->lastThis == this->et);
@@ -1998,11 +1998,11 @@ void test_Event_tc_onUpdateTree(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 3);
     test_assert(this->et->lastThis == this->et);
@@ -2036,11 +2036,11 @@ void test_Event_tc_onUpdateTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 1);
     test_assert(this->et->lastThis == this->et);
@@ -2051,11 +2051,11 @@ void test_Event_tc_onUpdateTreeNotObservable(
     test_assert(this->et->countUpdateTree == 1);
     test_assert(!corto_checkAttr(p, CORTO_ATTR_OBSERVABLE));
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
     test_assert(this->et->lastThis == this->et);
@@ -2070,11 +2070,11 @@ void test_Event_tc_onUpdateTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 3);
     test_assert(this->et->lastThis == this->et);
@@ -2104,10 +2104,10 @@ void test_Event_tc_onUpdateTreeOrphan(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
@@ -2190,13 +2190,13 @@ void test_Event_tc_updateUndefined(
     test_assert(this->et->countDefine == 1);
     test_assert(o != NULL);
 
-    corto_int16 ret = corto_updateBegin(o);
+    corto_int16 ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assert(this->et->countUpdate == 0);
     test_assert(this->et->countDefine == 1);
     test_assert(!corto_checkState(o, CORTO_VALID));
 
-    ret = corto_updateEnd(o);
+    ret = corto_update_end(o);
     test_assert(ret == 0);
     test_assert(corto_checkState(o, CORTO_VALID));
     test_assert(this->et->countUpdate == 0);

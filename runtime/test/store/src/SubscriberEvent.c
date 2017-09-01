@@ -382,11 +382,11 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 2);
     test_assertstr(this->st->lastParent, ".");
@@ -399,11 +399,11 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assert(p != NULL);
     test_assertint(this->st->countUpdate, 2);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 2);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 3);
     test_assertstr(this->st->lastParent, ".");
@@ -420,11 +420,11 @@ void test_SubscriberEvent_tc_onUpdate(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 3);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 3);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdate, 4);
     test_assertstr(this->st->lastParent, "p");
@@ -459,11 +459,11 @@ void test_SubscriberEvent_tc_onUpdateScope(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 0);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 1);
     test_assertstr(this->st->lastParent, ".");
@@ -476,11 +476,11 @@ void test_SubscriberEvent_tc_onUpdateScope(
     test_assert(p != NULL);
     test_assertint(this->st->countUpdateScope, 1);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 2);
     test_assertstr(this->st->lastParent, ".");
@@ -497,11 +497,11 @@ void test_SubscriberEvent_tc_onUpdateScope(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateScope, 2);
     test_assertstr(this->st->lastParent, "p");
@@ -541,11 +541,11 @@ void test_SubscriberEvent_tc_onUpdateSelf(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
@@ -553,11 +553,11 @@ void test_SubscriberEvent_tc_onUpdateSelf(
     test_assert(p != NULL);
     test_assertint(this->st->countUpdateSelf, 1);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
@@ -569,11 +569,11 @@ void test_SubscriberEvent_tc_onUpdateSelf(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateSelf, 1);
 
@@ -603,11 +603,11 @@ void test_SubscriberEvent_tc_onUpdateTree(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 0);
 
-    ret = corto_updateBegin(o);
+    ret = corto_update_begin(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 0);
 
-    corto_updateEnd(o);
+    corto_update_end(o);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 1);
     test_assertstr(this->st->lastParent, ".");
@@ -620,11 +620,11 @@ void test_SubscriberEvent_tc_onUpdateTree(
     test_assert(p != NULL);
     test_assertint(this->st->countUpdateTree, 1);
 
-    ret = corto_updateBegin(p);
+    ret = corto_update_begin(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 1);
 
-    corto_updateEnd(p);
+    corto_update_end(p);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 2);
     test_assertstr(this->st->lastParent, ".");
@@ -641,11 +641,11 @@ void test_SubscriberEvent_tc_onUpdateTree(
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 2);
 
-    ret = corto_updateBegin(q);
+    ret = corto_update_begin(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 2);
 
-    corto_updateEnd(q);
+    corto_update_end(q);
     test_assert(ret == 0);
     test_assertint(this->st->countUpdateTree, 3);
     test_assertstr(this->st->lastParent, "p");

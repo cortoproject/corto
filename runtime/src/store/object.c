@@ -3609,11 +3609,11 @@ corto_int16 corto_publish(
         case CORTO_DEFINE:
         case CORTO_UPDATE:
             if (corto_typeof(o)->kind != CORTO_VOID) {
-                if (!(result = corto_updateBegin(o))) {
+                if (!(result = corto_update_begin(o))) {
                     if ((result = corto_fromcontent(o, contentType, content))) {
-                        corto_updateCancel(o);
+                        corto_update_cancel(o);
                     } else {
-                        corto_updateEnd(o);
+                        corto_update_end(o);
                     }
                 }
             } else {
@@ -3682,7 +3682,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_updateBegin(corto_object o) {
+corto_int16 corto_update_begin(corto_object o) {
     corto_assertObject(o);
     corto_type type = corto_typeof(o);
 
@@ -3727,7 +3727,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_updateTry(corto_object observable) {
+corto_int16 corto_update_try(corto_object observable) {
     corto_assertObject(observable);
 
     corto__writable* _wr;
@@ -3754,7 +3754,7 @@ busy:
     return CORTO_LOCK_BUSY;
 }
 
-corto_int16 corto_updateEnd(corto_object observable) {
+corto_int16 corto_update_end(corto_object observable) {
     corto_assertObject(observable);
 
     corto__writable* _wr;
@@ -3806,7 +3806,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_updateCancel(corto_object observable) {
+corto_int16 corto_update_cancel(corto_object observable) {
     corto_assertObject(observable);
 
     if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {

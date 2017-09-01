@@ -40,13 +40,13 @@ corto_secure_accessKind* _corto_secure_accessKindCreateChild(corto_object _paren
 
 corto_int16 _corto_secure_accessKindUpdate(corto_secure_accessKind* _this, corto_secure_accessKind value) {
     CORTO_UNUSED(_this);
-    if (!corto_updateBegin(_this)) {
+    if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             *((corto_secure_accessKind*)CORTO_OFFSET(_this, ((corto_type)corto_secure_accessKind_o)->size)) = value;
         } else {
             *_this = value;
         }
-        corto_updateEnd(_this);
+        corto_update_end(_this);
     } else {
         return -1;
     }
@@ -117,13 +117,13 @@ corto_secure_actionKind* _corto_secure_actionKindCreateChild(corto_object _paren
 
 corto_int16 _corto_secure_actionKindUpdate(corto_secure_actionKind* _this, corto_secure_actionKind value) {
     CORTO_UNUSED(_this);
-    if (!corto_updateBegin(_this)) {
+    if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             *((corto_secure_actionKind*)CORTO_OFFSET(_this, ((corto_type)corto_secure_actionKind_o)->size)) = value;
         } else {
             *_this = value;
         }
-        corto_updateEnd(_this);
+        corto_update_end(_this);
     } else {
         return -1;
     }
@@ -192,11 +192,11 @@ corto_secure_key _corto_secure_keyCreateChild(corto_object _parent, corto_string
 
 corto_int16 _corto_secure_keyUpdate(corto_secure_key _this) {
     CORTO_UNUSED(_this);
-    if (!corto_updateBegin(_this)) {
+    if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_updateEnd(_this);
+        corto_update_end(_this);
     } else {
         return -1;
     }
@@ -269,7 +269,7 @@ corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, corto_stri
 
 corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_string mount, corto_string expr, int16_t priority) {
     CORTO_UNUSED(_this);
-    if (!corto_updateBegin(_this)) {
+    if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_ptr_setstr(&((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->mount, mount);
             corto_ptr_setstr(&((corto_secure_lock)((corto_secure_lock)CORTO_OFFSET(_this, ((corto_type)corto_secure_lock_o)->size)))->expr, expr);
@@ -279,7 +279,7 @@ corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_string mount
             corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
             ((corto_secure_lock)_this)->priority = priority;
         }
-        corto_updateEnd(_this);
+        corto_update_end(_this);
     } else {
         return -1;
     }

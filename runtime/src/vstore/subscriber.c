@@ -41,13 +41,6 @@ corto_entityAdmin corto_subscriber_admin = {
     .changed = 0
 };
 
-/* Function to determine relative path from two path strings  */
-char* corto_pathstr(
-    corto_string buffer,
-    corto_string from,
-    corto_string to,
-    char *sep);
-
 static corto_int16 corto_subscriber_invoke(
     corto_object instance,
     corto_eventMask mask,
@@ -124,7 +117,7 @@ static char tochar(char *to, char *ptr, int len) {
 /* Function returns the 'to' path relative to 'from', and ensures that the
  * output can be used in an "out + / + id" expression to reconstruct a correct
  * full path to an object. */
-static void corto_pathstr_optimized(
+void corto_pathstr(
     char *out,
     char *from,
     char *to,
@@ -194,7 +187,6 @@ static void corto_pathstr_optimized(
         } while (tch);
     }
     outptr[0] = '\0';
-    //printf("from=%s, to=%s, out=%s\n", from, to, out);
 }
 
 corto_int16 corto_notifySubscribersId(
@@ -380,7 +372,7 @@ corto_int16 corto_notifySubscribersId(
                     if (!fromptr[1]) {
                         fromptr ++;
                     }
-                    corto_pathstr_optimized(relativeParent, fromptr, parent, sepLength);
+                    corto_pathstr(relativeParent, fromptr, parent, sepLength);
                     corto_benchmark_stop(S_B_PATHID);
                     relativeParentSet = TRUE;
                 }

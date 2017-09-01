@@ -225,7 +225,7 @@ struct corto_select__fluent corto_select(
  * @param contentType A string representing the content type (format) of the specified value.
  * @param value A string (or binary value) representing the serialized value of the object.
  * @return 0 if success, nonzero if failed.
- * @see corto_updateBegin corto_updateEnd corto_updateTry corto_updateCancel corto_publish
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT 

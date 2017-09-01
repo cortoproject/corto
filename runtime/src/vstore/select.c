@@ -219,7 +219,7 @@ error:
 
 corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep);
 
-char* corto_pathstr(
+/*char* corto_pathstr(
     corto_string buffer,
     corto_string from,
     corto_string to,
@@ -256,7 +256,7 @@ char* corto_pathstr(
         toCount --;
     }
 
-    /* Find common ancestor */
+    /* Find common ancestor * /
     while ((common < fromCount) &&
        (common < toCount) &&
        !stricmp(fromPtr[common], toPtr[common]))
@@ -267,7 +267,7 @@ char* corto_pathstr(
     if ((fromCount == toCount) && (toCount == common)) {
         strcpy(buffer, ".");
     } else {
-        /* Go up until common ancestor */
+        /* Go up until common ancestor * /
         while (fromCount > common) {
             if (buffer[0]) {
                 strcat(buffer, "/..");
@@ -277,7 +277,7 @@ char* corto_pathstr(
             fromCount --;
         }
 
-        /* Navigate from common ancestor to target */
+        /* Navigate from common ancestor to target * /
         while (common < toCount) {
             if (!toPtr[common][0] || (buffer[0] && strcmp(buffer, "/"))) {
                 if (common || (toCount != 1)) {
@@ -290,7 +290,13 @@ char* corto_pathstr(
     }
 
     return buffer;
-}
+}*/
+
+void corto_pathstr(
+    char *out,
+    char *from,
+    char *to,
+    int tolen);
 
 static void corto_setItemData(
     corto_object o,
@@ -309,7 +315,7 @@ static void corto_setItemData(
 
     /* Compute path from scope to result */
     strcpy(from, data->scope ? data->scope : "");
-    corto_pathstr(item->parent, from, to, "/");
+    corto_pathstr(item->parent, from, to, -1);
 
     if (corto_idof(o)) {
         strcpy(item->id, corto_idof(o));
@@ -611,7 +617,7 @@ static corto_int16 corto_selectIterMount(
         strcat(rpath, "/");
         strcat(rpath, result->parent);
         corto_cleanpath(rpath, rpath);
-        corto_pathstr(data->item.parent, path, rpath, "/");
+        corto_pathstr(data->item.parent, path, rpath, -1);
     } else {
         data->item.parent[0] = '\0';
     }
