@@ -220,6 +220,12 @@ int main(int argc, char *argv[]) {
             }
         }        
 
+        if (keep_alive) {
+            while (true) {
+                corto_sleep(1, 0);
+            }
+        }
+
         /* Stop corto */
         corto_stop();
     } else {
