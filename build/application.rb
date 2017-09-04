@@ -40,7 +40,12 @@ end
 ARTEFACT = PACKAGE.split("/").last
 
 task :symlink do
-  cmd "ln -fs #{TARGETDIR}/#{ARTEFACT} ./#{ARTEFACT}"
+  begin
+    cmd "ln -fs #{TARGETDIR}/#{ARTEFACT} ./#{ARTEFACT}"
+  rescue
+    # If symlinks are not supported in the project directory, copy file
+    cmd "cp #{TARGETDIR}/#{ARTEFACT} ./#{ARTEFACT}"
+  end
 end
 
 if ENV['CORTO_TARGET'] != '/usr/local' then
