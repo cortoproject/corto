@@ -25,6 +25,7 @@ static corto_threadKey corto_errKey = 0;
 extern corto_mutex_s corto_adminLock;
 static corto_err CORTO_LOG_LEVEL = CORTO_INFO;
 extern char *corto_appName;
+static char *corto_errfmt_application;
 static char *corto_errfmt_current = CORTO_ERRFMT_DEFAULT;
 
 #define DEPTH 60
@@ -486,8 +487,14 @@ static char* corto_log_parseComponents(char *components[], char *msg) {
 }
 
 void corto_errfmt(char *fmt) {
-    corto_errfmt_current = fmt;
-    corto_setenv("CORTO_ERRFMT", "%s", fmt);
+    if (corto_errfmt_application) {
+        free(corto_errfmt_application);
+    }
+
+    corto_errfmt_current = strdup(fmt);
+    corto_errfmt_application = corto_errfmt_current;
+
+    corto_setenv("CORTO_ERRFMT", "%s", corto_errfmt_current);
 }
 
 corto_err corto_logv(char const *file, unsigned int line, corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
