@@ -114,9 +114,15 @@ static char tochar(char *to, char *ptr, int len) {
 
 #define tch tochar(to, tptr, tolen)
 
+static bool chicmp(char ch1, char ch2) {
+    if (ch1 < 97) ch1 = tolower(ch1);
+    if (ch2 < 97) ch2 = tolower(ch2);
+    return ch1 == ch2;
+}
+
 /* Function returns the 'to' path relative to 'from', and ensures that the
- * output can be used in an "out + / + id" expression to reconstruct a correct
- * full path to an object. */
+ * output can be used in an "from + / + out + / + id" expression to reconstruct
+ * a correct full path to an object. */
 void corto_pathstr(
     char *out,
     char *from,
@@ -145,23 +151,18 @@ void corto_pathstr(
     char *tptr = to ? to[0] == '/' ? &to[1] : to : "";
 
     /* First, move ptrs until paths diverge */
-    while (fptr[0] && (fptr[0] == tch)) {
+    while (fptr[0] && chicmp(fptr[0], tch)) {
         fptr ++;
         tptr ++;
     }
     
     /* Check if paths are equal */
     if (!fptr[0] && !tch) {
-        bool from_isRoot = from && (from[0] == '/') && !from[1];            
-        if (from_isRoot) {
-            /* If both from and to point to the root, return an empty string.
-             * This ensures that a user can always do parent + / + id in order
-             * to build a full path */
-            (outptr++)[0] = '\0';
-        } else {
-            (outptr++)[0] = '.';
-        }
-    } else if (fptr[0]){
+        (outptr++)[0] = '.';
+    } else if (fptr[0]) {
+        /* If fptr was split on a '..', don't insert a '..' for that */
+        if (fptr[0] == '/') fptr ++;
+
         /* Next, for every identifier in 'from', add '..' */
         while (fptr[0]) {
             if (fptr[0] == '/') {

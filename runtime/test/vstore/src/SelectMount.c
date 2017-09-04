@@ -1502,3 +1502,29 @@ void test_SelectMount_tc_selectFromMountWithPartialFrom(
     test_assert(corto_delete(p) == 0);
 }
 
+void test_SelectMount_tc_selectFromPartialMatchedElement(
+    test_SelectMount this)
+{
+    corto_iter it;
+    test_assert(corto_select("*").from("/a/x").iter(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "uint32");
+
+    test_assert(corto_iter_hasNext(&it));    
+    r = corto_iter_next(&it);
+    test_assertstr(r->id, "b");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "uint32");
+
+    test_assert(corto_iter_hasNext(&it));    
+    r = corto_iter_next(&it);
+    test_assertstr(r->id, "c");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "uint32"); 
+
+    test_assert(!corto_iter_hasNext(&it));
+}

@@ -979,6 +979,7 @@ test/Suite Select:/
     void tc_selectFromRootNull()
     void tc_selectFromRootEmpty()
     void tc_selectFromLangParent()
+    void tc_selectFromPartialMatchedElement()
 
     void tc_selectParentNoSlash()
 

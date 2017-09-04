@@ -1769,6 +1769,26 @@ void test_Select_tc_selectUnderscore(
 
 }
 
+void test_Select_tc_selectFromPartialMatchedElement(
+    test_Select this)
+{
+    corto_object a = corto_createChild(root_o, "data/hello/a", corto_void_o);
+    test_assert(a != NULL);
+    corto_object b = corto_createChild(root_o, "data/helloworld/b", corto_void_o);
+    test_assert(b != NULL);
+
+    corto_iter it;
+    test_assert(corto_select("*").from("data/hello").iter(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it));
+    corto_result *r = corto_iter_next(&it);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "void");
+
+    test_assert(!corto_iter_hasNext(&it));
+}
+
 void test_Select_teardown(
     test_Select this)
 {
@@ -1776,4 +1796,3 @@ void test_Select_teardown(
     /* << Insert implementation >> */
 
 }
-

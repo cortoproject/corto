@@ -141,6 +141,7 @@ test/Suite SelectMount:/
     void tc_selectGrandparentFromVirtualScope()
     void tc_selectVirtualParentFromVirtualScope()
     void tc_selectVirtualGrandparentFromVirtualScope()
+    void tc_selectFromPartialMatchedElement()
 
     void tc_selectTree()
     void tc_selectTreeFromScope()
