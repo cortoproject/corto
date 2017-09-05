@@ -121,16 +121,14 @@ void corto_loader_addDir(
 
                 if (q->content) {
                     if (strcmp(q->from, ".")) {
-                        corto_asprintf(
-                            &content,
+                        content = corto_asprintf(
                             "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"env\":\"%s\"}",
                             q->from,
                             f,
                             env
                         );
                     } else {
-                        corto_asprintf(
-                            &content,
+                        content = corto_asprintf(
                             "{\"url\":\"http://www.corto.io/doc/%s\",\"env\":\"%s\"}",
                             f,
                             env

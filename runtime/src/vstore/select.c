@@ -400,6 +400,10 @@ static corto_resultIter corto_selectRequestMount(
         uint64_t len = q->from ? strlen(q->from) : 0;
         uint64_t scopeLen = strlen(segment->scope);
 
+        if (q->from && q->from[0] != '/') {
+            len ++;
+        }
+
         if (len < scopeLen) {
             strcpy(parent, &segment->scope[len]);
         } else {
@@ -1293,7 +1297,7 @@ static corto_resultIter corto_selectPrepareIterator (
     if (scope && *scope) {
         if (*scope != '/') {
             /* Normalize scope to properly formatted identifier */
-            corto_asprintf(&data->scope, "/%s", scope);
+            data->scope = corto_asprintf("/%s", scope);
         } else {
             data->scope = corto_strdup(scope);
         }
@@ -1769,7 +1773,7 @@ corto_select__fluent corto_select(
     
     if (expr) {
         va_start(arglist, expr);
-        corto_vasprintf(&request->expr, expr, arglist);
+        request->expr = corto_vasprintf(expr, arglist);
         va_end(arglist);
     }
 

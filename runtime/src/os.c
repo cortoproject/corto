@@ -581,7 +581,7 @@ char* corto_venvparse(const char* input, va_list arglist) {
     char var[256], *varptr; /* buffer for name of environment variable */
     char ch;
 
-    corto_vasprintf(&str, input, arglist);
+    str = corto_vasprintf(input, arglist);
 
     ptr = str;
     bptr = result;

@@ -7,7 +7,7 @@ corto_string test_Point_nameof(
 {
     corto_string name;
 
-    corto_asprintf(&name, "%d,%d", this->x, this->y);
+    name = corto_asprintf("%d,%d", this->x, this->y);
 
     return name;
 }

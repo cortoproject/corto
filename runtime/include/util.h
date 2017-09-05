@@ -197,11 +197,14 @@ CORTO_EXPORT size_t strmask(char *str, char *mask);
 CORTO_EXPORT char* corto_strdup(const char* str);
 
 /* sprintf with automatic allocation */
-CORTO_EXPORT int corto_asprintf (char **str, const char *fmt, ...);
-CORTO_EXPORT int corto_vasprintf (char **str, const char *fmt, va_list args);
+CORTO_EXPORT char* corto_asprintf (const char *fmt, ...);
+CORTO_EXPORT char* corto_vasprintf (const char *fmt, va_list args);
 
 /* Replace substring in string */
 CORTO_EXPORT char* corto_replace(char *s, char *old, char *_new);
+
+/* Build string that can be used as argument (no dealloc required) */
+CORTO_EXPORT char* strarg(const char *fmt, ...);
 
 #ifdef __cplusplus
 }

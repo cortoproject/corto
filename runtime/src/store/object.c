@@ -646,7 +646,7 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
         memtrace[memtraceSp] = NULL;
     }
 
-    corto_asprintf(&memtrace[memtraceSp], "%s (%s) %s", path, oper, context ? context : "");
+    memtrace[memtraceSp] = corto_asprintf("%s (%s) %s", path, oper, context ? context : "");
 
     if ((CORTO_TRACE_OBJECT == o) || (CORTO_TRACE_ID && !strcmp(path, CORTO_TRACE_ID))) {
         memtraceCount ++;
@@ -2195,13 +2195,12 @@ error:
 corto_int16 corto_fromcontent(corto_object o, corto_string contentType, corto_string fmt, ...) {
     corto_contentType type;
     va_list args;
-    corto_string content;
     corto_int16 result;
 
     corto_assertObject(o);
 
     va_start(args, fmt);
-    corto_vasprintf(&content, fmt, args);
+    char *content = corto_vasprintf(fmt, args);
     va_end(args);
 
     if (!(type = corto_loadContentType(contentType))) {
@@ -2237,13 +2236,12 @@ error:
 corto_int16 corto_object_fromcontent(corto_object *o, corto_string contentType, corto_string fmt, ...) {
     corto_contentType type;
     va_list args;
-    corto_string content;
     corto_int16 result;
 
     corto_assertObject(o);
 
     va_start(args, fmt);
-    corto_vasprintf(&content, fmt, args);
+    char *content = corto_vasprintf(fmt, args);
     va_end(args);
 
     if (!(type = corto_loadContentType(contentType))) {

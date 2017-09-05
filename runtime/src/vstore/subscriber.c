@@ -457,7 +457,7 @@ static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 
     if (r->scope && *r->scope) {
         if (*r->scope != '/') {
-            corto_asprintf(&s->query.from, "/%s", r->scope);
+            s->query.from = corto_asprintf("/%s", r->scope);
         } else {
             s->query.from = corto_strdup(r->scope);
         } 
@@ -590,7 +590,7 @@ corto_subscribe__fluent corto_subscribe(
     }
 
     va_start(arglist, expr);
-    corto_vasprintf(&request->expr, expr, arglist);
+    request->expr = corto_vasprintf(expr, arglist);
     va_end (arglist);
 
     request->enabled = TRUE;

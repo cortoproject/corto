@@ -208,7 +208,7 @@ static corto_string corto_replaceColons(corto_id buffer, corto_string package) {
 static corto_string corto_packageToFile(corto_string package) {
     corto_string path;
 #ifdef CORTO_REDIS
-    corto_asprintf(&path, "lib%s.so", package[0] == '/' ? package + 1 : package);
+    path = corto_asprintf("lib%s.so", package[0] == '/' ? package + 1 : package);
     char ch, *ptr;
     for (ptr = path; (ch = *ptr); ptr++) {
         if (ch == '/') *ptr = '_';
@@ -669,22 +669,19 @@ static char* corto_locatePackageIntern(
 
     corto_string targetDetail = NULL, homeDetail = NULL, usrDetail = NULL;
     if (targetBuild) {
-        corto_asprintf(
-          &targetDetail,
+        targetDetail = corto_asprintf(
           "\n- %s found but uses different corto build ('%s')",
           targetPath, targetBuild);
         corto_dealloc(targetBuild);
     }
     if (homeBuild) {
-        corto_asprintf(
-          &homeDetail,
+        homeDetail = corto_asprintf(
           "\n- %s found but uses different corto build ('%s')",
           homePath, homeBuild);
         corto_dealloc(homeBuild);
     }
     if (usrBuild) {
-        corto_asprintf(
-          &usrDetail,
+        usrDetail = corto_asprintf(
           "\n- %s found but uses different corto build ('%s')",
           usrPath, usrBuild);
         corto_dealloc(usrBuild);
@@ -693,7 +690,7 @@ static char* corto_locatePackageIntern(
     if (targetDetail || homeDetail || usrDetail ||
         targetErr || homeErr || usrErr)
     {
-        corto_asprintf(&details,
+        details = corto_asprintf(
           "%s%s%s%s%s%s%s%s%s",
           targetDetail ? targetDetail : "",
           targetErr ? "\n- " : "",
@@ -852,7 +849,7 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_loc
         switch(kind) {
         case CORTO_LOCATION_ENV:
             /* Quick & dirty trick to strip everything but the env */
-            corto_asprintf(&result, base, "@");
+            result = corto_asprintf(base, "@");
             *(strchr(result, '@') - 1) = '\0'; /* Also strip the '/' */
             break;
         case CORTO_LOCATION_LIB:
@@ -860,14 +857,14 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_loc
             break;
         case CORTO_LOCATION_LIBPATH: {
             corto_string lib;
-            corto_asprintf(&lib, base, "lib");
-            corto_asprintf(&result, "%s/%s", lib, package);
+            lib = corto_asprintf(base, "lib");
+            result = corto_asprintf("%s/%s", lib, package);
             break;
         }
         case CORTO_LOCATION_INCLUDE: {
             corto_string include;
-            corto_asprintf(&include, base, "include");
-            corto_asprintf(&result, "%s/%s", include, package);
+            include = corto_asprintf(base, "include");
+            result = corto_asprintf("%s/%s", include, package);
             corto_dealloc(include);
             break;
         }

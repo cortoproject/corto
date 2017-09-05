@@ -326,21 +326,21 @@ char* corto_strdup(const char* str) {
  * copyright (c) 2014 joseph werle <joseph.werle@gmail.com>
  */
 
-int corto_asprintf (char **str, const char *fmt, ...) {
-    int size = 0;
+char* corto_asprintf (const char *fmt, ...) {
     va_list args;
 
     va_start(args, fmt);
 
-    size = corto_vasprintf(str, fmt, args);
+    char *result = corto_vasprintf(fmt, args);
 
     va_end(args);
 
-    return size;
+    return result;
 }
 
-int corto_vasprintf (char **str, const char *fmt, va_list args) {
+char* corto_vasprintf (const char *fmt, va_list args) {
     int size = 0;
+    char *result  = NULL;
     va_list tmpa;
 
     va_copy(tmpa, args);
@@ -349,21 +349,25 @@ int corto_vasprintf (char **str, const char *fmt, va_list args) {
 
     va_end(tmpa);
 
-    // return -1 to be compliant if
-    // size is less than 0
-    if (size < 0) { return -1; }
+    if (size < 0) { return NULL; }
 
     // alloc with size plus 1 for `\0'
-    *str = (char *) malloc(size + 1);
+    result = (char *) malloc(size + 1);
 
-    // return -1 to be compliant
-    // if pointer is `NULL'
-    if (NULL == *str) { return -1; }
+    if (!result) { return NULL; }
 
-    // format string with original
-    // variadic arguments and set new size
-    size = vsprintf(*str, fmt, args);
-    return size;
+    vsprintf(result, fmt, args);
+    return result;
+}
+
+char* strarg(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    char *tmp = corto_vasprintf(fmt, args);
+    va_end(args);
+    char *result = corto_setThreadString(tmp);
+    free(tmp);
+    return result;
 }
 
 /* Convert characters in string to uppercase */
