@@ -35,6 +35,7 @@ typedef struct corto_errThreadData {
     corto_string lastError;
     corto_string backtrace;
     corto_bool viewed;
+    char *components[CORTO_MAX_LOG_COMPONENTS + 1];
 } corto_errThreadData;
 
 struct corto_err_callback {
@@ -274,7 +275,7 @@ static char* corto_log_componentString(char *components[]) {
             CORTO_MAGENTA, components[i], CORTO_NORMAL);
         i ++;
         if (components[i]) {
-            corto_buffer_appendstr(&buff, ": ");
+            corto_buffer_appendstr(&buff, ".");
         }
     }
 
@@ -471,6 +472,12 @@ static void corto_logprint(FILE *f, corto_err kind, char *components[], char con
 static char* corto_log_parseComponents(char *components[], char *msg) {
     char *ptr, *prev = msg, ch;
     int count = 0;
+    corto_errThreadData *data = corto_getThreadData();
+
+    while (data->components[count]) {
+        components[count] = data->components[count];
+        count ++;
+    }
 
     for (ptr = msg; (ch = *ptr) && (isalpha(ch) || isdigit(ch) || (ch == ':') || (ch == '/') || (ch == '_')); ptr++) {
         if ((ch == ':') && (ptr[1] == ' ')) {
@@ -478,6 +485,9 @@ static char* corto_log_parseComponents(char *components[], char *msg) {
             components[count ++] = prev;
             ptr ++;
             prev = ptr + 1;
+            if (count == CORTO_MAX_LOG_COMPONENTS) {
+                break;
+            }
         }
     }
 
@@ -595,7 +605,7 @@ corto_err corto_infov(char const *file, unsigned int line, char* fmt, va_list ar
 void corto_seterrv(char *fmt, va_list args) {
     char *err = NULL;
     if (fmt) {
-        corto_vasprintf(&err, fmt, args);
+        err = corto_vasprintf(fmt, args);
     }
     corto_setLastError(err);
 
@@ -616,7 +626,7 @@ void corto_seterrv(char *fmt, va_list args) {
 void corto_setmsgv(char *fmt, va_list args) {
     char *err = NULL;
     if (fmt) {
-        corto_vasprintf(&err, fmt, args);
+        err = corto_vasprintf(fmt, args);
     }
     corto_setLastMessage(err);
     corto_dealloc(err);
@@ -734,7 +744,23 @@ void corto_setinfo(char *fmt, ...) {
 }
 
 void corto_verbosity(corto_err level) {
+
+    switch(level) {
+    case CORTO_DEBUG: corto_setenv("CORTO_VERBOSITY", "DEBUG"); break;
+    case CORTO_TRACE: corto_setenv("CORTO_VERBOSITY", "TRACE"); break;
+    case CORTO_OK: corto_setenv("CORTO_VERBOSITY", "OK"); break;
+    case CORTO_INFO: corto_setenv("CORTO_VERBOSITY", "INFO"); break;
+    case CORTO_WARNING: corto_setenv("CORTO_VERBOSITY", "WARNING"); break;
+    case CORTO_ERROR: corto_setenv("CORTO_VERBOSITY", "ERROR"); break;
+    case CORTO_CRITICAL: corto_setenv("CORTO_VERBOSITY", "CRITICAL"); break;
+    case CORTO_ASSERT: corto_setenv("CORTO_VERBOSITY", "ASSERT"); break;
+    default:
+        corto_critical("invalid verbosity level %d", level);
+        return;
+    }
+
     CORTO_LOG_LEVEL = level;
+
     if (level == CORTO_DEBUG) {
         CORTO_DEBUG_ENABLED = 1;
         CORTO_TRACE_NOTIFICATIONS = 1;
@@ -747,3 +773,28 @@ void corto_verbosity(corto_err level) {
 corto_err corto_verbosityGet() {
     return CORTO_LOG_LEVEL;
 }
+
+int corto_component_push(char *component) {
+    corto_errThreadData *data = corto_getThreadData();
+    int i = 0;
+    while (data->components[i] && (i < CORTO_MAX_LOG_COMPONENTS)) {
+        i ++;
+    }
+
+    if (!data->components[i]) {
+        corto_ptr_setstr(&data->components[i], component);
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
+void corto_component_pop(void) {
+    corto_errThreadData *data = corto_getThreadData();
+    int i = CORTO_MAX_LOG_COMPONENTS;
+    while (!data->components[i] && i) {
+        i --;
+    }
+    corto_ptr_setstr(&data->components[i], NULL);
+}
+

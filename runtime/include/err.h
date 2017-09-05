@@ -65,6 +65,10 @@ typedef enum corto_err {
 CORTO_EXPORT void corto_verbosity(corto_err level);
 CORTO_EXPORT corto_err corto_verbosityGet(void);
 
+/* Push / pop components */
+CORTO_EXPORT int corto_component_push(char *component);
+CORTO_EXPORT void corto_component_pop(void);
+
 /* Report errors */
 CORTO_EXPORT void _corto_assert(char const *file, unsigned int line, unsigned int condition, char* fmt, ...);
 CORTO_EXPORT corto_err _corto_debug(char const *file, unsigned int line, char* fmt, ...);
