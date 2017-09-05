@@ -1528,3 +1528,38 @@ void test_SelectMount_tc_selectFromPartialMatchedElement(
 
     test_assert(!corto_iter_hasNext(&it));
 }
+
+void test_SelectMount_tc_selectFromRootNoInitialSlashInFrom(
+    test_SelectMount this)
+{
+    /* Create mount where no initial '/' is provided for 'from' */
+    corto_object vmount = test_VirtualMountCreate("data");
+    test_assert(vmount != NULL);
+
+    /* Select data from root of mount */
+    corto_iter it;
+    corto_select("*").from("data").iter(&it);
+
+    corto_result *r;
+
+    test_assert(corto_iter_hasNext(&it));
+    test_assert ((r = corto_iter_next(&it)) != NULL);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "int32");
+
+    test_assert(corto_iter_hasNext(&it));
+    test_assert ((r = corto_iter_next(&it)) != NULL);
+    test_assertstr(r->id, "b");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "string");
+
+    test_assert(corto_iter_hasNext(&it));
+    test_assert ((r = corto_iter_next(&it)) != NULL);
+    test_assertstr(r->id, "c");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "float64");
+
+    test_assert(!corto_iter_hasNext(&it));
+}
+

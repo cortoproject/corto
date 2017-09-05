@@ -49,8 +49,10 @@ corto_resultIter test_VirtualMount_onQuery(
     test_VirtualMount this,
     corto_query *query)
 {
-
-    return corto_ll_iterAlloc(this->data);
-
+    if (!strcmp(query->from, ".")) {
+        return corto_ll_iterAlloc(this->data);
+    } else {
+        return CORTO_ITER_EMPTY;
+    }
 }
 

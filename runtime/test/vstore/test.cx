@@ -165,6 +165,7 @@ test/Suite SelectMount:/
     void tc_selectTreeFromVirtualMount()
 
     void tc_selectFromMountWithPartialFrom()
+    void tc_selectFromRootNoInitialSlashInFrom()
 
 
 class HistoryMount : vstore/mount, hidden:/
