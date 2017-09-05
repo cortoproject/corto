@@ -1079,6 +1079,45 @@ void corto_initEnvironment(void) {
     }
 }
 
+static int corto_loadConfig(void) {
+    int result = 0;
+    corto_component_push("config");
+    char *cfg = corto_getenv("CORTO_CONFIG");
+    if (cfg) {
+        if (corto_isdir(cfg)) {
+            corto_trace("loading configuration");
+            char *prevDir = strdup(corto_cwd());
+            corto_ll cfgfiles = corto_opendir(cfg);
+            corto_chdir(cfg);
+            corto_iter it = corto_ll_iter(cfgfiles);
+            while (corto_iter_hasNext(&it)) {
+                char *file = corto_iter_next(&it);
+                if (corto_load(file, 0, NULL)) {
+                    corto_error("%s: %s", file, corto_lasterr());
+                    result = -1;
+                    /* Don't break, report all errors */
+                } else {
+                    corto_ok("successfuly loaded '%s'", file);
+                }
+            }
+            corto_chdir(prevDir);
+            corto_closedir(cfgfiles);
+        } else if (corto_fileTest(cfg)) {
+            if (corto_load(cfg, 0, NULL)) {
+                corto_error("%s: %s", cfg, corto_lasterr());
+                result = -1;
+            }
+        } else {
+            corto_error(
+                "$CORTO_CONFIG ('%s') does not point to an accessible path or file", 
+                cfg);
+            result = -1;
+        }
+    }
+    corto_component_pop();
+    return result;
+}
+
 int corto_start(char *appName) {
     CORTO_OPERATIONAL = 1; /* Initializing */
 
@@ -1086,6 +1125,23 @@ int corto_start(char *appName) {
     if ((appName[0] == '.') && (appName[1] == '/')) {
         corto_appName += 2;
     }
+
+    /* Initialize TLS keys */
+    corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
+    corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
+    corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
+    corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
+    corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
+    corto_threadTlsKey(&CORTO_KEY_FLUENT, NULL);
+    void corto_threadStringDealloc(void *data);
+    corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
+    corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
+    corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
+
+    /* Push init component for logging */
+    corto_component_push("init");
+
+    corto_trace("initializing...");
 
     /* Initialize benchmark constants */
     CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");
@@ -1109,22 +1165,8 @@ int corto_start(char *appName) {
     /* Initialize operating system environment */
     corto_initEnvironment();
 
-    corto_trace("init: initializing...");
-
     /* Initialize security */
     corto_secure_init();
-
-    /* Initialize TLS keys */
-    corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
-    corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
-    corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
-    corto_threadTlsKey(&CORTO_KEY_FLUENT, NULL);
-    void corto_threadStringDealloc(void *data);
-    corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
-    corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
-    corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
 
     /* Initialize entity administrations */
     corto_threadTlsKey(&corto_subscriber_admin.key, corto_entityAdmin_free);
@@ -1287,8 +1329,13 @@ int corto_start(char *appName) {
     corto_createChild(root_o, "config", corto_void_o);
     corto_createChild(root_o, "data", corto_void_o);
     corto_createChild(root_o, "home", corto_void_o);
+
+    /* Load configuration, if available */
+    corto_loadConfig();
     
-    corto_ok("init: initialized");
+    corto_ok("initialized");
+
+    corto_component_pop();
 
     return 0;
 }

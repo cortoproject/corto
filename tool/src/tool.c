@@ -73,6 +73,10 @@ static void printUsage(void) {
     printf("  -l,--load [file/package]   Pass all subsequent arguments to specified file/package\n");
     printf("  -a,--keep-alive            Keep corto running after command is executed\n");
     printf("\n");
+    printf("  configuration:\n");
+    printf("  --name [id]                Assign a name to the process\n");
+    printf("  --config [path]            A path or file that contains configuration\n");
+    printf("\n");
     printf("  tracing:\n");
     printf("  --debug                    Set verbosity to DEBUG\n");
     printf("  --trace                    Set verbosity to TRACE\n");
@@ -105,6 +109,7 @@ static void printUsage(void) {
 static bool load = false;
 static bool keep_alive = false;
 static bool mute = false;
+static char *appname;
 
 static void printVersion(bool minor, bool patch) {
     if (patch) {
@@ -141,6 +146,8 @@ static int parseGenericArgs(int argc, char *argv[]) {
             PARSE_OPTION(0, "version", printLongVersion());
             PARSE_OPTION('h', "help", printUsage());
             PARSE_OPTION(0, "logo", printLogo());
+            PARSE_OPTION(0, "name", appname = argv[i + 1]; i ++);
+            PARSE_OPTION(0, "config", corto_setenv("CORTO_CONFIG", argv[i + 1]); i ++);
             PARSE_OPTION(0, "debug", corto_verbosity(CORTO_DEBUG));
             PARSE_OPTION(0, "trace", corto_verbosity(CORTO_TRACE));
             PARSE_OPTION(0, "ok", corto_verbosity(CORTO_OK));
@@ -166,6 +173,8 @@ static int parseGenericArgs(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
     int result = 0;
 
+    appname = argv[0];
+
     /* Parse arguments before first command. Any arguments after the first
      * command or file are passed to that file or command. */
     int last_parsed = parseGenericArgs(argc - 1, &argv[1]);
@@ -175,7 +184,7 @@ int main(int argc, char *argv[]) {
         char *cmd = "unknown";
 
         /* Start corto */
-        corto_start(argv[0]);
+        corto_start(appname);
 
         /* If there are more arguments than that have been parsed so far, there must
          * be a command or file to be loaded */
