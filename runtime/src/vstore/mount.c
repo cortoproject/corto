@@ -691,6 +691,7 @@ corto_resultIter corto_mount_onQuery_v(
     corto_query *query)
 {
     corto_resultIter result;
+
     CORTO_UNUSED(this);
     memset(&result, 0, sizeof(corto_iter));
 
@@ -698,12 +699,15 @@ corto_resultIter corto_mount_onQuery_v(
         corto_id routerRequest;
         corto_any routerResult = {corto_type(corto_resultIter_o), &result};
         corto_any routerParam = {corto_type(corto_query_o), query};
-        sprintf(routerRequest, "%s/%s", query->from, query->select);
+        if (!strcmp(query->from, ".")) {
+            sprintf(routerRequest, "/");
+        } else {
+            sprintf(routerRequest, "/%s", query->from);
+        }
         corto_cleanpath(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
             corto_warning("%s", corto_lasterr());
         }
-
     }
 
     return result;

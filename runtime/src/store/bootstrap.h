@@ -1425,7 +1425,7 @@ CORTO_CLASS_O(vstore, routerimpl, lang_class, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, 
 
 /* /corto/vstore/route */
 CORTO_FW_IC(vstore, route);
-CORTO_PROCEDURE_O(vstore, route, TRUE, NULL, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(vstore_routerimpl), CORTO_VALID, CORTO_IC);
+CORTO_PROCEDURE_O(vstore, route, TRUE, NULL, lang_method, CORTO_LOCAL | CORTO_READONLY, CORTO_TYPE_ID(vstore_routerimpl), CORTO_DECLARED, CORTO_IC);
     CORTO_MEMBER_O(vstore_route, pattern, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_route, elements, lang_stringseq, CORTO_READONLY);
     CORTO_METHOD_O(vstore_route, init, "()", lang_int16, corto_route_init);
