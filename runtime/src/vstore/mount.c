@@ -503,7 +503,6 @@ void corto_mount_post(
     int size = 0;
     corto_time lastPoll = {0, 0};
     int lastQueueSize = 0;
-    bool addedToHistory = false;
 
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
@@ -534,7 +533,7 @@ void corto_mount_post(
                     if (e2->event & CORTO_DECLARE) this->sentDiscarded.declares++;
                     if (e2->event & (CORTO_DEFINE | CORTO_UPDATE)) this->sentDiscarded.updates++;
                     if (e2->event & CORTO_DELETE) this->sentDiscarded.deletes++;
-                    corto_release(e2) == 0;
+                    corto_release(e2);
                 } else {
                     corto_ll_append(this->events, e);
                     corto_claim(e);
