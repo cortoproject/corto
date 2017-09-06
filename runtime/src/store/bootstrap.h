@@ -1170,7 +1170,7 @@ CORTO_CLASS_NOBASE_O(lang, quantity, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | 
 
 /* /corto/lang/unit */
 CORTO_FW_ICD(lang, unit);
-CORTO_CLASS_O(lang, unit, lang_class, CORTO_PRIVATE, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_ICD);
+CORTO_CLASS_NOBASE_O(lang, unit, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_ICD);
     CORTO_MEMBER_O(lang_unit, quantity, lang_quantity, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_unit, symbol, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_unit, conversion, lang_string, CORTO_GLOBAL);

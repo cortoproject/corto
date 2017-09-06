@@ -324,7 +324,6 @@ struct corto_quantity_s {
 typedef struct corto_unit_s *corto_unit;
 
 struct corto_unit_s {
-    struct corto_class_s super;
     corto_quantity quantity;
     corto_string symbol;
     corto_string conversion;
