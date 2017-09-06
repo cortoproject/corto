@@ -44,7 +44,7 @@ void* corto_mount_thread(void* arg) {
     while (!this->quit) {
         corto_mount_onPoll(this);
         corto_timeGet(&current);
-        
+
         lastSleep = sleep;
         sleep = corto_timeSub(next, current);
         if (lastSleep.sec || lastSleep.nanosec) {
@@ -81,7 +81,7 @@ void corto_mount_notify(corto_subscriberEvent *e) {
         }
 
         switch(event) {
-        case CORTO_DEFINE: 
+        case CORTO_DEFINE:
             this->sent.updates ++;
             if (this->policy.mask & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
@@ -95,11 +95,11 @@ void corto_mount_notify(corto_subscriberEvent *e) {
             }
 
             break;
-        case CORTO_UPDATE: 
-            this->sent.updates ++; 
+        case CORTO_UPDATE:
+            this->sent.updates ++;
             break;
-        case CORTO_DELETE: 
-            this->sent.deletes ++; 
+        case CORTO_DELETE:
+            this->sent.deletes ++;
             if (this->policy.mask & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
@@ -109,9 +109,9 @@ void corto_mount_notify(corto_subscriberEvent *e) {
                     corto_mount_unsubscribeOrUnmount(this, &q, false, true);
                 }
 
-            }            
+            }
             break;
-        default: 
+        default:
             break;
         }
 
@@ -183,7 +183,7 @@ int16_t corto_mount_construct(
     }
 
     corto_eventMask mask = corto_observer(this)->mask;
-    
+
     /* If parent is set, resolve it and assign mount */
     if (!s->query.select) {
         /* Set the expression according to the mask */
@@ -251,7 +251,7 @@ int16_t corto_mount_construct(
     corto_ptr_setref(&corto_observer(this)->instance, this);
     corto_ptr_setref(&corto_observer(this)->dispatcher, dispatcher);
     /* Enable subscriber only when mount implements onNotify */
-    if (this->policy.mask & CORTO_MOUNT_NOTIFY || 
+    if (this->policy.mask & CORTO_MOUNT_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_MOUNT) {
@@ -273,7 +273,7 @@ int16_t corto_mount_construct(
 
     /* Add mount to mount admin so it can be found by corto_select */
     corto_entityAdmin_add(&corto_mount_admin, s->query.from, this, this);
-    
+
     /* If mount is interested in subscriptions, align from existing subscribers */
     if (this->policy.mask & (CORTO_MOUNT_SUBSCRIBE|CORTO_MOUNT_MOUNT))
     {
@@ -288,7 +288,7 @@ int16_t corto_mount_construct(
         corto_entityAdmin_remove(&corto_mount_admin, s->query.from, this, this, FALSE);
     } else {
         /* Make it easy to see whether this mount observes a tree, scope or self */
-        corto_observer(this)->mask = 
+        corto_observer(this)->mask =
             corto_match_getScope((corto_idmatch_program)corto_subscriber(this)->idmatch);
     }
 
@@ -321,7 +321,7 @@ void corto_mount_destruct(
 
     safe_corto_subscriber_destruct(this);
     corto_assert(
-        corto_entityAdmin_remove(&corto_mount_admin, this->super.query.from, this, this, FALSE) != -1, 
+        corto_entityAdmin_remove(&corto_mount_admin, this->super.query.from, this, this, FALSE) != -1,
         "trying to remove mount that was never added to mountAdmin");
 }
 
@@ -433,8 +433,8 @@ void corto_mount_onPoll_v(
 
     /* Collect events */
     corto_lock(this);
-    
-    corto_timeGet(&this->lastPoll);    
+
+    corto_timeGet(&this->lastPoll);
     this->lastQueueSize = 0;
     if (corto_ll_size(this->events)) {
         events = corto_ll_new();
@@ -450,7 +450,7 @@ void corto_mount_onPoll_v(
     }
     corto_unlock(this);
 
-    /* If batching is enabled, call onBatchNotify */ 
+    /* If batching is enabled, call onBatchNotify */
     if (events && this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(events);
         corto_mount_onBatchNotify(this, it);
@@ -475,7 +475,7 @@ void corto_mount_onPoll_v(
             corto_event_handle(e);
             corto_assert(corto_release(e) == 0, "event is leaking");
         }
-        corto_ll_free(events);   
+        corto_ll_free(events);
     }
 }
 
@@ -507,9 +507,9 @@ void corto_mount_post(
 
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
-    if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY | CORTO_MOUNT_HISTORY_BATCH_NOTIFY)) 
+    if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY | CORTO_MOUNT_HISTORY_BATCH_NOTIFY))
     {
-        if (this->policy.sampleRate) 
+        if (this->policy.sampleRate)
         {
             corto_subscriberEvent *e2;
 
@@ -522,8 +522,8 @@ void corto_mount_post(
 
             if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 corto_ll_append(this->historicalEvents, e);
+                corto_claim(e);
                 size = corto_ll_size(this->historicalEvents);
-                addedToHistory = true;
             }
 
             if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
@@ -534,11 +534,9 @@ void corto_mount_post(
                     if (e2->event & CORTO_DECLARE) this->sentDiscarded.declares++;
                     if (e2->event & (CORTO_DEFINE | CORTO_UPDATE)) this->sentDiscarded.updates++;
                     if (e2->event & CORTO_DELETE) this->sentDiscarded.deletes++;
-                    corto_assert(corto_release(e2) == 0);
+                    corto_release(e2) == 0;
                 } else {
                     corto_ll_append(this->events, e);
-                }
-                if (addedToHistory) {
                     corto_claim(e);
                 }
 
@@ -564,7 +562,7 @@ void corto_mount_post(
      * current time, this would be too expensive to do for every event. Instead
      * it is determined adaptively. A risk is that this thread is very busy, and
      * is keeping the poll thread from being scheduled in. To ensure that this
-     * is kept to a minimum, checking is done more often towards the end of a 
+     * is kept to a minimum, checking is done more often towards the end of a
      * cycle. If this thread notices time has moved past last poll time + 1 / Sr
      * it should stop until the poll thread has been scheduled in again. */
 
@@ -575,7 +573,7 @@ void corto_mount_post(
     /** Throttling algorithm that spreads delays evenly between events.
      * A simple throttling algorithm would block a publisher once the queue.max
      * has been reached. That is undesirable, because that way there would be
-     * (queue.max - 1) updates that are very fast, and 1 update that is very 
+     * (queue.max - 1) updates that are very fast, and 1 update that is very
      * slow. If data collection happens at the same time an update is done, this
      * would result in a very uneven dataset.
      *
@@ -588,7 +586,7 @@ void corto_mount_post(
      * does not exceed the max, there will be no delay.
      *
      * If the number of events is going to exceed queue.max, the algorithm looks
-     * at how much time is left in the current period, and how many samples 
+     * at how much time is left in the current period, and how many samples
      * still can be written before the max is reached. Based on this, an average
      * delay is computed per sample to be written.
      *
@@ -599,7 +597,7 @@ void corto_mount_post(
      * equals queue.max.
      *
      * The algorithm parameters are reset at the beginning of each poll cycle,
-     * so that it can adapt fast to changing behavior of the application. 
+     * so that it can adapt fast to changing behavior of the application.
      */
 
     if (size > collectCount && size < this->policy.queue.max) {
@@ -611,7 +609,7 @@ void corto_mount_post(
             /* Calculate total available time per period */
             corto_time totalTime = corto_mount_doubleToTime(1.0 / this->policy.sampleRate);
 
-            corto_time spent = lastPoll.sec 
+            corto_time spent = lastPoll.sec
                 ? corto_timeSub(this->lastPost, lastPoll)
                 : (corto_time){0, 0}
                 ;
@@ -626,14 +624,14 @@ void corto_mount_post(
                     /* Need to throttle. Calculate how much publisher needs to slow down */
                     corto_time budget = corto_timeSub(totalTime, spent);
 
-                    /* Calculate time available per remaining sample, which is the time 
+                    /* Calculate time available per remaining sample, which is the time
                      * we should sleep to slow down the publisher. Add one
                      * sample for error margin so that in a stable system
                      * each poll cycle receives exactly the max queue size. */
-                    double timePerSample = 
+                    double timePerSample =
                         corto_timeToDouble(budget) / ((double)this->policy.queue.max - (double)size + collectCount);
 
-                    /*printf("sleep: %d.%.9d budget=[%d.%.9d] spent=[%d.%.9d] size=%d timePerSample=%f\n", 
+                    /*printf("sleep: %d.%.9d budget=[%d.%.9d] spent=[%d.%.9d] size=%d timePerSample=%f\n",
                         this->lastSleep.sec, this->lastSleep.nanosec,
                         budget.sec, budget.nanosec,
                         spent.sec, spent.nanosec,
@@ -646,23 +644,23 @@ void corto_mount_post(
                     this->lastSleep.nanosec = 0;
                 }
             } else {
-                /* If time spent in current period exceeds total period time, 
+                /* If time spent in current period exceeds total period time,
                  * the OS scheduler is lagging. In that case block, as it might
                  * be this thread that is holding up the poll thread. */
                 do {
                     corto_sleep(0, 1000000);
-                } while ((lastPoll.nanosec == this->lastPoll.nanosec) || 
+                } while ((lastPoll.nanosec == this->lastPoll.nanosec) ||
                          (lastPoll.nanosec == this->lastPoll.nanosec));
                 this->lastSleep.sec = 0;
                 this->lastSleep.nanosec = 0;
                 this->dueSleep.sec = 0;
-                this->dueSleep.nanosec = 0;                
+                this->dueSleep.nanosec = 0;
             }
-            this->lastQueueSize = size; 
+            this->lastQueueSize = size;
         }
 
         /* If sleep time is less than a millisecond, accuracy of a sleep is not
-         * good enough due to OS scheduler variation. Instead, accumulate sleep 
+         * good enough due to OS scheduler variation. Instead, accumulate sleep
          * until it is larger than a millisecond, then sleep. */
         this->dueSleep = corto_timeAdd(this->dueSleep, this->lastSleep);
         if (this->dueSleep.sec || this->dueSleep.nanosec > 10000000) {
@@ -833,7 +831,7 @@ corto_object corto_mount_resume(
         return NULL;
     }
 
-    
+
     /* Ensure that if object is created, owner & attributes are set correctly */
     corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
     corto_object prevOwner = corto_setOwner(this);
@@ -963,17 +961,17 @@ void corto_mount_return(
 
     if (!r->id) {
         corto_error("mount: returned result that doesn't set the id");
-        return;        
+        return;
     }
 
     if (!r->parent) {
         corto_error("mount: returned result that doesn't set the parent");
-        return;        
+        return;
     }
 
     if (!r->type) {
         corto_error("mount: returned result that doesn't set the type");
-        return;        
+        return;
     }
 
     if (!r->value && this->contentTypeOutHandle) {
@@ -1068,10 +1066,10 @@ static corto_mountSubscription* corto_mount_findSubscription(
 /* Depending on whether a query is for a subscription or whether it comes from
  * a notification it needs to forward the object, or the parent of the object. */
 corto_query* corto_mount_getQueryForMount(
-    corto_query *q_in, 
-    corto_query *q_out, 
-    char *parentBuffer, 
-    bool subscribe) 
+    corto_query *q_in,
+    corto_query *q_out,
+    char *parentBuffer,
+    bool subscribe)
 {
     /* A subscription for one or more objects in a scope should
      * result in spawning a mount that provides these objects, so
@@ -1128,7 +1126,7 @@ void corto_mount_subscribeOrMount(
 
     if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
     subscription = corto_mount_findSubscription(this, query, &found);
-    
+
     if (subscription) {
         /* Ensure subscription isn't deleted outside of lock */
         if (subscribe) {
@@ -1155,11 +1153,11 @@ void corto_mount_subscribeOrMount(
     }
 
     if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
-    
+
     /* Process callback outside of lock */
-    if (!found && (!subscription || 
-        (subscribe && subscription->subscriberCtx) || 
-        (mount && subscription->mountCtx))) 
+    if (!found && (!subscription ||
+        (subscribe && subscription->subscriberCtx) ||
+        (mount && subscription->mountCtx)))
     {
         /* If no subscription is found that both matches parent and expr, notify
          * the mount */
@@ -1168,7 +1166,7 @@ void corto_mount_subscribeOrMount(
                 this,
                 query,
                 subscription ? subscription->subscriberCtx : 0);
-        } 
+        }
         if (mount) {
             corto_query q_out, *q;
             corto_id parentId;
@@ -1222,7 +1220,7 @@ void corto_mount_subscribeOrMount(
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'select' parameter of the
-         * subscription is meaningless, so to avoid confusion set it to '*' 
+         * subscription is meaningless, so to avoid confusion set it to '*'
          */
         if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
         corto_ptr_setstr(&subscription->query.select, "*");
@@ -1281,12 +1279,12 @@ void corto_mount_unsubscribeOrUnmount(
     }
 
     corto_unlock(this);
-    
+
     if (subscription) {
         if (subscribe && !subscription->subscriberCount) {
             corto_mount_onUnsubscribe(
-                this, 
-                &subscription->query, 
+                this,
+                &subscription->query,
                 subscription->subscriberCtx);
         }
 
