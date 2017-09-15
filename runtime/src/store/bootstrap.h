@@ -615,10 +615,13 @@ CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 /* Package type */
 CORTO_FW_IC(vstore, package);
 CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
-    CORTO_MEMBER_O(vstore_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, organization, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, repository, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, icon, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);    
     CORTO_MEMBER_O(vstore_package, env, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, language, lang_string, CORTO_GLOBAL|CORTO_READONLY);

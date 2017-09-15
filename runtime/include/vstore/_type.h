@@ -61,10 +61,13 @@ extern "C" {
 typedef struct corto_package_s *corto_package;
 
 struct corto_package_s {
-    corto_string url;
+    corto_string description;
     corto_string version;
     corto_string author;
-    corto_string description;
+    corto_string organization;
+    corto_string url;
+    corto_string repository;
+    corto_string icon;
     corto_stringlist dependencies;    
     corto_string env;
     corto_string language;

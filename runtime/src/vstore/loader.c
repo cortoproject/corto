@@ -133,7 +133,6 @@ void corto_loader_addDir(
 
                 corto_ptr_setstr(&result->parent, q->from);
 
-
                 corto_dealloc(env);
 
                 /* because the corto object is not persistent, but because the
