@@ -145,7 +145,12 @@ repeat:
 
             /* If buffer is empty, just return current object */
             if (!*buffer) {
-                break;
+                if (step == 3) {
+                    return NULL; /* If nothing has been resolved yet, this is
+                                  * not a resolvable expression. */
+                } else {
+                    break;
+                }
             }
 
             if (!strcmp(buffer, ".")) {
