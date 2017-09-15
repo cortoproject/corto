@@ -127,10 +127,12 @@ void corto_loader_addDir(
                     corto_result_fromcontent(result, "text/json", json);
                 } else {
                     result->id = corto_strdup(f);
-                    result->parent = corto_strdup(q->from);
                     result->type = corto_strdup("/corto/vstore/package");
                     result->value = (uintptr_t)strdup("{}");
                 }
+
+                corto_ptr_setstr(&result->parent, q->from);
+
 
                 corto_dealloc(env);
 
