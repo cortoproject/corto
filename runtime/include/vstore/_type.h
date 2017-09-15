@@ -65,13 +65,13 @@ struct corto_package_s {
     corto_string version;
     corto_string author;
     corto_string description;
+    corto_stringlist dependencies;    
     corto_string env;
     corto_string language;
     bool managed;
     bool noapi;
     corto_stringlist cflags;
     corto_stringlist cxxflags;
-    corto_stringlist dependencies;
     corto_stringlist definitions;
     corto_string prefix;
     corto_stringlist cortoVersion;

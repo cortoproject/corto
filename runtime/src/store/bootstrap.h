@@ -619,13 +619,13 @@ CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, 
     CORTO_MEMBER_O(vstore_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);    
     CORTO_MEMBER_O(vstore_package, env, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, language, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, noapi, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, cflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, cxxflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, definitions, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, prefix, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, cortoVersion, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);

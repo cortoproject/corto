@@ -877,13 +877,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_package_version),\
     SSO_OP_OBJ(vstore_package_author),\
     SSO_OP_OBJ(vstore_package_description),\
+    SSO_OP_OBJ(vstore_package_dependencies),\
     SSO_OP_OBJ(vstore_package_env),\
     SSO_OP_OBJ(vstore_package_language),\
     SSO_OP_OBJ(vstore_package_managed),\
     SSO_OP_OBJ(vstore_package_noapi),\
     SSO_OP_OBJ(vstore_package_cflags),\
     SSO_OP_OBJ(vstore_package_cxxflags),\
-    SSO_OP_OBJ(vstore_package_dependencies),\
     SSO_OP_OBJ(vstore_package_definitions),\
     SSO_OP_OBJ(vstore_package_prefix),\
     SSO_OP_OBJ(vstore_package_cortoVersion),\
