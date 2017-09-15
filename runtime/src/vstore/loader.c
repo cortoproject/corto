@@ -73,7 +73,6 @@ void corto_loader_addDir(
 
             if (!corto_loader_checkIfAdded(list, f) && corto_idmatch(q->select, f)) {
                 struct stat attr;
-                corto_string content = NULL;
 
                 corto_id fpath;
                 sprintf(fpath, "%s/%s", path, f);
@@ -119,30 +118,21 @@ void corto_loader_addDir(
                     env = corto_strdup("");
                 }
 
-                if (q->content) {
-                    if (strcmp(q->from, ".")) {
-                        content = corto_asprintf(
-                            "{\"url\":\"http://www.corto.io/doc/%s/%s\",\"env\":\"%s\"}",
-                            q->from,
-                            f,
-                            env
-                        );
-                    } else {
-                        content = corto_asprintf(
-                            "{\"url\":\"http://www.corto.io/doc/%s\",\"env\":\"%s\"}",
-                            f,
-                            env
-                        );
-                    }
+                corto_result *result = corto_calloc(sizeof(corto_result));
+
+                corto_id packageFile;
+                sprintf(packageFile, "%s/project.json", fpath);
+                if (corto_fileTest(packageFile)) {
+                    char *json = corto_fileLoad(packageFile);
+                    corto_result_fromcontent(result, "text/json", json);
+                } else {
+                    result->id = corto_strdup(f);
+                    result->parent = corto_strdup(q->from);
+                    result->type = corto_strdup("/corto/vstore/package");
+                    result->value = (uintptr_t)strdup("{}");
                 }
 
                 corto_dealloc(env);
-
-                corto_result *result = corto_calloc(sizeof(corto_result));
-                result->id = corto_strdup(f);
-                result->parent = corto_strdup(q->from);
-                result->type = corto_strdup("/corto/vstore/package");
-                result->value = (corto_word)content;
 
                 /* because the corto object is not persistent, but because the
                  * mount does have objects under the corto scope, hide the corto

@@ -84,31 +84,31 @@ typedef struct corto__object {
      * its alignment. */
     union {
         corto__attr attrs;
-        corto_uint64 dummy;
+        uint64_t dummy;
     } align; /* Anonymous union would've been nice, but not supported in C99 */
     #ifndef NDEBUG
         /* Magic number to check in debugging whether value is an object. This value
          * should not be used in application logic. */
-        corto_uint32 magic;
+        uint32_t magic;
     #endif
-    corto_int32 refcount;
+    int32_t refcount;
     corto_type type;
 } corto__object;
 
 typedef struct corto__ols {
-    corto_int8 key;
+    int8_t key;
     void *value;
 } corto__ols;
 
 typedef struct corto__scope {
     corto_object parent;
-    corto_string id;
+    char *id;
     corto_rbtree scope;
 
     /* See corto__object */
     union {
         struct corto_rwmutex_s scopeLock;
-        corto_int64 dummy;
+        int64_t dummy;
     } align;
     corto__ols *ols;
 } corto__scope;
@@ -117,7 +117,7 @@ typedef struct corto__writable {
     /* See corto__object */
     union {
         struct corto_rwmutex_s lock;
-        corto_int64 dummy;
+        int64_t dummy;
     } align;
 } corto__writable;
 
@@ -128,7 +128,7 @@ struct corto__observer {
     corto_object _this;
     corto_observer observer;
     char notifyKind;
-    corto_int32 count;
+    int32_t count;
 };
 
 typedef struct corto__observable corto__observable;
@@ -140,7 +140,7 @@ struct corto__observable {
     /* See corto__object */
     union {
         struct corto_rwmutex_s selfLock;
-        corto_int64 dummy;
+        int64_t dummy;
     } align;
 
     /* Lockless access to observers (zero-terminated)

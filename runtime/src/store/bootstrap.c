@@ -1213,6 +1213,13 @@ int corto_start(char *appName) {
     corto_class_validate_o = &lang_class_validate__o.v;
     corto_class_update_o = &lang_class_update__o.v;
 
+    /* Set version of builtin packages */
+    corto_o->version = (char*)CORTO_VERSION;
+    corto_lang_o->version = (char*)CORTO_VERSION;
+    corto_vstore_o->version = (char*)CORTO_VERSION;
+    corto_secure_o->version = (char*)CORTO_VERSION;
+    corto_native_o->version = (char*)CORTO_VERSION;
+
     /* Initialize builtin scopes */
     corto_initObject(root_o);
     corto_initObject(corto_o);

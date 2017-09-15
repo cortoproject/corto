@@ -131,7 +131,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}, {uri}
+#define CORTO_PACKAGE_V(parent, name, uri, version, author, description) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}, {uri, version, author, description}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 #define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
@@ -215,8 +215,8 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_MEMBER_V(type, access, state, cond, weak) {(corto_type)&type##__o.v, access, NULL, state, cond, weak, 0, 0}
 
 /* object */
-#define CORTO_PACKAGE_O(name, uri) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(root, #name, uri)}
-#define CORTO_PACKAGE_O_SCOPE(parent, name, uri) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(parent, #name, uri)}
+#define CORTO_PACKAGE_O(name, uri, description) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(root, #name, uri, NULL, "Sander Mertens", description)}
+#define CORTO_PACKAGE_O_SCOPE(parent, name, uri, description) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(parent, #name, uri, NULL, "Sander Mertens", description)}
 
 /* type object */
 #define CORTO_TYPE_O(parent, name, kind, reference)\
@@ -571,11 +571,11 @@ corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
 corto_package root_o = CORTO_OFFSET(&root__o.o.o, sizeof(corto__object));
 
 /* /corto, /corto/lang, /corto/vstore, /corto/secure */
-CORTO_PACKAGE_O(corto, "http://corto.io/doc/corto");
-CORTO_PACKAGE_O_SCOPE(corto, lang, "http://corto.io/doc/corto/lang");
-CORTO_PACKAGE_O_SCOPE(corto, vstore, "http://corto.io/doc/corto/vstore");
-CORTO_PACKAGE_O_SCOPE(corto, native, "http://corto.io/doc/corto/native");
-CORTO_PACKAGE_O_SCOPE(corto, secure, "http://corto.io/doc/corto/secure");
+CORTO_PACKAGE_O(corto, "https://www.corto.io", "Corto packages");
+CORTO_PACKAGE_O_SCOPE(corto, lang, "https://www.corto.io", "Corto typesystem");
+CORTO_PACKAGE_O_SCOPE(corto, vstore, "https://www.corto.io", "Corto virtual store");
+CORTO_PACKAGE_O_SCOPE(corto, native, "https://www.corto.io", "Corto native type integration");
+CORTO_PACKAGE_O_SCOPE(corto, secure, "https://www.corto.io", "Corto security framework");
 
 corto_package corto_o = CORTO_OFFSET(&corto__o.o.o, sizeof(corto__object));
 corto_package corto_lang_o = CORTO_OFFSET(&lang__o.o.o, sizeof(corto__object));
