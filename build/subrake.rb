@@ -25,14 +25,16 @@ COMPONENTS_DONE = []
 
 def forward(dir, task)
   if not COMPONENTS_DONE.include? dir then
+    err = false
     if File.exists? "#{dir}/project.json" then
       begin
         sh "corto rakefile #{dir}"
       rescue
         warn "failed to generate rakefile for '#{dir}'"
+        err = true
       end
     end
-    if File.exists? "#{dir}/rakefile" then
+    if not err and File.exists? "#{dir}/rakefile" then
       begin
         sh "rake #{task} -f #{dir}/rakefile"
       rescue
