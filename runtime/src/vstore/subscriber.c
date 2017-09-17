@@ -7,8 +7,8 @@
 #include "src/store/object.h"
 #include "idmatch.h"
 
-extern corto_threadKey CORTO_KEY_SUBSCRIBER_ADMIN;
-extern corto_threadKey CORTO_KEY_FLUENT;
+extern corto_tls CORTO_KEY_SUBSCRIBER_ADMIN;
+extern corto_tls CORTO_KEY_FLUENT;
 
 extern corto_rwmutex_s corto_subscriberLock;
 
@@ -489,7 +489,7 @@ static corto_subscribe__fluent corto_subscribe__fluentGet(void);
 static corto_subscribe__fluent corto_subscribeContentType(
     corto_string contentType)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->contentType = contentType;
     }
@@ -499,7 +499,7 @@ static corto_subscribe__fluent corto_subscribeContentType(
 static corto_subscribe__fluent corto_subscribeType(
     corto_string type)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
     }
@@ -509,7 +509,7 @@ static corto_subscribe__fluent corto_subscribeType(
 static corto_subscribe__fluent corto_subscribeInstance(
     corto_object instance)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
@@ -518,7 +518,7 @@ static corto_subscribe__fluent corto_subscribeInstance(
 
 static corto_subscribe__fluent corto_subscribeDisabled(void)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->enabled = FALSE;
     }
@@ -527,7 +527,7 @@ static corto_subscribe__fluent corto_subscribeDisabled(void)
 
 static corto_subscribe__fluent corto_subscribeDispatcher(corto_dispatcher dispatcher)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->dispatcher = dispatcher;
     }
@@ -538,7 +538,7 @@ static corto_subscribe__fluent corto_subscribeDispatcher(corto_dispatcher dispat
 static corto_subscribe__fluent corto_subscribeFrom(
     char *scope)
 {
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->scope = scope;
     }
@@ -551,10 +551,10 @@ static corto_subscriber corto_subscribeCallback(
 {
     corto_subscriber result = NULL;
 
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->callback = callback;
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         result = corto_subscribeSubscribe(request);
         corto_dealloc(request);
     }
@@ -581,10 +581,10 @@ corto_subscribe__fluent corto_subscribe(
 {
     va_list arglist;
 
-    corto_subscribeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_subscribeRequest));
-        corto_threadTlsSet(CORTO_KEY_FLUENT, request);
+        corto_tls_set(CORTO_KEY_FLUENT, request);
     } else {
         memset(request, 0, sizeof(corto_subscribeRequest));
     }

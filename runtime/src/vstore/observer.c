@@ -24,15 +24,15 @@ typedef struct corto_observeRequest {
  * will not look at their own threadId, since this would indicate listen\silence is called from an observer being
  * notified. This key is created in corto_start. */
 /* TODO: when a thread exits, the corresponding element must be free'd again - use tls destructor function */
-extern corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
+extern corto_tls CORTO_KEY_OBSERVER_ADMIN;
 
 /* Administration that keeps track of listen operations for undefined instances.
  * These operations are temporarily stored in this admin and are evaluated &
  * removed from the admin when the object is defined */
-extern corto_threadKey CORTO_KEY_LISTEN_ADMIN;
+extern corto_tls CORTO_KEY_LISTEN_ADMIN;
 
 /* Key used for passing object between fluent API calls */
-extern corto_threadKey CORTO_KEY_FLUENT;
+extern corto_tls CORTO_KEY_FLUENT;
 
 typedef struct corto_observerDelayedAdmin {
     corto_object instance;
@@ -45,10 +45,10 @@ void corto_observerDelayedAdminAdd(
     corto_observer observer,
     corto_object observable)
 {
-    corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
+    corto_ll admin = corto_tls_get(CORTO_KEY_LISTEN_ADMIN);
     if (!admin) {
         admin = corto_ll_new();
-        corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, admin);
+        corto_tls_set(CORTO_KEY_LISTEN_ADMIN, admin);
     }
 
     corto_observerDelayedAdmin *elem = corto_alloc(sizeof(corto_observerDelayedAdmin));
@@ -62,7 +62,7 @@ void corto_observerDelayedAdminRemove(
     corto_object instance,
     corto_observer observer)
 {
-    corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
+    corto_ll admin = corto_tls_get(CORTO_KEY_LISTEN_ADMIN);
     if (admin) {
         corto_iter it = corto_ll_iter(admin);
         while (corto_iter_hasNext(&it)) {
@@ -76,7 +76,7 @@ void corto_observerDelayedAdminRemove(
         }
         if (!corto_ll_size(admin)) {
             corto_ll_free(admin);
-            corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, NULL);
+            corto_tls_set(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
     }
 }
@@ -84,7 +84,7 @@ void corto_observerDelayedAdminRemove(
 void corto_observerDelayedAdminDefine(
     corto_object instance)
 {
-    corto_ll admin = corto_threadTlsGet(CORTO_KEY_LISTEN_ADMIN);
+    corto_ll admin = corto_tls_get(CORTO_KEY_LISTEN_ADMIN);
     if (admin) {
         corto_iter it = corto_ll_iter(admin);
         while (corto_iter_hasNext(&it)) {
@@ -104,7 +104,7 @@ void corto_observerDelayedAdminDefine(
         }
         if (!corto_ll_size(admin)) {
             corto_ll_free(admin);
-            corto_threadTlsSet(CORTO_KEY_LISTEN_ADMIN, NULL);
+            corto_tls_set(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
     }
 }
@@ -126,7 +126,7 @@ static corto_observerAdmin observerAdmin[CORTO_MAX_THREADS];
  * exits */
 void corto_observerAdminFree(void *admin) {
     corto_uint32 i;
-    corto_thread self = corto_threadSelf();
+    corto_thread self = corto_thread_self();
 
     /* No actual memory is allocated in admin. This function just clears up the
      * slot in the thread administration */
@@ -211,9 +211,9 @@ static corto__observer** corto_observersArrayNew(corto_ll list) {
 }
 
 static struct corto_observerAdmin* corto_observerAdminGet(void) {
-    corto_observerAdmin *admin = corto_threadTlsGet(CORTO_KEY_OBSERVER_ADMIN);
+    corto_observerAdmin *admin = corto_tls_get(CORTO_KEY_OBSERVER_ADMIN);
     if (!admin) {
-        corto_thread thr = corto_threadSelf();
+        corto_thread thr = corto_thread_self();
         corto_uint32 i;
         do {
             i = 0;
@@ -226,7 +226,7 @@ static struct corto_observerAdmin* corto_observerAdminGet(void) {
         } while(!corto_cas(&observerAdmin[i].id,0,thr));
         admin = &observerAdmin[i];
         admin->sp = 0;
-        corto_threadTlsSet(CORTO_KEY_OBSERVER_ADMIN, admin);
+        corto_tls_set(CORTO_KEY_OBSERVER_ADMIN, admin);
     }
     return admin;
 }
@@ -252,7 +252,7 @@ static corto_bool corto_observersPop(corto_observerAdmin *admin) {
 }
 
 static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
-    corto_thread self = corto_threadSelf();
+    corto_thread self = corto_thread_self();
     corto_uint32 i, j;
     corto_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
 
@@ -395,7 +395,7 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
 
             /* Set thread handle so the dispatcher can figure out whether a
              * readlock is needed */
-            event->thread = corto_threadSelf();
+            event->thread = corto_thread_self();
             corto_dispatcher_post(dispatcher, corto_event(event));
         }
     }
@@ -651,7 +651,7 @@ error:
 static corto_observe__fluent corto_observeInstance(
     corto_object instance)
 {
-    corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
@@ -661,7 +661,7 @@ static corto_observe__fluent corto_observeInstance(
 static corto_observe__fluent corto_observeType(
     corto_string type)
 {
-    corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
     }
@@ -670,7 +670,7 @@ static corto_observe__fluent corto_observeType(
 
 static corto_observe__fluent corto_observeDisabled(void)
 {
-    corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->enabled = FALSE;
     }
@@ -680,7 +680,7 @@ static corto_observe__fluent corto_observeDisabled(void)
 static corto_observe__fluent corto_observeDispatcher(
     corto_dispatcher dispatcher)
 {
-    corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->dispatcher = dispatcher;
     }
@@ -692,10 +692,10 @@ static corto_observer corto_observeCallback(
 {
     corto_observer result = NULL;
 
-    corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->callback = callback;
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         result = corto_observeObserve(request);
         corto_dealloc(request);
     }
@@ -715,10 +715,10 @@ static corto_observe__fluent corto_observe__fluentGet(void)
 }
 
 struct corto_observe__fluent corto_observe(corto_eventMask mask, corto_object observable) {
-    corto_observeRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_observeRequest));
-        corto_threadTlsSet(CORTO_KEY_FLUENT, request);
+        corto_tls_set(CORTO_KEY_FLUENT, request);
     } else {
         memset(request, 0, sizeof(corto_observeRequest));
     }
@@ -946,7 +946,7 @@ int16_t corto_observer_observe(
 
     /* If observer must trigger on updates of me, add it to onSelf list */
     if (mask & CORTO_ON_SELF) {
-        if (corto_rwmutexWrite(&_o->align.selfLock)) {
+        if (corto_rwmutex_write(&_o->align.selfLock)) {
             goto error;
         }
         if (!corto_observerFind(_o->onSelf, this, instance)) {
@@ -961,14 +961,14 @@ int16_t corto_observer_observe(
             oldSelfArray = _o->onSelfArray;
             _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
         }
-        if (corto_rwmutexUnlock(&_o->align.selfLock)) {
+        if (corto_rwmutex_unlock(&_o->align.selfLock)) {
             goto error;
         }
     }
 
     /* If observer must trigger on updates of childs, add it to onChilds list */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-        if (corto_rwmutexWrite(&_o->align.selfLock)) {
+        if (corto_rwmutex_write(&_o->align.selfLock)) {
             goto error;
         }
         if (!corto_observerFind(_o->onChild, this, instance)) {
@@ -984,7 +984,7 @@ int16_t corto_observer_observe(
             oldChildArray = _o->onChildArray;
             _o->onChildArray = corto_observersArrayNew(_o->onChild);
         }
-        if (corto_rwmutexUnlock(&_o->align.selfLock)) {
+        if (corto_rwmutex_unlock(&_o->align.selfLock)) {
             goto error;
         }
     }
@@ -1075,24 +1075,24 @@ bool corto_observer_observing(
 
     if (_o) {
         if (this->mask & CORTO_ON_SELF) {
-            corto_rwmutexWrite(&_o->align.selfLock);
+            corto_rwmutex_write(&_o->align.selfLock);
             observerData = corto_observerFind(_o->onSelf, this, instance);
             if (observerData) {
                 result = TRUE;
             }
-            corto_rwmutexUnlock(&_o->align.selfLock);
+            corto_rwmutex_unlock(&_o->align.selfLock);
         }
 
         if (!result) {
             if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
                 if ((this->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE))) {
                     if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
-                        corto_rwmutexWrite(&_o->align.selfLock);
+                        corto_rwmutex_write(&_o->align.selfLock);
                         observerData = corto_observerFind(_o->onChild, this, instance);
                         if (observerData) {
                             result = TRUE;
                         }
-                        corto_rwmutexUnlock(&_o->align.selfLock);
+                        corto_rwmutex_unlock(&_o->align.selfLock);
                     }
                 }
             } else {
@@ -1145,7 +1145,7 @@ int16_t corto_observer_unobserve(
 
         /* If observer triggered on updates of me, remove from onSelf list */
         if (mask & CORTO_ON_SELF) {
-            if (corto_rwmutexWrite(&_o->align.selfLock)) {
+            if (corto_rwmutex_write(&_o->align.selfLock)) {
                 goto error;
             }
             observerData = corto_observerFind(_o->onSelf, this, instance);
@@ -1167,7 +1167,7 @@ int16_t corto_observer_unobserve(
                 }
     #endif
             }
-            if (corto_rwmutexUnlock(&_o->align.selfLock)) {
+            if (corto_rwmutex_unlock(&_o->align.selfLock)) {
                 goto error;
             }
         }
@@ -1175,7 +1175,7 @@ int16_t corto_observer_unobserve(
         /* If observer triggered on updates of childs, remove from onChilds list */
         if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
             if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
-                if (corto_rwmutexWrite(&_o->align.selfLock)) {
+                if (corto_rwmutex_write(&_o->align.selfLock)) {
                     goto error;
                 }
                 observerData = corto_observerFind(_o->onChild, this, instance);
@@ -1188,7 +1188,7 @@ int16_t corto_observer_unobserve(
                     oldChildArray = _o->onChildArray;
                     _o->onChildArray = corto_observersArrayNew(_o->onChild);
                 }
-                if (corto_rwmutexUnlock(&_o->align.selfLock)) {
+                if (corto_rwmutex_unlock(&_o->align.selfLock)) {
                     goto error;
                 }
             } else {

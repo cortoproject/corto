@@ -21,7 +21,7 @@
 
 #include <include/base.h>
 
-extern corto_threadKey CORTO_KEY_THREAD_STRING;
+extern corto_tls CORTO_KEY_THREAD_STRING;
 
 typedef struct corto_threadString_t {
     char* strings[CORTO_MAX_TLS_STRINGS];
@@ -31,13 +31,13 @@ typedef struct corto_threadString_t {
 
 /* Set intern TLS string */
 char* corto_setThreadString(char* string) {
-    corto_threadString_t *data = corto_threadTlsGet(CORTO_KEY_THREAD_STRING);
+    corto_threadString_t *data = corto_tls_get(CORTO_KEY_THREAD_STRING);
     int32_t len = strlen(string);
     int32_t max = 0;
 
     if (!data) {
         data = corto_calloc(sizeof(corto_threadString_t));
-        corto_threadTlsSet(CORTO_KEY_THREAD_STRING, data);
+        corto_tls_set(CORTO_KEY_THREAD_STRING, data);
     }
 
     /* Select next string */

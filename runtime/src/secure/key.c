@@ -11,7 +11,7 @@ static corto_thread corto_secure_mainThread;
 extern corto_mutex_s corto_adminLock;
 
 void corto_secure_init(void) {
-    corto_secure_mainThread = corto_threadSelf();
+    corto_secure_mainThread = corto_thread_self();
 }
 
 corto_bool corto_secured(void) {
@@ -27,14 +27,14 @@ corto_string corto_login(corto_string username, corto_string password) {
 }
 
 corto_string corto_authenticate(corto_string key) {
-    if (corto_mutexLock(&corto_adminLock)) {
+    if (corto_mutex_lock(&corto_adminLock)) {
         goto error;
     }
 
     corto_string prev = corto_secure_token;
     corto_secure_token = key;
 
-    if (corto_mutexUnlock(&corto_adminLock)) {
+    if (corto_mutex_unlock(&corto_adminLock)) {
         goto error;
     }
 
@@ -53,7 +53,7 @@ static corto_int16 corto_secure_getObjectDepth(corto_id id) {
 }
 
 corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
-    if (corto_secure_mainThread == corto_threadSelf()) {
+    if (corto_secure_mainThread == corto_thread_self()) {
         corto_int16 depth = corto_secure_getObjectDepth(lock->mount);
         if (depth >= CORTO_MAX_SCOPE_DEPTH) {
             corto_seterr("invalid identifier for mount-member of lock");
@@ -163,7 +163,7 @@ int16_t corto_secure_key_construct(
     }
 
     /* Only allow setting key in the mainthread */
-    if (corto_secure_mainThread != corto_threadSelf()) {
+    if (corto_secure_mainThread != corto_thread_self()) {
         corto_seterr("secure: may only create a secure/key instance in the mainthread");
         goto error;
     }

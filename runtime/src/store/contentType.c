@@ -173,9 +173,9 @@ corto_contentType corto_loadContentType(
     packagePtr ++;
 
     /* Find content type in admin */
-    corto_mutexLock(&corto_adminLock);
+    corto_mutex_lock(&corto_adminLock);
     result = corto_findContentType(isBinary, packagePtr);
-    corto_mutexUnlock(&corto_adminLock);
+    corto_mutex_unlock(&corto_adminLock);
 
     /* Load contentType outside of lock */
     if (!result) {
@@ -270,7 +270,7 @@ corto_contentType corto_loadContentType(
 
         /* Add to admin, verify that it hasn't been already added by another
          * thread */
-         corto_mutexLock(&corto_adminLock);
+         corto_mutex_lock(&corto_adminLock);
          corto_contentType alreadyAdded = corto_findContentType(isBinary, packagePtr);
          if (!alreadyAdded) {
             corto_ll_append(contentTypes, result);
@@ -279,7 +279,7 @@ corto_contentType corto_loadContentType(
             corto_dealloc(result);
             result = alreadyAdded;
          }
-         corto_mutexUnlock(&corto_adminLock);
+         corto_mutex_unlock(&corto_adminLock);
     }
 
     return result;

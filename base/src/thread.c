@@ -21,7 +21,7 @@
 
 #include <include/base.h>
 
-corto_thread corto_threadNew(corto_threadFunc f, void* arg) {
+corto_thread corto_thread_new(corto_thread_cb f, void* arg) {
     pthread_t thread;
     int r;
 
@@ -32,16 +32,16 @@ corto_thread corto_threadNew(corto_threadFunc f, void* arg) {
     return (corto_thread)thread;
 }
 
-int corto_threadJoin(corto_thread thread, void** result) {
+int corto_thread_join(corto_thread thread, void** result) {
     return pthread_join((pthread_t)thread, result);
 }
 
-int corto_threadDetach(corto_thread thread) {
+int corto_thread_detach(corto_thread thread) {
     pthread_detach((pthread_t)thread);
     return 0;
 }
 
-int corto_threadSetPriority(corto_thread thread, int priority) {
+int corto_thread_setPriority(corto_thread thread, int priority) {
     pthread_t tid;
     struct sched_param param;
 
@@ -52,7 +52,7 @@ int corto_threadSetPriority(corto_thread thread, int priority) {
     return pthread_setschedparam(tid, SCHED_OTHER, &param);
 }
 
-int corto_threadGetPriority(corto_thread thread) {
+int corto_thread_getPriority(corto_thread thread) {
     pthread_t tid;
     int policy;
     struct sched_param param;
@@ -66,31 +66,23 @@ int corto_threadGetPriority(corto_thread thread) {
     return param.sched_priority;
 }
 
-int corto_threadKill(corto_thread thr, int signal) {
-    return pthread_kill((pthread_t)thr, signal);
-}
-
-corto_thread corto_threadSelf() {
+corto_thread corto_thread_self() {
     return (corto_thread)pthread_self();
-}
-
-int corto_threadCancel(corto_thread thread) {
-    return pthread_cancel((pthread_t)thread);
 }
 
 /* Keep track of registered thread keys since pthread does not call destructors
  * for the main thread */
 typedef struct corto_threadTlsAdmin_t {
-    corto_threadKey key;
+    corto_tls key;
     void (*destructor)(void*);
 } corto_threadTlsAdmin_t;
 
 static corto_threadTlsAdmin_t corto_threadTlsAdmin[CORTO_MAX_THREAD_KEY];
 static int32_t corto_threadTlsCount = -1;
 
-int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*)){
+int corto_tls_new(corto_tls* key, void(*destructor)(void*)){
     if (pthread_key_create(key, destructor)) {
-        corto_seterr("corto_threadTlsKey failed.");
+        corto_seterr("corto_tls_new failed.");
         goto error;
     }
 
@@ -105,24 +97,24 @@ error:
     return -1;
 }
 
-int corto_threadTlsSet(corto_threadKey key, void* value) {
+int corto_tls_set(corto_tls key, void* value) {
     return pthread_setspecific(key, value);
 }
 
-void* corto_threadTlsGet(corto_threadKey key) {
+void* corto_tls_get(corto_tls key) {
     return pthread_getspecific(key);
 }
 
-void corto_threadTlsKeysDestruct(void) {
+void corto_tls_free(void) {
     int32_t i;
 
     for (i = 0; i <= corto_threadTlsCount; i++) {
-        void *data = corto_threadTlsGet(corto_threadTlsAdmin[i].key);
+        void *data = corto_tls_get(corto_threadTlsAdmin[i].key);
         corto_threadTlsAdmin[i].destructor(data);
     }
 }
 
-int corto_mutexNew(struct corto_mutex_s *m) {
+int corto_mutex_new(struct corto_mutex_s *m) {
     int result;
     if ((result = pthread_mutex_init (&m->mutex, NULL))) {
         corto_seterr("mutexNew failed: %s", strerror(result));
@@ -130,7 +122,7 @@ int corto_mutexNew(struct corto_mutex_s *m) {
     return result;
 }
 
-int corto_mutexLock(corto_mutex mutex) {
+int corto_mutex_lock(corto_mutex mutex) {
     int result;
     if ((result = pthread_mutex_lock(&mutex->mutex))) {
         corto_seterr("mutexLock failed: %s", strerror(result));
@@ -138,11 +130,11 @@ int corto_mutexLock(corto_mutex mutex) {
     return result;
 }
 
-int corto_mutexUnlock(corto_mutex mutex) {
+int corto_mutex_unlock(corto_mutex mutex) {
     return pthread_mutex_unlock(&mutex->mutex);
 }
 
-int corto_mutexFree(corto_mutex mutex) {
+int corto_mutex_free(corto_mutex mutex) {
     int result;
     if ((result = pthread_mutex_destroy(&mutex->mutex))) {
         corto_seterr("mutexFree failed: %s", strerror(result));
@@ -150,7 +142,7 @@ int corto_mutexFree(corto_mutex mutex) {
     return result;
 }
 
-int corto_mutexTry(corto_mutex mutex) {
+int corto_mutex_try(corto_mutex mutex) {
     int result;
     if ((result = pthread_mutex_trylock(&mutex->mutex))) {
         corto_seterr("mutexTry failed: %s", strerror(result));
@@ -187,7 +179,7 @@ static int pthread_mutex_timedlock (
 }
 #endif
 
-int corto_mutexLockTimed(corto_mutex mutex, struct timespec ts) {
+int corto_mutex_lockTimed(corto_mutex mutex, struct timespec ts) {
     int result;
 
     if ((result = pthread_mutex_timedlock(&mutex->mutex, &ts))) {
@@ -200,7 +192,7 @@ int corto_mutexLockTimed(corto_mutex mutex, struct timespec ts) {
 }
 
 /* Create read-write mutex */
-int corto_rwmutexNew(struct corto_rwmutex_s *m) {
+int corto_rwmutex_new(struct corto_rwmutex_s *m) {
     int result = 0;
 
     if ((result = pthread_rwlock_init(&m->mutex, NULL))) {
@@ -210,7 +202,7 @@ int corto_rwmutexNew(struct corto_rwmutex_s *m) {
 }
 
 /* Free read-write mutex */
-int corto_rwmutexFree(corto_rwmutex m) {
+int corto_rwmutex_free(corto_rwmutex m) {
     int result = 0;
     if ((result = pthread_rwlock_destroy(&m->mutex))) {
         corto_seterr("rwmutexFree failed: %s", strerror(result));
@@ -219,7 +211,7 @@ int corto_rwmutexFree(corto_rwmutex m) {
 }
 
 /* Read lock */
-int corto_rwmutexRead(corto_rwmutex mutex) {
+int corto_rwmutex_read(corto_rwmutex mutex) {
     int result = 0;
     if ((result = pthread_rwlock_rdlock(&mutex->mutex))) {
         corto_seterr("rwmutexRead failed: %s", strerror(result));
@@ -228,7 +220,7 @@ int corto_rwmutexRead(corto_rwmutex mutex) {
 }
 
 /* Write lock */
-int corto_rwmutexWrite(corto_rwmutex mutex) {
+int corto_rwmutex_write(corto_rwmutex mutex) {
     int result = 0;
     if ((result = pthread_rwlock_wrlock(&mutex->mutex))) {
         corto_seterr("rwmutexWrite failed: %s", strerror(result));
@@ -237,7 +229,7 @@ int corto_rwmutexWrite(corto_rwmutex mutex) {
 }
 
 /* Try read */
-int corto_rwmutexTryRead(corto_rwmutex mutex) {
+int corto_rwmutex_tryRead(corto_rwmutex mutex) {
     int result;
     if ((result = pthread_rwlock_tryrdlock(&mutex->mutex))) {
         corto_seterr("rwmutexTryRead failed: %s", strerror(result));
@@ -246,7 +238,7 @@ int corto_rwmutexTryRead(corto_rwmutex mutex) {
 }
 
 /* Try write */
-int corto_rwmutexTryWrite(corto_rwmutex mutex) {
+int corto_rwmutex_tryWrite(corto_rwmutex mutex) {
     int result;
     if ((result = pthread_rwlock_trywrlock(&mutex->mutex))) {
         corto_seterr("rwmutexTryWrite failed: %s", strerror(result));
@@ -255,7 +247,7 @@ int corto_rwmutexTryWrite(corto_rwmutex mutex) {
 }
 
 /* Write unlock */
-int corto_rwmutexUnlock(corto_rwmutex mutex) {
+int corto_rwmutex_unlock(corto_rwmutex mutex) {
     int result;
     if ((result = pthread_rwlock_unlock(&mutex->mutex))) {
         corto_seterr("rwmutexUnlock failed: %s", strerror(result));
@@ -263,7 +255,7 @@ int corto_rwmutexUnlock(corto_rwmutex mutex) {
     return result;
 }
 
-corto_sem corto_semNew(unsigned int initValue) {
+corto_sem corto_sem_new(unsigned int initValue) {
     corto_sem semaphore;
 
     semaphore = malloc (sizeof(corto_sem_s));
@@ -278,7 +270,7 @@ corto_sem corto_semNew(unsigned int initValue) {
 }
 
 /* Post to semaphore */
-int corto_semPost(corto_sem semaphore) {
+int corto_sem_post(corto_sem semaphore) {
     pthread_mutex_lock(&semaphore->mutex);
     semaphore->value++;
     if(semaphore->value > 0) {
@@ -289,7 +281,7 @@ int corto_semPost(corto_sem semaphore) {
 }
 
 /* Wait for semaphore */
-int corto_semWait(corto_sem semaphore) {
+int corto_sem_wait(corto_sem semaphore) {
     pthread_mutex_lock(&semaphore->mutex);
     while(semaphore->value <= 0) {
         pthread_cond_wait(&semaphore->cond, &semaphore->mutex);
@@ -300,7 +292,7 @@ int corto_semWait(corto_sem semaphore) {
 }
 
 /* Trywait for semaphore */
-int corto_semTryWait(corto_sem semaphore) {
+int corto_sem_tryWait(corto_sem semaphore) {
     int result;
 
     pthread_mutex_lock(&semaphore->mutex);
@@ -316,12 +308,12 @@ int corto_semTryWait(corto_sem semaphore) {
 }
 
 /* Get value of semaphore */
-int corto_semValue(corto_sem semaphore) {
+int corto_sem_value(corto_sem semaphore) {
     return semaphore->value;
 }
 
 /* Free semaphore */
-int corto_semFree(corto_sem semaphore) {
+int corto_sem_free(corto_sem semaphore) {
     pthread_cond_destroy(&semaphore->cond);
     pthread_mutex_destroy(&semaphore->mutex);
     free(semaphore);

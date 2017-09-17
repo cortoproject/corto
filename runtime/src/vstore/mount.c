@@ -2,7 +2,7 @@
 
 #include <corto/corto.h>
 #include "src/store/object.h"
-extern corto_threadKey CORTO_KEY_MOUNT_RESULT;
+extern corto_tls CORTO_KEY_MOUNT_RESULT;
 corto_entityAdmin corto_mount_admin = {
     .key = 0,
     .count = 0,
@@ -202,7 +202,7 @@ int16_t corto_mount_construct(
     /* Parse policies */
     if (this->policy.sampleRate) {
         dispatcher = this;
-        this->thread = (corto_word)corto_threadNew(
+        this->thread = (corto_word)corto_thread_new(
             corto_mount_thread,
             this);
     }
@@ -316,7 +316,7 @@ void corto_mount_destruct(
     }
 
     if (this->thread) {
-        corto_threadJoin((corto_thread)this->thread, NULL);
+        corto_thread_join((corto_thread)this->thread, NULL);
     }
 
     safe_corto_subscriber_destruct(this);
@@ -799,8 +799,8 @@ corto_resultIter corto_mount_query(
     corto_query *query)
 {
     corto_iter result;
-    corto_ll r, prevResult = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
-    corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, NULL);
+    corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
+    corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
 
     if (memcmp(&query->timeBegin, &query->timeEnd, sizeof(corto_frame))) {
         result = corto_mount_onHistoryQuery(this, query);
@@ -810,12 +810,12 @@ corto_resultIter corto_mount_query(
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
-    if (!result.hasNext && (r = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT))) {
+    if (!result.hasNext && (r = corto_tls_get(CORTO_KEY_MOUNT_RESULT))) {
         result = corto_ll_iterAlloc(r);
         result.release = corto_mount_queryRelease;
     }
 
-    corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, prevResult);
+    corto_tls_set(CORTO_KEY_MOUNT_RESULT, prevResult);
     return result;
 }
 
@@ -951,11 +951,11 @@ void corto_mount_return(
     corto_mount this,
     corto_result *r)
 {
-    corto_ll result = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
+    corto_ll result = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
 
     if (!result) {
         result = corto_ll_new();
-        corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, result);
+        corto_tls_set(CORTO_KEY_MOUNT_RESULT, result);
     }
 
     if (!r->id) {

@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-typedef pthread_key_t corto_threadKey;
+typedef pthread_key_t corto_tls;
 
 typedef struct corto_rwmutex_s {
     pthread_rwlock_t mutex;

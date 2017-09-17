@@ -24,7 +24,7 @@
 typedef void*(*dlproc)(void);
 
 /* Link dynamic library */
-corto_dl corto_dlOpen(const char* file) {
+corto_dl corto_dl_open(const char* file) {
     corto_dl dl;
 
     dl = (corto_dl)dlopen(file, RTLD_LAZY | RTLD_LOCAL);
@@ -33,20 +33,20 @@ corto_dl corto_dlOpen(const char* file) {
 }
 
 /* Close dynamic library */
-void corto_dlClose(corto_dl dl) {
+void corto_dl_close(corto_dl dl) {
     dlclose(dl);
 }
 
 /* Lookup symbol in dynamic library */
-void* corto_dlSym(corto_dl dl, const char* sym) {
+void* corto_dl_sym(corto_dl dl, const char* sym) {
     return dlsym(dl, sym);
 }
 
 /* Lookup procedure in dynamic library */
-void*(*corto_dlProc(corto_dl dl, const char* proc))(void) {
+void*(*corto_dl_proc(corto_dl dl, const char* proc))(void) {
     return (dlproc)(intptr_t)dlsym(dl, proc);
 }
 
-const char* corto_dlError(void) {
+const char* corto_dl_error(void) {
     return dlerror();
 }

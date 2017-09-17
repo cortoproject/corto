@@ -21,7 +21,7 @@
 
 #include <include/base.h>
 
-static corto_threadKey corto_errKey = 0;
+static corto_tls corto_errKey = 0;
 extern corto_mutex_s corto_adminLock;
 static corto_log_verbosity CORTO_LOG_LEVEL = CORTO_INFO;
 extern char *corto_appName;
@@ -71,12 +71,12 @@ static void corto_lasterrorFree(void* tls) {
 static corto_errThreadData* corto_getThreadData(void){
     corto_errThreadData* result;
     if (!corto_errKey) {
-        corto_threadTlsKey(&corto_errKey, corto_lasterrorFree);
+        corto_tls_new(&corto_errKey, corto_lasterrorFree);
     }
-    result = corto_threadTlsGet(corto_errKey);
+    result = corto_tls_get(corto_errKey);
     if (!result) {
         result = corto_calloc(sizeof(corto_errThreadData));
-        corto_threadTlsSet(corto_errKey, result);
+        corto_tls_set(corto_errKey, result);
     }
     return result;
 }
@@ -202,12 +202,12 @@ corto_log_handler corto_log_handlerRegister(
         result->compiled_category_filter = NULL;
     }
 
-    corto_mutexLock(&corto_adminLock);
+    corto_mutex_lock(&corto_adminLock);
     if (!corto_log_handlers) {
         corto_log_handlers = corto_ll_new();
     }
     corto_ll_append(corto_log_handlers, result);
-    corto_mutexUnlock(&corto_adminLock);
+    corto_mutex_unlock(&corto_adminLock);
 
     return result;
 error:
@@ -219,13 +219,13 @@ void corto_log_handlerUnregister(corto_log_handler cb)
 {
     struct corto_log_handler* callback = cb;
     if (callback) {
-        corto_mutexLock(&corto_adminLock);
+        corto_mutex_lock(&corto_adminLock);
         corto_ll_remove(corto_log_handlers, callback);
         if (!corto_ll_size(corto_log_handlers)) {
             corto_ll_free(corto_log_handlers);
             corto_log_handlers = NULL;
         }
-        corto_mutexUnlock(&corto_adminLock);
+        corto_mutex_unlock(&corto_adminLock);
 
         if (callback->category_filter) corto_dealloc(callback->category_filter);
         if (callback->auth_token) corto_dealloc(callback->auth_token);
@@ -538,7 +538,7 @@ corto_log_verbosity corto_logv(char const *file, unsigned int line, corto_log_ve
         }
 
         if (corto_log_handlers) {
-            corto_mutexLock(&corto_adminLock);
+            corto_mutex_lock(&corto_adminLock);
             if (corto_log_handlers) {
                 corto_iter it = corto_ll_iter(corto_log_handlers);
                 while (corto_iter_hasNext(&it)) {
@@ -550,7 +550,7 @@ corto_log_verbosity corto_logv(char const *file, unsigned int line, corto_log_ve
                         msgBody);
                 }
             }
-            corto_mutexUnlock(&corto_adminLock);
+            corto_mutex_unlock(&corto_adminLock);
         }
 
         if (alloc) {

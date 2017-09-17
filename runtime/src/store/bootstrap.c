@@ -82,15 +82,15 @@ static corto_ll corto_exitHandlers = NULL;
 char *corto_appName = NULL;
 
 /* TLS keys */
-corto_threadKey CORTO_KEY_OBSERVER_ADMIN;
-corto_threadKey CORTO_KEY_DECLARED_ADMIN;
-corto_threadKey CORTO_KEY_LISTEN_ADMIN;
-corto_threadKey CORTO_KEY_OWNER;
-corto_threadKey CORTO_KEY_ATTR;
-corto_threadKey CORTO_KEY_FLUENT;
-corto_threadKey CORTO_KEY_THREAD_STRING;
-corto_threadKey CORTO_KEY_MOUNT_RESULT;
-corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
+corto_tls CORTO_KEY_OBSERVER_ADMIN;
+corto_tls CORTO_KEY_DECLARED_ADMIN;
+corto_tls CORTO_KEY_LISTEN_ADMIN;
+corto_tls CORTO_KEY_OWNER;
+corto_tls CORTO_KEY_ATTR;
+corto_tls CORTO_KEY_FLUENT;
+corto_tls CORTO_KEY_THREAD_STRING;
+corto_tls CORTO_KEY_MOUNT_RESULT;
+corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
 /* Delegate object variables */
 corto_member corto_type_init_o = NULL;
@@ -1125,18 +1125,18 @@ int corto_start(char *appName) {
     }
 
     /* Initialize TLS keys */
-    corto_threadTlsKey(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
-    corto_threadTlsKey(&CORTO_KEY_LISTEN_ADMIN, NULL);
-    corto_threadTlsKey(&CORTO_KEY_OWNER, NULL);
-    corto_threadTlsKey(&CORTO_KEY_ATTR, corto_genericTlsFree);
-    corto_threadTlsKey(&CORTO_KEY_FLUENT, NULL);
+    corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
+    corto_tls_new(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
+    corto_tls_new(&CORTO_KEY_LISTEN_ADMIN, NULL);
+    corto_tls_new(&CORTO_KEY_OWNER, NULL);
+    corto_tls_new(&CORTO_KEY_ATTR, corto_genericTlsFree);
+    corto_tls_new(&CORTO_KEY_FLUENT, NULL);
     void corto_threadStringDealloc(void *data);
-    corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
-    corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
-    corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
-    corto_threadTlsKey(&corto_subscriber_admin.key, corto_entityAdmin_free);
-    corto_threadTlsKey(&corto_mount_admin.key, corto_entityAdmin_free);
+    corto_tls_new(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
+    corto_tls_new(&CORTO_KEY_MOUNT_RESULT, NULL);
+    corto_tls_new(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
+    corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
+    corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Push init component for logging */
     corto_log_categoryPush("init");
@@ -1183,8 +1183,8 @@ int corto_start(char *appName) {
     }
 
     /* Init admin-lock */
-    corto_mutexNew(&corto_adminLock);
-    corto_rwmutexNew(&corto_subscriberLock);
+    corto_mutex_new(&corto_adminLock);
+    corto_rwmutex_new(&corto_subscriberLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::construct. */
@@ -1360,12 +1360,12 @@ void corto_onexit(void(*handler)(void*), void* userData) {
     h->handler = handler;
     h->userData = userData;
 
-    corto_mutexLock(&corto_adminLock);
+    corto_mutex_lock(&corto_adminLock);
     if (!corto_exitHandlers) {
         corto_exitHandlers = corto_ll_new();
     }
     corto_ll_insert(corto_exitHandlers, h);
-    corto_mutexUnlock(&corto_adminLock);
+    corto_mutex_unlock(&corto_adminLock);
 }
 
 /* Call exit-handlers */
@@ -1407,7 +1407,7 @@ int corto_stop(void) {
 
     /* This function calls all destructors for registered TLS keys for the main
      * thread */
-    corto_threadTlsKeysDestruct();
+    corto_tls_free();
 
     /* Call exithandlers */
     corto_exit();
@@ -1437,7 +1437,7 @@ int corto_stop(void) {
     if (corto__freeSSO(root_o)) goto error;
 
     /* Deinit adminLock */
-    corto_mutexFree(&corto_adminLock);
+    corto_mutex_free(&corto_adminLock);
 
     CORTO_APP_STATUS = 3; /* Shut down */
 

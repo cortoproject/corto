@@ -51,7 +51,7 @@ static corto_int16 corto_entityAdmin_copyIn(corto_entityAdmin *src, corto_entity
     corto_int32 depth, sp;
 
     if (src->count) {
-        if (corto_rwmutexRead(&src->lock)) {
+        if (corto_rwmutex_read(&src->lock)) {
             goto error;
         }
 
@@ -76,7 +76,7 @@ static corto_int16 corto_entityAdmin_copyIn(corto_entityAdmin *src, corto_entity
             }
         }
 
-        if (corto_rwmutexUnlock(&src->lock)) {
+        if (corto_rwmutex_unlock(&src->lock)) {
             goto error;
         }
     }
@@ -87,10 +87,10 @@ error:
 }
 
 corto_entityAdmin* corto_entityAdmin_get(corto_entityAdmin *this) {
-    corto_entityAdmin *result = corto_threadTlsGet(this->key);
+    corto_entityAdmin *result = corto_tls_get(this->key);
     if (!result) {
         result = corto_calloc(sizeof(corto_entityAdmin));
-        corto_threadTlsSet(this->key, result);
+        corto_tls_set(this->key, result);
     }
 
     if (result->changed != this->changed) {
@@ -185,7 +185,7 @@ int16_t corto_entityAdmin_add(
     
     corto_int16 depth = corto_entityAdmin_getDepthFromId(parent);
 
-    if (corto_rwmutexWrite(&this->lock)) {
+    if (corto_rwmutex_write(&this->lock)) {
         goto error;
     }
 
@@ -232,7 +232,7 @@ int16_t corto_entityAdmin_add(
     this->count ++;
     this->changed ++;
 
-    if (corto_rwmutexUnlock(&this->lock)) {
+    if (corto_rwmutex_unlock(&this->lock)) {
         goto error;
     }
 
@@ -251,7 +251,7 @@ int corto_entityAdmin_remove(
     corto_int32 count = 0;
     corto_int16 depth = corto_entityAdmin_getDepthFromId(parent);
 
-    if (corto_rwmutexWrite(&this->lock)) {
+    if (corto_rwmutex_write(&this->lock)) {
         goto error;
     }
 
@@ -295,12 +295,12 @@ int corto_entityAdmin_remove(
         this->changed ++;
     }
 
-    if (corto_rwmutexUnlock(&this->lock)) {
+    if (corto_rwmutex_unlock(&this->lock)) {
         goto error;
     }
 
     return count;
 error:
-    corto_rwmutexUnlock(&this->lock);
+    corto_rwmutex_unlock(&this->lock);
     return -1;
 }

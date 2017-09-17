@@ -44,7 +44,7 @@ CORTO_SEQUENCE(corto_entityPerParentSeq, corto_entityPerParent,);
  * a lock when walking the admin */
 typedef struct corto_entityAdmin {
     /* Key for accessing local thread copy */
-    corto_threadKey key;
+    corto_tls key;
 
     /* Total number of enitities */
     int count;

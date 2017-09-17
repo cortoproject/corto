@@ -20,7 +20,9 @@
  */
 
 /*
-  Red Black balanced tree library
+  Red Black balanced tree library (released under MIT license)
+
+  GitHub: https://github.com/clibs/red-black-tree
 
     > Created (Julienne Walker): August 23, 2003
     > Modified (Julienne Walker): March 14, 2008

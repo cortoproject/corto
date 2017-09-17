@@ -25,7 +25,7 @@
 #include "idmatch.h"
 
 extern corto_int8 CORTO_OLS_AUGMENT;
-extern corto_threadKey CORTO_KEY_FLUENT;
+extern corto_tls CORTO_KEY_FLUENT;
 
 struct corto_select_data;
 
@@ -1381,7 +1381,7 @@ static corto_select__fluent corto_selectorContentType(
     corto_string contentType)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->contentType = contentType;
     }
@@ -1393,7 +1393,7 @@ static corto_select__fluent corto_selectorLimit(
     corto_uint64 limit)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->offset = offset;
         request->limit = limit;
@@ -1405,7 +1405,7 @@ static corto_select__fluent corto_selectorType(
     corto_string type)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
     }
@@ -1417,9 +1417,9 @@ static corto_int16 corto_selectorIter(corto_resultIter *ret)
     corto_assert(ret != NULL, "no iterator provided to .iter()");
 
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
@@ -1452,12 +1452,12 @@ static corto_string corto_selectorId()
 {
     corto_string result = NULL;
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
 
     if (request) {
         corto_bool quit = FALSE;
         request->mountAction = corto_mountAction_id;
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
@@ -1494,10 +1494,10 @@ static corto_int16 corto_selectorSubscribe(corto_resultIter *ret)
     corto_assert(ret != NULL, "no iterator provided to .subscribe()");
 
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->mountAction = corto_mountAction_subscribe;
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
@@ -1520,10 +1520,10 @@ static int corto_mountAction_unsubscribe(corto_mount m, corto_query *r, void *ct
 static corto_int16 corto_selectorUnsubscribe()
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->mountAction = corto_mountAction_unsubscribe;
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
@@ -1546,10 +1546,10 @@ static corto_int16 corto_selectorIterObjects(corto_objectIter *ret)
     corto_assert(ret != NULL, "no iterator provided to .iter()");
 
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
 
     if (request) {
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
@@ -1577,10 +1577,10 @@ static corto_int64 corto_selectorCount()
     corto_uint64 count = 0;
 
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
 
     if (request) {
-        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_tls_set(CORTO_KEY_FLUENT, NULL);
         it = corto_selectPrepareIterator(request);
         if (request->err) {
             goto error;
@@ -1601,7 +1601,7 @@ error:
 static corto_select__fluent corto_selectorFromNow(void)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->from.kind = CORTO_FRAME_NOW;
         request->from.value = 0;
@@ -1612,7 +1612,7 @@ static corto_select__fluent corto_selectorFromNow(void)
 static corto_select__fluent corto_selectorFromTime(corto_time t)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->from.kind = CORTO_FRAME_TIME;
         union {
@@ -1628,7 +1628,7 @@ static corto_select__fluent corto_selectorFromTime(corto_time t)
 static corto_select__fluent corto_selectorFromSample(corto_uint64 sample)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->from.kind = CORTO_FRAME_SAMPLE;
         request->from.value = sample;
@@ -1639,7 +1639,7 @@ static corto_select__fluent corto_selectorFromSample(corto_uint64 sample)
 static corto_select__fluent corto_selectorToNow(void)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->to.kind = CORTO_FRAME_NOW;
         request->from.value = 0;
@@ -1650,7 +1650,7 @@ static corto_select__fluent corto_selectorToNow(void)
 static corto_select__fluent corto_selectorToTime(corto_time t)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->to.kind = CORTO_FRAME_TIME;
         union {
@@ -1666,7 +1666,7 @@ static corto_select__fluent corto_selectorToTime(corto_time t)
 static corto_select__fluent corto_selectorToSample(corto_uint64 sample)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->to.kind = CORTO_FRAME_SAMPLE;
         request->to.value = sample;
@@ -1677,7 +1677,7 @@ static corto_select__fluent corto_selectorToSample(corto_uint64 sample)
 static corto_select__fluent corto_selectorForDuration(corto_time t)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->to.kind = CORTO_FRAME_DURATION;
         union {
@@ -1693,7 +1693,7 @@ static corto_select__fluent corto_selectorForDuration(corto_time t)
 static corto_select__fluent corto_selectorForDepth(corto_int64 depth)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->to.kind = CORTO_FRAME_DEPTH;
         request->to.value = depth;
@@ -1704,7 +1704,7 @@ static corto_select__fluent corto_selectorForDepth(corto_int64 depth)
 static corto_select__fluent corto_selectorInstance(corto_object instance)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
@@ -1714,7 +1714,7 @@ static corto_select__fluent corto_selectorInstance(corto_object instance)
 static corto_select__fluent corto_selectorMount(corto_mount mount)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->mount = mount;
     }
@@ -1724,7 +1724,7 @@ static corto_select__fluent corto_selectorMount(corto_mount mount)
 static corto_select__fluent corto_selectorFrom(char *scope)
 {
     corto_selectRequest *request =
-      corto_threadTlsGet(CORTO_KEY_FLUENT);
+      corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->scope = scope;
     }
@@ -1763,10 +1763,10 @@ corto_select__fluent corto_select(
 {
     va_list arglist;
 
-    corto_selectRequest *request = corto_threadTlsGet(CORTO_KEY_FLUENT);
+    corto_selectRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_selectRequest));
-        corto_threadTlsSet(CORTO_KEY_FLUENT, request);
+        corto_tls_set(CORTO_KEY_FLUENT, request);
     } else {
         memset(request, 0, sizeof(corto_selectRequest));
     }

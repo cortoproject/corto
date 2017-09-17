@@ -35,10 +35,10 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
 static void corto_olsDestroy(corto__scope *scope);
 static corto_bool corto_ownerMatch(corto_object owner, corto_object current);
 
-extern corto_threadKey CORTO_KEY_ATTR;
-extern corto_threadKey CORTO_KEY_DECLARED_ADMIN;
-extern corto_threadKey CORTO_KEY_OWNER;
-extern corto_threadKey CORTO_KEY_CONSTRUCTOR_TYPE;
+extern corto_tls CORTO_KEY_ATTR;
+extern corto_tls CORTO_KEY_DECLARED_ADMIN;
+extern corto_tls CORTO_KEY_OWNER;
+extern corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
 extern int CORTO_BENCHMARK_DECLARE;
 extern int CORTO_BENCHMARK_DECLARECHILD;
@@ -57,7 +57,7 @@ void corto_declaredAdminFree(void *admin) {
 
 corto_bool corto_declaredAdminCheck(corto_object o) {
     corto_assertObject(o);
-    corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
+    corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (!admin) {
         return FALSE;
     } else {
@@ -67,17 +67,17 @@ corto_bool corto_declaredAdminCheck(corto_object o) {
 
 static void corto_declaredAdminAdd(corto_object o) {
     corto_assertObject(o);
-    corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
+    corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (!admin) {
         admin = corto_ll_new();
-        corto_threadTlsSet(CORTO_KEY_DECLARED_ADMIN, admin);
+        corto_tls_set(CORTO_KEY_DECLARED_ADMIN, admin);
     }
     corto_ll_append(admin, o);
 }
 
 static corto_bool corto_declaredAdminRemove(corto_object o) {
     corto_assertObject(o);
-    corto_ll admin = corto_threadTlsGet(CORTO_KEY_DECLARED_ADMIN);
+    corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (admin) {
         if (corto_ll_remove(admin, o)) {
             corto_unlock(o);
@@ -228,7 +228,7 @@ static corto_object corto__initScope(
 
     /* Set parent, so that initializer can refer to it */
     scope->parent = parent;
-    corto_rwmutexNew(&scope->align.scopeLock);
+    corto_rwmutex_new(&scope->align.scopeLock);
 
     /* Add object to the scope of the parent-object */
     if (!orphan && corto_checkAttr(parent, CORTO_ATTR_NAMED)) {
@@ -245,7 +245,7 @@ static corto_object corto__initScope(
 
     if (result != o) {
         corto_dealloc(scope->id);
-        corto_rwmutexFree(&scope->align.scopeLock);
+        corto_rwmutex_free(&scope->align.scopeLock);
         _o = CORTO_OFFSET(result, -sizeof(corto__object));
         scope = corto__objectScope(_o);
     } else {
@@ -312,7 +312,7 @@ static void corto__deinitScope(corto_object o) {
     }
 
     /* Finally, free own scopeLock. */
-    corto_rwmutexFree(&scope->align.scopeLock);
+    corto_rwmutex_free(&scope->align.scopeLock);
 }
 
 /* Initialize writable-part of object */
@@ -326,7 +326,7 @@ static void corto__initWritable(corto_object o) {
     writable = corto__objectWritable(_o);
     corto_assert(writable != NULL, "corto__initWritable: created writable object, but corto__objectWritable returned NULL.");
 
-    corto_rwmutexNew(&writable->align.lock);
+    corto_rwmutex_new(&writable->align.lock);
 }
 
 static void corto__deinitWritable(corto_object o) {
@@ -339,7 +339,7 @@ static void corto__deinitWritable(corto_object o) {
     writable = corto__objectWritable(_o);
     corto_assert(writable != NULL, "corto__deinitWritable: called on non-writable object <%p>.", o);
 
-    corto_rwmutexFree(&writable->align.lock);
+    corto_rwmutex_free(&writable->align.lock);
 }
 
 /* Initialize observable-part of object */
@@ -353,7 +353,7 @@ static void corto__initObservable(corto_object o) {
     observable = corto__objectObservable(_o);
     corto_assert(observable != NULL, "corto__initObservable: created observable object, but corto__objectObservable returned NULL.");
 
-    corto_rwmutexNew(&observable->align.selfLock);
+    corto_rwmutex_new(&observable->align.selfLock);
 
     observable->onSelf = NULL;
     observable->onChild = NULL;
@@ -396,7 +396,7 @@ static void corto__deinitObservable(corto_object o) {
         observable->onChild = NULL;
     }
 
-    corto_rwmutexFree(&observable->align.selfLock);
+    corto_rwmutex_free(&observable->align.selfLock);
 }
 
 /* Initialize static scoped object */
@@ -411,7 +411,7 @@ void corto__newSSO(corto_object sso) {
     corto_assert(scope != NULL, "SSO object without a scope? That's bad.");
 
     /* Don't call initScope because id is already set. */
-    corto_rwmutexNew(&scope->align.scopeLock);
+    corto_rwmutex_new(&scope->align.scopeLock);
     if (scope->parent) {
         corto__adoptSSO(sso);
     }
@@ -458,7 +458,7 @@ corto_int16 corto__freeSSO(corto_object sso) {
         scope->scope = NULL;
     }
 
-    corto_rwmutexFree(&scope->align.scopeLock);
+    corto_rwmutex_free(&scope->align.scopeLock);
 
     /* Deinitialize observable */
     if (corto_checkAttr(sso, CORTO_ATTR_OBSERVABLE)) {
@@ -498,15 +498,15 @@ corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_obje
         corto_interface prev = NULL;
         bool hasBase = (t->kind == CORTO_COMPOSITE) && ((corto_interface)t)->base;
         if (hasBase) {
-            prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
-            corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, t);
+            prev = corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE);
+            corto_tls_set(CORTO_KEY_CONSTRUCTOR_TYPE, t);
         }
         if (delegate->kind == CORTO_PROCEDURE_CDECL) {
             result = ((corto_int16 ___ (*)(corto_object))delegate->fptr)(o);
         } else {
             corto_callb(delegate, &result, (void*[]){&o});
         }
-        if (hasBase) corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
+        if (hasBase) corto_tls_set(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
     }
     return result;
 }
@@ -517,8 +517,8 @@ void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_obj
         corto_interface prev;
         bool hasBase = (t->kind == CORTO_COMPOSITE) && ((corto_interface)t)->base;
         if (hasBase) {
-            prev = corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE);
-            corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, t);
+            prev = corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE);
+            corto_tls_set(CORTO_KEY_CONSTRUCTOR_TYPE, t);
         }
         if (delegate->kind == CORTO_PROCEDURE_CDECL) {
             ((void ___ (*)(corto_object))delegate->fptr)(o);
@@ -526,7 +526,7 @@ void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_obj
             corto_callb(delegate, NULL, (void*[]){&o});
         }
         if (hasBase) {
-            corto_threadTlsSet(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
+            corto_tls_set(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
         }
     }
 }
@@ -729,7 +729,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
             corto_lock(child);
 
             /* Insert child in parent-scope */
-            if (corto_rwmutexWrite(&p_scope->align.scopeLock))
+            if (corto_rwmutex_write(&p_scope->align.scopeLock))
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
@@ -814,7 +814,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
             corto_claim(parent);
             if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
 
-            if (corto_rwmutexUnlock(&p_scope->align.scopeLock))
+            if (corto_rwmutex_unlock(&p_scope->align.scopeLock))
                 corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");
         } else {
             corto_critical("corto_adopt: child-object is not scoped");
@@ -830,7 +830,7 @@ err_invalid_parent_leaf:
     c_scope->parent = NULL;
     corto_rb_remove(p_scope->scope, c_scope->id);
 err_existing:
-    corto_rwmutexUnlock(&p_scope->align.scopeLock);
+    corto_rwmutex_unlock(&p_scope->align.scopeLock);
     return NULL;
 }
 
@@ -849,10 +849,10 @@ void corto__orphan(corto_object o) {
         p_scope = corto__objectScope(_parent);
 
         /* Remove object from parent scope */
-        if (corto_rwmutexWrite(&p_scope->align.scopeLock)) goto err_parent_mutex;
+        if (corto_rwmutex_write(&p_scope->align.scopeLock)) goto err_parent_mutex;
         corto_rb_remove(p_scope->scope, (void*)corto_idof(o));
 
-        if (corto_rwmutexUnlock(&p_scope->align.scopeLock)) goto err_parent_mutex;
+        if (corto_rwmutex_unlock(&p_scope->align.scopeLock)) goto err_parent_mutex;
     }
 
     return;
@@ -861,11 +861,11 @@ err_parent_mutex:
 }
 
 corto_attr corto_setAttr(corto_attr attrs) {
-    corto_attr* attr = corto_threadTlsGet(CORTO_KEY_ATTR);
+    corto_attr* attr = corto_tls_get(CORTO_KEY_ATTR);
     corto_attr oldAttr = CORTO_ATTR_DEFAULT;
     if (!attr) {
         attr = corto_alloc(sizeof(corto_attr));
-        corto_threadTlsSet(CORTO_KEY_ATTR, attr);
+        corto_tls_set(CORTO_KEY_ATTR, attr);
     } else {
         oldAttr = *attr;
     }
@@ -874,7 +874,7 @@ corto_attr corto_setAttr(corto_attr attrs) {
 }
 
 corto_attr corto_getAttr(void) {
-    corto_attr* attr = corto_threadTlsGet(CORTO_KEY_ATTR);
+    corto_attr* attr = corto_tls_get(CORTO_KEY_ATTR);
     if (attr) {
         return *attr;
     } else {
@@ -2028,12 +2028,12 @@ void corto_drop(corto_object o, corto_bool delete) {
          * destruction of an object, this scopeLock is also required,
          * which would result in deadlocks. */
 
-        corto_rwmutexRead(&scope->align.scopeLock);
+        corto_rwmutex_read(&scope->align.scopeLock);
         walkData.objects = NULL;
         if (scope->scope) {
             corto_rb_walk(scope->scope, corto_dropWalk, &walkData);
         }
-        corto_rwmutexUnlock(&scope->align.scopeLock);
+        corto_rwmutex_unlock(&scope->align.scopeLock);
 
         /* Free objects outside scopeLock */
         if (walkData.objects) {
@@ -2523,7 +2523,7 @@ void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
     if (scope) {
         corto__ols *ols = NULL;
 
-        if (corto_rwmutexWrite(&scope->align.scopeLock)) {
+        if (corto_rwmutex_write(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed");
             goto error;
         }
@@ -2542,7 +2542,7 @@ void* corto_olsSet(corto_object o, corto_int8 key, void *value) {
         }
         ols->value = value;
 
-        corto_rwmutexUnlock(&scope->align.scopeLock);
+        corto_rwmutex_unlock(&scope->align.scopeLock);
     } else {
         corto_seterr("object is not scoped");
         goto error;
@@ -2565,7 +2565,7 @@ void* corto_olsGet(corto_object o, corto_int8 key) {
     scope = corto__objectScope(_o);
     if (scope) {
         corto__ols *ols = NULL;
-        if (corto_rwmutexWrite(&scope->align.scopeLock)) {
+        if (corto_rwmutex_write(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed: %s", corto_lasterr());
             goto error;
         }
@@ -2576,7 +2576,7 @@ void* corto_olsGet(corto_object o, corto_int8 key) {
             result = ols->value;
         }
 
-        corto_rwmutexUnlock(&scope->align.scopeLock);
+        corto_rwmutex_unlock(&scope->align.scopeLock);
     } else {
         corto_seterr("object is not scoped");
         goto error;
@@ -2598,7 +2598,7 @@ void* corto_olsLockGet(corto_object o, corto_int8 key) {
     scope = corto__objectScope(_o);
     if (scope) {
         corto__ols *ols = NULL;
-        if (corto_rwmutexWrite(&scope->align.scopeLock)) {
+        if (corto_rwmutex_write(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed");
             goto error;
         }
@@ -2641,7 +2641,7 @@ void corto_olsUnlockSet(corto_object o, corto_int8 key, void *value) {
             corto_assert(ols->key == key, "returned wrong OLS data");
             ols->value = value;
         }
-        corto_rwmutexUnlock(&scope->align.scopeLock);
+        corto_rwmutex_unlock(&scope->align.scopeLock);
     } else {
         corto_seterr("object is not scoped");
     }
@@ -2654,7 +2654,7 @@ corto__scope *corto__scopeClaim(corto_object o) {
     corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__scope *scope = corto__objectScope(_o);
     if (scope) {
-        if (corto_rwmutexRead(&scope->align.scopeLock)) {
+        if (corto_rwmutex_read(&scope->align.scopeLock)) {
             corto_seterr("aquiring scopelock failed");
             goto error;
         }
@@ -2671,7 +2671,7 @@ void corto__scopeRelease(corto_object o) {
     corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__scope *scope = corto__objectScope(_o);
     if (scope) {
-        corto_rwmutexUnlock(&scope->align.scopeLock);
+        corto_rwmutex_unlock(&scope->align.scopeLock);
     }
 }
 
@@ -2842,7 +2842,7 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalk_cb action, void* use
     scope = corto__objectScope(CORTO_OFFSET(o, -sizeof(corto__object)));
     if (scope) {
         if (scope->scope) {
-            corto_rwmutexRead(&scope->align.scopeLock);
+            corto_rwmutex_read(&scope->align.scopeLock);
             if (!corto_secured()) {
                 result = corto_rb_walk(scope->scope, (corto_elementWalk_cb)action, userData);
             } else {
@@ -2852,7 +2852,7 @@ corto_int16 corto_scopeWalk(corto_object o, corto_scopeWalk_cb action, void* use
                     (corto_elementWalk_cb)corto_scopeWalkSecured,
                     &walkData);
             }
-            corto_rwmutexUnlock(&scope->align.scopeLock);
+            corto_rwmutex_unlock(&scope->align.scopeLock);
         }
     }
 
@@ -3425,7 +3425,7 @@ static corto_object corto_lookup_intern(
 
                     if (o) corto_release(o);
                 } else {
-                    corto_rwmutexRead(&scope->align.scopeLock);
+                    corto_rwmutex_read(&scope->align.scopeLock);
                     if (!corto_rb_hasKey_w_cmp(
                           tree,
                           ptr,
@@ -3449,12 +3449,12 @@ static corto_object corto_lookup_intern(
                         } else if (corto_instanceof(corto_function_o, o)) {
                             if (corto_function(o)->overloaded == TRUE) {
                                 corto_setinfo("ambiguous reference '%s'", id);
-                                corto_rwmutexUnlock(&scope->align.scopeLock);
+                                corto_rwmutex_unlock(&scope->align.scopeLock);
                                 goto error;
                             }
                         }
                     }
-                    corto_rwmutexUnlock(&scope->align.scopeLock);
+                    corto_rwmutex_unlock(&scope->align.scopeLock);
                 }
             } else {
                 o = NULL;
@@ -3547,13 +3547,13 @@ error:
 
 corto_object corto_setOwner(corto_object owner) {
     corto_assertObject(owner);
-    corto_object result = corto_threadTlsGet(CORTO_KEY_OWNER);
-    corto_threadTlsSet(CORTO_KEY_OWNER, owner);
+    corto_object result = corto_tls_get(CORTO_KEY_OWNER);
+    corto_tls_set(CORTO_KEY_OWNER, owner);
     return result;
 }
 
 corto_object corto_getOwner() {
-    return corto_threadTlsGet(CORTO_KEY_OWNER);
+    return corto_tls_get(CORTO_KEY_OWNER);
 }
 
 /* Publish new value for object */
@@ -3677,7 +3677,7 @@ corto_int16 corto_update_begin(corto_object o) {
     if (corto_checkState(o, CORTO_VALID)) {
         corto__writable* _wr = corto__objectWritable(CORTO_OFFSET(o, -sizeof(corto__object)));
         if (_wr) {
-            if (corto_rwmutexWrite(&_wr->align.lock)) {
+            if (corto_rwmutex_write(&_wr->align.lock)) {
                 corto_seterr("updateBegin: %s",
                     corto_fullpath(NULL, o), corto_lasterr());
                 goto error;
@@ -3706,7 +3706,7 @@ corto_int16 corto_update_try(corto_object observable) {
 
     _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     if (_wr) {
-        if (corto_rwmutexTryWrite(&_wr->align.lock) == CORTO_LOCK_BUSY) {
+        if (corto_rwmutex_tryWrite(&_wr->align.lock) == CORTO_LOCK_BUSY) {
             goto busy;
         }
     } else {
@@ -3761,7 +3761,7 @@ corto_int16 corto_update_end(corto_object observable) {
     if (defined) {
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         if (_wr) {
-            if (corto_rwmutexUnlock(&_wr->align.lock)) {
+            if (corto_rwmutex_unlock(&_wr->align.lock)) {
                 corto_seterr("updateEnd: unlock on '%s' failed (%s)",
                   corto_fullpath(NULL, observable), corto_lasterr());
             }
@@ -3781,7 +3781,7 @@ corto_int16 corto_update_cancel(corto_object observable) {
 
         _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
 
-        if (corto_rwmutexUnlock(&_wr->align.lock)) {
+        if (corto_rwmutex_unlock(&_wr->align.lock)) {
             corto_seterr("updateCancel: unlock on '%s' failed (%s)",
               corto_fullpath(NULL, observable), corto_lasterr());
         }
@@ -3875,7 +3875,7 @@ corto_int16 corto_readBegin(corto_object object) {
         corto__writable* _o;
 
         _o = corto__objectWritable(CORTO_OFFSET(object, -sizeof(corto__object)));
-        if (corto_rwmutexRead(&_o->align.lock)) {
+        if (corto_rwmutex_read(&_o->align.lock)) {
             corto_seterr("readBegin of '%s' failed: %s",
               corto_fullpath(NULL, object), corto_lasterr());
             goto error;
@@ -3900,7 +3900,7 @@ corto_int16 corto_lock(corto_object object) {
         corto__writable* _o;
 
         _o = corto__objectWritable(CORTO_OFFSET(object, -sizeof(corto__object)));
-        if (corto_rwmutexWrite(&_o->align.lock)) {
+        if (corto_rwmutex_write(&_o->align.lock)) {
             goto error;
         }
     }
@@ -3917,7 +3917,7 @@ corto_int16 corto_unlock(corto_object object) {
         corto__writable* _o;
 
         _o = corto__objectWritable(CORTO_OFFSET(object, -sizeof(corto__object)));
-        if (corto_rwmutexUnlock(&_o->align.lock)) {
+        if (corto_rwmutex_unlock(&_o->align.lock)) {
             goto error;
         }
     }
@@ -4897,7 +4897,7 @@ corto_int16 _corto_copy(corto_object *dst, corto_object src) {
 }
 
 corto_int16 corto_super_init(corto_object o) {
-    corto_interface cur = corto_interface(corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE));
+    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
     if (!cur) {
         corto_seterr("can only call corto_super_init from an initializer");
         goto error;
@@ -4913,7 +4913,7 @@ error:
 }
 
 int16_t corto_super_deinit(corto_object o) {
-    corto_interface cur = corto_interface(corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE));
+    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
     if (!cur) {
         corto_seterr("can only call corto_super_deinit from an deinitializer");
         goto error;
@@ -4931,7 +4931,7 @@ error:
 }
 
 corto_int16 corto_super_construct(corto_object o) {
-    corto_interface cur = corto_interface(corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE));
+    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
     if (!cur) {
         corto_seterr("can only call corto_super_construct from a constructor");
         goto error;
@@ -4947,7 +4947,7 @@ error:
 }
 
 void corto_super_destruct(corto_object o) {
-    corto_interface cur = corto_interface(corto_threadTlsGet(CORTO_KEY_CONSTRUCTOR_TYPE));
+    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
     if (!cur) {
         corto_seterr("can only call corto_super_destruct from a destructor");
         goto error;
