@@ -53,6 +53,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include <ftw.h>
+#include <fcntl.h>
+
 
 #ifdef __MACH__
 #include <mach/clock.h>
@@ -272,9 +274,13 @@ typedef int ___ (*corto_equals_cb)(void *context, const void* o1, const void* o2
 #include <include/ll.h>
 #include <include/string.h>
 #include <include/os.h>
+#include <include/dl.h>
+#include <include/fs.h>
+#include <include/thread.h>
 #include <include/load.h>
 #include <include/util.h>
 #include <include/log.h>
+#include <include/proc.h>
 #include <include/idmatch.h>
 
 #endif /* CORTO_BASE_H */

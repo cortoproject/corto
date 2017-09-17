@@ -24,8 +24,6 @@
 
 /* UNSTABLE API */
 
-#include "corto/posix_thread.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,50 +68,6 @@ extern "C" {
 
 #define CORTO_PLATFORM_STRING CORTO_CPU_STRING "-" CORTO_OS_STRING
 
-typedef int corto_pid;
-
-typedef enum corto_procsignal {
-    CORTO_SIGINT = 2,
-    CORTO_SIGQUIT = 3,
-    CORTO_SIGILL = 4,
-    CORTO_SIGABRT = 6,
-    CORTO_SIGFPE = 8,
-    CORTO_SIGKILL = 9,
-    CORTO_SIGSEGV = 11,
-    CORTO_SIGTERM = 15
-} corto_procsignal;
-
-/* Run a process, return PID (-1 if failed) */
-CORTO_EXPORT corto_pid corto_procrun(const char* exec, char *argv[]);
-
-/* Same as corto_procrun, but override stdin, stdout and stderr of child */
-CORTO_EXPORT corto_pid corto_procrunRedirect(
-    const char* exec, char *argv[], FILE *in, FILE *out, FILE *err);
-
-/* Send signal to process */
-CORTO_EXPORT int corto_prockill(corto_pid pid, corto_procsignal sig);
-
-/* Wait for process */
-CORTO_EXPORT int corto_procwait(corto_pid pid, int8_t *rc);
-
-/* Check state of process */
-CORTO_EXPORT int corto_proccheck(corto_pid pid, int8_t *rc);
-
-/* Simple blocking function to create and wait for a process */
-CORTO_EXPORT int corto_proccmd(char *cmd, int8_t *rc);
-
-/* Check whether process is being debugged */
-CORTO_EXPORT int corto_beingTraced(void);
-
-/* Get hostname of current machine */
-CORTO_EXPORT char* corto_hostname(void);
-
-/* Get PID of current process */
-#define corto_pid() _corto_pid()
-CORTO_EXPORT corto_pid _corto_pid(void);
-
-typedef struct corto_dl_s* corto_dl;
-
 /* Set environment variable */
 CORTO_EXPORT int16_t corto_setenv(const char *varname, const char *value, ...);
 
@@ -125,6 +79,9 @@ CORTO_EXPORT char* corto_envparse(const char* str, ...);
 
 /* Same as envparse with va_list */
 CORTO_EXPORT char* corto_venvparse(const char* str, va_list args);
+
+/* Get hostname of current machine */
+CORTO_EXPORT char* corto_hostname(void);
 
 typedef struct corto_file_s* corto_file;
 
@@ -156,12 +113,6 @@ CORTO_EXPORT struct timespec timespec_add(struct timespec t1, struct timespec t2
 CORTO_EXPORT struct timespec timespec_sub(struct timespec t1, struct timespec t2);
 CORTO_EXPORT int timespec_compare(struct timespec t1, struct timespec t2);
 CORTO_EXPORT double timespec_toDouble(struct timespec t);
-
-/* Do not belong here */
-CORTO_EXPORT char* corto_itoa (int num, char* buff);
-CORTO_EXPORT char* corto_utoa (unsigned int num, char* buff);
-CORTO_EXPORT char* corto_ftoa (float num, char* buff);
-
 
 #ifdef __cplusplus
 }

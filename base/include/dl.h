@@ -31,6 +31,8 @@
 extern "C" {
 #endif
 
+typedef struct corto_dl_s* corto_dl;
+
 /** Load dynamic library.
  *
  * @param name Name of library.

@@ -17,15 +17,15 @@ void test_Builds_tc_appDef(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_appDef --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_appDef --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_appDef", &ret);
+    sig = corto_proc_cmd("corto run tc_appDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_appDef", &ret);
+    sig = corto_proc_cmd("corto clean tc_appDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -37,15 +37,15 @@ void test_Builds_tc_appDefObject(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_appDefObject --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_appDefObject --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_appDefObject", &ret);
+    sig = corto_proc_cmd("corto run tc_appDefObject", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_appDefObject", &ret);
+    sig = corto_proc_cmd("corto clean tc_appDefObject", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -57,15 +57,15 @@ void test_Builds_tc_appLocalDef(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_appLocalDef --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_appLocalDef --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_appLocalDef", &ret);
+    sig = corto_proc_cmd("corto run tc_appLocalDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_appLocalDef", &ret);
+    sig = corto_proc_cmd("corto clean tc_appLocalDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -77,15 +77,15 @@ void test_Builds_tc_appLocalDefObject(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_appLocalDefObject --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_appLocalDefObject --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_appLocalDefObject", &ret);
+    sig = corto_proc_cmd("corto run tc_appLocalDefObject", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_appLocalDefObject", &ret);
+    sig = corto_proc_cmd("corto clean tc_appLocalDefObject", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -97,19 +97,19 @@ void test_Builds_tc_appNested(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_appNested --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_appNested --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_appNested", &ret);
+    sig = corto_proc_cmd("corto run tc_appNested", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run fooparent/tc_appNested", &ret);
+    sig = corto_proc_cmd("corto run fooparent/tc_appNested", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_appNested", &ret);
+    sig = corto_proc_cmd("corto clean tc_appNested", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -121,19 +121,19 @@ void test_Builds_tc_appNestedDef(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_appNestedDef --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_appNestedDef --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_appNestedDef", &ret);
+    sig = corto_proc_cmd("corto run tc_appNestedDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run fooparent/tc_appNestedDef", &ret);
+    sig = corto_proc_cmd("corto run fooparent/tc_appNestedDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_appNestedDef", &ret);
+    sig = corto_proc_cmd("corto clean tc_appNestedDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -145,23 +145,23 @@ void test_Builds_tc_packageNoDef(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_packageNoDef --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_packageNoDef --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto rebuild tc_packageNoDef/noCorto --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_packageNoDef/noCorto --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto locate noCorto", &ret);
+    sig = corto_proc_cmd("corto locate noCorto", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_packageNoDef/noCorto", &ret);
+    sig = corto_proc_cmd("corto clean tc_packageNoDef/noCorto", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_packageNoDef", &ret);
+    sig = corto_proc_cmd("corto clean tc_packageNoDef", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -173,15 +173,15 @@ void test_Builds_tc_runDirect(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_app --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_app --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("tc_app/tc_app", &ret);
+    sig = corto_proc_cmd("tc_app/tc_app", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_app", &ret);
+    sig = corto_proc_cmd("corto clean tc_app", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -193,15 +193,15 @@ void test_Builds_tc_runFromParent(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_app --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_app --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto run tc_app", &ret);
+    sig = corto_proc_cmd("corto run tc_app", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean tc_app", &ret);
+    sig = corto_proc_cmd("corto clean tc_app", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -213,16 +213,16 @@ void test_Builds_tc_runFromProject(
     corto_int8 ret;
     corto_int8 sig;
 
-    sig = corto_proccmd("corto rebuild tc_app --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild tc_app --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
     ret = corto_chdir("tc_app");
-    sig = corto_proccmd("corto run", &ret);
+    sig = corto_proc_cmd("corto run", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proccmd("corto clean", &ret);
+    sig = corto_proc_cmd("corto clean", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 

@@ -31,13 +31,13 @@ void test_AttrCheck_tc_packageMainAttr(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proccmd("corto rebuild attrtest --silent", &ret);
+    sig = corto_proc_cmd("corto rebuild attrtest --silent", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
     test_assert(corto_load("attrtest", 0, NULL) == 0);
 
-    sig = corto_proccmd("corto clean attrtest", &ret);
+    sig = corto_proc_cmd("corto clean attrtest", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 

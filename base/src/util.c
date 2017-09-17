@@ -127,18 +127,6 @@ char* corto_itoa(int num, char* buff) {
     return buffptr;
 }
 
-char* corto_utoa(unsigned int num, char* buff) {
-    CORTO_UNUSED(num);
-    CORTO_UNUSED(buff);
-    return NULL;
-}
-
-char* corto_ftoa(float num, char* buff) {
-    CORTO_UNUSED(num);
-    CORTO_UNUSED(buff);
-    return NULL;
-}
-
 int32_t corto_pathToArray(char *path, char *elements[], char *sep) {
     int32_t count = 0;
     char *ptr = path;

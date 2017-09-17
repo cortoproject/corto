@@ -44,13 +44,13 @@ void test_Application_tc_app(
     corto_int8 ret;
     corto_int16 waitResult;
 
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){"corto", "create", "Project", "--silent", NULL});
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -69,7 +69,7 @@ void test_Application_tc_appCortoDependencyNoCorto(
     corto_int16 waitResult;
 
     /* Create package that will be depended on */
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -84,12 +84,12 @@ void test_Application_tc_appCortoDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Create application that will depend on foo */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -102,12 +102,12 @@ void test_Application_tc_appCortoDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Add package dependency */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -120,7 +120,7 @@ void test_Application_tc_appCortoDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -145,7 +145,7 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
     corto_int16 waitResult;
 
     /* Create nested package */
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -160,11 +160,11 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -179,12 +179,12 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Create application that will depend on parent/child */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -197,12 +197,12 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Add package dependency */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -215,7 +215,7 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -239,12 +239,12 @@ void test_Application_tc_appDef(
     corto_int8 ret;
     corto_int16 waitResult;
 
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){"corto", "create", "Project", "--silent", "--notest", NULL});
 
     test_assert(pid != 0);
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
  
@@ -262,12 +262,12 @@ void test_Application_tc_appDef(
     fprintf(f, "    void add(Point p)\n");
     fclose(f);
 
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){"corto", "rebuild", "Project", "--silent", NULL});
 
     test_assert(pid != 0);
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -284,7 +284,7 @@ void test_Application_tc_appDependency(
     corto_int16 waitResult;
 
     /* Create package that will be depended on */
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -298,12 +298,12 @@ void test_Application_tc_appDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Create application that will depend on foo */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -316,12 +316,12 @@ void test_Application_tc_appDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Add package dependency */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -334,7 +334,7 @@ void test_Application_tc_appDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -358,12 +358,12 @@ void test_Application_tc_appNested(
     corto_int8 ret;
     corto_int16 waitResult;
 
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){"corto", "create", "corto/Project", "--silent", NULL});
 
     test_assert(pid != 0);
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -373,23 +373,23 @@ void test_Application_tc_appNested(
     test_assert(corto_fileTest("Project/src/Project.c"));
     test_assert(corto_fileTest("Project/test"));
 
-    pid = corto_procrunRedirect(
+    pid = corto_proc_runRedirect(
         "corto",
         (char*[]){"corto", "run", "Project", NULL},
         stdin, NULL, stderr);
 
     test_assert(pid != 0);
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    pid = corto_procrunRedirect(
+    pid = corto_proc_runRedirect(
         "corto",
         (char*[]){"corto", "run", "corto/Project", NULL},
         stdin, NULL, stderr);
 
     test_assert(pid != 0);
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -402,7 +402,7 @@ void test_Application_tc_appNestedDependency(
     corto_int16 waitResult;
 
     /* Create nested package */
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -416,11 +416,11 @@ void test_Application_tc_appNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -434,12 +434,12 @@ void test_Application_tc_appNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Create application that will depend on parent/child */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -452,12 +452,12 @@ void test_Application_tc_appNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Add package dependency */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -470,7 +470,7 @@ void test_Application_tc_appNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -495,7 +495,7 @@ void test_Application_tc_appNoCortoDependency(
     corto_int16 waitResult;
 
     /* Create package that will be depended on */
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -510,12 +510,12 @@ void test_Application_tc_appNoCortoDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Create application that will depend on foo */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -529,12 +529,12 @@ void test_Application_tc_appNoCortoDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Add package dependency */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -547,7 +547,7 @@ void test_Application_tc_appNoCortoDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -572,7 +572,7 @@ void test_Application_tc_appNoCortoNestedDependency(
     corto_int16 waitResult;
 
     /* Create nested package */
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -587,11 +587,11 @@ void test_Application_tc_appNoCortoNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -606,12 +606,12 @@ void test_Application_tc_appNoCortoNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Create application that will depend on parent/child */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -625,12 +625,12 @@ void test_Application_tc_appNoCortoNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
     /* Add package dependency */
-    pid = corto_procrun(
+    pid = corto_proc_run(
         "corto",
         (char*[]){
             "corto",
@@ -643,7 +643,7 @@ void test_Application_tc_appNoCortoNestedDependency(
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
@@ -667,13 +667,13 @@ void test_Application_tc_appNoTest(
     corto_int8 ret;
     corto_int16 waitResult;
 
-    corto_pid pid = corto_procrun(
+    corto_proc pid = corto_proc_run(
         "corto",
         (char*[]){"corto", "create", "Project", "--silent", "--notest", NULL});
 
     test_assert(pid != 0);
 
-    waitResult = corto_procwait(pid, &ret);
+    waitResult = corto_proc_wait(pid, &ret);
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
