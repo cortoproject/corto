@@ -3,7 +3,7 @@
 #include <include/test.h>
 
 
-void tc_callback_callback(corto_err level, char *category[], char *msg, void* ctx)
+void tc_callback_callback(corto_log_verbosity level, char *category[], char *msg, void* ctx)
 {
     test_Err this = ctx;
     this->level = level;
@@ -24,9 +24,9 @@ void test_Err_tc_callback(
     test_Err this)
 {
 
-    corto_verbosity(CORTO_WARNING);
+    corto_log_verbositySet(CORTO_WARNING);
 
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_OK, 
         CORTO_WARNING,
         NULL, 
@@ -61,14 +61,14 @@ void test_Err_tc_callback(
     test_assertstr(this->msg, "Test warning");
     test_assert(this->level == CORTO_WARNING);
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
 
 }
 
 void test_Err_tc_category(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         NULL, 
@@ -82,14 +82,14 @@ void test_Err_tc_category(
     test_assertstr(this->category, "mycategory");
     test_assert(this->level == CORTO_TRACE);
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
 
 }
 
 void test_Err_tc_categoryColonNoCategory(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         NULL, 
@@ -103,13 +103,13 @@ void test_Err_tc_categoryColonNoCategory(
     test_assert(this->category == NULL);
     test_assert(this->level == CORTO_TRACE);
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
 }
 
 void test_Err_tc_categoryFilter(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         "foo", 
@@ -129,14 +129,14 @@ void test_Err_tc_categoryFilter(
     test_assertstr(this->msg, "test trace");
     test_assertstr(this->category, "foo");
 
-    corto_err_callbackUnregister(cb);    
+    corto_log_handlerUnregister(cb);    
 
 }
 
 void test_Err_tc_categoryFilterMulti(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         "foo/bar", 
@@ -156,14 +156,14 @@ void test_Err_tc_categoryFilterMulti(
     test_assertstr(this->msg, "test trace");
     test_assertstr(this->category, "foo,bar");
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
     
 }
 
 void test_Err_tc_categoryFilterWildcard(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         "fo?", 
@@ -183,14 +183,14 @@ void test_Err_tc_categoryFilterWildcard(
     test_assertstr(this->msg, "test trace");
     test_assertstr(this->category, "foo");
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
 
 }
 
 void test_Err_tc_categoryMultiple(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         NULL, 
@@ -204,13 +204,13 @@ void test_Err_tc_categoryMultiple(
     test_assertstr(this->category, "mycategory1,mycategory2");
     test_assert(this->level == CORTO_TRACE);
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
 }
 
 void test_Err_tc_categoryRecursive(
     test_Err this)
 {
-    corto_err_callback cb = corto_err_callbackRegister(
+    corto_log_handler cb = corto_log_handlerRegister(
         CORTO_DEBUG, 
         CORTO_TRACE,
         "foo//", 
@@ -236,7 +236,7 @@ void test_Err_tc_categoryRecursive(
     test_assertstr(this->msg, "more trace");
     test_assertstr(this->category, "foo,bar,hello");
 
-    corto_err_callbackUnregister(cb);
+    corto_log_handlerUnregister(cb);
 
 }
 

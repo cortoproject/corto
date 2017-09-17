@@ -1031,28 +1031,28 @@ void corto_environment_init(void) {
     corto_string verbosity = corto_getenv("CORTO_VERBOSITY");
     if (verbosity) {
         if (!strcmp(verbosity, "DEBUG")) {
-            corto_verbosity(CORTO_DEBUG);
+            corto_log_verbositySet(CORTO_DEBUG);
         }
         if (!strcmp(verbosity, "TRACE")) {
-            corto_verbosity(CORTO_TRACE);
+            corto_log_verbositySet(CORTO_TRACE);
         }
         if (!strcmp(verbosity, "OK")) {
-            corto_verbosity(CORTO_OK);
+            corto_log_verbositySet(CORTO_OK);
         }
         if (!strcmp(verbosity, "INFO")) {
-            corto_verbosity(CORTO_INFO);
+            corto_log_verbositySet(CORTO_INFO);
         }
         if (!strcmp(verbosity, "WARNING")) {
-            corto_verbosity(CORTO_WARNING);
+            corto_log_verbositySet(CORTO_WARNING);
         }
         if (!strcmp(verbosity, "ERROR")) {
-            corto_verbosity(CORTO_ERROR);
+            corto_log_verbositySet(CORTO_ERROR);
         }
         if (!strcmp(verbosity, "CRITICAL")) {
-            corto_verbosity(CORTO_CRITICAL);
+            corto_log_verbositySet(CORTO_CRITICAL);
         }
         if (!strcmp(verbosity, "ASSERT")) {
-            corto_verbosity(CORTO_ASSERT);
+            corto_log_verbositySet(CORTO_ASSERT);
         }
     }
 
@@ -1071,15 +1071,15 @@ void corto_environment_init(void) {
         CORTO_MEMTRACE_BREAKPOINT = atoi(memtraceBreakpoint);
     }
 
-    corto_string errfmt = corto_getenv("CORTO_ERRFMT");
+    corto_string errfmt = corto_getenv("CORTO_LOGFMT");
     if (errfmt && errfmt[0]) {
-        corto_errfmt(errfmt);
+        corto_log_fmt(errfmt);
     }
 }
 
 static int corto_loadConfig(void) {
     int result = 0;
-    corto_component_push("config");
+    corto_log_categoryPush("config");
     char *cfg = corto_getenv("CORTO_CONFIG");
     if (cfg) {
         if (corto_isdir(cfg)) {
@@ -1112,7 +1112,7 @@ static int corto_loadConfig(void) {
             result = -1;
         }
     }
-    corto_component_pop();
+    corto_log_categoryPop();
     return result;
 }
 
@@ -1139,7 +1139,7 @@ int corto_start(char *appName) {
     corto_threadTlsKey(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Push init component for logging */
-    corto_component_push("init");
+    corto_log_categoryPush("init");
 
     corto_trace("initializing...");
 
@@ -1347,7 +1347,7 @@ int corto_start(char *appName) {
     corto_ok("initialized");
 
     /* Pop init log component */
-    corto_component_pop();
+    corto_log_categoryPop();
 
     return 0;
 }

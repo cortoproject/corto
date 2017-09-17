@@ -148,12 +148,12 @@ static int parseGenericArgs(int argc, char *argv[]) {
             PARSE_OPTION(0, "logo", printLogo());
             PARSE_OPTION(0, "name", appname = argv[i + 1]; i ++);
             PARSE_OPTION(0, "config", corto_setenv("CORTO_CONFIG", argv[i + 1]); i ++);
-            PARSE_OPTION(0, "debug", corto_verbosity(CORTO_DEBUG));
-            PARSE_OPTION(0, "trace", corto_verbosity(CORTO_TRACE));
-            PARSE_OPTION(0, "ok", corto_verbosity(CORTO_OK));
-            PARSE_OPTION(0, "info", corto_verbosity(CORTO_INFO));
-            PARSE_OPTION(0, "warning", corto_verbosity(CORTO_WARNING));
-            PARSE_OPTION(0, "error", corto_verbosity(CORTO_ERROR));
+            PARSE_OPTION(0, "debug", corto_log_verbositySet(CORTO_DEBUG));
+            PARSE_OPTION(0, "trace", corto_log_verbositySet(CORTO_TRACE));
+            PARSE_OPTION(0, "ok", corto_log_verbositySet(CORTO_OK));
+            PARSE_OPTION(0, "info", corto_log_verbositySet(CORTO_INFO));
+            PARSE_OPTION(0, "warning", corto_log_verbositySet(CORTO_WARNING));
+            PARSE_OPTION(0, "error", corto_log_verbositySet(CORTO_ERROR));
             PARSE_OPTION(0, "mute", mute = true);
             PARSE_OPTION(0, "backtrace", CORTO_BACKTRACE_ENABLED = true);
             PARSE_OPTION(0, "trace-object", CORTO_TRACE_OBJECT = argv[i + 1]; i ++);
