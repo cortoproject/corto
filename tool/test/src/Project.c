@@ -317,8 +317,8 @@ void test_Project_tc_packageCortoDependencyNoCorto(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(corto_file_test("bar/.corto/packages.txt"));
+    corto_string str = corto_file_load("bar/.corto/packages.txt");
     test_assert(!strcmp(str, "/foo\n"));
     corto_dealloc(str);
 
@@ -413,8 +413,8 @@ void test_Project_tc_packageCortoNestedDependencyNoCorto(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -489,8 +489,8 @@ void test_Project_tc_packageDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(corto_file_test("bar/.corto/packages.txt"));
+    corto_string str = corto_file_load("bar/.corto/packages.txt");
     test_assert(!strcmp(str, "/foo\n"));
     corto_dealloc(str);
 
@@ -627,8 +627,8 @@ void test_Project_tc_packageNestedDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -721,8 +721,8 @@ void test_Project_tc_packageNestedDependencyFullyScoped(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -806,21 +806,21 @@ void test_Project_tc_packageNoCorto(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(!corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(!corto_file_test("Project/test"));
+    test_assert(!corto_file_test("Project/doc"));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -847,11 +847,11 @@ void test_Project_tc_packageNoCorto(
     test_assert(ret == 0);
 
     /* Validate that library is present */
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -928,8 +928,8 @@ void test_Project_tc_packageNoCortoDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(corto_file_test("bar/.corto/packages.txt"));
+    corto_string str = corto_file_load("bar/.corto/packages.txt");
     test_assert(!strcmp(str, "/foo\n"));
     corto_dealloc(str);
 
@@ -995,21 +995,21 @@ void test_Project_tc_packageNoCortoNested(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(!corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(!corto_file_test("Project/test"));
+    test_assert(!corto_file_test("Project/doc"));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1036,11 +1036,11 @@ void test_Project_tc_packageNoCortoNested(
     test_assert(ret == 0);
 
     /* Validate that library is present */
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/corto/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/corto/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1136,8 +1136,8 @@ void test_Project_tc_packageNoCortoNestedDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -1170,50 +1170,50 @@ void test_Project_tc_packageNodef(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
-    test_assert(!corto_fileTest("Project/Project.md"));
-    test_assert(!corto_fileTest("Project/Project.cx"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
+    test_assert(!corto_file_test("Project/Project.md"));
+    test_assert(!corto_file_test("Project/Project.cx"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(corto_fileTest("Project/include/Project.h"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(corto_file_test("Project/include/Project.h"));
 
-    test_assert(corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/project.json"));
-    test_assert(corto_fileTest("Project/test/test.cx"));
-    test_assert(corto_fileTest("Project/test/src"));
-    test_assert(corto_fileTest("Project/test/src/test.c"));
-    test_assert(corto_fileTest("Project/test/src/MySuite.c"));
-    test_assert(corto_fileTest("Project/test/include"));
-    test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_project.h"));
-    test_assert(corto_fileTest("Project/test/include/_load.h"));
-    test_assert(corto_fileTest("Project/test/include/_type.h"));
+    test_assert(corto_file_test("Project/test"));
+    test_assert(!corto_file_test("Project/test/test"));
+    test_assert(corto_file_test("Project/test/project.json"));
+    test_assert(corto_file_test("Project/test/test.cx"));
+    test_assert(corto_file_test("Project/test/src"));
+    test_assert(corto_file_test("Project/test/src/test.c"));
+    test_assert(corto_file_test("Project/test/src/MySuite.c"));
+    test_assert(corto_file_test("Project/test/include"));
+    test_assert(corto_file_test("Project/test/include/test.h"));
+    test_assert(corto_file_test("Project/test/include/_api.h"));
+    test_assert(corto_file_test("Project/test/include/_project.h"));
+    test_assert(corto_file_test("Project/test/include/_load.h"));
+    test_assert(corto_file_test("Project/test/include/_type.h"));
 
-    test_assert(corto_fileTest("Project/.corto"));
-    test_assert(!corto_fileTest("Project/.corto/_api.c"));
-    test_assert(!corto_fileTest("Project/.corto/libProject.so"));
+    test_assert(corto_file_test("Project/.corto"));
+    test_assert(!corto_file_test("Project/.corto/_api.c"));
+    test_assert(!corto_file_test("Project/.corto/libProject.so"));
 
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(!corto_file_test("Project/doc"));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1245,50 +1245,50 @@ void test_Project_tc_packageNodefC4cpp(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
-    test_assert(!corto_fileTest("Project/Project.md"));
-    test_assert(!corto_fileTest("Project/Project.cx"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
+    test_assert(!corto_file_test("Project/Project.md"));
+    test_assert(!corto_file_test("Project/Project.cx"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.cpp"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.cpp"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(corto_fileTest("Project/include/Project.h"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(corto_file_test("Project/include/Project.h"));
 
-    test_assert(corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/project.json"));
-    test_assert(corto_fileTest("Project/test/test.cx"));
-    test_assert(corto_fileTest("Project/test/src"));
-    test_assert(corto_fileTest("Project/test/src/test.cpp"));
-    test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
-    test_assert(corto_fileTest("Project/test/include"));
-    test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_project.h"));
-    test_assert(corto_fileTest("Project/test/include/_load.h"));
-    test_assert(corto_fileTest("Project/test/include/_type.h"));
+    test_assert(corto_file_test("Project/test"));
+    test_assert(!corto_file_test("Project/test/test"));
+    test_assert(corto_file_test("Project/test/project.json"));
+    test_assert(corto_file_test("Project/test/test.cx"));
+    test_assert(corto_file_test("Project/test/src"));
+    test_assert(corto_file_test("Project/test/src/test.cpp"));
+    test_assert(corto_file_test("Project/test/src/MySuite.cpp"));
+    test_assert(corto_file_test("Project/test/include"));
+    test_assert(corto_file_test("Project/test/include/test.h"));
+    test_assert(corto_file_test("Project/test/include/_api.h"));
+    test_assert(corto_file_test("Project/test/include/_project.h"));
+    test_assert(corto_file_test("Project/test/include/_load.h"));
+    test_assert(corto_file_test("Project/test/include/_type.h"));
 
-    test_assert(corto_fileTest("Project/.corto"));
-    test_assert(!corto_fileTest("Project/.corto/_api.cpp"));
-    test_assert(!corto_fileTest("Project/.corto/libProject.so"));
+    test_assert(corto_file_test("Project/.corto"));
+    test_assert(!corto_file_test("Project/.corto/_api.cpp"));
+    test_assert(!corto_file_test("Project/.corto/libProject.so"));
 
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(!corto_file_test("Project/doc"));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1319,50 +1319,50 @@ void test_Project_tc_packageNodefLocal(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
-    test_assert(!corto_fileTest("Project/Project.md"));
-    test_assert(!corto_fileTest("Project/Project.cx"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
+    test_assert(!corto_file_test("Project/Project.md"));
+    test_assert(!corto_file_test("Project/Project.cx"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(corto_fileTest("Project/include/Project.h"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(corto_file_test("Project/include/Project.h"));
 
-    test_assert(corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/project.json"));
-    test_assert(corto_fileTest("Project/test/test.cx"));
-    test_assert(corto_fileTest("Project/test/src"));
-    test_assert(corto_fileTest("Project/test/src/test.c"));
-    test_assert(corto_fileTest("Project/test/src/MySuite.c"));
-    test_assert(corto_fileTest("Project/test/include"));
-    test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_project.h"));
-    test_assert(corto_fileTest("Project/test/include/_load.h"));
-    test_assert(corto_fileTest("Project/test/include/_type.h"));
+    test_assert(corto_file_test("Project/test"));
+    test_assert(!corto_file_test("Project/test/test"));
+    test_assert(corto_file_test("Project/test/project.json"));
+    test_assert(corto_file_test("Project/test/test.cx"));
+    test_assert(corto_file_test("Project/test/src"));
+    test_assert(corto_file_test("Project/test/src/test.c"));
+    test_assert(corto_file_test("Project/test/src/MySuite.c"));
+    test_assert(corto_file_test("Project/test/include"));
+    test_assert(corto_file_test("Project/test/include/test.h"));
+    test_assert(corto_file_test("Project/test/include/_api.h"));
+    test_assert(corto_file_test("Project/test/include/_project.h"));
+    test_assert(corto_file_test("Project/test/include/_load.h"));
+    test_assert(corto_file_test("Project/test/include/_type.h"));
 
-    test_assert(corto_fileTest("Project/.corto"));
-    test_assert(!corto_fileTest("Project/.corto/_api.c"));
-    test_assert(corto_fileTest("Project/.corto/libProject.so"));
+    test_assert(corto_file_test("Project/.corto"));
+    test_assert(!corto_file_test("Project/.corto/_api.c"));
+    test_assert(corto_file_test("Project/.corto/libProject.so"));
 
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(!corto_file_test("Project/doc"));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1395,49 +1395,49 @@ void test_Project_tc_packageNodefLocalC4cpp(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
-    test_assert(!corto_fileTest("Project/Project.md"));
-    test_assert(!corto_fileTest("Project/Project.cx"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
+    test_assert(!corto_file_test("Project/Project.md"));
+    test_assert(!corto_file_test("Project/Project.cx"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.cpp"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.cpp"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(corto_fileTest("Project/include/Project.h"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(corto_file_test("Project/include/Project.h"));
 
-    test_assert(corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/test/test"));
-    test_assert(corto_fileTest("Project/test/project.json"));
-    test_assert(corto_fileTest("Project/test/test.cx"));
-    test_assert(corto_fileTest("Project/test/src"));
-    test_assert(corto_fileTest("Project/test/src/test.cpp"));
-    test_assert(corto_fileTest("Project/test/src/MySuite.cpp"));
-    test_assert(corto_fileTest("Project/test/include"));
-    test_assert(corto_fileTest("Project/test/include/test.h"));
-    test_assert(corto_fileTest("Project/test/include/_api.h"));
-    test_assert(corto_fileTest("Project/test/include/_project.h"));
-    test_assert(corto_fileTest("Project/test/include/_load.h"));
-    test_assert(corto_fileTest("Project/test/include/_type.h"));
+    test_assert(corto_file_test("Project/test"));
+    test_assert(!corto_file_test("Project/test/test"));
+    test_assert(corto_file_test("Project/test/project.json"));
+    test_assert(corto_file_test("Project/test/test.cx"));
+    test_assert(corto_file_test("Project/test/src"));
+    test_assert(corto_file_test("Project/test/src/test.cpp"));
+    test_assert(corto_file_test("Project/test/src/MySuite.cpp"));
+    test_assert(corto_file_test("Project/test/include"));
+    test_assert(corto_file_test("Project/test/include/test.h"));
+    test_assert(corto_file_test("Project/test/include/_api.h"));
+    test_assert(corto_file_test("Project/test/include/_project.h"));
+    test_assert(corto_file_test("Project/test/include/_load.h"));
+    test_assert(corto_file_test("Project/test/include/_type.h"));
 
-    test_assert(corto_fileTest("Project/.corto"));
-    test_assert(corto_fileTest("Project/.corto/libProject.so"));
+    test_assert(corto_file_test("Project/.corto"));
+    test_assert(corto_file_test("Project/.corto/libProject.so"));
 
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(!corto_file_test("Project/doc"));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1468,28 +1468,28 @@ void test_Project_tc_packagePublicHeaderRemoval(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/project.json"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(corto_fileTest("Project/include/Project.h"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(corto_file_test("Project/include/Project.h"));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
         "$CORTO_TARGET/lib/corto/%s.%s/Project",
         CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/lib/corto/%s.%s/Project/libProject.so",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/Project.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1516,7 +1516,7 @@ void test_Project_tc_packagePublicHeaderRemoval(
     test_assert(ret == 0);
 
     /* Test if header is installed */
-    test_assert(corto_fileTest(
+    test_assert(corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/MyInclude.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
@@ -1542,7 +1542,7 @@ void test_Project_tc_packagePublicHeaderRemoval(
     test_assert(ret == 0);
 
     /* Verify header file is no longer installed in environment */
-    test_assert(!corto_fileTest(
+    test_assert(!corto_file_test(
       "$CORTO_TARGET/include/corto/%s.%s/Project/MyInclude.h",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 

@@ -21,7 +21,6 @@
 
 #include <include/base.h>
 
-/* Sleep */
 void corto_sleep(unsigned int sec, unsigned int nanosec) {
     struct timespec sleepTime;
 

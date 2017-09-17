@@ -54,11 +54,11 @@ void test_Application_tc_app(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(corto_fileTest("Project/test"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/rakefile"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/test"));
 
 }
 
@@ -127,8 +127,8 @@ void test_Application_tc_appCortoDependencyNoCorto(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(corto_file_test("bar/.corto/packages.txt"));
+    corto_string str = corto_file_load("bar/.corto/packages.txt");
     test_assert(!strcmp(str, "/foo\n"));
     corto_dealloc(str);
 
@@ -222,8 +222,8 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -248,11 +248,11 @@ void test_Application_tc_appDef(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
  
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(!corto_fileTest("Project/test"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/rakefile"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
+    test_assert(!corto_file_test("Project/test"));
 
     /* Create definition file */
     FILE *f = fopen("Project/Project.cx", "w");
@@ -271,9 +271,9 @@ void test_Application_tc_appDef(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(corto_fileTest("Project/include/Project.h"));
-    test_assert(corto_fileTest("Project/src/Point.c"));
+    test_assert(corto_file_test("Project/include"));
+    test_assert(corto_file_test("Project/include/Project.h"));
+    test_assert(corto_file_test("Project/src/Point.c"));
 
 }
 
@@ -341,8 +341,8 @@ void test_Application_tc_appDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(corto_file_test("bar/.corto/packages.txt"));
+    corto_string str = corto_file_load("bar/.corto/packages.txt");
     test_assert(!strcmp(str, "/foo\n"));
     corto_dealloc(str);
 
@@ -367,11 +367,11 @@ void test_Application_tc_appNested(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(corto_fileTest("Project/test"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/rakefile"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
+    test_assert(corto_file_test("Project/test"));
 
     pid = corto_proc_runRedirect(
         "corto",
@@ -477,8 +477,8 @@ void test_Application_tc_appNestedDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -554,8 +554,8 @@ void test_Application_tc_appNoCortoDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("bar/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("bar/.corto/packages.txt");
+    test_assert(corto_file_test("bar/.corto/packages.txt"));
+    corto_string str = corto_file_load("bar/.corto/packages.txt");
     test_assert(!strcmp(str, "/foo\n"));
     corto_dealloc(str);
 
@@ -650,8 +650,8 @@ void test_Application_tc_appNoCortoNestedDependency(
     /* If test is still running, it means the package builds */
 
     /* Test package.txt */
-    test_assert(corto_fileTest("foo/.corto/packages.txt"));
-    corto_string str = corto_fileLoad("foo/.corto/packages.txt");
+    test_assert(corto_file_test("foo/.corto/packages.txt"));
+    corto_string str = corto_file_load("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
 
@@ -677,11 +677,11 @@ void test_Application_tc_appNoTest(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(!corto_fileTest("Project/test"));
+    test_assert(corto_file_test("Project"));
+    test_assert(corto_file_test("Project/rakefile"));
+    test_assert(corto_file_test("Project/src"));
+    test_assert(corto_file_test("Project/src/Project.c"));
+    test_assert(!corto_file_test("Project/test"));
 
 }
 

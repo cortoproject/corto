@@ -480,7 +480,7 @@ int corto_loadIntern(char* str, int argc, char* argv[], bool try, bool ignoreRec
     corto_mutex_unlock(&corto_adminLock);
 
     /* Get extension from filename */
-    if (!corto_fileExtension(str, ext)) {
+    if (!corto_file_extension(str, ext)) {
         goto error;
     }
 
@@ -621,7 +621,7 @@ static char* corto_locatePackageIntern(
     if (!(targetLib = corto_asprintf("%s/%s", targetPath, lib))) {
         goto error;
     }    
-    if (corto_fileTest(targetLib)) {
+    if (corto_file_test(targetLib)) {
         corto_debug("loader: locate '%s': found '%s'", lib, targetLib);
         if (!isLibrary || corto_checkLibrary(targetLib, &targetBuild, &dl)) {
             t = corto_getModified(targetLib);
@@ -649,7 +649,7 @@ static char* corto_locatePackageIntern(
         if (!(homeLib = corto_asprintf("%s/%s", homePath, lib))) {
             goto error;
         }
-        if (corto_fileTest(homeLib)) {
+        if (corto_file_test(homeLib)) {
             time_t myT = corto_getModified(homeLib);
             corto_debug("loader: locate '%s': found '%s'", lib, homeLib);
             if ((myT >= t) || !result) {
@@ -687,7 +687,7 @@ static char* corto_locatePackageIntern(
         if (!(usrLib = corto_asprintf("%s/%s", globalPath, lib))) {
             goto error;
         }
-        if (corto_fileTest(usrLib)) {
+        if (corto_file_test(usrLib)) {
             time_t myT = corto_getModified(usrLib);
             corto_debug("loader: locate '%s': found '%s'", usrLib, lib);
             if ((myT >= t) || !result) {
@@ -963,15 +963,15 @@ void* corto_load_sym(char *package, corto_dl *dl_out, char *symbol) {
 corto_ll corto_loadGetDependencies(char* file) {
     corto_ll result = NULL;
 
-    if (corto_fileTest(file)) {
+    if (corto_file_test(file)) {
         corto_id name;
         result = corto_ll_new();
-        corto_file f = corto_fileRead(file);
+        FILE* f = fopen(file, "r");
         char *dependency;
-        while ((dependency = corto_fileReadLine(f, name, sizeof(name)))) {
+        while ((dependency = corto_file_readln(f, name, sizeof(name)))) {
             corto_ll_append(result, corto_strdup(dependency));
         }
-        corto_fileClose(f);
+        fclose(f);
     }
 
     return result;
@@ -1031,7 +1031,7 @@ int corto_loadPackages(void) {
 }
 
 /* Load file with unspecified extension */
-int corto_fileLoader(char* package, int argc, char* argv[], void* ctx) {
+int corto_file_loader(char* package, int argc, char* argv[], void* ctx) {
     CORTO_UNUSED(ctx);
     char* fileName;
     int result;

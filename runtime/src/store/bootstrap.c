@@ -1100,7 +1100,7 @@ static int corto_loadConfig(void) {
             }
             corto_chdir(prevDir);
             corto_closedir(cfgfiles);
-        } else if (corto_fileTest(cfg)) {
+        } else if (corto_file_test(cfg)) {
             if (corto_load(cfg, 0, NULL)) {
                 corto_error("%s: %s", cfg, corto_lasterr());
                 result = -1;
@@ -1313,8 +1313,8 @@ int corto_start(char *appName) {
     int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data);
     corto_load_register("so", corto_loadLibraryAction, NULL);
 
-    int corto_fileLoader(corto_string file, int argc, char* argv[], void *data);
-    corto_load_register("", corto_fileLoader, NULL);
+    int corto_file_loader(corto_string file, int argc, char* argv[], void *data);
+    corto_load_register("", corto_file_loader, NULL);
 
     /* Always randomize seed */
     srand (time(NULL));

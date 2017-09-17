@@ -122,8 +122,8 @@ void corto_loader_addDir(
 
                 corto_id packageFile;
                 sprintf(packageFile, "%s/project.json", fpath);
-                if (corto_fileTest(packageFile)) {
-                    char *json = corto_fileLoad(packageFile);
+                if (corto_file_test(packageFile)) {
+                    char *json = corto_file_load(packageFile);
                     corto_result_fromcontent(result, "text/json", json);
                 } else {
                     result->id = corto_strdup(f);

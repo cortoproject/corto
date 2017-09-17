@@ -22,7 +22,7 @@
 #include <include/base.h>
 
 /* Load all contents from file, close file afterwards, return contents */
-char* corto_fileLoad(const char* filename) {
+char* corto_file_load(const char* filename) {
     FILE* file;
     char* content;
     int size;
@@ -58,90 +58,7 @@ error:
     return NULL;
 }
 
-/* Open file */
-corto_file corto_fileOpen(const char* file) {
-
-    if (!strcmp(file, "<<")) {
-        return (corto_file)stdin;
-    } else if (!strcmp(file, ">>")) {
-        return (corto_file)stdout;
-    } else {
-        return (corto_file)fopen(file, "w");
-    }
-}
-
-/* Open file for appending */
-corto_file corto_fileAppend(const char* file) {
-
-    if (!strcmp(file, "<<")) {
-        return (corto_file)stdin;
-    } else if (!strcmp(file, ">>")) {
-        return (corto_file)stdout;
-    } else {
-        return (corto_file)fopen(file, "a");
-    }
-}
-
-/* Open file for reading */
-corto_file corto_fileRead(const char* file) {
-
-    if (!strcmp(file, "<<")) {
-        return (corto_file)stdin;
-    } else if (!strcmp(file, ">>")) {
-        return (corto_file)stdout;
-    } else {
-        return (corto_file)fopen(file, "r");
-    }
-}
-
-/* Close file */
-void corto_fileClose(corto_file file) {
-    if (file) {
-        fclose((FILE*)file);
-    }
-}
-
-/* Get file - a noop in the current implementation */
-FILE* corto_fileGet(corto_file file) {
-    return (FILE*)file;
-}
-
-typedef struct fileSearchWalk_t {
-    const char* file;
-    char* result;
-}fileSearchWalk_t;
-
-/* Search file */
-int fileSearchWalk(const char* location, fileSearchWalk_t* userData) {
-    char* filename;
-
-    filename = malloc(strlen(userData->file) + strlen(location) + 1 + 1);
-
-    sprintf(filename, "%s/%s", location, userData->file);
-
-    if (corto_fileTest(filename)) {
-        userData->result = filename;
-        return 0;
-    }
-
-    corto_dealloc(filename);
-
-    return 1;
-}
-
-/* Search file in paths */
-char* corto_fileSearch(const char* file, corto_ll locations) {
-    fileSearchWalk_t walkData;
-
-    walkData.file = file;
-    walkData.result = 0;
-
-    corto_ll_walk(locations, (corto_elementWalk_cb)fileSearchWalk, &walkData);
-
-    return walkData.result;
-}
-
-int corto_fileTest(const char* filefmt, ...) {
+bool corto_file_test(const char* filefmt, ...) {
     FILE* exists = NULL;
     va_list arglist;
 
@@ -161,28 +78,23 @@ int corto_fileTest(const char* filefmt, ...) {
 
     corto_dealloc(file);
 
-    return (exists != 0);
+    return (exists != 0) ? true : false;
 }
 
 /* Get file size */
-unsigned int corto_fileSize(corto_file file) {
+unsigned int corto_file_size(FILE* file) {
     unsigned int size;
 
     /* Determine file size */
-    fseek ((FILE*)file, 0 , SEEK_END);
-    size = ftell ((FILE*)file);
-    rewind((FILE*)file);
+    fseek (file, 0 , SEEK_END);
+    size = ftell (file);
+    rewind(file);
 
     return size;
 }
 
-/* Get file ptr */
-unsigned int corto_fileTell(corto_file file) {
-    return ftell((FILE*)file);
-}
-
 /* Read line from file */
-char* corto_fileReadLine(corto_file file, char* buf, unsigned int length) {
+char* corto_file_readln(FILE* file, char* buf, unsigned int length) {
     int c;
     char* ptr;
 
@@ -193,9 +105,9 @@ char* corto_fileReadLine(corto_file file, char* buf, unsigned int length) {
     c = EOF;
     ptr = buf;
 
-    while (!feof((FILE*)file)) {
+    while (!feof(file)) {
 
-        c = fgetc((FILE*)file);
+        c = fgetc(file);
         if ((c == '\n') || (c == EOF)) {
             break;
         }
@@ -213,7 +125,7 @@ char* corto_fileReadLine(corto_file file, char* buf, unsigned int length) {
 }
 
 /* Get file extension */
-char* corto_fileExtension(char* file, char* buffer) {
+char* corto_file_extension(char* file, char* buffer) {
     char *ptr, *bptr;
     char ch;
 
@@ -241,7 +153,7 @@ char* corto_fileExtension(char* file, char* buffer) {
 }
 
 /* Get file base */
-char* corto_fileBase(char* file, char* buffer) {
+char* corto_file_base(char* file, char* buffer) {
     strcpy(buffer, file);
     char *ch = strrchr(buffer, '.');
     if (ch) {
@@ -251,7 +163,7 @@ char* corto_fileBase(char* file, char* buffer) {
 }
 
 /* Get file path */
-char* corto_filePath(char* file, char* buffer) {
+char* corto_file_path(char* file, char* buffer) {
     int32_t i;
 
     strcpy(buffer, file);
@@ -267,6 +179,3 @@ char* corto_filePath(char* file, char* buffer) {
     return (i != -1) ? buffer : NULL;
 }
 
-bool corto_fileEof(corto_file file) {
-    return feof((FILE*)file);
-}
