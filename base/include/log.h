@@ -24,7 +24,7 @@
  * @brief Functions for throwing, catching, forwarding and printing logging.
  *
  * The logging framework is the basis for a multi-language approach that can be
- * used by languages that do and do not support native exception handling.
+ * used by languages/frameworks that do and do not support native exception handling.
  *
  * Usage of the framework is as follows:
  * - Nested- and library functions use corto_seterr and corto_lasterr to log errors.

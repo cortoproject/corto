@@ -106,14 +106,6 @@ CORTO_EXPORT char* corto_fileExtension(char* file, char* buffer);
 CORTO_EXPORT char* corto_filePath(char* file, char* buffer);
 CORTO_EXPORT char* corto_fileBase(char* file, char* buffer);
 
-/* Time functions */
-CORTO_EXPORT void corto_sleep(unsigned int sec, unsigned int nanosec);
-CORTO_EXPORT void timespec_gettime(struct timespec* time);
-CORTO_EXPORT struct timespec timespec_add(struct timespec t1, struct timespec t2);
-CORTO_EXPORT struct timespec timespec_sub(struct timespec t1, struct timespec t2);
-CORTO_EXPORT int timespec_compare(struct timespec t1, struct timespec t2);
-CORTO_EXPORT double timespec_toDouble(struct timespec t);
-
 #ifdef __cplusplus
 }
 #endif

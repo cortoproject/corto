@@ -274,6 +274,7 @@ typedef int ___ (*corto_equals_cb)(void *context, const void* o1, const void* o2
 #include <include/ll.h>
 #include <include/string.h>
 #include <include/os.h>
+#include <include/time.h>
 #include <include/dl.h>
 #include <include/fs.h>
 #include <include/thread.h>
