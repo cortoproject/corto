@@ -101,36 +101,7 @@ int tokicmp(char ** const str1, const char *str2, char sep) {
     return result;
 }
 
-/* Case insensitive string compare, stop at / instead of \0. Returns next
- * element, NULL when no match or "\0" when reached the end */
-char* corto_elemcmp(char *path, char *elem) {
-    char *pathptr, *elemptr;
-    char pathch, elemch;
-    pathptr = path;
-    elemptr = elem;
-
-    while((pathch = *pathptr) && (elemch = *elemptr)) {
-        if (pathch == '/') {
-           if (!elemch) break;
-           else return NULL;
-        }
-        if (pathch == elemch) {
-            pathptr++; elemptr++;
-            continue;
-        }
-        if (pathch < 97) pathch = tolower(pathch);
-        if (elemch < 97) elemch = tolower(elemch);
-        if (pathch != elemch) {
-            return NULL;
-        }
-        pathptr++;
-        elemptr++;
-    }
-
-    return pathptr;
-}
-
-char *corto_strelem(char *str) {
+char *strelem(char *str) {
     char *ptr, ch;
     for (ptr = str; (ch = *ptr); ptr++) {
         if (ch == '(' || ch == '/') {
@@ -158,58 +129,6 @@ char *strappend(char *src, char *fmt, ...) {
 
     return src;
 }
-
-/**
- * C++ version 0.4 char* style "itoa":
- * Written by Lukás Chmela
- * Released under GPLv3.
- */
-char *itostr(int value, char *result, int base) {
-    // check that the base if valid
-    if (base < 2 || base > 36) { *result = '\0'; return result; }
-
-    char* ptr = result, *ptr1 = result, tmp_char;
-    int tmp_value;
-
-    do {
-        tmp_value = value;
-        value /= base;
-        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
-    } while ( value );
-
-    // Apply negative sign
-    if (tmp_value < 0) *ptr++ = '-';
-    *ptr-- = '\0';
-    while(ptr1 < ptr) {
-        tmp_char = *ptr;
-        *ptr--= *ptr1;
-        *ptr1++ = tmp_char;
-    }
-    return result;
-}
-
-char *utostr(unsigned int value, char *result, int base) {
-    // check that the base if valid
-    if (base < 2 || base > 36) { *result = '\0'; return result; }
-
-    char* ptr = result, *ptr1 = result, tmp_char;
-    int tmp_value;
-
-    do {
-        tmp_value = value;
-        value /= base;
-        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz" [35 + (tmp_value - value * base)];
-    } while ( value );
-
-    *ptr-- = '\0';
-    while(ptr1 < ptr) {
-        tmp_char = *ptr;
-        *ptr--= *ptr1;
-        *ptr1++ = tmp_char;
-    }
-    return result;
-}
-
 
 char *chresc(char *out, char in, char delimiter) {
     char *bptr = out;
@@ -285,31 +204,15 @@ size_t stresc(char *out, size_t n, const char *in) {
     return written;
 }
 
-/* Count the number of characters in a string that do not match a provided
- * mask. */
-size_t strmask(char *str, char *mask) {
-    char maskbuff[256];
-    memset(maskbuff, 0, sizeof(maskbuff));
-    char ch, *ptr;
-    size_t result = 0;
-
-    /* Set mask */
-    ptr = mask;
-    while ((ch = *ptr)) {
-        maskbuff[(int)ch] = 1;
-        ptr++;
+void strset(char **out, const char *str) {
+    if (*out) {
+        free(*out);
     }
-
-    /* Loop string, count mismatches */
-    ptr = str;
-    while ((ch = *ptr)) {
-        if (!maskbuff[(int)ch]) {
-            result++;
-        }
-        ptr++;
+    if (str) {
+        *out = corto_strdup(str);
+    } else {
+        *out = NULL;
     }
-
-    return result;
 }
 
 /* strdup is not a standard C function, so provide own implementation. */
@@ -371,7 +274,7 @@ char* strarg(const char *fmt, ...) {
 }
 
 /* Convert characters in string to uppercase */
-char* corto_strupper(char *str) {
+char* strupper(char *str) {
     char *ptr, ch;
     ptr = str;
     while ((ch = *ptr)) {
@@ -382,7 +285,7 @@ char* corto_strupper(char *str) {
 }
 
 /* Convert characters in string to lowercase */
-char* corto_strlower(char *str) {
+char* strlower(char *str) {
     char *ptr, ch;
     ptr = str;
     while ((ch = *ptr)) {
@@ -393,7 +296,7 @@ char* corto_strlower(char *str) {
 }
 
 // You must free the result if result is non-NULL.
-char* corto_replace(char *orig, char *rep, char *with) {
+char* strreplace(char *orig, char *rep, char *with) {
     char *result; // the return string
     char *ins;    // the next insert point
     char *tmp;    // varies
@@ -436,16 +339,3 @@ char* corto_replace(char *orig, char *rep, char *with) {
     strcpy(tmp, orig);
     return result;
 }
-
-void strset(char **out, char *str) {
-    if (*out) {
-        free(*out);
-    }
-    if (str) {
-        *out = corto_strdup(str);
-    } else {
-        *out = NULL;
-    }
-}
-
-

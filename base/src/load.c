@@ -225,7 +225,7 @@ error:
     return -1;
 }
 
-static char* corto_replaceColons(corto_id buffer, char* package) {
+static char* strreplaceColons(corto_id buffer, char* package) {
     char ch, *ptr, *bptr;
     char* fileName, *start;
 
@@ -270,7 +270,7 @@ static char* corto_packageToFile(char* package) {
     char* fileName;
     int fileNameLength;
     path = malloc(strlen(package) * 2 + strlen("/lib.so") + 1);
-    fileName = corto_replaceColons(path, package);
+    fileName = strreplaceColons(path, package);
     fileNameLength = strlen(fileName);
     memcpy(fileName + fileNameLength, "/lib", 4);
     memcpy(fileName + fileNameLength + 4, fileName, fileNameLength);
@@ -804,11 +804,11 @@ char* corto_locateGetName(char* package, corto_load_locateKind kind) {
     char* name;
 
     if (package[0] == '/') {
-        name = corto_replaceColons(result, package + 1);
+        name = strreplaceColons(result, package + 1);
     } else if (package[0] == ':') {
-        name = corto_replaceColons(result, package + 2);
+        name = strreplaceColons(result, package + 2);
     } else {
-        name = corto_replaceColons(result, package);
+        name = strreplaceColons(result, package);
     }
 
     if (kind == CORTO_LOCATION_NAME) {

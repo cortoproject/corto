@@ -19,13 +19,13 @@
  * THE SOFTWARE.
  */
 
- #ifndef CORTO_IDMATCH_H
- #define CORTO_IDMATCH_H
-
 /** @file
  * @section idmatch Id matching API
  * @brief API for matching corto identifiers against a pattern
  */
+
+#ifndef CORTO_IDMATCH_H
+#define CORTO_IDMATCH_H
 
 typedef struct corto_idmatch_program_s* corto_idmatch_program;
 

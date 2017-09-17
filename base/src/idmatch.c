@@ -169,7 +169,7 @@ int16_t corto_idmatchParseIntern(
     data->size = 0;
     data->kind = 0;
     data->tokens = corto_strdup(expr);
-    corto_strlower(data->tokens);
+    strlower(data->tokens);
 
     ptr = data->tokens;
     for (; (ch = *ptr); data->ops[op].start = ptr, ptr++) {
@@ -479,7 +479,7 @@ bool corto_idmatch_run(corto_idmatch_program program, char *str) {
         char **elem = elements;
         corto_id id;
         strcpy(id, str);
-        corto_strlower(id);
+        strlower(id);
 
         int8_t elementCount = corto_pathToArray(id, elements, "/");
         if (elementCount == -1) {

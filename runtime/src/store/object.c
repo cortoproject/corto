@@ -1649,7 +1649,7 @@ static corto_object corto_declareChildInternRecursive(
         id ++;
     }
 
-    if (id && (next = corto_strelem(id)) && (*next != '(')) {
+    if (id && (next = strelem(id)) && (*next != '(')) {
         corto_id buf;
         char *cur = buf;
         strcpy(buf, id);
@@ -1689,7 +1689,7 @@ static corto_object corto_declareChildInternRecursive(
             stack[sp ++] = result;
 
             cur = next;
-            if (cur && (next = corto_strelem(cur))) {
+            if (cur && (next = strelem(cur))) {
                 *next = '\0';
                 next ++;
             }

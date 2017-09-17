@@ -315,8 +315,8 @@ static corto_bool corto_selectMatch(
 
         strcpy(filterLc, data->filter);
         strcpy(nameLc, id);
-        corto_strlower(filterLc);
-        corto_strlower(nameLc);
+        strlower(filterLc);
+        strlower(nameLc);
 
         result = corto_idmatch(filterLc, nameLc);
     }
