@@ -207,7 +207,7 @@ corto_int16 corto_notifySubscribersId(
     }
 
     /* Don't notify when shutting down */
-    if (CORTO_OPERATIONAL != 0) {
+    if (CORTO_APP_STATUS != 0) {
         return 0;
     }
 

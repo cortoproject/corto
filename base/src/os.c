@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <include/base.h>
 
 /*
  * Receives:
@@ -141,9 +141,11 @@ int corto_cp(const char *sourcePath, const char *destinationPath) {
         /* If destination is a directory, append filename to directory and try
          * again */
         if (errno == EISDIR) {
-            corto_id fileName, dest;
-            strcpy(fileName, sourcePath);
-            corto_nameFromFullname(fileName);
+            corto_id dest;
+            const char *fileName = strrchr(sourcePath, '/');
+            if (!fileName) {
+                fileName = sourcePath;
+            }
             sprintf(dest, "%s/%s", destinationPath, fileName);
             if (!(destinationFile = fopen(dest, "wb"))) {
                 _errno = errno;
@@ -405,7 +407,7 @@ int corto_procwait(corto_pid pid, int8_t *rc) {
 }
 
 /* Simple blocking function to create and wait for a process */
-int corto_proccmd(corto_string cmd, int8_t *rc) {
+int corto_proccmd(char* cmd, int8_t *rc) {
     int pid;
     char *args[CORTO_MAX_CMD_ARGS];
     char buffer[CORTO_MAX_CMD];
@@ -415,8 +417,8 @@ int corto_proccmd(corto_string cmd, int8_t *rc) {
 
     /* Split up commands */
     char ch, *ptr;
-    corto_uint8 argCount = 0;
-    corto_bool newArg = FALSE;
+    uint8_t argCount = 0;
+    bool newArg = FALSE;
     args[argCount] = buffer;
     for (ptr = buffer; (ch = *ptr); ptr++) {
         if (isspace(ch)) {
@@ -515,7 +517,7 @@ corto_pid _corto_pid(void) {
     return getpid();
 }
 
-corto_int16 corto_setenv(const char *varname, const char *value, ...) {
+int16_t corto_setenv(const char *varname, const char *value, ...) {
     if (value) {
         va_list arglist;
         char *buff;

@@ -64,6 +64,8 @@
 #define CORTO_MAGIC_DESTRUCT (0x74726F6B)
 #endif
 
+#include <include/_project.h>
+
 #ifdef __cplusplus
 #ifndef CORTO_CPP_H
 #include <utility>
@@ -238,9 +240,40 @@ typedef int (*corto_compare_cb)(void* o1, void* o2);
 /* Callback used to walk elements in collection */
 typedef int (*corto_elementWalk_cb)(void* o, void* userData);
 
+/* Type for traversing a tree */
+#ifndef HEIGHT_LIMIT
+#define HEIGHT_LIMIT 24 /* 16M nodes in a single tree */
+#endif 
+typedef struct jsw_rbtrav jsw_rbtrav_t;
+typedef struct jsw_rbtree jsw_rbtree_t;
+typedef struct jsw_rbnode jsw_rbnode_t;
+struct jsw_rbtrav {
+  jsw_rbtree_t *tree;               /* Paired tree */
+  jsw_rbnode_t *it;                 /* Current node */
+  jsw_rbnode_t *path[HEIGHT_LIMIT]; /* Traversal path */
+  size_t        top;                /* Top of stack */
+  int32_t   changes;
+};
+
+/* Global variables */
+CORTO_EXPORT extern int8_t CORTO_APP_STATUS;
+CORTO_EXPORT extern int8_t CORTO_BACKTRACE_ENABLED;
+
+/* Callback used to determine if value is smaller/larger/equal */
+typedef int ___ (*corto_equals_cb)(void *context, const void* o1, const void* o2);
 
 #ifdef __cplusplus
 }
 #endif
+
+/* Base includes */
+#include <include/buffer.h>
+#include <include/iter.h>
+#include <include/ll.h>
+#include <include/os.h>
+#include <include/load.h>
+#include <include/util.h>
+#include <include/log.h>
+#include <include/idmatch.h>
 
 #endif /* CORTO_BASE_H */

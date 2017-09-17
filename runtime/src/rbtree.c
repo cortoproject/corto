@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <include/base.h>
 #include "jsw_rbtree.h"
 
 corto_rbtree corto_rb_new(corto_type keyType) {

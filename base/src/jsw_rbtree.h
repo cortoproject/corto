@@ -41,8 +41,7 @@
   a header comment, such as this one.
 */
 
-#include <corto/store/object.h>
-#include <corto/rb.h>
+#include <include/base.h>
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -59,14 +58,14 @@ typedef void *(*dup_f) ( void *p );
 typedef void  (*rel_f) ( void *p );
 
 /* Red Black tree functions */
-jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp);
+jsw_rbtree_t *jsw_rbnew ( void *ctx, corto_equals_cb cmp);
 void          jsw_rbdelete ( jsw_rbtree_t *tree );
-corto_type    jsw_rbtype( jsw_rbtree_t *tree);
+void         *jsw_rbctx( jsw_rbtree_t *tree);
 void         *jsw_rbfind ( jsw_rbtree_t *tree, void *key );
 void         *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key );
 int           jsw_rbhaskey ( jsw_rbtree_t *tree, const void *key, void** data );
 int           jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto_equals_cb f_cmp );
-int           jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, corto_bool overwrite );
+int           jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, bool overwrite );
 int           jsw_rberase ( jsw_rbtree_t *tree, void *key );
 size_t        jsw_rbsize ( jsw_rbtree_t *tree );
 
@@ -87,7 +86,7 @@ void         *jsw_rbtlast ( jsw_rbtrav_t *trav, jsw_rbtree_t *tree );
 void         *jsw_rbtnext ( jsw_rbtrav_t *trav );
 void         *jsw_rbtnextptr ( jsw_rbtrav_t *trav );
 void         *jsw_rbtprev ( jsw_rbtrav_t *trav );
-corto_bool    jsw_rbtchanged( jsw_rbtrav_t *trav );
+bool          jsw_rbtchanged( jsw_rbtrav_t *trav );
 
 void *jsw_rbnodedata(jsw_rbnode_t *node);
 

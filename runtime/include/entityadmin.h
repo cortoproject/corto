@@ -19,10 +19,10 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO__ENTITYADMIN_H_
-#define CORTO__ENTITYADMIN_H_
+#ifndef CORTO_ENTITYADMIN_H_
+#define CORTO_ENTITYADMIN_H_
 
-#include <corto/corto.h>
+#include <corto/base.h>
 
 typedef int (*corto_entityWalkAction)(corto_object e, corto_object instance, void *userData);
 

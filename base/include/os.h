@@ -24,7 +24,7 @@
 
 /* UNSTABLE API */
 
-#include "corto/async_posix.h"
+#include "corto/posix_thread.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -133,7 +133,7 @@ CORTO_EXPORT int corto_procwait(corto_pid pid, int8_t *rc);
 CORTO_EXPORT int corto_proccheck(corto_pid pid, int8_t *rc);
 
 /* Simple blocking function to create and wait for a process */
-CORTO_EXPORT int corto_proccmd(corto_string cmd, int8_t *rc);
+CORTO_EXPORT int corto_proccmd(char *cmd, int8_t *rc);
 
 /* Check whether process is being debugged */
 CORTO_EXPORT int corto_beingTraced(void);
@@ -202,7 +202,7 @@ CORTO_EXPORT int corto_mutexLock(corto_mutex mutex);
 CORTO_EXPORT int corto_mutexUnlock(corto_mutex mutex);
 CORTO_EXPORT int corto_mutexFree(corto_mutex mutex);
 CORTO_EXPORT int corto_mutexTry(corto_mutex mutex);
-CORTO_EXPORT int corto_mutexLockTimed(corto_mutex mutex, corto_time timeout);
+CORTO_EXPORT int corto_mutexLockTimed(corto_mutex mutex, struct timespec timeout);
 
 /* Read-write mutex */
 typedef struct corto_rwmutex_s* corto_rwmutex;
@@ -247,7 +247,7 @@ CORTO_EXPORT int corto_fileTest(const char* filefmt, ...);
 
 CORTO_EXPORT unsigned int corto_fileSize(corto_file);
 CORTO_EXPORT unsigned int corto_fileTell(corto_file);
-CORTO_EXPORT corto_bool corto_fileEof(corto_file);
+CORTO_EXPORT bool corto_fileEof(corto_file);
 
 CORTO_EXPORT char* corto_fileReadLine(corto_file file, char* buf, unsigned int length);
 
@@ -257,11 +257,11 @@ CORTO_EXPORT char* corto_fileBase(char* file, char* buffer);
 
 /* Time functions */
 CORTO_EXPORT void corto_sleep(unsigned int sec, unsigned int nanosec);
-CORTO_EXPORT void corto_timeGet(corto_time* time);
-CORTO_EXPORT corto_time corto_timeAdd(corto_time t1, corto_time t2);
-CORTO_EXPORT corto_time corto_timeSub(corto_time t1, corto_time t2);
-CORTO_EXPORT int corto_time_compare(corto_time t1, corto_time t2);
-CORTO_EXPORT double corto_timeToDouble(corto_time t);
+CORTO_EXPORT void timespec_gettime(struct timespec* time);
+CORTO_EXPORT struct timespec timespec_add(struct timespec t1, struct timespec t2);
+CORTO_EXPORT struct timespec timespec_sub(struct timespec t1, struct timespec t2);
+CORTO_EXPORT int timespec_compare(struct timespec t1, struct timespec t2);
+CORTO_EXPORT double timespec_toDouble(struct timespec t);
 
 /* Do not belong here */
 CORTO_EXPORT char* corto_itoa (int num, char* buff);

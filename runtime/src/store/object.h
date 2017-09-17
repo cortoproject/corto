@@ -179,18 +179,6 @@ typedef struct corto_augment_olsData_t {
     corto_string id;
 } corto_augment_olsData_t;
 
-typedef struct corto_ll_node_s {
-    void* data;
-    corto_ll_node next;
-    corto_ll_node prev;
-} corto_ll_node_s;
-
-typedef struct corto_ll_s {
-    corto_ll_node first;
-    corto_ll_node last;
-    unsigned int size;
-} corto_ll_s;
-
 /* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
 corto_int16 corto__freeSSO(corto_object sso);
@@ -268,6 +256,37 @@ typedef struct freeops freeops;
 void freeops_ptr_free(corto_type t, void *ptr);
 void freeops_create(freeops *r, corto_type type);
 void freeops_delete(corto_struct t);
+
+/* In place replacelemt of '::' with '/' */
+CORTO_EXPORT char* corto_pathFromFullname(corto_id buffer);
+
+/* Check if object is a builtin package */
+CORTO_EXPORT bool corto_isBuiltinPackage(corto_object o);
+
+/* Check if object is a builtin object */
+CORTO_EXPORT bool corto_isBuiltin(corto_object o);
+
+/* Used in type checking macro */
+CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
+#ifndef NDEBUG
+#define corto_assertType(type, o) _corto_assertType((type), (o))
+#else
+#define corto_assertType(type, o) (o)
+#endif
+
+/* Throws an assertion when invalid object in debugging */
+#ifndef NDEBUG
+CORTO_EXPORT void corto_assertObject(corto_object o);
+#else
+#define corto_assertObject(o)
+#endif
+
+/* Obtain documentation objects */
+CORTO_EXPORT char* corto_manId(corto_object o, corto_id buffer);
+CORTO_EXPORT corto_object corto_man(corto_object o);
+
+/* Obtain pointer and type for deserializing member */
+CORTO_EXPORT void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
 
 #ifdef __cplusplus
 }

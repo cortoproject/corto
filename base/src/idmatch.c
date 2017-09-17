@@ -19,7 +19,8 @@
  * THE SOFTWARE.
  */
 
- #include "idmatch.h"
+#include <include/base.h>
+#include "idmatch.h"
 
 static char* corto_idmatchTokenStr(corto_idmatchToken t) {
     switch(t) {
@@ -156,11 +157,11 @@ error:
     return -1;
 }
 
-corto_int16 corto_idmatchParseIntern(
+int16_t corto_idmatchParseIntern(
     corto_idmatch_program data,
-    corto_string expr,
-    corto_bool allowScopes,
-    corto_bool allowSeparators)
+    char *expr,
+    bool allowScopes,
+    bool allowSeparators)
 {
     char *ptr, *start, ch;
     int op = 0;
@@ -302,9 +303,9 @@ error:
 }
 
 corto_idmatch_program corto_idmatch_compile(
-    corto_string expr,
-    corto_bool allowScopes,
-    corto_bool allowSeparators)
+    char *expr,
+    bool allowScopes,
+    bool allowSeparators)
 {
     corto_idmatch_program result = corto_alloc(sizeof(struct corto_idmatch_program_s));
     result->kind = 0;
@@ -357,11 +358,11 @@ error:
     return NULL;
 }
 
-corto_bool corto_idmatch_runExpr(corto_idmatchOp **op, char **elements[], corto_idmatchToken precedence) {
-    corto_bool done = FALSE;
-    corto_bool result = TRUE;
-    corto_bool right = FALSE;
-    corto_bool identifierMatched = FALSE;
+bool corto_idmatch_runExpr(corto_idmatchOp **op, char **elements[], corto_idmatchToken precedence) {
+    bool done = FALSE;
+    bool result = TRUE;
+    bool right = FALSE;
+    bool identifierMatched = FALSE;
     corto_idmatchOp *cur;
     char **start = *elements; // Pointer to array of strings
 
@@ -465,8 +466,8 @@ corto_bool corto_idmatch_runExpr(corto_idmatchOp **op, char **elements[], corto_
     return result;
 }
 
-corto_bool corto_idmatch_run(corto_idmatch_program program, corto_string str) {
-    corto_bool result = FALSE;
+bool corto_idmatch_run(corto_idmatch_program program, char *str) {
+    bool result = FALSE;
 
     if (!program->size) {
         return FALSE;
@@ -480,7 +481,7 @@ corto_bool corto_idmatch_run(corto_idmatch_program program, corto_string str) {
         strcpy(id, str);
         corto_strlower(id);
 
-        corto_int8 elementCount = corto_pathToArray(id, elements, "/");
+        int8_t elementCount = corto_pathToArray(id, elements, "/");
         if (elementCount == -1) {
             goto error;
         }
@@ -577,32 +578,6 @@ void corto_idmatch_free(corto_idmatch_program matcher) {
         }
         corto_dealloc(matcher);
     }
-}
-
-corto_eventMask corto_match_getScope(corto_idmatch_program program) {
-    corto_eventMask result = CORTO_ON_SCOPE;
-    corto_int32 op;
-    bool quit = false;
-
-    for (op = 0; (op < program->size) && !quit; op ++) {
-        switch (program->ops[op].token) {
-        case CORTO_MATCHER_TOKEN_IDENTIFIER:
-        case CORTO_MATCHER_TOKEN_THIS:
-        case CORTO_MATCHER_TOKEN_PARENT:
-            result = CORTO_ON_SELF;
-            break;
-        case CORTO_MATCHER_TOKEN_SCOPE:
-            result = CORTO_ON_SCOPE;
-            break;
-        case CORTO_MATCHER_TOKEN_TREE:
-            result = CORTO_ON_TREE;
-        default:
-            quit = true;
-            break;
-        }
-    }
-
-    return result;
 }
 
 

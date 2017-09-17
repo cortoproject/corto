@@ -344,6 +344,18 @@ int16_t corto_unsubscribe(
     corto_subscriber subscriber, 
     corto_object instance);
 
+/** Determine whether a pattern matches an object, scope or tree.
+ * Learns from a compiled pattern if it matches a tree (`foo//`), a
+ * scope (`foo/`) or an object (`foo/bar`).
+ *
+ * @param program The program to evaluate
+ * @return CORTO_ON_SELF if matching an object, CORTO_ON_SCOPE if matching a 
+ * scope, and CORTO_ON_TREE if matching a tree.
+ */ 
+CORTO_EXPORT 
+corto_eventMask corto_match_getScope(
+    corto_idmatch_program program);
+
 #ifdef __cplusplus
 }
 #endif

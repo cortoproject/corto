@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <include/base.h>
 
 /* Load all contents from file, close file afterwards, return contents */
 char* corto_fileLoad(const char* filename) {
@@ -252,7 +252,7 @@ char* corto_fileBase(char* file, char* buffer) {
 
 /* Get file path */
 char* corto_filePath(char* file, char* buffer) {
-    corto_int32 i;
+    int32_t i;
 
     strcpy(buffer, file);
     i = strlen(buffer);
@@ -267,6 +267,6 @@ char* corto_filePath(char* file, char* buffer) {
     return (i != -1) ? buffer : NULL;
 }
 
-corto_bool corto_fileEof(corto_file file) {
+bool corto_fileEof(corto_file file) {
     return feof((FILE*)file);
 }

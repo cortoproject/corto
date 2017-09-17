@@ -19,56 +19,21 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <include/base.h>
 
 extern corto_threadKey CORTO_KEY_THREAD_STRING;
 
 typedef struct corto_threadString_t {
-    corto_string strings[CORTO_MAX_TLS_STRINGS];
-    corto_int32 max[CORTO_MAX_TLS_STRINGS];
-    corto_uint8 current;
+    char* strings[CORTO_MAX_TLS_STRINGS];
+    int32_t max[CORTO_MAX_TLS_STRINGS];
+    uint8_t current;
 } corto_threadString_t;
 
-corto_string corto_pathFromFullname(corto_id buffer) {
-    char *ptr = buffer, *bptr, ch;
-    bptr = ptr;
-
-    for (; (ch = *ptr); ptr++, bptr++) {
-        if (ch == ':') {
-            *bptr = '/';
-            ptr++;
-        } else {
-            *bptr = ch;
-        }
-    }
-
-    *bptr = '\0';
-
-    return buffer;
-}
-
-corto_string corto_nameFromFullname(corto_id buffer) {
-    char *ptr = buffer, *name = buffer, ch;
-
-    for (; (ch = *ptr); ptr++) {
-        if (ch == ':') {
-            ptr ++;
-            name = ptr + 1;
-        } else if (ch == '/') {
-            name = ptr + 1;
-        }
-    }
-
-    memmove(buffer, name, strlen(name) + 1);
-
-    return buffer;
-}
-
 /* Set intern TLS string */
-corto_string corto_setThreadString(corto_string string) {
+char* corto_setThreadString(char* string) {
     corto_threadString_t *data = corto_threadTlsGet(CORTO_KEY_THREAD_STRING);
-    corto_int32 len = strlen(string);
-    corto_int32 max = 0;
+    int32_t len = strlen(string);
+    int32_t max = 0;
 
     if (!data) {
         data = corto_calloc(sizeof(corto_threadString_t));
@@ -101,7 +66,7 @@ void corto_threadStringDealloc(void *tdata) {
     corto_threadString_t *data = tdata;
 
     if (data) {
-        corto_int32 i;
+        int32_t i;
         for (i = 0; i < CORTO_MAX_TLS_STRINGS; i++) {
             if (data->strings[i]) {
                 corto_dealloc(data->strings[i]);
@@ -112,53 +77,102 @@ void corto_threadStringDealloc(void *tdata) {
     corto_dealloc(data);
 }
 
-/* Check whether object is a builtin package */
-corto_bool corto_isBuiltinPackage(corto_object o) {
-    return (o == root_o) ||
-           (o == corto_o) ||
-           (o == corto_lang_o) ||
-           (o == corto_vstore_o) ||
-           (o == corto_native_o) ||
-           (o == corto_secure_o);
+static char* g_num = "0123456789";
+static int nmax = 1;
+
+char* corto_itoa(int num, char* buff) {
+    char* buffptr;
+    unsigned int ch;
+    unsigned int ntest;
+    int i;
+    int ignoreNull;
+
+    if (nmax == 1) {
+        i = log10(INT_MAX);
+        for (; i>=1; i--) {
+            nmax *= 10;
+        }
+    }
+
+    ntest = nmax;
+    buffptr = buff;
+    ignoreNull = TRUE;
+
+    if (!num) {
+        *buffptr = '0';
+        buffptr++;
+    } else {
+        if (num < 0) {
+            *buffptr = '-';
+            buffptr++;
+            num *= -1;
+        }
+
+        while (ntest) {
+            ch = num / ntest;
+            if (ch) ignoreNull = FALSE;
+
+            if (!ignoreNull) {
+                *buffptr = g_num[ch];
+                buffptr++;
+            }
+
+            num -= ch * ntest;
+            ntest /= 10;
+        }
+    }
+
+    *buffptr = '\0';
+
+    return buffptr;
 }
 
-void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
-    void *result;
+char* corto_utoa(unsigned int num, char* buff) {
+    CORTO_UNUSED(num);
+    CORTO_UNUSED(buff);
+    return NULL;
+}
 
-    if (!ptr) {
-        return NULL;
+char* corto_ftoa(float num, char* buff) {
+    CORTO_UNUSED(num);
+    CORTO_UNUSED(buff);
+    return NULL;
+}
+
+int32_t corto_pathToArray(char *path, char *elements[], char *sep) {
+    int32_t count = 0;
+    char *ptr = path;
+
+    if (*ptr == *sep) {
+        elements[count ++] = ptr;
+        *ptr = '\0';
+        ptr ++;
+    }
+    if (*ptr) {
+        do {
+            /* Never parse more elements than maximum scope depth */
+            if (count == CORTO_MAX_SCOPE_DEPTH) {
+                corto_seterr(
+                    "number of elements in path exceeds MAX_SCOPE_DEPTH (%d)",
+                    CORTO_MAX_SCOPE_DEPTH);
+                goto error;
+            }
+            if (*ptr == *sep) {
+                *ptr = '\0';
+                ptr++;
+            }
+            elements[count ++] = ptr;
+        } while ((ptr = strchr(ptr, *sep)));
     }
 
-    result = CORTO_OFFSET(ptr, m->offset);
-
-    /* If member is of target type, it represents either a target or actual
-     * value. Actual members can only be set if the object is owned by thread
-     * that deserializes the value. Target members can only be set if the thread
-     * does not own the object. */
-    if (corto_typeof(corto_parentof(m)) == (corto_type)corto_target_o) {
-        corto_bool owned = corto_owned(ptr);
-        corto_bool isActual = strcmp("target", corto_idof(m));
-        if ((owned && !isActual) || (!owned && isActual)) {
-            result = NULL;
-        }
-    } else if (o && !corto_owned(o)) {
-        /* If type is composite, continue serializing as structure may contain
-         * members of target types */
-        if (m->type->kind != CORTO_COMPOSITE) {
-            result = NULL;
-        }
-    }
-
-    if (result && (m->modifiers & CORTO_OBSERVABLE)) {
-        result = *(void**)result;
-    }
-
-    return result;
+    return count;
+error:
+    return -1;
 }
 
 #if 0
 struct corto_benchmark {
-    corto_string name;
+    char* name;
     corto_time start;
     double total;
     int count;
@@ -166,7 +180,7 @@ struct corto_benchmark {
 static struct corto_benchmark corto_benchmarks[CORTO_MAX_BENCHMARK];
 static int corto_benchmark_count;
 
-int corto_benchmark_init(corto_string name) {
+int corto_benchmark_init(char* name) {
     int id = corto_ainc(&corto_benchmark_count);
     corto_benchmarks[id].name = name;
     corto_benchmarks[id].total = 0;

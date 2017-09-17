@@ -19,8 +19,8 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
-#include "store/object.h"
+#include <include/base.h>
+#include "base_types.h"
 
 #define get(list, index) corto_ll_get(list, index)
 #define walk(list, cb, ctx) corto_ll_walk(list, cb, ctx)
@@ -66,7 +66,7 @@ int corto_ll_walk(corto_ll list, corto_elementWalk_cb callback, void* userdata) 
     corto_ll_node next;
     corto_ll_node ptr;
     int result;
-    corto_uint32 i=0;
+    uint32_t i=0;
 
     ptr = list->first;
     result = 1;
@@ -88,7 +88,7 @@ int corto_ll_walkPtr(corto_ll list, corto_elementWalk_cb callback, void* userdat
     corto_ll_node next;
     corto_ll_node ptr;
     int result;
-    corto_uint32 i=0;
+    uint32_t i=0;
 
     ptr = list->first;
     result = 1;
@@ -191,9 +191,9 @@ void* corto_ll_find(corto_ll list, corto_compare_cb callback, void* o) {
     return result ? *(void**)result : NULL;
 }
 
-corto_uint32 corto_ll_hasObject(corto_ll list, void* o) {
+uint32_t corto_ll_hasObject(corto_ll list, void* o) {
     corto_ll_node ptr;
-    corto_uint32 index = 0;
+    uint32_t index = 0;
 
     ptr = list->first;
 
@@ -304,7 +304,7 @@ void corto_ll_insertList(corto_ll l1, corto_ll l2) {
 
 /* Reverse list */
 void corto_ll_reverse(corto_ll list) {
-    corto_uint32 i, size = corto_ll_size(list);
+    uint32_t i, size = corto_ll_size(list);
     corto_ll_node start = list->first;
     corto_ll_node end = list->last;
     corto_ll_node ptr;

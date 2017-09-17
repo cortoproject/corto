@@ -19,8 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include "entityadmin.h"
-#include "store/object.h"
+#include <include/base.h>
 
 /* Free all entityscriptoins, but do not free corto_entityAdmin itself so
  * it can be reused when a thread needs to copy global entities */
@@ -288,8 +287,7 @@ int corto_entityAdmin_remove(
     }
     if (!count && !removeAll) {
         corto_seterr(
-          "unsubscribe failed, could not find entity for instance '%s' <%p>",
-          corto_fullpath(NULL, instance), instance);
+          "unsubscribe failed, could not find entity for instance <%p>", instance);
         goto error;
     }
 

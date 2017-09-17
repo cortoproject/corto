@@ -19,33 +19,42 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#ifndef CORTO__MATCHER_H_
+#define CORTO__MATCHER_H_
 
-int corto_iter_hasNext(corto_iter* iter) {
-    if (iter->hasNext) {
-        if (!iter->hasNext(iter)) {
-            corto_iter_release(iter);
-            iter->hasNext = NULL;
-            return 0;
-        } else {
-            return 1;
-        }
-    } else {
-        return 0;
-    }
-}
+#include <include/base.h>
 
-void* corto_iter_next(corto_iter* iter) {
-    return iter->next(iter);
-}
+typedef enum corto_idmatchToken {
+    CORTO_MATCHER_TOKEN_NONE,
+    CORTO_MATCHER_TOKEN_THIS,
+    CORTO_MATCHER_TOKEN_PARENT,
+    CORTO_MATCHER_TOKEN_IDENTIFIER,
+    CORTO_MATCHER_TOKEN_FILTER,
+    CORTO_MATCHER_TOKEN_AND,
+    CORTO_MATCHER_TOKEN_OR,
+    CORTO_MATCHER_TOKEN_NOT,
+    CORTO_MATCHER_TOKEN_SCOPE,
+    CORTO_MATCHER_TOKEN_TREE,
+    CORTO_MATCHER_TOKEN_SEPARATOR
+} corto_idmatchToken;
 
-void* corto_iter_nextPtr(corto_iter* iter) {
-    return iter->nextPtr(iter);
-}
+typedef struct corto_idmatchOp {
+    corto_idmatchToken token;
+    char *start;
+    bool containsWildcard;
+} corto_idmatchOp;
 
-void corto_iter_release(corto_iter* iter) {
-    if (iter->release) {
-        iter->release(iter);
-        iter->release = NULL;
-    }
-}
+struct corto_idmatch_program_s {
+    int kind; /* 0 = default, 1 = identifier, 2 = this, 3 = /, 4 = // */
+    corto_idmatchOp ops[CORTO_MATCHER_MAX_OP];
+    uint8_t size;
+    char *tokens;
+};
+
+int16_t corto_idmatchParseIntern(
+    corto_idmatch_program data,
+    char *expr,
+    bool allowScopes,
+    bool allowSeparators);
+
+#endif

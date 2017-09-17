@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <include/base.h>
 
 int stricmp(const char *str1, const char *str2) {
     const char *ptr1, *ptr2;
@@ -436,3 +436,16 @@ char* corto_replace(char *orig, char *rep, char *with) {
     strcpy(tmp, orig);
     return result;
 }
+
+void strset(char **out, char *str) {
+    if (*out) {
+        free(*out);
+    }
+    if (str) {
+        *out = corto_strdup(str);
+    } else {
+        *out = NULL;
+    }
+}
+
+

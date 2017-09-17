@@ -19,42 +19,52 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO__MATCHER_H_
-#define CORTO__MATCHER_H_
+#ifndef CORTO_THREAD_POSIX_H_
+#define CORTO_THREAD_POSIX_H_
 
-#include <corto/corto.h>
+#include "pthread.h"
+#include "signal.h"
 
-typedef enum corto_idmatchToken {
-    CORTO_MATCHER_TOKEN_NONE,
-    CORTO_MATCHER_TOKEN_THIS,
-    CORTO_MATCHER_TOKEN_PARENT,
-    CORTO_MATCHER_TOKEN_IDENTIFIER,
-    CORTO_MATCHER_TOKEN_FILTER,
-    CORTO_MATCHER_TOKEN_AND,
-    CORTO_MATCHER_TOKEN_OR,
-    CORTO_MATCHER_TOKEN_NOT,
-    CORTO_MATCHER_TOKEN_SCOPE,
-    CORTO_MATCHER_TOKEN_TREE,
-    CORTO_MATCHER_TOKEN_SEPARATOR
-} corto_idmatchToken;
-
-typedef struct corto_idmatchOp {
-    corto_idmatchToken token;
-    char *start;
-    corto_bool containsWildcard;
-} corto_idmatchOp;
-
-struct corto_idmatch_program_s {
-    int kind; /* 0 = default, 1 = identifier, 2 = this, 3 = /, 4 = // */
-    corto_idmatchOp ops[CORTO_MATCHER_MAX_OP];
-    corto_uint8 size;
-    corto_string tokens;
-};
-
-corto_int16 corto_idmatchParseIntern(
-    corto_idmatch_program data,
-    corto_string expr,
-    corto_bool allowScopes,
-    corto_bool allowSeparators);
-
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+typedef pthread_key_t corto_threadKey;
+
+typedef struct corto_rwmutex_s {
+    pthread_rwlock_t mutex;
+}corto_rwmutex_s;
+
+#define DETECT_CONTENTION (0)
+
+typedef struct corto_mutex_s {
+    pthread_mutex_t mutex;
+
+#if DETECT_CONTENTION
+    uint32_t contention;
+    corto_time hotness;
+
+    /* creation */
+    uint32_t c_entries;
+    char** c_symbols;
+
+    /* locked by */
+    uint32_t l_entries;
+    char** l_symbols;
+#endif
+}corto_mutex_s;
+    
+typedef struct corto_sem_s {
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int value;
+}corto_sem_s;
+
+#define CORTO_MUTEX_INITIALIZER {PTHREAD_MUTEX_INITIALIZER}
+#define CORTO_RWMUTEX_INITIALIZER {PTHREAD_RWLOCK_INITIALIZER}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* CORTO_THREAD_POSIX_H_ */

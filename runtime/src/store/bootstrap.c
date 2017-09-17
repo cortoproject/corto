@@ -112,9 +112,6 @@ corto_string CORTO_TRACE_ID = NULL;
 /* When set, notifications are traced */
 int8_t CORTO_TRACE_NOTIFICATIONS = 0;
 
-/* When set, backtraces are enabled */
-int8_t CORTO_BACKTRACE_ENABLED = 0;
-
 /* When set, the runtime will break at specified breakpoint */
 int32_t CORTO_MEMTRACE_BREAKPOINT;
 
@@ -144,8 +141,6 @@ int S_B_CONTENTTYPE;
  * 2 = deinitializing
  * 3 = stopped
  */
-
-int8_t CORTO_OPERATIONAL = 3;
 
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
@@ -1002,7 +997,7 @@ static void corto_patchSequences(void) {
     corto_ptr_setstr(&p->name, "event");
 }
 
-void corto_initEnvironment(void) {
+void corto_environment_init(void) {
 /* Only set environment variables if library is installed as corto package */
 #ifndef CORTO_REDIS
     /* CORTO_BUILD is where the buildsystem is located */
@@ -1122,7 +1117,7 @@ static int corto_loadConfig(void) {
 }
 
 int corto_start(char *appName) {
-    CORTO_OPERATIONAL = 1; /* Initializing */
+    CORTO_APP_STATUS = 1; /* Initializing */
 
     corto_appName = appName;
     if ((appName[0] == '.') && (appName[1] == '/')) {
@@ -1140,6 +1135,8 @@ int corto_start(char *appName) {
     corto_threadTlsKey(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
     corto_threadTlsKey(&CORTO_KEY_MOUNT_RESULT, NULL);
     corto_threadTlsKey(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
+    corto_threadTlsKey(&corto_subscriber_admin.key, corto_entityAdmin_free);
+    corto_threadTlsKey(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Push init component for logging */
     corto_component_push("init");
@@ -1166,14 +1163,18 @@ int corto_start(char *appName) {
     S_B_CONTENTTYPE = corto_benchmark_init("S_B_CONTENTTYPE");
 
     /* Initialize operating system environment */
-    corto_initEnvironment();
+    corto_environment_init();
+
+    /* Now that environment is initialized, set paths for loader */
+    corto_load_init(
+        corto_getenv("CORTO_TARGET"),
+        corto_getenv("CORTO_HOME"),
+        corto_getenv("/usr/local")
+        CORTO_VERSION_MAJOR,
+        CORTO_VERSION_MINOR);
 
     /* Initialize security */
     corto_secure_init();
-
-    /* Initialize entity administrations */
-    corto_threadTlsKey(&corto_subscriber_admin.key, corto_entityAdmin_free);
-    corto_threadTlsKey(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Register CDECL as first binding */
     if (corto_callRegister(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {
@@ -1318,7 +1319,7 @@ int corto_start(char *appName) {
     /* Always randomize seed */
     srand (time(NULL));
 
-    CORTO_OPERATIONAL = 0; /* Running */
+    CORTO_APP_STATUS = 0; /* Running */
 
 /* Only create package mount for non-redistributable version of corto, where
  * packages are installed in a common location */
@@ -1345,6 +1346,7 @@ int corto_start(char *appName) {
     
     corto_ok("initialized");
 
+    /* Pop init log component */
     corto_component_pop();
 
     return 0;
@@ -1382,7 +1384,7 @@ static void corto_exit(void) {
 
 int corto_stop(void) {
 
-    CORTO_OPERATIONAL = 2; /* Shutting down */
+    CORTO_APP_STATUS = 2; /* Shutting down */
 
     corto_trace("init: shutting down");
 
@@ -1437,7 +1439,7 @@ int corto_stop(void) {
     /* Deinit adminLock */
     corto_mutexFree(&corto_adminLock);
 
-    CORTO_OPERATIONAL = 3; /* Shut down */
+    CORTO_APP_STATUS = 3; /* Shut down */
 
     corto_benchmark_fini(CORTO_BENCHMARK_DECLARE);
     corto_benchmark_fini(CORTO_BENCHMARK_DECLARECHILD);

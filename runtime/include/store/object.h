@@ -1158,6 +1158,49 @@ CORTO_EXPORT bool corto_secured(void);
 #define corto_updateCancel corto_update_cancel
 #define corto_updateEnd corto_update_end
 
+/* Overload functions */
+
+/* Parameter kinds */
+#define CORTO_PARAMETER_REFERENCE          (1)
+#define CORTO_PARAMETER_FORCEREFERENCE     (2)
+#define CORTO_PARAMETER_WILDCARD           (4)
+#define CORTO_PARAMETER_NULL               (8)
+#define CORTO_PARAMETER_IN                 (16)
+#define CORTO_PARAMETER_OUT                (32)
+
+/* Special distance values for corto_overload */
+#define CORTO_OVERLOAD_ERROR               (-1)
+#define CORTO_OVERLOAD_NOMATCH             (-2)
+#define CORTO_OVERLOAD_NOMATCH_OVERLOAD    (-3)
+
+/* Calculate the distance between a function and a request signature */
+CORTO_EXPORT int16_t corto_overload(corto_object object, char* name, int32_t* distance);
+
+/* Obtain information from signature.
+ *   Signatures can be of the following form:
+ *     name(type name,type name)
+ *     name(type,type)
+ *     name --> Only allowed for non-overloaded functions
+ *
+ *   No extra whitespaces are allowed.
+ */
+CORTO_EXPORT int32_t corto_signatureName(char* signature, corto_id buffer);
+CORTO_EXPORT int32_t corto_signatureParamCount(char* signature);
+CORTO_EXPORT int32_t corto_signatureParamName(char* signature, uint32_t id, corto_id buffer);
+CORTO_EXPORT int32_t corto_signatureParamType(char* signature, uint32_t id, corto_id buffer, int* reference);
+
+/* Create request signature */
+CORTO_EXPORT char* corto_signatureOpen(char* name);
+CORTO_EXPORT char* corto_signatureAdd(char* sig, corto_type type, int flags);
+CORTO_EXPORT char* corto_signatureAddWildcard(char* sig, bool isReference);
+CORTO_EXPORT char* corto_signatureClose(char* sig);
+
+/* Obtain signature from object */
+CORTO_EXPORT char* corto_signature(corto_object o, corto_id buffer);
+
+/* Find a function that matches a signature */
+CORTO_EXPORT corto_object corto_lookupFunction(corto_object scope, char* requested, int32_t *d, int32_t *diff);
+CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, char* requested, int32_t* d, int32_t *diff);
 
 #ifdef __cplusplus
 }

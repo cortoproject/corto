@@ -27,7 +27,7 @@
     > Modified (Sander Mertens): 2010 - 2017
 */
 
-#include <corto/corto.h>
+#include <include/base.h>
 #include "jsw_rbtree.h"
 
 #ifdef __cplusplus
@@ -45,14 +45,12 @@ struct jsw_rbnode {
   struct jsw_rbnode *link[2]; /* Left (0) and right (1) links */
 };
 
-typedef corto_equalityKind ___ (*corto_equalFunction)(corto_any this, corto_any value);
-
 struct jsw_rbtree {
   jsw_rbnode_t *root; /* Top of the tree */
   corto_equals_cb cmp;  /* Compare two items */
-  corto_type type; /* This object which must be passed to cmp-function */
+  void* ctx; /* This object which must be passed to cmp-function */
   size_t size; /* Number of items (user-defined) */
-  corto_int32 changes; /* Change counter- for iterators */
+  int32_t changes; /* Change counter- for iterators */
 };
 
 /**
@@ -142,11 +140,6 @@ void *jsw_rbnodedata(jsw_rbnode_t *node) {
   return node->data;
 }
 
-/* Marshall between intern comparefunction and corto::type::equals */
-static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v1, const void* v2) {
-    return corto_ptr_compare((void*)v1, (corto_map(t))->keyType, (void*)v2);
-}
-
 /**
   <summary>
   Creates and initializes an empty red black tree with
@@ -160,48 +153,28 @@ static corto_equalityKind corto_rbtreeGenericCompare(corto_type t, const void* v
   The returned pointer must be released with jsw_rbdelete
   </remarks>
 */
-jsw_rbtree_t *jsw_rbnew ( corto_type type, corto_equals_cb cmp)
+jsw_rbtree_t *jsw_rbnew (void* ctx, corto_equals_cb cmp)
 {
+  corto_assert(cmp != NULL, "no comparator function provided for jsw_rbtree");
+
   jsw_rbtree_t *rt = (jsw_rbtree_t *)malloc ( sizeof *rt );
 
   if ( rt == NULL )
     return NULL;
 
-  if (!cmp) {
-      cmp = corto_rbtreeGenericCompare;
-  }
-
   rt->root = NULL;
   rt->cmp = cmp;
-  rt->type = type;
+  rt->ctx = ctx;
   rt->size = 0;
   rt->changes = 0;
 
   return rt;
 }
 
-corto_type jsw_rbtype( jsw_rbtree_t *tree) {
-    return tree->type;
+void* jsw_rbctx( jsw_rbtree_t *tree) {
+    return tree->ctx;
 }
 
-
-void jsw_keyFree( jsw_rbtree_t *tree, void *key )
-{
-    if (tree->type) {
-        corto_type keyType = corto_map(tree->type)->keyType;
-
-        if (keyType->reference) {
-            corto_release(*(corto_object*)key);
-        } else {
-            if (keyType->kind == CORTO_PRIMITIVE) {
-                if (corto_primitive(keyType)->kind == CORTO_TEXT) {
-                    free(*(corto_string*)key);
-                }
-            }
-        }
-        free(key);
-    }
-}
 /**
   <summary>
   Releases a valid red black tree
@@ -225,7 +198,6 @@ void jsw_rbdelete ( jsw_rbtree_t *tree )
     if ( it->link[0] == NULL ) {
       /* No left links, just kill the node and move on */
       save = it->link[1];
-      jsw_keyFree( tree, it->key );
       free ( it );
     }
     else {
@@ -258,7 +230,7 @@ void *jsw_rbfind ( jsw_rbtree_t *tree, void *key )
   jsw_rbnode_t *it = tree->root;
 
   while ( it != NULL ) {
-    int cmp = tree->cmp ( tree->type, it->key, key );
+    int cmp = tree->cmp ( tree->ctx, it->key, key );
 
     if ( cmp == 0 )
       break;
@@ -278,7 +250,7 @@ void *jsw_rbfindPtr ( jsw_rbtree_t *tree, void *key )
     jsw_rbnode_t *it = tree->root;
 
     while ( it != NULL ) {
-        int cmp = tree->cmp ( tree->type, it->key, key );
+        int cmp = tree->cmp ( tree->ctx, it->key, key );
 
         if ( cmp == 0 )
             break;
@@ -315,7 +287,7 @@ int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto
   jsw_rbnode_t *it = tree->root;
 
   while ( it != NULL ) {
-    int cmp = f_cmp ( tree->type, it->key, key );
+    int cmp = f_cmp ( tree->ctx, it->key, key );
 
     if ( cmp == 0 )
       break;
@@ -350,7 +322,7 @@ int jsw_rbhaskey_w_cmp ( jsw_rbtree_t *tree, const void *key, void** data, corto
   0 if the insertion failed for any reason
   </returns>
 */
-int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, corto_bool overwrite )
+int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, bool overwrite )
 {
   CORTO_UNUSED(overwrite);
 
@@ -410,7 +382,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void* key, void *data, void **old_out, co
         Stop working if we inserted a node. This
         check also disallows duplicates in the tree
       */
-      corto_equalityKind eq = tree->cmp ( tree->type, q->key, key );
+      int eq = tree->cmp ( tree->ctx, q->key, key );
       if ( eq == 0 ) {
         if (old_out)
           *old_out = q->data;
@@ -478,7 +450,7 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *key )
       /* Move the helpers down */
       g = p, p = q;
       q = q->link[dir];
-      corto_equalityKind eq = tree->cmp ( tree->type, q->key, key );
+      int eq = tree->cmp ( tree->ctx, q->key, key );
       dir = eq  < 0;
 
       /*
@@ -587,13 +559,13 @@ void *jsw_rbgetmax ( jsw_rbtree_t *tree, void** key) {
 /* Get next and prev */
 void *jsw_rbgetnext ( jsw_rbtree_t *tree, void* key, void** key_out) {
     jsw_rbnode_t* stack[32];
-    corto_uint32 sp;
+    uint32_t sp;
     jsw_rbnode_t *it = tree->root;
     void* result;
 
     sp = 0;
     while ( it != NULL ) {
-      int cmp = tree->cmp ( tree->type, it->key, key );
+      int cmp = tree->cmp ( tree->ctx, it->key, key );
       if ( cmp == 0 )
         break;
 
@@ -611,7 +583,7 @@ void *jsw_rbgetnext ( jsw_rbtree_t *tree, void* key, void** key_out) {
             }
             result = it->data;
         } else {
-            while(sp && tree->cmp( tree->type, stack[sp-1]->key, key) == -1) {
+            while(sp && tree->cmp( tree->ctx, stack[sp-1]->key, key) == -1) {
                 sp--;
             }
             if (sp) {
@@ -636,7 +608,7 @@ void *jsw_rbgetprev ( jsw_rbtree_t *tree, void* key, void** key_out) {
     void* result;
 
     while ( it != NULL ) {
-      int cmp = tree->cmp ( tree->type, it->key, key );
+      int cmp = tree->cmp ( tree->ctx, it->key, key );
 
       if ( cmp == 0 )
         break;
@@ -853,6 +825,6 @@ void *jsw_rbtprev ( jsw_rbtrav_t *trav )
   return move ( trav, 0, 0 ); /* Toward smaller items */
 }
 
-corto_bool jsw_rbtchanged( jsw_rbtrav_t *trav ) {
+bool jsw_rbtchanged( jsw_rbtrav_t *trav ) {
   return trav->changes != trav->tree->changes;
 }

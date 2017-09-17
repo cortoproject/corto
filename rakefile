@@ -1,8 +1,9 @@
 
 COMPONENTS = %w(
+    base
+    tool
     runtime
     runtime/c
-    tool
 )
 
 task :default do

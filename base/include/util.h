@@ -54,46 +54,9 @@ extern "C" {
 #define corto_dealloc free
 #define corto_realloc realloc
 
-/* In place replacelemt of '::' with '/' */
-CORTO_EXPORT corto_string corto_pathFromFullname(corto_id buffer);
-
-/* Strip parent identifiers from fullname */
-CORTO_EXPORT corto_string corto_nameFromFullname(corto_id buffer);
-
-/* Set intern TLS string */
-CORTO_EXPORT corto_string corto_setThreadString(corto_string string);
-
-/* Check if object is a builtin package */
-CORTO_EXPORT corto_bool corto_isBuiltinPackage(corto_object o);
-
-/* Check if object is a builtin object */
-CORTO_EXPORT corto_bool corto_isBuiltin(corto_object o);
-
-/* Used in type checking macro */
-CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
-#ifndef NDEBUG
-#define corto_assertType(type, o) _corto_assertType((type), (o))
-#else
-#define corto_assertType(type, o) (o)
-#endif
-
-/* Throws an assertion when invalid object in debugging */
-#ifndef NDEBUG
-CORTO_EXPORT void corto_assertObject(corto_object o);
-#else
-#define corto_assertObject(o)
-#endif
-
-/* Obtain documentation objects */
-CORTO_EXPORT char* corto_manId(corto_object o, corto_id buffer);
-CORTO_EXPORT corto_object corto_man(corto_object o);
-
-/* Obtain pointer and type for deserializing member */
-CORTO_EXPORT void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
-
 /* Benchmarking */
 #if 0
-CORTO_EXPORT int corto_benchmark_init(corto_string name);
+CORTO_EXPORT int corto_benchmark_init(char* name);
 CORTO_EXPORT void corto_benchmark_stop(int id);
 CORTO_EXPORT void corto_benchmark_start(int id);
 CORTO_EXPORT double corto_benchmark_fini(int id);
@@ -104,49 +67,8 @@ CORTO_EXPORT double corto_benchmark_fini(int id);
 #define corto_benchmark_fini(id) ((void)0)
 #endif
 
-/* Overload utility functions */
-
-/* Parameter kinds */
-#define CORTO_PARAMETER_REFERENCE          (1)
-#define CORTO_PARAMETER_FORCEREFERENCE     (2)
-#define CORTO_PARAMETER_WILDCARD           (4)
-#define CORTO_PARAMETER_NULL               (8)
-#define CORTO_PARAMETER_IN                 (16)
-#define CORTO_PARAMETER_OUT                (32)
-
-/* Special distance values for corto_overload */
-#define CORTO_OVERLOAD_ERROR               (-1)
-#define CORTO_OVERLOAD_NOMATCH             (-2)
-#define CORTO_OVERLOAD_NOMATCH_OVERLOAD    (-3)
-
-/* Calculate the distance between a function and a request signature */
-CORTO_EXPORT int16_t corto_overload(corto_object object, corto_string name, corto_int32* distance);
-
-/* Obtain information from signature.
- *   Signatures can be of the following form:
- *     name(type name,type name)
- *     name(type,type)
- *     name --> Only allowed for non-overloaded functions
- *
- *   No extra whitespaces are allowed.
- */
-CORTO_EXPORT corto_int32 corto_signatureName(corto_string signature, corto_id buffer);
-CORTO_EXPORT corto_int32 corto_signatureParamCount(corto_string signature);
-CORTO_EXPORT corto_int32 corto_signatureParamName(corto_string signature, corto_uint32 id, corto_id buffer);
-CORTO_EXPORT corto_int32 corto_signatureParamType(corto_string signature, corto_uint32 id, corto_id buffer, int* reference);
-
-/* Create request signature */
-CORTO_EXPORT corto_string corto_signatureOpen(corto_string name);
-CORTO_EXPORT corto_string corto_signatureAdd(corto_string sig, corto_type type, int flags);
-CORTO_EXPORT corto_string corto_signatureAddWildcard(corto_string sig, corto_bool isReference);
-CORTO_EXPORT corto_string corto_signatureClose(corto_string sig);
-
-/* Obtain signature from object */
-CORTO_EXPORT char* corto_signature(corto_object o, corto_id buffer);
-
-/* Find a function that matches a signature */
-CORTO_EXPORT corto_object corto_lookupFunction(corto_object scope, corto_string requested, corto_int32 *d, corto_int32 *diff);
-CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, corto_string requested, corto_int32* d, corto_int32 *diff);
+/* Set intern TLS string */
+CORTO_EXPORT char* corto_setThreadString(char* string);
 
 /* String utility functions */
 /* Case insensitive string compare */
@@ -193,6 +115,9 @@ CORTO_EXPORT size_t stresc(char *out, size_t n, const char *in);
  * mask. */
 CORTO_EXPORT size_t strmask(char *str, char *mask);
 
+/* Safe set string */
+void strset(char **out, char *str);
+
 /* Duplicate string */
 CORTO_EXPORT char* corto_strdup(const char* str);
 
@@ -205,6 +130,9 @@ CORTO_EXPORT char* corto_replace(char *s, char *old, char *_new);
 
 /* Build string that can be used as argument (no dealloc required) */
 CORTO_EXPORT char* strarg(const char *fmt, ...);
+
+/* Split path into separate elements. Modifies 'path'. */
+int32_t corto_pathToArray(char *path, char *elements[], char *sep);
 
 #ifdef __cplusplus
 }

@@ -2962,37 +2962,6 @@ corto_string corto_fullname(corto_id buffer, corto_object o) {
     return corto_fullpath_intern(buffer, o, TRUE);
 }
 
-corto_int32 corto_pathToArray(corto_string path, char *elements[], char *sep) {
-    corto_int32 count = 0;
-    char *ptr = path;
-
-    if (*ptr == *sep) {
-        elements[count ++] = ptr;
-        *ptr = '\0';
-        ptr ++;
-    }
-    if (*ptr) {
-        do {
-            /* Never parse more elements than maximum scope depth */
-            if (count == CORTO_MAX_SCOPE_DEPTH) {
-                corto_seterr(
-                    "number of elements in path exceeds MAX_SCOPE_DEPTH (%d)",
-                    CORTO_MAX_SCOPE_DEPTH);
-                goto error;
-            }
-            if (*ptr == *sep) {
-                *ptr = '\0';
-                ptr++;
-            }
-            elements[count ++] = ptr;
-        } while ((ptr = strchr(ptr, *sep)));
-    }
-
-    return count;
-error:
-    return -1;
-}
-
 static corto_object* corto_scopeStack(
     corto_object o,
     corto_object scopeStack[],
@@ -4990,4 +4959,93 @@ void corto_super_destruct(corto_object o) {
         corto_seterr("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
 error:;
+}
+
+
+char* corto_pathFromFullname(corto_id buffer) {
+    char *ptr = buffer, *bptr, ch;
+    bptr = ptr;
+
+    for (; (ch = *ptr); ptr++, bptr++) {
+        if (ch == ':') {
+            *bptr = '/';
+            ptr++;
+        } else {
+            *bptr = ch;
+        }
+    }
+
+    *bptr = '\0';
+
+    return buffer;
+}
+
+/* Check whether object is a builtin package */
+corto_bool corto_isBuiltinPackage(corto_object o) {
+    return (o == root_o) ||
+           (o == corto_o) ||
+           (o == corto_lang_o) ||
+           (o == corto_vstore_o) ||
+           (o == corto_native_o) ||
+           (o == corto_secure_o);
+}
+
+void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
+    void *result;
+
+    if (!ptr) {
+        return NULL;
+    }
+
+    result = CORTO_OFFSET(ptr, m->offset);
+
+    /* If member is of target type, it represents either a target or actual
+     * value. Actual members can only be set if the object is owned by thread
+     * that deserializes the value. Target members can only be set if the thread
+     * does not own the object. */
+    if (corto_typeof(corto_parentof(m)) == (corto_type)corto_target_o) {
+        corto_bool owned = corto_owned(ptr);
+        corto_bool isActual = strcmp("target", corto_idof(m));
+        if ((owned && !isActual) || (!owned && isActual)) {
+            result = NULL;
+        }
+    } else if (o && !corto_owned(o)) {
+        /* If type is composite, continue serializing as structure may contain
+         * members of target types */
+        if (m->type->kind != CORTO_COMPOSITE) {
+            result = NULL;
+        }
+    }
+
+    if (result && (m->modifiers & CORTO_OBSERVABLE)) {
+        result = *(void**)result;
+    }
+
+    return result;
+}
+
+corto_eventMask corto_match_getScope(corto_idmatch_program program) {
+    corto_eventMask result = CORTO_ON_SCOPE;
+    int32_t op;
+    bool quit = false;
+
+    for (op = 0; (op < program->size) && !quit; op ++) {
+        switch (program->ops[op].token) {
+        case CORTO_MATCHER_TOKEN_IDENTIFIER:
+        case CORTO_MATCHER_TOKEN_THIS:
+        case CORTO_MATCHER_TOKEN_PARENT:
+            result = CORTO_ON_SELF;
+            break;
+        case CORTO_MATCHER_TOKEN_SCOPE:
+            result = CORTO_ON_SCOPE;
+            break;
+        case CORTO_MATCHER_TOKEN_TREE:
+            result = CORTO_ON_TREE;
+        default:
+            quit = true;
+            break;
+        }
+    }
+
+    return result;
 }

@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <include/base.h>
 
 corto_thread corto_threadNew(corto_threadFunc f, void* arg) {
     pthread_t thread;
@@ -86,7 +86,7 @@ typedef struct corto_threadTlsAdmin_t {
 } corto_threadTlsAdmin_t;
 
 static corto_threadTlsAdmin_t corto_threadTlsAdmin[CORTO_MAX_THREAD_KEY];
-static corto_int32 corto_threadTlsCount = -1;
+static int32_t corto_threadTlsCount = -1;
 
 int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*)){
     if (pthread_key_create(key, destructor)) {
@@ -95,7 +95,7 @@ int corto_threadTlsKey(corto_threadKey* key, void(*destructor)(void*)){
     }
 
     if (destructor) {
-        corto_int32 slot = corto_ainc(&corto_threadTlsCount);
+        int32_t slot = corto_ainc(&corto_threadTlsCount);
         corto_threadTlsAdmin[slot].key = *key;
         corto_threadTlsAdmin[slot].destructor = destructor;
     }
@@ -114,7 +114,7 @@ void* corto_threadTlsGet(corto_threadKey key) {
 }
 
 void corto_threadTlsKeysDestruct(void) {
-    corto_int32 i;
+    int32_t i;
 
     for (i = 0; i <= corto_threadTlsCount; i++) {
         void *data = corto_threadTlsGet(corto_threadTlsAdmin[i].key);
@@ -187,10 +187,9 @@ static int pthread_mutex_timedlock (
 }
 #endif
 
-int corto_mutexLockTimed(corto_mutex mutex, corto_time timeout) {
+int corto_mutexLockTimed(corto_mutex mutex, struct timespec ts) {
     int result;
 
-    struct timespec ts = {timeout.sec, timeout.nanosec};
     if ((result = pthread_mutex_timedlock(&mutex->mutex, &ts))) {
         if (result != ETIMEDOUT) {
             corto_seterr("mutexTry failed: %s", strerror(result));

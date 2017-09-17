@@ -19,8 +19,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORE_ERR_H_
-#define CORE_ERR_H_
+#ifndef CORE_LOG_H_
+#define CORE_LOG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -115,13 +115,13 @@ typedef void (*corto_err_callback_callback)(
 CORTO_EXPORT corto_err_callback corto_err_callbackRegister(
     corto_err min_level, 
     corto_err max_level,
-    corto_string component_filter, // filter in corto_match expr format
-    corto_string auth_token,
+    char* component_filter, // filter in corto_match expr format
+    char* auth_token,
     corto_err_callback_callback callback,
     void *context);
 
 CORTO_EXPORT void corto_err_callbackUnregister(corto_err_callback callback);
-CORTO_EXPORT corto_bool corto_err_callbacksRegistered(void);
+CORTO_EXPORT bool corto_err_callbacksRegistered(void);
 
 /* Get stack backtraces */
 CORTO_EXPORT void corto_printBacktrace(FILE* f, int nEntries, char** symbols);
