@@ -217,3 +217,7 @@ int corto_beingTraced(void) {
     return 0;
 #endif
 }
+
+corto_proc _corto_proc(void) {
+    return getpid();
+}

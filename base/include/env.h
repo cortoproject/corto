@@ -19,55 +19,56 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO_OS_H
-#define CORTO_OS_H
+/** @file
+ * @section File utility functions.
+ * @brief Functions that make commonly used file-based operations easier.
+ */
 
-/* UNSTABLE API */
+#ifndef CORTO_ENV_H
+#define CORTO_ENV_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if INTPTR_MAX == INT32_MAX
-#define CORTO_CPU_32BIT
-#elif INTPTR_MAX == INT64_MAX
-#define CORTO_CPU_64BIT
-#else
-#warning "corto is not supported on platforms which are neither 32- nor 64-bit."
-#endif
+/** Set environment variable.
+ * 
+ * @param varname Name of environment variable
+ * @param value Value to assign to environment variable.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT 
+int16_t corto_setenv(
+    const char *varname, 
+    const char *value, 
+    ...);
 
-#if defined(WIN32) || defined(WIN64)
-#define CORTO_OS_WINDOWS
-#elif defined(__linux__)
-#define CORTO_OS_LINUX
-#elif defined(__APPLE__) && defined(__MACH__)
-#define CORTO_OS_OSX
-#else
-#warning "corto is not supported on non-unix or windows operating systems."
-#endif
+/** Get environment variable.
+ * 
+ * @param varname Name of environment variable
+ * @return value if environment variable, NULL if not set.
+ */
+CORTO_EXPORT 
+char* corto_getenv(
+    const char *varname);
 
-#ifdef __i386__
-#define CORTO_CPU_STRING "x86"
-#elif __x86_64__
-#define CORTO_CPU_STRING "x64"
-#elif defined(__arm__) && defined(CORTO_CPU_32BIT)
-#define CORTO_CPU_STRING "Arm"
-#elif defined(__arm__) && defined(CORTO_CPU_64BIT)
-#define CORTO_CPU_STRING "Arm64"
-#endif
+/** Replace string with references to environment variables with their values.
+ * A reference to an environment variable is an identifier prefixed with a $. 
+ *
+ * @param str String that contains references to environment variables.
+ * @param value Value to assign to environment variable.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT 
+char* corto_envparse(
+    const char* str, 
+    ...);
 
-#ifdef CORTO_OS_WINDOWS
-#define CORTO_OS_STRING "windows"
-#elif defined(CORTO_OS_LINUX)
-#define CORTO_OS_STRING "linux"
-#elif defined(CORTO_OS_OSX)
-#define CORTO_OS_STRING "darwin"
-#endif
-
-#define CORTO_PLATFORM_STRING CORTO_CPU_STRING "-" CORTO_OS_STRING
-
-/* Get hostname of current machine */
-CORTO_EXPORT char* corto_hostname(void);
+/** Same as envparse but with a va_list parameter */
+CORTO_EXPORT 
+char* corto_venvparse(
+    const char* str, 
+    va_list args);
 
 #ifdef __cplusplus
 }
