@@ -1391,7 +1391,7 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_OVERRIDABLE_O(vstore_mount, onId, "()", lang_string, corto_mount_onId_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onQuery_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onHistoryQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onHistoryQuery_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onResume, "(string parent,string name,object object)", lang_object, corto_mount_onResume_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, onResume, "(string parent,string id,object object)", lang_object, corto_mount_onResume_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onNotify, "(vstore/subscriberEvent event)", lang_void, corto_mount_onNotify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onHistoryBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
