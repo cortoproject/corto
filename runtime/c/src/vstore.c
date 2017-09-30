@@ -562,6 +562,7 @@ corto_int16 corto_handleActionInitC(corto_handleAction *d, corto_void ___ (*call
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "(/corto/vstore/event event)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -573,6 +574,7 @@ corto_int16 corto_handleActionInitCInstance(corto_handleAction *d, corto_object 
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "(object instance, /corto/vstore/event event)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);

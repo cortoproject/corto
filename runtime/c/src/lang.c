@@ -1736,6 +1736,7 @@ corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "()");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -1747,6 +1748,7 @@ corto_int16 corto_destructActionInitCInstance(corto_destructAction *d, corto_obj
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "(object instance)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -2339,6 +2341,7 @@ corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callbac
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_int16_o);
     corto_function_parseParamString(d->super.procedure, "()");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -2350,6 +2353,7 @@ corto_int16 corto_initActionInitCInstance(corto_initAction *d, corto_object inst
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_int16_o);
     corto_function_parseParamString(d->super.procedure, "(object instance)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -4111,6 +4115,7 @@ corto_int16 corto_nameActionInitC(corto_nameAction *d, corto_string ___ (*callba
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_string_o);
     corto_function_parseParamString(d->super.procedure, "()");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -4122,6 +4127,7 @@ corto_int16 corto_nameActionInitCInstance(corto_nameAction *d, corto_object inst
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_string_o);
     corto_function_parseParamString(d->super.procedure, "(object instance)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);

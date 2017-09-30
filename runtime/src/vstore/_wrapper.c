@@ -18,12 +18,12 @@ void _corto_dispatcher_post(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(corto_dispatcher_o, "post(event e)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "post(event e)");
     }
-    corto_assert(_methodId, "virtual 'post(event e)' not found in 'dispatcher'%s%s", corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
-    _method = corto_class_resolveInterfaceMethod((corto_class)_abstract, corto_dispatcher_o, _methodId);
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
@@ -347,7 +347,7 @@ corto_resultIter _corto_mount_onQuery(
 corto_object _corto_mount_onResume(
     corto_mount _this,
     corto_string parent,
-    corto_string name,
+    corto_string id,
     corto_object object)
 
 {
@@ -360,18 +360,18 @@ corto_object _corto_mount_onResume(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string name,object object)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string id,object object)");
     }
-    corto_assert(_methodId, "virtual 'onResume(string parent,string name,object object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onResume(string parent,string id,object object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string name,object object)@%d'", corto_idof(_this), _methodId);
+    corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string id,object object)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(_this, parent, name, object);
+        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(_this, parent, id, object);
     } else {
-        corto_call(corto_function(_method), &_result, _this, parent, name, object);
+        corto_call(corto_function(_method), &_result, _this, parent, id, object);
     }
     
     return _result;

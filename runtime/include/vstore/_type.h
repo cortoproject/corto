@@ -68,7 +68,7 @@ struct corto_package_s {
     corto_string url;
     corto_string repository;
     corto_string icon;
-    corto_stringlist dependencies;    
+    corto_stringlist dependencies;
     corto_string env;
     corto_string language;
     bool managed;

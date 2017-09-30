@@ -458,25 +458,25 @@ CORTO_EXPORT
 corto_object _corto_mount_onResume_v(
     corto_mount _this,
     corto_string parent,
-    corto_string name,
+    corto_string id,
     corto_object object);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
-#define corto_mount_onResume_v(_this, parent, name, object) _corto_mount_onResume_v(corto_mount(_this), parent, name, object)
+#define corto_mount_onResume_v(_this, parent, id, object) _corto_mount_onResume_v(corto_mount(_this), parent, id, object)
 #else
 #define corto_mount_onResume_v _corto_mount_onResume_v
 #endif
 
 /* explicit type-safe macro */
-#define safe_corto_mount_onResume_v(_this, parent, name, object) _corto_mount_onResume_v(corto_mount(_this), parent, name, object)
+#define safe_corto_mount_onResume_v(_this, parent, id, object) _corto_mount_onResume_v(corto_mount(_this), parent, id, object)
 
-#define corto_mount_onResume(_this, parent, name, object) _corto_mount_onResume(corto_mount(_this), parent, name, object)
+#define corto_mount_onResume(_this, parent, id, object) _corto_mount_onResume(corto_mount(_this), parent, id, object)
 CORTO_EXPORT
 corto_object _corto_mount_onResume(
     corto_mount _this,
     corto_string parent,
-    corto_string name,
+    corto_string id,
     corto_object object);
 
 /* forward declaration of the function. the '_' in front of the name allows
@@ -973,6 +973,23 @@ uint32_t _corto_query_cardinality(
 
 /* explicit type-safe macro */
 #define safe_corto_query_cardinality(_this) _corto_query_cardinality(_this)
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
+bool _corto_query_match(
+    corto_query* _this,
+    corto_result *result);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_query_match(_this, result) _corto_query_match(_this, result)
+#else
+#define corto_query_match _corto_query_match
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_query_match(_this, result) _corto_query_match(_this, result)
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */

@@ -1302,6 +1302,7 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
     CORTO_MEMBER_O(vstore_query, timeEnd, vstore_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, content, lang_bool, CORTO_GLOBAL|CORTO_HIDDEN);
     CORTO_METHOD_O(vstore_query, cardinality, "()", lang_uint32, corto_query_cardinality);
+    CORTO_METHOD_O(vstore_query, match, "(vstore/result result)", lang_bool, corto_query_cardinality);
 
 /* /corto/vstore/subscriber */
 CORTO_FW_IFCD(vstore, subscriber);

@@ -34,14 +34,6 @@ extern "C" {
 #define corto_nameAction(o) ((corto_nameAction*)corto_assertType((corto_type)corto_nameAction_o, o))
 #define corto_type(o) ((corto_type)corto_assertType((corto_type)corto_type_o, o))
 #define corto_modifier(o) ((corto_modifier*)corto_assertType((corto_type)corto_modifier_o, o))
-#define corto_compositeKind(o) ((corto_compositeKind*)corto_assertType((corto_type)corto_compositeKind_o, o))
-#define corto_interface(o) ((corto_interface)corto_assertType((corto_type)corto_interface_o, o))
-#define corto_stringseq(o) ((corto_stringseq*)corto_assertType((corto_type)corto_stringseq_o, o))
-#define corto_struct(o) ((corto_struct)corto_assertType((corto_type)corto_struct_o, o))
-#define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assertType((corto_type)corto_interfaceseq_o, o))
-#define corto_interfaceVector(o) ((corto_interfaceVector*)corto_assertType((corto_type)corto_interfaceVector_o, o))
-#define corto_interfaceVectorseq(o) ((corto_interfaceVectorseq*)corto_assertType((corto_type)corto_interfaceVectorseq_o, o))
-#define corto_class(o) ((corto_class)corto_assertType((corto_type)corto_class_o, o))
 #define corto_quantity(o) ((corto_quantity)corto_assertType((corto_type)corto_quantity_o, o))
 #define corto_unit(o) ((corto_unit)corto_assertType((corto_type)corto_unit_o, o))
 #define corto_member(o) ((corto_member)corto_assertType((corto_type)corto_member_o, o))
@@ -63,6 +55,14 @@ extern "C" {
 #define corto_case(o) ((corto_case)corto_assertType((corto_type)corto_case_o, o))
 #define corto_char(o) ((char*)corto_assertType((corto_type)corto_char_o, o))
 #define corto_character(o) ((corto_character)corto_assertType((corto_type)corto_character_o, o))
+#define corto_compositeKind(o) ((corto_compositeKind*)corto_assertType((corto_type)corto_compositeKind_o, o))
+#define corto_interface(o) ((corto_interface)corto_assertType((corto_type)corto_interface_o, o))
+#define corto_stringseq(o) ((corto_stringseq*)corto_assertType((corto_type)corto_stringseq_o, o))
+#define corto_struct(o) ((corto_struct)corto_assertType((corto_type)corto_struct_o, o))
+#define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assertType((corto_type)corto_interfaceseq_o, o))
+#define corto_interfaceVector(o) ((corto_interfaceVector*)corto_assertType((corto_type)corto_interfaceVector_o, o))
+#define corto_interfaceVectorseq(o) ((corto_interfaceVectorseq*)corto_assertType((corto_type)corto_interfaceVectorseq_o, o))
+#define corto_class(o) ((corto_class)corto_assertType((corto_type)corto_class_o, o))
 #define corto_constant(o) ((int32_t*)corto_assertType((corto_type)corto_constant_o, o))
 #define corto_container(o) ((corto_container)corto_assertType((corto_type)corto_container_o, o))
 #define corto_default(o) ((corto_default)corto_assertType((corto_type)corto_default_o, o))
@@ -251,68 +251,6 @@ typedef uint32_t corto_modifier;
     #define CORTO_OBSERVABLE (0x40)
     #define CORTO_KEY (0x84)
 
-/* compositeKind */
-typedef enum corto_compositeKind {
-    CORTO_INTERFACE = 0,
-    CORTO_STRUCT = 1,
-    CORTO_UNION = 2,
-    CORTO_CLASS = 3,
-    CORTO_DELEGATE = 4,
-    CORTO_PROCEDURE = 5
-} corto_compositeKind;
-
-/*  interface */
-typedef struct corto_interface_s *corto_interface;
-
-struct corto_interface_s {
-    struct corto_type_s super;
-    corto_compositeKind kind;
-    uint32_t nextMemberId;
-    corto_objectseq members;
-    corto_objectseq methods;
-    corto_interface base;
-};
-
-typedef struct corto_stringseq {uint32_t length; corto_string *buffer;} corto_stringseq;
-
-/*  struct */
-typedef struct corto_struct_s *corto_struct;
-
-struct corto_struct_s {
-    struct corto_interface_s super;
-    corto_modifier baseAccess;
-    corto_stringseq keys;
-    corto_objectseq keycache;
-    uintptr_t freeops;
-};
-
-typedef struct corto_interfaceseq {uint32_t length; corto_interface *buffer;} corto_interfaceseq;
-
-/*  interfaceVector */
-typedef struct corto_interfaceVector corto_interfaceVector;
-
-struct corto_interfaceVector {
-    corto_interface interface;
-    corto_objectseq vector;
-};
-
-typedef struct corto_interfaceVectorseq {uint32_t length; corto_interfaceVector *buffer;} corto_interfaceVectorseq;
-
-/*  class */
-typedef struct corto_class_s *corto_class;
-
-struct corto_class_s {
-    struct corto_struct_s super;
-    corto_interfaceseq implements;
-    corto_interfaceVectorseq interfaceVector;
-    corto_initAction construct;
-    corto_destructAction define;
-    corto_initAction validate;
-    corto_destructAction update;
-    corto_destructAction destruct;
-    corto_destructAction _delete;
-};
-
 /*  quantity */
 typedef struct corto_quantity_s *corto_quantity;
 
@@ -468,6 +406,68 @@ typedef struct corto_character_s *corto_character;
 
 struct corto_character_s {
     struct corto_primitive_s super;
+};
+
+/* compositeKind */
+typedef enum corto_compositeKind {
+    CORTO_INTERFACE = 0,
+    CORTO_STRUCT = 1,
+    CORTO_UNION = 2,
+    CORTO_CLASS = 3,
+    CORTO_DELEGATE = 4,
+    CORTO_PROCEDURE = 5
+} corto_compositeKind;
+
+/*  interface */
+typedef struct corto_interface_s *corto_interface;
+
+struct corto_interface_s {
+    struct corto_type_s super;
+    corto_compositeKind kind;
+    uint32_t nextMemberId;
+    corto_objectseq members;
+    corto_objectseq methods;
+    corto_interface base;
+};
+
+typedef struct corto_stringseq {uint32_t length; corto_string *buffer;} corto_stringseq;
+
+/*  struct */
+typedef struct corto_struct_s *corto_struct;
+
+struct corto_struct_s {
+    struct corto_interface_s super;
+    corto_modifier baseAccess;
+    corto_stringseq keys;
+    corto_objectseq keycache;
+    uintptr_t freeops;
+};
+
+typedef struct corto_interfaceseq {uint32_t length; corto_interface *buffer;} corto_interfaceseq;
+
+/*  interfaceVector */
+typedef struct corto_interfaceVector corto_interfaceVector;
+
+struct corto_interfaceVector {
+    corto_interface interface;
+    corto_objectseq vector;
+};
+
+typedef struct corto_interfaceVectorseq {uint32_t length; corto_interfaceVector *buffer;} corto_interfaceVectorseq;
+
+/*  class */
+typedef struct corto_class_s *corto_class;
+
+struct corto_class_s {
+    struct corto_struct_s super;
+    corto_interfaceseq implements;
+    corto_interfaceVectorseq interfaceVector;
+    corto_initAction construct;
+    corto_destructAction define;
+    corto_initAction validate;
+    corto_destructAction update;
+    corto_destructAction destruct;
+    corto_destructAction _delete;
 };
 
 /* constant */
