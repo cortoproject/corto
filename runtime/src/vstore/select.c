@@ -120,6 +120,7 @@ struct corto_select_data {
 
     /* Filters */
     corto_string typeFilter;
+    corto_idmatch_program typeFilterProgram;   /* Parsed program */
 
     /* Full path representing the current location of select */
     corto_id location;
@@ -384,12 +385,12 @@ static corto_bool corto_selectMatch(
                 if ((typeObject = corto_resolve(NULL, type))) {
                     corto_fullpath(type, typeObject);
                     corto_release(typeObject);
-                    result = corto_idmatch(data->typeFilter, type);
+                    result = corto_idmatch_run(data->typeFilterProgram, type);
                 } else {
                     result = FALSE;
                 }
             } else {
-                result = corto_idmatch(data->typeFilter, type);
+                result = corto_idmatch_run(data->typeFilterProgram, type);
             }
         }        
     }
@@ -788,7 +789,7 @@ static int corto_selectLoadMountWalk(
     /* If type is requested, test whether it matches with the mount type */
     corto_string rType = mount->super.query.type;
     if (data->typeFilter && rType) {
-        if (!corto_idmatch(data->typeFilter, rType)) {
+        if (!corto_idmatch_run(data->typeFilterProgram, rType)) {
             return 1;
         }
     }
@@ -1102,6 +1103,7 @@ static void corto_selectRelease(corto_iter *iter) {
     if (data->scope) corto_dealloc(data->scope);
     if (data->fullscope) corto_dealloc(data->fullscope);
     if (data->filterProgram) corto_idmatch_free(data->filterProgram);
+    if (data->typeFilterProgram) corto_idmatch_free(data->typeFilterProgram);
 
     /* Free iterators */
     corto_int32 i;
@@ -1410,6 +1412,11 @@ static corto_resultIter corto_selectPrepareIterator (
     if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
         corto_seterr("select '%s' failed: %s", data->expr, corto_lasterr());
         goto error;
+    }
+
+    /* Prepare type filter */
+    if (data->typeFilter) {
+        data->typeFilterProgram = corto_idmatch_compile(data->typeFilter, TRUE, TRUE);
     }
 
     if (corto_selectRun(data)) {
