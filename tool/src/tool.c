@@ -76,6 +76,7 @@ static void printUsage(void) {
     printf("  configuration:\n");
     printf("  --name [id]                Assign a name to the process\n");
     printf("  --config [path]            A path or file that contains configuration\n");
+    printf("  --cwd [path]               Specify the current working directory\n");
     printf("\n");
     printf("  tracing:\n");
     printf("  --debug                    Set verbosity to DEBUG\n");
@@ -110,6 +111,7 @@ static bool load = false;
 static bool keep_alive = false;
 static bool mute = false;
 static char *appname;
+static char *cwd;
 
 static void printVersion(bool minor, bool patch) {
     if (patch) {
@@ -148,6 +150,7 @@ static int parseGenericArgs(int argc, char *argv[]) {
             PARSE_OPTION(0, "logo", printLogo());
             PARSE_OPTION(0, "name", appname = argv[i + 1]; i ++);
             PARSE_OPTION(0, "config", corto_setenv("CORTO_CONFIG", argv[i + 1]); i ++);
+            PARSE_OPTION(0, "cwd", cwd = argv[i + 1]; i ++);
             PARSE_OPTION(0, "debug", corto_verbosity(CORTO_DEBUG));
             PARSE_OPTION(0, "trace", corto_verbosity(CORTO_TRACE));
             PARSE_OPTION(0, "ok", corto_verbosity(CORTO_OK));
@@ -185,6 +188,13 @@ int main(int argc, char *argv[]) {
 
         /* Start corto */
         corto_start(appname);
+
+        /* Change working directory, if set */
+        if (cwd) {
+            if (corto_chdir(cwd)) {
+                goto error;
+            }
+        }
 
         /* If there are more arguments than that have been parsed so far, there must
          * be a command or file to be loaded */
@@ -241,5 +251,7 @@ int main(int argc, char *argv[]) {
         result = -1;
     }
 
-    return result;    
+    return result;   
+error:
+    return -1; 
 }
