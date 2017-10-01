@@ -292,10 +292,11 @@ static void corto_setItemData(
 
 static corto_bool corto_selectMatch(
     corto_object o,
+    corto_result *item,
     corto_select_data *data)
 {
     corto_bool result = TRUE;
-    char *id = o ? corto_idof(o) : data->item.id;
+    char *id = o ? corto_idof(o) : item->id;
 
     if (corto_secured()) {
         if (o) {
@@ -304,7 +305,7 @@ static corto_bool corto_selectMatch(
             }
         } else {
             corto_id id;
-            sprintf(id, "%s/%s", data->item.parent, data->item.id);
+            sprintf(id, "%s/%s", item->parent, item->id);
             corto_cleanpath(id, id);
             if (!corto_authorizedId(id, CORTO_SECURE_ACTION_READ)) {
                 goto access_error;
@@ -323,7 +324,7 @@ static corto_bool corto_selectMatch(
         if (o) {
             corto_fullpath(type, corto_typeof(o));
         } else {
-            strcpy(type, data->item.type);
+            strcpy(type, item->type);
         }
 
         /* Only filter (duplicate) results from the object store. The root object
@@ -398,27 +399,36 @@ access_error:
     return FALSE;
 }
 
-static corto_resultIter corto_selectRequestMount(
+static
+char* corto_selectRelativeParent(
+    corto_query *q,
+    corto_select_data *data)
+{
+    uint64_t len = q->from ? strlen(q->from) : 0;
+
+    if (q->from && q->from[0] != '/') {
+        len ++;
+    }
+
+    char *parent = &data->location[len];
+    if (!parent[0]) {
+        parent = ".";
+    } else if (parent[0] == '/') {
+        parent ++;
+    }
+
+    return parent;
+}
+
+static 
+corto_resultIter corto_selectRequestMount(
     corto_select_data *data,
     corto_mount mount)
 {
     if (data->mountAction || !data->quit) {
-        char *parent;
         char *expr = data->mask == CORTO_ON_TREE ? "*" : data->filter ? data->filter : "*";
         corto_query *q = &corto_subscriber(mount)->query;
-
-        uint64_t len = q->from ? strlen(q->from) : 0;
-
-        if (q->from && q->from[0] != '/') {
-            len ++;
-        }
-
-        parent = &data->location[len];
-        if (!parent[0]) {
-            parent = ".";
-        } else if (parent[0] == '/') {
-            parent ++;
-        }
+        char *parent = corto_selectRelativeParent(q, data);
 
         corto_debug("select: query (select='%s' from='%s') mount '%s', location '%s'",
           expr, 
@@ -514,12 +524,12 @@ static bool corto_selectIterMount(
         mount->policy.filterResults && 
         data->mask != CORTO_ON_TREE) 
     {
-        if (data->typeFilter) {
-            if (!corto_idmatch(data->typeFilter, result->type)) {
-                goto noMatch;
-            }
+        if (!corto_selectMatch(NULL, result, data)) {
+            goto noMatch;
         }
-        if (!corto_idmatch_run(data->filterProgram, result->id)) {
+
+        char *parent = corto_selectRelativeParent(&corto_subscriber(mount)->query, data);
+        if (strcmp(parent, result->parent)) {
             goto noMatch;
         }
     }
@@ -891,7 +901,7 @@ static int16_t corto_selectTree(
             data->next = &data->item;
 
             if (o) {
-                if (corto_selectMatch(o, data) &&
+                if (corto_selectMatch(o, &data->item, data) &&
                    (data->skip >= data->offset))
                 {
                     noMatch = FALSE;
@@ -908,7 +918,7 @@ static int16_t corto_selectTree(
                 if (data->mask != CORTO_ON_TREE) {
                     noMatch = FALSE;
                 } else {
-                    noMatch = !corto_selectMatch(NULL, data);
+                    noMatch = !corto_selectMatch(NULL, &data->item, data);
                 }
                 flags = data->next->flags;
             }
