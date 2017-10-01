@@ -96,6 +96,7 @@ class MountIterCount: mount, hidden:/
     releaseCount: int32, readonly
     result: vstore/result, readonly
     id: string, readonly
+    int16 construct()
     resultIter onQuery(vstore/query query) override
 
 class VirtualMount: mount, hidden:/

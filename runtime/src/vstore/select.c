@@ -514,6 +514,11 @@ static bool corto_selectIterMount(
         corto_critical("mount iterator returned NULL");
     }
 
+    corto_assert(result->id != NULL, "mount '%s' returns result without id", corto_fullpath(NULL, mount));
+    corto_assert(result->parent != NULL, "mount '%s' returns result without parent", corto_fullpath(NULL, mount));
+    corto_assert(result->type != NULL, "mount '%s' returns result without type", corto_fullpath(NULL, mount));
+    corto_assert(result->type[0] != 0, "mount '%s' returns result with empty type", corto_fullpath(NULL, mount));
+
     corto_debug(
         "select: mount returned (id = '%s', parent = '%s' leaf = '%s')",
         result->id, result->parent, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
