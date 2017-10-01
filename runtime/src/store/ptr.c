@@ -145,7 +145,9 @@ void _corto_ptr_free(void *ptr, corto_type type) {
 int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
     corto_assert(type->kind == CORTO_COLLECTION, "corto_ptr_size is only valid for collection types");
     corto_collection collectionType = corto_collection(type);
-    corto_assert(collectionType->max < size, "size exceeds bounds of collectiontype");
+    corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)", 
+        size, 
+        collectionType->max);
     corto_type elementType = collectionType->elementType;
     uint32_t elemSize = corto_type_sizeof(elementType);
 
@@ -185,10 +187,43 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
         seq->length = size;
         break;
     }
-    case CORTO_LIST:
+    case CORTO_LIST: {
+        corto_ll l = *(corto_ll*)ptr;
+        if (corto_ll_size(l) > size) {
+            corto_iter it = corto_ll_iter(l);
+
+            /* Move iterator to first redundant element */
+            corto_ll_iterMove(&it, size);
+
+            /* Deinitialize redundant samples */
+            while (corto_iter_hasNext(&it)) {
+                void *elem;
+                if (corto_collection_requiresAlloc(elementType)) {
+                    elem = corto_iter_next(&it);
+                    corto_ptr_init(elem, elementType);
+                } else {
+                    elem = corto_ll_iterNextPtr(&it);
+                    corto_ptr_free(elem, elementType);
+                }
+                corto_ll_iterRemove(&it);
+            }
+        }
+
+        int i;
+        for (i = corto_ll_size(l); i < size; i++) {
+            void *elem;
+            if (corto_collection_requiresAlloc(elementType)) {
+                elem = corto_ptr_new(elementType);
+            } else {
+                elem = NULL;
+            }
+            corto_ll_append(l, elem);
+        }
+    
         break;
+    }
     default:
-        break;    
+        break;
     }
 
     return 0;

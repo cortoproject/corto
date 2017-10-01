@@ -612,7 +612,8 @@ static bool corto_selectIterMount(
             corto_ptr_setref(&type, corto_observer(mount)->type);
         } else {
             if (!(type = corto_resolve(NULL, result->type))) {
-                corto_warning("select: could not resume '%s/%s' from '%s': type '%s not found",
+                corto_warning(
+                    "select: could not resume '%s/%s' from '%s': type '%s not found",
                   result->parent,
                   result->id,
                   corto_fullpath(NULL, mount),
@@ -622,7 +623,8 @@ static bool corto_selectIterMount(
 
         corto_object parent = corto_lookup(NULL, rpath);
         if (!parent) {
-            corto_warning("select: could not resume '%s/%s' from '%s': parent not found",
+            corto_warning(
+              "select: could not resume '%s/%s' from '%s': parent not found",
               result->parent,
               result->id,
               corto_fullpath(NULL, mount));
@@ -634,7 +636,8 @@ static bool corto_selectIterMount(
         corto_release(parent);
 
         if (!ref) {
-            corto_warning("select: could not resume '%s/%s' from '%s': failed to create object",
+            corto_warning(
+              "select: could not resume '%s/%s' from '%s': failed to create object",
               result->parent,
               result->id,
               corto_fullpath(NULL, mount));
@@ -646,13 +649,15 @@ static bool corto_selectIterMount(
                 corto_value v = corto_value_object(ref, type);
                 handle->toValue(&v, result->value);
             } else {
-                corto_warning("select: mount '%s' sets result.value but has no contentType",
+                corto_warning(
+                  "select: mount '%s' sets result.value but has no contentType",
                   corto_fullpath(NULL, mount));
             }
         }
 
         if (corto_define(ref)) {
-            corto_warning("select: failed to define '%s/%s' from mount '%s'",
+            corto_warning(
+              "select: failed to define '%s/%s' from mount '%s'",
               result->parent, result->id,
               corto_fullpath(NULL, mount));
         }
