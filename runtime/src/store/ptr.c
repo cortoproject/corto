@@ -200,10 +200,10 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
                 void *elem;
                 if (corto_collection_requiresAlloc(elementType)) {
                     elem = corto_iter_next(&it);
-                    corto_ptr_init(elem, elementType);
+                    corto_ptr_free(elem, elementType);
                 } else {
                     elem = corto_ll_iterNextPtr(&it);
-                    corto_ptr_free(elem, elementType);
+                    corto_ptr_deinit(elem, elementType);
                 }
                 corto_ll_iterRemove(&it);
             }
