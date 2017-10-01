@@ -222,6 +222,7 @@ struct corto_mountPolicy {
     double sampleRate;
     corto_queuePolicy queue;
     uint64_t expiryTime;
+    bool filterResults;
 };
 
 /*  /corto/vstore/mountStats */

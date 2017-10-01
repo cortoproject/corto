@@ -186,7 +186,7 @@ corto_resultIter test_SinkMount_onQuery(
 corto_object test_SinkMount_onResume(
     test_SinkMount this,
     corto_string parent,
-    corto_string name,
+    corto_string id,
     corto_object object)
 {
     corto_iter iter = corto_ll_iter(this->items);
@@ -195,7 +195,7 @@ corto_object test_SinkMount_onResume(
     /* Find object. Do proper error handling, so testcases are easy to debug */
     corto_resultIterForeach(iter, e) {
         if (!strcmp(parent, e.parent)) {
-            if (!strcmp(name, e.id)) {
+            if (!strcmp(id, e.id)) {
                 corto_type t = corto_resolve(NULL, e.type);
                 if (!t) {
                     corto_seterr("cannot resume object, unknown type '%s'",

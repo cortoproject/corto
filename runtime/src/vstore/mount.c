@@ -370,7 +370,9 @@ int16_t corto_mount_init(
 
     this->policy.sampleRate = 0;
     this->policy.expiryTime = -1;
+    this->policy.filterResults = true;
     this->attr = CORTO_ATTR_PERSISTENT;
+
     return safe_corto_subscriber_init(this);
 }
 

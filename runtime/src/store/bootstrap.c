@@ -677,6 +677,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mountPolicy_sampleRate),\
     SSO_OP_OBJ(vstore_mountPolicy_queue),\
     SSO_OP_OBJ(vstore_mountPolicy_expiryTime),\
+    SSO_OP_OBJ(vstore_mountPolicy_filterResults),\
     /* mountSubscription */\
     SSO_OP_OBJ(vstore_mountSubscription_query),\
     SSO_OP_OBJ(vstore_mountSubscription_mountCount),\

@@ -194,7 +194,7 @@ class SinkMount : vstore/mount, hidden:/
     items: resultList, private
     int16 construct()
     resultIter onQuery(vstore/query query) override
-    object onResume(string parent, string name, object object) override
+    object onResume(string parent, string id, object object) override
 
 class AutoResumeSinkMount : vstore/mount, hidden:/
     alias mount: mount/mount

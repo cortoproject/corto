@@ -1338,6 +1338,7 @@ CORTO_STRUCT_O(vstore, mountPolicy, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NU
     CORTO_MEMBER_O(vstore_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, queue, vstore_queuePolicy, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, expiryTime, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mountPolicy, filterResults, lang_bool, CORTO_GLOBAL);
 
 /* /corto/vstore/mountSubscription */
 CORTO_STRUCT_O(vstore, mountSubscription, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
