@@ -372,10 +372,24 @@ static corto_bool corto_selectMatch(
             }
         }
 
-
         /* Filter type */
         if (result && data->typeFilter) {
-            result = corto_idmatch(data->typeFilter, type);
+            if (data->typeFilter[0] == '/' && type[0] != '/') {
+                /* If typeFilter starts with a slash (indicating a full path)
+                 * but the object type doesn't, the result either does not match
+                 * or it is in one of corto's default search scopes. Try to
+                 * obtain the full type identifier, then apply filter */
+                corto_object typeObject = NULL;
+                if ((typeObject = corto_resolve(NULL, type))) {
+                    corto_fullpath(type, typeObject);
+                    corto_release(typeObject);
+                    result = corto_idmatch(data->typeFilter, type);
+                } else {
+                    result = FALSE;
+                }
+            } else {
+                result = corto_idmatch(data->typeFilter, type);
+            }
         }        
     }
 

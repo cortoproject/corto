@@ -313,6 +313,11 @@ void test_SelectSink_tc_selectLoaderRootScope(
     test_assert(r != NULL);
     test_assertstr(r->id, "p");
 
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "v");
+
     test_assert(!corto_iter_hasNext(&it));
 
     test_assert(corto_delete(m) == 0);
@@ -409,6 +414,12 @@ void test_SelectSink_tc_selectLoaderRootTree(
     test_assert(r != NULL);
     test_assertstr(r->id, "q");
     test_assertstr(r->parent, "/p");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "v");
+    test_assertstr(r->parent, "");
 
     test_assert(!corto_iter_hasNext(&it));
 

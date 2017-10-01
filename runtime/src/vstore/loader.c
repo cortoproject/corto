@@ -16,8 +16,11 @@ int16_t corto_loader_construct(
         if (safe_corto_mount_setContentType(this, "text/json")) {
             return -1;
         }
+        corto_mount(this)->policy.filterResults = false;
+
         return safe_corto_mount_construct(this);
     } else {
+        corto_seterr("cannot create multiple instances of vstore/loader");
         return -1;
     }
 }
