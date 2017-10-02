@@ -507,6 +507,11 @@ void corto_errfmt(char *fmt) {
     corto_setenv("CORTO_ERRFMT", "%s", corto_errfmt_current);
 }
 
+char* corto_errfmt_get(void) {
+    return corto_errfmt_current;
+}
+
+
 corto_err corto_logv(char const *file, unsigned int line, corto_err kind, unsigned int level, char* fmt, va_list arg, FILE* f) {
     if (kind >= CORTO_LOG_LEVEL || corto_err_callbacks) {
         corto_string alloc = NULL;

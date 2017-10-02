@@ -701,7 +701,7 @@ corto_resultIter corto_mount_onQuery_v(
 
         corto_cleanpath(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
-            corto_warning("%s", corto_lasterr());
+            corto_warning("%s: %s", corto_fullpath(NULL, this), corto_lasterr());
         }
 
     }

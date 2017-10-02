@@ -86,6 +86,7 @@ static void printUsage(void) {
     printf("  --info                     Set verbosity to INFO\n");
     printf("  --warning                  Set verbosity to WARNING\n");
     printf("  --error                    Set verbosity to ERROR\n");
+    printf("  --show-lines               Show linenumbers of log messages\n");
     printf("  --mute                     Mute errors from loaded packages\n");
     printf("  --backtrace                Enable backtraces for tracing\n");
     printf("  --trace-object [id]        Trace operations for specified object\n");
@@ -110,6 +111,8 @@ static void printUsage(void) {
 static bool load = false;
 static bool keep_alive = false;
 static bool mute = false;
+static bool showLines = false;
+static bool showTime = false;
 static char *appname;
 static char *cwd;
 
@@ -157,6 +160,8 @@ static int parseGenericArgs(int argc, char *argv[]) {
             PARSE_OPTION(0, "info", corto_verbosity(CORTO_INFO));
             PARSE_OPTION(0, "warning", corto_verbosity(CORTO_WARNING));
             PARSE_OPTION(0, "error", corto_verbosity(CORTO_ERROR));
+            PARSE_OPTION(0, "show-lines", showLines = true);
+            PARSE_OPTION(0, "show-time", showTime = true);
             PARSE_OPTION(0, "mute", mute = true);
             PARSE_OPTION(0, "backtrace", CORTO_BACKTRACE_ENABLED = true);
             PARSE_OPTION(0, "trace-object", CORTO_TRACE_OBJECT = argv[i + 1]; i ++);
@@ -181,6 +186,22 @@ int main(int argc, char *argv[]) {
     /* Parse arguments before first command. Any arguments after the first
      * command or file are passed to that file or command. */
     int last_parsed = parseGenericArgs(argc - 1, &argv[1]);
+
+    if (showLines) {
+        corto_errfmt(
+            strarg("%s %s",
+                "%f:%l",
+                corto_errfmt_get())
+        );
+    }
+
+    if (showTime) {
+        corto_errfmt(
+            strarg("%s %s",
+                "%T",
+                corto_errfmt_get())
+        );
+    }
 
     /* If arguments are invalid, don't bother starting corto */
     if (last_parsed != -1) {

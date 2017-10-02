@@ -93,6 +93,7 @@ CORTO_EXPORT void corto_seterrv(char *fmt, va_list args);
 /* Set console error format */
 #define CORTO_ERRFMT_DEFAULT "%k: [%a] %c: %m"
 CORTO_EXPORT void corto_errfmt(char *fmt);
+CORTO_EXPORT char* corto_errfmt_get(void);
 
 /* Set & get last error */
 CORTO_EXPORT char* corto_lasterr(void);
