@@ -127,6 +127,7 @@ struct corto_select_data {
 
     /* Does select need to resume objects */
     corto_bool resume;
+    corto_bool resumeKeep;
 
     /* Additional action to be performed when data is requested from mount */
     corto_mountAction mountAction;
@@ -608,6 +609,9 @@ static bool corto_selectIterMount(
     if (data->resume) {
         corto_type type = NULL;
 
+        corto_trace("select: resuming '%s/%s' of type '%s'",
+            result->parent, result->id, result->type);
+
         if (corto_observer(mount)->type) {
             corto_ptr_setref(&type, corto_observer(mount)->type);
         } else {
@@ -624,10 +628,13 @@ static bool corto_selectIterMount(
         corto_object parent = corto_lookup(NULL, rpath);
         if (!parent) {
             corto_warning(
-              "select: could not resume '%s/%s' from '%s': parent not found",
+              "select: could not resume '%s/%s' from '%s': parent '%s' not available",
               result->parent,
               result->id,
-              corto_fullpath(NULL, mount));
+              corto_fullpath(NULL, mount),
+              rpath);
+            corto_release(type);
+            goto resume_failed;
         }
 
         corto_object prev = corto_setOwner(mount);
@@ -641,6 +648,7 @@ static bool corto_selectIterMount(
               result->parent,
               result->id,
               corto_fullpath(NULL, mount));
+            goto resume_failed;
         }
 
         if (result->value) {
@@ -652,6 +660,8 @@ static bool corto_selectIterMount(
                 corto_warning(
                   "select: mount '%s' sets result.value but has no contentType",
                   corto_fullpath(NULL, mount));
+                corto_delete(ref);
+                goto resume_failed;
             }
         }
 
@@ -660,13 +670,20 @@ static bool corto_selectIterMount(
               "select: failed to define '%s/%s' from mount '%s'",
               result->parent, result->id,
               corto_fullpath(NULL, mount));
+            corto_delete(ref);
+            goto resume_failed;
         }
+
+        corto_ok("select: resumed '%s'", corto_fullpath(NULL, ref));
 
         corto_setOwner(prev);
         corto_ptr_setref(&result->object, ref);
-        corto_release(ref);
+        if (!data->resumeKeep) {
+            corto_release(ref);
+        }
     }
 
+resume_failed:
     return true;
 noMatch:
     return false;
@@ -1615,14 +1632,42 @@ static corto_int16 corto_selectorIterObjects(corto_objectIter *ret)
         }
         corto_dealloc(request);
 
-        /* When requesting objects, the from-scope is meaningless. Setting the
-         * scope to NULL makes it easier to resolve the parent while iterating.
-         */
         corto_select_data *data = ret->ctx;
         data->resume = TRUE;
 
         /* Override iterator callbacks for object iterator */
         ret->next = corto_selectNextObjects;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static corto_int16 corto_selectorResume()
+{
+    corto_selectRequest *request =
+      corto_threadTlsGet(CORTO_KEY_FLUENT);
+
+    if (request) {
+        corto_threadTlsSet(CORTO_KEY_FLUENT, NULL);
+        corto_iter it = corto_selectPrepareIterator(request);
+        if (request->err) {
+            goto error;
+        }
+        corto_dealloc(request);
+
+        corto_select_data *data = it.ctx;
+        data->resume = TRUE;
+        data->resumeKeep = TRUE;
+
+        /* Iterate over objects to resume them in the store */
+        while (corto_iter_hasNext(&it)) {
+            corto_result *r = corto_iter_next(&it);
+            if (r->object) {
+                corto_claim(r->object);
+            }
+        }
     }
 
     return 0;
@@ -1809,6 +1854,7 @@ static corto_select__fluent corto_select__fluentGet(void)
     result.subscribe = corto_selectorSubscribe;
     result.unsubscribe = corto_selectorUnsubscribe;
     result.id = corto_selectorId;
+    result.resume = corto_selectorResume;
     result.iterObjects = corto_selectorIterObjects;
     result.count = corto_selectorCount;
     result.instance = corto_selectorInstance;
