@@ -913,7 +913,10 @@ char* corto_etc(
         corto_string tmp = etc;
         etc = corto_setThreadString(tmp);
         corto_dealloc(tmp);        
+    } else {
+        etc = corto_envparse("$CORTO_TARGET/corto/%s.%s/etc/%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, package);
     }
+
     return etc;
 }
 
