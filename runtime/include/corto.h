@@ -186,6 +186,7 @@ typedef enum corto_load_locateKind {
     CORTO_LOCATION_LIB,
     CORTO_LOCATION_LIBPATH,
     CORTO_LOCATION_INCLUDE,
+    CORTO_LOCATION_ETC,
     CORTO_LOCATION_NAME,
     CORTO_LOCATION_FULLNAME
 } corto_load_locateKind;
@@ -226,13 +227,23 @@ typedef enum corto_load_locateKind {
  * @param package A logical package name.
  * @param dl_out Will be set to library object, if already loaded.
  * @param kind Specify which information should be obtained from package.
- * @return The requested information. 
+ * @return The requested information. Must be freed.
  */
 CORTO_EXPORT 
 char* corto_locate(
     char *package, 
     corto_dl *dl_out, 
     corto_load_locateKind kind);
+
+/** Locate the 'etc' folder for a package.
+ * The corto_etc function is a convenience wrapper around corto_locate.
+ *
+ * @param package A logical package name.
+ * @return Path to the etc folder. Does not need to be freed. 
+ */
+CORTO_EXPORT 
+char* corto_etc(
+    const char *package);
 
 /** Load a resource from a library.
  * The `corto_load_sym` function looks up a function or global variable from a

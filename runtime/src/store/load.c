@@ -805,6 +805,9 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_loc
         corto_dealloc(result);
         result = corto_strdup("");
         break;
+    case CORTO_LOCATION_ETC:
+        result = corto_asprintf("etc/%s", package);
+        break;
     case CORTO_LOCATION_LIB:
         /* Result is already pointing to the lib */
         break;
@@ -852,6 +855,12 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_loc
             result = corto_asprintf(base, "@");
             *(strchr(result, '@') - 1) = '\0'; /* Also strip the '/' */
             break;
+        case CORTO_LOCATION_ETC: {
+            corto_string lib;
+            lib = corto_asprintf(base, "etc");
+            result = corto_asprintf("%s/%s", lib, package);
+            break;
+        }          
         case CORTO_LOCATION_LIB:
             /* Result is already pointing to the lib */
             break;
@@ -894,6 +903,18 @@ corto_string corto_locate(corto_string package, corto_dl *dl_out, corto_load_loc
     return result;
 error:
     return NULL;
+}
+
+char* corto_etc(
+    const char *package)
+{
+    char *etc = corto_locate((char*)package, NULL, CORTO_LOCATION_ETC);
+    if (etc) {
+        corto_string tmp = etc;
+        etc = corto_setThreadString(tmp);
+        corto_dealloc(tmp);        
+    }
+    return etc;
 }
 
 void* corto_load_sym(char *package, corto_dl *dl_out, char *symbol) {

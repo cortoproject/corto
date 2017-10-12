@@ -36,7 +36,9 @@ ARTEFACT_PREFIX = "lib" if not defined? ARTEFACT_PREFIX
 ARTEFACT_EXT = "so" if not defined? ARTEFACT_EXT
 INSTALL = "lib/corto" if not defined? INSTALL
 NOCORTO = false if not defined? NOCORTO
-DEFINE << "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase
+DEFINE <<
+  "BUILDING_" + PACKAGE_FWSLASH.gsub("/", "_").upcase <<
+  "PACKAGE_ID='\"" + PACKAGE_FWSLASH + "\"'"
 COMPONENTS = [] if not defined? COMPONENTS
 APP = false if not defined? APP
 # Private variables
@@ -96,9 +98,9 @@ end
 
 # Define a convenience macro in the package that points to the installed ETC directory
 if not LOCAL then
-  DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"#{CORTO_TARGET}/etc/corto/#{CORTO_VERSION}/#{TARGETPATH}\"'"
+  DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='corto_etc(PACKAGE_ID)'"
 else
-  DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"" + Dir.getwd + "/etc\"'"
+  DEFINE << PACKAGE_FWSLASH.gsub("/", "_").upcase + "_ETC='\"etc\"'"
 end
 
 # Rule for creating packages.txt
