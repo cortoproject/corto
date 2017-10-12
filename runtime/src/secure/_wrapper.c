@@ -22,7 +22,7 @@ corto_string _corto_secure_key_authenticate(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "authenticate(string user,string password)");
     }
-    corto_assert(_methodId, "virtual 'authenticate(string user,string password)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "method 'authenticate(string user,string password)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -53,7 +53,7 @@ corto_secure_accessKind _corto_secure_lock_authorize(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "authorize(string token,secure/actionKind action)");
     }
-    corto_assert(_methodId, "virtual 'authorize(string token,secure/actionKind action)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "method 'authorize(string token,secure/actionKind action)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);

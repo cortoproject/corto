@@ -304,14 +304,14 @@ CORTO_EXPORT corto_mountMask* _corto_mountMaskAssign(corto_mountMask* _this, cor
 #define corto_mountMaskSet(_this, value) _this = _this ? _this : (corto_mountMask*)corto_ptr_new(corto_mountMask_o); _corto_mountMaskAssign(_this, value)
 
 /* /corto/vstore/mountPolicy */
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime);
-#define corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime) _corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime)
-#define corto_mountPolicyCreate_auto(_id, ownership, mask, sampleRate, queue, expiryTime) corto_mountPolicy* _id = corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime); (void)_id
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime);
-#define corto_mountPolicyCreateChild(_parent, _id, ownership, mask, sampleRate, queue, expiryTime) _corto_mountPolicyCreateChild(_parent, _id, ownership, mask, sampleRate, queue, expiryTime)
-#define corto_mountPolicyCreateChild_auto(_parent, _id, ownership, mask, sampleRate, queue, expiryTime) corto_mountPolicy* _id = corto_mountPolicyCreateChild(_parent, #_id, ownership, mask, sampleRate, queue, expiryTime); (void)_id
-CORTO_EXPORT corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime);
-#define corto_mountPolicyUpdate(_this, ownership, mask, sampleRate, queue, expiryTime) _corto_mountPolicyUpdate(corto_mountPolicy(_this), ownership, mask, sampleRate, queue, expiryTime)
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
+#define corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime, filterResults)
+#define corto_mountPolicyCreate_auto(_id, ownership, mask, sampleRate, queue, expiryTime, filterResults) corto_mountPolicy* _id = corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime, filterResults); (void)_id
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
+#define corto_mountPolicyCreateChild(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyCreateChild(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults)
+#define corto_mountPolicyCreateChild_auto(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults) corto_mountPolicy* _id = corto_mountPolicyCreateChild(_parent, #_id, ownership, mask, sampleRate, queue, expiryTime, filterResults); (void)_id
+CORTO_EXPORT corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
+#define corto_mountPolicyUpdate(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyUpdate(corto_mountPolicy(_this), ownership, mask, sampleRate, queue, expiryTime, filterResults)
 
 CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclare(void);
 #define corto_mountPolicyDeclare() _corto_mountPolicyDeclare()
@@ -319,15 +319,15 @@ CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclare(void);
 CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, corto_string _id);
 #define corto_mountPolicyDeclareChild(_parent, _id) _corto_mountPolicyDeclareChild(_parent, _id)
 #define corto_mountPolicyDeclareChild_auto(_parent, _id) corto_mountPolicy* _id = corto_mountPolicyDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime);
-#define corto_mountPolicyDefine(_this, ownership, mask, sampleRate, queue, expiryTime) _corto_mountPolicyDefine(corto_mountPolicy(_this), ownership, mask, sampleRate, queue, expiryTime)
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime);
+CORTO_EXPORT corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
+#define corto_mountPolicyDefine(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyDefine(corto_mountPolicy(_this), ownership, mask, sampleRate, queue, expiryTime, filterResults)
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
 #define corto_mountPolicy__optional_NotSet NULL
-#define corto_mountPolicy__optional_Set(ownership, mask, sampleRate, queue, expiryTime) corto_mountPolicyAssign((corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o)), ownership, mask, sampleRate, queue, expiryTime)
-#define corto_mountPolicy__optional_SetCond(cond, ownership, mask, sampleRate, queue, expiryTime) cond ? corto_mountPolicyAssign((corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o), ownership, mask, sampleRate, queue, expiryTime) : NULL
+#define corto_mountPolicy__optional_Set(ownership, mask, sampleRate, queue, expiryTime, filterResults) corto_mountPolicyAssign((corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o)), ownership, mask, sampleRate, queue, expiryTime, filterResults)
+#define corto_mountPolicy__optional_SetCond(cond, ownership, mask, sampleRate, queue, expiryTime, filterResults) cond ? corto_mountPolicyAssign((corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o), ownership, mask, sampleRate, queue, expiryTime, filterResults) : NULL
 #define corto_mountPolicyUnset(_this) _this ? corto_ptr_free(_this, corto_mountPolicy_o), 0 : 0; _this = NULL;
-#define corto_mountPolicyAssign(_this, ownership, mask, sampleRate, queue, expiryTime) _corto_mountPolicyAssign(_this, ownership, mask, sampleRate, queue, expiryTime)
-#define corto_mountPolicySet(_this, ownership, mask, sampleRate, queue, expiryTime) _this = _this ? _this : (corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o); _corto_mountPolicyAssign(_this, ownership, mask, sampleRate, queue, expiryTime)
+#define corto_mountPolicyAssign(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyAssign(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults)
+#define corto_mountPolicySet(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _this = _this ? _this : (corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o); _corto_mountPolicyAssign(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults)
 
 /* /corto/vstore/mountStats */
 CORTO_EXPORT corto_mountStats* _corto_mountStatsCreate(uint64_t declares, uint64_t updates, uint64_t deletes);

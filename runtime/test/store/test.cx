@@ -391,6 +391,18 @@ class LifecycleTest:/
     void delete()
     void deinit()
 
+// Types to test invoking interface methods
+interface Vehicle:/
+    float64 move(float64 x, float64 y)
+
+class Boat: implements={Vehicle} :/
+    cur_x, cur_y: float64
+    float64 move(float64 x, float64 y)
+
+class Plane: implements={Vehicle} :/
+    cur_x, cur_y: float64
+    float64 move(float64 x, float64 y)
+
 test/Suite Attributes:/
     void tc_testDefaultSet()
     void tc_testTargetAttr()
@@ -1386,6 +1398,10 @@ test/Suite MethodResolver:/
     void tc_inheritVirtualOverloadNoArgs()
     void tc_nonexisting()
     void tc_redeclare()
+
+// Test invoking methods
+test/Suite MethodInvoking:/
+    void tc_interfaceMethod()
 
 // Test Corto string serializer
 test/Suite StringSerializer:/

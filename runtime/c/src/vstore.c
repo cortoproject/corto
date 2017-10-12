@@ -949,7 +949,7 @@ corto_mountMask* _corto_mountMaskAssign(corto_mountMask* _this, corto_mountMask 
     return _this;
 }
 
-corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
+corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
     corto_mountPolicy* _this;
     _this = (corto_mountPolicy*)corto_declare(corto_mountPolicy_o);
     if (!_this) {
@@ -963,6 +963,7 @@ corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mou
             corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
         }
         ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
+        ((corto_mountPolicy*)_this)->filterResults = filterResults;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -971,7 +972,7 @@ corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mou
     return _this;
 }
 
-corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
+corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
     corto_mountPolicy* _this;
     _this = (corto_mountPolicy*)corto_declareChild(_parent, _id, corto_mountPolicy_o);
     if (!_this) {
@@ -985,6 +986,7 @@ corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_str
             corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
         }
         ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
+        ((corto_mountPolicy*)_this)->filterResults = filterResults;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -993,7 +995,7 @@ corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_str
     return _this;
 }
 
-corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
+corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -1004,6 +1006,7 @@ corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership o
                 corto_ptr_copy(&((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->queue, corto_queuePolicy_o, queue);
             }
             ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->expiryTime = expiryTime;
+            ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->filterResults = filterResults;
         } else {
             ((corto_mountPolicy*)_this)->ownership = ownership;
             ((corto_mountPolicy*)_this)->mask = mask;
@@ -1012,6 +1015,7 @@ corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership o
                 corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
             }
             ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
+            ((corto_mountPolicy*)_this)->filterResults = filterResults;
         }
         corto_update_end(_this);
     } else {
@@ -1038,7 +1042,7 @@ corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, corto_st
     return _this;
 }
 
-corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
+corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
     CORTO_UNUSED(_this);
     ((corto_mountPolicy*)_this)->ownership = ownership;
     ((corto_mountPolicy*)_this)->mask = mask;
@@ -1047,10 +1051,11 @@ corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership o
         corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
     }
     ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
+    ((corto_mountPolicy*)_this)->filterResults = filterResults;
     return corto_define(_this);
 }
 
-corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime) {
+corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
     CORTO_UNUSED(_this);
     ((corto_mountPolicy*)_this)->ownership = ownership;
     ((corto_mountPolicy*)_this)->mask = mask;
@@ -1059,6 +1064,7 @@ corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _this, corto_owne
         corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
     }
     ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
+    ((corto_mountPolicy*)_this)->filterResults = filterResults;
     return _this;
 }
 
