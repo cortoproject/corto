@@ -1392,7 +1392,11 @@ static corto_resultIter corto_selectPrepareIterator (
     data->mountsLoaded = -1;
     data->offset = r->offset;
     data->limit = r->limit;
-    data->typeFilter = r->type;
+    if (r->type && strlen(r->type)) {
+        data->typeFilter = strdup(r->type);
+    } else {
+        data->typeFilter = NULL;
+    }
     data->from = r->from;
     data->to = r->to;
     data->item.parent = data->parent;
