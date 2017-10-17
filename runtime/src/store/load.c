@@ -914,7 +914,7 @@ char* corto_etc(
         etc = corto_setThreadString(tmp);
         corto_dealloc(tmp);        
     } else {
-        etc = corto_envparse("$CORTO_TARGET/corto/%s.%s/etc/%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, package);
+        etc = corto_envparse("$CORTO_TARGET/etc/corto/%s.%s/%s", CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR, package);
     }
 
     return etc;

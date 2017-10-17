@@ -261,11 +261,14 @@ int16_t corto_mount_construct(
         corto_ptr_setstr(&s->query.select, "//");
     }
 
-    if (s->contentType &&
-        (!s->contentTypeHandle ||
-        !this->contentTypeOutHandle))
+    if (s->contentType)
     {
-        corto_mount_setContentType(this, s->contentType);
+        if (!s->contentTypeHandle) {
+            corto_mount_setContentTypeIn(this, s->contentType);
+        }
+        if (!this->contentTypeOutHandle) {
+            corto_mount_setContentTypeOut(this, s->contentType);            
+        }
     }
 
     /* Add mount to mount admin so it can be found by corto_select */
@@ -576,7 +579,7 @@ void corto_mount_post(
      * would result in a very uneven dataset.
      *
      * The purpose of this algorithm is to spread delays evenly between updates
-     * so that for the application, every update takes approximatly the "same"
+     * so that for the application, every update takes approximately the "same"
      * time (within one order of magnitude).
      *
      * The algorithm looks if the frequency at which the application publishes
@@ -905,8 +908,8 @@ corto_object corto_mount_resume(
 
             if (o) {
                 corto_value v = corto_value_object(o, NULL);
-                if (corto_subscriber(this)->contentTypeHandle && iterResult->value) {
-                    ((corto_contentType)corto_subscriber(this)->contentTypeHandle)->toValue(
+                if (this->contentTypeOutHandle && iterResult->value) {
+                    ((corto_contentType)this->contentTypeOutHandle)->toValue(
                         &v, iterResult->value);
                 }
 
