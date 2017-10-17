@@ -811,7 +811,9 @@ static int corto_selectLoadMountWalk(
     /* If type is requested, test whether it matches with the mount type */
     corto_string rType = mount->super.query.type;
     if (data->typeFilter && rType) {
-        if (!corto_idmatch_run(data->typeFilterProgram, rType)) {
+        if (!data->typeFilterProgram) {
+            corto_warning("type filter '%s' specified, but program is NULL");
+        } else if (!corto_idmatch_run(data->typeFilterProgram, rType)) {
             return 1;
         }
     }
