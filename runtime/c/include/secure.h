@@ -32,7 +32,7 @@ CORTO_EXPORT corto_int16 _corto_secure_accessKindDefine(corto_secure_accessKind*
 #define corto_secure_accessKindDefine(_this, value) _corto_secure_accessKindDefine(corto_secure_accessKind(_this), value)
 CORTO_EXPORT corto_secure_accessKind* _corto_secure_accessKindAssign(corto_secure_accessKind* _this, corto_secure_accessKind value);
 #define corto_secure_accessKind__optional_NotSet NULL
-#define corto_secure_accessKind__optional_Set(value) corto_secure_accessKindAssign((corto_secure_accessKind*)corto_ptr_new(corto_secure_accessKind_o)), value)
+#define corto_secure_accessKind__optional_Set(value) corto_secure_accessKindAssign((corto_secure_accessKind*)corto_ptr_new(corto_secure_accessKind_o), value)
 #define corto_secure_accessKind__optional_SetCond(cond, value) cond ? corto_secure_accessKindAssign((corto_secure_accessKind*)corto_ptr_new(corto_secure_accessKind_o), value) : NULL
 #define corto_secure_accessKindUnset(_this) _this ? corto_ptr_free(_this, corto_secure_accessKind_o), 0 : 0; _this = NULL;
 #define corto_secure_accessKindAssign(_this, value) _corto_secure_accessKindAssign(_this, value)
@@ -58,7 +58,7 @@ CORTO_EXPORT corto_int16 _corto_secure_actionKindDefine(corto_secure_actionKind*
 #define corto_secure_actionKindDefine(_this, value) _corto_secure_actionKindDefine(corto_secure_actionKind(_this), value)
 CORTO_EXPORT corto_secure_actionKind* _corto_secure_actionKindAssign(corto_secure_actionKind* _this, corto_secure_actionKind value);
 #define corto_secure_actionKind__optional_NotSet NULL
-#define corto_secure_actionKind__optional_Set(value) corto_secure_actionKindAssign((corto_secure_actionKind*)corto_ptr_new(corto_secure_actionKind_o)), value)
+#define corto_secure_actionKind__optional_Set(value) corto_secure_actionKindAssign((corto_secure_actionKind*)corto_ptr_new(corto_secure_actionKind_o), value)
 #define corto_secure_actionKind__optional_SetCond(cond, value) cond ? corto_secure_actionKindAssign((corto_secure_actionKind*)corto_ptr_new(corto_secure_actionKind_o), value) : NULL
 #define corto_secure_actionKindUnset(_this) _this ? corto_ptr_free(_this, corto_secure_actionKind_o), 0 : 0; _this = NULL;
 #define corto_secure_actionKindAssign(_this, value) _corto_secure_actionKindAssign(_this, value)
@@ -84,7 +84,7 @@ CORTO_EXPORT corto_int16 _corto_secure_keyDefine(corto_secure_key _this);
 #define corto_secure_keyDefine(_this) _corto_secure_keyDefine(corto_secure_key(_this))
 CORTO_EXPORT corto_secure_key _corto_secure_keyAssign(corto_secure_key _this);
 #define corto_secure_key__optional_NotSet NULL
-#define corto_secure_key__optional_Set() corto_secure_keyAssign((corto_secure_key*)corto_ptr_new(corto_secure_key_o)))
+#define corto_secure_key__optional_Set() corto_secure_keyAssign((corto_secure_key*)corto_ptr_new(corto_secure_key_o))
 #define corto_secure_key__optional_SetCond(cond) cond ? corto_secure_keyAssign((corto_secure_key*)corto_ptr_new(corto_secure_key_o)) : NULL
 #define corto_secure_keyUnset(_this) _this ? corto_ptr_free(_this, corto_secure_key_o), 0 : 0; _this = NULL;
 #define corto_secure_keyAssign(_this) _corto_secure_keyAssign(_this)
@@ -110,7 +110,7 @@ CORTO_EXPORT corto_int16 _corto_secure_lockDefine(corto_secure_lock _this, corto
 #define corto_secure_lockDefine(_this, mount, expr, priority) _corto_secure_lockDefine(corto_secure_lock(_this), mount, expr, priority)
 CORTO_EXPORT corto_secure_lock _corto_secure_lockAssign(corto_secure_lock _this, corto_string mount, corto_string expr, int16_t priority);
 #define corto_secure_lock__optional_NotSet NULL
-#define corto_secure_lock__optional_Set(mount, expr, priority) corto_secure_lockAssign((corto_secure_lock*)corto_ptr_new(corto_secure_lock_o)), mount, expr, priority)
+#define corto_secure_lock__optional_Set(mount, expr, priority) corto_secure_lockAssign((corto_secure_lock*)corto_ptr_new(corto_secure_lock_o), mount, expr, priority)
 #define corto_secure_lock__optional_SetCond(cond, mount, expr, priority) cond ? corto_secure_lockAssign((corto_secure_lock*)corto_ptr_new(corto_secure_lock_o), mount, expr, priority) : NULL
 #define corto_secure_lockUnset(_this) _this ? corto_ptr_free(_this, corto_secure_lock_o), 0 : 0; _this = NULL;
 #define corto_secure_lockAssign(_this, mount, expr, priority) _corto_secure_lockAssign(_this, mount, expr, priority)
