@@ -303,7 +303,7 @@ static corto_bool corto_selectMatch(
     } else {
         corto_id id;
         sprintf(id, "%s/%s", data->item.parent, data->item.id);
-        corto_cleanpath(id, id);
+        corto_path_clean(id, id);
         if (!corto_authorizedId(id, CORTO_SECURE_ACTION_READ)) {
             goto access_error;
         }
@@ -424,7 +424,7 @@ static corto_resultIter corto_selectRequestMount(
             strcat(parent, data->recursiveQuery);
         }
 
-        corto_cleanpath(parent, parent);
+        corto_path_clean(parent, parent);
 
         /*printf("frame = {%s,%s} recursiveQuery = '%s' parent = '%s'\n",
             segment->scope, segment->expr, data->recursiveQuery, corto_subscriber(mount)->parent);*/
@@ -547,7 +547,7 @@ static corto_int16 corto_selectIterMount(
         strcpy(rpath, corto_subscriber(mount)->query.from);
         strcat(rpath, "/");
         strcat(rpath, result->parent);
-        corto_cleanpath(rpath, rpath);
+        corto_path_clean(rpath, rpath);
         corto_pathstr(data->item.parent, path, rpath, -1);
     } else {
         data->item.parent[0] = '\0';
@@ -1168,7 +1168,7 @@ static corto_int16 corto_selectRun(corto_select_data *data) {
     data->mask = corto_match_getScope(&data->program);
 
     corto_ptr_setstr(&data->fullscope, fullscope);
-    corto_cleanpath(data->fullscope, data->fullscope);
+    corto_path_clean(data->fullscope, data->fullscope);
 
     /* Does expression contain a filter? */
     if (data->expr && (data->expr[strlen(data->expr) - 1] != '/')) {

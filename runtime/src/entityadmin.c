@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <include/base.h>
+#include <corto/corto.h>
 
 /* Free all entityscriptoins, but do not free corto_entityAdmin itself so
  * it can be reused when a thread needs to copy global entities */

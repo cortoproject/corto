@@ -701,7 +701,7 @@ corto_resultIter corto_mount_onQuery_v(
         } else {
             sprintf(routerRequest, "/%s", query->from);
         }
-        corto_cleanpath(routerRequest, routerRequest);
+        corto_path_clean(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
             corto_warning("%s", corto_lasterr());
         }
@@ -777,7 +777,7 @@ void corto_mount_publish(
 {
     corto_id identifier;
     sprintf(identifier, "%s/%s/%s", corto_subscriber(this)->query.from, from, id);
-    corto_cleanpath(identifier, identifier);
+    corto_path_clean(identifier, identifier);
 
     corto_publish(
         event,
@@ -873,7 +873,7 @@ corto_object corto_mount_resume(
 
                 corto_id fullparent;
                 sprintf(fullparent, "%s/%s", corto_subscriber(this)->query.from, iterResult->parent);
-                corto_cleanpath(fullparent, fullparent);
+                corto_path_clean(fullparent, fullparent);
                 corto_object parent_o = corto_lookup(NULL, fullparent);
                 if (parent_o) {
                     corto_object type_o = corto_resolve(NULL, iterResult->type);

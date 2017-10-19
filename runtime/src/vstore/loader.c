@@ -90,7 +90,7 @@ void corto_loader_addDir(
 
                 corto_id package;
                 sprintf(package, "%s/%s", q->from, f);
-                corto_cleanpath(package, package);
+                corto_path_clean(package, package);
 
                 corto_string env = corto_locate(package, NULL, CORTO_LOCATION_ENV);
 
@@ -170,17 +170,17 @@ corto_resultIter corto_loader_onQuery_v(
     targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       query->from);
-    corto_cleanpath(targetPath, targetPath);
+    corto_path_clean(targetPath, targetPath);
 
     homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       query->from);
-    corto_cleanpath(homePath, homePath);
+    corto_path_clean(homePath, homePath);
 
     globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
       query->from);
-    corto_cleanpath(globalPath, globalPath);
+    corto_path_clean(globalPath, globalPath);
 
     corto_loader_addDir(data, targetPath, query);
 

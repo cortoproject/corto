@@ -52,7 +52,7 @@ struct corto_exitHandler {
 };
 
 #define VERSION_MAJOR "1"
-#define VERSION_MINOR "3"
+#define VERSION_MINOR "4"
 #define VERSION_PATCH "0"
 #define VERSION_SUFFIX "beta"
 
@@ -88,7 +88,6 @@ corto_tls CORTO_KEY_LISTEN_ADMIN;
 corto_tls CORTO_KEY_OWNER;
 corto_tls CORTO_KEY_ATTR;
 corto_tls CORTO_KEY_FLUENT;
-corto_tls CORTO_KEY_THREAD_STRING;
 corto_tls CORTO_KEY_MOUNT_RESULT;
 corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
@@ -1028,34 +1027,6 @@ void corto_environment_init(void) {
     }
 #endif
 
-    corto_string verbosity = corto_getenv("CORTO_VERBOSITY");
-    if (verbosity) {
-        if (!strcmp(verbosity, "DEBUG")) {
-            corto_log_verbositySet(CORTO_DEBUG);
-        }
-        if (!strcmp(verbosity, "TRACE")) {
-            corto_log_verbositySet(CORTO_TRACE);
-        }
-        if (!strcmp(verbosity, "OK")) {
-            corto_log_verbositySet(CORTO_OK);
-        }
-        if (!strcmp(verbosity, "INFO")) {
-            corto_log_verbositySet(CORTO_INFO);
-        }
-        if (!strcmp(verbosity, "WARNING")) {
-            corto_log_verbositySet(CORTO_WARNING);
-        }
-        if (!strcmp(verbosity, "ERROR")) {
-            corto_log_verbositySet(CORTO_ERROR);
-        }
-        if (!strcmp(verbosity, "CRITICAL")) {
-            corto_log_verbositySet(CORTO_CRITICAL);
-        }
-        if (!strcmp(verbosity, "ASSERT")) {
-            corto_log_verbositySet(CORTO_ASSERT);
-        }
-    }
-
     corto_string traceObject = corto_getenv("CORTO_TRACE_ID");
     if (traceObject && traceObject[0]) {
         CORTO_TRACE_ID = traceObject;
@@ -1079,7 +1050,7 @@ void corto_environment_init(void) {
 
 static int corto_loadConfig(void) {
     int result = 0;
-    corto_log_categoryPush("config");
+    corto_log_push("config");
     char *cfg = corto_getenv("CORTO_CONFIG");
     if (cfg) {
         if (corto_isdir(cfg)) {
@@ -1112,7 +1083,7 @@ static int corto_loadConfig(void) {
             result = -1;
         }
     }
-    corto_log_categoryPop();
+    corto_log_pop();
     return result;
 }
 
@@ -1131,15 +1102,13 @@ int corto_start(char *appName) {
     corto_tls_new(&CORTO_KEY_OWNER, NULL);
     corto_tls_new(&CORTO_KEY_ATTR, corto_genericTlsFree);
     corto_tls_new(&CORTO_KEY_FLUENT, NULL);
-    void corto_threadStringDealloc(void *data);
-    corto_tls_new(&CORTO_KEY_THREAD_STRING, corto_threadStringDealloc);
     corto_tls_new(&CORTO_KEY_MOUNT_RESULT, NULL);
     corto_tls_new(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
     corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
     corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* Push init component for logging */
-    corto_log_categoryPush("init");
+    corto_log_push("init");
 
     corto_trace("initializing...");
 
@@ -1347,7 +1316,7 @@ int corto_start(char *appName) {
     corto_ok("initialized");
 
     /* Pop init log component */
-    corto_log_categoryPop();
+    corto_log_pop();
 
     return 0;
 }
