@@ -126,7 +126,10 @@ corto_int16 _corto_ptr_copy(void *dst, corto_type type, void *src) {
 void* _corto_ptr_new(corto_type type) {
     void *result = NULL;
 
-    result = corto_calloc(corto_type_sizeof(type));
+    result = corto_calloc(corto_type_sizeof(type) + sizeof(corto_type));
+    *(corto_type*)result = type;
+    result = CORTO_OFFSET(result, sizeof(corto_type));
+
     if (corto_ptr_init(result, type)) {
         corto_dealloc(result);
         goto error;
@@ -139,6 +142,7 @@ error:
 
 void _corto_ptr_free(void *ptr, corto_type type) {
     corto_ptr_deinit(ptr, type);
+    ptr = CORTO_OFFSET(ptr, -sizeof(corto_type));
     corto_dealloc(ptr);
 }
 
