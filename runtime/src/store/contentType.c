@@ -30,9 +30,7 @@ static corto_ll contentTypes = NULL;
 
 static corto_word corto_contentType_ptr_fromValue(corto_value *v) {
     corto_type t = corto_value_typeof(v);
-    void *ptr = corto_calloc(t->size + sizeof(corto_type));
-    *(corto_type*)ptr = t;
-    ptr = CORTO_OFFSET(ptr, sizeof(corto_type));
+    void *ptr = corto_mem_new(t);
     corto_value dst = corto_value_mem(ptr, t);
     if (t->flags & CORTO_TYPE_NEEDS_INIT) {
         corto_walk_opt s =
@@ -63,18 +61,12 @@ static corto_int16 corto_contentType_ptr_toValue(corto_value *v, corto_word ptr)
 
 static void corto_contentType_ptr_release(corto_word ptr) {
     if (ptr) {
-        corto_type t = corto_type(*(corto_type*)CORTO_OFFSET(ptr, -sizeof(corto_type)));
-
-        if (t->flags & CORTO_TYPE_HAS_RESOURCES) {
-            freeops_ptr_free(t, (void*)ptr);
-        }
-
-        corto_dealloc(CORTO_OFFSET(ptr, -sizeof(corto_type)));
+        corto_mem_free((void*)ptr);
     }
 }
 
 static corto_word corto_contentType_ptr_copy(corto_word src) {
-    corto_type t = corto_type(*(corto_type*)CORTO_OFFSET(src, -sizeof(corto_type)));
+    corto_type t = corto_mem_typeof((void*)src);
     corto_value srcValue = corto_value_mem((void*)src, t);
     return corto_contentType_ptr_fromValue(&srcValue);
 }

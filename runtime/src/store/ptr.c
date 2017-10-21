@@ -126,7 +126,28 @@ corto_int16 _corto_ptr_copy(void *dst, corto_type type, void *src) {
 void* _corto_ptr_new(corto_type type) {
     void *result = NULL;
 
-    result = corto_calloc(corto_type_sizeof(type) + sizeof(corto_type));
+    result = corto_calloc(corto_type_sizeof(type));
+    if (corto_ptr_init(result, type)) {
+        corto_dealloc(result);
+        goto error;
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
+void _corto_ptr_free(void *ptr, corto_type type) {
+    corto_ptr_deinit(ptr, type);
+    corto_dealloc(ptr);
+}
+
+void* _corto_mem_new(
+    corto_type type)
+{
+    void *result = NULL;
+
+    result = corto_calloc(type->size + sizeof(corto_type));
     *(corto_type*)result = type;
     result = CORTO_OFFSET(result, sizeof(corto_type));
 
@@ -140,10 +161,19 @@ error:
     return NULL;
 }
 
-void _corto_ptr_free(void *ptr, corto_type type) {
-    corto_ptr_deinit(ptr, type);
+void corto_mem_free(
+    void *ptr)
+{
+    corto_ptr_deinit(ptr, corto_mem_typeof(ptr));
     ptr = CORTO_OFFSET(ptr, -sizeof(corto_type));
     corto_dealloc(ptr);
+}
+
+corto_type corto_mem_typeof(
+    void *ptr)
+{
+    ptr = CORTO_OFFSET(ptr, -sizeof(corto_type));
+    return *(corto_type*)ptr;
 }
 
 int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
