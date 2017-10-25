@@ -28,8 +28,8 @@
 #include "cdeclhandler.h"
 #include "init_ser.h"
 #include "memory_ser.h"
-#include "lang/class.h"
-#include "lang/interface.h"
+#include "src/lang/class.h"
+#include "src/lang/interface.h"
 
 void corto_secure_init(void);
 
@@ -1134,13 +1134,7 @@ int corto_start(char *appName) {
     /* Initialize operating system environment */
     corto_environment_init();
 
-    /* Now that environment is initialized, set paths for loader */
-    corto_load_init(
-        corto_getenv("CORTO_TARGET"),
-        corto_getenv("CORTO_HOME"),
-        corto_getenv("/usr/local")
-        CORTO_VERSION_MAJOR,
-        CORTO_VERSION_MINOR);
+    base_init(appName);
 
     /* Initialize security */
     corto_secure_init();
@@ -1438,7 +1432,7 @@ corto_string corto_getBuild(void) {
 }
 
 corto_string corto_getLibrary(void) {
-    return CORTO_OBJECT_NAME;
+    return "libcorto.so";
 }
 
 #define CORTO_CHECKBUILTIN(builtinobj)\

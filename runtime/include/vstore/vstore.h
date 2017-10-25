@@ -34,7 +34,6 @@
 #include <corto/vstore/_interface.h>
 
 /* $body() */
-#include <corto/vstore/idmatch.h>
 #include <corto/vstore/query.h>
 /* $end */
 

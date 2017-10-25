@@ -19,58 +19,66 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO_OS_H
-#define CORTO_OS_H
-
-/* UNSTABLE API */
+#ifndef CORTO_TIME_H_
+#define CORTO_TIME_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if INTPTR_MAX == INT32_MAX
-#define CORTO_CPU_32BIT
-#elif INTPTR_MAX == INT64_MAX
-#define CORTO_CPU_64BIT
-#else
-#warning "corto is not supported on platforms which are neither 32- nor 64-bit."
-#endif
+/** Get current time.
+ * 
+ * @param time Variable that will contain the time.
+ */
+CORTO_EXPORT 
+void corto_time_get(
+    corto_time* time);
 
-#if defined(WIN32) || defined(WIN64)
-#define CORTO_OS_WINDOWS
-#elif defined(__linux__)
-#define CORTO_OS_LINUX
-#elif defined(__APPLE__) && defined(__MACH__)
-#define CORTO_OS_OSX
-#else
-#warning "corto is not supported on non-unix or windows operating systems."
-#endif
+/** Add two time values.
+ * 
+ * @param t1 Time value.
+ * @param t2 Time value.
+ * @result Result of adding t1 and t2
+ */
+CORTO_EXPORT 
+corto_time corto_time_add(
+    corto_time t1, 
+    corto_time t2);
 
-#ifdef __i386__
-#define CORTO_CPU_STRING "x86"
-#elif __x86_64__
-#define CORTO_CPU_STRING "x64"
-#elif defined(__arm__) && defined(CORTO_CPU_32BIT)
-#define CORTO_CPU_STRING "Arm"
-#elif defined(__arm__) && defined(CORTO_CPU_64BIT)
-#define CORTO_CPU_STRING "Arm64"
-#endif
+/** Subtract two time values.
+ * 
+ * @param t1 Time value to subtract from.
+ * @param t2 Time value to subtract.
+ * @result Result of subtracting t1 and t2
+ */
+CORTO_EXPORT 
+corto_time corto_time_sub(
+    corto_time t1, 
+    corto_time t2);
 
-#ifdef CORTO_OS_WINDOWS
-#define CORTO_OS_STRING "windows"
-#elif defined(CORTO_OS_LINUX)
-#define CORTO_OS_STRING "linux"
-#elif defined(CORTO_OS_OSX)
-#define CORTO_OS_STRING "darwin"
-#endif
+/** Compare two time values.
+ * 
+ * @param t1 Time value.
+ * @param t2 Time value.
+ * @result 0 if equal, -1 if t2 is less than t1, 1 if t1 is larger than t2
+ */
+CORTO_EXPORT 
+int corto_time_compare(
+    corto_time t1, 
+    corto_time t2);
 
-#define CORTO_PLATFORM_STRING CORTO_CPU_STRING "-" CORTO_OS_STRING
-
-/* Get hostname of current machine */
-CORTO_EXPORT char* corto_hostname(void);
+/** Convert time to double-precision floating point value.
+ *
+ * @param t Time value.
+ * @result Floating point representation of the time.
+ */
+CORTO_EXPORT 
+double corto_time_toDouble(
+    corto_time t);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
+

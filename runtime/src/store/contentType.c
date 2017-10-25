@@ -147,7 +147,6 @@ static corto_contentType corto_findContentType(
         result->release = corto_contentType_ptr_release;
         result->copy = corto_contentType_ptr_copy;
         corto_ll_append(contentTypes, result);
-
     }
 
     return result;
@@ -204,7 +203,7 @@ corto_contentType corto_loadContentType(
         corto_id id;
         sprintf(id, "%s_fromValue", packagePtr);
         result->fromValue =
-            (corto_word ___ (*)(corto_value*))corto_load_sym(packageId, &dl, id);
+            (corto_word ___ (*)(corto_value*))corto_load_proc(packageId, &dl, id);
         if (!result->fromValue) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -212,7 +211,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_toValue", packagePtr);
         result->toValue =
-            (corto_int16 ___ (*)(corto_value*, corto_word)) corto_load_sym(packageId, &dl, id);
+            (corto_int16 ___ (*)(corto_value*, corto_word)) corto_load_proc(packageId, &dl, id);
         if (!result->toValue) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -221,7 +220,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_fromResult", packagePtr);
         result->fromResult =
-          (corto_word ___ (*)(corto_result*))corto_load_sym(packageId, &dl, id);
+          (corto_word ___ (*)(corto_result*))corto_load_proc(packageId, &dl, id);
         if (!result->fromResult) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -229,7 +228,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_toResult", packagePtr);
         result->toResult =
-          (corto_int16 ___ (*)(corto_result*, corto_word))corto_load_sym(packageId, &dl, id);
+          (corto_int16 ___ (*)(corto_result*, corto_word))corto_load_proc(packageId, &dl, id);
         if (!result->toResult) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -238,7 +237,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_fromObject", packagePtr);
         result->fromObject =
-          (corto_word ___ (*)(corto_object))corto_load_sym(packageId, &dl, id);
+          (corto_word ___ (*)(corto_object))corto_load_proc(packageId, &dl, id);
         if (!result->fromObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -246,7 +245,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_toObject", packagePtr);
         result->toObject =
-          (corto_int16 ___ (*)(corto_object*, corto_word))corto_load_sym(packageId, &dl, id);
+          (corto_int16 ___ (*)(corto_object*, corto_word))corto_load_proc(packageId, &dl, id);
         if (!result->toObject) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -254,7 +253,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_copy", packagePtr);
         result->copy =
-            (corto_word ___ (*)(corto_word))corto_load_sym(packageId, &dl, id);
+            (corto_word ___ (*)(corto_word))corto_load_proc(packageId, &dl, id);
         if (!result->copy) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -262,7 +261,7 @@ corto_contentType corto_loadContentType(
 
         sprintf(id, "%s_release", packagePtr);
         result->release =
-            (void ___ (*)(corto_word))corto_load_sym(packageId, &dl, id);
+            (void ___ (*)(corto_word))corto_load_proc(packageId, &dl, id);
         if (!result->release) {
             corto_seterr("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;

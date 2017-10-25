@@ -20,7 +20,7 @@
  */
 
 #include <corto/corto.h>
-#include "lang/primitive.h"
+#include "src/lang/primitive.h"
 
 #ifdef CORTO_CONVERSIONS
 

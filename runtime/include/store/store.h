@@ -31,5 +31,6 @@
 #include <corto/store/ptr.h>
 #include <corto/store/string_deser.h>
 #include <corto/store/string_ser.h>
+#include <corto/store/time.h>
 
 #endif

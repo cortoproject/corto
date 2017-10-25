@@ -24,7 +24,7 @@
 
 #include <corto/corto.h>
 #include <corto/store/store.h>
-#include "entityadmin.h"
+#include <corto/entityadmin.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -265,21 +265,6 @@ CORTO_EXPORT bool corto_isBuiltinPackage(corto_object o);
 
 /* Check if object is a builtin object */
 CORTO_EXPORT bool corto_isBuiltin(corto_object o);
-
-/* Used in type checking macro */
-CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
-#ifndef NDEBUG
-#define corto_assertType(type, o) _corto_assertType((type), (o))
-#else
-#define corto_assertType(type, o) (o)
-#endif
-
-/* Throws an assertion when invalid object in debugging */
-#ifndef NDEBUG
-CORTO_EXPORT void corto_assertObject(corto_object o);
-#else
-#define corto_assertObject(o)
-#endif
 
 /* Obtain documentation objects */
 CORTO_EXPORT char* corto_manId(corto_object o, corto_id buffer);

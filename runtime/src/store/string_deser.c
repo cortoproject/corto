@@ -20,6 +20,7 @@
  */
 
 #include <corto/corto.h>
+#include "src/store/object.h"
 
 #ifdef CORTO_CONVERSIONS
 

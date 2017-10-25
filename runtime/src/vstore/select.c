@@ -22,7 +22,7 @@
 #include <corto/corto.h>
 
 #include "src/store/object.h"
-#include "idmatch.h"
+#include "../../base/src/idmatch.h"
 
 extern corto_int8 CORTO_OLS_AUGMENT;
 extern corto_tls CORTO_KEY_FLUENT;
@@ -466,7 +466,8 @@ static corto_resultIter corto_selectRequestMount(
     }
 }
 
-int corto_selectHistoryHasNext(corto_iter *it) {
+static
+bool corto_selectHistoryHasNext(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->ctx;
     return corto_iter_hasNext(&ctx->iter);
 }
@@ -1243,7 +1244,7 @@ error:
     return FALSE;
 }
 
-static int corto_selectHasNext(corto_resultIter *iter) {
+static bool corto_selectHasNext(corto_resultIter *iter) {
     corto_select_data *data = iter->ctx;
     if (data->quit) {
         return 0;

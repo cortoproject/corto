@@ -19,8 +19,8 @@
  * THE SOFTWARE.
  */
 
-#include <include/base.h>
-#include "jsw_rbtree.h"
+#include <corto/corto.h>
+#include <corto/jsw_rbtree.h>
 
 corto_rbtree corto_rb_new(corto_type keyType) {
 
@@ -134,12 +134,12 @@ int corto_rb_walkPtr(corto_rbtree tree, corto_elementWalk_cb callback, void* use
 }
 
 corto_type corto_rb_keyType(corto_rbtree tree) {
-    return corto_type(jsw_rbtype((jsw_rbtree_t*)tree));
+    return NULL;
 }
 
 #define corto_iterData(iter) ((jsw_rbtrav_t*)iter->ctx)
 
-static int corto_rb_iterHasNext(corto_iter *iter) {
+static bool corto_rb_iterHasNext(corto_iter *iter) {
     return corto_iterData(iter)->it != NULL;
 }
 

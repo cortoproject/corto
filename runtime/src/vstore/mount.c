@@ -38,19 +38,19 @@ void* corto_mount_thread(void* arg) {
     corto_time interval = corto_mount_doubleToTime(1.0 / frequency);
     corto_time next, current, sleep = {0, 0}, lastSleep = {0, 0};
 
-    corto_timeGet(&next);
-    next = corto_timeAdd(next, interval);
+    corto_time_get(&next);
+    next = corto_time_add(next, interval);
 
     while (!this->quit) {
         corto_mount_onPoll(this);
-        corto_timeGet(&current);
+        corto_time_get(&current);
 
         lastSleep = sleep;
-        sleep = corto_timeSub(next, current);
+        sleep = corto_time_sub(next, current);
         if (lastSleep.sec || lastSleep.nanosec) {
             /* Attempt to limit the amount of oscillation in a fully loaded system */
             if (corto_time_compare(lastSleep, sleep) == CORTO_LT) {
-                double tmp = (corto_timeToDouble(sleep) + corto_timeToDouble(lastSleep)) / 2;
+                double tmp = (corto_time_toDouble(sleep) + corto_time_toDouble(lastSleep)) / 2;
                 sleep = corto_mount_doubleToTime(tmp);
             }
         }
@@ -58,13 +58,13 @@ void* corto_mount_thread(void* arg) {
         if (sleep.sec >= 0) {
             corto_sleep(sleep.sec, sleep.nanosec);
         } else {
-            sleep = corto_timeSub(current, next);
+            sleep = corto_time_sub(current, next);
             corto_warning(
                 "processing events took [%d.%.9d] longer than sampleRate interval",
                 sleep.sec, sleep.nanosec);
-            corto_timeGet(&next);
+            corto_time_get(&next);
         }
-        next = corto_timeAdd(next, interval);
+        next = corto_time_add(next, interval);
     }
 
     return NULL;
@@ -434,7 +434,7 @@ void corto_mount_onPoll_v(
     /* Collect events */
     corto_lock(this);
 
-    corto_timeGet(&this->lastPoll);
+    corto_time_get(&this->lastPoll);
     this->lastQueueSize = 0;
     if (corto_ll_size(this->events)) {
         events = corto_ll_new();
@@ -547,7 +547,7 @@ void corto_mount_post(
             corto_unlock(this);
         } else {
             corto_event_handle(e);
-            corto_assert(corto_release(e) == 0);
+            corto_assert(corto_release(e) == 0, "event is leaking");
         }
     }
 
@@ -603,32 +603,32 @@ void corto_mount_post(
 
         /* Retrieve time every collectCount samples */
         if (!lastQueueSize || !(size % collectCount)) {
-            corto_timeGet(&this->lastPost);
+            corto_time_get(&this->lastPost);
 
             /* Calculate total available time per period */
             corto_time totalTime = corto_mount_doubleToTime(1.0 / this->policy.sampleRate);
 
             corto_time spent = lastPoll.sec
-                ? corto_timeSub(this->lastPost, lastPoll)
+                ? corto_time_sub(this->lastPost, lastPoll)
                 : (corto_time){0, 0}
                 ;
 
             if (corto_time_compare(spent, totalTime) == CORTO_LT) {
                 /* Calculate last recorded write frequency */
-                double writeFrequency = size / corto_timeToDouble(spent);
+                double writeFrequency = size / corto_time_toDouble(spent);
 
                 /* Calculate if number of samples exceeds max if continuing to write at
                  * this frequency */
-                if (lastQueueSize || (writeFrequency * corto_timeToDouble(totalTime) > this->policy.queue.max)) {
+                if (lastQueueSize || (writeFrequency * corto_time_toDouble(totalTime) > this->policy.queue.max)) {
                     /* Need to throttle. Calculate how much publisher needs to slow down */
-                    corto_time budget = corto_timeSub(totalTime, spent);
+                    corto_time budget = corto_time_sub(totalTime, spent);
 
                     /* Calculate time available per remaining sample, which is the time
                      * we should sleep to slow down the publisher. Add one
                      * sample for error margin so that in a stable system
                      * each poll cycle receives exactly the max queue size. */
                     double timePerSample =
-                        corto_timeToDouble(budget) / ((double)this->policy.queue.max - (double)size + collectCount);
+                        corto_time_toDouble(budget) / ((double)this->policy.queue.max - (double)size + collectCount);
 
                     /*printf("sleep: %d.%.9d budget=[%d.%.9d] spent=[%d.%.9d] size=%d timePerSample=%f\n",
                         this->lastSleep.sec, this->lastSleep.nanosec,
@@ -661,7 +661,7 @@ void corto_mount_post(
         /* If sleep time is less than a millisecond, accuracy of a sleep is not
          * good enough due to OS scheduler variation. Instead, accumulate sleep
          * until it is larger than a millisecond, then sleep. */
-        this->dueSleep = corto_timeAdd(this->dueSleep, this->lastSleep);
+        this->dueSleep = corto_time_add(this->dueSleep, this->lastSleep);
         if (this->dueSleep.sec || this->dueSleep.nanosec > 10000000) {
             corto_sleep(this->dueSleep.sec, this->dueSleep.nanosec);
             this->dueSleep = (corto_time){0, 0};

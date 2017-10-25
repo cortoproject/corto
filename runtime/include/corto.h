@@ -38,13 +38,9 @@
 /* Callback used to walk contents of scope */
 typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
 
-#include <corto/iter.h>
-#include <corto/ll.h>
-#include <corto/rb.h>
-#include <corto/os.h>
-#include <corto/err.h>
-#include <corto/buffer.h>
 #include <corto/util.h>
+#include <corto/entityadmin.h>
+#include <corto/rb.h>
 
 #include <corto/store/store.h>
 #include <corto/vstore/vstore.h>
@@ -139,6 +135,21 @@ CORTO_EXPORT void corto_callDeinit(corto_function f);
 #define corto_call(f, ...) _corto_call(corto_function(f), __VA_ARGS__)
 #define corto_callv(f, result, args) _corto_callv(corto_function(f), result, args)
 #define corto_callb(f, result, argptrs) _corto_callb(corto_function(f), result, argptrs)
+
+/* Used in type checking macro */
+CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
+#ifndef NDEBUG
+#define corto_assertType(type, o) _corto_assertType((type), (o))
+#else
+#define corto_assertType(type, o) (o)
+#endif
+
+/* Throws an assertion when invalid object in debugging */
+#ifndef NDEBUG
+CORTO_EXPORT void corto_assertObject(corto_object o);
+#else
+#define corto_assertObject(o)
+#endif
 
 CORTO_EXPORT extern int8_t CORTO_DEBUG_ENABLED;
 CORTO_EXPORT extern int8_t CORTO_TRACING_ENABLED;

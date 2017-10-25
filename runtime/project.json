@@ -1,0 +1,10 @@
+{
+    "id": "corto",
+    "type": "package",
+    "value": {
+        "language": "c",
+        "managed": false,
+        "lib": ["rt", "dl", "m", "ffi"],
+        "sources": ["../../base/src"]
+    }
+}

@@ -21,9 +21,10 @@
 
 #include <corto/corto.h>
 
-#include "lang/class.h"
+#include "../../base/src/idmatch.h"
+#include "src/lang/class.h"
+#include "src/store/object.h"
 #include "object.h"
-#include "vstore/idmatch.h"
 #include "compare_ser.h"
 #include "copy_ser.h"
 #include "init_ser.h"
@@ -733,7 +734,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
-                p_scope->scope = corto_rb_new_w_func(corto_compareDefault);
+                p_scope->scope = corto_rb_new_w_func((corto_equals_cb)corto_compareDefault);
             }
 
             corto_object existing = corto_rb_findOrSet(p_scope->scope, c_scope->id, child);
@@ -3336,7 +3337,7 @@ static corto_object corto_lookup_intern(
                           tree,
                           ptr,
                           (void**)&o,
-                          corto_compareLookup))
+                          (corto_equals_cb)corto_compareLookup))
                     {
                         o = NULL;
                     } else if (strchr(corto_idof(o), '(')) {
@@ -3349,7 +3350,7 @@ static corto_object corto_lookup_intern(
                               tree,
                               ptr,
                               (void**)&checkNoArgs,
-                              corto_compareLookupNoArgMatching))
+                              (corto_equals_cb)corto_compareLookupNoArgMatching))
                         {
                             o = checkNoArgs;
                         } else if (corto_instanceof(corto_function_o, o)) {

@@ -19,52 +19,74 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO_THREAD_POSIX_H_
-#define CORTO_THREAD_POSIX_H_
+#include <corto/corto.h>
 
-#include "pthread.h"
-#include "signal.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef pthread_key_t corto_tls;
-
-typedef struct corto_rwmutex_s {
-    pthread_rwlock_t mutex;
-}corto_rwmutex_s;
-
-#define DETECT_CONTENTION (0)
-
-typedef struct corto_mutex_s {
-    pthread_mutex_t mutex;
-
-#if DETECT_CONTENTION
-    uint32_t contention;
-    corto_time hotness;
-
-    /* creation */
-    uint32_t c_entries;
-    char** c_symbols;
-
-    /* locked by */
-    uint32_t l_entries;
-    char** l_symbols;
-#endif
-}corto_mutex_s;
-    
-typedef struct corto_sem_s {
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-    int value;
-}corto_sem_s;
-
-#define CORTO_MUTEX_INITIALIZER {PTHREAD_MUTEX_INITIALIZER}
-#define CORTO_RWMUTEX_INITIALIZER {PTHREAD_RWLOCK_INITIALIZER}
-
-#ifdef __cplusplus
+static 
+corto_time from_timespec(
+    struct timespec *t)
+{
+    corto_time r = {
+        .sec = t->tv_sec,
+        .nanosec = t->tv_nsec
+    };
+    return r;
 }
-#endif
 
-#endif /* CORTO_THREAD_POSIX_H_ */
+static 
+struct timespec to_timespec(
+    corto_time *t)
+{
+    struct timespec r = {
+        .tv_sec = t->sec,
+        .tv_nsec = t->nanosec
+    };
+    return r;
+}
+
+void corto_time_get(
+    corto_time* time)
+{
+    struct timespec t;
+    timespec_gettime(&t);
+    *time = from_timespec(&t);
+}
+
+corto_time corto_time_add(
+    corto_time t1, 
+    corto_time t2)
+{
+    struct timespec r = timespec_add(
+        to_timespec(&t1),
+        to_timespec(&t2)
+    );
+    return from_timespec(&r);
+}
+
+corto_time corto_time_sub(
+    corto_time t1, 
+    corto_time t2)
+{
+    struct timespec r = timespec_sub(
+        to_timespec(&t1),
+        to_timespec(&t2)
+    );
+    return from_timespec(&r);
+}
+
+int corto_time_compare(
+    corto_time t1, 
+    corto_time t2)
+{
+    return  timespec_compare(
+        to_timespec(&t1),
+        to_timespec(&t2)
+    );
+}
+
+double corto_time_toDouble(
+    corto_time t)
+{
+    return timespec_toDouble(
+        to_timespec(&t)
+    );
+}
