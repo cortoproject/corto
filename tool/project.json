@@ -1,0 +1,9 @@
+{
+    "id": "corto",
+    "type": "tool",
+    "value": {
+        "language": "c",
+        "managed": false,
+        "use": ["corto"]
+    }
+}

@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/base.h>
+#include <corto/corto.h>
 
 static int runCommand(char *cmd, int argc, char *argv[]) {
     /* If a command is found, run the command with remaining args */

@@ -5,6 +5,11 @@
         "language": "c",
         "managed": false,
         "lib": ["rt", "dl", "m", "ffi"],
-        "sources": ["../../base/src"]
+        "sources": [
+            "src", "../../base/src"
+        ],
+        "includes": [
+            "include", "../../base/include/corto"
+        ]
     }
 }
