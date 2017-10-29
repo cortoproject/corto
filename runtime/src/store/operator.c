@@ -54,10 +54,20 @@ static void CORTO_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {
 }
 
 static void CORTO_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* result) {
-    *(corto_bool*)result = !strcmp(*(corto_string*)op1, *(corto_string*)op2);
+    char *str1 = *(char**)op1, *str2 = *(char**)op2;
+    if (!str1 || !str2) {
+        if (str1 == str2) {
+            *(bool*)result = true;
+        } else {
+            *(bool*)result = false;
+        }
+    } else {
+        *(bool*)result = !strcmp(str1, str2);
+    }
 }
 static void CORTO_NAME_BINARYOP(string,cond_neq)(void* op1, void* op2, void* result) {
-    *(corto_bool*)result = strcmp(*(corto_string*)op1, *(corto_string*)op2) != 0;
+    CORTO_NAME_BINARYOP(string,cond_eq)(op1, op2, result);
+    *(bool*)result = !*(bool*)result;
 }
 static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) {
     corto_uint32 len = strlen(*(corto_string*)op1) + strlen(*(corto_string*)op2);
