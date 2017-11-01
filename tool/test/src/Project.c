@@ -37,8 +37,12 @@ corto_int16 test_Project_implement(corto_string package) {
     corto_id cxfile;
     corto_int8 ret;
     corto_int16 waitResult;
+    
+    char *cx = strrchr(package, '-');
+    if (cx) cx ++;
+    else cx = package;
 
-    sprintf(cxfile, "%s/%s.cx", package, package);
+    sprintf(cxfile, "%s/%s.cx", package, cx);
     FILE *f = fopen(cxfile, "a");
     if (!f) {
         goto error;
@@ -77,8 +81,17 @@ corto_int16 test_Project_implementNoCorto(
     corto_id cfile;
     corto_int8 ret;
     corto_int16 waitResult;
-
-    sprintf(cfile, "%s/src/%s.c", name, name);
+    
+    corto_id packageCopy;
+    strcpy(packageCopy, package);
+    char *ptr, ch;
+    for (ptr = packageCopy; (ch = *ptr); ptr ++) {
+        if (ch == '/') {
+            *ptr = '-';
+        }
+    }
+    
+    sprintf(cfile, "%s/src/%s.c", packageCopy, name);
     FILE *f = fopen(cfile, "w");
     if (!f) {
         goto error;
@@ -93,7 +106,7 @@ corto_int16 test_Project_implementNoCorto(
     fprintf(f, "void foo(void) {}\n\n");
     fclose(f);
 
-    sprintf(cfile, "%s/include/%s.h", name, name);
+    sprintf(cfile, "%s/include/%s.h", packageCopy, name);
     f = fopen(cfile, "w");
     if (!f) {
         goto error;
@@ -108,7 +121,7 @@ corto_int16 test_Project_implementNoCorto(
         (char*[]){
             "corto",
             "rebuild",
-            name,
+            packageCopy,
             "--silent",
              NULL
          });
@@ -633,7 +646,7 @@ void test_Project_tc_packageNestedDependency(
     corto_dealloc(str);
 
     /* Add function to foo package */
-    test_assert(!test_Project_implement("child"));
+    test_assert(!test_Project_implement("parent-child"));
     test_assert(!test_Project_use("foo", "/foo", "child"));
 
 }
@@ -727,7 +740,7 @@ void test_Project_tc_packageNestedDependencyFullyScoped(
     corto_dealloc(str);
 
     /* Add function to foo package */
-    test_assert(!test_Project_implement("child"));
+    test_assert(!test_Project_implement("parent-child"));
     test_assert(!test_Project_use("foo", "/foo", "child"));
 
 }
@@ -983,7 +996,7 @@ void test_Project_tc_packageNoCortoNested(
             "corto",
             "create",
             "package",
-            "corto::Project",
+            "corto/Project",
             "--silent",
             "--unmanaged",
             NULL
@@ -995,15 +1008,15 @@ void test_Project_tc_packageNoCortoNested(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/project.json"));
+    test_assert(corto_fileTest("corto-Project"));
+    test_assert(corto_fileTest("corto-Project/project.json"));
 
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
+    test_assert(corto_fileTest("corto-Project/src"));
+    test_assert(corto_fileTest("corto-Project/src/Project.c"));
 
-    test_assert(corto_fileTest("Project/include"));
-    test_assert(!corto_fileTest("Project/test"));
-    test_assert(!corto_fileTest("Project/doc"));
+    test_assert(corto_fileTest("corto-Project/include"));
+    test_assert(!corto_fileTest("corto-Project/test"));
+    test_assert(!corto_fileTest("corto-Project/doc"));
 
     test_assert(corto_fileTest(
         "$CORTO_TARGET/lib/corto/%s.%s/corto/Project",
@@ -1014,7 +1027,7 @@ void test_Project_tc_packageNoCortoNested(
       CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR));
 
     /* Create a source file */
-    FILE *f = fopen("Project/src/Project.c", "w");
+    FILE *f = fopen("corto-Project/src/Project.c", "w");
     fprintf(f, "\nvoid foo(void) {}\n\n");
     fclose(f);
 
@@ -1024,7 +1037,7 @@ void test_Project_tc_packageNoCortoNested(
         (char*[]){
             "corto",
             "build",
-            "Project",
+            "corto-Project",
             "--silent",
             NULL
         });
@@ -1559,9 +1572,10 @@ void test_Project_teardown(
     test_Project_cleanEnv("parent");
 
     corto_rmtree("Project");
+    corto_rmtree("corto-Project");
     corto_rmtree("foo");
     corto_rmtree("bar");
     corto_rmtree("parent");
-    corto_rmtree("child");
+    corto_rmtree("parent-child");
 }
 

@@ -228,7 +228,7 @@ void test_Application_tc_appCortoNestedDependencyNoCorto(
     corto_dealloc(str);
 
     /* Add function to foo application */
-    test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
+    test_assert(!test_Project_implementNoCorto("parent-child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
 
 }
@@ -367,15 +367,15 @@ void test_Application_tc_appNested(
     test_assert(waitResult == 0);
     test_assert(ret == 0);
 
-    test_assert(corto_fileTest("Project"));
-    test_assert(corto_fileTest("Project/rakefile"));
-    test_assert(corto_fileTest("Project/src"));
-    test_assert(corto_fileTest("Project/src/Project.c"));
-    test_assert(corto_fileTest("Project/test"));
+    test_assert(corto_fileTest("corto-Project"));
+    test_assert(corto_fileTest("corto-Project/rakefile"));
+    test_assert(corto_fileTest("corto-Project/src"));
+    test_assert(corto_fileTest("corto-Project/src/Project.c"));
+    test_assert(corto_fileTest("corto-Project/test"));
 
     pid = corto_procrunRedirect(
         "corto",
-        (char*[]){"corto", "run", "Project", NULL},
+        (char*[]){"corto", "run", "corto-Project", NULL},
         stdin, NULL, stderr);
 
     test_assert(pid != 0);
@@ -483,7 +483,7 @@ void test_Application_tc_appNestedDependency(
     corto_dealloc(str);
 
     /* Add function to foo application */
-    test_assert(!test_Project_implement("child"));
+    test_assert(!test_Project_implement("parent-child"));
     test_assert(!test_Project_use("foo", NULL, "child"));
 
 }
@@ -654,11 +654,10 @@ void test_Application_tc_appNoCortoNestedDependency(
     corto_string str = corto_fileLoad("foo/.corto/packages.txt");
     test_assert(!strcmp(str, "/parent/child\n"));
     corto_dealloc(str);
-
+    
     /* Add function to foo application */
     test_assert(!test_Project_implementNoCorto("child", "parent/child", FALSE));
     test_assert(!test_Project_useNoCorto("foo", "parent/child", "child"));
-
 }
 
 void test_Application_tc_appNoTest(
@@ -696,9 +695,10 @@ void test_Application_teardown(
     test_Project_cleanEnv("parent");
 
     corto_rmtree("Project");
+    corto_rmtree("corto-Project");
     corto_rmtree("foo");
     corto_rmtree("bar");
     corto_rmtree("parent");
-    corto_rmtree("child");
+    corto_rmtree("parent-child");
 }
 
