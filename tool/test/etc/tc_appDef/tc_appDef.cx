@@ -1,4 +1,0 @@
-#package /tc_appDef
-
-struct Point::
-  x, y: int32

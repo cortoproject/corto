@@ -22,7 +22,7 @@
 #include <corto/corto.h>
 
 #include "src/store/object.h"
-#include "../../base/src/idmatch.h"
+#include "../base/src/idmatch.h"
 
 extern corto_int8 CORTO_OLS_AUGMENT;
 extern corto_tls CORTO_KEY_FLUENT;

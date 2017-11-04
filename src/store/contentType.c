@@ -187,7 +187,6 @@ corto_contentType corto_loadContentType(
         result->isBinary = isBinary;
 
         /* Load package associated with content type */
-        corto_throw(NULL);
         if (corto_load(packageId, 0, NULL)) {
             corto_throw("unresolved package '%s' for contentType '%s'",
                 packageId, contentType);

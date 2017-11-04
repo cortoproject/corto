@@ -1,7 +1,0 @@
-
-TARGET = 'tc_appLocalDefObject'
-
-PP_SCOPES = ["Point"]
-LOCAL = true
-
-require "#{ENV['CORTO_BUILD']}/application"

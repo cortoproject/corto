@@ -8,10 +8,10 @@
         "managed": false,
         "lib": ["rt", "dl", "m", "ffi", "pthread"],
         "sources": [
-            "src", "../../base/src"
+            "src", "../base/src"
         ],
         "includes": [
-            "include", "../../base/include/corto"
+            "include", "../base/include/corto"
         ]
     }
 }
