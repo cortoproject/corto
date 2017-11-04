@@ -79,7 +79,7 @@ void corto_loader_addDir(
 
                 /* Stat file to determine whether it's a directory */
                 if (stat(fpath, &attr) < 0) {
-                    corto_seterr("failed to stat '%s' (%s)\n",
+                    corto_throw("failed to stat '%s' (%s)\n",
                         fpath,
                         strerror(errno));
                 }
@@ -95,11 +95,10 @@ void corto_loader_addDir(
                 corto_string env = corto_locate(package, NULL, CORTO_LOCATION_ENV);
 
                 if (!env) {
-                    corto_lasterr();
+                    corto_catch();
                     //continue;
                 }
 
-                /* Built-in packages use corto version */
                 if (!strcmp(package, "corto") ||
                     !strcmp(package, "corto/lang") ||
                     !strcmp(package, "corto/vstore") ||
@@ -108,7 +107,7 @@ void corto_loader_addDir(
                 {
                     if (!env) {
                         env = corto_locate("corto", NULL, CORTO_LOCATION_ENV);
-                        if (!env) corto_lasterr(); /* Catch error */
+                        if (!env) corto_catch(); /* Catch error */
                     }
                 }
 
@@ -152,8 +151,8 @@ void corto_loader_addDir(
         /* Free up resources of opendir */
         corto_closedir(dirs);
     } else {
-        /* Catch error */
-        corto_lasterr();
+        /* Catch error logged by corto_opendir */
+        corto_catch();
     }
 }
 
@@ -163,6 +162,8 @@ corto_resultIter corto_loader_onQuery_v(
 {
     corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
+
+    corto_log_push("vstore/loader");
 
     CORTO_UNUSED(this);
 
@@ -200,6 +201,8 @@ corto_resultIter corto_loader_onQuery_v(
     corto_dealloc(targetPath);
     corto_dealloc(homePath);
     corto_dealloc(globalPath);
+
+    corto_log_pop();
 
     return result;
 }

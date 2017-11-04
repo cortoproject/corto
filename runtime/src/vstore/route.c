@@ -33,7 +33,7 @@ int16_t corto_route_construct(
 
         if (routerBase->elementSeparator) {
             if ((elementCount = corto_pathToArray(ptr, elements, routerBase->elementSeparator)) == -1) {
-                corto_seterr("invalid pattern '%s': %s", this->pattern, corto_lasterr());
+                corto_throw("invalid pattern '%s'", this->pattern);
                 goto error;
             }
 
@@ -112,7 +112,7 @@ int16_t corto_route_init(
     corto_route this)
 {
     if (!corto_route_findRouterImpl(this)) {
-        corto_seterr("parent of '%s' is not an instance of 'routerimpl'",
+        corto_throw("parent of '%s' is not an instance of 'routerimpl'",
             corto_fullpath(NULL, this));
         goto error;
     }

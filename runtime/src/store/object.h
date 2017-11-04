@@ -103,7 +103,7 @@ typedef struct corto__ols {
 typedef struct corto__scope {
     corto_object parent;
     char *id;
-    corto_rbtree scope;
+    corto_rb scope;
 
     /* See corto__object */
     union {
@@ -203,7 +203,7 @@ void corto__scopeRelease(corto_object o);
 void* corto_olsFind(corto__scope *scope, corto_int8 key);
 
 /* Get scope tree */
-corto_rbtree corto_scopeof(corto_object o);
+corto_rb corto_scopeof(corto_object o);
 
 corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o);
 corto_int16 corto_notifySubscribersId(

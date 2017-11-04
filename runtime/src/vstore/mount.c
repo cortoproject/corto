@@ -703,7 +703,7 @@ corto_resultIter corto_mount_onQuery_v(
         }
         corto_path_clean(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
-            corto_warning("%s", corto_lasterr());
+            corto_raise();
         }
     }
 
@@ -880,14 +880,14 @@ corto_object corto_mount_resume(
                     if (type_o) {
                         o = corto_declareChild(parent_o, iterResult->id, type_o);
                         if (!o) {
-                            corto_seterr("failed to create object %s/%s: %s",
-                              parent, name, corto_lasterr());
+                            corto_throw("failed to create object %s/%s",
+                              parent, name);
                         }
 
                         newObject = TRUE;
                         corto_release(type_o);
                     } else {
-                        corto_seterr("unresolved type '%s' of object '%s' returned by '%s'",
+                        corto_throw("unresolved type '%s' of object '%s' returned by '%s'",
                             iterResult->type,
                             iterResult->id,
                             corto_fullpath(NULL, this));
@@ -896,7 +896,7 @@ corto_object corto_mount_resume(
 
                     corto_release(parent_o);
                 } else {
-                    corto_seterr("parent '%s' is not provided by any mount, cannot resume '%s/%s'",
+                    corto_throw("parent '%s' is not provided by any mount, cannot resume '%s/%s'",
                         fullparent,
                         parent,
                         name);

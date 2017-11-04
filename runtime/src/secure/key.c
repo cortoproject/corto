@@ -56,7 +56,7 @@ corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
     if (corto_secure_mainThread == corto_thread_self()) {
         corto_int16 depth = corto_secure_getObjectDepth(lock->mount);
         if (depth >= CORTO_MAX_SCOPE_DEPTH) {
-            corto_seterr("invalid identifier for mount-member of lock");
+            corto_throw("invalid identifier for mount-member of lock");
             goto error;
         }
         if (!corto_secure_locks[depth]) {
@@ -64,7 +64,7 @@ corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
         }
         corto_ll_append(corto_secure_locks[depth], lock);
     } else {
-        corto_seterr("locks can only be created in mainthread");
+        corto_throw("locks can only be created in mainthread");
         goto error;
     }
 
@@ -158,13 +158,13 @@ int16_t corto_secure_key_construct(
     corto_secure_key this)
 {
     if (corto_secure_keyInstance != NULL) {
-        corto_seterr("secure: a secure/key instance is already active");
+        corto_throw("secure: a secure/key instance is already active");
         goto error;
     }
 
     /* Only allow setting key in the mainthread */
     if (corto_secure_mainThread != corto_thread_self()) {
-        corto_seterr("secure: may only create a secure/key instance in the mainthread");
+        corto_throw("secure: may only create a secure/key instance in the mainthread");
         goto error;
     }
 

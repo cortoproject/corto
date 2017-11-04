@@ -91,7 +91,7 @@ int16_t corto_delegate_validate(
         if (!corto_delegate_instanceof(corto_delegate(m->type), object)) {
             /* If there is a member that corresponds to a delegate but has a non matching
                 * signature, always report error */
-            corto_seterr(
+            corto_throw(
                 "signature of '%s' does not match delegate type '%s' of '%s'",
                 corto_fullpath(NULL, object),
                 corto_fullpath(NULL, m->type),

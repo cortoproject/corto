@@ -5,8 +5,7 @@
         "author": "Sander Mertens",
         "description": "Base executable for corto tools (found in driver/tool)",
         "version": "1.0.0",         
-        "language": "c",
-        "managed": false,
-        "use": ["corto"]
+        "use": ["corto"],
+        "managed": false
     }
 }

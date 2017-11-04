@@ -33,7 +33,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
                 corto_ptr_setref(&vtable->buffer[i], m_class);
             }
         } else {
-            corto_seterr(
+            corto_throw(
                 "class '%s' is missing implementation for function '%s'",
                 corto_fullpath(NULL, this),
                 corto_fullpath(NULL, m_interface));

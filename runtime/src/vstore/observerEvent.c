@@ -33,8 +33,7 @@ void corto_observerEvent_handle(
         }
     } else {
         /* Error */
-        corto_error("%s", corto_lasterr());
-        corto_backtrace(stderr);
+        corto_raise();
     }
 
 }

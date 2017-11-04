@@ -243,7 +243,7 @@ static corto_uint32 corto_ser_getCollectionSize(corto_any this) {
         result = corto_ll_size(*(corto_ll*)this.value);
         break;
     case CORTO_MAP:
-        result = corto_rb_size(*(corto_rbtree*)this.value);
+        result = corto_rb_size(*(corto_rb*)this.value);
         break;
     }
     return result;

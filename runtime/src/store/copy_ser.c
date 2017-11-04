@@ -349,7 +349,7 @@ static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, voi
 
     ret = !corto_type_castable(t2, t1);
     if (ret) {
-        corto_seterr("cannot copy value of type '%s' to '%s'",
+        corto_throw("cannot copy value of type '%s' to '%s'",
             corto_fullpath(NULL, t1), corto_fullpath(NULL, t2));
     }
 

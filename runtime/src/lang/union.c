@@ -14,7 +14,7 @@ int16_t corto_union_construct(
 
     /* Don't allow empty unions */
     if (!corto_interface(this)->nextMemberId) {
-        corto_seterr("invalid empty union");
+        corto_throw("invalid empty union");
         goto error;
     }
 
@@ -27,9 +27,8 @@ int16_t corto_union_construct(
     if (corto_interface(this)->members.length) {
         alignment = corto__interface_calculateAlignment(corto_interface(this));
         if (!alignment) {
-            corto_seterr("can't compute alignment of %s: %s",
-                corto_fullpath(NULL, this),
-                corto_lasterr());
+            corto_throw("can't compute alignment of %s",
+                corto_fullpath(NULL, this));
             goto error;
         }
     }

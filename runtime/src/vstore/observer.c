@@ -628,11 +628,11 @@ static corto_observer corto_observeObserve(corto_observeRequest *r)
     if (r->type) {
         corto_type type = corto_resolve(NULL, r->type);
         if (!type) {
-            corto_seterr("unresolved type '%s'", r->type);
+            corto_throw("unresolved type '%s'", r->type);
             goto error;
         }
         if (!corto_instanceof(corto_type_o, type)) {
-            corto_seterr("'%s' is not a type", r->type);
+            corto_throw("'%s' is not a type", r->type);
             goto error;
         }
         corto_ptr_setref(&result->type, type);
@@ -777,7 +777,7 @@ void corto_observer_destruct(
 
     if (this->enabled && this->observable) {
         if (corto_observer_unobserve(this, this->instance, this->observable)) {
-            corto_error("unobserve failed: %s", corto_lasterr());
+            corto_error("unobserve failed");
         }
     }
 
@@ -787,7 +787,6 @@ void corto_observer_destruct(
     }
 
     this->enabled = FALSE;
-    
 }
 
 int16_t corto_observer_init(
@@ -804,12 +803,12 @@ int16_t corto_observer_init(
         }
 
         if (corto_function(this)->parameters.length != 1) {
-            corto_seterr("observers must have one argument");
+            corto_throw("observers must have one argument");
             goto error;
         }
 
         if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_observerEvent_o)) {
-            corto_seterr("first argument must be of type vstore/eventMask");
+            corto_throw("first argument must be of type vstore/eventMask");
             goto error;
         }
     }
@@ -857,7 +856,7 @@ int16_t corto_observer_observe(
          * set the observable and it differs from the observable parameter,
          * throw an error. */
         if (this->observable && (this->observable != observable)) {
-            corto_seterr(
+            corto_throw(
               "parameter observable ('%s') differs from observer %s ('%s')",
               corto_fullpath(NULL, observable),
               corto_fullpath(NULL, this),
@@ -867,21 +866,21 @@ int16_t corto_observer_observe(
     }
 
     if (!observable) {
-        corto_seterr("no observable provided for observer");
+        corto_throw("no observable provided for observer");
         goto error;
     }
 
     /* Test for error conditions before making changes */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
         if (!corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
-            corto_seterr(
+            corto_throw(
                 "invalid nested subscription, observable is not scoped");
             goto error;
         }
     }
 
     if (!corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
-        corto_seterr(
+        corto_throw(
             "'%s' is not an observable",
             corto_fullpath(NULL, observable));
         goto error;
@@ -1013,7 +1012,7 @@ int16_t corto_observer_observe(
               .instance(this)
               .subscribe(&it);
             if (ret) {
-                corto_seterr("observer: failed to notify mounts of subscription");
+                corto_throw("observer: failed to notify mounts of subscription");
                 goto error;
             }
 
@@ -1096,7 +1095,7 @@ bool corto_observer_observing(
                     }
                 }
             } else {
-                corto_seterr("object '%s' is not an observable",
+                corto_throw("object '%s' is not an observable",
                     corto_fullpath(NULL, observable));
                 goto error;
             }
@@ -1120,7 +1119,7 @@ int16_t corto_observer_unobserve(
     corto_bool removed = FALSE;
 
     if (!observable) {
-        corto_seterr("unobserve: observable not provided");
+        corto_throw("unobserve: observable not provided");
         goto error;
     }
 
@@ -1192,13 +1191,13 @@ int16_t corto_observer_unobserve(
                     goto error;
                 }
             } else {
-                corto_seterr(
+                corto_throw(
                     "observer subscribed on childs of non-scoped object");
                 goto error;
             }
         }
     } else {
-        corto_seterr("object '%s' is not an observable",
+        corto_throw("object '%s' is not an observable",
             corto_fullpath(NULL, observable));
         goto error;
     }

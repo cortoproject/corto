@@ -46,7 +46,7 @@ corto_int16 corto_ser_initCollection(corto_walk_opt* s, corto_value* v, void* us
             *(corto_ll*)o = corto_ll_new();
             break;
         case CORTO_MAP:
-            /**(corto_rbtree*)o = corto_rb_new(t);*/
+            /**(corto_rb*)o = corto_rb_new(t);*/
             break;
         default:
             break;

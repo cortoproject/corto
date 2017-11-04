@@ -259,7 +259,7 @@ static corto_int16 corto_ser_scope(corto_walk_opt* s, corto_value* v, void* user
             void *ptr = corto_value_ptrof(v);
             char *d;
             if (corto_ptr_cast(corto_union(t)->discriminator, ptr, corto_string_o, &d)) {
-                corto_seterr("invalid discriminator value '%d' for union '%s'",
+                corto_throw("invalid discriminator value '%d' for union '%s'",
                   *(corto_int32*)ptr,
                   corto_fullpath(NULL, t));
                   goto finished;

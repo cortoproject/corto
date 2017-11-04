@@ -13,7 +13,7 @@ void corto_package_onDefine(corto_observerEvent *e)
         if (corto_loader(owner)->autoLoad) {
             corto_id id;
             if (corto_loadIntern(corto_fullpath(id, e->data), 0, NULL, FALSE, TRUE)) {
-                corto_lasterr(); /* Ignore error */
+                corto_catch(); /* Ignore error */
             }
         }
     }

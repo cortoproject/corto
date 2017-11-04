@@ -8,14 +8,14 @@ int16_t corto_member_construct(
     corto_member this)
 {
     if (!this->type) {
-        corto_seterr("member '%s' has no type", corto_fullpath(NULL, this));
+        corto_throw("member '%s' has no type", corto_fullpath(NULL, this));
         goto error;
     }
 
     if (corto_instanceof(corto_native_type_o, this->type) &&
         !(this->modifiers & CORTO_LOCAL))
     {
-        corto_seterr("member '%s' of native type '%s' is not local",
+        corto_throw("member '%s' of native type '%s' is not local",
             corto_fullpath(NULL, this),
             corto_fullpath(NULL, this->type));
         goto error;
@@ -56,7 +56,7 @@ int16_t corto_member_init(
                 this->state = CORTO_DECLARED | CORTO_VALID;
             }
         } else {
-            corto_seterr(
+            corto_throw(
               "invalid declaration of member '%s' in non-composite scope '%s'",
               corto_idof(this), corto_fullpath(NULL, parent));
             goto error;

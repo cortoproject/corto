@@ -5,9 +5,8 @@
         "author": "Sander Mertens",
         "description": "Corto runtime library",
         "version": "1.4.0",         
-        "language": "c",
         "managed": false,
-        "lib": ["rt", "dl", "m", "ffi"],
+        "lib": ["rt", "dl", "m", "ffi", "pthread"],
         "sources": [
             "src", "../../base/src"
         ],

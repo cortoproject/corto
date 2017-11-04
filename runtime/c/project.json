@@ -1,0 +1,8 @@
+{
+    "id": "corto/c",
+    "type": "package",
+    "value": {
+        "language": "c",
+        "use": ["corto"]
+    }
+}

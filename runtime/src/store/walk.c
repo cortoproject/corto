@@ -360,7 +360,7 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
             }
         } else {
             /* Member not found? That means the discriminator is invalid. */
-            corto_seterr("discriminator %d invalid for union '%s'\n",
+            corto_throw("discriminator %d invalid for union '%s'\n",
                 discriminator,
                 corto_fullpath(NULL, t));
             goto error;
@@ -488,7 +488,7 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
         break;
     }
     case CORTO_MAP: {
-        corto_rbtree tree = *(corto_rbtree*)v;
+        corto_rb tree = *(corto_rb*)v;
         if (tree) {
             if (corto_collection_requiresAlloc(t->elementType)) {
                 result = corto_rb_walk(tree, corto_serializeElement, &walkData);

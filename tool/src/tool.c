@@ -216,17 +216,14 @@ int main(int argc, char *argv[]) {
         } else if (argc == 1) {
             /* Run default command */
             if ((result = runCommand("default", 0, NULL))) {
-                corto_lasterr();
-                corto_seterr("no default command configured");
+                corto_catch(); /* Clear previous error */
+                corto_throw("no default command configured");
             }
         }
 
         if (result) {
-            if (!mute && (!corto_lasterr() || corto_lasterr()[0])) {
-                corto_error("%s: %s", cmd, corto_lasterr() ? corto_lasterr() : "undefined error");
-            } else {
-                corto_lasterr();
-            }
+            corto_throw("command '%s' failed", cmd);
+            corto_raise();
         }        
 
         if (keep_alive) {

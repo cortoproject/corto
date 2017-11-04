@@ -338,7 +338,7 @@ corto_int16 corto_notifySubscribersId(
                             /* Resolve type of object */
                             corto_type t = corto_resolve(NULL, type);
                             if (!t) {
-                                corto_seterr("failed to resolve type '%s'", type);
+                                corto_throw("failed to resolve type '%s'", type);
                                 goto error;
                             }
 
@@ -633,7 +633,7 @@ int16_t corto_subscriber_construct(
     corto_subscriber this)
 {
     if (!this->query.select || !this->query.select[0]) {
-        corto_seterr("'null' is not a valid subscriber expression");
+        corto_throw("'null' is not a valid subscriber expression");
         goto error;
     }
 
@@ -659,7 +659,7 @@ int16_t corto_subscriber_construct(
         corto_type type = corto_resolve(NULL, this->query.type);
         if (type) {
             if (!corto_instanceof(corto_type_o, type)) {
-                corto_seterr("'%s' is not a type", this->query.type);
+                corto_throw("'%s' is not a type", this->query.type);
                 goto error;
             }
             corto_ptr_setref(&corto_observer(this)->type, type);

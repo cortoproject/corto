@@ -183,7 +183,7 @@ static corto_word corto_selectConvert(
     if (srcType && (srcType != data->dstSer)) {
         corto_object t = corto_resolve(NULL, type);
         if (!t) {
-            corto_seterr("unresolved type '%s'", type);
+            corto_throw("unresolved type '%s'", type);
             goto error;
         } else {
             corto_object o = corto_create(t);
@@ -191,17 +191,13 @@ static corto_word corto_selectConvert(
             /* Convert from source format to object */
             corto_value v = corto_value_object(o, NULL);
             if (srcType->toValue(&v, value)) {
-                corto_seterr("failed to convert value to '%s' (%s)",
-                    type,
-                    corto_lasterr());
+                corto_throw("failed to convert value to '%s'", type);
                 goto error;
             }
 
             /* Convert from object to destination format */
             if (!(result = data->dstSer->fromValue(&v))) {
-                corto_seterr("failed to convert value to '%s' (%s)",
-                    data->contentType,
-                    corto_lasterr());
+                corto_throw("failed to convert value to '%s'", data->contentType);
                 goto error;
             }
 
@@ -750,10 +746,16 @@ static int corto_selectLoadMountWalk(
         return 1;
     }
 
-    /* If historical data is requested, only load historians and don't request 
-     * ordinary data from historians. */
     if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
+        /* If historical data is requested, only load historians and don't request 
+         * ordinary data from historians. */ 
         if (!(mount->policy.mask & CORTO_MOUNT_HISTORY_QUERY)) {
+            return 1;
+        }
+    } else {
+        /* If it is a normal query but the mask does not specify QUERY, the mount
+         * should not be loaded */
+        if (!(mount->policy.mask & CORTO_MOUNT_QUERY)) {
             return 1;
         }
     }
@@ -783,7 +785,7 @@ static int corto_selectLoadMountWalk(
     }
 
     if (data->mountsLoaded == CORTO_MAX_MOUNTS_PER_SELECT) {
-        corto_seterr("number of mounts exceeded (%d) for request",
+        corto_throw("number of mounts exceeded (%d) for request",
             CORTO_MAX_MOUNTS_PER_SELECT);
         return 0;
     }
@@ -912,7 +914,7 @@ static int16_t corto_selectTree(
                 corto_ptr_setref(&frame->o, o);
 
                 if (o) {
-                    corto_rbtree scope = corto_scopeof(o);
+                    corto_rb scope = corto_scopeof(o);
                     if (scope) {
                         frame->iter = _corto_rb_iter(scope, &frame->trav);
                     }
@@ -970,7 +972,7 @@ static int16_t corto_selectPrepareFrame(
     frame->firstMount = 0;
 
     if (frame->o) {
-        corto_rbtree tree = corto_scopeof(frame->o);
+        corto_rb tree = corto_scopeof(frame->o);
         if (tree) {
             frame->iter = _corto_rb_iter(tree, &frame->trav);
         } else {
@@ -1229,12 +1231,12 @@ static corto_bool corto_selectNextExpr(corto_select_data *data) {
 
         if (data->program.tokens) corto_dealloc(data->program.tokens);
         if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
-            corto_error("select '%s' failed: %s", data->expr, corto_lasterr());
+            corto_throw("select '%s' failed", data->expr);
             goto error;
         }
 
         if (corto_selectRun(data)) {
-            corto_error("select '%s' failed: %s", data->expr, corto_lasterr());
+            corto_throw("select '%s' failed", data->expr);
             goto error;
         }
     }
@@ -1362,7 +1364,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->exprCurrent = 0;
 
     if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
-        corto_seterr("select '%s' failed: %s", data->expr, corto_lasterr());
+        corto_throw("select '%s' failed", data->expr);
         goto error;
     }
 

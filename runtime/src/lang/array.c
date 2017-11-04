@@ -20,14 +20,14 @@ int16_t corto_array_construct(
             this->elementType = corto_collection(this)->elementType;
         }
     } else {
-        corto_seterr("no elementType provided for array");
+        corto_throw("no elementType provided for array");
         goto error;
     }
 
     /* Arrays can only be defined when their elementType is also defined. */
    if (!corto_checkState((corto_collection(this)->elementType), CORTO_VALID)) {
        if (!(corto_instanceof(corto_type(corto_type_o), corto_collection(this)->elementType) && corto_type(corto_collection(this)->elementType)->reference)) {
-            corto_seterr(
+            corto_throw(
                 "elementType '%s' is not defined",
                 corto_fullpath(NULL, corto_collection(this)->elementType));
             goto error;
@@ -43,12 +43,12 @@ int16_t corto_array_construct(
             corto_type(this)->size = elementTypeSize * corto_collection(this)->max;
             corto_type(this)->alignment = corto_type_alignmentof(elementType);
         } else {
-            corto_seterr("array has size 0",
+            corto_throw("array has size 0",
                 corto_fullpath(NULL, this));
             goto error;
         }
     } else {
-        corto_seterr("elementType '%s' has size 0",
+        corto_throw("elementType '%s' has size 0",
             corto_fullpath(NULL, elementType), corto_fullpath(NULL, this));
         goto error;
     }

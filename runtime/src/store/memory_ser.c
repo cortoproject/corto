@@ -121,12 +121,12 @@ corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* us
         }
         break;
     case CORTO_MAP:
-        if (*(corto_rbtree*)o) {
+        if (*(corto_rb*)o) {
             /* Free memory allocated for mapnodes */
             if (corto_collection_requiresAlloc(corto_collection(t)->elementType)) {
-                corto_rb_walk(*(corto_rbtree*)o, corto_ser_clear,NULL);
+                corto_rb_walk(*(corto_rb*)o, corto_ser_clear,NULL);
             }
-            corto_rb_free(*(corto_rbtree*)o);
+            corto_rb_free(*(corto_rb*)o);
         }
         break;
 

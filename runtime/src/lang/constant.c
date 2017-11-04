@@ -27,7 +27,7 @@ int16_t corto_constant_init(
     }
     else
     {
-        corto_seterr("constant/init: parent of constant '%s' is not an enum.",
+        corto_throw("constant/init: parent of constant '%s' is not an enum.",
             corto_fullpath(NULL, this));
         goto error;
     }

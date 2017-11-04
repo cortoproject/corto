@@ -132,7 +132,7 @@ int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction actio
     if (this->count) {
         corto_entityAdmin *admin = corto_entityAdmin_get(this);
         if (!admin) {
-            corto_seterr("failed to obtain entity admin");
+            corto_throw("failed to obtain entity admin");
             return 0;
         }
 
@@ -286,7 +286,7 @@ int corto_entityAdmin_remove(
         }
     }
     if (!count && !removeAll) {
-        corto_seterr(
+        corto_throw(
           "unsubscribe failed, could not find entity for instance <%p>", instance);
         goto error;
     }

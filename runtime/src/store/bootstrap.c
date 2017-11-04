@@ -948,7 +948,7 @@ static void corto_initObject(corto_object o) {
 /* Define object */
 static void corto_defineObject(corto_object o) {
     if (corto_define(o)) {
-        corto_error("construction of builtin-object '%s' failed (%s)", corto_idof(o), corto_lasterr());
+        corto_throw("construction of builtin-object '%s' failed", corto_idof(o));
     }
 }
 
@@ -1062,7 +1062,7 @@ static int corto_loadConfig(void) {
             while (corto_iter_hasNext(&it)) {
                 char *file = corto_iter_next(&it);
                 if (corto_load(file, 0, NULL)) {
-                    corto_error("%s: %s", file, corto_lasterr());
+                    corto_raise();
                     result = -1;
                     /* Don't break, report all errors */
                 } else {
@@ -1073,11 +1073,10 @@ static int corto_loadConfig(void) {
             corto_closedir(cfgfiles);
         } else if (corto_file_test(cfg)) {
             if (corto_load(cfg, 0, NULL)) {
-                corto_error("%s: %s", cfg, corto_lasterr());
                 result = -1;
             }
         } else {
-            corto_error(
+            corto_throw(
                 "$CORTO_CONFIG ('%s') does not point to an accessible path or file", 
                 cfg);
             result = -1;
@@ -1094,6 +1093,8 @@ int corto_start(char *appName) {
     if ((appName[0] == '.') && (appName[1] == '/')) {
         corto_appName += 2;
     }
+
+    base_init(appName);    
 
     /* Initialize TLS keys */
     corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
@@ -1133,8 +1134,6 @@ int corto_start(char *appName) {
 
     /* Initialize operating system environment */
     corto_environment_init();
-
-    base_init(appName);
 
     /* Initialize security */
     corto_secure_init();
@@ -1293,9 +1292,8 @@ int corto_start(char *appName) {
         corto_loaderInstance->autoLoad = TRUE;
     }
     else {
-        corto_trace("init: autoloading of packages disabled: %s", 
-            corto_lasterr());
-        corto_lasterr();
+        corto_raise();
+        corto_trace("init: autoloading of packages disabled");
     }
 #endif
 

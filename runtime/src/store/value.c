@@ -151,7 +151,7 @@ corto_int16 corto_value_ptrset(corto_value *val, void *ptr) {
         val->is.mapElement.v = ptr;
         break;
     case CORTO_LITERAL:
-        corto_seterr("cannot set pointer for literal");
+        corto_throw("cannot set pointer for literal");
         goto error;
     default:
         corto_critical("corto_value_ptrset: invalid corto_valueKind(%d).", val->kind);
@@ -214,7 +214,7 @@ corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_
         if (cur && (cur = strchr(cur + 1, '.'))) *cur = '\0';
 
         if (!corto_instanceof(corto_interface_o, t)) {
-            corto_seterr(
+            corto_throw(
                 "cannot get member from a non-composite value (type is '%s')",
                 corto_fullpath(NULL, t));
             goto error;
@@ -222,7 +222,7 @@ corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_
 
         if (!strcmp(prev, "super")) {
             if (!(t = (corto_type)corto_interface(t)->base)) {
-                corto_seterr("super unpexpected: interface '%s' does not have a base",
+                corto_throw("super unpexpected: interface '%s' does not have a base",
                     corto_fullpath(NULL, t));
                 goto error;
             } else {
@@ -231,7 +231,7 @@ corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_
         } else {
             corto_member m = corto_interface_resolveMember(t, prev);
             if (!m) {
-                corto_seterr(
+                corto_throw(
                     "unresolved member '%s' in type '%s'",
                     prev,
                     corto_fullpath(NULL, t));
@@ -260,13 +260,13 @@ corto_function corto_valueFunction(corto_value* val) {
         if (corto_class_instanceof(corto_procedure_o, corto_typeof(val->is.object.o))) {
             result = val->is.object.o;
         } else {
-            corto_seterr("object '%s' in value is not a function",
+            corto_throw("object '%s' in value is not a function",
                 corto_fullpath(NULL, val->is.object.o));
             result = NULL;
         }
         break;
     default:
-       corto_seterr("value does not represent a function");
+       corto_throw("value does not represent a function");
        result = NULL;
        break;
     }
@@ -511,7 +511,7 @@ static corto_type corto_valueExpr_getType(corto_type src, corto_type target, cor
                 if (targetIsRef) {
                     result = target;
                 } else {
-                    corto_seterr(
+                    corto_throw(
                       "invalid usage of null with non-string and non-reference type '%s'",
                       corto_fullpath(NULL, target));
                     goto error;
@@ -855,7 +855,7 @@ corto_int16 corto_valueExpr_getTypeForBinary(
                 castType = leftType;
             }
         } else {
-            corto_seterr("cannot cast from '%s' to '%s'",
+            corto_throw("cannot cast from '%s' to '%s'",
                     corto_fullpath(NULL, leftType),
                     corto_fullpath(NULL, rightType));
             goto error;
@@ -1033,7 +1033,7 @@ void corto_value_free(corto_value *v) {
 corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content) {
     corto_contentType ct = corto_loadContentType(contentType);
     if (!ct) {
-        corto_seterr("unknown contentType '%s'", contentType);
+        corto_throw("unknown contentType '%s'", contentType);
         goto error;
     }
 
@@ -1051,7 +1051,7 @@ corto_string corto_value_contentof(corto_value *v, corto_string contentType) {
     corto_string result;
 
     if (!ct) {
-        corto_seterr("unknown contentType '%s'", contentType);
+        corto_throw("unknown contentType '%s'", contentType);
         goto error;
     }
 

@@ -158,7 +158,7 @@ repeat:
             } else if (!strcmp(buffer, "..")) {
                 o = corto_parentof(o);
                 if (!o) {
-                    corto_seterr("cannot resolve parent of root");
+                    corto_throw("cannot resolve parent of root");
                     goto error;
                 }
                 corto_ptr_setref(&lookup, o);
@@ -201,7 +201,7 @@ repeat:
                 } else if (ch == '/') {
                     ptr += 1;
                 } else {
-                    corto_seterr("invalid ':' in expression '%s'", str);
+                    corto_throw("invalid ':' in expression '%s'", str);
                     o = NULL;
                     break;
                 }

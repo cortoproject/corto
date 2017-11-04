@@ -55,7 +55,7 @@ int16_t corto_struct_construct(
     if (!corto_interface(this)->nextMemberId && !corto_interface(this)->base) {
         corto_member m = corto_declareChild(this, "__dummy", corto_member_o);
         if (!m) {
-            corto_critical("failed to declare dummy member (%s)", corto_lasterr());
+            corto_critical("failed to declare dummy member");
         }
 
         corto_ptr_setref(&m->type, corto_int8_o);
@@ -72,9 +72,8 @@ int16_t corto_struct_construct(
     if (corto_interface(this)->members.length) {
         alignment = corto__interface_calculateAlignment(corto_interface(this));
         if (!alignment) {
-            corto_seterr("can't compute alignment of %s: %s",
-                corto_fullpath(NULL, this),
-                corto_lasterr());
+            corto_throw("can't compute alignment of %s",
+                corto_fullpath(NULL, this));
             goto error;
         }
 
@@ -85,7 +84,7 @@ int16_t corto_struct_construct(
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
-            corto_seterr("struct '%s' inherits from non-struct type '%s'",
+            corto_throw("struct '%s' inherits from non-struct type '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, base));
             goto error;
         }
@@ -118,9 +117,8 @@ int16_t corto_struct_construct(
     if (corto_interface(this)->members.length) {
         size = corto__interface_calculateSize(corto_interface(this), size);
         if (!size) {
-            corto_seterr("can't compute size of %s: %s",
-                corto_fullpath(NULL, this),
-                corto_lasterr());
+            corto_throw("can't compute size of %s",
+                corto_fullpath(NULL, this));
             goto error;
         }
 
@@ -135,14 +133,14 @@ int16_t corto_struct_construct(
         for (i = 0; i < this->keys.length; i++) {
             corto_object o = corto_interface_resolveMember(this, this->keys.buffer[i]);
             if (!o) {
-                corto_seterr("no member with name '%s' found for table '%s'",
+                corto_throw("no member with name '%s' found for table '%s'",
                     this->keys.buffer[i],
                     corto_fullpath(NULL, this));
                 goto error;
             }
 
             if (!corto_instanceof(corto_member_o, o)) {
-                corto_seterr("object '%s' in table '%s' is not a member",
+                corto_throw("object '%s' in table '%s' is not a member",
                     corto_fullpath(NULL, o),
                     corto_fullpath(NULL, this));
                 goto error;

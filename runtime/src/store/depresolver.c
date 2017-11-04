@@ -522,7 +522,7 @@ int corto_depresolver_walk(corto_depresolver this) {
     corto_dealloc(this);
 
     if (unresolved) {
-        corto_seterr("unsolvable dependecy cycles encountered in data");
+        corto_throw("unsolvable dependecy cycles encountered in data");
         goto error;
     }
 

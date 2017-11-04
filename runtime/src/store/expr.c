@@ -43,21 +43,21 @@ static corto_int16 ext_corto_expr_load() {
         _corto_expr_compb = (corto_int16 ___ (*)(ext_corto_expr*,ext_corto_expr_opt*,char*,char**))
             corto_load_proc("driver/ext", &dl, "corto_expr_compb");
         if (!_corto_expr_compb) {
-            corto_seterr("corto_expr_compb not found in corto/expr");
+            corto_throw("corto_expr_compb not found in corto/expr");
             goto error;
         }
 
         _corto_expr_runb = (corto_int16 ___ (*)(ext_corto_expr*,corto_value*,void**))
             corto_load_proc("driver/ext", &dl, "corto_expr_runb");
         if (!_corto_expr_runb) {
-            corto_seterr("corto_expr_runb not found in corto/expr");
+            corto_throw("corto_expr_runb not found in corto/expr");
             goto error;
         }
 
         _corto_expr_free = (corto_int16 ___ (*)(ext_corto_expr*))
             corto_load_proc("driver/ext", &dl, "corto_expr_free");
         if (!_corto_expr_free) {
-            corto_seterr("corto_expr_free not found in corto/expr");
+            corto_throw("corto_expr_free not found in corto/expr");
             goto error;
         }
     }

@@ -17,7 +17,7 @@ corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure pr
         } else {
             if (*f != corto_function(procedure)) {
                 /* Overriding metaprocedures is not allowed. */
-                corto_seterr(
+                corto_throw(
                   "definition of metaprocedure '%s' conflicts with existing '%s'",
                   corto_fullpath(NULL, *f),
                   corto_fullpath(NULL, procedure));

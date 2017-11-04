@@ -266,7 +266,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
     kind = info->type->kind;
 
     if ((kind != CORTO_COMPOSITE) && (kind != CORTO_COLLECTION) && (kind != CORTO_ANY)) {
-        corto_seterr("'{' unexpected for type '%s'",
+        corto_throw("'{' unexpected for type '%s'",
             corto_fullpath(NULL, info->type));
         goto error;
     }
@@ -288,7 +288,7 @@ static corto_string corto_string_deserParseScope(corto_string str, struct corto_
             corto_int32 d = *(corto_int32*)ptr;
             corto_member m = safe_corto_union_findCase(info->type, d);
             if (!m) {
-                corto_seterr("discriminator '%d' invalid for union '%s'",
+                corto_throw("discriminator '%d' invalid for union '%s'",
                     d, corto_fullpath(NULL, info->type));
                 goto error;
             }
@@ -383,7 +383,7 @@ corto_int16 corto_string_getDestinationPtr(
     *ptr_out = NULL;
 
     if (!info) {
-        corto_seterr("excess elements in string");
+        corto_throw("excess elements in string");
         goto error;
     }
 
@@ -439,19 +439,19 @@ static corto_int16 corto_string_deserParseValue(
 {
     void *offset;
     if (corto_string_getDestinationPtr(info, data, &offset)) {
-        corto_seterr("%s: %s", value, corto_lasterr());
+        corto_throw("cannot deserialize %s", value);
         goto error;
     }
 
     /* No more elements where available in the index, meaning an excess element */
     if (!info) {
-        corto_seterr("excess elements in scope @ '%s'", value);
+        corto_throw("excess elements in scope @ '%s'", value);
         goto error;
     }
 
     /* Can typically occur when mixing short with default notation. */
     if (info->parsed) {
-        corto_seterr("member '%s' is already parsed", corto_idof(info->m));
+        corto_throw("member '%s' is already parsed", corto_idof(info->m));
         goto error;
     }
 
@@ -467,14 +467,14 @@ static corto_int16 corto_string_deserParseValue(
                     o = data->out;
                     corto_claim(o);
                 } else {
-                    corto_seterr("cannot refer to self (<0>), not deserializing an object");
+                    corto_throw("cannot refer to self (<0>), not deserializing an object");
                     goto error;
                 }
             } else if (data->anonymousObjects && (index <= corto_ll_size(data->anonymousObjects))) {
                 o = corto_ll_get(data->anonymousObjects, index - 1);
                 corto_claim(o);
             } else {
-                corto_seterr("undefined anonymous identifier '%s'", value);
+                corto_throw("undefined anonymous identifier '%s'", value);
                 goto error;
             }
         } else {
@@ -485,7 +485,7 @@ static corto_int16 corto_string_deserParseValue(
             if (offset) corto_ptr_setref(offset, o);
             if (o) corto_release(o);
         } else {
-            corto_seterr("unresolved reference to '%s' for member '%s'", value,
+            corto_throw("unresolved reference to '%s' for member '%s'", value,
                 corto_fullpath(NULL, info->m));
             goto error;
         }
@@ -607,7 +607,7 @@ static corto_string corto_string_parseAnonymous(
     void *offset;
 
     if (corto_string_getDestinationPtr(info, data, &offset)) {
-        corto_seterr("%s: %s", str, corto_lasterr());
+        corto_throw("cannot deserialize %s", str);
         goto error;
     }
 
@@ -622,7 +622,7 @@ static corto_string corto_string_parseAnonymous(
                 /* If the <n> is followed up with more data, a new anonymous
                  * object is being created while one existed already with the
                  * specified number */
-                corto_seterr("identifier <%d> is already defined (%s)", index, value);
+                corto_throw("identifier <%d> is already defined (%s)", index, value);
                 goto error;
             }
         }
@@ -634,7 +634,7 @@ static corto_string corto_string_parseAnonymous(
     if (!o && *valuePtr) {
         corto_object type = corto_resolve(NULL, valuePtr);
         if (!type) {
-            corto_seterr("unresolved type '%s'", valuePtr);
+            corto_throw("unresolved type '%s'", valuePtr);
             goto error;
         }
 
@@ -642,15 +642,13 @@ static corto_string corto_string_parseAnonymous(
             o = *(corto_object*)offset;
             if (!o || (type != corto_typeof(o))) {
                 if (!corto_instanceof(corto_type_o, type)) {
-                    corto_seterr("'%s' is not a type", corto_fullpath(NULL, type));
+                    corto_throw("'%s' is not a type", corto_fullpath(NULL, type));
                     goto error;
                 }
 
                 o = corto_declare(type);
                 if (!o) {
-                    corto_seterr("failed to declare %s: %s",
-                        value,
-                        corto_lasterr());
+                    corto_throw("failed to declare %s", value);
                     goto error;
                 }
             } else {
@@ -733,7 +731,7 @@ static corto_string corto_string_deserParse(
         case '=': /* Explicit member assignment */
             excess = FALSE;
             if (buffer == bptr) {
-                corto_seterr("missing member identifier");
+                corto_throw("missing member identifier");
                 goto error;
             } else {
                 *nonWs = '\0';
@@ -741,7 +739,7 @@ static corto_string corto_string_deserParse(
                 bptr = buffer;
                 nonWs = bptr;
                 if (!memberInfo) {
-                    corto_seterr("member '%s' not found in type '%s'", buffer, corto_fullpath(NULL, data->type));
+                    corto_throw("member '%s' not found in type '%s'", buffer, corto_fullpath(NULL, data->type));
                     goto error;
                 }
                 break;
@@ -801,7 +799,7 @@ static corto_string corto_string_deserParse(
 
                 /* ptr must always end with a '}' */
                 if (*ptr != ')') {
-                    corto_seterr("missing ')' at '%s' (%s)", start, ptr);
+                    corto_throw("missing ')' at '%s' (%s)", start, ptr);
                     goto error;
                 }
             }
@@ -879,7 +877,7 @@ static corto_string corto_string_deserParse(
     }
 
     if (excess) {
-        corto_seterr("excess elements in string");
+        corto_throw("excess elements in string");
         goto error;
     }
 
@@ -920,7 +918,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
                 type = corto_resolve(NULL, buffer);
                 if (type) {
                     if (data->type && (type != data->type)) {
-                        corto_seterr(
+                        corto_throw(
                           "type of object ('%s') does not match string ('%s')",
                           corto_fullpath(NULL, data->type),
                           corto_fullpath(NULL, type));
@@ -934,13 +932,13 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
                         }
                         data->type = type;
                     } else {
-                        corto_seterr("'%s' is not a type", buffer);
+                        corto_throw("'%s' is not a type", buffer);
                         corto_release(type);
                         goto error;
                     }
                     corto_release(type);
                 } else {
-                    corto_seterr("unknown type '%s'", buffer);
+                    corto_throw("unknown type '%s'", buffer);
                     goto error;
                 }
             } else {
@@ -964,7 +962,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
         if (!data->type) {
             data->type = corto_typeof(data->out);
         } else if (!corto_instanceofType(corto_typeof(data->out), data->type)) {
-            corto_seterr("object '%s' of type '%s' is not an instance of type '%s'",
+            corto_throw("object '%s' of type '%s' is not an instance of type '%s'",
                 corto_fullpath(NULL, data->out),
                 corto_fullpath(NULL, corto_typeof(data->out)),
                 corto_fullpath(NULL, data->type));
@@ -973,7 +971,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     }
 
     if (!data->type) {
-        corto_seterr("no type provided for '%s'", str);
+        corto_throw("no type provided for '%s'", str);
         goto error;
     }
     
@@ -987,11 +985,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     }
 
     if (!ptr) {
-        if (!corto_lasterr()) {
-            corto_seterr("failed to deserialize '%s'", str);
-        } else {
-            corto_seterr("failed to deserialize '%s': %s", str, corto_lasterr());
-        }
+        corto_throw("failed to deserialize '%s'", str);
         goto error;
     }
 

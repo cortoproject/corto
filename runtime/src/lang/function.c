@@ -134,7 +134,7 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
         /* Check if function matches */
         if (!d) {
             if (strcmp(id, corto_idof(o))) {
-                corto_seterr(
+                corto_throw(
                   "function '%s' conflicts with existing declaration '%s'",
                   id, corto_idof(o));
                 data->error = TRUE;
@@ -256,7 +256,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
             /* Parse arguments */
             for(i = 0; i < count; i++) {
                 if (corto_signatureParamType(name, i, id, &flags)) {
-                    corto_seterr(
+                    corto_throw(
                         "error occurred while parsing type of parameter '%d' for signature '%s'",
                         i,
                         name);
@@ -279,13 +279,13 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 /* Assign type */
                 result.buffer[i].type = corto_resolve(scope, id);
                 if (!result.buffer[i].type) {
-                    corto_seterr("%s: '%s' not found", name, id);
+                    corto_throw("%s: '%s' not found", name, id);
                     goto error;
                 }
 
                 /* Validate whether reference is not redundantly applied */
                 if (result.buffer[i].passByReference && result.buffer[i].type->reference) {
-                    corto_seterr(
+                    corto_throw(
                         "redundant '&' qualifier for parameter %d, type '%s' is already a reference",
                         i,
                         corto_fullpath(NULL, result.buffer[i].type));
@@ -294,7 +294,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
 
                 /* Parse name */
                 if (corto_signatureParamName(name, i, id)) {
-                    corto_seterr(
+                    corto_throw(
                         "error occurred while parsing name of argument '%s' for signature '%s'",
                         name);
                     goto error;

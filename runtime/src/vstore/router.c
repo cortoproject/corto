@@ -20,7 +20,7 @@ int16_t corto_router_construct(
         corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
         if (!corto_instanceofType(corto_routerimpl_o, corto_interface(this)->base)) {
-            corto_seterr("router must inherit from 'routerimpl'");
+            corto_throw("router must inherit from 'routerimpl'");
             goto error;
         }
     }
@@ -62,7 +62,7 @@ int16_t corto_router_match(
     if (routerBase->elementSeparator) {
         strcpy(requestBuffer, request[0] == '/' ? request + 1 : request);
         if ((elementCount = corto_pathToArray(requestBuffer, requestElements, "/")) == -1) {
-            corto_seterr("%s: invalid request: %s", request, corto_lasterr());
+            corto_throw("invalid request '%s'", request);
             goto error;
         }
     } else {
@@ -73,7 +73,7 @@ int16_t corto_router_match(
     
     corto_stringseq pattern = {elementCount, requestElements};
     if (!(match = corto_routerimpl_findRoute(router, instance, pattern, param, &routerData))) {
-        corto_seterr("router: resource '%s' unknown", request);
+        corto_throw("router: resource '%s' unknown", request);
         goto error;
     }
 
@@ -84,7 +84,7 @@ int16_t corto_router_match(
          returnType->reference) &&
         !result.value)
     {
-        corto_seterr("no result provided for route '%s' (expected value of type '%s')",
+        corto_throw("no result provided for route '%s' (expected value of type '%s')",
             corto_fullpath(NULL, match),
             returnType ? corto_fullpath(NULL, returnType) : "void");
         goto error;

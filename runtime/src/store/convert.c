@@ -168,7 +168,7 @@ CORTO_DECL_TRANSFORM(string, boolean) {
     } else if (!strcmp(str, "FALSE") || !strcmp(str, "false")) {
         *(corto_bool*)to = FALSE;
     } else {
-        corto_seterr("'%s' is not a valid boolean value", str);
+        corto_throw("'%s' is not a valid boolean value", str);
         return -1;
     }
     return 0;
@@ -180,7 +180,7 @@ CORTO_DECL_TRANSFORM(enum, string) {
     CORTO_UNUSED(toType);
     constant = corto_enum_constant((corto_enum)fromType, *(corto_int32*)from);
     if (!constant) {
-        corto_seterr("value %d is not valid for enumeration '%s'",
+        corto_throw("value %d is not valid for enumeration '%s'",
             *(corto_uint32*)from,
             corto_fullpath(NULL, fromType));
         return -1;
@@ -196,7 +196,7 @@ CORTO_DECL_TRANSFORM(string, enum) {
 
     o = corto_find(toType, *(corto_string*)from, CORTO_FIND_DEFAULT);
     if (!o) {
-        corto_seterr(
+        corto_throw(
             "constant identifier '%s' is not valid for enumeration '%s'",
             *(corto_string*)from,
             corto_fullpath(NULL, toType));
@@ -308,7 +308,7 @@ CORTO_DECL_TRANSFORM(string, bitmask) {
                 *bptr = '\0';
                 constant = corto_find(toType, buffer, CORTO_FIND_DEFAULT);
                 if (!constant) {
-                    corto_seterr(
+                    corto_throw(
                         "constant identifier '%s' is not valid for bitmask '%s'.",
                         buffer, corto_fullpath(NULL, toType));
                     v = 0;
@@ -550,7 +550,7 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
             if (corto_type_castable(toType, fromType)) {
                 *(corto_object*)to = *(corto_object*)from;
             } else {
-                corto_seterr("reference types '%s' and '%s' are not castable",
+                corto_throw("reference types '%s' and '%s' are not castable",
                   corto_fullpath(NULL, fromType),
                   corto_fullpath(NULL, toType));
                 goto error;
@@ -563,14 +563,14 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
                 corto_ptr_setstr((corto_string*)to,
                   corto_fullpath(id, *(corto_object*)from));
             } else {
-                corto_seterr(
+                corto_throw(
                   "cannot cast reference type '%s' to primitive type '%s'",
                   corto_fullpath(NULL, fromType),
                   corto_fullpath(NULL, toType));
                 goto error;
             }
         } else {
-            corto_seterr(
+            corto_throw(
               "cannot cast reference type '%s' to type '%s'",
               corto_fullpath(NULL, fromType),
               corto_fullpath(NULL, toType));
@@ -585,7 +585,7 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
                 goto error;
             }
         } else {
-            corto_seterr("no conversion possible from primitive type '%s' to '%s'.",
+            corto_throw("no conversion possible from primitive type '%s' to '%s'.",
                 corto_fullpath(NULL, fromType), corto_fullpath(NULL, toType));
             goto error;
         }
