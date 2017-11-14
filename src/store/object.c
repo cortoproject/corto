@@ -261,13 +261,13 @@ static corto_object corto__initScope(
 
         /* Call framework initializer. */
         if (corto_init(o)) {
-            corto_throw("%s/init failed", corto_fullpath(NULL, corto_typeof(o)));
-
             /* Remove object from scope */
             corto__orphan(o);
 
             /* Reset parent so deinitScope won't release it */
             scope->parent = NULL;
+
+            corto_throw(NULL);
             goto error;
         }
     }
@@ -730,7 +730,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 corto_critical("corto_adopt: lock operation on scopeLock of parent failed");
 
             if (!p_scope->scope) {
-                p_scope->scope = corto_rb_new((corto_equals_cb)corto_compareDefault);
+                p_scope->scope = corto_rb_new((corto_equals_cb)corto_compareDefault, NULL);
             }
 
             corto_object existing = corto_rb_findOrSet(p_scope->scope, c_scope->id, child);

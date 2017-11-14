@@ -225,9 +225,9 @@ int16_t _corto_ptr_cast(
  */
 CORTO_EXPORT
 corto_equalityKind _corto_ptr_compare(
-    void *ptr1,
+    const void *ptr1,
     corto_type type,
-    void *ptr2);
+    const void *ptr2);
 
 /** Initialize a value.
  * This function is not needed when a value is allocated with corto_ptr_new. A

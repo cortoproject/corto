@@ -3,6 +3,8 @@
     "type": "package",
     "value": {
         "language": "c",
-        "use": ["corto"]
+        "use": ["corto"],
+        "managed": false,
+        "use_generated_api": false
     }
 }

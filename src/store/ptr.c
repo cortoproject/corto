@@ -86,17 +86,24 @@ error:
     return -1;
 }
 
-corto_equalityKind _corto_ptr_compare(void *p1, corto_type type, void *p2) {
+corto_equalityKind _corto_ptr_compare(
+    const void *p1, 
+    corto_type type, 
+    const void *p2) 
+{
     corto_assertObject(type);
 
     corto_value vdst;
     corto_value vsrc;
-    vdst = corto_value_value(p1, type);
-    vsrc = corto_value_value(p2, type);
+    vdst = corto_value_value((void*)p1, type);
+    vsrc = corto_value_value((void*)p2, type);
     return corto_value_compare(&vdst, &vsrc);
 }
 
-corto_int16 _corto_ptr_init(void *p, corto_type type) {
+corto_int16 _corto_ptr_init(
+    void *p, 
+    corto_type type) 
+{
     corto_assertObject(type);
     memset(p, 0, corto_type_sizeof(type));
     corto_value v;

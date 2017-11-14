@@ -1107,6 +1107,9 @@ int corto_start(char *appName) {
     corto_tls_new(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
     corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
     corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
+    
+    /* Initialize operating system environment */
+    corto_environment_init();
 
     /* Push init component for logging */
     corto_log_push("init");
@@ -1131,9 +1134,6 @@ int corto_start(char *appName) {
     S_B_INVOKE = corto_benchmark_init("S_B_INVOKE");
     S_B_MATCHPARENT = corto_benchmark_init("S_B_MATCHPARENT");
     S_B_CONTENTTYPE = corto_benchmark_init("S_B_CONTENTTYPE");
-
-    /* Initialize operating system environment */
-    corto_environment_init();
 
     /* Initialize security */
     corto_secure_init();
@@ -1304,8 +1304,6 @@ int corto_start(char *appName) {
 
     /* Load configuration, if available */
     corto_loadConfig();
-    
-    corto_ok("initialized");
 
     /* Pop init log component */
     corto_log_pop();
@@ -1347,7 +1345,7 @@ int corto_stop(void) {
 
     CORTO_APP_STATUS = 2; /* Shutting down */
 
-    corto_trace("init: shutting down");
+    corto_trace("shutting down");
 
     if (corto_getOwner()) {
         corto_error("owner has not been reset to NULL before shutting down");

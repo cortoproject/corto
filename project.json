@@ -7,6 +7,7 @@
         "version": "1.4.0",         
         "managed": false,
         "lib": ["rt", "dl", "m", "ffi", "pthread"],
+        "use_generated_api": false,
         "sources": [
             "src", "../base/src"
         ],
