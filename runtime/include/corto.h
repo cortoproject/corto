@@ -56,15 +56,15 @@ extern "C" {
  * @param appName Name of the application. Used in tracing.
  * @return 0 if success, nonzero if failed.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int corto_start(
     char *appName);
- 
+
 /** Stop corto
  * This function deinitializes the corto object store. Should only be called once
  * per process, and after corto_start.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int corto_stop(void);
 
 /** Mount package data
@@ -75,7 +75,7 @@ int corto_stop(void);
  * @param enable Specifiies whether to enable mounting package data.
  * @return Previous value.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 bool corto_enableload(
     corto_bool enable);
 
@@ -86,7 +86,7 @@ bool corto_enableload(
  * @param autoload Specifies whether to enable automatic package loading.
  * @return Previous value.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 bool corto_autoload(
     corto_bool autoload);
 
@@ -95,8 +95,8 @@ bool corto_autoload(
  * correct corto library before allowing it to be loaded.
  *
  * @return String that uniquely identifies the current corto build
- */ 
-CORTO_EXPORT 
+ */
+CORTO_EXPORT
 char* corto_getBuild(void);
 
 /** Get filename of corto library that current process links with.
@@ -104,15 +104,15 @@ char* corto_getBuild(void);
  * build that does not match the build of the application.
  *
  * @return path + filename of the corto library that the application links with.
- */ 
-CORTO_EXPORT 
+ */
+CORTO_EXPORT
 char* corto_getLibrary(void);
 
 /** Specify function to be executed when corto exits.
  *
  * @param handler Pointer to function to be executed.
- */ 
-CORTO_EXPORT 
+ */
+CORTO_EXPORT
 void corto_onexit(
     void(*handler)(void*), void* userData);
 

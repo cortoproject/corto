@@ -193,7 +193,7 @@ struct struct_targetSequence:/
 struct struct_targetList:/
     m: target{IntList}
 
-enum TypeKind :/ 
+enum TypeKind :/
     Int,
     String,
     Composite,
@@ -390,6 +390,18 @@ class LifecycleTest:/
     void destruct()
     void delete()
     void deinit()
+
+// Types to test invoking interface methods
+interface Vehicle:/
+    float64 move(float64 x, float64 y)
+
+class Boat: implements={Vehicle} :/
+    cur_x, cur_y: float64
+    float64 move(float64 x, float64 y)
+
+class Plane: implements={Vehicle} :/
+    cur_x, cur_y: float64
+    float64 move(float64 x, float64 y)
 
 test/Suite Attributes:/
     void tc_testDefaultSet()
@@ -1387,6 +1399,10 @@ test/Suite MethodResolver:/
     void tc_nonexisting()
     void tc_redeclare()
 
+// Test invoking methods
+test/Suite MethodInvoking:/
+    void tc_interfaceMethod()
+
 // Test Corto string serializer
 test/Suite StringSerializer:/
     void tc_serBoolTrue()
@@ -1457,9 +1473,9 @@ test/Suite StringSerializer:/
     void tc_serStructTargetInt()
     void tc_serStructTargetString()
     void tc_serStructTargetReference()
-    void tc_serStructTargetStruct() 
+    void tc_serStructTargetStruct()
     void tc_serStructTargetArray()
-    void tc_serStructTargetSequence() 
+    void tc_serStructTargetSequence()
     void tc_serStructTargetList()
     void tc_serStructArrayInt()
     void tc_serStructArrayString()
@@ -1733,6 +1749,11 @@ test/Suite ValueCast:/
     void tc_castStringUint()
     void tc_castStringFloat()
     void tc_castStringEnum()
+
+// Test value casting
+test/Suite BinaryOperators:/
+    void tc_compareStringEqual()
+    void tc_compareStringNotEqual()
 
 // Test value expressions
 test/Suite ValueExpr:/

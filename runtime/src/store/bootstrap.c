@@ -671,6 +671,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mountPolicy_sampleRate),\
     SSO_OP_OBJ(vstore_mountPolicy_queue),\
     SSO_OP_OBJ(vstore_mountPolicy_expiryTime),\
+    SSO_OP_OBJ(vstore_mountPolicy_filterResults),\
     /* mountSubscription */\
     SSO_OP_OBJ(vstore_mountSubscription_query),\
     SSO_OP_OBJ(vstore_mountSubscription_mountCount),\
@@ -689,6 +690,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_query_timeEnd),\
     SSO_OP_OBJ(vstore_query_content),\
     SSO_OP_OBJ(vstore_query_cardinality_),\
+    SSO_OP_OBJ(vstore_query_match_),\
     /* subscriber */\
     SSO_OP_OBJ(vstore_subscriber_query),\
     SSO_OP_OBJ(vstore_subscriber_contentType),\

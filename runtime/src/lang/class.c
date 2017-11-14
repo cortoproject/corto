@@ -18,7 +18,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
 
     /* Walk vtable of interface */
     compatible = TRUE;
-    for (i=0; (i<interface->methods.length); i++) {
+    for (i = 0; i < interface->methods.length; i++) {
         m_interface = (corto_method)interface->methods.buffer[i];
 
         m_class = NULL;
@@ -67,35 +67,39 @@ int16_t corto_class_construct(
 
         /* Validate that all interface interfaces are correctly implemented and generate interface tables. */
         for (i=0; (i<this->implements.length) && !result; i++) {
+
             corto_interface interface = this->implements.buffer[i];
             this->interfaceVector.buffer[i].interface = interface;
             this->interfaceVector.buffer[i].vector.length  = interface->methods.length;
+
             if (interface->methods.length) {
                 this->interfaceVector.buffer[i].vector.buffer = corto_calloc(interface->methods.length * sizeof(corto_function));
             } else {
                 this->interfaceVector.buffer[i].vector.buffer = NULL;
             }
-            result = !corto_class_checkInterfaceCompatibility(this, interface, &this->interfaceVector.buffer[i].vector);
+            result = !corto_class_checkInterfaceCompatibility(this, interface, &this->interfaceVector.buffer[i].vector);          
         }
     }
 
-    if (corto_interface_pullDelegate(corto_interface(this), corto_class_construct_o)) {
-        corto_type(this)->flags |= CORTO_TYPE_HAS_CONSTRUCT;
-    }
-    if (corto_interface_pullDelegate(corto_interface(this), corto_class_define_o)) {
-        corto_type(this)->flags |= CORTO_TYPE_HAS_DEFINE;
-    }
-    if (corto_interface_pullDelegate(corto_interface(this), corto_class_destruct_o)) {
-        corto_type(this)->flags |= CORTO_TYPE_HAS_DESTRUCT;
-    }
-    if (corto_interface_pullDelegate(corto_interface(this), corto_class_delete_o)) {
-        corto_type(this)->flags |= CORTO_TYPE_HAS_DELETE;
-    }
-    if (corto_interface_pullDelegate(corto_interface(this), corto_class_validate_o)) {
-        corto_type(this)->flags |= CORTO_TYPE_HAS_VALIDATE;
-    }
-    if (corto_interface_pullDelegate(corto_interface(this), corto_class_update_o)) {
-        corto_type(this)->flags |= CORTO_TYPE_HAS_UPDATE;
+    if (!result) {
+        if (corto_interface_pullDelegate(corto_interface(this), corto_class_construct_o)) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_CONSTRUCT;
+        }
+        if (corto_interface_pullDelegate(corto_interface(this), corto_class_define_o)) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_DEFINE;
+        }
+        if (corto_interface_pullDelegate(corto_interface(this), corto_class_destruct_o)) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_DESTRUCT;
+        }
+        if (corto_interface_pullDelegate(corto_interface(this), corto_class_delete_o)) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_DELETE;
+        }
+        if (corto_interface_pullDelegate(corto_interface(this), corto_class_validate_o)) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_VALIDATE;
+        }
+        if (corto_interface_pullDelegate(corto_interface(this), corto_class_update_o)) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_UPDATE;
+        }
     }
 
     return result;
@@ -168,18 +172,21 @@ corto_method corto_class_resolveInterfaceMethod(
     corto_interface interface,
     uint32_t method)
 {
-    corto_uint32 i;
-    corto_interfaceVector *v;
-
+    uint32_t i;
+    corto_interfaceVector *v = NULL;
+    
     /* Lookup interface class */
-    for (i=0; i<this->interfaceVector.length; i++) {
-        v = &this->interfaceVector.buffer[i];
-        if (v->interface == interface) {
-            break;
-        } else {
-            v = NULL;
+    corto_interface base = (corto_interface)this;
+    do {
+        for (i = 0; i < ((corto_class)base)->interfaceVector.length; i++) {
+            v = &((corto_class)base)->interfaceVector.buffer[i];
+            if (v->interface == interface) {
+                break;
+            } else {
+                v = NULL;
+            }
         }
-    }
+    } while (!v && (base = base->base));
 
     if (!v) {
         corto_error(
@@ -189,7 +196,7 @@ corto_method corto_class_resolveInterfaceMethod(
         goto error;
     }
 
-    return corto_method(v->vector.buffer[method-1]);
+    return corto_method(v->vector.buffer[method - 1]);
 error:
     return NULL;
 }

@@ -877,7 +877,7 @@ CORTO_CLASS_O(lang, primitive, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_AT
 
 /* /corto/lang/interface */
 CORTO_FW_ICD(lang, interface);
-CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_ICD);
+CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_overridable), CORTO_ICD);
     CORTO_MEMBER_O(lang_interface, kind, lang_compositeKind, CORTO_LOCAL|CORTO_READONLY);
     CORTO_MEMBER_O(lang_interface, nextMemberId, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_interface, members, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
@@ -1302,6 +1302,7 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
     CORTO_MEMBER_O(vstore_query, timeEnd, vstore_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, content, lang_bool, CORTO_GLOBAL|CORTO_HIDDEN);
     CORTO_METHOD_O(vstore_query, cardinality, "()", lang_uint32, corto_query_cardinality);
+    CORTO_METHOD_O(vstore_query, match, "(vstore/result result)", lang_bool, corto_query_cardinality);
 
 /* /corto/vstore/subscriber */
 CORTO_FW_IFCD(vstore, subscriber);
@@ -1337,6 +1338,7 @@ CORTO_STRUCT_O(vstore, mountPolicy, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NU
     CORTO_MEMBER_O(vstore_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, queue, vstore_queuePolicy, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_mountPolicy, expiryTime, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mountPolicy, filterResults, lang_bool, CORTO_GLOBAL);
 
 /* /corto/vstore/mountSubscription */
 CORTO_STRUCT_O(vstore, mountSubscription, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
@@ -1391,7 +1393,7 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_OVERRIDABLE_O(vstore_mount, onId, "()", lang_string, corto_mount_onId_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onQuery_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onHistoryQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onHistoryQuery_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onResume, "(string parent,string name,object object)", lang_object, corto_mount_onResume_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, onResume, "(string parent,string id,object object)", lang_object, corto_mount_onResume_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onNotify, "(vstore/subscriberEvent event)", lang_void, corto_mount_onNotify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, onHistoryBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);

@@ -73,6 +73,49 @@ CORTO_EXPORT
 void _corto_ptr_free(
     void *ptr, corto_type type);
 
+/** Allocate memory on the heap.
+ * This function allocates memory on the heap that can hold the value of a corto
+ * type. In contrary to corto_ptr_new, if the type is a reference type, the
+ * function will not create a pointer but allocate the type size.
+ * This function will invoke the initializer for the specified type.
+ *
+ * Note that the result of this function is a plain heap object, not a corto object, 
+ * so you cannot use functions that accept a corto_object instance.
+ *
+ * The result of this function can be used as a value for the binary/corto
+ * content type.
+ *
+ * To avoid memory leakage, the result of this function must be deallocated with
+ * corto_ptr_free.
+ *
+ * @param type The type for which to create the value.
+ * @return An initialized value on the heap for the specified type.
+ * @see corto_ptr_free
+ */
+CORTO_EXPORT
+void* _corto_mem_new(
+    corto_type type);
+
+/** Deallocate a value allocated with corto_mem_new.
+ * This function deallocates a value allocated with corto_mem_new and will invoke
+ * the deinitializer for the specified type.
+ *
+ * @param ptr A pointer to the value.
+ * @see corto_ptr_new
+ */
+CORTO_EXPORT
+void corto_mem_free(
+    void *ptr);
+
+/** Get type of a pointer allocated with corto_mem_new.
+ *
+ * @param ptr A pointer to the value.
+ * @see corto_ptr_new
+ */
+CORTO_EXPORT
+corto_type corto_mem_typeof(
+    void *ptr);
+
 /** Populate a collection with specified number of elements.
  * This function fills a collection with initialized elements. Depending on
  * the kind of the collection the function will either populate an array, sequence
@@ -297,6 +340,7 @@ void corto_ptr_setstr(
 #define corto_ptr_free(ptr, type) _corto_ptr_free(ptr, corto_type(type))
 #define corto_ptr_size(p, type, size) _corto_ptr_size(p, corto_type(type), size)
 #define corto_ptr_count(p, type) _corto_ptr_count(p, corto_type(type))
+#define corto_mem_new(type) _corto_mem_new(corto_type(type))
 
 #ifdef __cplusplus
 }

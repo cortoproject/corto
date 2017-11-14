@@ -1,13 +1,12 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
-
 int test_MounterIterCount_hasNext(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->hasNextCount ++;
     return this->hasNextCount <= 10;
 }
+
 void* test_MounterIterCount_next(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->nextCount ++;
@@ -16,6 +15,7 @@ void* test_MounterIterCount_next(corto_iter *it) {
     this->id[0] ++;
     return &this->result;
 }
+
 void test_MounterIterCount_release(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->releaseCount ++;
@@ -35,9 +35,17 @@ corto_resultIter test_MountIterCount_onQuery(
 
         this->result.id = "foo";
         this->result.parent = "/hello/world";
+        this->result.type = "void";
         corto_ptr_setstr(&this->id, "a");
     }
 
     return it;
+}
+
+int16_t test_MountIterCount_construct(
+    test_MountIterCount this)
+{
+    corto_mount(this)->policy.filterResults = false;
+    return corto_super_construct(this);
 }
 

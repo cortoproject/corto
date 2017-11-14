@@ -11,6 +11,7 @@ int16_t test_LoaderSimulatorMount_construct(
     corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_mount(this)->policy.filterResults = false;
 
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
@@ -58,6 +59,16 @@ int16_t test_LoaderSimulatorMount_construct(
         NULL,
         "corto/r",
         "/corto/vstore/package",
+        0,
+        FALSE
+    );
+
+    corto_resultAssign(
+        corto_resultListAppendAlloc(this->items),
+        "v",
+        NULL,
+        ".",
+        "package",
         0,
         FALSE
     );

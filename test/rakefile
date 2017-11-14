@@ -1,7 +1,0 @@
-
-COMPONENTS = %w(
-    store
-    vstore
-)
-
-require "#{ENV['CORTO_BUILD']}/forward"

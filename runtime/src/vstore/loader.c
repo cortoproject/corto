@@ -16,8 +16,11 @@ int16_t corto_loader_construct(
         if (safe_corto_mount_setContentType(this, "text/json")) {
             return -1;
         }
+        corto_mount(this)->policy.filterResults = false;
+
         return safe_corto_mount_construct(this);
     } else {
+        corto_throw("cannot create multiple instances of vstore/loader");
         return -1;
     }
 }
@@ -188,7 +191,7 @@ corto_resultIter corto_loader_onQuery_v(
     if (strcmp(targetPath, homePath)) {
         corto_loader_addDir(data, homePath, query);
     }
-    
+
     if (strcmp(targetPath, globalPath) && strcmp(homePath, globalPath)) {
         corto_loader_addDir(data, globalPath, query);
     }
@@ -206,4 +209,3 @@ corto_resultIter corto_loader_onQuery_v(
 
     return result;
 }
-

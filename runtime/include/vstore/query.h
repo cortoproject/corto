@@ -143,6 +143,13 @@ typedef struct corto_select__fluent {
     int16_t (*iter)(
         corto_resultIter *iter_out);
 
+    /** Resume objects into the object store.
+     * This function will resume objects in the object store.
+     *
+     * @return 0 if success, -1 if failed.
+     */
+    int16_t (*resume)(void);
+
     /** Return an iterator to the requested objects.
      * This function will return results as anonymous objects. No objects will be
      * created in the object store.
