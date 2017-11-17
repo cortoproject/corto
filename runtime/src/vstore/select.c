@@ -448,8 +448,6 @@ corto_resultIter corto_selectRequestMount(
           .timeBegin = data->from,
           .timeEnd = data->to};
 
-        printf("data->offset = %d, data->count = %d, data->limit = %d\n", data->offset, data->count, data->limit);
-
         if (data->mountAction) {
             /* If mount-action returns non-zero, quit the walk asap */
             if (!data->mountAction(mount, &r, data)) {

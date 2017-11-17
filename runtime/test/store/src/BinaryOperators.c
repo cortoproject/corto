@@ -13,9 +13,6 @@ void test_BinaryOperators_tc_compareStringEqual(
 
     corto_type type = corto_typeof(str);
 
-    corto_info("Type [%s] Target [%s] String [%s]",
-        corto_fullpath(NULL, type), targetNull, *str);
-
     bool equal = false;
     test_assert(corto_ptr_binaryOp(type, CORTO_COND_EQ, &target, &*str, &equal) == 0);
     test_assert(equal == true);
