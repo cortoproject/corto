@@ -80,7 +80,7 @@ struct corto_select_data {
     corto_string expr;                       /* Current expression */
     corto_string exprStart;                  /* Points to start of full expr */
     corto_string contentType;
-    
+
     /* Object filter */
     corto_string filter;
     corto_idmatch_program filterProgram;   /* Parsed program */
@@ -393,7 +393,7 @@ static corto_bool corto_selectMatch(
             } else {
                 result = corto_idmatch_run(data->typeFilterProgram, type);
             }
-        }        
+        }
     }
 
     return result;
@@ -422,7 +422,7 @@ char* corto_selectRelativeParent(
     return parent;
 }
 
-static 
+static
 corto_resultIter corto_selectRequestMount(
     corto_select_data *data,
     corto_mount mount)
@@ -433,7 +433,7 @@ corto_resultIter corto_selectRequestMount(
         char *parent = corto_selectRelativeParent(q, data);
 
         corto_debug("select: query (select='%s' from='%s') mount '%s', location '%s'",
-          expr, 
+          expr,
           parent,
           corto_fullpath(NULL, mount),
           data->location);
@@ -443,10 +443,12 @@ corto_resultIter corto_selectRequestMount(
           .select = expr,
           .type = data->type,
           .offset = (data->offset > data->count) ? data->offset - data->count : 0,
-          .limit = (data->offset > data->count) ? data->limit : data->limit - (data->offset - data->count),
+          .limit = (data->offset > data->count || !data->limit) ? data->limit : data->limit - (data->offset - data->count),
           .content = data->contentType ? TRUE : FALSE,
           .timeBegin = data->from,
           .timeEnd = data->to};
+
+        printf("data->offset = %d, data->count = %d, data->limit = %d\n", data->offset, data->count, data->limit);
 
         if (data->mountAction) {
             /* If mount-action returns non-zero, quit the walk asap */
@@ -479,7 +481,7 @@ void* corto_selectHistoryNext(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->ctx;
     corto_word dstValue;
     corto_sample *s = corto_iter_next(&ctx->iter);
-    
+
     dstValue = corto_selectConvert(ctx->data, ctx->data->item.type, s->value);
 
     if (ctx->sample.value) {
@@ -494,7 +496,7 @@ void* corto_selectHistoryNext(corto_iter *it) {
 
 void corto_selectHistoryRelease(corto_iter *it) {
     corto_selectHistoryIter_t *ctx = it->ctx;
-    
+
     if (ctx->sample.value) {
         ctx->data->dstSer->release(ctx->sample.value);
     }
@@ -527,9 +529,9 @@ static bool corto_selectIterMount(
 
     /* Filter data early if mount indicates it doesn't do any filtering, and
      * this is not a tree query */
-    if (data->filterProgram && 
-        mount->policy.filterResults && 
-        data->mask != CORTO_ON_TREE) 
+    if (data->filterProgram &&
+        mount->policy.filterResults &&
+        data->mask != CORTO_ON_TREE)
     {
         if (!corto_selectMatch(NULL, result, data)) {
             goto noMatch;
@@ -598,7 +600,7 @@ static bool corto_selectIterMount(
             data->item.history.ctx = &data->historyIterData;
             data->historyIterData.iter = result->history;
             data->historyIterData.data = data;
-            data->historyIterData.sample.value = 0;            
+            data->historyIterData.sample.value = 0;
         }
     } else {
         data->item.history = result->history;
@@ -781,9 +783,9 @@ static corto_bool corto_selectIterNext(
 
 /* Evaluate whether mount for specific scope should be loaded */
 static int corto_selectLoadMountWalk(
-    corto_object entity, 
-    corto_object instance, 
-    void *userData) 
+    corto_object entity,
+    corto_object instance,
+    void *userData)
 {
     corto_select_data *data = userData;
     corto_mount mount = entity;
@@ -800,7 +802,7 @@ static int corto_selectLoadMountWalk(
         return 1;
     }
 
-    /* If historical data is requested, only load historians and don't request 
+    /* If historical data is requested, only load historians and don't request
      * ordinary data from historians. */
     if (memcmp(&data->from, &data->to, sizeof(corto_frame))) {
         if (!(mount->policy.mask & CORTO_MOUNT_HISTORY_QUERY)) {
@@ -870,7 +872,7 @@ static int16_t corto_selectLoadMounts(
     frame->currentMount = data->mountsLoaded;
     frame->firstMount = data->mountsLoaded;
 
-    corto_debug("select: look for mounts in '%s'%s", 
+    corto_debug("select: look for mounts in '%s'%s",
         frame->cur->scope,
         recursive ? " recursively" : "");
 
@@ -880,7 +882,7 @@ static int16_t corto_selectLoadMounts(
         corto_selectLoadMountWalk,
         frame->cur->scope,
         recursive ? true : false,
-        data)) 
+        data))
     {
         return -1;
     }
@@ -973,7 +975,7 @@ static int16_t corto_selectTree(
                     if (!len || data->location[len - 1] != '/') {
                         data->location[len] = '/';
                         len ++;
-                    }                    
+                    }
                     strcpy(&data->location[len], data->item.name);
                     frame->currentMount = prevFrame->currentMount;
                     frame->iter = corto_selectRequestMount(
@@ -1053,7 +1055,7 @@ static int16_t corto_selectPrepareFrame(
 
 /* When moving to the next scope element, filter out active mounts that
  * don't operate on a tree, as they don't contain relevant data for
- * a child scope. The remaining mounts are used to evaluate whether a 
+ * a child scope. The remaining mounts are used to evaluate whether a
  * LOCAL_SOURCE is active for a scope, in which case objects must be masked. */
 static void corto_selectFilterMounts(corto_select_data *data) {
     corto_int32 i = 0;
@@ -1065,11 +1067,11 @@ static void corto_selectFilterMounts(corto_select_data *data) {
         if (data->segments[data->segment + 1].scope && data->segments[data->segment + 2].scope) {
             mountType = ((corto_subscriber)data->mounts[i])->query.type;
             corto_select_segment *segment = &data->segments[data->segment + 2];
-            segmentType = segment->o ? corto_fullpath(typeId, corto_typeof(segment->o)) : NULL;   
+            segmentType = segment->o ? corto_fullpath(typeId, corto_typeof(segment->o)) : NULL;
         }
 
         if (!(((corto_observer)data->mounts[i])->mask & CORTO_ON_TREE) ||
-             (segmentType && mountType && strcmp(segmentType, mountType))) 
+             (segmentType && mountType && strcmp(segmentType, mountType)))
         {
             if (i == (data->mountsLoaded - 1)) {
                 data->mounts[i] = NULL;
@@ -1095,8 +1097,8 @@ static void* corto_selectNext(corto_resultIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->next) {
-        corto_debug("select: yield ('%s', '%s')", 
-            data->next->id, 
+        corto_debug("select: yield ('%s', '%s')",
+            data->next->id,
             data->next->parent);
         data->count ++;
     }
@@ -1186,7 +1188,7 @@ static corto_int16 corto_selectSplitScope(corto_select_data *data) {
     corto_ptr_setref(&data->segments[0].o, root_o);
     current ++;
 
-    corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p", 
+    corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p",
         data->segments[0].scope, data->segments[0].expr, data->segments[0].o);
 
     if (ptr[0]) {
@@ -1206,7 +1208,7 @@ static corto_int16 corto_selectSplitScope(corto_select_data *data) {
 
                 *ptr = ch;
 
-                corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p", 
+                corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p",
                     data->segments[current].scope, data->segments[current].expr, data->segments[current].o);
 
                 current++;
@@ -1256,7 +1258,7 @@ static corto_int16 corto_selectRun(corto_select_data *data) {
 
     /* Prepare first frame */
     corto_selectPrepareFrame(data, frame, 0);
-    
+
     /* Prepare object filter */
     data->filter = filter;
     if (filter) {
@@ -1273,7 +1275,7 @@ error:
 static corto_select_frame* corto_selectNextSegment(corto_select_data *data) {
     if (data->segments[data->segment + 1].scope) {
         corto_debug("select: evaluate segment: scope = '%s', expr = '%s'",
-            data->segments[data->segment + 1].scope, 
+            data->segments[data->segment + 1].scope,
             data->segments[data->segment + 1].expr);
 
         corto_select_frame *frame = &data->stack[0];
@@ -1881,7 +1883,7 @@ corto_select__fluent corto_select(
     } else {
         memset(request, 0, sizeof(corto_selectRequest));
     }
-    
+
     if (expr) {
         va_start(arglist, expr);
         request->expr = corto_vasprintf(expr, arglist);
