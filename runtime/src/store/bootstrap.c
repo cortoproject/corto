@@ -439,8 +439,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_frameKind_FRAME_NOW),\
     SSO_OP_OBJ(vstore_frameKind_FRAME_TIME),\
     SSO_OP_OBJ(vstore_frameKind_FRAME_DURATION),\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_SAMPLE),\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_DEPTH),\
     /* accessKind */\
     SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_GRANTED),\
     SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_DENIED),\
@@ -692,6 +690,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_query_where),\
     SSO_OP_OBJ(vstore_query_offset),\
     SSO_OP_OBJ(vstore_query_limit),\
+    SSO_OP_OBJ(vstore_query_soffset),\
+    SSO_OP_OBJ(vstore_query_slimit),\
     SSO_OP_OBJ(vstore_query_timeBegin),\
     SSO_OP_OBJ(vstore_query_timeEnd),\
     SSO_OP_OBJ(vstore_query_content),\
@@ -757,6 +757,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mount_invoke_),\
     SSO_OP_OBJ(vstore_mount_id_),\
     SSO_OP_OBJ(vstore_mount_query_),\
+    SSO_OP_OBJ(vstore_mount_historyQuery_),\
     SSO_OP_OBJ(vstore_mount_resume_),\
     SSO_OP_OBJ(vstore_mount_subscribe_),\
     SSO_OP_OBJ(vstore_mount_unsubscribe_),\
@@ -1114,7 +1115,7 @@ static int corto_loadConfig(void) {
             }
         } else {
             corto_error(
-                "$CORTO_CONFIG ('%s') does not point to an accessible path or file", 
+                "$CORTO_CONFIG ('%s') does not point to an accessible path or file",
                 cfg);
             result = -1;
         }
@@ -1196,7 +1197,7 @@ int corto_start(char *appName) {
     corto_type(corto_state_o)->size = sizeof(corto_state);
     corto_type(corto_attr_o)->size = sizeof(corto_attr);
 
-    /* Bootstrap offsets of delegates. These are required to pull forward 
+    /* Bootstrap offsets of delegates. These are required to pull forward
      * delegates from base classes */
     lang_type_init__o.v.offset = offsetof(struct corto_type_s, init);
     lang_type_deinit__o.v.offset = offsetof(struct corto_type_s, deinit);
@@ -1331,7 +1332,7 @@ int corto_start(char *appName) {
         corto_loaderInstance->autoLoad = TRUE;
     }
     else {
-        corto_trace("init: autoloading of packages disabled: %s", 
+        corto_trace("init: autoloading of packages disabled: %s",
             corto_lasterr());
         corto_lasterr();
     }
@@ -1344,7 +1345,7 @@ int corto_start(char *appName) {
 
     /* Load configuration, if available */
     corto_loadConfig();
-    
+
     corto_ok("initialized");
 
     corto_component_pop();
@@ -1485,7 +1486,7 @@ bool corto_autoload(corto_bool autoload) {
         prev = corto_loaderInstance->autoLoad;
         corto_loaderInstance->autoLoad = autoload;
     }
-    
+
     return prev;
 }
 

@@ -177,7 +177,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_CD_TYPE(name)
 #define CORTO_CD_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
-#define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}, {{NULL, NULL}} 
+#define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}, {{NULL, NULL}}
 #define CORTO_NODELEGATE_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 /* type */
@@ -622,7 +622,7 @@ CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, 
     CORTO_MEMBER_O(vstore_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, repository, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, icon, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);    
+    CORTO_MEMBER_O(vstore_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, env, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, language, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
@@ -751,8 +751,6 @@ CORTO_ENUM_O(vstore, frameKind);
     CORTO_CONSTANT_O(vstore_frameKind, FRAME_NOW);
     CORTO_CONSTANT_O(vstore_frameKind, FRAME_TIME);
     CORTO_CONSTANT_O(vstore_frameKind, FRAME_DURATION);
-    CORTO_CONSTANT_O(vstore_frameKind, FRAME_SAMPLE);
-    CORTO_CONSTANT_O(vstore_frameKind, FRAME_DEPTH);
 
 CORTO_ENUM_O(secure, accessKind);
     CORTO_SECURE_CONSTANT_O(secure_accessKind, ACCESS_GRANTED);
@@ -990,7 +988,7 @@ CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|COR
     CORTO_METHOD_O(lang_struct, init, "()", lang_int16, corto_struct_init);
     CORTO_METHOD_O(lang_struct, construct, "()", lang_int16, corto_struct_construct);
     CORTO_METHOD_O(lang_struct, destruct, "()", lang_void, corto_struct_destruct);
-    
+
 /* /corto/lang/union */
 CORTO_FW_IC(lang, union);
 CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_case), CORTO_TYPE_ID(lang_method), CORTO_IC);
@@ -1298,6 +1296,8 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
     CORTO_MEMBER_O(vstore_query, where, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, offset, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, limit, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_query, soffset, lang_uint64, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_query, slimit, lang_uint64, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, timeBegin, vstore_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, timeEnd, vstore_frame, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, content, lang_bool, CORTO_GLOBAL|CORTO_HIDDEN);
@@ -1386,6 +1386,7 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_METHOD_O(vstore_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_invoke);
     CORTO_METHOD_O(vstore_mount, id, "()", lang_string, corto_mount_id);
     CORTO_METHOD_O(vstore_mount, query, "(vstore/query query)", vstore_resultIter, corto_mount_query);
+    CORTO_METHOD_O(vstore_mount, historyQuery, "(vstore/query query)", vstore_resultIter, corto_mount_query);
     CORTO_METHOD_O(vstore_mount, resume, "(string parent,string name,object o)", lang_object, corto_mount_resume);
     CORTO_METHOD_O(vstore_mount, subscribe, "(/corto/vstore/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(vstore_mount, unsubscribe, "(/corto/vstore/query query)", lang_void, corto_mount_unsubscribe);

@@ -41,13 +41,14 @@ int16_t test_HistoryMount_construct(
         &r,
         samples
     );
-    
+
     return corto_mount_construct(this);
 }
 
 typedef struct iterData {
     test_HistoryMount this;
     corto_frame from, to;
+    uint64_t soffset, slimit;
     corto_ll history;
     corto_iter iter;
 } iterData;
@@ -67,29 +68,23 @@ static void* next(corto_iter *it) {
         corto_dealloc(s);
     }
 
+    int sampleCount = corto_ll_size(data->history);
+
     /* Populate history list, only supporting indexes, the oldest sample being
      * index 0 */
-    if (ctx->from.kind == CORTO_FRAME_NOW) {
-        start = corto_ll_size(data->history) - 1;
-    } else if (ctx->from.kind == CORTO_FRAME_SAMPLE) {
-        start = ctx->from.value;
-        if (start >= corto_ll_size(data->history)) {
-            start = corto_ll_size(data->history) - 1;
-        }
-
-    }
-
-    if (ctx->to.kind == CORTO_FRAME_SAMPLE) {
-        stop = ctx->to.value;
-    } else if (ctx->to.kind == CORTO_FRAME_DEPTH) {
-        stop = start - ctx->to.value + 1;
-    }
-
-    if (stop < 0) {
+    start = sampleCount - ctx->soffset;
+    if (ctx->slimit) {
+        stop = start - ctx->slimit;
+    } else {
         stop = 0;
     }
 
-    for (i = start; i >= stop; i--) {
+    if (start < 0) start = 0;
+    if (start > sampleCount) start = sampleCount;
+    if (stop < 0) stop = 0;
+    if (stop > sampleCount) stop = sampleCount;
+
+    for (i = start - 1; i >= stop; i--) {
         corto_sample *s = corto_alloc(sizeof(corto_sample));
         s->timestamp.sec = i;
         s->timestamp.nanosec = 0;
@@ -118,10 +113,14 @@ corto_resultIter test_HistoryMount_onHistoryQuery(
 {
     corto_resultIter it;
 
+    printf("HistoryQuery\n");
+
     iterData *data = corto_alloc(sizeof(iterData));
     data->this = this;
     data->from = query->timeBegin;
     data->to = query->timeEnd;
+    data->soffset = query->soffset;
+    data->slimit = query->slimit;
     data->iter = corto_ll_iterAlloc(this->history);
     data->history = corto_ll_new();
 
@@ -129,6 +128,6 @@ corto_resultIter test_HistoryMount_onHistoryQuery(
     it.hasNext = hasNext;
     it.release = release;
     it.ctx = data;
-    
+
     return it;
 }

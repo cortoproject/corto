@@ -195,6 +195,23 @@ void _corto_mount_destruct(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
+corto_resultIter _corto_mount_historyQuery(
+    corto_mount _this,
+    corto_query *query);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_mount_historyQuery(_this, query) _corto_mount_historyQuery(corto_mount(_this), query)
+#else
+#define corto_mount_historyQuery _corto_mount_historyQuery
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_mount_historyQuery(_this, query) _corto_mount_historyQuery(corto_mount(_this), query)
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
 corto_string _corto_mount_id(
     corto_mount _this);
 

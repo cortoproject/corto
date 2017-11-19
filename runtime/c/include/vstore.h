@@ -564,14 +564,14 @@ CORTO_EXPORT corto_package _corto_packageAssign(corto_package _this);
 #define corto_packageSet(_this) _this = _this ? _this : (corto_package*)corto_ptr_new(corto_package_o); _corto_packageAssign(_this)
 
 /* /corto/vstore/query */
-CORTO_EXPORT corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd);
-#define corto_queryCreate(select, from, type, member, where, offset, limit, timeBegin, timeEnd) _corto_queryCreate(select, from, type, member, where, offset, limit, timeBegin, timeEnd)
-#define corto_queryCreate_auto(_id, select, from, type, member, where, offset, limit, timeBegin, timeEnd) corto_query* _id = corto_queryCreate(select, from, type, member, where, offset, limit, timeBegin, timeEnd); (void)_id
-CORTO_EXPORT corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd);
-#define corto_queryCreateChild(_parent, _id, select, from, type, member, where, offset, limit, timeBegin, timeEnd) _corto_queryCreateChild(_parent, _id, select, from, type, member, where, offset, limit, timeBegin, timeEnd)
-#define corto_queryCreateChild_auto(_parent, _id, select, from, type, member, where, offset, limit, timeBegin, timeEnd) corto_query* _id = corto_queryCreateChild(_parent, #_id, select, from, type, member, where, offset, limit, timeBegin, timeEnd); (void)_id
-CORTO_EXPORT corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd);
-#define corto_queryUpdate(_this, select, from, type, member, where, offset, limit, timeBegin, timeEnd) _corto_queryUpdate(corto_query(_this), select, from, type, member, where, offset, limit, timeBegin, timeEnd)
+CORTO_EXPORT corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
+#define corto_queryCreate(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryCreate(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
+#define corto_queryCreate_auto(_id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) corto_query* _id = corto_queryCreate(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd); (void)_id
+CORTO_EXPORT corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
+#define corto_queryCreateChild(_parent, _id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryCreateChild(_parent, _id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
+#define corto_queryCreateChild_auto(_parent, _id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) corto_query* _id = corto_queryCreateChild(_parent, #_id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd); (void)_id
+CORTO_EXPORT corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
+#define corto_queryUpdate(_this, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryUpdate(corto_query(_this), select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
 
 CORTO_EXPORT corto_query* _corto_queryDeclare(void);
 #define corto_queryDeclare() _corto_queryDeclare()
@@ -579,15 +579,15 @@ CORTO_EXPORT corto_query* _corto_queryDeclare(void);
 CORTO_EXPORT corto_query* _corto_queryDeclareChild(corto_object _parent, corto_string _id);
 #define corto_queryDeclareChild(_parent, _id) _corto_queryDeclareChild(_parent, _id)
 #define corto_queryDeclareChild_auto(_parent, _id) corto_query* _id = corto_queryDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_queryDefine(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd);
-#define corto_queryDefine(_this, select, from, type, member, where, offset, limit, timeBegin, timeEnd) _corto_queryDefine(corto_query(_this), select, from, type, member, where, offset, limit, timeBegin, timeEnd)
-CORTO_EXPORT corto_query* _corto_queryAssign(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd);
+CORTO_EXPORT corto_int16 _corto_queryDefine(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
+#define corto_queryDefine(_this, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryDefine(corto_query(_this), select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
+CORTO_EXPORT corto_query* _corto_queryAssign(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
 #define corto_query__optional_NotSet NULL
-#define corto_query__optional_Set(select, from, type, member, where, offset, limit, timeBegin, timeEnd) corto_queryAssign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, member, where, offset, limit, timeBegin, timeEnd)
-#define corto_query__optional_SetCond(cond, select, from, type, member, where, offset, limit, timeBegin, timeEnd) cond ? corto_queryAssign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, member, where, offset, limit, timeBegin, timeEnd) : NULL
+#define corto_query__optional_Set(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) corto_queryAssign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
+#define corto_query__optional_SetCond(cond, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) cond ? corto_queryAssign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) : NULL
 #define corto_queryUnset(_this) _this ? corto_ptr_free(_this, corto_query_o), 0 : 0; _this = NULL;
-#define corto_queryAssign(_this, select, from, type, member, where, offset, limit, timeBegin, timeEnd) _corto_queryAssign(_this, select, from, type, member, where, offset, limit, timeBegin, timeEnd)
-#define corto_querySet(_this, select, from, type, member, where, offset, limit, timeBegin, timeEnd) _this = _this ? _this : (corto_query*)corto_ptr_new(corto_query_o); _corto_queryAssign(_this, select, from, type, member, where, offset, limit, timeBegin, timeEnd)
+#define corto_queryAssign(_this, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryAssign(_this, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
+#define corto_querySet(_this, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _this = _this ? _this : (corto_query*)corto_ptr_new(corto_query_o); _corto_queryAssign(_this, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
 
 /* /corto/vstore/queuePolicy */
 CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyCreate(uint32_t max);

@@ -266,9 +266,11 @@ int16_t corto_mount_construct(
         if (!s->contentTypeHandle) {
             corto_mount_setContentTypeIn(this, s->contentType);
         }
+
         if (!this->contentTypeOutHandle) {
-            corto_mount_setContentTypeOut(this, s->contentType);            
+            corto_mount_setContentTypeOut(this, s->contentType);
         }
+
     }
 
     /* Add mount to mount admin so it can be found by corto_select */
@@ -375,7 +377,6 @@ int16_t corto_mount_init(
     this->policy.expiryTime = -1;
     this->policy.filterResults = true;
     this->attr = CORTO_ATTR_PERSISTENT;
-
     return safe_corto_subscriber_init(this);
 }
 
@@ -804,11 +805,28 @@ corto_resultIter corto_mount_query(
     corto_ll r, prevResult = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
     corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, NULL);
 
-    if (memcmp(&query->timeBegin, &query->timeEnd, sizeof(corto_frame))) {
-        result = corto_mount_onHistoryQuery(this, query);
-    } else {
-        result = corto_mount_onQuery(this, query);
+    result = corto_mount_onQuery(this, query);
+
+    /* If mount isn't returning anything with the iterator, check if there's
+     * anything in the result list. */
+    if (!result.hasNext && (r = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT))) {
+        result = corto_ll_iterAlloc(r);
+        result.release = corto_mount_queryRelease;
     }
+
+    corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, prevResult);
+    return result;
+}
+
+corto_resultIter corto_mount_historyQuery(
+    corto_mount this,
+    corto_query *query)
+{
+    corto_iter result;
+    corto_ll r, prevResult = corto_threadTlsGet(CORTO_KEY_MOUNT_RESULT);
+    corto_threadTlsSet(CORTO_KEY_MOUNT_RESULT, NULL);
+
+    result = corto_mount_onHistoryQuery(this, query);
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
@@ -1359,4 +1377,3 @@ void corto_mount_onHistoryBatchNotify_v(
     CORTO_UNUSED(this);
     CORTO_UNUSED(events);
 }
-

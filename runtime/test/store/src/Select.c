@@ -10,7 +10,8 @@ corto_resultList test_Select_collect(
     corto_select__fluent r = corto_select(expr).from(scope);
 
     if (offset || limit) {
-        r.limit(offset, limit);
+        r.limit(limit);
+        r.offset(offset);
     }
 
     corto_iter iter;
