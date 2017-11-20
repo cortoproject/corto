@@ -31,7 +31,7 @@ int16_t corto_package_construct(
          * trigger on DEFINE event */
         if (!corto_observe(CORTO_RESUME|CORTO_ON_SELF, this)
             .instance(this)
-            .callback(corto_package_onDefine)) 
+            .callback(corto_package_onDefine))
         {
             goto error;
         }
@@ -41,11 +41,3 @@ int16_t corto_package_construct(
 error:
     return -1;
 }
-
-int16_t corto_package_init(
-    corto_package this)
-{
-    this->managed = TRUE;
-    return 0;
-}
-

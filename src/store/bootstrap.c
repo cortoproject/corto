@@ -875,24 +875,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_package_organization),\
     SSO_OP_OBJ(vstore_package_url),\
     SSO_OP_OBJ(vstore_package_repository),\
+    SSO_OP_OBJ(vstore_package_license),\
     SSO_OP_OBJ(vstore_package_icon),\
-    SSO_OP_OBJ(vstore_package_dependencies),\
-    SSO_OP_OBJ(vstore_package_env),\
-    SSO_OP_OBJ(vstore_package_language),\
-    SSO_OP_OBJ(vstore_package_managed),\
-    SSO_OP_OBJ(vstore_package_noapi),\
-    SSO_OP_OBJ(vstore_package_cflags),\
-    SSO_OP_OBJ(vstore_package_cxxflags),\
-    SSO_OP_OBJ(vstore_package_definitions),\
-    SSO_OP_OBJ(vstore_package_prefix),\
-    SSO_OP_OBJ(vstore_package_cortoVersion),\
-    SSO_OP_OBJ(vstore_package_local),\
-    SSO_OP_OBJ(vstore_package_lib),\
-    SSO_OP_OBJ(vstore_package_libpath),\
-    SSO_OP_OBJ(vstore_package_include),\
-    SSO_OP_OBJ(vstore_package_link),\
-    SSO_OP_OBJ(vstore_package_coverage),\
-    SSO_OP_OBJ(vstore_package_init_),\
+    SSO_OP_OBJ(vstore_package_use),\
     SSO_OP_OBJ(vstore_package_construct_),\
     /* time */\
     SSO_OP_OBJ(vstore_time_sec),\
@@ -1079,7 +1064,7 @@ static int corto_loadConfig(void) {
             }
         } else {
             corto_throw(
-                "$CORTO_CONFIG ('%s') does not point to an accessible path or file", 
+                "$CORTO_CONFIG ('%s') does not point to an accessible path or file",
                 cfg);
             result = -1;
         }
@@ -1096,7 +1081,7 @@ int corto_start(char *appName) {
         corto_appName += 2;
     }
 
-    base_init(appName);    
+    base_init(appName);
 
     /* Initialize TLS keys */
     corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
@@ -1109,7 +1094,7 @@ int corto_start(char *appName) {
     corto_tls_new(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
     corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
     corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
-    
+
     /* Initialize operating system environment */
     corto_environment_init();
 
@@ -1159,7 +1144,7 @@ int corto_start(char *appName) {
     corto_type(corto_state_o)->size = sizeof(corto_state);
     corto_type(corto_attr_o)->size = sizeof(corto_attr);
 
-    /* Bootstrap offsets of delegates. These are required to pull forward 
+    /* Bootstrap offsets of delegates. These are required to pull forward
      * delegates from base classes */
     lang_type_init__o.v.offset = offsetof(struct corto_type_s, init);
     lang_type_deinit__o.v.offset = offsetof(struct corto_type_s, deinit);
@@ -1446,7 +1431,7 @@ bool corto_autoload(corto_bool autoload) {
         prev = corto_loaderInstance->autoLoad;
         corto_loaderInstance->autoLoad = autoload;
     }
-    
+
     return prev;
 }
 

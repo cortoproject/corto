@@ -131,7 +131,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, uri, version, author, description) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}, {uri, version, author, description}
+#define CORTO_PACKAGE_V(parent, name, description, version, author, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}, {description, version, author, "cortoproject", uri}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 #define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}, _(extensions)NULL},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
@@ -177,7 +177,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_CD_TYPE(name)
 #define CORTO_CD_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
-#define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}, {{NULL, NULL}} 
+#define CORTO_NODELEGATE_TYPE(name) {{NULL, NULL}}, {{NULL, NULL}}
 #define CORTO_NODELEGATE_CLASS(name) {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 /* type */
@@ -571,11 +571,11 @@ corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
 corto_package root_o = CORTO_OFFSET(&root__o.o.o, sizeof(corto__object));
 
 /* /corto, /corto/lang, /corto/vstore, /corto/secure */
-CORTO_PACKAGE_O(corto, "https://www.corto.io", "Corto packages");
-CORTO_PACKAGE_O_SCOPE(corto, lang, "https://www.corto.io", "Corto typesystem");
-CORTO_PACKAGE_O_SCOPE(corto, vstore, "https://www.corto.io", "Corto virtual store");
-CORTO_PACKAGE_O_SCOPE(corto, native, "https://www.corto.io", "Corto native type integration");
-CORTO_PACKAGE_O_SCOPE(corto, secure, "https://www.corto.io", "Corto security framework");
+CORTO_PACKAGE_O(corto, "Corto runtime library", "https://www.corto.io");
+CORTO_PACKAGE_O_SCOPE(corto, lang, "Corto typesystem", "https://www.corto.io");
+CORTO_PACKAGE_O_SCOPE(corto, vstore, "Corto virtual store", "https://www.corto.io");
+CORTO_PACKAGE_O_SCOPE(corto, native, "Corto native type integration", "https://www.corto.io");
+CORTO_PACKAGE_O_SCOPE(corto, secure, "Corto security framework", "https://www.corto.io");
 
 corto_package corto_o = CORTO_OFFSET(&corto__o.o.o, sizeof(corto__object));
 corto_package corto_lang_o = CORTO_OFFSET(&lang__o.o.o, sizeof(corto__object));
@@ -613,32 +613,17 @@ CORTO_TYPE_O(lang, void, CORTO_VOID, FALSE);
 CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 
 /* Package type */
-CORTO_FW_IC(vstore, package);
-CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
+CORTO_FW_C(vstore, package);
+CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_C);
     CORTO_MEMBER_O(vstore_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, organization, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, repository, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, license, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, icon, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, dependencies, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);    
-    CORTO_MEMBER_O(vstore_package, env, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, language, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, noapi, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, cflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, cxxflags, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, definitions, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, prefix, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, cortoVersion, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, local, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, lib, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, libpath, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, include, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, link, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, coverage, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_METHOD_O(vstore_package, init, "()", lang_int16, corto_package_init);
+    CORTO_MEMBER_O(vstore_package, use, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_METHOD_O(vstore_package, construct, "()", lang_int16, corto_package_construct);
 
 CORTO_CLASS_O(vstore, application, vstore_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
@@ -990,7 +975,7 @@ CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|COR
     CORTO_METHOD_O(lang_struct, init, "()", lang_int16, corto_struct_init);
     CORTO_METHOD_O(lang_struct, construct, "()", lang_int16, corto_struct_construct);
     CORTO_METHOD_O(lang_struct, destruct, "()", lang_void, corto_struct_destruct);
-    
+
 /* /corto/lang/union */
 CORTO_FW_IC(lang, union);
 CORTO_CLASS_O(lang, union, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_case), CORTO_TYPE_ID(lang_method), CORTO_IC);

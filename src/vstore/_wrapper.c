@@ -18,12 +18,12 @@ void _corto_dispatcher_post(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(corto_dispatcher_o, "post(event e)");
+        _methodId = corto_interface_resolveMethodId(_abstract, "post(event e)");
     }
-    corto_assert(_methodId, "method 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
-    _method = corto_class_resolveInterfaceMethod((corto_class)_abstract, corto_dispatcher_o, _methodId);
+    _method = corto_interface_resolveMethodById(_abstract, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
@@ -46,7 +46,7 @@ void _corto_invokeEvent_handle(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "handle()");
     }
-    corto_assert(_methodId, "method 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'handle()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -74,7 +74,7 @@ corto_resultIter _corto_loader_onQuery(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onQuery(/corto/vstore/query query)");
     }
-    corto_assert(_methodId, "method 'onQuery(/corto/vstore/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onQuery(/corto/vstore/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -103,7 +103,7 @@ void _corto_mount_onBatchNotify(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onBatchNotify(vstore/subscriberEventIter events)");
     }
-    corto_assert(_methodId, "method 'onBatchNotify(vstore/subscriberEventIter events)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onBatchNotify(vstore/subscriberEventIter events)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -130,7 +130,7 @@ void _corto_mount_onHistoryBatchNotify(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onHistoryBatchNotify(vstore/subscriberEventIter events)");
     }
-    corto_assert(_methodId, "method 'onHistoryBatchNotify(vstore/subscriberEventIter events)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onHistoryBatchNotify(vstore/subscriberEventIter events)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -158,7 +158,7 @@ corto_resultIter _corto_mount_onHistoryQuery(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onHistoryQuery(/corto/vstore/query query)");
     }
-    corto_assert(_methodId, "method 'onHistoryQuery(/corto/vstore/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onHistoryQuery(/corto/vstore/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -187,7 +187,7 @@ corto_string _corto_mount_onId(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onId()");
     }
-    corto_assert(_methodId, "method 'onId()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onId()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -218,7 +218,7 @@ void _corto_mount_onInvoke(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onInvoke(object instance,function proc,word argptrs)");
     }
-    corto_assert(_methodId, "method 'onInvoke(object instance,function proc,word argptrs)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onInvoke(object instance,function proc,word argptrs)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -247,7 +247,7 @@ uintptr_t _corto_mount_onMount(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onMount(vstore/query query,lang/word ctx)");
     }
-    corto_assert(_methodId, "method 'onMount(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onMount(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -276,7 +276,7 @@ void _corto_mount_onNotify(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onNotify(vstore/subscriberEvent event)");
     }
-    corto_assert(_methodId, "method 'onNotify(vstore/subscriberEvent event)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onNotify(vstore/subscriberEvent event)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -302,7 +302,7 @@ void _corto_mount_onPoll(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onPoll()");
     }
-    corto_assert(_methodId, "method 'onPoll()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onPoll()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -330,7 +330,7 @@ corto_resultIter _corto_mount_onQuery(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onQuery(/corto/vstore/query query)");
     }
-    corto_assert(_methodId, "method 'onQuery(/corto/vstore/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onQuery(/corto/vstore/query query)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -362,7 +362,7 @@ corto_object _corto_mount_onResume(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onResume(string parent,string id,object object)");
     }
-    corto_assert(_methodId, "method 'onResume(string parent,string id,object object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onResume(string parent,string id,object object)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -393,7 +393,7 @@ uintptr_t _corto_mount_onSubscribe(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onSubscribe(vstore/query query,lang/word ctx)");
     }
-    corto_assert(_methodId, "method 'onSubscribe(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onSubscribe(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -422,7 +422,7 @@ uintptr_t _corto_mount_onTransactionBegin(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onTransactionBegin()");
     }
-    corto_assert(_methodId, "method 'onTransactionBegin()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onTransactionBegin()' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -452,7 +452,7 @@ void _corto_mount_onTransactionEnd(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onTransactionEnd(vstore/subscriberEventIter events,word ctx)");
     }
-    corto_assert(_methodId, "method 'onTransactionEnd(vstore/subscriberEventIter events,word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onTransactionEnd(vstore/subscriberEventIter events,word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -480,7 +480,7 @@ void _corto_mount_onUnmount(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onUnmount(vstore/query query,lang/word ctx)");
     }
-    corto_assert(_methodId, "method 'onUnmount(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onUnmount(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -508,7 +508,7 @@ void _corto_mount_onUnsubscribe(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "onUnsubscribe(vstore/query query,lang/word ctx)");
     }
-    corto_assert(_methodId, "method 'onUnsubscribe(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'onUnsubscribe(vstore/query query,lang/word ctx)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -539,7 +539,7 @@ corto_route _corto_routerimpl_findRoute(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "findRoute(object instance,stringseq pattern,any param,out:any routerData)");
     }
-    corto_assert(_methodId, "method 'findRoute(object instance,stringseq pattern,any param,out:any routerData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'findRoute(object instance,stringseq pattern,any param,out:any routerData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -572,7 +572,7 @@ int32_t _corto_routerimpl_matchRoute(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "matchRoute(vstore/route route,stringseq pattern,any param,out:any routerData)");
     }
-    corto_assert(_methodId, "method 'matchRoute(vstore/route route,stringseq pattern,any param,out:any routerData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'matchRoute(vstore/route route,stringseq pattern,any param,out:any routerData)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);

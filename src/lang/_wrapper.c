@@ -21,7 +21,7 @@ bool _corto_collection_castable(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "method 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -51,7 +51,7 @@ bool _corto_collection_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -81,7 +81,7 @@ bool _corto_delegate_castable(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "method 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -111,7 +111,7 @@ bool _corto_delegate_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -141,7 +141,7 @@ bool _corto_interface_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -171,7 +171,7 @@ corto_member _corto_interface_resolveMember(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    corto_assert(_methodId, "method 'resolveMember(string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'resolveMember(string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -201,7 +201,7 @@ bool _corto_iterator_castable(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "method 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -231,7 +231,7 @@ bool _corto_iterator_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -261,7 +261,7 @@ bool _corto_primitive_castable(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "method 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -291,7 +291,7 @@ bool _corto_primitive_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -321,7 +321,7 @@ bool _corto_struct_castable(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "method 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -351,7 +351,7 @@ bool _corto_struct_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -381,7 +381,7 @@ corto_member _corto_struct_resolveMember(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "resolveMember(string name)");
     }
-    corto_assert(_methodId, "method 'resolveMember(string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'resolveMember(string name)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -411,7 +411,7 @@ bool _corto_type_castable(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "castable(type type)");
     }
-    corto_assert(_methodId, "method 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'castable(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);
@@ -441,7 +441,7 @@ bool _corto_type_compatible(
     if (!_methodId) {
         _methodId = corto_interface_resolveMethodId(_abstract, "compatible(type type)");
     }
-    corto_assert(_methodId, "method 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    corto_assert(_methodId, "virtual 'compatible(type type)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_interface_resolveMethodById(_abstract, _methodId);

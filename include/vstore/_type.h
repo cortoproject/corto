@@ -67,23 +67,9 @@ struct corto_package_s {
     corto_string organization;
     corto_string url;
     corto_string repository;
+    corto_string license;
     corto_string icon;
     corto_stringlist dependencies;
-    corto_string env;
-    corto_string language;
-    bool managed;
-    bool noapi;
-    corto_stringlist cflags;
-    corto_stringlist cxxflags;
-    corto_stringlist definitions;
-    corto_string prefix;
-    corto_stringlist cortoVersion;
-    bool local;
-    corto_stringlist lib;
-    corto_stringlist libpath;
-    corto_stringlist include;
-    corto_stringlist link;
-    bool coverage;
 };
 
 /*  /corto/vstore/application */
@@ -457,4 +443,3 @@ struct corto_tool_s {
 }
 #endif
 #endif
-
