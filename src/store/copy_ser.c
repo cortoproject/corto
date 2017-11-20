@@ -278,9 +278,10 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
                 break;
             case CORTO_LIST:
                 srcList = *(corto_ll*)src;
+
                 corto_assert(
-                    srcList != NULL, 
-                    "invalid list value (expected instance of %s)", 
+                    srcList != NULL,
+                    "invalid list value (expected instance of %s)",
                     corto_fullpath(NULL, t1));
                 size1 = corto_ll_size(srcList);
                 break;
@@ -300,8 +301,8 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
             case CORTO_LIST:
                 dstList = *(corto_ll*)dst;
                 corto_assert(
-                    dstList != NULL, 
-                    "invalid list value (expected instance of %s)", 
+                    dstList != NULL,
+                    "invalid list value (expected instance of %s)",
                     corto_fullpath(NULL, t2));
                 break;
             case CORTO_MAP:
@@ -402,7 +403,7 @@ static corto_int16 corto_ser_observable(corto_walk_opt* s, corto_value *info, vo
 
     if (!type->reference) {
         corto_copy_ser_t privateData = {
-            .value = corto_value_object(*(corto_object*)value, NULL), 
+            .value = corto_value_object(*(corto_object*)value, NULL),
             .base = *(corto_object*)ptr
         };
         return corto_walk_observable(s, info, &privateData);

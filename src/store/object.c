@@ -3200,6 +3200,10 @@ corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string conte
     corto_assertObject(src);
     corto_assertObject(o);
 
+    if (corto_isbuiltin(o)) {
+        return 2;
+    }
+
     corto__object* _o;
     corto_uint32 i;
     CORTO_UNUSED(src);
@@ -3216,6 +3220,10 @@ corto_int32 corto_claim_ext(corto_object src, corto_object o, corto_string conte
 corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string context) {
     corto_assertObject(src);
     corto_assertObject(o);
+
+    if (corto_isbuiltin(o)) {
+        return 1;
+    }
 
     corto_int32 i;
     corto__object* _o;

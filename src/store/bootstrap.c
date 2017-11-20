@@ -951,20 +951,6 @@ static void corto_defineType(corto_object o, corto_uint32 size) {
     }
 }
 
-/* Update references */
-static void corto_updateRef(corto_object o) {
-    corto_walk_opt s;
-    s = corto_ser_keep(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-    corto_walk(&s, o, NULL);
-}
-
-/* Decrease references */
-static void corto_decreaseRef(corto_object o) {
-    corto_walk_opt s;
-    s = corto_ser_free(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-    corto_walk(&s, o, NULL);
-}
-
 static void corto_genericTlsFree(void *o) {
     corto_dealloc(o);
 }
@@ -1167,11 +1153,11 @@ int corto_start(char *appName) {
     corto_class_update_o = &lang_class_update__o.v;
 
     /* Set version of builtin packages */
-    corto_o->version = (char*)CORTO_VERSION;
-    corto_lang_o->version = (char*)CORTO_VERSION;
-    corto_vstore_o->version = (char*)CORTO_VERSION;
-    corto_secure_o->version = (char*)CORTO_VERSION;
-    corto_native_o->version = (char*)CORTO_VERSION;
+    corto_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+    corto_lang_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+    corto_vstore_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+    corto_secure_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+    corto_native_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
 
     /* Initialize builtin scopes */
     corto_initObject(root_o);
@@ -1180,6 +1166,13 @@ int corto_start(char *appName) {
     corto_initObject(corto_vstore_o);
     corto_initObject(corto_native_o);
     corto_initObject(corto_secure_o);
+
+    /* Allocate lists */
+    corto_o->use = corto_ll_new();
+    corto_lang_o->use = corto_ll_new();
+    corto_vstore_o->use = corto_ll_new();
+    corto_native_o->use = corto_ll_new();
+    corto_secure_o->use = corto_ll_new();
 
     /* Define builtin scopes */
     corto_defineObject(root_o);
@@ -1233,18 +1226,6 @@ int corto_start(char *appName) {
     /* Construct objects */
     for (i = 0; (o = objects[i].o); i++) corto_defineObject(o);
     for (i = 0; (o = types[i].o); i++) corto_defineType(o, types[i].size);
-
-    /* Update refcounts of public members */
-    for (i = 0; (o = types[i].o); i++) corto_updateRef(o);
-    for (i = 0; (o = objects[i].o); i++) corto_updateRef(o);
-
-    /* Now that types are defined, update refs on scopes */
-    corto_updateRef(root_o);
-    corto_updateRef(corto_o);
-    corto_updateRef(corto_lang_o);
-    corto_updateRef(corto_vstore_o);
-    corto_updateRef(corto_native_o);
-    corto_updateRef(corto_secure_o);
 
     /* Initialize conversions and operators */
 #ifdef CORTO_CONVERSIONS
@@ -1360,10 +1341,6 @@ int corto_stop(void) {
 
     corto_int32 i;
     corto_object o;
-
-    /* Decrease refcounts of public members */
-    for (i = 0; (o = types[i].o); i++) corto_decreaseRef(o);
-    for (i = 0; (o = objects[i].o); i++) corto_decreaseRef(o);
 
     /* Destruct objects */
     for (i = 0; (o = types[i].o); i++) corto_destruct(o, FALSE);

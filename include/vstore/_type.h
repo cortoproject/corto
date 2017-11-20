@@ -69,7 +69,7 @@ struct corto_package_s {
     corto_string repository;
     corto_string license;
     corto_string icon;
-    corto_stringlist dependencies;
+    corto_stringlist use;
 };
 
 /*  /corto/vstore/application */
