@@ -1428,9 +1428,9 @@ typedef struct corto_resumeWalk_t {
 } corto_resumeWalk_t;
 
 static int corto_resumeWalk(
-    corto_object entity, 
+    corto_object entity,
     corto_object instance,
-    void *userData) 
+    void *userData)
 {
     corto_mount mount = entity;
     corto_resumeWalk_t *data = userData;
@@ -1440,7 +1440,7 @@ static int corto_resumeWalk(
     /* Either the mount registered for the direct parent of the
      * provided object, or the mount must have ON_TREE set */
     if ((data->p == data->parent) ||
-      (((corto_observer)mount)->mask & CORTO_ON_TREE)) 
+      (((corto_observer)mount)->mask & CORTO_ON_TREE))
     {
         corto_type mountType = corto_observer(mount)->type;
 
@@ -1528,9 +1528,9 @@ corto_object corto_resume(
                 "/");
 
             walkData.result = corto_resume_fromMount(
-                walkData.lastMount, 
-                walkData.parentId, 
-                walkData.exprPtr, 
+                walkData.lastMount,
+                walkData.parentId,
+                walkData.exprPtr,
                 walkData.o);
         }
 
@@ -1663,17 +1663,17 @@ static corto_object corto_declareChildInternRecursive(
 
         do {
             /* Try to resume parent objects first, in case they have another type */
-            if (!(result = corto_find(parent, cur, CORTO_FIND_DEFAULT))) {         
+            if (!(result = corto_find(parent, cur, CORTO_FIND_DEFAULT))) {
                 if (!next || !(result = corto_resume(parent, cur, NULL))) {
                     /* If object was not resumed, declare it */
                     result = corto_declareChildIntern(
-                        parent, 
-                        cur, 
-                        next ? corto_void_o : type, 
-                        orphan, 
+                        parent,
+                        cur,
+                        next ? corto_void_o : type,
+                        orphan,
                         next ? FALSE : forceType,
                         FALSE /* prevent sending VALID event for void objects */);
-                    
+
                     /* Keep track of first non-existing object. If something
                      * goes wrong, all objects, starting from this object, must
                      * be deleted. */
@@ -1750,7 +1750,7 @@ static corto_object corto_declareChildInternRecursive(
     return result;
 }
 
-corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {    
+corto_object _corto_declareChild(corto_object parent, corto_string id, corto_type type) {
     corto_object o = corto_declareChildInternRecursive(parent, id, type, FALSE, TRUE, FALSE);
     return o;
 }
@@ -1861,7 +1861,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
 
         /* Call destructor before marking object state as destructed */
         if (defined && corto_owned(o)) {
-            corto__destructor(o);            
+            corto__destructor(o);
         }
 
         /* From here, object is marked as destructed. */
@@ -1877,7 +1877,7 @@ corto_bool corto_destruct(corto_object o, corto_bool delete) {
 
             /* Only send delete notification when object is being deleted, not
              * when object is being suspended. */
-            if (!corto_isorphan(o)) {            
+            if (!corto_isorphan(o)) {
                 if (delete) {
                     corto_notify(o, CORTO_DELETE);
                     if (t->flags & CORTO_TYPE_HAS_DELETE) {
@@ -2067,7 +2067,7 @@ void corto_drop(corto_object o, corto_bool delete) {
                 }
 
                 if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
-                
+
                 /* Release the claim introduced by corto_drop */
                 corto_release(collected);
             }
@@ -2311,14 +2311,14 @@ bool corto_isorphan(corto_object o) {
     corto__object* _o;
     corto_assertObject(o);
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    return _o->align.attrs.orphan;    
+    return _o->align.attrs.orphan;
 }
 
 bool corto_isbuiltin(corto_object o) {
     corto__object* _o;
     corto_assertObject(o);
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    return _o->align.attrs.builtin;    
+    return _o->align.attrs.builtin;
 }
 
 corto_object _corto_assertType(corto_type type, corto_object o) {
@@ -3927,6 +3927,13 @@ corto_int16 corto_readEnd(corto_object object) {
 corto_int16 corto_lock(corto_object object) {
     corto_assertObject(object);
 
+    if (!corto_checkState(object, CORTO_VALID)) {
+        if (corto_declaredAdminCheck(object)) {
+            /* Don't lock if object is being defined */
+            return 0;
+        }
+    }
+
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
 
@@ -3943,6 +3950,13 @@ error:
 
 corto_int16 corto_unlock(corto_object object) {
     corto_assertObject(object);
+
+    if (!corto_checkState(object, CORTO_VALID)) {
+        if (corto_declaredAdminCheck(object)) {
+            /* Don't lock if object is being defined */
+            return 0;
+        }
+    }
 
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
@@ -4350,7 +4364,7 @@ static corto_uint32 corto_overloadParamCompare(
         /* If types are not compatible, they won't match */
         } else if (!corto_type_compatible(o_type, r_type)) {
             goto nomatch;
-            
+
         /* Types are compatible. Increase d by one if types are of a different primitive
          * kind. */
         } else if ((o_type->kind == CORTO_PRIMITIVE) && (r_type->kind == CORTO_PRIMITIVE)) {
