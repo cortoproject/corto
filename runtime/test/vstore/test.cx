@@ -413,6 +413,7 @@ test/Suite ReplicatorEvent:/
     void tc_ownedByMount()
     void tc_rateLimitOneObject()
     void tc_rateLimitThreeObjects()
+    void tc_rateLimitAlign()
 
 test/Suite MountSubscription:/
     void tc_subscribeSingle()

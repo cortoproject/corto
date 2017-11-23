@@ -3995,8 +3995,6 @@ corto_int16 corto_unlock(
     return corto_unlock_intern(object);
 }
 
-
-
 /* Obtain function name from signature */
 corto_int32 corto_signatureName(corto_string signature, corto_id buffer) {
     corto_char ch, *srcptr, *bptr;
