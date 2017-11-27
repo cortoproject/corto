@@ -27,9 +27,9 @@ void test_Err_tc_callback(
     corto_log_verbositySet(CORTO_WARNING);
 
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_OK, 
+        CORTO_OK,
         CORTO_WARNING,
-        NULL, 
+        NULL,
         NULL,
         tc_callback_callback,
         this);
@@ -69,9 +69,9 @@ void test_Err_tc_category(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        NULL, 
+        NULL,
         NULL,
         tc_callback_callback,
         this);
@@ -90,9 +90,9 @@ void test_Err_tc_categoryColonNoCategory(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        NULL, 
+        NULL,
         NULL,
         tc_callback_callback,
         this);
@@ -110,9 +110,9 @@ void test_Err_tc_categoryFilter(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        "foo", 
+        "foo",
         NULL,
         tc_callback_callback,
         this);
@@ -129,7 +129,7 @@ void test_Err_tc_categoryFilter(
     test_assertstr(this->msg, "test trace");
     test_assertstr(this->category, "foo");
 
-    corto_log_handlerUnregister(cb);    
+    corto_log_handlerUnregister(cb);
 
 }
 
@@ -137,9 +137,9 @@ void test_Err_tc_categoryFilterMulti(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        "foo/bar", 
+        "foo/bar",
         NULL,
         tc_callback_callback,
         this);
@@ -157,16 +157,16 @@ void test_Err_tc_categoryFilterMulti(
     test_assertstr(this->category, "foo,bar");
 
     corto_log_handlerUnregister(cb);
-    
+
 }
 
 void test_Err_tc_categoryFilterWildcard(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        "fo?", 
+        "fo?",
         NULL,
         tc_callback_callback,
         this);
@@ -191,9 +191,9 @@ void test_Err_tc_categoryMultiple(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        NULL, 
+        NULL,
         NULL,
         tc_callback_callback,
         this);
@@ -211,9 +211,9 @@ void test_Err_tc_categoryRecursive(
     test_Err this)
 {
     corto_log_handler cb = corto_log_handlerRegister(
-        CORTO_DEBUG, 
+        CORTO_DEBUG,
         CORTO_TRACE,
-        "foo//", 
+        "foo//",
         NULL,
         tc_callback_callback,
         this);
@@ -240,15 +240,6 @@ void test_Err_tc_categoryRecursive(
 
 }
 
-void test_Err_tc_lasterr(
-    test_Err this)
-{
-
-    corto_seterr("Hello World");
-    test_assertstr(corto_lasterr(), "Hello World");
-
-}
-
 void test_Err_tc_lastinfo(
     test_Err this)
 {
@@ -257,4 +248,3 @@ void test_Err_tc_lastinfo(
     test_assertstr(corto_lastinfo(), "Hello World");
 
 }
-

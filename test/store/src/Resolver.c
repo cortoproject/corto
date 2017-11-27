@@ -29,10 +29,10 @@ int tc_resolveAllWalk(corto_object o, void *ctx) {
     r = corto_resolve(NULL, id);
 
     /* Set errormessage to ease debugging */
-    if (!r) corto_seterr("failed to resolve %s", id);
+    if (!r) corto_throw("failed to resolve %s", id);
     test_assert(r != NULL);
     if (r != o) {
-        corto_seterr("got %s, expected %s",
+        corto_throw("got %s, expected %s",
           corto_fullpath(NULL, r),
           corto_fullpath(NULL, o));
     }
@@ -498,4 +498,3 @@ void test_Resolver_teardown(
 {
 
 }
-

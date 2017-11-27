@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-int testMain(int argc, char *argv[]) {
+int cortomain(int argc, char *argv[]) {
     int result = 0;
     test_Runner runner = test_RunnerCreate("store", argv[0], (argc > 1) ? argv[1] : NULL);
     if (!runner) return -1;
@@ -149,4 +149,3 @@ void test_ol_wildcard_int32_string(
 {
     /* Insert implementation */
 }
-

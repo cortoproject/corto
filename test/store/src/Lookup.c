@@ -12,7 +12,7 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
     r = corto_lookup(NULL, id);
 
     /* Set errormessage to ease debugging */
-    if (!r) corto_seterr("failed to lookup %s", id);
+    if (!r) corto_throw("failed to lookup %s", id);
     test_assert(r != NULL);
     test_assert(r == o);
     corto_release(r);
@@ -419,4 +419,3 @@ void test_Lookup_tc_lookupThisInExpr(
     corto_release(o);
 
 }
-

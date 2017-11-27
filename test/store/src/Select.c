@@ -46,15 +46,15 @@ bool test_Select_hasObject(
                 if (!strcmp(item->type, type)) {
                     return TRUE;
                 } else {
-                    corto_seterr("type does not match (%s vs %s)", item->type, type);
+                    corto_throw("type does not match (%s vs %s)", item->type, type);
                 }
 
             } else {
-                corto_seterr("name does not match (%s vs %s)", item->name, name);
+                corto_throw("name does not match (%s vs %s)", item->name, name);
             }
 
         } else {
-            corto_seterr("parent does not match (%s vs %s)", item->parent, parent);
+            corto_throw("parent does not match (%s vs %s)", item->parent, parent);
         }
 
         /* This prevents the API from complaining about unhandled errors */

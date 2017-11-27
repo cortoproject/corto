@@ -93,11 +93,11 @@ found:
 /* Pull delegates from base-classes to subclass if undefined */
 bool corto_interface_pullDelegate(corto_interface this, corto_member m) {
     corto_delegatedata *myDelegate = CORTO_OFFSET(this, m->offset);
-        
+
     if (corto_instanceof(corto_delegate_o, m->type) && corto_instanceof(corto_parentof(m), this)) {
         corto_interface base = this;
         corto_delegatedata *delegate = NULL;
-        
+
         do {
             delegate = CORTO_OFFSET(base, m->offset);
 
@@ -111,10 +111,10 @@ bool corto_interface_pullDelegate(corto_interface this, corto_member m) {
         } while ((!delegate || !delegate->procedure) && (base = corto_interface(base)->base));
 
         if (base && (base != this) && corto_instanceof(corto_parentof(m), base)) {
-            corto_ptr_setref(&myDelegate->procedure, delegate->procedure); 
+            corto_ptr_setref(&myDelegate->procedure, delegate->procedure);
         }
     }
-    
+
     return myDelegate->procedure != NULL;
 }
 
@@ -245,7 +245,7 @@ static int corto_interface_validateAlias(corto_alias this) {
         goto error;
     } else {
         if (this->member == corto_member(this)) {
-            corto_throw("alias member '%s' refers to itself", 
+            corto_throw("alias member '%s' refers to itself",
                 corto_fullpath(NULL, this));
             goto error;
         }
@@ -479,11 +479,11 @@ int16_t corto_interface_bindMethod(
     if (procedureType == corto_override_o) {
         if (!found || !*found || d < 0) {
             if (found && *found) {
-                corto_throw("no overridable method found for '%s'\n  closest match: '%s'", 
+                corto_throw("no overridable method found for '%s'\n  closest match: '%s'",
                     corto_fullpath(NULL, method),
                     corto_fullpath(NULL, *found));
             } else {
-                corto_throw("no overridable method found for '%s'", 
+                corto_throw("no overridable method found for '%s'",
                     corto_fullpath(NULL, method));
             }
             goto error;
@@ -504,8 +504,8 @@ int16_t corto_interface_bindMethod(
                 if ((*found)->overridable) {
                     /* Check if overriding method is compatible */
                     if (!corto_interface_checkProcedureCompatibility(
-                        *found, 
-                        corto_function(method))) 
+                        *found,
+                        corto_function(method)))
                     {
                         goto error;
                     }
@@ -566,7 +566,6 @@ bool corto_interface_compatible_v(
 int16_t corto_interface_construct(
     corto_interface this)
 {
-
     this->methods = corto_interface_vtableFromBase(this);
 
     if (!corto_scopeWalk(this, corto_interface_walkScope, this)) {
@@ -739,4 +738,3 @@ notfound:
 error:
     return -1;
 }
-
