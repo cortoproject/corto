@@ -1,0 +1,9 @@
+{
+    "id": "test",
+    "type": "package",
+    "value": {
+        "public": false,
+        "link": ["m"],
+        "use": ["corto/test"]
+    }
+}
