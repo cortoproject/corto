@@ -20,6 +20,7 @@
  */
 
 #include <corto/corto.h>
+#include "init_ser.h"
 
 CORTO_SEQUENCE(dummySeq, char,);
 
@@ -87,9 +88,9 @@ error:
 }
 
 corto_equalityKind _corto_ptr_compare(
-    const void *p1, 
-    corto_type type, 
-    const void *p2) 
+    const void *p1,
+    corto_type type,
+    const void *p2)
 {
     corto_assertObject(type);
 
@@ -101,8 +102,8 @@ corto_equalityKind _corto_ptr_compare(
 }
 
 corto_int16 _corto_ptr_init(
-    void *p, 
-    corto_type type) 
+    void *p,
+    corto_type type)
 {
     corto_assertObject(type);
     memset(p, 0, corto_type_sizeof(type));
@@ -162,9 +163,12 @@ void* _corto_mem_new(
     *(corto_type*)result = type;
     result = CORTO_OFFSET(result, sizeof(corto_type));
 
-    if (corto_ptr_init(result, type)) {
-        corto_dealloc(result);
-        goto error;
+    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+        corto_walk_opt s =
+            corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        if (corto_walk_ptr(&s, result, type, NULL)) {
+            goto error;
+        }
     }
 
     return result;
@@ -190,8 +194,8 @@ corto_type corto_mem_typeof(
 int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
     corto_assert(type->kind == CORTO_COLLECTION, "corto_ptr_size is only valid for collection types");
     corto_collection collectionType = corto_collection(type);
-    corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)", 
-        size, 
+    corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)",
+        size,
         collectionType->max);
     corto_type elementType = collectionType->elementType;
     uint32_t elemSize = corto_type_sizeof(elementType);
@@ -207,7 +211,7 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
                 if (corto_ptr_init(elem, elementType)) {
                     goto error;
                 }
-            } 
+            }
         }
         break;
     case CORTO_SEQUENCE: {
@@ -227,7 +231,7 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
                 if (corto_ptr_init(elem, elementType)) {
                     goto error;
                 }
-            }  
+            }
         }
         seq->length = size;
         break;
@@ -264,7 +268,7 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
             }
             corto_ll_append(l, elem);
         }
-    
+
         break;
     }
     default:
@@ -301,7 +305,7 @@ uint64_t _corto_ptr_count(void *ptr, corto_type type) {
         break;
     default:
         //return corto_rb_size(*(corto_rb*)ptr);
-        break;    
+        break;
     }
 
     return 0;
