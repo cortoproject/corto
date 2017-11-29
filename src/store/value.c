@@ -1145,7 +1145,7 @@ corto_int16 corto_value_init(corto_value *v) {
             return -1;
         }
     }
-    return corto_callInitDelegate(&type->init, type, corto_value_ptrof(v));
+    return corto_callInitDelegate(&type->init, type, corto_value_ptrof(v), false);
 }
 
 corto_int16 corto_value_deinit(corto_value *v) {

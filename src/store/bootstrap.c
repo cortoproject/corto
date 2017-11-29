@@ -929,7 +929,7 @@ static void corto_initObject(corto_object o) {
         corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_walk(&s, o, NULL);
     corto_type t = corto_typeof(o);
-    corto_callInitDelegate(&t->init, t, o);
+    corto_callInitDelegate(&t->init, t, o, false);
 }
 
 /* Define object */

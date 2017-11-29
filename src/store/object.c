@@ -488,12 +488,16 @@ int corto__adoptSSO(corto_object sso) {
     return !corto_adopt(parent, sso, TRUE);
 }
 
-corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o) {
+corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine) {
     corto_int16 result = 0;
     corto_function delegate;
 
-    if (!corto_checkState(o, CORTO_VALID)) {
-        corto_log_push(strarg("init:%s", corto_fullpath(NULL, o)));
+    if (!isDefine) {
+        if (t->reference) {
+            corto_log_push(strarg("init:%s", corto_fullpath(NULL, o)));
+        } else {
+            corto_log_push(strarg("init:instanceof(%s)", corto_fullpath(NULL, t)));
+        }
     } else {
         corto_log_push(strarg("define:%s", corto_fullpath(NULL, o)));
     }
@@ -1597,7 +1601,7 @@ static corto_int16 corto_defineDeclared(corto_object o) {
         if (corto_ownerMatch(corto_ownerof(o), NULL)) {
             /* Call constructor with default attributes */
             corto_attr prev = corto_setAttr(CORTO_ATTR_DEFAULT);
-            result = corto_callInitDelegate(&((corto_class)t)->construct, t, o);
+            result = corto_callInitDelegate(&((corto_class)t)->construct, t, o, true);
             corto_setAttr(prev);
         }
     }
@@ -3267,7 +3271,8 @@ corto_int32 corto_release(corto_object o) {
     return corto_release_ext(NULL, o, NULL);
 }
 
-static corto_object corto_lookup_intern(
+static
+corto_object corto_lookup_intern(
     corto_object parent,
     corto_string id,
     corto_bool resume)
@@ -3444,6 +3449,257 @@ corto_object _corto_lookupAssert(corto_object scope, corto_string id, corto_type
 corto_object corto_find(corto_object scope, corto_string id, corto_findKind mode)
 {
     return corto_lookup_intern(scope, id, mode & CORTO_FIND_RESUME);
+}
+
+extern int CORTO_BENCHMARK_RESOLVE;
+
+corto_bool corto_declaredAdminCheck(corto_object o);
+
+/* Resolve anonymous object */
+static corto_char* corto_resolveAnonymous(corto_object scope, corto_object o, corto_string str, corto_object* out) {
+    char *ptr = str;
+    corto_object result = corto_declare(o);
+    corto_string_deser_t data = {
+        .out = result,
+        .scope = scope,
+        .type = o,
+        .isObject = TRUE
+    };
+
+    if (corto_type(o)->kind == CORTO_PRIMITIVE) {
+        ptr += 1;
+    }
+
+    ptr = corto_string_deser(ptr, &data);
+    *out = result;
+
+    corto_define(result);
+
+    return ptr;
+}
+
+/* Resolve address-identifier */
+static corto_object corto_resolveAddress(corto_string str) {
+    corto_word addr;
+
+    addr = strtoul(str+1, NULL, 16);
+
+    corto_claim((corto_object)addr);
+
+    return (corto_object)addr;
+}
+
+/* Use private function to do a lookup with a string that is guaranteed lowercase */
+#include "ctype.h"
+
+/* Resolve fully scoped name */
+corto_object corto_resolve(corto_object _scope, corto_string str) {
+    corto_benchmark_start(CORTO_BENCHMARK_RESOLVE);
+    corto_object scope, _scope_start, o, lookup;
+    const char* ptr;
+    char *bptr, *bptrLc;
+    corto_id buffer;
+    corto_id bufferLc;
+    corto_char ch;
+    corto_bool fullyQualified = FALSE;
+    corto_bool cortoSearched = FALSE, cortoCoreSearched = FALSE;
+    int step = 3;
+
+    if (!str) {
+        return NULL;
+    }
+
+    if (!*str) {
+        return NULL;
+    }
+
+    if (*str == '<') {
+        return corto_resolveAddress(str);
+    }
+
+    if (*str == '.') {
+        _scope_start = _scope;
+    } else {
+        _scope_start = corto_lang_o;
+    }
+    scope = _scope_start;
+
+    if (!_scope) {
+        _scope = root_o;
+    }
+
+    /* Optimization: do not resume objects from builtin scopes, except if they
+     * are in / or /corto. */
+    bool shouldResume =
+        !corto_isbuiltin(_scope) || _scope == corto_o || _scope == root_o;
+
+    if (*str == '/') {
+        str += 1;
+        scope = root_o;
+        fullyQualified = TRUE;
+    }
+
+repeat:
+    lookup = NULL;
+    do {
+        o = scope;
+
+        ptr = str;
+        ch = *ptr;
+        if (!ch) {
+            break;
+        }
+        while (ch) {
+            if (scope == corto_o) {
+                cortoSearched = TRUE;
+            } else if (scope == corto_vstore_o) {
+                cortoCoreSearched = TRUE;
+            }
+
+            bptr = buffer;
+            bptrLc = bufferLc;
+            while ((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
+                *bptr = ch;
+                *bptrLc = tolower(ch);
+                bptr++;
+                bptrLc++;
+                ptr++;
+                if (ch == '(') {
+                    while ((ch = *ptr) && (ch != ')')) {
+                        *bptrLc = tolower(ch);
+                        *bptr = ch;
+                        bptrLc++;
+                        bptr++;
+                        ptr++;
+                    }
+                }
+            }
+            *bptr = '\0';
+            *bptrLc = '\0';
+
+            /* If buffer is empty, just return current object */
+            if (!*buffer) {
+                if (step == 3) {
+                    return NULL; /* If nothing has been resolved yet, this is
+                                  * not a resolvable expression. */
+                } else {
+                    break;
+                }
+            }
+
+            if (!strcmp(buffer, ".")) {
+                /* o is already set to scope, just continue */
+            } else if (!strcmp(buffer, "..")) {
+                o = corto_parentof(o);
+                if (!o) {
+                    corto_throw("cannot resolve parent of root");
+                    goto error;
+                }
+                corto_ptr_setref(&lookup, o);
+            } else {
+                corto_object prevLookup = lookup;
+
+                o = corto_lookup_intern(o, bufferLc, shouldResume);
+
+                /* Release lookup after(!) potentially resuming an object. In
+                 * case of a nested resume, a parent will have been
+                 * resumed first. Releasing the parent before resuming the
+                 * child will remove the parent from the store. Becuase the
+                 * child claims the parent, this won't happen after the
+                 * resume. */
+                if (prevLookup) {
+                    corto_release(prevLookup); /* Free reference */
+                }
+
+                lookup = o;
+
+                if (!o) {
+                    break;
+                }
+            }
+
+            /* Expect scope or serializable string */
+            if (ch) {
+                if (ch == '{') {
+                    do {
+                        corto_object prev = o;
+                        ptr = lookup = corto_resolveAnonymous(_scope, o, (char*)ptr, &o);
+                        if (!ptr) {
+                            o = NULL;
+                        }
+                        corto_release(prev);
+                    } while (ptr && (ch = *ptr) && (ch == '{'));
+
+
+                    break;
+                } else if (ch == '/') {
+                    ptr += 1;
+                } else {
+                    corto_throw("invalid ':' in expression '%s'", str);
+                    o = NULL;
+                    break;
+                }
+            }
+        }
+        if (o) break;
+    } while((step == 2) && (scope = corto_parentof(scope)));
+
+    /* Do lookup in actual scope first, then in corto/vstore, then corto */
+    if (!o && step && !fullyQualified) {
+        switch(--step) {
+        case 2:
+            if ((_scope == corto_o) || (_scope == corto_lang_o)) {
+                _scope_start = scope = root_o;
+            } else {
+                _scope_start = scope = _scope;
+            }
+            goto repeat;
+        case 1:
+            if (!cortoCoreSearched) {
+                _scope_start = scope = corto_vstore_o;
+                goto repeat;
+            }
+            break;
+        case 0:
+            if (!cortoSearched) {
+                _scope_start = scope = corto_o;
+                goto repeat;
+            }
+            break;
+        }
+
+         /* Do goto instead of a recursive call. Besides saving (a little bit of) performance,
+            this also preserves the original searchscope, which is needed in anonymous type lookups, which
+            uses the stringserializer. In a serialized string references to other objects may be relatively
+            scoped. For example: the string sequence{F} results in an anonymous sequence object with
+            elementType 'F', which is looked up in scope '_scope_start'. */
+    }
+
+    /* If the current object is not obtained by a lookup, it is not yet keeped. */
+    if (!lookup && o) {
+        corto_claim(o);
+    }
+
+    if (o && !corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+        goto access_error;
+    }
+
+    /* If object is not defined and not declared by this thread, don't return */
+    if (o && !corto_checkState(o, CORTO_VALID) && !corto_declaredAdminCheck(o)) {
+        corto_debug(
+            "corto: resolved undefined object '%s' is declared by another thread (%d)",
+            corto_fullpath(NULL, o), corto_declaredAdminCheck(o));
+        corto_release(o);
+        o = NULL;
+    }
+
+    corto_benchmark_stop(CORTO_BENCHMARK_RESOLVE);
+    return o;
+access_error:
+    corto_release(o);
+error:
+    corto_benchmark_stop(CORTO_BENCHMARK_RESOLVE);
+    return NULL;
 }
 
 corto_bool corto_idmatch(corto_string expr, corto_string str) {
@@ -4759,7 +5015,7 @@ corto_int16 corto_init(corto_object o) {
     }
 
     if (type->flags & CORTO_TYPE_HAS_INIT) {
-        result = corto_callInitDelegate(&type->init, type, o);
+        result = corto_callInitDelegate(&type->init, type, o, false);
     }
     return result;
 error:
@@ -4813,7 +5069,7 @@ corto_int16 corto_super_init(corto_object o) {
     }
     corto_type base = (corto_type)cur->base;
     if (base && base->flags & CORTO_TYPE_HAS_INIT) {
-        return corto_callInitDelegate(&base->init, (corto_type)base, o);
+        return corto_callInitDelegate(&base->init, (corto_type)base, o, false);
     } else {
         corto_throw("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }
@@ -4847,7 +5103,7 @@ corto_int16 corto_super_construct(corto_object o) {
     }
     corto_class base = (corto_class)cur->base;
     if (base && ((corto_type)base)->flags & CORTO_TYPE_HAS_CONSTRUCT) {
-        return corto_callInitDelegate(&base->construct, (corto_type)base, o);
+        return corto_callInitDelegate(&base->construct, (corto_type)base, o, true);
     } else {
         corto_throw("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
     }

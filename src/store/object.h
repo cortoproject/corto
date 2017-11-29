@@ -161,7 +161,7 @@ struct corto__persistent {
 
     /* Objects that are explicitly resumed should also be explicitly suspended
      * by an application. If this is set to true, corto won't automatically
-     * attempt to decrease refcount when dropping a scope. 
+     * attempt to decrease refcount when dropping a scope.
      *
      * Only objects that are resumed through a lookup operation set this flag to
      * true. If an object has been created with declareChild explicitly, it
@@ -245,9 +245,9 @@ corto_int16 ext_corto_expr_free(ext_corto_expr *expr);
 
 corto_procedure corto_function_getProcedureType(corto_function this);
 
-corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o);
+corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine);
 void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_object o);
-    
+
 extern corto_entityAdmin corto_subscriber_admin;
 extern corto_entityAdmin corto_mount_admin;
 
