@@ -861,8 +861,9 @@ corto_object corto_mount_resume(
 
         q.type = type;
         q.content = TRUE;
-        // Request object from mount
-        corto_debug("mount: try resume for '%s/%s' (mount = '%s')", parent, name, corto_fullpath(NULL, this));
+
+        corto_log_push(strarg("resume:%s/%s", parent, name));
+
         corto_resultIter it = corto_mount_query(this, &q);
         if (corto_iter_hasNext(&it)) {
             corto_result *iterResult = corto_iter_next(&it);
@@ -945,11 +946,13 @@ corto_object corto_mount_resume(
     corto_setAttr(prevAttr);
     corto_setOwner(prevOwner);
     if (result) {
-        corto_debug("mount: resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
+        corto_debug("resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
     }
 
+    corto_log_pop();
     return result;
 error:
+    corto_log_pop();
     return NULL;
 }
 

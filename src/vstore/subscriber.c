@@ -558,6 +558,8 @@ static corto_subscriber corto_subscribeCallback(
         corto_dealloc(request);
     }
 
+    corto_log_pop();
+
     return result;
 }
 
@@ -632,6 +634,19 @@ error:
 int16_t corto_subscriber_construct(
     corto_subscriber this)
 {
+    corto_log_push("subscribe");
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+        corto_debug("ID '%s'", corto_fullpath(NULL, this));
+    }
+
+    corto_debug("SELECT '%s'", this->query.select);
+    if (this->query.from) {
+        corto_debug("FROM '%s'", this->query.from);
+    }
+    if (this->query.type) {
+        corto_debug("TYPE '%s'", this->query.type);
+    }
+
     if (!this->query.select || !this->query.select[0]) {
         corto_throw("'null' is not a valid subscriber expression");
         goto error;
@@ -672,8 +687,11 @@ int16_t corto_subscriber_construct(
         corto_ptr_setstr(&this->query.type, id);
     }
 
-    return safe_corto_observer_construct(this);
+    int16_t result = safe_corto_observer_construct(this);
+    corto_log_pop();
+    return result;
 error:
+    corto_log_pop();
     return -1;
 }
 

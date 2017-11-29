@@ -176,7 +176,7 @@ static corto_word corto_selectConvert(
     corto_contentType srcType = corto_selectSrcContentType(data);
 
     if (!srcType && value) {
-        corto_warning("select: mount '%s' provides value but no contentType",
+        corto_warning("mount '%s' provides value but no contentType",
             corto_fullpath(NULL, data->mounts[data->stack[data->sp].currentMount - 1]));
         return 0;
     }
@@ -428,7 +428,7 @@ corto_resultIter corto_selectRequestMount(
         corto_query *q = &corto_subscriber(mount)->query;
         char *parent = corto_selectRelativeParent(q, data);
 
-        corto_debug("select: query (select='%s' from='%s') mount '%s', location '%s'",
+        corto_debug("query (select='%s' from='%s') mount '%s', location '%s'",
           expr,
           parent,
           corto_fullpath(NULL, mount),
@@ -519,7 +519,7 @@ static bool corto_selectIterMount(
     corto_assert(result->type[0] != 0, "mount '%s' returns result with empty type", corto_fullpath(NULL, mount));
 
     corto_debug(
-        "select: mount returned (id = '%s', parent = '%s' leaf = '%s')",
+        "mount returned (id = '%s', parent = '%s' leaf = '%s')",
         result->id, result->parent, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
 
     /* Filter data early if mount indicates it doesn't do any filtering, and
@@ -606,7 +606,7 @@ static bool corto_selectIterMount(
     if (data->resume) {
         corto_type type = NULL;
 
-        corto_trace("select: resuming '%s/%s' of type '%s'",
+        corto_trace("resuming '%s/%s' of type '%s'",
             result->parent, result->id, result->type);
 
         if (corto_observer(mount)->type) {
@@ -614,7 +614,7 @@ static bool corto_selectIterMount(
         } else {
             if (!(type = corto_resolve(NULL, result->type))) {
                 corto_warning(
-                    "select: could not resume '%s/%s' from '%s': type '%s not found",
+                    "could not resume '%s/%s' from '%s': type '%s not found",
                   result->parent,
                   result->id,
                   corto_fullpath(NULL, mount),
@@ -625,7 +625,7 @@ static bool corto_selectIterMount(
         corto_object parent = corto_lookup(NULL, rpath);
         if (!parent) {
             corto_warning(
-              "select: could not resume '%s/%s' from '%s': parent '%s' not available",
+              "could not resume '%s/%s' from '%s': parent '%s' not available",
               result->parent,
               result->id,
               corto_fullpath(NULL, mount),
@@ -641,7 +641,7 @@ static bool corto_selectIterMount(
 
         if (!ref) {
             corto_warning(
-              "select: could not resume '%s/%s' from '%s': failed to create object",
+              "could not resume '%s/%s' from '%s': failed to create object",
               result->parent,
               result->id,
               corto_fullpath(NULL, mount));
@@ -655,7 +655,7 @@ static bool corto_selectIterMount(
                 handle->toValue(&v, result->value);
             } else {
                 corto_warning(
-                  "select: mount '%s' sets result.value but has no contentType",
+                  "mount '%s' sets result.value but has no contentType",
                   corto_fullpath(NULL, mount));
                 corto_delete(ref);
                 goto resume_failed;
@@ -664,14 +664,14 @@ static bool corto_selectIterMount(
 
         if (corto_define(ref)) {
             corto_warning(
-              "select: failed to define '%s/%s' from mount '%s'",
+              "failed to define '%s/%s' from mount '%s'",
               result->parent, result->id,
               corto_fullpath(NULL, mount));
             corto_delete(ref);
             goto resume_failed;
         }
 
-        corto_ok("select: resumed '%s'", corto_fullpath(NULL, ref));
+        corto_ok("resumed '%s'", corto_fullpath(NULL, ref));
 
         corto_setOwner(prev);
         corto_ptr_setref(&result->object, ref);
@@ -847,7 +847,7 @@ static int corto_selectLoadMountWalk(
     data->mounts[data->mountsLoaded] = mount;
     data->mountsLoaded ++;
 
-    corto_debug("select: add mount '%s' of type = '%s', mountsLoaded = %d",
+    corto_debug("add mount '%s' of type = '%s', mountsLoaded = %d",
       corto_fullpath(NULL, mount),
       corto_fullpath(NULL, corto_typeof(mount)),
       data->mountsLoaded);
@@ -873,7 +873,7 @@ static int16_t corto_selectLoadMounts(
     frame->currentMount = data->mountsLoaded;
     frame->firstMount = data->mountsLoaded;
 
-    corto_debug("select: look for mounts in '%s'%s",
+    corto_debug("look for mounts in '%s'%s",
         frame->cur->scope,
         recursive ? " recursively" : "");
 
@@ -909,7 +909,7 @@ static int16_t corto_selectTree(
         return 0;
     }
 
-    corto_debug("select: iterate frame %d (scope = '%s', expr = '%s', location = '%s')",
+    corto_debug("iterate frame %d (scope = '%s', expr = '%s', location = '%s')",
             data->sp, frame->cur->scope, frame->cur->expr, data->location);
 
     do {
@@ -982,7 +982,7 @@ static int16_t corto_selectTree(
                     frame->iter = corto_selectRequestMount(
                       data, data->mounts[frame->currentMount - 1]);
 
-                    corto_debug("select: moved to '%s'", data->location);
+                    corto_debug("moved to '%s'", data->location);
                 }
             }
 
@@ -1097,12 +1097,16 @@ static void* corto_selectNext(corto_resultIter *iter) {
 
     CORTO_UNUSED(iter);
 
+    corto_log_push("next");
+
     if (data->next) {
-        corto_debug("select: yield ('%s', '%s')",
+        corto_debug("yield ('%s', '%s')",
             data->next->id,
             data->next->parent);
         data->count ++;
     }
+
+    corto_log_pop();
 
     return data->next;
 }
@@ -1113,7 +1117,7 @@ static void* corto_selectNextObjects(corto_objectIter *iter) {
     CORTO_UNUSED(iter);
 
     if (data->next) {
-        corto_debug("select: NextObject (%s, %s)", data->next->id, data->next->parent);
+        corto_debug("NextObject (%s, %s)", data->next->id, data->next->parent);
         data->count ++;
     }
 
@@ -1154,6 +1158,8 @@ static void corto_selectRelease(corto_iter *iter) {
     data->program.tokens = NULL;
     data->item.value = 0;
     corto_dealloc(data);
+
+    corto_log_pop();
 }
 
 /* Split up scope expression in object/string pairs so mounts are invoked
@@ -1189,7 +1195,7 @@ static corto_int16 corto_selectSplitScope(corto_select_data *data) {
     corto_ptr_setref(&data->segments[0].o, root_o);
     current ++;
 
-    corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p",
+    corto_debug("segment added: scope = '%s', expr = '%s', o = %p",
         data->segments[0].scope, data->segments[0].expr, data->segments[0].o);
 
     if (ptr[0]) {
@@ -1209,7 +1215,7 @@ static corto_int16 corto_selectSplitScope(corto_select_data *data) {
 
                 *ptr = ch;
 
-                corto_debug("select: segment added: scope = '%s', expr = '%s', o = %p",
+                corto_debug("segment added: scope = '%s', expr = '%s', o = %p",
                     data->segments[current].scope, data->segments[current].expr, data->segments[current].o);
 
                 current++;
@@ -1266,7 +1272,7 @@ static corto_int16 corto_selectRun(corto_select_data *data) {
         data->filterProgram = corto_idmatch_compile(data->filter, FALSE, FALSE);
     }
 
-    corto_debug("select: id filter = '%s'", filter);
+    corto_debug("id filter = '%s'", filter);
 
     return 0;
 error:
@@ -1275,7 +1281,7 @@ error:
 
 static corto_select_frame* corto_selectNextSegment(corto_select_data *data) {
     if (data->segments[data->segment + 1].scope) {
-        corto_debug("select: evaluate segment: scope = '%s', expr = '%s'",
+        corto_debug("evaluate segment: scope = '%s', expr = '%s'",
             data->segments[data->segment + 1].scope,
             data->segments[data->segment + 1].expr);
 
@@ -1297,7 +1303,7 @@ static corto_bool corto_selectNextExpr(corto_select_data *data) {
         data->exprCurrent ++;
         result = TRUE;
 
-        corto_debug("select: evaluate expression '%s'", data->expr);
+        corto_debug("evaluate expression '%s'", data->expr);
 
         corto_selectReset(data);
         data->segment = 0;
@@ -1325,6 +1331,8 @@ static bool corto_selectHasNext(corto_resultIter *iter) {
         return 0;
     }
 
+    corto_log_push("hasNext");
+
     corto_select_frame *frame = &data->stack[data->sp];
 
     CORTO_UNUSED(iter);
@@ -1332,7 +1340,7 @@ static bool corto_selectHasNext(corto_resultIter *iter) {
     if (data->limit) {
          if (data->limit <= data->count)
          {
-              corto_debug("select: limit reached, stop iterating (%d)", data->limit);
+              corto_debug("limit reached, stop iterating (%d)", data->limit);
               goto stop;
          }
     }
@@ -1352,11 +1360,14 @@ static bool corto_selectHasNext(corto_resultIter *iter) {
      * obtain the data before returning 0, and cleaning up the select data. */
 
     if (!data->next) {
-        corto_debug("select: no more data");
+        goto stop;
     }
 
+    corto_log_pop();
     return data->quit ? 1 : data->next != NULL;
 stop:
+    corto_debug("no more data");
+    corto_log_pop();
     return 0;
 }
 
@@ -1423,8 +1434,6 @@ static corto_resultIter corto_selectPrepareIterator (
     result.next = corto_selectNext;
     result.release = corto_selectRelease;
 
-    corto_debug("select: '%s' from '%s'", data->expr, scope);
-
     /* Split expression on ,. Expressions with multiple segments should be
      * evaluated sequentially. */
     char *ptr = data->expr, *prev = ptr;
@@ -1432,16 +1441,16 @@ static corto_resultIter corto_selectPrepareIterator (
         *ptr = '\0';
         ptr++;
         data->exprCount ++;
-        corto_debug("select: expression added: '%s'", prev);
+        corto_debug("expression added: '%s'", prev);
         prev = ptr;
     }
     if (!data->exprCount) {
-        corto_debug("select: expression added: '%s'", data->expr);
+        corto_debug("expression added: '%s'", data->expr);
     }
     data->exprCurrent = 0;
 
     if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
-        corto_throw("select '%s' failed", data->expr);
+        corto_throw("select failed");
         goto error;
     }
 
@@ -1468,6 +1477,7 @@ static corto_select__fluent corto_selectorContentType(
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("CONTENTTYPE '%s'", contentType);
         request->contentType = contentType;
     }
     return corto_select__fluentGet();
@@ -1480,6 +1490,7 @@ static corto_select__fluent corto_selectorLimit(
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("OFFSET %llu LIMIT %llu", offset, limit);
         request->offset = offset;
         request->limit = limit;
     }
@@ -1492,6 +1503,7 @@ static corto_select__fluent corto_selectorType(
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("TYPE '%s'", type);
         request->type = type;
     }
     return corto_select__fluentGet();
@@ -1504,6 +1516,7 @@ static corto_int16 corto_selectorIter(corto_resultIter *ret)
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("ITER");
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1541,6 +1554,7 @@ static corto_string corto_selectorId()
 
     if (request) {
         corto_bool quit = FALSE;
+        corto_debug("ID");
         request->mountAction = corto_mountAction_id;
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
@@ -1581,6 +1595,7 @@ static corto_int16 corto_selectorSubscribe(corto_resultIter *ret)
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("SUBSCRIBE");
         request->mountAction = corto_mountAction_subscribe;
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
@@ -1607,6 +1622,7 @@ static corto_int16 corto_selectorUnsubscribe()
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("UNSUBSCRIBE");
         request->mountAction = corto_mountAction_unsubscribe;
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
@@ -1634,6 +1650,7 @@ static corto_int16 corto_selectorIterObjects(corto_objectIter *ret)
       corto_tls_get(CORTO_KEY_FLUENT);
 
     if (request) {
+        corto_debug("ITER_OBJECTS");
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         *ret = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1659,6 +1676,7 @@ static corto_int16 corto_selectorResume()
       corto_tls_get(CORTO_KEY_FLUENT);
 
     if (request) {
+        corto_debug("RESUME");
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1693,6 +1711,7 @@ static corto_int64 corto_selectorCount()
       corto_tls_get(CORTO_KEY_FLUENT);
 
     if (request) {
+        corto_debug("COUNT");
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         it = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -1819,6 +1838,7 @@ static corto_select__fluent corto_selectorInstance(corto_object instance)
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("INSTANCE '%s'", corto_fullpath(NULL, instance));
         request->instance = instance;
     }
     return corto_select__fluentGet();
@@ -1829,6 +1849,7 @@ static corto_select__fluent corto_selectorMount(corto_mount mount)
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
+        corto_debug("MOUNT '%s'", corto_fullpath(NULL, mount));
         request->mount = mount;
     }
     return corto_select__fluentGet();
@@ -1840,6 +1861,7 @@ static corto_select__fluent corto_selectorFrom(char *scope)
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->scope = scope;
+        corto_debug("FROM '%s'", scope);
     }
     return corto_select__fluentGet();
 }
@@ -1890,6 +1912,9 @@ corto_select__fluent corto_select(
         request->expr = corto_vasprintf(expr, arglist);
         va_end(arglist);
     }
+
+    corto_log_push("select");
+    corto_debug(strarg("SELECT '%s'", request->expr));
 
     request->scope = NULL;
     return corto_select__fluentGet();

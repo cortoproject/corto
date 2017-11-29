@@ -491,6 +491,13 @@ int corto__adoptSSO(corto_object sso) {
 corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o) {
     corto_int16 result = 0;
     corto_function delegate;
+
+    if (!corto_checkState(o, CORTO_VALID)) {
+        corto_log_push(strarg("init:%s", corto_fullpath(NULL, o)));
+    } else {
+        corto_log_push(strarg("define:%s", corto_fullpath(NULL, o)));
+    }
+
     if ((delegate = d->super.procedure)) {
         corto_interface prev = NULL;
         bool hasBase = (t->kind == CORTO_COMPOSITE) && ((corto_interface)t)->base;
@@ -505,6 +512,8 @@ corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_obje
         }
         if (hasBase) corto_tls_set(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
     }
+
+    corto_log_pop();
     return result;
 }
 
@@ -1472,6 +1481,8 @@ corto_object corto_resume(
     if (!expr) {
         return NULL;
     }
+
+    corto_debug("try resume '%s' from '%s'", expr, corto_fullpath(NULL, parent));
 
     corto_id exprBuff;
 
@@ -4750,7 +4761,6 @@ corto_int16 corto_init(corto_object o) {
     if (type->flags & CORTO_TYPE_HAS_INIT) {
         result = corto_callInitDelegate(&type->init, type, o);
     }
-    corto_benchmark_stop(CORTO_BENCHMARK_INIT);
     return result;
 error:
     corto_benchmark_stop(CORTO_BENCHMARK_INIT);

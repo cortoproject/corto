@@ -1254,7 +1254,7 @@ int corto_start(char *appName) {
 /* Only create package mount for non-redistributable version of corto, where
  * packages are installed in a common location */
 #ifndef CORTO_REDIS
-    corto_loaderInstance = corto_create(corto_loader_o);
+    corto_loaderInstance = corto_createChild(root_o, "config/loader", corto_loader_o);
 
     if (corto_loaderInstance) {
         corto_loaderInstance->autoLoad = TRUE;
@@ -1422,7 +1422,8 @@ corto_bool corto_enableload(corto_bool enable) {
         }
     } else {
         if (!corto_loaderInstance) {
-            corto_loaderInstance = corto_create(corto_loader_o);
+            corto_loaderInstance = corto_createChild(
+                root_o, "config/loader", corto_loader_o);
         } else {
             prev = TRUE;
         }

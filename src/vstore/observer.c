@@ -314,6 +314,8 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
 
     if (corto_subscriber_admin.count && corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
         if (observerMask & CORTO_ON_TREE) {
+            corto_log_push("update-subscription");
+
             if (mask == CORTO_DEFINE) {
                 corto_id id;
                 corto_fullpath(id, observable);
@@ -324,6 +326,8 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
                 corto_fullpath(id, observable);
                 corto_select("//").from(id).unsubscribe();
             }
+
+            corto_log_pop();
         }
     }
 }
@@ -425,7 +429,7 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
         case 1: corto_notifyObserverCdecl(data, observable, prev, mask, depth); break;
         case 2: corto_notifyObserverDispatch(data, observable, prev, mask, depth); break;
         }
-        
+
         observers++;
     }
     corto_setOwner(prev);
@@ -737,6 +741,19 @@ corto_int16 corto_unobserve(corto_observer observer) {
 int16_t corto_observer_construct(
     corto_observer this)
 {
+    corto_log_push("observe");
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+        corto_debug("ID '%s'", corto_fullpath(NULL, this));
+    }
+    if (corto_log_verbosityGet() <= CORTO_DEBUG) {
+        char *str = corto_ptr_str(&this->mask, corto_eventMask_o, 0);
+        corto_debug("MASK '%s'", str);
+        free(str);
+    }
+    if (!this->enabled) {
+        corto_debug("DISABLED");
+    }
+    corto_debug("OBSERVABLE '%s'", corto_fullpath(NULL, this->observable));
 
     if (!corto_function(this)->parameters.length) {
         if (!corto_checkAttr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
@@ -765,8 +782,10 @@ int16_t corto_observer_construct(
         }
     }
 
+    corto_log_pop();
     return 0;
 error:
+    corto_log_pop();
     return -1;
 }
 
@@ -834,8 +853,8 @@ int16_t corto_observer_observe(
     }
 
     if (this->mask == CORTO_ON_SCOPE || this->mask == CORTO_ON_TREE) {
-        this->mask |= 
-            CORTO_DECLARE | CORTO_DEFINE | CORTO_UPDATE | 
+        this->mask |=
+            CORTO_DECLARE | CORTO_DEFINE | CORTO_UPDATE |
             CORTO_DELETE | CORTO_RESUME | CORTO_SUSPEND;
     }
 
@@ -1005,6 +1024,8 @@ int16_t corto_observer_observe(
             corto_iter it;
             corto_id observableId;
             corto_fullpath(observableId, observable);
+
+            corto_log_push("align-subscribe");
             corto_int16 ret = corto_select(
                 mask & CORTO_ON_SELF ? "." :
                 mask & CORTO_ON_SCOPE ? "/" : "//")
@@ -1013,11 +1034,13 @@ int16_t corto_observer_observe(
               .subscribe(&it);
             if (ret) {
                 corto_throw("observer: failed to notify mounts of subscription");
+                corto_log_pop();
                 goto error;
             }
 
             /* TODO: use data from select to align observer */
             while (corto_iter_hasNext(&it)) corto_iter_next(&it);
+            corto_log_pop();
         }
     }
 
@@ -1207,14 +1230,16 @@ int16_t corto_observer_unobserve(
         if (!this->active) {
             this->enabled = FALSE;
         }
-        
+
         if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
             corto_id observableId;
             corto_fullpath(observableId, observable);
+            corto_log_push("align-unsubscribe");
             corto_select(
                 mask & CORTO_ON_SELF ? "." :
                 mask & CORTO_ON_SCOPE ? "/" : "//")
                .from(observableId).instance(this).unsubscribe();
+            corto_log_pop();
        }
     }
 
@@ -1240,4 +1265,3 @@ ignore:
 error:
     return -1;
 }
-
