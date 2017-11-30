@@ -634,46 +634,26 @@ static bool corto_selectIterMount(
             goto resume_failed;
         }
 
+        corto_contentType contentTypeHandle = (corto_contentType)mount->contentTypeOutHandle;
         corto_object prev = corto_setOwner(mount);
-        corto_object ref = corto_declareChild(parent, result->id, type);
+        corto_object ref =
+        corto(parent, result->id, type, NULL, contentTypeHandle, (void*)result->value, -1,
+            CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
+        corto_setOwner(prev);
         corto_release(type);
         corto_release(parent);
 
         if (!ref) {
             corto_warning(
-              "could not resume '%s/%s' from '%s': failed to create object",
+              "could not resume '%s/%s' from mount '%s'",
               result->parent,
               result->id,
               corto_fullpath(NULL, mount));
             goto resume_failed;
         }
 
-        if (result->value) {
-            if (mount->contentTypeOutHandle) {
-                corto_contentType handle = (corto_contentType)mount->contentTypeOutHandle;
-                corto_value v = corto_value_object(ref, type);
-                handle->toValue(&v, result->value);
-            } else {
-                corto_warning(
-                  "mount '%s' sets result.value but has no contentType",
-                  corto_fullpath(NULL, mount));
-                corto_delete(ref);
-                goto resume_failed;
-            }
-        }
-
-        if (corto_define(ref)) {
-            corto_warning(
-              "failed to define '%s/%s' from mount '%s'",
-              result->parent, result->id,
-              corto_fullpath(NULL, mount));
-            corto_delete(ref);
-            goto resume_failed;
-        }
-
         corto_ok("resumed '%s'", corto_fullpath(NULL, ref));
 
-        corto_setOwner(prev);
         corto_ptr_setref(&result->object, ref);
         if (!data->resumeKeep) {
             corto_release(ref);
@@ -1424,7 +1404,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->valueAllocated = FALSE;
 
     if (data->contentType) {
-        if (!(data->dstSer = corto_loadContentType(data->contentType))) {
+        if (!(data->dstSer = corto_load_contentType(data->contentType))) {
             goto error;
         }
     }

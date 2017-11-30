@@ -132,6 +132,8 @@ void corto_type_destruct(
         corto_dealloc(this->metaprocedures.buffer);
         this->metaprocedures.buffer = NULL;
     }
+
+    
 }
 
 int16_t corto_type_init(
@@ -189,4 +191,3 @@ uint32_t corto_type_sizeof(
     }
     return size;
 }
-

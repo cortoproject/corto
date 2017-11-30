@@ -348,54 +348,6 @@ void test_Select_tc_selectEmptyStrings(
     test_assert(test_Select_hasObject(results, "", "", "/corto/vstore/package"));
 }
 
-void test_Select_tc_selectErrParentAst(
-    test_Select this)
-{
-    corto_int16 ret = 0;
-    corto_iter iter;
-    ret = corto_select("..*").from("/").iter( &iter );
-    test_assert(ret != 0);
-    test_assert(corto_lasterr() != NULL);
-    (test_assertstr(corto_lasterr(), "select '..*' failed: unexpected 'filter' after '..'"));
-
-}
-
-void test_Select_tc_selectErrParentId(
-    test_Select this)
-{
-    corto_int16 ret = 0;
-    corto_iter iter;
-    ret = corto_select("..id").iter( &iter );
-    test_assert(ret != 0);
-    test_assert(corto_lasterr() != NULL);
-    (test_assertstr(corto_lasterr(), "select '..id' failed: unexpected 'identifier' after '..'"));
-
-}
-
-void test_Select_tc_selectErrParentTree(
-    test_Select this)
-{
-    corto_int16 ret = 0;
-    corto_iter iter;
-    ret = corto_select("...").iter( &iter );
-    test_assert(ret != 0);
-    test_assert(corto_lasterr() != NULL);
-    (test_assertstr(corto_lasterr(), "select '...' failed: unexpected '.' after '..'"));
-
-}
-
-void test_Select_tc_selectErrParentWc(
-    test_Select this)
-{
-    corto_int16 ret = 0;
-    corto_iter iter;
-    ret = corto_select("..?").iter( &iter );
-    test_assert(ret != 0);
-    test_assert(corto_lasterr() != NULL);
-    (test_assertstr(corto_lasterr(), "select '..?' failed: unexpected 'filter' after '..'"));
-
-}
-
 void test_Select_tc_selectFilterAsterisk(
     test_Select this)
 {

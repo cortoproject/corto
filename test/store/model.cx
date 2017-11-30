@@ -923,11 +923,6 @@ test/Suite Select:/
     resultList collect(string scope, string expr, uint64 offset, uint64 limit) function
     bool hasObject(resultList items, string parent, string name, string type) function
 
-    void tc_selectErrParentTree()
-    void tc_selectErrParentId()
-    void tc_selectErrParentAst()
-    void tc_selectErrParentWc()
-
     void tc_selectFromNull()
     void tc_selectFromRoot()
     void tc_selectFromCorto()

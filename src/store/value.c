@@ -1031,7 +1031,7 @@ void corto_value_free(corto_value *v) {
 }
 
 corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content) {
-    corto_contentType ct = corto_loadContentType(contentType);
+    corto_contentType ct = corto_load_contentType(contentType);
     if (!ct) {
         corto_throw("unknown contentType '%s'", contentType);
         goto error;
@@ -1047,7 +1047,7 @@ error:
 }
 
 corto_string corto_value_contentof(corto_value *v, corto_string contentType) {
-    corto_contentType ct = corto_loadContentType(contentType);
+    corto_contentType ct = corto_load_contentType(contentType);
     corto_string result;
 
     if (!ct) {

@@ -157,7 +157,6 @@ corto_int16 corto_cdeclInit(corto_function this) {
     ffi_type **args = CORTO_OFFSET(cif, sizeof(ffi_cif));
     corto_uint8 hasThis = 0;
 
-
     /* Add size of this-pointer */
     corto_procedure procedure = corto_function_getProcedureType(this);
 

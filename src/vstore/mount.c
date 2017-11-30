@@ -1021,7 +1021,7 @@ int16_t corto_mount_setContentTypeIn(
 {
 
     corto_ptr_setstr(&corto_subscriber(this)->contentType, type);
-    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_loadContentType(type);
+    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_load_contentType(type);
     if (!corto_subscriber(this)->contentTypeHandle) {
         goto error;
     }
@@ -1037,7 +1037,7 @@ int16_t corto_mount_setContentTypeOut(
 {
 
     corto_ptr_setstr(&this->contentTypeOut, type);
-    this->contentTypeOutHandle = (corto_word)corto_loadContentType(type);
+    this->contentTypeOutHandle = (corto_word)corto_load_contentType(type);
     if (!this->contentTypeOutHandle) {
         goto error;
     }

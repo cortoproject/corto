@@ -49,7 +49,7 @@ int16_t corto_function_construct(
         corto_uint32 i;
         for(i=0; i<this->parameters.length; i++) {
             if (this->parameters.buffer[i].passByReference ||
-                this->parameters.buffer[i].inout) 
+                this->parameters.buffer[i].inout)
             {
                 this->size += sizeof(corto_word);
             } else {
@@ -79,7 +79,7 @@ int16_t corto_function_construct(
         if (corto_delegate_validate(this)) {
             goto error;
         }
-    }    
+    }
 
     /* Initialize binding-specific data */
     if (corto_callInit(this)) {
@@ -159,15 +159,15 @@ int16_t corto_function_init(
 
     if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
         if (!corto_instanceof(corto_interface_o, corto_parentof(this)) &&
-            !corto_instanceof(corto_method_o, this)) 
+            !corto_instanceof(corto_method_o, this))
         {
             corto_functionLookup_t walkData = {.f = this, .error = FALSE};
             corto_uint32 i;
 
-            corto_objectseq scope = 
+            corto_objectseq scope =
                 corto_scopeClaimWithFilter(
-                    corto_parentof(this), 
-                    NULL, 
+                    corto_parentof(this),
+                    NULL,
                     corto_idof(this)
                 );
 
@@ -196,7 +196,7 @@ int16_t corto_function_init(
         if (corto_delegate_bind(this)) {
             goto error;
         }
-    }    
+    }
 
     corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return 0;
@@ -266,8 +266,8 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 /* Set reference */
                 result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
 
-                if ((flags & (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) == 
-                             (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) 
+                if ((flags & (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) ==
+                             (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT))
                 {
                     result.buffer[i].inout = CORTO_INOUT;
                 } else if (flags & CORTO_PARAMETER_OUT) {
@@ -312,4 +312,3 @@ error:
     result.buffer = NULL;
     return result;
 }
-

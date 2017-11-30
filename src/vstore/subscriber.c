@@ -330,7 +330,7 @@ corto_int16 corto_notifySubscribersId(
                         /* Has source contentType been loaded? */
                         if (contentType && !contentTypeHandle) {
                             /* Load contentType */
-                            contentTypeHandle = corto_loadContentType(contentType);
+                            contentTypeHandle = corto_load_contentType(contentType);
                             if (!contentTypeHandle) {
                                 goto error;
                             }
@@ -635,17 +635,6 @@ int16_t corto_subscriber_construct(
     corto_subscriber this)
 {
     corto_log_push("subscribe");
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
-        corto_debug("ID '%s'", corto_fullpath(NULL, this));
-    }
-
-    corto_debug("SELECT '%s'", this->query.select);
-    if (this->query.from) {
-        corto_debug("FROM '%s'", this->query.from);
-    }
-    if (this->query.type) {
-        corto_debug("TYPE '%s'", this->query.type);
-    }
 
     if (!this->query.select || !this->query.select[0]) {
         corto_throw("'null' is not a valid subscriber expression");
@@ -653,7 +642,7 @@ int16_t corto_subscriber_construct(
     }
 
     if (this->contentType && !this->contentTypeHandle) {
-        this->contentTypeHandle = (corto_word)corto_loadContentType(this->contentType);
+        this->contentTypeHandle = (corto_word)corto_load_contentType(this->contentType);
         if (!this->contentTypeHandle) {
             goto error;
         }
@@ -736,10 +725,17 @@ int16_t corto_subscriber_subscribe(
 {
     corto_iter it;
 
-    corto_debug("subscriber: '%s' subscribing for '%s', '%s'",
-      corto_fullpath(NULL, this),
-      this->query.from,
-      this->query.select);
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+        corto_debug("ID '%s'", corto_fullpath(NULL, this));
+    }
+
+    corto_debug("SELECT '%s'", this->query.select);
+    if (this->query.from) {
+        corto_debug("FROM '%s'", this->query.from);
+    }
+    if (this->query.type) {
+        corto_debug("TYPE '%s'", this->query.type);
+    }
 
     /* If subscriber was not yet enabled, subscribe to mounts */
     corto_int16 ret;

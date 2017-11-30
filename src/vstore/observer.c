@@ -441,7 +441,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
 
     corto_type t = corto_typeof(observable);
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
-        if (corto_callInitDelegate(&((corto_class)t)->validate, t, observable)) {
+        if (corto_callInitDelegate(&((corto_class)t)->validate, t, observable, true)) {
             goto error;
         }
     }
@@ -742,18 +742,6 @@ int16_t corto_observer_construct(
     corto_observer this)
 {
     corto_log_push("observe");
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
-        corto_debug("ID '%s'", corto_fullpath(NULL, this));
-    }
-    if (corto_log_verbosityGet() <= CORTO_DEBUG) {
-        char *str = corto_ptr_str(&this->mask, corto_eventMask_o, 0);
-        corto_debug("MASK '%s'", str);
-        free(str);
-    }
-    if (!this->enabled) {
-        corto_debug("DISABLED");
-    }
-    corto_debug("OBSERVABLE '%s'", corto_fullpath(NULL, this->observable));
 
     if (!corto_function(this)->parameters.length) {
         if (!corto_checkAttr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
@@ -846,6 +834,19 @@ int16_t corto_observer_observe(
     corto__observer* _observerData = NULL;
     corto_bool added = FALSE;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
+
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+        corto_debug("ID '%s'", corto_fullpath(NULL, this));
+    }
+    if (corto_log_verbosityGet() <= CORTO_DEBUG) {
+        char *str = corto_ptr_str(&this->mask, corto_eventMask_o, 0);
+        corto_debug("MASK '%s'", str);
+        free(str);
+    }
+    if (!this->enabled) {
+        corto_debug("DISABLED");
+    }
+    corto_debug("OBSERVABLE '%s'", corto_fullpath(NULL, this->observable));
 
     /* Check if mask specifies either SELF or CHILDS, if not enable SELF */
     if (!(this->mask & (CORTO_ON_SELF|CORTO_ON_SCOPE|CORTO_ON_TREE))) {

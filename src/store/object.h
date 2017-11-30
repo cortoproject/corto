@@ -36,7 +36,6 @@ void corto_ptr_castInit(void);
 void corto_drop(corto_object o, corto_bool delete);
 corto_object corto_resumePersistent(corto_object o);
 
-typedef struct corto_contentType *corto_contentType;
 struct corto_contentType {
     corto_string name;
     bool isBinary;
@@ -59,8 +58,6 @@ struct corto_contentType {
     /* Free a contentType value */
     void (*release)(corto_word content);
 };
-
-corto_contentType corto_loadContentType(corto_string contentType);
 
 typedef struct corto__attr {
     /* attributes */

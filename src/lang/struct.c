@@ -53,7 +53,10 @@ int16_t corto_struct_construct(
 
     /* Don't allow empty structs */
     if (!corto_interface(this)->nextMemberId && !corto_interface(this)->base) {
-        corto_member m = corto_declareChild(this, "__dummy", corto_member_o);
+        corto_member m =
+        corto(this, "__dummy", corto_member_o, NULL, NULL, NULL, CORTO_ATTR_NAMED,
+            CORTO_DO_DECLARE | CORTO_DO_FORCE_TYPE);
+
         if (!m) {
             corto_critical("failed to declare dummy member");
         }
@@ -151,8 +154,8 @@ int16_t corto_struct_construct(
                 m->modifiers |= CORTO_KEY;
             }
 
-            this->keycache.buffer = 
-                corto_realloc(this->keycache.buffer, 
+            this->keycache.buffer =
+                corto_realloc(this->keycache.buffer,
                     sizeof(corto_object) * (this->keycache.length + 1));
             this->keycache.buffer[this->keycache.length] = m;
             corto_claim(m);
@@ -168,18 +171,18 @@ int16_t corto_struct_construct(
         for (i = 0; i < interface->members.length; i ++) {
             corto_member m = interface->members.buffer[i];
             if ((m->modifiers & CORTO_KEY) == CORTO_KEY) {
-                this->keys.buffer = 
-                    corto_realloc(this->keys.buffer, 
+                this->keys.buffer =
+                    corto_realloc(this->keys.buffer,
                         sizeof(char*) * (this->keys.length + 1));
-                this->keys.buffer[this->keys.length] = 
+                this->keys.buffer[this->keys.length] =
                     corto_strdup(corto_idof(m));
                 this->keys.length ++;
-                this->keycache.buffer = 
-                    corto_realloc(this->keycache.buffer, 
+                this->keycache.buffer =
+                    corto_realloc(this->keycache.buffer,
                         sizeof(corto_object) * (this->keycache.length + 1));
                 this->keycache.buffer[this->keycache.length] = m;
                 corto_claim(m);
-                this->keycache.length ++;   
+                this->keycache.length ++;
             }
 
         }
@@ -223,7 +226,7 @@ corto_member corto_struct_resolveMember_v(
     base = corto_interface(this);
     do {
         m = corto_interface_resolveMember_v(corto_interface(base), name);
-    }while(!m && (base=corto_interface(base)->base));
+    } while(!m && (base = corto_interface(base)->base));
     return m;
 }
 
@@ -232,4 +235,3 @@ void corto_struct_destruct(
 {
     freeops_delete(this);
 }
-

@@ -595,7 +595,7 @@ void corto_interface_destruct(
 
     /* Free members */
     for (i=0; i<this->members.length; i++) {
-        corto_ptr_setref(&this->members.buffer[i], NULL);
+        corto_ptr_setref(&this->members.buffer[i], NULL);      
     }
 
     if (this->members.buffer) {

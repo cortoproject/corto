@@ -28,7 +28,10 @@ extern corto_mutex_s corto_adminLock;
 
 static corto_ll contentTypes = NULL;
 
-static corto_word corto_contentType_ptr_fromValue(corto_value *v) {
+static
+corto_word corto_contentType_ptr_fromValue(
+    corto_value *v)
+{
     corto_type t = corto_value_typeof(v);
     void *ptr = corto_mem_new(t);
     corto_value dst = corto_value_mem(ptr, t);
@@ -53,33 +56,53 @@ error:
     return 0;
 }
 
-static corto_int16 corto_contentType_ptr_toValue(corto_value *v, corto_word ptr) {
+static
+corto_int16 corto_contentType_ptr_toValue(
+    corto_value *v,
+    corto_word ptr)
+{
     corto_type t = corto_type(*(corto_type*)CORTO_OFFSET(ptr, -sizeof(corto_type)));
     *v = corto_value_mem((void*)ptr, t);
     return 0;
 }
 
-static void corto_contentType_ptr_release(corto_word ptr) {
+static
+void corto_contentType_ptr_release(
+    corto_word ptr)
+{
     if (ptr) {
         corto_mem_free((void*)ptr);
     }
 }
 
-static corto_word corto_contentType_ptr_copy(corto_word src) {
+static
+corto_word corto_contentType_ptr_copy(
+    corto_word src)
+{
     corto_type t = corto_mem_typeof((void*)src);
     corto_value srcValue = corto_value_mem((void*)src, t);
     return corto_contentType_ptr_fromValue(&srcValue);
 }
 
-static corto_word corto_contentType_str_fromValue(corto_value *v) {
+static
+corto_word corto_contentType_str_fromValue(
+    corto_value *v)
+{
     return (corto_word)corto_value_str(v, 0);
 }
 
-static corto_int16 corto_contentType_str_toValue(corto_value *v, corto_word str) {
+static
+corto_int16 corto_contentType_str_toValue(
+    corto_value *v,
+    corto_word str)
+{
     return corto_value_fromStr(v, (char*)str);
 }
 
-static corto_word corto_contentType_strColor_fromValue(corto_value *v) {
+static
+corto_word corto_contentType_strColor_fromValue(
+    corto_value *v)
+{
     corto_string_ser_t sdata;
     corto_walk_opt s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     memset(&sdata, 0, sizeof(corto_string_ser_t));
@@ -92,7 +115,8 @@ static corto_word corto_contentType_strColor_fromValue(corto_value *v) {
     return (corto_word)corto_buffer_str(&sdata.buffer);
 }
 
-static corto_contentType corto_findContentType(
+static
+corto_contentType corto_findContentType(
     bool isBinary,
     corto_string contentType)
 {
@@ -144,7 +168,8 @@ static corto_contentType corto_findContentType(
     return result;
 }
 
-corto_contentType corto_loadContentType(
+corto_contentType
+corto_load_contentType(
     corto_string contentType)
 {
     corto_contentType result = NULL;

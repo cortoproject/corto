@@ -1109,13 +1109,17 @@ int corto_start(char *appName) {
     S_B_CONTENTTYPE = corto_benchmark_init("S_B_CONTENTTYPE");
 
     /* Initialize security */
+    corto_debug("init security");
     corto_secure_init();
 
     /* Register CDECL as first binding */
+    corto_debug("init C binding");
     if (corto_callRegister(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {
         /* Sanity check */
         corto_critical("CDECL binding did not register with id 1");
     }
+
+    corto_debug("init global administration");
 
     /* Init admin-lock */
     corto_mutex_new(&corto_adminLock);
@@ -1160,6 +1164,7 @@ int corto_start(char *appName) {
     corto_native_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
 
     /* Initialize builtin scopes */
+    corto_debug("init builtin packages");
     corto_initObject(root_o);
     corto_initObject(corto_o);
     corto_initObject(corto_lang_o);
@@ -1188,6 +1193,7 @@ int corto_start(char *appName) {
      * all types. This only affects types that support inheritance, so all
      * types that inherit from interface. */
 
+    corto_debug("init delegates");
     corto_int32 i = 0;
     corto_object o;
     for (i = 0; (o = types[i].o); i++) {
@@ -1212,6 +1218,7 @@ int corto_start(char *appName) {
     }
 
     /* Init objects */
+    corto_debug("init builtin objects");
     for (i = 0; (o = types[i].o); i++) corto_initObject(o);
     for (i = 0; (o = objects[i].o); i++) corto_initObject(o);
 
@@ -1240,6 +1247,8 @@ int corto_start(char *appName) {
     corto_onexit(corto_loaderOnExit, NULL);
 
     /* Register library-binding */
+    corto_debug("init builtin file extensions");
+
     int corto_loadLibraryAction(corto_string file, int argc, char* argv[], void *data);
     corto_load_register("so", corto_loadLibraryAction, NULL);
 
@@ -1251,26 +1260,36 @@ int corto_start(char *appName) {
 
     CORTO_APP_STATUS = 0; /* Running */
 
+    /* Create builtin root scopes */
+    corto_debug("init root scopes");
+    corto_object config_o =
+    corto(root_o, "config", corto_void_o, NULL, NULL, NULL, CORTO_ATTR_DEFAULT,
+        CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
+
+    corto(root_o, "data", corto_void_o, NULL, NULL, NULL, CORTO_ATTR_DEFAULT,
+        CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
+
+    corto(root_o, "home", corto_void_o, NULL, NULL, NULL, CORTO_ATTR_DEFAULT,
+        CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
+
 /* Only create package mount for non-redistributable version of corto, where
  * packages are installed in a common location */
 #ifndef CORTO_REDIS
-    corto_loaderInstance = corto_createChild(root_o, "config/loader", corto_loader_o);
+    corto_debug("init package loader");
+    corto_loaderInstance =
+    corto(config_o, "loader", corto_loader_o, NULL, NULL, NULL, CORTO_ATTR_DEFAULT,
+            CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
 
     if (corto_loaderInstance) {
         corto_loaderInstance->autoLoad = TRUE;
-    }
-    else {
+    } else {
         corto_raise();
-        corto_trace("init: autoloading of packages disabled");
+        corto_trace("autoloading of packages disabled");
     }
 #endif
 
-    /* Create builtin root scopes */
-    corto_createChild(root_o, "config", corto_void_o);
-    corto_createChild(root_o, "data", corto_void_o);
-    corto_createChild(root_o, "home", corto_void_o);
-
     /* Load configuration, if available */
+    corto_debug("load configurgation");
     corto_loadConfig();
 
     /* Pop init log component */
@@ -1313,7 +1332,9 @@ int corto_stop(void) {
 
     CORTO_APP_STATUS = 2; /* Shutting down */
 
-    corto_trace("shutting down");
+    corto_log_push("fini");
+
+    corto_trace("shutting down...");
 
     if (corto_getOwner()) {
         corto_error("owner has not been reset to NULL before shutting down");
@@ -1322,6 +1343,7 @@ int corto_stop(void) {
 
 #ifndef CORTO_REDIS
     if (corto_loaderInstance) {
+        corto_debug("cleanup package loader");
         corto_delete(corto_loaderInstance);
     }
 #endif
@@ -1329,11 +1351,12 @@ int corto_stop(void) {
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the
      * removal of all non-static objects. */
+    corto_debug("cleanup objects");
     corto_drop(root_o, FALSE);
-    corto_release(root_o);
 
     /* This function calls all destructors for registered TLS keys for the main
      * thread */
+    corto_debug("cleanup TLS data");
     corto_tls_free();
 
     /* Call exithandlers */
@@ -1343,16 +1366,14 @@ int corto_stop(void) {
     corto_object o;
 
     /* Destruct objects */
+    corto_debug("cleanup builtin objects");
     for (i = 0; (o = types[i].o); i++) corto_destruct(o, FALSE);
     for (i = 0; (o = objects[i].o); i++) corto_destruct(o, FALSE);
-
-    corto_destruct(corto_o, FALSE);
 
     /* Free objects */
     for (i = 0; (o = objects[i].o); i++) corto__freeSSO(o);
     for (i = 0; (o = types[i].o); i++) corto__freeSSO(o);
 
-    /* Deinitialize vstore loader */
     if (corto__freeSSO(corto_native_o)) goto error;
     if (corto__freeSSO(corto_vstore_o)) goto error;
     if (corto__freeSSO(corto_lang_o)) goto error;
@@ -1360,7 +1381,11 @@ int corto_stop(void) {
     if (corto__freeSSO(root_o)) goto error;
 
     /* Deinit adminLock */
+    corto_debug("cleanup global administration");
     corto_mutex_free(&corto_adminLock);
+    corto_rwmutex_free(&corto_subscriberLock);
+
+    corto_log_pop();
 
     CORTO_APP_STATUS = 3; /* Shut down */
 
