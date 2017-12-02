@@ -10,7 +10,7 @@ void test_Loader_tc_createSelfPackage(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("corto rebuild createSelfPackage --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild createSelfPackage --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -18,7 +18,7 @@ void test_Loader_tc_createSelfPackage(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean createSelfPackage --silent", &ret);
+    sig = corto_proc_cmd("bake clean createSelfPackage --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -32,7 +32,7 @@ void test_Loader_tc_loadChildNoDep(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -40,7 +40,7 @@ void test_Loader_tc_loadChildNoDep(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -54,15 +54,15 @@ void test_Loader_tc_loadDepOnChild(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier2_A --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_A --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier1 --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier1 --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -70,15 +70,15 @@ void test_Loader_tc_loadDepOnChild(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier1 --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier1 --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_A --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_A --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -93,20 +93,20 @@ void test_Loader_tc_loadDepOnParent(
     test_assert(corto_chdir(TEST_ETC) == 0);
 
     /* tier1/tier2_A depends on tier1/tier2_B */
-    sig = corto_proc_cmd("corto rebuild tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
     /* tier1 depends on tier1/tier2_A */
-    sig = corto_proc_cmd("corto rebuild tier2_A --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_A --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier1 --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier1 --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier2_C --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_C --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -114,19 +114,19 @@ void test_Loader_tc_loadDepOnParent(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier1 --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier1 --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_A --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_A --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_C --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_C --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -140,15 +140,15 @@ void test_Loader_tc_loadDepOnSibling(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier2_A --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_A --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto rebuild tier1 --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild tier1 --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -156,15 +156,15 @@ void test_Loader_tc_loadDepOnSibling(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_A --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_A --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier2_B --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier2_B --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean tier1 --silent", &ret);
+    sig = corto_proc_cmd("bake clean tier1 --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -176,9 +176,7 @@ void test_Loader_tc_loadNonExistent(
 
     corto_int16 ret = corto_load("nonexistent.cx", 0, NULL);
     test_assert(ret != 0);
-    test_assert(corto_lasterr() != NULL);
-    test_assertstr(corto_lasterr(), "No such file or directory (nonexistent.cx)");
-
+    test_assert(corto_catch());
 }
 
 void test_Loader_tc_loadSelf(
@@ -189,15 +187,20 @@ void test_Loader_tc_loadSelf(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("corto rebuild loadSelf --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild loadSelf --error", &ret);
     test_assertint(ret, 0);
     test_assertint(sig, 0);
 
-    sig = corto_proc_cmd("corto loadSelf", &ret);
-    test_assertint(ret, 0);
-    test_assertint(sig, 6);
+    corto_log_verbosity old = corto_log_verbositySet(CORTO_CRITICAL);
 
-    sig = corto_proc_cmd("corto clean loadSelf --silent", &ret);
+    sig = corto_proc_cmd("corto loadSelf", &ret);
+    test_assertint(ret, 1);
+    test_assertint(sig, 0);
+    test_assert(corto_catch());
+
+    corto_log_verbositySet(old);
+
+    sig = corto_proc_cmd("bake clean loadSelf --error", &ret);
     test_assertint(ret, 0);
     test_assertint(sig, 0);
 
@@ -211,7 +214,7 @@ void test_Loader_tc_locateSelf(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("corto rebuild locateSelf --silent", &ret);
+    sig = corto_proc_cmd("bake rebuild locateSelf --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
@@ -219,9 +222,8 @@ void test_Loader_tc_locateSelf(
     test_assert(ret == 0);
     test_assert(sig == 0);
 
-    sig = corto_proc_cmd("corto clean locateSelf --silent", &ret);
+    sig = corto_proc_cmd("bake clean locateSelf --error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
 }
-

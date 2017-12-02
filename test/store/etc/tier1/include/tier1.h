@@ -10,7 +10,6 @@
 #include <corto/corto.h>
 #include <tier1/_project.h>
 #include <corto/c/c.h>
-#include <tier1/tier2_A/tier2_A.h>
 
 /* $header() */
 /* Enter additional code here. */

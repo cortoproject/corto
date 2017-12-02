@@ -1145,7 +1145,11 @@ corto_int16 corto_value_init(corto_value *v) {
             return -1;
         }
     }
-    return corto_callInitDelegate(&type->init, type, corto_value_ptrof(v), false);
+    if (type->flags & CORTO_TYPE_HAS_INIT) {
+        return corto_callInitDelegate(&type->init, type, corto_value_ptrof(v), false);
+    } else {
+        return 0;
+    }
 }
 
 corto_int16 corto_value_deinit(corto_value *v) {
@@ -1153,6 +1157,8 @@ corto_int16 corto_value_deinit(corto_value *v) {
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
         freeops_ptr_free(type, corto_value_ptrof(v));
     }
-    corto_callDestructDelegate(&type->deinit, type, corto_value_ptrof(v));
+    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
+        corto_callDestructDelegate(&type->deinit, type, corto_value_ptrof(v));
+    }
     return 0;
 }

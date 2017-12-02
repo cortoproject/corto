@@ -2215,8 +2215,6 @@ void test_Event_tc_updateVoid(
 
     corto_int16 ret = corto_update(o);
     test_assert(ret == 0);
-    test_assert(corto_lasterr() == NULL);
-
 }
 
 void test_Event_teardown(
@@ -2234,4 +2232,3 @@ void test_Event_teardown(
     corto_setAttr(this->prevAttr);
 
 }
-

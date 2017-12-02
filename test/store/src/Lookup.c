@@ -55,8 +55,7 @@ void test_Lookup_tc_lookupEmptyString(
 
     corto_object o = corto_lookup(NULL, "");
     test_assert (o == NULL);
-    test_assertstr(corto_lasterr(), "invalid identifier");
-
+    test_assert(corto_catch());
 }
 
 void test_Lookup_tc_lookupFunctionArgs(
@@ -214,8 +213,7 @@ void test_Lookup_tc_lookupNull(
 
     corto_object o = corto_lookup(NULL, NULL);
     test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "invalid identifier");
-
+    test_assert(corto_catch());
 }
 
 void test_Lookup_tc_lookupParent(

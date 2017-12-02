@@ -457,8 +457,7 @@ void test_Overload_tc_numString(
 
     corto_object o = corto_resolve(test_o, "ol_num(string)");
     test_assert(o == NULL);
-    test_assert(corto_lasterr() == NULL);
-
+    test_assert(!corto_catch());
 }
 
 void test_Overload_tc_numUint16(
@@ -536,4 +535,3 @@ void test_Overload_tc_wildcard(
     test_assert(!strcmp(corto_idof(o), "ol_wildcard(int32 a,string b)"));
 
 }
-

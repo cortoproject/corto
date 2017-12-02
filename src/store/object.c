@@ -509,11 +509,7 @@ corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_obje
     corto_function delegate;
 
     if (!isDefine) {
-        if (t->reference) {
-            corto_log_push(strarg("init:%s", corto_fullpath(NULL, o)));
-        } else {
-            corto_log_push(strarg("init:instanceof(%s)", corto_fullpath(NULL, t)));
-        }
+        corto_log_push(strarg("init:instanceof(%s)", corto_fullpath(NULL, t)));
     } else {
         corto_log_push(strarg("define:%s", corto_fullpath(NULL, o)));
     }
@@ -1597,13 +1593,12 @@ corto_object corto_resume(
 /* Resume a declared object */
 static
 corto_bool corto_resumeDeclared(
-    corto_object o)
+    corto_object o,
+    bool resume)
 {
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__persistent *_p = NULL;
     corto_bool resumed = FALSE;
-
-    corto_assertObject(o);
 
     if ((_p = corto__objectPersistent(_o))) {
         _p->owner = corto_getOwner();
@@ -1615,8 +1610,10 @@ corto_bool corto_resumeDeclared(
         /* If object is persistent and locally owned, check if a
          * persistent copy is already available */
         if (!_p->owner && corto_checkAttr(o, CORTO_ATTR_NAMED)) {
-            if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
-                resumed = TRUE;
+            if (resume) {
+                if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
+                    resumed = TRUE;
+                }
             }
 
         /* If owner of an object is a SINK, object is resumed */
@@ -1756,11 +1753,7 @@ corto_object corto_declareChildRecursive_intern(
                 /* First ensure all constructors are successfully called */
                 for (i = 0; i < (sp - !defineSelf); i++) {
                     if (!corto_checkState(stack[i], CORTO_VALID)) {
-                        if (resume) {
-                            masks[i] = corto_resumeDeclared(stack[i]) ? CORTO_RESUME : CORTO_DEFINE;
-                        } else {
-                            masks[i] = CORTO_DEFINE;
-                        }
+                        masks[i] = corto_resumeDeclared(stack[i], resume) ? CORTO_RESUME : CORTO_DEFINE;
                         if (corto_defineDeclared(stack[i])) {
                             result = NULL; /* Signal failure */
                             break;
@@ -1896,10 +1889,7 @@ corto_int16 corto_define_intern(
             }
         }
 
-        bool resumed = false;
-        if (resume) {
-            resumed = corto_resumeDeclared(o);
-        }
+        bool resumed = corto_resumeDeclared(o, resume);
         result = corto_defineDeclared(o);
         if (!result) {
             result = corto_notifyDefined(o, resumed ? CORTO_RESUME : CORTO_DEFINE);
@@ -3972,7 +3962,7 @@ corto_int16 corto_update(corto_object o) {
             goto error;
         }
         if (!corto_checkState(o, CORTO_VALID)) {
-            mask |= corto_resumeDeclared(o) ? CORTO_RESUME : CORTO_DEFINE;
+            mask |= corto_resumeDeclared(o, true) ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
                 result = corto_notifyDefined(o, mask);
@@ -3984,7 +3974,7 @@ corto_int16 corto_update(corto_object o) {
         }
     } else {
         if (!corto_checkState(o, CORTO_VALID)) {
-            mask |= corto_resumeDeclared(o) ? CORTO_RESUME : CORTO_DEFINE;
+            mask |= corto_resumeDeclared(o, true) ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
                 result = corto_notifyDefined(o, mask);
@@ -4014,8 +4004,8 @@ corto_int16 corto_update_begin_intern(
         goto error;
     }
 
-    if (resume && !corto_checkState(o, CORTO_VALID)) {
-        corto_resumeDeclared(o);
+    if (!corto_checkState(o, CORTO_VALID)) {
+        corto_resumeDeclared(o, resume);
     }
 
     if (!(type->flags & CORTO_TYPE_HAS_TARGET) && (corto_typeof(type) != (corto_type)corto_target_o) && !corto_owned(o)) {

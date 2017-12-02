@@ -878,6 +878,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_package_license),\
     SSO_OP_OBJ(vstore_package_icon),\
     SSO_OP_OBJ(vstore_package_use),\
+    SSO_OP_OBJ(vstore_package_public),\
+    SSO_OP_OBJ(vstore_package_managed),\
     SSO_OP_OBJ(vstore_package_construct_),\
     /* time */\
     SSO_OP_OBJ(vstore_time_sec),\
@@ -1458,14 +1460,14 @@ corto_bool corto_enableload(corto_bool enable) {
 }
 
 #ifndef NDEBUG
-void corto_assertObject(corto_object o) {
+void _corto_assertObject(char const *file, unsigned int line, corto_object o) {
     if (o) {
         corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
         if (_o->magic != CORTO_MAGIC) {
             if (_o->magic == CORTO_MAGIC_DESTRUCT) {
-                corto_critical("address <%p> points to an object that is already deleted", o);
+                corto_critical_fl(file, line, "address <%p> points to an object that is already deleted", o);
             } else {
-                corto_critical("address <%p> does not point to an object", o);
+                corto_critical_fl(file, line, "address <%p> does not point to an object", o);
             }
         }
     }

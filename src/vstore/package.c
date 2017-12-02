@@ -25,7 +25,7 @@ void corto_package_onDefine(corto_observerEvent *e)
 int16_t corto_package_construct(
     corto_package this)
 {
-    if (!corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (this->_public && !corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_NAMED)) {
 
         /* Load package after object has been defined. Create one-shot observer to
          * trigger on DEFINE event */

@@ -1,19 +1,11 @@
-/* $CORTO_GENERATED
- *
- * locateSelf.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <locateSelf/locateSelf.h>
 
-/* $header() */
-/* Enter code outside of main here. */
-/* $end */
 
-int locateSelfMain(int argc, char *argv[]) {
-/* $begin(main) */
+/* Enter code outside of main here. */
+
+int cortomain(int argc, char *argv[]) {
 
     corto_string str = corto_locate("locateSelf", NULL, CORTO_LOCATION_LIB);
     if (!str) {
@@ -23,5 +15,5 @@ int locateSelfMain(int argc, char *argv[]) {
     return 0;
 error:
     return -1;
-/* $end */
 }
+

@@ -51,7 +51,7 @@ void test_Env_tc_envparseVariableNotFound(
 {
     char* s = corto_envparse("ABC ABC $CORTO_NOT_FOUND");
     test_assert(s == NULL);
-    test_assertstr(corto_lasterr(), "environment variable 'CORTO_NOT_FOUND' doesn't exist");
+    test_assert(corto_catch());
 }
 
 void test_Env_tc_setenvFormatAndReplace(
@@ -113,7 +113,5 @@ void test_Env_tc_setenvVariableNotFound(
     test_Env this)
 {
     test_assert(corto_setenv("CORTO_TEST_A", "ABC ABC $CORTO_NOT_FOUND"));
-    test_assertstr(corto_lasterr(), "environment variable 'CORTO_NOT_FOUND' doesn't exist");
-
+    test_assert(corto_catch());
 }
-

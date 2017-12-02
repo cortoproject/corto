@@ -79,6 +79,9 @@ void corto_loader_addDir(
 
                 corto_id fpath;
                 sprintf(fpath, "%s/%s", path, f);
+                if (!corto_file_test(fpath)) {
+                    continue;
+                }
 
                 /* Stat file to determine whether it's a directory */
                 if (stat(fpath, &attr) < 0) {

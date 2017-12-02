@@ -70,6 +70,8 @@ struct corto_package_s {
     corto_string license;
     corto_string icon;
     corto_stringlist use;
+    bool _public;
+    bool managed;
 };
 
 /*  /corto/vstore/application */

@@ -204,7 +204,7 @@ void test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     corto_observer observer = corto_observe(CORTO_UPDATE | CORTO_ON_SCOPE, o)
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assertstr(corto_lasterr(), "invalid nested subscription, observable is not scoped");
+    test_assert(corto_catch());
 
     test_assert(corto_delete(o) == 0);
 
@@ -221,7 +221,7 @@ void test_Observers_tc_observerMissingObservable(
     corto_observer observer = corto_observe(CORTO_UPDATE, NULL)
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assertstr(corto_lasterr(), "no observable provided for observer");
+    test_assert(corto_catch());
 
     test_assert(corto_delete(o) == 0);
 
@@ -277,8 +277,7 @@ void test_Observers_tc_observeTypeFilterNotAType(
       .type("/corto")
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assertstr(corto_lasterr(), "'/corto' is not a type");
-
+    test_assert(corto_catch());
 }
 
 void test_Observers_tc_observeTypeFilterUnresolved(
@@ -289,8 +288,7 @@ void test_Observers_tc_observeTypeFilterUnresolved(
       .type("/doesnotexist")
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assertstr(corto_lasterr(), "unresolved type '/doesnotexist'");
-
+    test_assert(corto_catch());
 }
 
 
@@ -435,4 +433,3 @@ void test_Observers_tc_observingTree(
     test_assert(corto_delete(observer) == 0);
 
 }
-

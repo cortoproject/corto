@@ -624,6 +624,8 @@ CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, 
     CORTO_MEMBER_O(vstore_package, license, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, icon, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(vstore_package, use, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, public, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(vstore_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_METHOD_O(vstore_package, construct, "()", lang_int16, corto_package_construct);
 
 CORTO_CLASS_O(vstore, application, vstore_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);

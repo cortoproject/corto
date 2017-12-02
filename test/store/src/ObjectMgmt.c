@@ -86,8 +86,7 @@ void test_ObjectMgmt_tc_createChildInitFail(
 
     corto_object o = corto_createChild(NULL, "o", test_Bar_o);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'o' of '/test/Bar' failed: /test/Bar/init failed"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_createChildInt(
@@ -164,7 +163,7 @@ void test_ObjectMgmt_tc_createChildInvalidType(
 
     corto_object o = corto_create(t);
     test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_createChildNested(
@@ -229,8 +228,7 @@ void test_ObjectMgmt_tc_createChildNullType(
 
     corto_object o = corto_createChild(NULL, "o", NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "type not specified"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_createChildParentStateErr(
@@ -243,12 +241,12 @@ void test_ObjectMgmt_tc_createChildParentStateErr(
     test_assert(!corto_checkState(o, CORTO_VALID));
 
     corto_object p = corto_createChild(o, "p", test_DefinedParent_o);
-    test_assertstr(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be VALID");
     test_assert(p == NULL);
+    test_assert(corto_catch());
 
     corto_object q = test_DefinedParentCreateChild(o, "q", 0);
-    test_assertstr(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be VALID");
     test_assert(q == NULL);
+    test_assert(corto_catch());
 
     corto_delete(o);
 
@@ -264,15 +262,14 @@ void test_ObjectMgmt_tc_createChildParentTypeErr(
     test_assert(!corto_checkState(o, CORTO_VALID));
 
     corto_object p = corto_createChild(o, "p", test_VoidParent_o);
-    test_assert(!strcmp(corto_lasterr(), "init for 'p' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(p == NULL);
+    test_assert(corto_catch());
 
     corto_object q = test_VoidParentCreateChild(o, "q", 0);
-    test_assert(!strcmp(corto_lasterr(), "init for 'q' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(q == NULL);
+    test_assert(corto_catch());
 
-    corto_delete(o);
-
+    test_assert(corto_delete(o) == 0);
 }
 
 void test_ObjectMgmt_tc_createChildVoid(
@@ -389,8 +386,7 @@ void test_ObjectMgmt_tc_createInitFail(
 
     corto_object o = corto_create(test_Bar_o);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "/test/Bar/init failed"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_createInt(
@@ -446,8 +442,8 @@ void test_ObjectMgmt_tc_createInvalidType(
     test_assert(!corto_checkState(t, CORTO_VALID));
 
     corto_object o = corto_create(t);
-    test_assert(!strcmp(corto_lasterr(), "type '/invalid' is not valid/defined"));
     test_assert(o == NULL);
+    test_assert(corto_catch());
 
 }
 
@@ -471,7 +467,7 @@ void test_ObjectMgmt_tc_createNested(
         .instance(counter)
         .callback(onCreateNested);
     test_assert(o != NULL);
-    
+
     /* Reset counter so aligned objects don't pollute result */
     counter->declareCount = 0;
     counter->defineCount = 0;
@@ -503,7 +499,7 @@ void test_ObjectMgmt_tc_createNested(
 
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(o) == 0);
-    
+
     test_assertint(counter->declareCount, 3);
     test_assertint(counter->defineCount, 3);
     test_assertint(counter->updateCount, 0);
@@ -626,8 +622,7 @@ void test_ObjectMgmt_tc_createNullType(
 
     corto_object o = corto_create(NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "type not specified"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_createVoid(
@@ -742,8 +737,7 @@ void test_ObjectMgmt_tc_declareChildInitFail(
 
     corto_object o = corto_declareChild(NULL, "o", test_Bar_o);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'o' of '/test/Bar' failed: /test/Bar/init failed"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_declareChildInt(
@@ -824,8 +818,7 @@ void test_ObjectMgmt_tc_declareChildInvalidType(
 
     corto_object o = corto_declareChild(NULL, "foo", t);
     test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_declareChildNullType(
@@ -834,8 +827,7 @@ void test_ObjectMgmt_tc_declareChildNullType(
 
     corto_object o = corto_declareChild(NULL, "o", NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "type not specified"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_declareChildParentStateErr(
@@ -849,14 +841,13 @@ void test_ObjectMgmt_tc_declareChildParentStateErr(
 
     corto_object p = corto_declareChild(o, "p", test_DefinedParent_o);
     test_assert(p == NULL);
-    test_assertstr(corto_lasterr(), "init for 'p' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be VALID");
+    test_assert(corto_catch());
 
     corto_object q = test_DefinedParentDeclareChild(o, "q");
     test_assert(q == NULL);
-    test_assertstr(corto_lasterr(), "init for 'q' of '/test/DefinedParent' failed: parent '/o' is DECLARED, must be VALID");
+    test_assert(corto_catch());
 
     corto_delete(o);
-
 }
 
 void test_ObjectMgmt_tc_declareChildParentTypeErr(
@@ -869,12 +860,12 @@ void test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_assert(!corto_checkState(o, CORTO_VALID));
 
     corto_object p = corto_declareChild(o, "p", test_VoidParent_o);
-    test_assert(!strcmp(corto_lasterr(), "init for 'p' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(p == NULL);
+    test_assert(corto_catch());
 
     corto_object q = test_VoidParentDeclareChild(o, "q");
-    test_assert(!strcmp(corto_lasterr(), "init for 'q' of '/test/VoidParent' failed: type of '/o' is not 'void'"));
     test_assert(q == NULL);
+    test_assert(corto_catch());
 
     corto_delete(o);
 
@@ -1020,8 +1011,7 @@ void test_ObjectMgmt_tc_declareInitFail(
 
     corto_object o = corto_declare(test_Bar_o);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "/test/Bar/init failed"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_declareInt(
@@ -1076,8 +1066,7 @@ void test_ObjectMgmt_tc_declareInvalidType(
 
     corto_object o = corto_declare(t);
     test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "type '/invalid' is not valid/defined");
-
+    test_assert(corto_catch());
 }
 
 corto_void onDeclareNested(corto_observerEvent *e)
@@ -1163,7 +1152,7 @@ void test_ObjectMgmt_tc_declareNestedFirstFail(
 
     corto_object c = corto_declareChild(root_o, "myRoot/a/b/c", corto_int32_o);
     test_assert(c == NULL);
-    test_assertstr(corto_lasterr(), "init for 'a' of 'void' failed: type 'void' does not match tabletype 'int32' of '/myRoot'");
+    test_assert(corto_catch());
 
     test_assert(corto_lookup(root_o, "myRoot/a/b") == NULL);
     test_assert(corto_lookup(root_o, "myRoot/a") == NULL);
@@ -1192,6 +1181,8 @@ void test_ObjectMgmt_tc_declareNestedLastFail(
 
     corto_object c = corto_declareChild(root_o, "a/b/c", test_NestedInitFail_o);
     test_assert(c == NULL);
+    test_assert(corto_catch());
+
     test_assert(corto_lookup(root_o, "a/b") == NULL);
     test_assert(corto_lookup(root_o, "a") == NULL);
 
@@ -1227,7 +1218,7 @@ void test_ObjectMgmt_tc_declareNestedSecondFail(
 
     corto_object c = corto_declareChild(root_o, "a/b/c", corto_int32_o);
     test_assert(c == NULL);
-    test_assertstr(corto_lasterr(), "init for 'b' of 'void' failed: type 'void' does not match tabletype 'int32' of '/a'");
+    test_assert(corto_catch());
 
     test_assert(corto_lookup(root_o, "a/b") == NULL);
 
@@ -1248,8 +1239,7 @@ void test_ObjectMgmt_tc_declareNullType(
 
     corto_object o = corto_declare(NULL);
     test_assert(o == NULL);
-    test_assert(!strcmp(corto_lasterr(), "type not specified"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_declareOrphan(
@@ -1966,7 +1956,7 @@ void test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
-    
+
 }
 
 void test_ObjectMgmt_tc_invalidate(
@@ -2013,19 +2003,15 @@ void test_ObjectMgmt_tc_redeclareWithDifferentType(
 
     corto_object a = corto_float64DeclareChild(NULL, "a");
     test_assert(a == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'a' of 'float64' failed: 'a' is already declared with type 'float32'"));
+    test_assert(corto_catch());
 
     corto_object b = corto_float64DeclareChild(NULL, "b");
     test_assert(b == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'b' of 'float64' failed: 'b' is already declared with type 'float32'"));
+    test_assert(corto_catch());
 
     corto_object c = corto_float64DeclareChild(NULL, "c");
     test_assert(c == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(), "init for 'c' of 'float64' failed: 'c' is already declared with type 'float32'"));
-
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_teardown(
@@ -2205,7 +2191,7 @@ void test_ObjectMgmt_tc_lifecycle(
     test_LifecycleTest o = corto_declareChild(root_o, "data/lt", test_LifecycleTest_o);
     test_assert(o != NULL);
     test_assert(o->admin != NULL);
-    
+
     // Separate object keeps track of called callbacks so it is possible to track
     // calling deinit
     test_LifecycleAdmin a = o->admin;
@@ -2218,23 +2204,23 @@ void test_ObjectMgmt_tc_lifecycle(
     corto_claim(o);
 
     test_assert(corto_define(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
-    
+
     test_assert(corto_update(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
-    
+
     test_assert(corto_delete(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
         TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_DELETED);
 
     corto_release(o);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
         TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
 
@@ -2249,7 +2235,7 @@ void test_ObjectMgmt_tc_lifecycleConstructFail(
     test_assert(o->admin != NULL);
 
     o->constructFail = true;
-    
+
     // Separate object keeps track of called callbacks so it is possible to track
     // calling deinit
     test_LifecycleAdmin a = o->admin;
@@ -2262,10 +2248,10 @@ void test_ObjectMgmt_tc_lifecycleConstructFail(
     corto_claim(o);
 
     test_assert(corto_define(o) != 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED);
-    
+
     o->constructFail = false;
 
     /* Reset hooksCalled for next test */
@@ -2277,18 +2263,18 @@ void test_ObjectMgmt_tc_lifecycleConstructFail(
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
 
     test_assert(corto_update(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
 
     test_assert(corto_delete(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
         TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_DELETED);
 
     corto_release(o);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
         TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
 
@@ -2300,7 +2286,7 @@ void test_ObjectMgmt_tc_lifecycleInitFail(
 {
     test_LifecycleTest o = corto_declareChild(root_o, "data/fail", test_LifecycleTest_o);
     test_assert(o == NULL);
-    test_assertstr(corto_lasterr(), "init for 'fail' of '/test/LifecycleTest' failed: /test/LifecycleTest/init failed");
+    test_assert(corto_catch());
 }
 
 void test_ObjectMgmt_tc_lifecycleValidateFail(
@@ -2309,7 +2295,7 @@ void test_ObjectMgmt_tc_lifecycleValidateFail(
     test_LifecycleTest o = corto_declareChild(root_o, "data/lt", test_LifecycleTest_o);
     test_assert(o != NULL);
     test_assert(o->admin != NULL);
-    
+
     // Separate object keeps track of called callbacks so it is possible to track
     // calling deinit
     test_LifecycleAdmin a = o->admin;
@@ -2324,34 +2310,33 @@ void test_ObjectMgmt_tc_lifecycleValidateFail(
     o->validateFail = true;
 
     test_assert(corto_define(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
-    
+
     test_assert(corto_update(o) != 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
-    
+
     a->hooksCalled = TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED;
     o->validateFail = false;
 
     test_assert(corto_update(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
 
     test_assert(corto_delete(o) == 0);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
         TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
     test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_DELETED);
 
     corto_release(o);
-    test_assertint(a->hooksCalled, 
+    test_assertint(a->hooksCalled,
         TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
         TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
 
     test_assert(corto_delete(a) == 0);
 }
-

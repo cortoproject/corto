@@ -306,6 +306,13 @@ void test_Select_tc_selectEmptyParentAst(
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
+    test_assertstr(r->id, "Select"); /* Created by test framework */
+    test_assertstr(r->parent, "");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
     test_assertstr(r->id, "test");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "/corto/vstore/package");

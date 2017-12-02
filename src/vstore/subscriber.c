@@ -558,8 +558,6 @@ static corto_subscriber corto_subscribeCallback(
         corto_dealloc(request);
     }
 
-    corto_log_pop();
-
     return result;
 }
 

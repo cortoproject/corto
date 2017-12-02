@@ -462,16 +462,12 @@ void test_StringDeserializer_tc_deserBoolFalse(
 void test_StringDeserializer_tc_deserBoolInvalid(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = corto_boolCreate(TRUE);
     corto_int16 ret = corto_fromStr(&o, "bool{bar}");
     test_assert(o != NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "failed to deserialize 'bool{bar}': 'bar' is not a valid boolean value"));
-    corto_delete(o);
-
+    test_assert(corto_catch());
+    test_assert(!corto_delete(o));
 }
 
 void test_StringDeserializer_tc_deserBoolTrue(
@@ -1746,86 +1742,62 @@ void test_StringDeserializer_tc_deserUint8Overflow(
 void test_StringDeserializer_tc_errExcessElements(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, "test/Point{10, 20, 30}");
     test_assert(o == NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "failed to deserialize 'test/Point{10, 20, 30}': excess elements in string"));
-
+    test_assert(corto_catch());
 }
 
 void test_StringDeserializer_tc_errMissingType(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, "{foo}");
     test_assert(o == NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "no type provided for '{foo}'"));
-
+    test_assert(corto_catch());
 }
 
 void test_StringDeserializer_tc_errNotAType(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, "lang{foo}");
     test_assert(o == NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "'lang' is not a type"));
-
+    test_assert(corto_catch());
 }
 
 void test_StringDeserializer_tc_errTypeMismatch(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = corto_boolCreate(TRUE);
     corto_int16 ret = corto_fromStr(&o, "string{bar}");
     test_assert(o != NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "type of object ('bool') does not match string ('string')"));
     corto_delete(o);
-
+    test_assert(corto_catch());
 }
 
 void test_StringDeserializer_tc_errUnresolvedMember(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, "test/Point{a = 10}");
     test_assert(o == NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "failed to deserialize 'test/Point{a = 10}': member 'a' not found in type '/test/Point'"));
-
+    test_assert(corto_catch());    
 }
 
 void test_StringDeserializer_tc_errUnresolvedType(
     test_StringDeserializer this)
 {
-
-    corto_string err;
     corto_object o = NULL;
     corto_int16 ret = corto_fromStr(&o, "foo{bar}");
     test_assert(o == NULL);
     test_assert(ret != 0);
-    test_assert((err = corto_lasterr()) != NULL);
-    test_assert(!strcmp(err, "unknown type 'foo'"));
-
+    test_assert(corto_catch());
 }
 
 void test_StringDeserializer_teardown(
@@ -1835,4 +1807,3 @@ void test_StringDeserializer_teardown(
     /* << Insert implementation >> */
 
 }
-

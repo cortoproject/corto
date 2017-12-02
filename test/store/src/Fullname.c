@@ -83,9 +83,6 @@ void test_Fullname_tc_null(
     corto_string result = corto_fullpath(id, NULL);
     test_assert(result == id);
     test_assert(!strcmp(result, ""));
-    corto_string err = corto_lasterr();
-    test_assert(err == NULL);
-
 }
 
 void test_Fullname_tc_nullBuffer(
@@ -95,9 +92,6 @@ void test_Fullname_tc_nullBuffer(
     corto_string result = corto_fullpath(NULL, NULL);
     test_assert(result != NULL);
     test_assert(!strcmp(result, ""));
-    corto_string err = corto_lasterr();
-    test_assert(err == NULL);
-
 }
 
 void test_Fullname_tc_onelevel(
@@ -132,4 +126,3 @@ void test_Fullname_tc_twolevels(
     test_assert(!strcmp(result, "/corto/lang"));
 
 }
-

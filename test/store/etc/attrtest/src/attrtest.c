@@ -1,22 +1,14 @@
-/* $CORTO_GENERATED
- *
- * attrtest.c
- *
- * Only code written between the begin and end tags will be preserved
- * when the file is regenerated.
- */
+/* This is a managed file. Do not delete this comment. */
 
 #include <attrtest/attrtest.h>
 
-/* $header() */
-/* Enter code outside of main here. */
-/* $end */
 
-int attrtestMain(int argc, char *argv[]) {
-/* $begin(main) */
+/* Enter code outside of main here. */
+
+int cortomain(int argc, char *argv[]) {
 
     /* Insert implementation */
 
     return 0;
-/* $end */
 }
+

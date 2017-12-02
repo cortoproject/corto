@@ -286,9 +286,7 @@ void test_Copy_tc_listToArray(
     test_IntArrayCreate_auto(v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
-    test_assert(!strcmp(
-      corto_lasterr(),
-      "cannot copy value of type '/test/IntList' to '/test/IntArray'"));
+    test_assert(corto_catch());
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -302,9 +300,7 @@ void test_Copy_tc_listToArrayAlloc(
     test_AllocArrayCreate_auto(v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
-    test_assert(!strcmp(
-      corto_lasterr(),
-      "cannot copy value of type '/test/AllocList' to '/test/AllocArray'"));
+    test_assert(corto_catch());
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -318,9 +314,7 @@ void test_Copy_tc_listToArrayString(
     test_StringArrayCreate_auto(v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
-    test_assert(!strcmp(
-      corto_lasterr(),
-      "cannot copy value of type '/test/StringList' to '/test/StringArray'"));
+    test_assert(corto_catch());
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -1373,7 +1367,7 @@ void test_Copy_tc_structWithOptionalReference(
 
     test_assert(corto_ptr_deinit(&v1, test_struct_optionalReference_o) == 0);
     test_assert(corto_ptr_deinit(&v2, test_struct_optionalReference_o) == 0);
-    
+
 }
 
 void test_Copy_tc_structWithOptionalSequence(
@@ -1774,5 +1768,3 @@ void test_Copy_tc_unionWithStruct(
     /* << Insert implementation >> */
 
 }
-
-

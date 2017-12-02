@@ -123,9 +123,22 @@ typedef corto_int16 ___ (*corto_callInit_f)(corto_function f);
 typedef void (*corto_callDeinit_f)(corto_function f);
 
 /* Call API */
-CORTO_EXPORT void _corto_call(corto_function f, corto_void* result, ...);
-CORTO_EXPORT void _corto_callv(corto_function f, corto_void* result, va_list args);
-CORTO_EXPORT void _corto_callb(corto_function f, corto_void* result, void** argptrs);
+CORTO_EXPORT
+void _corto_call(
+    corto_function f,
+    corto_void* result, ...);
+
+CORTO_EXPORT
+void _corto_callv(
+    corto_function f,
+    corto_void* result,
+    va_list args);
+
+CORTO_EXPORT
+void _corto_callb(
+    corto_function f,
+    corto_void* result,
+    void** argptrs);
 
 /* Register binding */
 CORTO_EXPORT int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit);
@@ -137,7 +150,11 @@ CORTO_EXPORT void corto_callDeinit(corto_function f);
 #define corto_callb(f, result, argptrs) _corto_callb(corto_function(f), result, argptrs)
 
 /* Used in type checking macro */
-CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
+CORTO_EXPORT
+corto_object _corto_assertType(
+    corto_type type,
+    corto_object o);
+
 #ifndef NDEBUG
 #define corto_assertType(type, o) _corto_assertType((type), (o))
 #else
@@ -146,7 +163,12 @@ CORTO_EXPORT corto_object _corto_assertType(corto_type type, corto_object o);
 
 /* Throws an assertion when invalid object in debugging */
 #ifndef NDEBUG
-CORTO_EXPORT void corto_assertObject(corto_object o);
+CORTO_EXPORT
+void _corto_assertObject(
+    char const *file,
+    unsigned int line,
+    corto_object o);
+#define corto_assertObject(o) _corto_assertObject(__FILE__, __LINE__, o)
 #else
 #define corto_assertObject(o)
 #endif

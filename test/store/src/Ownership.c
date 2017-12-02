@@ -67,9 +67,7 @@ void test_Ownership_tc_createNotOwned(
 
     corto_object p = corto_voidCreateChild(NULL, "o");
     test_assert(p == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(),
-        "owner '/r' of existing object '/o' does not match owner ''"));
+    test_assert(corto_catch());
 
     /* Set owner back to r so we can delete o */
     corto_setOwner(r);
@@ -132,9 +130,7 @@ void test_Ownership_tc_declareNotOwned(
 
     corto_object p = corto_declareChild(NULL, "o", corto_void_o);
     test_assert(p == NULL);
-    test_assert(corto_lasterr() != NULL);
-    test_assert(!strcmp(corto_lasterr(),
-        "owner '/r' of existing object '/o' does not match owner ''"));
+    test_assert(corto_catch());
 
     corto_setOwner(old);
 
@@ -191,8 +187,7 @@ void test_Ownership_tc_deleteNotOwned(
 
     corto_int16 result = corto_delete(o);
     test_assert(result != 0);
-    test_assert(corto_lasterr() != NULL);
-    test_assertstr(corto_lasterr(), "object not owned by thread");
+    test_assert(corto_catch());
 
     result = corto_delete(r);
     test_assert(result == 0);
@@ -620,7 +615,7 @@ void test_Ownership_tc_updateNotOwned(
 
     corto_int16 result = corto_update(o);
     test_assert(result != 0);
-    test_assertstr(corto_lasterr(), "object not owned by thread");
+    test_assert(corto_catch());
 
     corto_setOwner(r);
 
@@ -692,4 +687,3 @@ void test_Ownership_tc_updateOwned(
     test_assert(result == 0);
 
 }
-
