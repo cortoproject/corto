@@ -733,6 +733,7 @@ CORTO_BITMASK_O(vstore, mountMask);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_MOUNT);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_RESUME);
     CORTO_CONSTANT_O(vstore_mountMask, MOUNT_INVOKE);
+    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_ID);
 
 CORTO_ENUM_O(vstore, frameKind);
     CORTO_CONSTANT_O(vstore_frameKind, FRAME_NOW);

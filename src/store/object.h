@@ -219,7 +219,7 @@ void corto_observerDelayedAdminDefine(corto_object instance);
 
 corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
 corto_int16 corto_suspend(corto_object o);
-int corto_loadIntern(corto_string str, int argc, char* argv[], corto_bool _try, corto_bool ignoreRecursive);
+int corto_load_intern(corto_string str, int argc, char* argv[], corto_bool _try, corto_bool ignoreRecursive);
 
 corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, char *id);
 

@@ -214,6 +214,7 @@ void test_SelectSinkWithType_tc_selectMount(
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectSinkWithType_tc_selectMountFromParent(
@@ -236,6 +237,7 @@ void test_SelectSinkWithType_tc_selectMountFromParent(
     test_assertstr(result->id, "mount");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "int32");
+    test_assert(!corto_iter_hasNext(&iter));
 
 }
 
@@ -255,7 +257,7 @@ void test_SelectSinkWithType_tc_selectMountFromVirtualParent(
     test_assertstr(result->id, "mount");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "int32");
-
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectSinkWithType_tc_selectSingleMatch(
@@ -295,7 +297,7 @@ void test_SelectSinkWithType_tc_selectSingleNoMatch(
     test_assertstr(result->id, "test");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float32");
-
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectSinkWithType_teardown(
@@ -305,4 +307,3 @@ void test_SelectSinkWithType_teardown(
     /* << Insert implementation >> */
 
 }
-

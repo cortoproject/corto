@@ -2,13 +2,16 @@
 
 #include <include/test.h>
 
-
-void *iterNext(corto_iter *iter)
+static
+void *iterNext(
+    corto_iter *iter)
 {
     return NULL;
 }
 
-int iterHasNext(corto_iter *iter)
+static
+bool iterHasNext(
+    corto_iter *iter)
 {
     return 0;
 }
@@ -26,4 +29,3 @@ corto_resultIter test_MountWIterData_onQuery(
 
     return result;
 }
-

@@ -47,6 +47,7 @@ typedef struct corto_selectRequest {
     corto_mountAction mountAction;
     corto_object instance;
     corto_mount mount;
+    corto_mountMask mountMask;
 } corto_selectRequest;
 
 typedef struct corto_select_data corto_select_data;
@@ -98,6 +99,7 @@ struct corto_select_data {
     corto_select_frame stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     corto_uint8 sp;
     corto_eventMask mask;
+    corto_mountMask mountMask;
 
     /* Mounts currently loaded */
     corto_mount mounts[CORTO_MAX_MOUNTS_PER_SELECT];
@@ -783,6 +785,10 @@ static int corto_selectLoadMountWalk(
         if (!(mount->policy.mask & CORTO_MOUNT_HISTORY_QUERY)) {
             return 1;
         }
+    } else if (data->mountMask) {
+        if (!(mount->policy.mask & data->mountMask)) {
+            return 1;
+        }
     } else {
         /* If it is a normal query but the mask does not specify QUERY, the mount
          * should not be loaded */
@@ -1139,7 +1145,7 @@ static void corto_selectRelease(corto_iter *iter) {
     data->item.value = 0;
     corto_dealloc(data);
 
-    corto_log_pop();
+    _corto_log_pop(__FILE__, __LINE__, "corto_select");
 }
 
 /* Split up scope expression in object/string pairs so mounts are invoked
@@ -1402,6 +1408,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->instance = r->instance;
     data->mount = r->mount;
     data->valueAllocated = FALSE;
+    data->mountMask = r->mountMask;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_load_contentType(data->contentType))) {
@@ -1535,6 +1542,7 @@ static corto_string corto_selectorId()
     if (request) {
         corto_bool quit = FALSE;
         corto_debug("ID");
+        request->mountMask = CORTO_MOUNT_ID;
         request->mountAction = corto_mountAction_id;
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);

@@ -497,7 +497,7 @@ void test_ReplicatorEvent_tc_rateLimitOneObject(
 {
     corto_int16 ret;
     int cycles = 50000;
-    
+
     corto_time timeout = {60, 0};
     test_setTimeout(&timeout);
 
@@ -519,16 +519,16 @@ void test_ReplicatorEvent_tc_rateLimitOneObject(
 
     /* Send 100K updates */
     corto_time start, stop;
-    corto_timeGet(&start);
+    corto_time_get(&start);
     corto_int32 i; for (i = 0; i < cycles; i ++) {
         ret = corto_int32Update(a, 20);
         test_assert(ret == 0);
     }
-    corto_timeGet(&stop);
+    corto_time_get(&stop);
 
     // Wait 2/frequency to ensure mount has processed all data
     corto_sleep(0, 400000000);
-    corto_float64 t = corto_timeToDouble(corto_timeSub(stop, start));
+    corto_float64 t = corto_time_toDouble(corto_time_sub(stop, start));
     test_assert(mount->updateCount <= ceil(t * 5.0 + 1.0));
     test_assert(mount->updateCount >= floor(t * 5.0 - 1.0));
 
@@ -575,18 +575,18 @@ void test_ReplicatorEvent_tc_rateLimitThreeObjects(
 
     /* Send 100K updates */
     corto_time start, stop;
-    corto_timeGet(&start);
+    corto_time_get(&start);
     corto_int32 i; for (i = 0; i < cycles; i ++) {
         ret = corto_int32Update(a, 20);
         ret = corto_int32Update(b, 20);
         ret = corto_int32Update(c, 20);
         test_assert(ret == 0);
     }
-    corto_timeGet(&stop);
+    corto_time_get(&stop);
 
     // Wait 2/frequency to ensure mount has processed all data
     corto_sleep(0, 400000000);
-    corto_float64 t = corto_timeToDouble(corto_timeSub(stop, start));
+    corto_float64 t = corto_time_toDouble(corto_time_sub(stop, start));
     test_assert(mount->updateCount <= 3.0 * ceil(t * 5.0 + 1.0));
     test_assert(mount->updateCount >= 3.0 * floor(t * 5.0 - 1.0));
 
@@ -600,4 +600,3 @@ void test_ReplicatorEvent_tc_rateLimitThreeObjects(
     test_assert(ret == 0);
 
 }
-

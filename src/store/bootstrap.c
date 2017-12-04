@@ -429,6 +429,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mountMask_MOUNT_MOUNT),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_RESUME),\
     SSO_OP_OBJ(vstore_mountMask_MOUNT_INVOKE),\
+    SSO_OP_OBJ(vstore_mountMask_MOUNT_ID),\
     /* frameKind */\
     SSO_OP_OBJ(vstore_frameKind_FRAME_NOW),\
     SSO_OP_OBJ(vstore_frameKind_FRAME_TIME),\
@@ -1058,6 +1059,7 @@ static int corto_loadConfig(void) {
         }
     }
     corto_log_pop();
+
     return result;
 }
 

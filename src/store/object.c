@@ -508,12 +508,6 @@ corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_obje
     corto_int16 result = 0;
     corto_function delegate;
 
-    if (!isDefine) {
-        corto_log_push(strarg("init:instanceof(%s)", corto_fullpath(NULL, t)));
-    } else {
-        corto_log_push(strarg("define:%s", corto_fullpath(NULL, o)));
-    }
-
     if ((delegate = d->super.procedure)) {
         corto_interface prev = NULL;
         bool hasBase = (t->kind == CORTO_COMPOSITE) && ((corto_interface)t)->base;
@@ -529,7 +523,6 @@ corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_obje
         if (hasBase) corto_tls_set(CORTO_KEY_CONSTRUCTOR_TYPE, prev);
     }
 
-    corto_log_pop();
     return result;
 }
 
@@ -4860,7 +4853,7 @@ nomatch_overload:
     return 0;
 error:
     *distance = CORTO_OVERLOAD_ERROR;
-    corto_throw("invalid procedure request '%s'", requested);
+    corto_throw_fallback("invalid procedure request '%s'", requested);
     return -1;
 }
 

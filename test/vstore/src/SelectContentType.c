@@ -74,6 +74,7 @@ void test_SelectContentType_tc_selectBinaryFromJson(
     test_assertint(p->x, 50);
     test_assertint(p->y, 60);
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectBinaryFromObjects(
@@ -122,6 +123,7 @@ void test_SelectContentType_tc_selectBinaryFromObjects(
     test_assertint(p->x, 50);
     test_assertint(p->y, 60);
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectBinaryFromString(
@@ -170,6 +172,7 @@ void test_SelectContentType_tc_selectBinaryFromString(
     test_assertint(p->x, 50);
     test_assertint(p->y, 60);
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectJsonFromJson(
@@ -215,6 +218,7 @@ void test_SelectContentType_tc_selectJsonFromJson(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectJsonFromObjects(
@@ -260,6 +264,7 @@ void test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectJsonFromString(
@@ -305,6 +310,7 @@ void test_SelectContentType_tc_selectJsonFromString(
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectStringFromJson(
@@ -350,6 +356,7 @@ void test_SelectContentType_tc_selectStringFromJson(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectStringFromObjects(
@@ -395,6 +402,7 @@ void test_SelectContentType_tc_selectStringFromObjects(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectContentType_tc_selectStringFromString(
@@ -440,5 +448,5 @@ void test_SelectContentType_tc_selectStringFromString(
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
-

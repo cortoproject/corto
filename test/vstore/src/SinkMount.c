@@ -198,13 +198,13 @@ corto_object test_SinkMount_onResume(
             if (!strcmp(id, e.id)) {
                 corto_type t = corto_resolve(NULL, e.type);
                 if (!t) {
-                    corto_seterr("cannot resume object, unknown type '%s'",
+                    corto_throw("cannot resume object, unknown type '%s'",
                       e.type);
                     goto error;
                 }
 
                 if (object && (t != corto_typeof(object))) {
-                    corto_seterr("type '%s' does not match type of object '%s'",
+                    corto_throw("type '%s' does not match type of object '%s'",
                       e.type, corto_fullpath(NULL, corto_typeof(object)));
                 }
 
@@ -213,12 +213,12 @@ corto_object test_SinkMount_onResume(
                     e.parent
                 );
                 if (!p) {
-                    corto_seterr("cannot find parent '%s'", e.parent);
+                    corto_throw("cannot find parent '%s'", e.parent);
                     goto error;
                 }
 
                 if (object && (p != corto_parentof(object))) {
-                    corto_seterr("parent '%s' does not match parent of object '%s'",
+                    corto_throw("parent '%s' does not match parent of object '%s'",
                       e.type, corto_fullpath(NULL, corto_parentof(object)));
                     goto error;
                 }
@@ -228,7 +228,7 @@ corto_object test_SinkMount_onResume(
                 } else {
                     result = corto_declareChild(p, e.id, t);
                     if (!result) {
-                        corto_seterr("cannot create object '%s': %s",
+                        corto_throw("cannot create object '%s': %s",
                             e.id, corto_lasterr());
                         goto error;
                     }
@@ -252,4 +252,3 @@ corto_object test_SinkMount_onResume(
 error:
     return NULL;
 }
-

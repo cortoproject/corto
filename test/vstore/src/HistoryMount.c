@@ -41,7 +41,7 @@ int16_t test_HistoryMount_construct(
         &r,
         samples
     );
-    
+
     return corto_mount_construct(this);
 }
 
@@ -51,12 +51,18 @@ typedef struct iterData {
     corto_ll history;
     corto_iter iter;
 } iterData;
-static int hasNext(corto_iter *it) {
+static
+bool hasNext(
+    corto_iter *it)
+{
     iterData *ctx = it->ctx;
     return corto_iter_hasNext(&ctx->iter);
 }
 
-static void* next(corto_iter *it) {
+static
+void* next(
+    corto_iter *it)
+{
     int start = 0, stop = 0, i;
     iterData *ctx = it->ctx;
     test_HistoryMount_data *data = corto_iter_next(&ctx->iter);
@@ -101,7 +107,10 @@ static void* next(corto_iter *it) {
     return result;
 }
 
-static void release(corto_iter *it) {
+static
+void release(
+    corto_iter *it)
+{
     iterData *ctx = it->ctx;
     corto_sample *s;
     while ((s = corto_ll_takeFirst(ctx->history))) {
@@ -129,6 +138,6 @@ corto_resultIter test_HistoryMount_onHistoryQuery(
     it.hasNext = hasNext;
     it.release = release;
     it.ctx = data;
-    
+
     return it;
 }

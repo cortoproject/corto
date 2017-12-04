@@ -244,6 +244,10 @@ int16_t corto_mount_construct(
         this->policy.mask &= ~CORTO_MOUNT_MOUNT;
     }
 
+    if (!corto_mount_hasMethod(this, "onId")) {
+        this->policy.mask &= ~CORTO_MOUNT_ID;
+    }
+
     /* Set the callback function */
     corto_function(this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(this)->fptr = (corto_word)corto_mount_notify;
@@ -343,6 +347,10 @@ int16_t corto_mount_init(
     /* Enable default flags based on which methods are implemented */
     if (corto_mount_hasMethod(this, "onQuery")) {
         this->policy.mask |= CORTO_MOUNT_QUERY;
+    }
+
+    if (corto_mount_hasMethod(this, "onId")) {
+        this->policy.mask |= CORTO_MOUNT_ID;
     }
 
     if (corto_mount_hasMethod(this, "onHistoryQuery")) {
@@ -837,10 +845,13 @@ corto_object corto_mount_resume(
         return NULL;
     }
 
+    corto_log_push(strarg("resume:%s/%s", parent, name));
+
     /* Ensure that if object is created, owner & attributes are set correctly */
     corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
     corto_object prevOwner = corto_setOwner(this);
     corto_object result = NULL;
+
     /* Resume object */
     if (this->explicitResume) {
         corto_debug("mount: onResume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
@@ -861,8 +872,6 @@ corto_object corto_mount_resume(
 
         q.type = type;
         q.content = TRUE;
-
-        corto_log_push(strarg("resume:%s/%s", parent, name));
 
         corto_resultIter it = corto_mount_query(this, &q);
         if (corto_iter_hasNext(&it)) {

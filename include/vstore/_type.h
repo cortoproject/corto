@@ -193,6 +193,7 @@ typedef uint32_t corto_mountMask;
     #define CORTO_MOUNT_MOUNT (0x40)
     #define CORTO_MOUNT_RESUME (0x80)
     #define CORTO_MOUNT_INVOKE (0x100)
+    #define CORTO_MOUNT_ID (0x200)
 
 /*  /corto/vstore/queuePolicy */
 typedef struct corto_queuePolicy corto_queuePolicy;

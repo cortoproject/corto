@@ -734,7 +734,7 @@ void test_SelectSink_tc_selectSingleTypeFilter(
     // Select single object of the package type
     corto_int16 ret = corto_select("//native*").iter( &iter );
     test_assert(ret == 0);
-    test_assertstr(corto_lasterr(), NULL);
+    test_assert(!corto_catch());
 
     test_assert(corto_iter_hasNext(&iter));
     result = corto_iter_next(&iter);
@@ -744,6 +744,7 @@ void test_SelectSink_tc_selectSingleTypeFilter(
     test_assertstr(result->parent, "/corto");
     test_assertstr(result->type, "/corto/vstore/package");
 
+    test_assert(!corto_iter_hasNext(&iter));
 }
 
 void test_SelectSink_tc_selectSingleVirtualNested1(
@@ -1154,4 +1155,3 @@ void test_SelectSink_teardown(
     /* << Insert implementation >> */
 
 }
-

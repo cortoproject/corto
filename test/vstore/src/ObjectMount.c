@@ -18,18 +18,27 @@ struct iterCtx {
     int count;
 };
 
-static int hasNext(corto_iter *it) {
+static
+bool hasNext(
+    corto_iter *it)
+{
     struct iterCtx *ctx = it->ctx;
     return !ctx->count;
 }
 
-static void* next(corto_iter *it) {
+static
+void* next(
+    corto_iter *it)
+{
     struct iterCtx *ctx = it->ctx;
     ctx->count ++;
     return ctx->result;
 }
 
-static void release(corto_iter *it) {
+static
+void release(
+    corto_iter *it)
+{
     corto_dealloc(it->ctx);
 }
 
@@ -50,4 +59,3 @@ corto_resultIter test_ObjectMount_onQuery(
 
     return result;
 }
-

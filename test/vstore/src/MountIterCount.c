@@ -1,12 +1,15 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-int test_MounterIterCount_hasNext(corto_iter *it) {
+
+static
+bool test_MounterIterCount_hasNext(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->hasNextCount ++;
     return this->hasNextCount <= 10;
 }
 
+static
 void* test_MounterIterCount_next(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->nextCount ++;
@@ -16,6 +19,7 @@ void* test_MounterIterCount_next(corto_iter *it) {
     return &this->result;
 }
 
+static
 void test_MounterIterCount_release(corto_iter *it) {
     test_MountIterCount this = it->ctx;
     this->releaseCount ++;
@@ -48,4 +52,3 @@ int16_t test_MountIterCount_construct(
     corto_mount(this)->policy.filterResults = false;
     return corto_super_construct(this);
 }
-

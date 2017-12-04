@@ -6,35 +6,35 @@ int16_t corto_target_construct(
     corto_target this)
 {
 
-    corto_member actual = corto_declareChild(this, "actual", corto_member_o);
+    corto_member actual = corto(this, "actual", corto_member_o, NULL, NULL, NULL, -1, CORTO_DO_DECLARE | CORTO_DO_FORCE_TYPE);
     if (!actual) {
         goto error;
     }
     if (!corto_checkState(actual, CORTO_VALID)) {
         corto_ptr_setref(&actual->type, this->type);
-        if (corto_define(actual)) {
+        if (!corto(NULL, NULL, NULL, actual, NULL, NULL, -1, CORTO_DO_DEFINE)) {
             goto error;
         }
     }
 
-    corto_member target = corto_declareChild(this, "target", corto_member_o);
+    corto_member target = corto(this, "target", corto_member_o, NULL, NULL, NULL, -1, CORTO_DO_DECLARE | CORTO_DO_FORCE_TYPE);
     if (!target) {
         goto error;
     }
     if (!corto_checkState(target, CORTO_VALID)) {
         corto_ptr_setref(&target->type, this->type);
-        if (corto_define(target)) {
+        if (!corto(NULL, NULL, NULL, target, NULL, NULL, -1, CORTO_DO_DEFINE)) {
             goto error;
         }
     }
 
-    corto_member objective = corto_declareChild(this, "objective", corto_member_o);
+    corto_member objective = corto(this, "objective", corto_member_o, NULL, NULL, NULL, -1, CORTO_DO_DECLARE | CORTO_DO_FORCE_TYPE);
     if (!target) {
         goto error;
     }
     if (!corto_checkState(objective, CORTO_VALID)) {
         corto_ptr_setref(&objective->type, this->type);
-        if (corto_define(objective)) {
+        if (!corto(NULL, NULL, NULL, objective, NULL, NULL, -1, CORTO_DO_DEFINE)) {
             goto error;
         }
     }
@@ -47,4 +47,3 @@ int16_t corto_target_construct(
 error:
     return -1;
 }
-
