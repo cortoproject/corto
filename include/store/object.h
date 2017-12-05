@@ -73,6 +73,9 @@ extern "C" {
 
 typedef struct corto_contentType *corto_contentType;
 
+/* TODO: REMOVE */
+CORTO_EXPORT corto_object corto_createFromContent(char *contentType, char *content);
+
 /** Create a new anonymous object.
  * Equivalent to calling corto_declare + corto_define.
  *
@@ -120,25 +123,6 @@ corto_object _corto_createChild(
  */
 CORTO_EXPORT
 corto_object _corto_createOrphan(
-    corto_object parent,
-    char *id,
-    corto_type type);
-
-/** Find or create a new object.
- * Equivalent to calling corto_findOrDeclare + corto_define.
- *
- * @param parent The parent for the new object.
- * @param id The object id. If NULL, a random unique id is generated. A name may contain
- *     multiple elements, separated by the '/' character. If one or more elements
- *     do not yet exist, they are created with the specified type.
- * @param type The type of the object to create.
- * @return The new object, NULL if failed.
- * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan
- * @see corto_define corto_delete corto_release
- */
-CORTO_EXPORT
-corto_object _corto_findOrCreate(
     corto_object parent,
     char *id,
     corto_type type);
@@ -191,50 +175,6 @@ corto_object _corto_declare(
  */
 CORTO_EXPORT
 corto_object _corto_declareChild(
-    corto_object parent,
-    char *id,
-    corto_type type);
-
-/** Declare a new orphaned object.
- * Equivalent to corto_declareChild, except that the function returns an orphaned
- * object.
- *
- * Orphaned objects, like named objects have a name and hold a reference to
- * their parent, but are not added to the scope of their parent and are thus not
- * discoverable. Orphaned objects are typically used for observable members.
- *
- * @param parent The parent for the new object.
- * @param id The object id. If NULL, a random unique id is generated. A name may contain
- *     multiple elements, separated by the '/' character. If one or more elements
- *     do not yet exist, they are created with the specified type.
- * @param type The type of the object to create.
- * @return The new object, NULL if failed.
- * @see corto_declare corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_define corto_delete corto_release
- */
-CORTO_EXPORT
-corto_object _corto_declareOrphan(
-    corto_object parent,
-    char *id,
-    corto_type type);
-
-/** Declare a new object.
- * Equivalent to corto_declareChild, except that when the function finds an
- * existing object with a different type, it does not fail.
- *
- * @param parent The parent for the new object.
- * @param id The object id. If NULL, a random unique id is generated. A name may contain
- *     multiple elements, separated by the '/' character. If one or more elements
- *     do not yet exist, they are created with the specified type.
- * @param type The type of the object to create.
- * @return The new object, NULL if failed.
- * @see corto_declare corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_define corto_delete corto_release
- */
-CORTO_EXPORT
-corto_object _corto_findOrDeclare(
     corto_object parent,
     char *id,
     corto_type type);
@@ -780,27 +720,6 @@ corto_object corto_lookup(
     corto_object scope,
     char *id);
 
-/** Lookup an object, assert if not found.
- * This function looks up an object and asserts if the object is not found. Use
- * this function only when the specified object is guaranteed to be resolvable.
- * Because the returned object is guaranteed to be alive, the application does
- * not need to invoke corto_release.
- *
- * If an object is found that is not of the specified type, this function will
- * also assert.
- *
- * @param scope The scope in which to lookup the object.
- * @param id An id expression (foo/bar) identifying the object to lookup.
- * @param type The type of the object to lookup.
- * @return The object if found, NULL if not found.
- * @see corto_lookup corto_resolve corto_release
- */
-CORTO_EXPORT
-corto_object _corto_lookupAssert(
-    corto_object scope,
-    char *id,
-    corto_type type);
-
 /** Resolve an object.
  * This function is similar to corto_lookup, but follows a set of rules that is
  * used to lookup types. Note however that corto_resolve can be used to lookup any
@@ -835,18 +754,6 @@ CORTO_EXPORT
 corto_object corto_resolve(
     corto_object scope,
     char *id);
-
-/* UNSTABLE API */
-typedef enum corto_findKind {
-    CORTO_FIND_DEFAULT = 0,
-    CORTO_FIND_RESUME = 1
-    /* Will be extended with more options */
-} corto_findKind;
-CORTO_EXPORT
-corto_object corto_find(
-    corto_object scope,
-    char *id,
-    corto_findKind mode);
 
 /** Obtain a full path identifier to an object.
  * This function returns the shortest path that will lead to resolving the object
@@ -929,26 +836,6 @@ char *corto_pathname(
     corto_object from,
     corto_object o,
     const char* sep);
-
-/** Obtain an array with the individual elements of a path.
- * This function splits up a path using the specified separator. An element with
- * at least *CORTO_MAX_SCOPE_DEPTH* elements must be provided.
- *
- * ```warning
- * This function modifies the input path.
- * ```
- *
- * @param path The path to be split up.
- * @param elements The result array with the path elements.
- * @param sep The separator used to split up the path.
- * @return The number of elements in the array.
- * @see corto_idof corto_fullname corto_path corto_pathname
- */
-CORTO_EXPORT
-int32_t corto_pathToArray(
-    char *path,
-    char *elements[],
-    char *sep);
 
 /* Observe objects for an observable matching an eventmask */
 typedef struct corto_observe__fluent {
@@ -1103,7 +990,8 @@ typedef enum corto_kind {
     CORTO_DO_ORPHAN = 0x10,
     CORTO_DO_RESUME = 0x20,
     CORTO_DO_FORCE_TYPE = 0x40,
-    CORTO_DO_LOOKUP_TYPE = 0x80
+    CORTO_DO_LOOKUP_TYPE = 0x80,
+    CORTO_DO_ASSERT_SUCCESS = 0x100
 } corto_kind;
 
 /** Function that provides low-level access to the corto store.
@@ -1125,27 +1013,32 @@ corto_object _corto(
     corto_kind kind);
 
 /* Serialize object value to contentType */
-CORTO_EXPORT char *corto_contentof(corto_object o, char *contentType);
-CORTO_EXPORT int16_t corto_fromcontent(corto_object o, char *contentType, char *content, ...);
+CORTO_EXPORT
+char *corto_contentof(
+    corto_object o,
+    char *contentType);
+
+CORTO_EXPORT
+int16_t corto_fromcontent(
+    corto_object o,
+    char *contentType,
+    char *content, ...);
 
 /* Serialize object to contentType */
-CORTO_EXPORT char *corto_object_contentof(corto_object o, char *contentType);
-CORTO_EXPORT int16_t corto_object_fromcontent(corto_object *o, char *contentType, char *content, ...);
+CORTO_EXPORT
+char *corto_object_contentof(
+    corto_object o,
+    char *contentType);
 
-/* Deprecated */
-CORTO_EXPORT corto_object corto_createFromContent(char *contentType, char *content);
-
-/* Object extensions (Object Local Storage) */
-CORTO_EXPORT uint8_t corto_olsKey(void(*destructor)(void*));
-CORTO_EXPORT void* corto_olsSet(corto_object o, int8_t key, void *data);
-CORTO_EXPORT void* corto_olsGet(corto_object o, int8_t key);
-/* Thread-safe way to modify OLS data */
-CORTO_EXPORT void* corto_olsLockGet(corto_object o, int8_t key);
-CORTO_EXPORT void corto_olsUnlockSet(corto_object o, int8_t key, void *value);
+CORTO_EXPORT
+int16_t corto_object_fromcontent(
+    corto_object *o,
+    char *contentType,
+    char *content, ...);
 
 /* Read locking */
-CORTO_EXPORT int16_t corto_readBegin(corto_object object);
-CORTO_EXPORT int16_t corto_readEnd(corto_object object);
+CORTO_EXPORT int16_t corto_read_begin(corto_object object);
+CORTO_EXPORT int16_t corto_read_end(corto_object object);
 
 /* Write locking */
 CORTO_EXPORT int16_t corto_lock(corto_object object);
@@ -1175,13 +1068,8 @@ CORTO_EXPORT bool corto_secured(void);
 /* Macro's that automate casting of parameters */
 #define corto_create(type) _corto_create(corto_type(type))
 #define corto_createChild(parent, name, type) _corto_createChild(parent, name, corto_type(type))
-#define corto_createOrphan(parent, name, type) _corto_createOrphan(parent, name, corto_type(type))
-#define corto_findOrCreate(parent, name, type) _corto_findOrCreate(parent, name, corto_type(type))
 #define corto_declare(type) _corto_declare(corto_type(type))
 #define corto_declareChild(parent, name, type) _corto_declareChild(parent, name, corto_type(type))
-#define corto_declareOrphan(parent, name, type) _corto_declareOrphan(parent, name, corto_type(type))
-#define corto_findOrDeclare(parent, name, type) _corto_findOrDeclare(parent, name, corto_type(type))
-#define corto_lookupAssert(parent, id, type) _corto_lookupAssert(parent, id, corto_type(type))
 #define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
 #define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)

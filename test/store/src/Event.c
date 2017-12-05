@@ -5,6 +5,10 @@
 
 static corto_object testScope;
 
+#define DECLARE_ORPHAN(parent, id, type)\
+    corto(parent, id, type, NULL, NULL, NULL, -1,\
+        CORTO_DO_DECLARE | CORTO_DO_ORPHAN | CORTO_DO_FORCE_TYPE);
+
 void test_Event_setup(
     test_Event this)
 {
@@ -65,7 +69,7 @@ void test_Event_tc_onDeclareOrphan(
 
     test_assert(this->et->countDeclare == 1);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclare == 1);
 
@@ -172,7 +176,7 @@ void test_Event_tc_onDeclareScopeOrphan(
 
     test_assert(this->et->countDeclareScope == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareScope == 0);
 
@@ -235,7 +239,7 @@ void test_Event_tc_onDeclareSelfOrphan(
 
     test_assert(this->et->countDeclareSelf == 1);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareSelf == 1);
 
@@ -349,7 +353,7 @@ void test_Event_tc_onDeclareTreeOrphan(
 
     test_assert(this->et->countDeclareTree == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareTree == 0);
 
@@ -416,7 +420,7 @@ void test_Event_tc_onDefineOrphan(
 
     test_assert(this->et->countDefine == 1);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefine == 1);
 
@@ -526,7 +530,7 @@ void test_Event_tc_onDefineScopeOrphan(
 
     test_assert(this->et->countDefineScope == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineScope == 0);
 
@@ -588,7 +592,7 @@ void test_Event_tc_onDefineSelfOrphan(
 
     test_assert(this->et->countDefineSelf == 1);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineSelf == 1);
 
@@ -702,7 +706,7 @@ void test_Event_tc_onDefineTreeOrphan(
 
     test_assert(this->et->countDefineTree == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineTree == 0);
 
@@ -765,7 +769,7 @@ void test_Event_tc_onDeleteOrphan(
 
     test_assert(this->et->countDelete == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDelete == 0);
 
@@ -869,7 +873,7 @@ void test_Event_tc_onDeleteScopeOrphan(
 
     test_assert(this->et->countDeleteScope == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteScope == 0);
 
@@ -932,7 +936,7 @@ void test_Event_tc_onDeleteSelfOrphan(
 
     test_assert(this->et->countDeleteSelf == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteSelf == 0);
 
@@ -1036,7 +1040,7 @@ void test_Event_tc_onDeleteTreeOrphan(
 
     test_assert(this->et->countDeleteTree == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteTree == 0);
 
@@ -1204,7 +1208,7 @@ void test_Event_tc_onUpdateDefineOrphan(
 
     test_assert(this->et->countUpdateDefine == 1);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefine == 1);
 
@@ -1372,7 +1376,7 @@ void test_Event_tc_onUpdateDefineScopeOrphan(
 
     test_assert(this->et->countUpdateDefineScope == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineScope == 0);
 
@@ -1464,7 +1468,7 @@ void test_Event_tc_onUpdateDefineSelfOrphan(
 
     test_assert(this->et->countUpdateDefineSelf == 1);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineSelf == 1);
 
@@ -1636,7 +1640,7 @@ void test_Event_tc_onUpdateDefineTreeOrphan(
 
     test_assert(this->et->countUpdateDefineTree == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineTree == 0);
 
@@ -1664,7 +1668,7 @@ void test_Event_tc_onUpdateOrphan(
 
     test_assert(this->et->countUpdate == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdate == 0);
 
@@ -1832,7 +1836,7 @@ void test_Event_tc_onUpdateScopeOrphan(
 
     test_assert(this->et->countUpdateScope == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateScope == 0);
 
@@ -1924,7 +1928,7 @@ void test_Event_tc_onUpdateSelfOrphan(
 
     test_assert(this->et->countUpdateSelf == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateSelf == 0);
 
@@ -2096,7 +2100,7 @@ void test_Event_tc_onUpdateTreeOrphan(
 
     test_assert(this->et->countUpdateTree == 0);
 
-    corto_object o = corto_declareOrphan(testScope, "o", corto_int32_o);
+    corto_object o = DECLARE_ORPHAN(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateTree == 0);
 

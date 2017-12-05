@@ -39,10 +39,6 @@ corto_object corto_adopt(
     corto_bool forceType);
 
 static
-void corto_olsDestroy(
-    corto__scope *scope);
-
-static
 bool corto_ownerMatch(
     corto_object owner,
     corto_object current);
@@ -319,10 +315,6 @@ static void corto__deinitScope(corto_object o) {
      * otherwise lots of objects with NULL ids would show up. It also
      * allows the select function to more efficiently determine what the
      * last iterated object was after a tree has changed. */
-
-    if (scope->ols) {
-        corto_olsDestroy(scope);
-    }
 
     /* Finally, free own scopeLock. */
     corto_rwmutex_free(&scope->align.scopeLock);
@@ -1305,9 +1297,9 @@ corto_object corto_declareChild_intern(
                               "corto: declareChild: %s declared in other thread, waiting",
                               id);
 
-                            corto_readBegin(o);
+                            corto_read_begin(o);
                             corto_bool destructed = corto_checkState(o, CORTO_DELETED);
-                            corto_readEnd(o);
+                            corto_read_end(o);
 
                             corto_debug(
                               "corto: declareChild: %s defined in other thread (destructed = %d)",
@@ -1706,7 +1698,7 @@ corto_object corto_declareChildRecursive_intern(
 
         do {
             /* Try to resume parent objects first, in case they have another type */
-            if (!(result = corto_find(parent, cur, CORTO_FIND_DEFAULT))) {
+            if (!(result = FIND(parent, cur))) {
                 if (!next || !resume || !(result = corto_resume(parent, cur, NULL))) {
                     /* If object was not resumed, declare it */
                     result = corto_declareChild_intern(
@@ -1801,22 +1793,6 @@ corto_object _corto_declareChild(
     return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, FALSE, FALSE, TRUE);
 }
 
-corto_object _corto_declareOrphan(
-    corto_object parent,
-    corto_string id,
-    corto_type type)
-{
-    return corto_declareChildRecursive_intern(parent, id, type, TRUE, TRUE, FALSE, FALSE, TRUE);
-}
-
-corto_object _corto_findOrDeclare(
-    corto_object parent,
-    corto_string id,
-    corto_type type)
-{
-    return corto_declareChildRecursive_intern(parent, id, type, FALSE, FALSE, FALSE, FALSE, TRUE);
-}
-
 corto_object _corto_create(
     corto_type type)
 {
@@ -1833,26 +1809,6 @@ corto_object _corto_createChild(
     corto_assertObject(parent);
     corto_assertObject(type);
     return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, TRUE, TRUE, TRUE);
-}
-
-corto_object _corto_createOrphan(
-    corto_object parent,
-    corto_string id,
-    corto_type type)
-{
-    corto_assertObject(parent);
-    corto_assertObject(type);
-    return corto_declareChildRecursive_intern(parent, id, type, TRUE, TRUE, TRUE, TRUE, TRUE);
-}
-
-corto_object _corto_findOrCreate(
-    corto_object parent,
-    corto_string id,
-    corto_type type)
-{
-    corto_assertObject(parent);
-    corto_assertObject(type);
-    return corto_declareChildRecursive_intern(parent, id, type, FALSE, FALSE, TRUE, TRUE, TRUE);
 }
 
 /* Define object */
@@ -2367,24 +2323,6 @@ error:
     return -1;
 }
 
-corto_object corto_createFromContent(
-    corto_string contentType,
-    corto_string content)
-{
-    corto_object result = NULL;
-    corto_contentType type = corto_load_contentType(contentType);
-    if (!type) {
-        goto error;
-    }
-    if (type->toObject(&result, (corto_word)content)) {
-        goto error;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
 bool corto_checkState(
     corto_object o,
     corto_state state)
@@ -2585,222 +2523,6 @@ corto_bool _corto_instanceof(
     }
 
     return _corto_instanceofType(type, t);
-}
-
-static void(*destructors[CORTO_MAX_OLS_KEY])(void*);
-
-static void corto_olsDestroy(
-    corto__scope *scope)
-{
-    if (scope->ols) {
-        corto__ols *ols = scope->ols;
-        do {
-            if (destructors[ols->key]) {
-                destructors[ols->key](ols->value);
-            }
-        } while ((ols++)->key);
-        corto_dealloc(scope->ols);
-        scope->ols = NULL;
-    }
-}
-
-/* Generate a new OLS key */
-corto_uint8 corto_olsKey(
-    void(*destructor)(void*))
-{
-    static int olsKeys;
-    corto_uint32 result;
-
-    result = corto_ainc(&olsKeys);
-    if (result > 255) {
-        corto_throw("maximum number of extensions exceeded");
-        result = 0;
-    } else {
-        destructors[result] = destructor;
-    }
-
-    return result;
-}
-
-/* Find OLS value (assumes scope is locked) */
-void* corto_olsFind(
-    corto__scope *scope,
-    corto_int8 key)
-{
-    corto__ols *ols = scope->ols;
-    if (ols) {
-        do {
-            if (ols->key == key) break;
-        } while ((++ols)->key);
-        return ols->key ? ols : NULL;
-    } else {
-        return NULL;
-    }
-}
-
-static
-corto_uint8 corto_olsSize(
-    corto__scope *scope)
-{
-    corto_uint8 result = 0;
-    corto__ols *ols = scope->ols;
-    if (ols) {
-        do {
-        } while ((++ols)->key);
-        result = ols - scope->ols;
-    }
-    return result;
-}
-
-/* Set an OLS value */
-void* corto_olsSet(
-    corto_object o,
-    corto_int8 key,
-    void *value)
-{
-    corto__object* _o;
-    corto__scope* scope;
-    void *old = NULL;
-
-    corto_assertObject(o);
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
-    if (scope) {
-        corto__ols *ols = NULL;
-
-        if (corto_rwmutex_write(&scope->align.scopeLock)) {
-            corto_throw("aquiring scopelock failed");
-            goto error;
-        }
-
-        ols = corto_olsFind(scope, key);
-        if (ols) {
-            corto_assert(ols->key == key, "returned wrong OLS data");
-            old = ols->value;
-        } else {
-            corto_uint8 size = corto_olsSize(scope);
-            scope->ols = corto_realloc(scope->ols,
-                (size + 2) * sizeof(corto__ols));
-            ols = &scope->ols[size];
-            ols->key = key;
-            (ols + 1)->key = 0;
-        }
-        ols->value = value;
-
-        corto_rwmutex_unlock(&scope->align.scopeLock);
-    } else {
-        corto_throw("object is not scoped");
-        goto error;
-    }
-
-    return old;
-error:
-    return NULL;
-}
-
-/* Get an OLS value */
-void* corto_olsGet(
-    corto_object o,
-    corto_int8 key)
-{
-    corto__object* _o;
-    corto__scope* scope;
-    void *result = NULL;
-
-    corto_assertObject(o);
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
-    if (scope) {
-        corto__ols *ols = NULL;
-        if (corto_rwmutex_write(&scope->align.scopeLock)) {
-            corto_throw("aquiring scopelock failed");
-            goto error;
-        }
-
-        ols = corto_olsFind(scope, key);
-        if (ols) {
-            corto_assert(ols->key == key, "returned wrong OLS data");
-            result = ols->value;
-        }
-
-        corto_rwmutex_unlock(&scope->align.scopeLock);
-    } else {
-        corto_throw("object is not scoped");
-        goto error;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-void* corto_olsLockGet(
-    corto_object o,
-    corto_int8 key)
-{
-    corto__object* _o;
-    corto__scope* scope;
-    void **result = NULL;
-
-    corto_assertObject(o);
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
-    if (scope) {
-        corto__ols *ols = NULL;
-        if (corto_rwmutex_write(&scope->align.scopeLock)) {
-            corto_throw("aquiring scopelock failed");
-            goto error;
-        }
-
-        ols = corto_olsFind(scope, key);
-        if (!ols) {
-            corto_uint8 size = corto_olsSize(scope);
-            scope->ols = corto_realloc(scope->ols,
-                (size + 2) * sizeof(corto__ols));
-            scope->ols[size + 1].key = 0; /* Marks end of list */
-            ols = &scope->ols[size];
-            ols->key = key;
-            ols->value = NULL;
-        } else {
-            corto_assert(ols->key == key, "returned wrong OLS data");
-        }
-
-        result = ols->value;
-    } else {
-        corto_throw("object is not scoped");
-        goto error;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-void corto_olsUnlockSet(
-    corto_object o,
-    corto_int8 key,
-    void *value)
-{
-    corto_assertObject(o);
-
-    corto__object* _o;
-    corto__scope* scope;
-
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
-    scope = corto__objectScope(_o);
-    if (scope) {
-        corto__ols *ols = corto_olsFind(scope, key);
-        if (ols) {
-            corto_assert(ols->key == key, "returned wrong OLS data");
-            ols->value = value;
-        }
-        corto_rwmutex_unlock(&scope->align.scopeLock);
-    } else {
-        corto_throw("object is not scoped");
-    }
 }
 
 /* Get & lock scope */
@@ -3589,21 +3311,6 @@ corto_object corto_lookup(corto_object scope, corto_string id)
     return corto_lookup_intern(scope, id, TRUE);
 }
 
-corto_object _corto_lookupAssert(corto_object scope, corto_string id, corto_type type)
-{
-    corto_object result = corto_lookup_intern(scope, id, TRUE);
-    corto_assert(result != NULL, "corto_lookupAssert returned NULL for '%s'", id);
-    (void)type;
-    (void)corto_assertType(type, result);
-    corto_release(result);
-    return result;
-}
-
-corto_object corto_find(corto_object scope, corto_string id, corto_findKind mode)
-{
-    return corto_lookup_intern(scope, id, mode & CORTO_FIND_RESUME);
-}
-
 extern int CORTO_BENCHMARK_RESOLVE;
 
 corto_bool corto_declaredAdminCheck(corto_object o);
@@ -3901,7 +3608,8 @@ corto_int16 corto_publish(
 {
     corto_assert(id != NULL, "NULL passed to 'id' parameter of corto_publish");
 
-    corto_object o = corto_find(NULL, id, CORTO_FIND_DEFAULT);
+    corto_object o = FIND(NULL, id);
+
     corto_int16 result = 0;
 
     CORTO_UNUSED(type);
@@ -4216,7 +3924,7 @@ corto_object corto_man(corto_object o) {
 }
 
 /* Thread-safe reading */
-corto_int16 corto_readBegin(corto_object object) {
+corto_int16 corto_read_begin(corto_object object) {
     corto_assertObject(object);
 
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
@@ -4235,7 +3943,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_readEnd(corto_object object) {
+corto_int16 corto_read_end(corto_object object) {
     corto_assertObject(object);
     return corto_unlock(object);
 }
@@ -5407,6 +5115,7 @@ corto_object _corto(
 {
     bool childDeclared = false;
     bool exists = result != NULL;
+    bool gotref = false;
 
     if (!result) {
         corto_attr prevAttr = -1;
@@ -5438,8 +5147,10 @@ corto_object _corto(
             }
         } else if (kind & CORTO_DO_LOOKUP_TYPE) {
             result = corto_resolve_intern(parent, (char*)id, kind & CORTO_DO_RESUME);
+            gotref = true;
         } else {
             result = corto_lookup_intern(parent, (char*)id, kind & CORTO_DO_RESUME);
+            gotref = true;
         }
         if (prevAttr != -1) corto_setAttr(prevAttr);
     } else if (kind & CORTO_DO_FORCE_TYPE) {
@@ -5486,6 +5197,25 @@ corto_object _corto(
         }
     }
 
+    if (kind & CORTO_DO_ASSERT_SUCCESS) {
+        if (!result) {
+            corto_throw("object '%s' does not exist", id);
+            goto assert_success;
+        } else if (!exists) {
+            /* If function obtained a new reference to the object, release the
+             * claim. A claim is not needed to keep the object alive
+             * when the application can assert that the object exists. */
+            if (childDeclared) {
+                if (corto_checkState(result, CORTO_VALID)) {
+                    gotref = true;
+                }
+            }
+            if (gotref) {
+                corto_release(result);
+            }
+        }
+    }
+
     return result;
 error:
     if (kind & CORTO_DECLARE) {
@@ -5493,5 +5223,28 @@ error:
     } else if (!exists) {
         corto_release(result);
     }
+assert_success:
+    if (kind & CORTO_DO_ASSERT_SUCCESS) {
+        corto_raise();
+        abort();
+    }
+    return NULL;
+}
+
+corto_object corto_createFromContent(
+    corto_string contentType,
+    corto_string content)
+{
+    corto_object result = NULL;
+    corto_contentType type = corto_load_contentType(contentType);
+    if (!type) {
+        goto error;
+    }
+    if (type->toObject(&result, (corto_word)content)) {
+        goto error;
+    }
+
+    return result;
+error:
     return NULL;
 }

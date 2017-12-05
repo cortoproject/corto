@@ -1248,7 +1248,9 @@ void test_ObjectMgmt_tc_declareOrphan(
     corto_int16 ret;
 
     /* Create orphaned object */
-    corto_object i = corto_declareOrphan(root_o, "i", corto_int32_o);
+    corto_object i = corto(root_o, "i", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE | CORTO_DO_ORPHAN | CORTO_DO_FORCE_TYPE);
+
     test_assert(i != NULL);
     test_assert(corto_checkAttr(i, CORTO_ATTR_NAMED));
     test_assertstr(corto_idof(i), "i");
@@ -1846,7 +1848,9 @@ void test_ObjectMgmt_tc_findOrCreate(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
+    corto_object o = corto(root_o, "foo", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE | CORTO_DO_DEFINE);
+
     test_assert(o != NULL);
     test_assert(corto_checkState(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
@@ -1868,7 +1872,8 @@ void test_ObjectMgmt_tc_findOrCreateExisting(
     corto_object e = corto_createChild(root_o, "foo", corto_int32_o);
     test_assert(e != NULL);
 
-    corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
+    corto_object o = corto(root_o, "foo", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE | CORTO_DO_DEFINE);
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(corto_checkState(o, CORTO_VALID));
@@ -1887,7 +1892,8 @@ void test_ObjectMgmt_tc_findOrCreateExistingOtherType(
 {
     corto_object e = corto_createChild(root_o, "foo", corto_float32_o);
 
-    corto_object o = corto_findOrCreate(root_o, "foo", corto_int32_o);
+    corto_object o = corto(root_o, "foo", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE | CORTO_DO_DEFINE);
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(corto_checkState(o, CORTO_VALID));
@@ -1904,7 +1910,8 @@ void test_ObjectMgmt_tc_findOrCreateExistingOtherType(
 void test_ObjectMgmt_tc_findOrDeclare(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
+    corto_object o = corto(root_o, "foo", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE);
     test_assert(o != NULL);
     test_assert(!corto_checkState(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
@@ -1926,7 +1933,8 @@ void test_ObjectMgmt_tc_findOrDeclareExisting(
     corto_object e = corto_declareChild(root_o, "foo", corto_int32_o);
     test_assert(e != NULL);
 
-    corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
+    corto_object o = corto(root_o, "foo", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE);
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(!corto_checkState(o, CORTO_VALID));
@@ -1945,7 +1953,8 @@ void test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
 {
     corto_object e = corto_declareChild(root_o, "foo", corto_float32_o);
 
-    corto_object o = corto_findOrDeclare(root_o, "foo", corto_int32_o);
+    corto_object o = corto(root_o, "foo", corto_int32_o, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE);
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(!corto_checkState(o, CORTO_VALID));

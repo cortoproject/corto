@@ -20,6 +20,7 @@
  */
 
 #include <corto/corto.h>
+#include "src/store/object.h"
 #include "src/lang/primitive.h"
 
 #ifdef CORTO_CONVERSIONS
@@ -194,7 +195,7 @@ CORTO_DECL_TRANSFORM(string, enum) {
     corto_constant* o;
     CORTO_UNUSED(fromType);
 
-    o = corto_find(toType, *(corto_string*)from, CORTO_FIND_DEFAULT);
+    o = FIND(toType, *(corto_string*)from);
     if (!o) {
         corto_throw(
             "constant identifier '%s' is not valid for enumeration '%s'",
@@ -306,7 +307,7 @@ CORTO_DECL_TRANSFORM(string, bitmask) {
             case ',':
             case '\0':
                 *bptr = '\0';
-                constant = corto_find(toType, buffer, CORTO_FIND_DEFAULT);
+                constant = FIND(toType, buffer);
                 if (!constant) {
                     corto_throw(
                         "constant identifier '%s' is not valid for bitmask '%s'.",

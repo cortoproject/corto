@@ -2,6 +2,9 @@
 
 #include <include/test.h>
 
+#define LOOKUP_ASSERT(parent, id, type)\
+    corto(parent, id, type, NULL, NULL, NULL, -1, CORTO_DO_FORCE_TYPE | CORTO_DO_ASSERT_SUCCESS)
+
 void test_SubscribeContentType_setup(
     test_SubscribeContentType this)
 {
@@ -57,7 +60,7 @@ void binary(corto_subscriberEvent *e) {
         p = (test_Point*)e->data.value;
         test_assertint(p->x, 70);
         test_assertint(p->y, 80);
-        break;        
+        break;
     }
 }
 
@@ -113,7 +116,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjects(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_Point *p = corto_lookupAssert(NULL, "obj/c", test_Point_o);
+    test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
     test_assert(test_PointUpdate(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
@@ -135,7 +138,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_Point *p = corto_lookupAssert(NULL, "obj/c", test_Point_o);
+    test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
     test_assert(test_PointUpdate(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
@@ -207,7 +210,7 @@ void json(corto_subscriberEvent *e) {
         test_assertstr(e->data.id, "c");
         json = corto_result_getText(&e->data);
         test_assertstr(json, "{\"x\":70,\"y\":80}");
-        break;        
+        break;
     }
 }
 
@@ -261,7 +264,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjects(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_Point *p = corto_lookupAssert(NULL, "obj/c", test_Point_o);
+    test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
     test_assert(test_PointUpdate(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
@@ -283,7 +286,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_Point *p = corto_lookupAssert(NULL, "obj/c", test_Point_o);
+    test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
     test_assert(test_PointUpdate(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
@@ -355,7 +358,7 @@ void string(corto_subscriberEvent *e) {
         test_assertstr(e->data.id, "c");
         json = corto_result_getText(&e->data);
         test_assertstr(json, "{70,80}");
-        break;        
+        break;
     }
 }
 
@@ -409,7 +412,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjects(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_Point *p = corto_lookupAssert(NULL, "obj/c", test_Point_o);
+    test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
     test_assert(test_PointUpdate(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
@@ -431,7 +434,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_Point *p = corto_lookupAssert(NULL, "obj/c", test_Point_o);
+    test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
     test_assert(test_PointUpdate(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
@@ -477,4 +480,3 @@ void test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
     test_assert(corto_delete(s) == 0);
 
 }
-

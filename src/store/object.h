@@ -36,6 +36,8 @@ void corto_ptr_castInit(void);
 void corto_drop(corto_object o, corto_bool delete);
 corto_object corto_resumePersistent(corto_object o);
 
+#define FIND(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, 0)
+
 struct corto_contentType {
     corto_string name;
     bool isBinary;
@@ -107,7 +109,6 @@ typedef struct corto__scope {
         struct corto_rwmutex_s scopeLock;
         int64_t dummy;
     } align;
-    corto__ols *ols;
 } corto__scope;
 
 typedef struct corto__writable {

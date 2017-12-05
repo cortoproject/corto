@@ -1194,10 +1194,8 @@ static corto_int16 corto_selectSplitScope(corto_select_data *data) {
                 corto_ptr_setstr(&data->segments[current].expr, ch ? ptr + 1 : NULL);
 
                 /* Lookup object in advance, if it exists */
-                data->segments[current].o = corto_find(
-                    NULL,
-                    data->segments[current].scope,
-                    CORTO_FIND_DEFAULT);
+                data->segments[current].o = corto(
+                    NULL, data->segments[current].scope, NULL, NULL, NULL, NULL, -1, 0);
 
                 *ptr = ch;
 

@@ -19,7 +19,7 @@ void corto_observerEvent_handle(
       !(this->event & CORTO_DELETE);
 
     /* Don't readlock event for DELETE events */
-    if (!lockRequired || !corto_readBegin(this->data)) {
+    if (!lockRequired || !corto_read_begin(this->data)) {
         corto_function f = corto_function(this->observer);
 
         if (f->kind == CORTO_PROCEDURE_CDECL) {
@@ -29,7 +29,7 @@ void corto_observerEvent_handle(
         }
 
         if (lockRequired) {
-            corto_readEnd(this->data);
+            corto_read_end(this->data);
         }
     } else {
         /* Error */
@@ -44,4 +44,3 @@ int16_t corto_observerEvent_init(
     ((corto_event*)this)->handleAction.super.procedure = corto_observerEvent_handle_o;
     return 0;
 }
-

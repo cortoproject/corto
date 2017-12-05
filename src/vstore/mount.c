@@ -179,7 +179,7 @@ int16_t corto_mount_construct(
     if (this->mount) {
         corto_ptr_setstr(&s->query.from, corto_fullpath(NULL, this->mount));
     } else if (s->query.from) {
-        this->mount = corto_find(NULL, s->query.from, CORTO_FIND_DEFAULT);
+        this->mount = corto(NULL, s->query.from, NULL, NULL, NULL, NULL, -1, 0);
     }
 
     corto_eventMask mask = corto_observer(this)->mask;
@@ -486,13 +486,12 @@ void corto_mount_onPoll_v(
     /* Default event handler */
     if (events) {
         while ((e = corto_ll_takeFirst(events))) {
-            corto_event_handle(e);
+            corto_mount_notify(e);
             corto_assert(corto_release(e) == 0, "event is leaking");
         }
 
         corto_ll_free(events);
     }
-
 }
 
 static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subscriberEvent *e) {
