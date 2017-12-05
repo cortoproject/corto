@@ -272,9 +272,11 @@ int16_t corto_mount_construct(
         if (!s->contentTypeHandle) {
             corto_mount_setContentTypeIn(this, s->contentType);
         }
+
         if (!this->contentTypeOutHandle) {
             corto_mount_setContentTypeOut(this, s->contentType);
         }
+
     }
 
     /* Add mount to mount admin so it can be found by corto_select */
@@ -385,7 +387,6 @@ int16_t corto_mount_init(
     this->policy.expiryTime = -1;
     this->policy.filterResults = true;
     this->attr = CORTO_ATTR_PERSISTENT;
-
     return safe_corto_subscriber_init(this);
 }
 
@@ -486,7 +487,7 @@ void corto_mount_onPoll_v(
     /* Default event handler */
     if (events) {
         while ((e = corto_ll_takeFirst(events))) {
-            corto_mount_notify(e);
+            corto_mount_notify((corto_subscriberEvent*)e);
             corto_assert(corto_release(e) == 0, "event is leaking");
         }
 
@@ -494,7 +495,11 @@ void corto_mount_onPoll_v(
     }
 }
 
-static corto_subscriberEvent* corto_mount_findEvent(corto_mount this, corto_subscriberEvent *e) {
+static
+corto_subscriberEvent* corto_mount_findEvent(
+    corto_mount this,
+    corto_subscriberEvent *e)
+{
     corto_iter iter = corto_ll_iter(this->events);
     corto_subscriberEvent *e2;
     while ((corto_iter_hasNext(&iter))) {
@@ -816,11 +821,28 @@ corto_resultIter corto_mount_query(
     corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
     corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
 
-    if (memcmp(&query->timeBegin, &query->timeEnd, sizeof(corto_frame))) {
-        result = corto_mount_onHistoryQuery(this, query);
-    } else {
-        result = corto_mount_onQuery(this, query);
+    result = corto_mount_onQuery(this, query);
+
+    /* If mount isn't returning anything with the iterator, check if there's
+     * anything in the result list. */
+    if (!result.hasNext && (r = corto_tls_get(CORTO_KEY_MOUNT_RESULT))) {
+        result = corto_ll_iterAlloc(r);
+        result.release = corto_mount_queryRelease;
     }
+
+    corto_tls_set(CORTO_KEY_MOUNT_RESULT, prevResult);
+    return result;
+}
+
+corto_resultIter corto_mount_historyQuery(
+    corto_mount this,
+    corto_query *query)
+{
+    corto_iter result;
+    corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
+    corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
+
+    result = corto_mount_onHistoryQuery(this, query);
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */

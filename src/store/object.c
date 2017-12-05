@@ -48,6 +48,14 @@ corto_int16 corto_define_intern(
     corto_object o,
     bool resume);
 
+static
+corto_int16 corto_lock_intern(
+    corto_object object);
+
+static
+corto_int16 corto_unlock_intern(
+    corto_object object);
+
 extern corto_tls CORTO_KEY_ATTR;
 extern corto_tls CORTO_KEY_DECLARED_ADMIN;
 extern corto_tls CORTO_KEY_OWNER;
@@ -93,7 +101,7 @@ static corto_bool corto_declaredAdminRemove(corto_object o) {
     corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (admin) {
         if (corto_ll_remove(admin, o)) {
-            corto_unlock(o);
+            corto_unlock_intern(o);
             return TRUE;
         }
     }
@@ -253,7 +261,7 @@ static corto_object corto__initScope(
     } else {
         result = o;
         corto_declaredAdminAdd(o);
-        corto_lock(o);
+        corto_lock_intern(o);
     }
 
     if (result != o) {
@@ -733,7 +741,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
 
             /* Lock object before locking parent-scope, this ensures that
              * locking order isn't violated when defining the object. */
-            corto_lock(child);
+            corto_lock_intern(child);
 
             /* Insert child in parent-scope */
             if (corto_rwmutex_write(&p_scope->align.scopeLock))
@@ -745,7 +753,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
 
             corto_object existing = corto_rb_findOrSet(p_scope->scope, c_scope->id, child);
             if (existing && (existing != child)) {
-                corto_unlock(child);
+                corto_unlock_intern(child);
                 if (forceType && (corto_typeof(existing) != corto_typeof(child))) {
                     corto_throw("'%s' is already declared with type '%s'",
                       c_scope->id,
@@ -1118,7 +1126,7 @@ corto_object corto_declareIntern(
             o->align.attrs.persistent = TRUE;
         }
 
-        o->align.attrs.orphan = orphan;
+        o->align.attrs.orphan = orphan != 0;
 
         corto_claim(type);
 
@@ -3948,10 +3956,10 @@ corto_int16 corto_read_end(corto_object object) {
     return corto_unlock(object);
 }
 
-/* Thread-safe writing */
-corto_int16 corto_lock(corto_object object) {
-    corto_assertObject(object);
-
+static
+corto_int16 corto_lock_intern(
+    corto_object object)
+{
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
 
@@ -3966,9 +3974,24 @@ error:
     return -1;
 }
 
-corto_int16 corto_unlock(corto_object object) {
+/* Thread-safe writing */
+corto_int16 corto_lock(
+    corto_object object)
+{
     corto_assertObject(object);
+    if (!corto_checkState(object, CORTO_VALID)) {
+        if (corto_declaredAdminCheck(object)) {
+            /* Don't lock if object is being defined */
+            return 0;
+        }
+    }
+    return corto_lock_intern(object);
+}
 
+static
+corto_int16 corto_unlock_intern(
+    corto_object object)
+{
     if (corto_checkAttr(object, CORTO_ATTR_WRITABLE)) {
         corto__writable* _o;
 
@@ -3977,12 +4000,25 @@ corto_int16 corto_unlock(corto_object object) {
             goto error;
         }
     }
-
     return 0;
 error:
     return -1;
 }
 
+corto_int16 corto_unlock(
+    corto_object object)
+{
+    corto_assertObject(object);
+
+    if (!corto_checkState(object, CORTO_VALID)) {
+        if (corto_declaredAdminCheck(object)) {
+            /* Don't lock if object is being defined */
+            return 0;
+        }
+    }
+
+    return corto_unlock_intern(object);
+}
 
 /* Obtain function name from signature */
 corto_int32 corto_signatureName(corto_string signature, corto_id buffer) {

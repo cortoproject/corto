@@ -1897,7 +1897,7 @@ corto_package _corto_packageAssign(corto_package _this) {
     return _this;
 }
 
-corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     corto_query* _this;
     _this = (corto_query*)corto_declare(corto_query_o);
     if (!_this) {
@@ -1911,6 +1911,8 @@ corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_st
         corto_ptr_setstr(&((corto_query*)_this)->where, where);
         ((corto_query*)_this)->offset = offset;
         ((corto_query*)_this)->limit = limit;
+        ((corto_query*)_this)->soffset = soffset;
+        ((corto_query*)_this)->slimit = slimit;
         if (timeBegin) {
             corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
         }
@@ -1925,7 +1927,7 @@ corto_query* _corto_queryCreate(corto_string select, corto_string from, corto_st
     return _this;
 }
 
-corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     corto_query* _this;
     _this = (corto_query*)corto_declareChild(_parent, _id, corto_query_o);
     if (!_this) {
@@ -1939,6 +1941,8 @@ corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, cor
         corto_ptr_setstr(&((corto_query*)_this)->where, where);
         ((corto_query*)_this)->offset = offset;
         ((corto_query*)_this)->limit = limit;
+        ((corto_query*)_this)->soffset = soffset;
+        ((corto_query*)_this)->slimit = slimit;
         if (timeBegin) {
             corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
         }
@@ -1953,7 +1957,7 @@ corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, cor
     return _this;
 }
 
-corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -1964,6 +1968,8 @@ corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_st
             corto_ptr_setstr(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->where, where);
             ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->offset = offset;
             ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->limit = limit;
+            ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->soffset = soffset;
+            ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->slimit = slimit;
             if (timeBegin) {
                 corto_ptr_copy(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->timeBegin, corto_frame_o, timeBegin);
             }
@@ -1978,6 +1984,8 @@ corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_st
             corto_ptr_setstr(&((corto_query*)_this)->where, where);
             ((corto_query*)_this)->offset = offset;
             ((corto_query*)_this)->limit = limit;
+            ((corto_query*)_this)->soffset = soffset;
+            ((corto_query*)_this)->slimit = slimit;
             if (timeBegin) {
                 corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
             }
@@ -2010,7 +2018,7 @@ corto_query* _corto_queryDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_queryDefine(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_int16 _corto_queryDefine(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_query*)_this)->select, select);
     corto_ptr_setstr(&((corto_query*)_this)->from, from);
@@ -2019,6 +2027,8 @@ corto_int16 _corto_queryDefine(corto_query* _this, corto_string select, corto_st
     corto_ptr_setstr(&((corto_query*)_this)->where, where);
     ((corto_query*)_this)->offset = offset;
     ((corto_query*)_this)->limit = limit;
+    ((corto_query*)_this)->soffset = soffset;
+    ((corto_query*)_this)->slimit = slimit;
     if (timeBegin) {
         corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
     }
@@ -2028,7 +2038,7 @@ corto_int16 _corto_queryDefine(corto_query* _this, corto_string select, corto_st
     return corto_define(_this);
 }
 
-corto_query* _corto_queryAssign(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_queryAssign(corto_query* _this, corto_string select, corto_string from, corto_string type, corto_string member, corto_string where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_query*)_this)->select, select);
     corto_ptr_setstr(&((corto_query*)_this)->from, from);
@@ -2037,6 +2047,8 @@ corto_query* _corto_queryAssign(corto_query* _this, corto_string select, corto_s
     corto_ptr_setstr(&((corto_query*)_this)->where, where);
     ((corto_query*)_this)->offset = offset;
     ((corto_query*)_this)->limit = limit;
+    ((corto_query*)_this)->soffset = soffset;
+    ((corto_query*)_this)->slimit = slimit;
     if (timeBegin) {
         corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
     }

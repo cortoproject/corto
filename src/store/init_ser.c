@@ -67,8 +67,8 @@ corto_int16 corto_ser_initObservable(corto_walk_opt* s, corto_value* v, void* us
 
     /* Create observable that is not added to the scope of its parent */
     corto_object o = corto(
-        p, corto_idof(m), t, NULL, NULL, NULL, CORTO_OBSERVABLE,
-        CORTO_DO_DECLARE | CORTO_DO_ORPHAN | CORTO_DO_DEFINE);
+        p, corto_idof(m), t, NULL, NULL, NULL, CORTO_ATTR_OBSERVABLE,
+        CORTO_DO_DECLARE | CORTO_DO_ORPHAN | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
     if (!o) {
         goto error;
     }

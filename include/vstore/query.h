@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-/** @file 
+/** @file
  * @section query Query API
  * @brief API for querying the store.
  *
@@ -28,7 +28,7 @@
  * datasets and thus does not rely on the RAM object store. Instead, the API
  * interacts directly with mounts to obtain data.
  *
- * The API contains functions to do single-shot queries (`corto_select`), 
+ * The API contains functions to do single-shot queries (`corto_select`),
  * realtime queries (`corto_subscribe`) and to push data to subscribers without
  * using RAM objects (`corto_publish`).
  */
@@ -47,7 +47,7 @@ extern "C" {
 
 typedef struct corto_select__fluent {
     /** Specify a relative scope for the query.
-     * @param scope A scope identifier. 
+     * @param scope A scope identifier.
      */
     struct corto_select__fluent (*from)(
         char *scope);
@@ -58,12 +58,16 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*contentType)(
         char *contentType);
 
-    /** Enable pagination by specifying an offset and limit.
+    /** Enable pagination by specifying an object offset.
      * @param offset Specifies from which nth object results should be returned.
+     */
+    struct corto_select__fluent (*offset)(
+        corto_uint64 offset);
+
+    /** Enable pagination by specifying a limit to the number of objects returned.
      * @param limit Specifies the total number of results that should be returned.
      */
     struct corto_select__fluent (*limit)(
-        corto_uint64 offset, 
         corto_uint64 limit);
 
     /** Filter results by type.
@@ -86,25 +90,19 @@ typedef struct corto_select__fluent {
      * mount does not want to invoke itself.
      *
      * @param instance The instance object.
-     */    
+     */
     struct corto_select__fluent (*mount)(
         corto_mount mount);
 
     /** Request historical data starting from the current time. */
     struct corto_select__fluent (*fromNow)(void);
 
-    /** Request historical data starting from fixed timestamp 
+    /** Request historical data starting from fixed timestamp
      * @param t The timestamp from which to return historical data.
      */
     struct corto_select__fluent (*fromTime)(
         corto_time t);
-
-    /** Request historical data from a fixed sample id.
-     * @param sample Sample id, starting from the beginning of the sequence.
-     */
-    struct corto_select__fluent (*fromSample)(
-        corto_uint64 sample);
-
+        
     /** Request historical data until now. */
     struct corto_select__fluent (*toNow)(void);
 
@@ -114,12 +112,6 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*toTime)(
         corto_time t);
 
-    /** Request historical data until a fixed sample id.
-     * @param sample Sample id, starting from the beginning of the sequence.
-     */    
-    struct corto_select__fluent (*toSample)(
-        corto_uint64 sample);
-
     /** Request historical data for a specific time window.
      * @param t The duration of the time window.
      */
@@ -127,14 +119,20 @@ typedef struct corto_select__fluent {
         corto_time t);
 
     /** Request historical data for a specific number of samples.
-     * @param depth The number of samples in the window.
+     * @param limit The number of samples per object.
      */
-    struct corto_select__fluent (*forDepth)(
-        int64_t depth);
+    struct corto_select__fluent (*slimit)(
+        uint64_t limit);
+
+    /** Request historical starting from a specific sample.
+     * @param offset The offset from which to return samples.
+     */
+    struct corto_select__fluent (*soffset)(
+        uint64_t offset);
 
     /** Return an iterator to the requested results.
      * Results are returned as corto_result instances. A corto_result contains
-     * metadata and when a content type is specified, a serialized value of an 
+     * metadata and when a content type is specified, a serialized value of an
      * object. When using this function, no objects are created.
      *
      * @param iter_out A pointer to an iterator object.
@@ -162,7 +160,7 @@ typedef struct corto_select__fluent {
 
     /** Return the number of objects for a query.
      * This function requires a walk over all the returned results to determine
-     * the total number of objects. 
+     * the total number of objects.
      *
      * @return -1 if failed, otherwise the total number of objects.
      */
@@ -177,7 +175,7 @@ typedef struct corto_select__fluent {
 /** Single-shot query.
  * With corto_select an application can select a subset of objects using a corto
  * identifier expression (parent, expr). The functionality of the corto_select
- * function is extended with fluent methods (see 
+ * function is extended with fluent methods (see
  * [corto_select fluent methods](corto_select_fluent_methods)) that enable an
  * application to further narrow down results and perform various operations on
  * the objects.
@@ -185,7 +183,7 @@ typedef struct corto_select__fluent {
  * The most common operation is to request an iterator to the matching objects
  * which allows the application to iterate over the set one by one.
  *
- * The corto_select function is designed to be an API that enables accessing large 
+ * The corto_select function is designed to be an API that enables accessing large
  * datasets with constrained resources. The iterative design of the API allows the
  * corto mount implementations to feed data to the application one object at a time,
  * so that even with large result sets, the memory of an application will not be
@@ -199,7 +197,7 @@ typedef struct corto_select__fluent {
  *
  * The performance of corto_select highly depends on the implementation of a mount.
  * The backend provides as much information as possible upfront to the mount about
- * which information is required, which allows a mount to prefetch/cache results. 
+ * which information is required, which allows a mount to prefetch/cache results.
  * A mount may choose to implement such optimizations, but this is not enforced.
  *
  * The function employs minimal locking on the object store while an application
@@ -208,10 +206,10 @@ typedef struct corto_select__fluent {
  * queries concurrently and without disturbing other tasks in an application.
  *
  * @param expr An expression matching one or more objects [printf-style format specifier].
- */ 
-CORTO_EXPORT 
+ */
+CORTO_EXPORT
 struct corto_select__fluent corto_select(
-    char *expr, 
+    char *expr,
     ...);
 
 /** Publish event.
@@ -222,8 +220,8 @@ struct corto_select__fluent corto_select(
  * If the object is loaded in the RAM store, a call to corto_publish will
  * demarshall the specified value into the object.
  *
- * The function may only emit events of the data kind, which are ON_DEFINE, 
- * ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for 
+ * The function may only emit events of the data kind, which are ON_DEFINE,
+ * ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for
  * objects that are loaded in the RAM store.
  *
  * @param event The event to be emitted
@@ -235,7 +233,7 @@ struct corto_select__fluent corto_select(
  * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
  * @see corto_observe corto_subscribe
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int16_t corto_publish(
     corto_eventMask event,
     char *id,
@@ -244,15 +242,15 @@ int16_t corto_publish(
     void *content);
 
 typedef struct corto_subscribe__fluent {
-    /** Specify a relative scope for the subscriber. 
-     * @param scope A scope identifier. 
+    /** Specify a relative scope for the subscriber.
+     * @param scope A scope identifier.
      */
     struct corto_subscribe__fluent (*from)(
         char *scope);
 
     /** Create disabled subscriber.
      * Disabled observers allow an application to make modifications to the
-     * event mask or expression, and to observe multiple expressions using 
+     * event mask or expression, and to observe multiple expressions using
      * `corto_subscriber_subscribe`.
      */
     struct corto_subscribe__fluent (*disabled)(void);
@@ -301,23 +299,23 @@ typedef struct corto_subscribe__fluent {
 } corto_subscribe__fluent;
 
 /** Create a realtime query.
- * Subscribers enable an application to listen for for events from the object 
+ * Subscribers enable an application to listen for for events from the object
  * store and events that come directly from mounts. Subscribers receive only
  * data events (`ON_DEFINE`, `ON_UPDATE`, `ON_DELETE`).
  *
- * The difference between subscribers and observers is that while observers 
+ * The difference between subscribers and observers is that while observers
  * provide a reference to an object, a subscriber returns a `corto_result`, which
  * contains metadata about the object, and when requested, a serialized value.
  *
- * This means that a subscriber does not require objects to be stored in the 
- * in-memory object store, which makes it a better API for working with large 
+ * This means that a subscriber does not require objects to be stored in the
+ * in-memory object store, which makes it a better API for working with large
  * datasets.
  *
  * @param expr An expression matching one or more objects [printf-style format specifier].
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 struct corto_subscribe__fluent corto_subscribe(
-    char *expr, 
+    char *expr,
     ...);
 
 /** Delete a subscriber.
@@ -345,10 +343,10 @@ void myDispatcher_post(corto_subscriberEvent *e) {
  *
  * @param subscriber A subscriber object.
  * @return 0 if success, -1 if failed.
- */ 
-CORTO_EXPORT 
+ */
+CORTO_EXPORT
 int16_t corto_unsubscribe(
-    corto_subscriber subscriber, 
+    corto_subscriber subscriber,
     corto_object instance);
 
 /** Determine whether a pattern matches an object, scope or tree.

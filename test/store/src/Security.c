@@ -388,10 +388,12 @@ void test_Security_tc_authorizeSelect(
     corto_int16 ret = corto_select(".").from("/a/b").iter(&iter);
     test_assert(ret == 0);
     test_assert(corto_iter_hasNext(&iter));
+    corto_iter_release(&iter);
 
     ret = corto_select("b").from("/a").iter(&iter);
     test_assert(ret == 0);
     test_assert(corto_iter_hasNext(&iter));
+    corto_iter_release(&iter);
 
     ret = corto_select("*")
         .from("/A").iter(&iter);
@@ -407,10 +409,10 @@ void test_Security_tc_authorizeSelect(
     ret = corto_select("..").from("/a/b/c").iter(&iter);
     test_assert(ret == 0);
     test_assert(corto_iter_hasNext(&iter));
+    corto_iter_release(&iter);
 
     prev = corto_authenticate(prev);
     test_assert(prev == token);
-
 }
 
 void test_Security_tc_authorizeUpdate(
@@ -1074,4 +1076,3 @@ void test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     test_assert(prev == token);
 
 }
-

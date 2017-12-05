@@ -121,9 +121,7 @@ typedef uint32_t corto_eventMask;
 typedef enum corto_frameKind {
     CORTO_FRAME_NOW = 0,
     CORTO_FRAME_TIME = 1,
-    CORTO_FRAME_DURATION = 2,
-    CORTO_FRAME_SAMPLE = 3,
-    CORTO_FRAME_DEPTH = 4
+    CORTO_FRAME_DURATION = 2
 } corto_frameKind;
 
 /*  /corto/vstore/frame */
@@ -159,6 +157,8 @@ struct corto_query {
     corto_string where;
     uint64_t offset;
     uint64_t limit;
+    uint64_t soffset;
+    uint64_t slimit;
     corto_frame timeBegin;
     corto_frame timeEnd;
     bool content;
@@ -173,6 +173,9 @@ struct corto_subscriber_s {
     corto_string contentType;
     uintptr_t contentTypeHandle;
     uintptr_t idmatch;
+    bool isAligning;
+    uintptr_t alignMutex;
+    corto_ll alignQueue;
 };
 
 /* /corto/vstore/ownership */

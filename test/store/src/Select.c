@@ -10,7 +10,8 @@ corto_resultList test_Select_collect(
     corto_select__fluent r = corto_select(expr).from(scope);
 
     if (offset || limit) {
-        r.limit(offset, limit);
+        r.limit(limit);
+        r.offset(offset);
     }
 
     corto_iter iter;
@@ -133,6 +134,8 @@ void test_Select_tc_selectDeleteCurrent(
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "Abab"));
 
+    corto_iter_release(&iter);
+
     corto_release(o);
 
 }
@@ -160,6 +163,8 @@ void test_Select_tc_selectDeleteFirst(
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "ab_ab"));
 
+    corto_iter_release(&iter);
+
     corto_release(o);
 
 }
@@ -186,6 +191,8 @@ void test_Select_tc_selectDeleteNext(
     test_assert(corto_iter_hasNext(&iter));
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "Abab"));
+
+    corto_iter_release(&iter);
 
     corto_release(o);
 
@@ -241,6 +248,8 @@ void test_Select_tc_selectDeletePrevious(
     test_assert(corto_iter_hasNext(&iter));
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "Abab"));
+
+    corto_iter_release(&iter);
 
     corto_release(o);
 
@@ -316,6 +325,8 @@ void test_Select_tc_selectEmptyParentAst(
     test_assertstr(r->id, "test");
     test_assertstr(r->parent, "");
     test_assertstr(r->type, "/corto/vstore/package");
+
+    test_assert(!corto_iter_hasNext(&it));
 
 }
 
@@ -1131,6 +1142,8 @@ void test_Select_tc_selectOrder(
     test_assert(item != NULL);
     (test_assertstr(item->name, "abcdef"));
 
+    test_assert(!corto_iter_hasNext(&iter));
+
 }
 
 void test_Select_tc_selectParent(
@@ -1428,6 +1441,8 @@ void test_Select_tc_selectTreeDeleteCurrent(
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "Abab"));
 
+    corto_iter_release(&iter);
+
     corto_release(o);
 
 }
@@ -1453,6 +1468,8 @@ void test_Select_tc_selectTreeDeleteFirst(
     test_assert(corto_iter_hasNext(&iter));
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "ab_ab"));
+
+    corto_iter_release(&iter);
 
     corto_release(o);
 
@@ -1550,6 +1567,8 @@ void test_Select_tc_selectTreeDeleteNext(
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "Abab"));
 
+    corto_iter_release(&iter);
+
     corto_release(o);
 
 }
@@ -1603,6 +1622,8 @@ void test_Select_tc_selectTreeDeletePrevious(
     test_assert(corto_iter_hasNext(&iter));
     item = corto_iter_next(&iter);
     (test_assertstr(item->name, "Abab"));
+
+    corto_iter_release(&iter);
 
     corto_release(o);
 

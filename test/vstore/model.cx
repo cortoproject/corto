@@ -184,7 +184,6 @@ test/Suite SelectHistory:/
     void setup() method
     void tc_selectNowToDepth()
     void tc_selectSampleToDepth()
-    void tc_selectSampleToSample()
     void tc_selectAll()
     void tc_selectJson()
 
@@ -414,6 +413,7 @@ test/Suite ReplicatorEvent:/
     void tc_ownedByMount()
     void tc_rateLimitOneObject()
     void tc_rateLimitThreeObjects()
+    void tc_rateLimitAlign()
 
 test/Suite MountSubscription:/
     void tc_subscribeSingle()
@@ -436,8 +436,8 @@ test/Suite MountSubscription:/
     void tc_subscribeTreeDefineNested()
     void tc_subscribeTreeDeleteNested()
     void tc_subscribeForMountWithTypeFilter()
-    void tc_subscribeNestedForMountWithTypeFilter()  
-    void tc_subscribeOnMountWithFromNull() 
+    void tc_subscribeNestedForMountWithTypeFilter()
+    void tc_subscribeOnMountWithFromNull()
 
 test/Suite MountMounts:/
     void tc_mountOnDefine()
@@ -453,4 +453,3 @@ test/Suite MountId:/
 // Test loader
 test/Suite Loader:/
     void tc_loadNonExistent()
-

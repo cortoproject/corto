@@ -40,58 +40,100 @@ corto_entityAdmin corto_subscriber_admin = {
     .changed = 0
 };
 
-static corto_int16 corto_subscriber_invoke(
+static
+corto_subscriberEvent* corto_subscriber_findEvent(
+    corto_ll events,
+    corto_subscriberEvent *e)
+{
+    corto_iter iter = corto_ll_iter(events);
+    corto_subscriberEvent *e2;
+    while ((corto_iter_hasNext(&iter))) {
+        e2 = corto_iter_next(&iter);
+        if (!strcmp(e2->data.id, e->data.id) &&
+            !strcmp(e2->data.parent, e->data.parent))
+        {
+            return e2;
+        }
+    }
+    return NULL;
+}
+
+static
+void corto_subscriber_addToAlignQueue(
+    corto_subscriber s,
+    corto_subscriberEvent *event)
+{
+    corto_subscriberEvent *oldEvent =
+        corto_subscriber_findEvent(s->alignQueue, event);
+
+    if (oldEvent) {
+        corto_ll_replace(s->alignQueue, oldEvent, event);
+        corto_assert(corto_release(oldEvent) == 0, "subscriber event leaks");
+    } else {
+        corto_ll_append(s->alignQueue, event);
+    }
+}
+
+static
+int16_t corto_subscriber_invoke(
     corto_object instance,
     corto_eventMask mask,
     corto_result *r,
-    corto_subscriber s)
+    corto_subscriber s,
+    corto_subscriberEvent *eptr)
 {
     corto_dispatcher dispatcher = corto_observer(s)->dispatcher;
-    if (!dispatcher) {
+
+    if (!dispatcher && !s->isAligning) {
+        /* Deliver synchronously if the subscriber does not have a dispatcher
+         * and is not aligning data. */
         corto_function f = corto_function(s);
-        if (f->kind == CORTO_PROCEDURE_CDECL) {
-            if (f->fptr) {
-                corto_subscriberEvent e = {
-                    .instance = instance,
-                    .event = mask,
-                    .source = NULL,
-                    .subscriber = s,
-                    .data = *r
-                };
-                ((void(*)(corto_subscriberEvent*))((corto_function)s)->fptr)(&e);
-            }
-        } else {
-            corto_subscriberEvent e = {
+
+        corto_subscriberEvent e;
+        if (!eptr) {
+            e = (corto_subscriberEvent){
                 .instance = instance,
                 .event = mask,
                 .source = NULL,
                 .subscriber = s,
                 .data = *r
-            },
-            *ePtr = &e;
-            void *args[] = {&ePtr};
+            };
+            eptr = &e;
+        }
+
+        if (f->kind == CORTO_PROCEDURE_CDECL) {
+            if (f->fptr) {
+                ((void(*)(corto_subscriberEvent*))((corto_function)s)->fptr)(eptr);
+            }
+        } else {
+            void *args[] = {&eptr};
             corto_callb((corto_function)s, NULL, args);
         }
     } else {
-        corto_subscriberEvent *event = corto_declare(corto_subscriberEvent_o);
-
-        corto_ptr_setref(&event->subscriber, s);
-        corto_ptr_setref(&event->instance, instance);
-        corto_ptr_setref(&event->source, NULL);
-        event->event = mask;
-        corto_ptr_setstr(&event->data.id, r->id);
-        corto_ptr_setstr(&event->data.type, r->type);
-        corto_ptr_setstr(&event->data.parent, r->parent);
-
-        if (r->value) {
-            event->data.value =
-              ((corto_contentType)s->contentTypeHandle)->copy(r->value);
+        if (!eptr) {
+            eptr = corto_declare(corto_subscriberEvent_o);
+            corto_ptr_setref(&eptr->subscriber, s);
+            corto_ptr_setref(&eptr->instance, instance);
+            corto_ptr_setref(&eptr->source, NULL);
+            eptr->event = mask;
+            corto_ptr_setstr(&eptr->data.id, r->id);
+            corto_ptr_setstr(&eptr->data.type, r->type);
+            corto_ptr_setstr(&eptr->data.parent, r->parent);
+            if (r->value) {
+                eptr->data.value =
+                  ((corto_contentType)s->contentTypeHandle)->copy(r->value);
+            }
+            eptr->contentTypeHandle = s->contentTypeHandle;
+            if (corto_define(eptr)) {
+                goto error;
+            }
         }
-        event->contentTypeHandle = s->contentTypeHandle;
-        if (corto_define(event)) {
-            goto error;
+
+        if (!s->isAligning) {
+            corto_dispatcher_post(dispatcher, corto_event(eptr));
+        } else {
+            corto_subscriber_addToAlignQueue(s, eptr);
         }
-        corto_dispatcher_post(dispatcher, corto_event(event));
     }
 
     return 0;
@@ -99,7 +141,30 @@ error:
     return -1;
 }
 
-static char tochar(char *to, char *ptr, int len) {
+static
+int16_t corto_subscriber_flushAlignQueue(
+    corto_subscriber s)
+{
+    corto_subscriberEvent *e;
+    while ((e = corto_ll_takeFirst(s->alignQueue))) {
+        if (corto_subscriber_invoke(NULL, 0, NULL, s, e)) {
+            corto_release(e);
+            goto error;
+        }
+        corto_release(e);
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static
+char tochar(
+    char *to,
+    char *ptr,
+    int len)
+{
     if (len > 0) {
         if (ptr - to < len) {
             return ptr[0];
@@ -400,7 +465,19 @@ corto_int16 corto_notifySubscribersId(
                 };
 
                 corto_benchmark_start(S_B_INVOKE);
-                corto_subscriber_invoke(instance, mask, &r, s);
+                if (s->isAligning) {
+                    if (corto_mutex_lock((corto_mutex)s->alignMutex)) {
+                        goto error;
+                    }
+
+                    corto_subscriber_invoke(instance, mask, &r, s, NULL);
+
+                    if (corto_mutex_unlock((corto_mutex)s->alignMutex)) {
+                        goto error;
+                    }
+                } else {
+                    corto_subscriber_invoke(instance, mask, &r, s, NULL);
+                }
                 corto_benchmark_stop(S_B_INVOKE);
             }
         }
@@ -628,6 +705,19 @@ error:
     return -1;
 }
 
+void corto_subscriber_define(
+    corto_subscriber this)
+{
+    //corto_unlock(this);
+
+    if (corto_observer(this)->enabled) {
+        if (corto_subscriber_subscribe(this, corto_observer(this)->instance)) {
+            corto_raise();
+        }
+    }
+
+    //corto_lock(this);
+}
 
 int16_t corto_subscriber_construct(
     corto_subscriber this)
@@ -649,12 +739,6 @@ int16_t corto_subscriber_construct(
     this->idmatch = (corto_word)corto_idmatch_compile(this->query.select, TRUE, TRUE);
     if (!this->idmatch) {
         goto error;
-    }
-
-    if (corto_observer(this)->enabled) {
-        if (corto_subscriber_subscribe(this, corto_observer(this)->instance)) {
-            goto error;
-        }
     }
 
     if (this->query.type) {
@@ -699,6 +783,8 @@ void corto_subscriber_destruct(
     /* Unsubscribe all entities of this subscriber */
     corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
 
+    corto_mutex_free((corto_mutex)this->alignMutex);
+    free((corto_mutex)this->alignMutex);
 }
 
 int16_t corto_subscriber_init(
@@ -714,7 +800,14 @@ int16_t corto_subscriber_init(
     p->passByReference = FALSE;
     corto_ptr_setref(&p->type, corto_subscriberEvent_o);
 
+    this->alignMutex = (uintptr_t)corto_alloc(sizeof(corto_mutex_s));
+    if (corto_mutex_new((corto_mutex)this->alignMutex)) {
+        goto error;
+    }
+
     return safe_corto_function_init(this);
+error:
+    return -1;
 }
 
 int16_t corto_subscriber_subscribe(
@@ -734,6 +827,15 @@ int16_t corto_subscriber_subscribe(
     if (this->query.type) {
         corto_debug("TYPE '%s'", this->query.type);
     }
+
+    this->isAligning = true;
+
+    /* Add subscriber to global subscriber admin */
+    corto_entityAdmin_add(
+        &corto_subscriber_admin,
+        this->query.from ? this->query.from : "/",
+        this,
+        instance);
 
     /* If subscriber was not yet enabled, subscribe to mounts */
     corto_int16 ret;
@@ -755,13 +857,6 @@ int16_t corto_subscriber_subscribe(
         goto error;
     }
 
-    /* Add subscriber to global subscriber admin */
-    corto_entityAdmin_add(
-        &corto_subscriber_admin,
-        this->query.from ? this->query.from : "/",
-        this,
-        instance);
-
     corto_observer(this)->enabled = TRUE;
 
     /* Ensure that subscriber isn't deleted before instance unsubscribes */
@@ -770,8 +865,16 @@ int16_t corto_subscriber_subscribe(
     /* Align subscriber */
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
-        corto_subscriber_invoke(instance, CORTO_DEFINE, r, this);
+        corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL);
     }
+
+    corto_mutex_lock((corto_mutex)this->alignMutex);
+    this->isAligning = false;
+    if (corto_subscriber_flushAlignQueue(this)) {
+        corto_mutex_unlock((corto_mutex)this->alignMutex);
+        goto error;
+    }
+    corto_mutex_unlock((corto_mutex)this->alignMutex);
 
     return 0;
 error:

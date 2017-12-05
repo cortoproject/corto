@@ -434,8 +434,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_frameKind_FRAME_NOW),\
     SSO_OP_OBJ(vstore_frameKind_FRAME_TIME),\
     SSO_OP_OBJ(vstore_frameKind_FRAME_DURATION),\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_SAMPLE),\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_DEPTH),\
     /* accessKind */\
     SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_GRANTED),\
     SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_DENIED),\
@@ -687,6 +685,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_query_where),\
     SSO_OP_OBJ(vstore_query_offset),\
     SSO_OP_OBJ(vstore_query_limit),\
+    SSO_OP_OBJ(vstore_query_soffset),\
+    SSO_OP_OBJ(vstore_query_slimit),\
     SSO_OP_OBJ(vstore_query_timeBegin),\
     SSO_OP_OBJ(vstore_query_timeEnd),\
     SSO_OP_OBJ(vstore_query_content),\
@@ -700,9 +700,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_subscriber_enabled),\
     SSO_OP_OBJ(vstore_subscriber_contentTypeHandle),\
     SSO_OP_OBJ(vstore_subscriber_idmatch),\
+    SSO_OP_OBJ(vstore_subscriber_isAligning),\
+    SSO_OP_OBJ(vstore_subscriber_alignMutex),\
+    SSO_OP_OBJ(vstore_subscriber_alignQueue),\
     SSO_OP_OBJ(vstore_subscriber_init_),\
     SSO_OP_OBJ(vstore_subscriber_deinit_),\
     SSO_OP_OBJ(vstore_subscriber_construct_),\
+    SSO_OP_OBJ(vstore_subscriber_define_),\
     SSO_OP_OBJ(vstore_subscriber_destruct_),\
     SSO_OP_OBJ(vstore_subscriber_subscribe_),\
     SSO_OP_OBJ(vstore_subscriber_unsubscribe_),\
@@ -752,6 +756,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mount_invoke_),\
     SSO_OP_OBJ(vstore_mount_id_),\
     SSO_OP_OBJ(vstore_mount_query_),\
+    SSO_OP_OBJ(vstore_mount_historyQuery_),\
     SSO_OP_OBJ(vstore_mount_resume_),\
     SSO_OP_OBJ(vstore_mount_subscribe_),\
     SSO_OP_OBJ(vstore_mount_unsubscribe_),\

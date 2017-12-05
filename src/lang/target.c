@@ -29,7 +29,7 @@ int16_t corto_target_construct(
     }
 
     corto_member objective = corto(this, "objective", corto_member_o, NULL, NULL, NULL, -1, CORTO_DO_DECLARE | CORTO_DO_FORCE_TYPE);
-    if (!target) {
+    if (!objective) {
         goto error;
     }
     if (!corto_checkState(objective, CORTO_VALID)) {
