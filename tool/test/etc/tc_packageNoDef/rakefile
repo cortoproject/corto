@@ -1,4 +1,0 @@
-
-PACKAGE = 'tc_packageNoDef'
-
-require "#{ENV['CORTO_BUILD']}/package"

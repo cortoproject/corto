@@ -1,4 +1,0 @@
-
-TARGET = 'tc_app'
-
-require "#{ENV['CORTO_BUILD']}/application"

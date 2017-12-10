@@ -1,0 +1,10 @@
+{
+    "id": "corto/c",
+    "type": "package",
+    "value": {
+        "language": "c",
+        "use": ["corto"],
+        "managed": false,
+        "use_generated_api": false
+    }
+}

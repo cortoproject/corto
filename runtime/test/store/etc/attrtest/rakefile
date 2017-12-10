@@ -1,7 +1,0 @@
-
-PACKAGE = 'attrtest'
-
-# Don't build redistributable
-ENV['redistr'] = "false"
-
-require "#{ENV['CORTO_BUILD']}/package"
