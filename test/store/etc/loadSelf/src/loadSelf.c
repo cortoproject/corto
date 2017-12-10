@@ -8,7 +8,7 @@
 int cortomain(int argc, char *argv[]) {
 
     /* Should abort */
-    corto_load("loadSelf", 0, NULL);
+    corto_use("loadSelf", 0, NULL);
 
     return -1;
 }

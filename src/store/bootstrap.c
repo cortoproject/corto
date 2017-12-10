@@ -1037,7 +1037,7 @@ static int corto_loadConfig(void) {
             corto_iter it = corto_ll_iter(cfgfiles);
             while (corto_iter_hasNext(&it)) {
                 char *file = corto_iter_next(&it);
-                if (corto_load(file, 0, NULL)) {
+                if (corto_use(file, 0, NULL)) {
                     corto_raise();
                     result = -1;
                     /* Don't break, report all errors */
@@ -1048,7 +1048,7 @@ static int corto_loadConfig(void) {
             corto_chdir(prevDir);
             corto_closedir(cfgfiles);
         } else if (corto_file_test(cfg)) {
-            if (corto_load(cfg, 0, NULL)) {
+            if (corto_use(cfg, 0, NULL)) {
                 result = -1;
             }
         } else {
@@ -1097,7 +1097,6 @@ int corto_start(char *appName) {
     corto_load_init(
         corto_getenv("BAKE_TARGET"),
         corto_getenv("BAKE_HOME"),
-        "/usr/local",
         corto_getenv("BAKE_VERSION"),
         NULL);
 

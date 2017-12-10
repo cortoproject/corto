@@ -270,7 +270,7 @@ mounts use the subscriber query to subscribe for data in the virtual store.
 
 Now, add this line to the main function in `MyMount/src/MyMount.c`:
 ```c
-corto_load("config.json", 0, NULL);
+corto_use("config.json", 0, NULL);
 ```
 And change the implementation of `onNotify` to this (using our fictual writeData function):
 ```c
