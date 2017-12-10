@@ -11,7 +11,7 @@ int16_t corto_loader_construct(
         corto_query *q = &corto_subscriber(this)->query;
         corto_ptr_setstr(&q->select, "//*");
         corto_ptr_setstr(&q->from, "/");
-        corto_ptr_setstr(&q->type, "/corto/vstore/package");
+        corto_ptr_setstr(&q->type, "package");
         corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
         if (safe_corto_mount_setContentType(this, "text/json")) {
             return -1;
