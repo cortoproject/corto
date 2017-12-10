@@ -74,7 +74,7 @@ void* next(
         corto_dealloc(s);
     }
 
-    int sampleCount = corto_ll_size(data->history);
+    int sampleCount = corto_ll_count(data->history);
 
     /* Populate history list, only supporting indexes, the oldest sample being
      * index 0 */

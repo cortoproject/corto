@@ -9,7 +9,7 @@ void test_Fullname_tc_anonymousAnonymous(
     test_assert(o != NULL);
     test_assert(corto_typeof(o)->kind == CORTO_COLLECTION);
     corto_ll *l = o;
-    test_assertint(corto_ll_size(*l), 3);
+    test_assertint(corto_ll_count(*l), 3);
 
     test_assertstr(corto_fullpath(NULL, o), "list{int32,0}{10,20,30}");
     corto_int16 ret = corto_delete(o);
@@ -24,7 +24,7 @@ void test_Fullname_tc_anonymousCollection(
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_IntList_o));
     test_IntList *l = test_IntList(o);
-    test_assertint(corto_ll_size(*l), 3);
+    test_assertint(corto_ll_count(*l), 3);
 
     test_assertstr(corto_fullpath(NULL, o), "/test/IntList{10,20,30}");
     corto_int16 ret = corto_delete(o);

@@ -444,11 +444,14 @@ void corto_mount_onPoll_v(
     corto_ll events = NULL, historicalEvents = NULL;
 
     /* Collect events */
-    corto_lock(this);
+    if (corto_lock(this)) {
+        corto_throw(NULL);
+        corto_raise();
+    }
 
     corto_time_get(&this->lastPoll);
     this->lastQueueSize = 0;
-    if (corto_ll_size(this->events)) {
+    if (corto_ll_count(this->events)) {
         events = corto_ll_new();
         while ((e = corto_ll_takeFirst(this->events))) {
             corto_ll_append(events, e);
@@ -456,7 +459,7 @@ void corto_mount_onPoll_v(
 
     }
 
-    if (corto_ll_size(this->historicalEvents)) {
+    if (corto_ll_count(this->historicalEvents)) {
         historicalEvents = corto_ll_new();
         while ((e = corto_ll_takeFirst(this->historicalEvents))) {
             corto_ll_append(historicalEvents, e);
@@ -464,7 +467,11 @@ void corto_mount_onPoll_v(
 
     }
 
-    corto_unlock(this);
+    if (corto_unlock(this)) {
+        corto_throw(NULL);
+        corto_raise();
+    }
+
     /* If batching is enabled, call onBatchNotify */
     if (events && this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(events);
@@ -530,15 +537,20 @@ void corto_mount_post(
         if (this->policy.sampleRate)
         {
             corto_subscriberEvent *e2;
+
             /* Append new event to queue */
-            corto_lock(this);
+            if (corto_lock(this)) {
+                corto_throw(NULL);
+                corto_raise();
+            }
+
             /* Retrieve last poll time within lock */
             lastPoll = this->lastPoll;
             lastQueueSize = this->lastQueueSize;
             if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 corto_ll_append(this->historicalEvents, e);
                 corto_claim(e);
-                size = corto_ll_size(this->historicalEvents);
+                size = corto_ll_count(this->historicalEvents);
             }
 
             if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
@@ -556,12 +568,15 @@ void corto_mount_post(
                 }
 
                 if (!size) {
-                    size = corto_ll_size(this->events);
+                    size = corto_ll_count(this->events);
                 }
 
             }
 
-            corto_unlock(this);
+            if (corto_unlock(this)) {
+                corto_throw(NULL);
+                corto_raise();
+            }
         } else {
             corto_event_handle(e);
             corto_assert(corto_release(e) == 0, "event is leaking");
@@ -690,9 +705,9 @@ void corto_mount_post(
             corto_sleep(0, 1000000); /* fast loop to minimize blocking time */
             corto_lock(this);
             if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
-                size = corto_ll_size(this->historicalEvents);
+                size = corto_ll_count(this->historicalEvents);
             } else {
-                size = corto_ll_size(this->events);
+                size = corto_ll_count(this->events);
             }
 
             corto_unlock(this);

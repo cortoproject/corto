@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -212,7 +212,7 @@ void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
                 corto_ll_append(list, result);
             } else {
                 corto_ll_append(list, NULL);
-                result = corto_ll_getPtr(list, corto_ll_size(list) - 1);
+                result = corto_ll_getPtr(list, corto_ll_count(list) - 1);
             }
             break;
         default:
@@ -470,7 +470,7 @@ static corto_int16 corto_string_deserParseValue(
                     corto_throw("cannot refer to self (<0>), not deserializing an object");
                     goto error;
                 }
-            } else if (data->anonymousObjects && (index <= corto_ll_size(data->anonymousObjects))) {
+            } else if (data->anonymousObjects && (index <= corto_ll_count(data->anonymousObjects))) {
                 o = corto_ll_get(data->anonymousObjects, index - 1);
                 corto_claim(o);
             } else {
@@ -614,7 +614,7 @@ static corto_string corto_string_parseAnonymous(
     /* Check if this is a 'named' anonymous object in which case it is
      * prefixed with <[id]> */
     if ((valuePtr = corto_string_deserParseAnonymousId(valuePtr, &index))) {
-        if (data->anonymousObjects && (index <= corto_ll_size(data->anonymousObjects))) {
+        if (data->anonymousObjects && (index <= corto_ll_count(data->anonymousObjects))) {
             if (!*valuePtr) {
                 o = corto_ll_get(data->anonymousObjects, index - 1);
                 corto_claim(o);

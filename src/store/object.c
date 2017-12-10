@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -459,12 +459,12 @@ corto_int16 corto__freeSSO(corto_object sso) {
     if (scope->scope) {
         /* Don't print this error - without a proper cycle detector this could
          * be reported without there actually being a problem
-        if (corto_rb_size(scope->scope)) {
+        if (corto_rb_count(scope->scope)) {
             corto_error("corto__freeSSO: scope of object '%s' is not empty (%p/%p: %d left)",
                 corto_idof(sso),
                 sso,
                 scope->scope,
-                corto_rb_size(scope->scope));
+                corto_rb_count(scope->scope));
             goto error;
         }*/
         corto_rb_free(scope->scope);
@@ -1652,22 +1652,29 @@ corto_int16 corto_notifyDefined(
 
     _o->align.attrs.state |= CORTO_VALID;
 
-    if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
-        corto_declaredAdminRemove(o);
-    }
-
     /* Do postponed listen calls for instance */
     corto_observerDelayedAdminDefine(o);
+
+    if (!corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+        corto_lock(o);
+    }
 
     /* Notify observers of defined object, don't generate DEFINED event for
      * orphaned objects. */
     if (!_o->align.attrs.orphan) {
         corto_notify(o, mask);
+    }
 
-        corto_type t = corto_typeof(o);
-        if ((t->flags & CORTO_TYPE_HAS_DEFINE)) {
-            corto_callDestructDelegate(&((corto_class)t)->define, t, o);
-        }
+    corto_type t = corto_typeof(o);
+    if ((t->flags & CORTO_TYPE_HAS_DEFINE)) {
+        corto_callDestructDelegate(&((corto_class)t)->define, t, o);
+    }
+
+    /* Remove object from declared admin and unlock object */
+    if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+        corto_declaredAdminRemove(o);
+    } else {
+        corto_unlock(o);
     }
 
     return 0;
@@ -2687,7 +2694,7 @@ corto_uint32 corto_scopeSize(corto_object o) {
     if (scope) {
         tree = scope->scope;
         if (tree) {
-            result = corto_rb_size(tree);
+            result = corto_rb_count(tree);
         }
     } else {
         goto err_not_scoped;

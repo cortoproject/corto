@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -481,8 +481,8 @@ int corto_depresolver_walk(corto_depresolver this) {
                 corto_fullpath(NULL, item->o),
                 item->declareCount,
                 item->defineCount,
-                item->onDeclared ? corto_ll_size(item->onDeclared) : 0,
-                item->onDefined ? corto_ll_size(item->onDefined) : 0);
+                item->onDeclared ? corto_ll_count(item->onDeclared) : 0,
+                item->onDefined ? corto_ll_count(item->onDefined) : 0);
 
             /* Locate and resolve cycles */
             this->sp = 0;

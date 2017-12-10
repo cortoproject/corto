@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -135,7 +135,7 @@ corto_contentType corto_findContentType(
     }
 
     if (!result && !strcmp(contentType, "corto") && !isBinary) {
-        result = corto_alloc(sizeof(struct corto_contentType));
+        result = corto_alloc(sizeof(struct corto_contentType_s));
         result->name = corto_strdup("corto");
         result->isBinary = isBinary;
         result->toValue = corto_contentType_str_toValue;
@@ -145,7 +145,7 @@ corto_contentType corto_findContentType(
         corto_ll_append(contentTypes, result);
 
     } else if (!result && !strcmp(contentType, "corto-color") && !isBinary) {
-        result = corto_alloc(sizeof(struct corto_contentType));
+        result = corto_alloc(sizeof(struct corto_contentType_s));
         result->name = corto_strdup("corto-color");
         result->isBinary = isBinary;
         result->toValue = NULL;
@@ -155,7 +155,7 @@ corto_contentType corto_findContentType(
         corto_ll_append(contentTypes, result);
 
     } else if (!result && !strcmp(contentType, "corto") && isBinary) {
-        result = corto_alloc(sizeof(struct corto_contentType));
+        result = corto_alloc(sizeof(struct corto_contentType_s));
         result->name = corto_strdup("corto");
         result->isBinary = isBinary;
         result->toValue = corto_contentType_ptr_toValue;
@@ -199,7 +199,7 @@ corto_load_contentType(
         corto_id packageId;
         sprintf(packageId, "driver/fmt/%s", packagePtr);
 
-        result = corto_alloc(sizeof(struct corto_contentType));
+        result = corto_alloc(sizeof(struct corto_contentType_s));
         result->name = corto_strdup(packagePtr);
         result->isBinary = isBinary;
 

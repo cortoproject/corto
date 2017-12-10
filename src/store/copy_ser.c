@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -163,7 +163,7 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
 
 /* Resize list */
 static void corto_collection_resizeList(corto_collection t, corto_ll list, corto_uint32 size) {
-    corto_uint32 ownSize = corto_ll_size(list);
+    corto_uint32 ownSize = corto_ll_count(list);
     corto_type elementType = t->elementType;
     bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
 
@@ -283,7 +283,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
                     srcList != NULL,
                     "invalid list value (expected instance of %s)",
                     corto_fullpath(NULL, t1));
-                size1 = corto_ll_size(srcList);
+                size1 = corto_ll_count(srcList);
                 break;
             case CORTO_MAP:
                 break;

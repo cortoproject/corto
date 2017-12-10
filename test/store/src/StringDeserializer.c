@@ -120,7 +120,7 @@ void test_StringDeserializer_tc_deserAnonymousMultiple(
     test_AnonymousTest t = test_AnonymousTest(o);
     test_assert(t != NULL);
     test_assert(t->objects != NULL);
-    test_assert(corto_ll_size(t->objects) == 3);
+    test_assert(corto_ll_count(t->objects) == 3);
     corto_object e1 = corto_ll_get(t->objects, 0);
     corto_object e2 = corto_ll_get(t->objects, 1);
     corto_object e3 = corto_ll_get(t->objects, 2);
@@ -161,7 +161,7 @@ void test_StringDeserializer_tc_deserAnonymousNested(
     test_AnonymousTest top = test_AnonymousTest(o);
     test_assert(top != NULL);
     test_assert(top->objects != NULL);
-    test_assert(corto_ll_size(top->objects) == 2);
+    test_assert(corto_ll_count(top->objects) == 2);
 
     corto_object e1 = corto_ll_get(top->objects, 0);
     corto_object e2 = corto_ll_get(top->objects, 1);
@@ -170,7 +170,7 @@ void test_StringDeserializer_tc_deserAnonymousNested(
     test_assert(*(corto_int32*)e1 == 10);
     test_AnonymousTest t2 = test_AnonymousTest(e2);
     test_assert(t2 != NULL);
-    test_assert(corto_ll_size(t2->objects) == 3);
+    test_assert(corto_ll_count(t2->objects) == 3);
 
     corto_object e3 = corto_ll_get(t2->objects, 0);
     corto_object e4 = corto_ll_get(t2->objects, 1);
@@ -185,7 +185,7 @@ void test_StringDeserializer_tc_deserAnonymousNested(
     test_assert(t4->y == 20);
     test_AnonymousTest t5 = test_AnonymousTest(e5);
     test_assert(t5 != NULL);
-    test_assert(corto_ll_size(t5->objects) == 2);
+    test_assert(corto_ll_count(t5->objects) == 2);
 
     corto_object e6 = corto_ll_get(t5->objects, 0);
     corto_object e7 = corto_ll_get(t5->objects, 1);
@@ -221,7 +221,7 @@ void test_StringDeserializer_tc_deserAnonymousReuse(
     test_AnonymousTest t = test_AnonymousTest(o);
     test_assert(t != NULL);
     test_assert(t->objects != NULL);
-    test_assert(corto_ll_size(t->objects) == 7);
+    test_assert(corto_ll_count(t->objects) == 7);
     corto_object e1 = corto_ll_get(t->objects, 0);
     corto_object e2 = corto_ll_get(t->objects, 1);
     corto_object e3 = corto_ll_get(t->objects, 2);
@@ -272,7 +272,7 @@ void test_StringDeserializer_tc_deserAnonymousReuseNested(
     test_AnonymousTest top = test_AnonymousTest(o);
     test_assert(top != NULL);
     test_assert(top->objects != NULL);
-    test_assert(corto_ll_size(top->objects) == 9);
+    test_assert(corto_ll_count(top->objects) == 9);
 
     corto_object e1 = corto_ll_get(top->objects, 0);
     corto_object e2 = corto_ll_get(top->objects, 1);
@@ -281,7 +281,7 @@ void test_StringDeserializer_tc_deserAnonymousReuseNested(
     test_assert(*(corto_int32*)e1 == 10);
     test_AnonymousTest t2 = test_AnonymousTest(e2);
     test_assert(t2 != NULL);
-    test_assert(corto_ll_size(t2->objects) == 3);
+    test_assert(corto_ll_count(t2->objects) == 3);
 
     corto_object e3 = corto_ll_get(t2->objects, 0);
     corto_object e4 = corto_ll_get(t2->objects, 1);
@@ -296,7 +296,7 @@ void test_StringDeserializer_tc_deserAnonymousReuseNested(
     test_assert(t4->y == 20);
     test_AnonymousTest t5 = test_AnonymousTest(e5);
     test_assert(t5 != NULL);
-    test_assert(corto_ll_size(t5->objects) == 2);
+    test_assert(corto_ll_count(t5->objects) == 2);
 
     corto_object e6 = corto_ll_get(t5->objects, 0);
     corto_object e7 = corto_ll_get(t5->objects, 1);
@@ -326,7 +326,7 @@ void test_StringDeserializer_tc_deserAnonymousSimple(
     test_AnonymousTest t = test_AnonymousTest(o);
     test_assert(t != NULL);
     test_assert(t->objects != NULL);
-    test_assert(corto_ll_size(t->objects) == 1);
+    test_assert(corto_ll_count(t->objects) == 1);
     corto_object e1 = corto_ll_get(t->objects, 0);
     test_assert(corto_instanceof(corto_int32_o, e1));
     test_assertint(*(corto_int32*)e1, 10);
@@ -972,7 +972,7 @@ void test_StringDeserializer_tc_deserList(
 
     test_IntList *c = test_IntList(o);
     test_assert(c != NULL);
-    test_assert(corto_ll_size(*c) == 4);
+    test_assert(corto_ll_count(*c) == 4);
 
     test_assert((corto_uint32)(corto_word)corto_ll_get(*c, 0) == 0);
     test_assert((corto_uint32)(corto_word)corto_ll_get(*c, 1) == 1);
@@ -994,7 +994,7 @@ void test_StringDeserializer_tc_deserListComplex(
 
     test_CompositeList *c = test_CompositeList(o);
     test_assert(c != NULL);
-    test_assert(corto_ll_size(*c) == 3);
+    test_assert(corto_ll_count(*c) == 3);
 
     test_Point *p = corto_ll_get(*c, 0);
     test_assert(p != NULL);
@@ -1026,7 +1026,7 @@ void test_StringDeserializer_tc_deserListReference(
 
     test_IntList *c = test_ObjectList(o);
     test_assert(c != NULL);
-    test_assert(corto_ll_size(*c) == 4);
+    test_assert(corto_ll_count(*c) == 4);
 
     test_assert(corto_ll_get(*c, 0) == corto_lang_o);
     test_assert(corto_ll_get(*c, 1) == corto_o);

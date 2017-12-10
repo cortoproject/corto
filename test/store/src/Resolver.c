@@ -91,7 +91,7 @@ void test_Resolver_tc_resolveAnonymousAnonymousType(
     test_assert(corto_collection(t)->elementType == corto_type(corto_int32_o));
 
     corto_ll l = *(corto_ll*)o;
-    test_assert(corto_ll_size(l) == 3);
+    test_assert(corto_ll_count(l) == 3);
     test_assertint((corto_int32)(corto_word)corto_ll_get(l, 0), 1);
     test_assertint((corto_int32)(corto_word)corto_ll_get(l, 1), 2);
     test_assertint((corto_int32)(corto_word)corto_ll_get(l, 2), 3);

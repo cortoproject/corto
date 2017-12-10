@@ -708,7 +708,10 @@ error:
 void corto_subscriber_define(
     corto_subscriber this)
 {
-    //corto_unlock(this);
+    if (corto_unlock(this)) {
+        corto_throw(NULL);
+        corto_raise();
+    }
 
     if (corto_observer(this)->enabled) {
         if (corto_subscriber_subscribe(this, corto_observer(this)->instance)) {
@@ -716,7 +719,10 @@ void corto_subscriber_define(
         }
     }
 
-    //corto_lock(this);
+    if (corto_lock(this)) {
+        corto_throw(NULL);
+        corto_raise();
+    }
 }
 
 int16_t corto_subscriber_construct(

@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -195,7 +195,7 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
                 walkData.enableColors = data->enableColors;
 
                 corto_ll_append(data->anonymousObjects, object);
-                if (!corto_buffer_append(&data->buffer, "<%d>", corto_ll_size(data->anonymousObjects))) {
+                if (!corto_buffer_append(&data->buffer, "<%d>", corto_ll_count(data->anonymousObjects))) {
                     goto finished;
                 }
 

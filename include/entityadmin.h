@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,10 +61,10 @@ typedef struct corto_entityAdmin {
 } corto_entityAdmin;
 
 corto_int16 corto_entityAdmin_getDepthFromId(char *id);
-corto_entityAdmin* corto_entityAdmin_get(corto_entityAdmin *this);
-int16_t corto_entityAdmin_add(corto_entityAdmin *this, char *parent, corto_object e, corto_object instance);
-int corto_entityAdmin_remove(corto_entityAdmin *this, char *parent, corto_object e, corto_object instance, corto_bool removeAll);
-int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction action, char *parent, bool recursive, void *userData);
+corto_entityAdmin* corto_entityAdmin_get(corto_entityAdmin *_this);
+int16_t corto_entityAdmin_add(corto_entityAdmin *_this, char *parent, corto_object e, corto_object instance);
+int corto_entityAdmin_remove(corto_entityAdmin *_this, char *parent, corto_object e, corto_object instance, corto_bool removeAll);
+int corto_entityAdmin_walk(corto_entityAdmin *_this, corto_entityWalkAction action, char *parent, bool recursive, void *userData);
 void corto_entityAdmin_free(void *admin);
 
 #endif

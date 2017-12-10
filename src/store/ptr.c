@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -188,8 +188,8 @@ corto_type corto_mem_typeof(
     return *(corto_type*)ptr;
 }
 
-int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
-    corto_assert(type->kind == CORTO_COLLECTION, "corto_ptr_size is only valid for collection types");
+int16_t _corto_ptr_resize(void *ptr, corto_type type, uint32_t size) {
+    corto_assert(type->kind == CORTO_COLLECTION, "corto_ptr_resize is only valid for collection types");
     corto_collection collectionType = corto_collection(type);
     corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)",
         size,
@@ -235,7 +235,7 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
     }
     case CORTO_LIST: {
         corto_ll l = *(corto_ll*)ptr;
-        if (corto_ll_size(l) > size) {
+        if (corto_ll_count(l) > size) {
             corto_iter it = corto_ll_iter(l);
 
             /* Move iterator to first redundant element */
@@ -256,7 +256,7 @@ int16_t _corto_ptr_size(void *ptr, corto_type type, uint32_t size) {
         }
 
         int i;
-        for (i = corto_ll_size(l); i < size; i++) {
+        for (i = corto_ll_count(l); i < size; i++) {
             void *elem;
             if (corto_collection_requiresAlloc(elementType)) {
                 elem = corto_ptr_new(elementType);
@@ -298,10 +298,10 @@ uint64_t _corto_ptr_count(void *ptr, corto_type type) {
         break;
     }
     case CORTO_LIST:
-        return corto_ll_size(*(corto_ll*)ptr);
+        return corto_ll_count(*(corto_ll*)ptr);
         break;
     default:
-        //return corto_rb_size(*(corto_rb*)ptr);
+        //return corto_rb_count(*(corto_rb*)ptr);
         break;
     }
 

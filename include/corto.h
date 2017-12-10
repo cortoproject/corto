@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -182,11 +182,11 @@ CORTO_EXPORT extern corto_object CORTO_TRACE_OBJECT;
 CORTO_EXPORT extern int8_t CORTO_TRACE_NOTIFICATIONS;
 CORTO_EXPORT extern int32_t CORTO_MEMTRACE_BREAKPOINT;
 
-CORTO_EXPORT extern const char* CORTO_VERSION;
-CORTO_EXPORT extern const char* CORTO_VERSION_MAJOR;
-CORTO_EXPORT extern const char* CORTO_VERSION_MINOR;
-CORTO_EXPORT extern const char* CORTO_VERSION_PATCH;
-CORTO_EXPORT extern const char* CORTO_VERSION_SUFFIX;
+CORTO_EXPORT extern const char* BAKE_VERSION;
+CORTO_EXPORT extern const char* BAKE_VERSION_MAJOR;
+CORTO_EXPORT extern const char* BAKE_VERSION_MINOR;
+CORTO_EXPORT extern const char* BAKE_VERSION_PATCH;
+CORTO_EXPORT extern const char* BAKE_VERSION_SUFFIX;
 
 #ifdef __cplusplus
 }

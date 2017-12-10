@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-/** @file 
+/** @file
  * @section ptr Ptr API
  * @brief API for native pointers.
  *
@@ -29,7 +29,7 @@
  * pointer must be at least of the size prescribed by the type, and must contain
  * a valid value.
  *
- * For safe creation of values on heap or stack, use `corto_ptr_new` and 
+ * For safe creation of values on heap or stack, use `corto_ptr_new` and
  * `corto_ptr_init`. To ensure that an application does not leak memory, ensure
  * to call `corto_ptr_free` for heap values created with `corto_ptr_new`, and call
  * `corto_ptr_deinit` for stack/heap values initialized with `corto_ptr_init`.
@@ -47,7 +47,7 @@ extern "C" {
  * corto type. If the specified type is a reference type, a pointer-sized value
  * is returned. This function will invoke the initializer for the specified type.
  *
- * Note that the result of this function is a plain heap object, not a corto object, 
+ * Note that the result of this function is a plain heap object, not a corto object,
  * so you cannot use functions that accept a corto_object instance.
  *
  * To avoid memory leakage, the result of this function must be deallocated with
@@ -79,7 +79,7 @@ void _corto_ptr_free(
  * function will not create a pointer but allocate the type size.
  * This function will invoke the initializer for the specified type.
  *
- * Note that the result of this function is a plain heap object, not a corto object, 
+ * Note that the result of this function is a plain heap object, not a corto object,
  * so you cannot use functions that accept a corto_object instance.
  *
  * The result of this function can be used as a value for the binary/corto
@@ -121,7 +121,7 @@ corto_type corto_mem_typeof(
  * the kind of the collection the function will either populate an array, sequence
  * or list. This function is not valid for map collection types.
  *
- * If the provided collection is not empty, the existing elements will be 
+ * If the provided collection is not empty, the existing elements will be
  * deinitialized. Note that for array types the size is fixed, and if the
  * function finds an existing array it won't do anything.
  *
@@ -138,7 +138,7 @@ corto_type corto_mem_typeof(
  * @see corto_ptr_free
  */
 CORTO_EXPORT
-int16_t _corto_ptr_size(
+int16_t _corto_ptr_resize(
     void *ptr,
     corto_type type,
     uint32_t size);
@@ -274,7 +274,7 @@ corto_equalityKind _corto_ptr_compare(
 
 /** Initialize a value.
  * This function is not needed when a value is allocated with corto_ptr_new. A
- * valid example usecase for corto_ptr_init is when allocating a buffer for a 
+ * valid example usecase for corto_ptr_init is when allocating a buffer for a
  * sequence, and the new elements need to be initialized.
  *
  * @param ptr A pointer to the value.
@@ -289,7 +289,7 @@ int16_t _corto_ptr_init(
 
 /** Deinitialize a value.
  * This function is not needed when a value is allocated with corto_ptr_new. A
- * valid example usecase for corto_ptr_init is when deallocating a buffer for a 
+ * valid example usecase for corto_ptr_init is when deallocating a buffer for a
  * sequence, and the elements need to be deinitialized.
  *
  * @param ptr A pointer to the value.
@@ -338,7 +338,7 @@ void corto_ptr_setstr(
 #define corto_ptr_deinit(p, type) _corto_ptr_deinit(p, corto_type(type))
 #define corto_ptr_new(type) _corto_ptr_new(corto_type(type))
 #define corto_ptr_free(ptr, type) _corto_ptr_free(ptr, corto_type(type))
-#define corto_ptr_size(p, type, size) _corto_ptr_size(p, corto_type(type), size)
+#define corto_ptr_resize(p, type, size) _corto_ptr_resize(p, corto_type(type), size)
 #define corto_ptr_count(p, type) _corto_ptr_count(p, corto_type(type))
 #define corto_mem_new(type) _corto_mem_new(corto_type(type))
 

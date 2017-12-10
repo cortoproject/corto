@@ -3561,7 +3561,7 @@ corto_mountSubscription* corto_mountSubscriptionListGet(corto_mountSubscriptionL
 }
 
 corto_uint32 corto_mountSubscriptionListSize(corto_mountSubscriptionList list) {
-    return corto_ll_size(list);
+    return corto_ll_count(list);
 }
 
 void corto_mountSubscriptionListClear(corto_mountSubscriptionList list) {
@@ -3623,7 +3623,7 @@ corto_result* corto_resultListGet(corto_resultList list, corto_uint32 index) {
 }
 
 corto_uint32 corto_resultListSize(corto_resultList list) {
-    return corto_ll_size(list);
+    return corto_ll_count(list);
 }
 
 void corto_resultListClear(corto_resultList list) {

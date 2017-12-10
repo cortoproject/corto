@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,22 +51,22 @@ struct corto_exitHandler {
     void* userData;
 };
 
-#define VERSION_MAJOR "1"
-#define VERSION_MINOR "4"
+#define VERSION_MAJOR "2"
+#define VERSION_MINOR "0"
 #define VERSION_PATCH "0"
-#define VERSION_SUFFIX "beta"
+#define VERSION_SUFFIX "alpha"
 
 #ifdef VERSION_SUFFIX
-const char* CORTO_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
-const char* CORTO_VERSION_SUFFIX = VERSION_SUFFIX;
+const char* BAKE_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
+const char* BAKE_VERSION_SUFFIX = VERSION_SUFFIX;
 #else
-const char* CORTO_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
-const char* CORTO_VERSION_SUFFIX = "";
+const char* BAKE_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
+const char* BAKE_VERSION_SUFFIX = "";
 #endif
 
-const char* CORTO_VERSION_MAJOR = VERSION_MAJOR;
-const char* CORTO_VERSION_MINOR = VERSION_MINOR;
-const char* CORTO_VERSION_PATCH = VERSION_PATCH;
+const char* BAKE_VERSION_MAJOR = VERSION_MAJOR;
+const char* BAKE_VERSION_MINOR = VERSION_MINOR;
+const char* BAKE_VERSION_PATCH = VERSION_PATCH;
 
 /* Single lock to protect infrequent actions on global corto data */
 corto_mutex_s corto_adminLock;
@@ -980,15 +980,10 @@ static void corto_patchSequences(void) {
 void corto_environment_init(void) {
 /* Only set environment variables if library is installed as corto package */
 #ifndef CORTO_REDIS
-    /* CORTO_BUILD is where the buildsystem is located */
-    if (!corto_getenv("CORTO_BUILD")) {
-        corto_setenv("CORTO_BUILD", "/usr/local/lib/corto/%s.%s/build",
-            CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR);
-    }
 
-    /* CORTO_HOME is where corto binaries are located */
-    if (!corto_getenv("CORTO_HOME") || !strlen(corto_getenv("CORTO_HOME"))) {
-        corto_setenv("CORTO_HOME", "/usr/local");
+    /* BAKE_HOME is where corto binaries are located */
+    if (!corto_getenv("BAKE_HOME") || !strlen(corto_getenv("BAKE_HOME"))) {
+        corto_setenv("BAKE_HOME", "/usr/local");
     }
 
     /* If there is no home directory, default to /usr/local. This should be
@@ -997,14 +992,14 @@ void corto_environment_init(void) {
         corto_setenv("HOME", "/usr/local");
     }
 
-    /* CORTO_TARGET is where a project will be built */
-    if (!corto_getenv("CORTO_TARGET")) {
-        corto_setenv("CORTO_TARGET", "~/.corto");
+    /* BAKE_TARGET is where a project will be built */
+    if (!corto_getenv("BAKE_TARGET") || !strlen(corto_getenv("BAKE_TARGET"))) {
+        corto_setenv("BAKE_TARGET", "~/.corto");
     }
 
-    /* CORTO_VERSION points to the current major-minor version */
-    if (!corto_getenv("CORTO_VERSION")) {
-        corto_setenv("CORTO_VERSION", VERSION_MAJOR "." VERSION_MINOR);
+    /* BAKE_VERSION points to the current major-minor version */
+    if (!corto_getenv("BAKE_VERSION")) {
+        corto_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
     }
 #endif
 
@@ -1097,6 +1092,14 @@ int corto_start(char *appName) {
     corto_log_push("init");
 
     corto_trace("initializing...");
+
+    /* Initialize loader */
+    corto_load_init(
+        corto_getenv("BAKE_TARGET"),
+        corto_getenv("BAKE_HOME"),
+        "/usr/local",
+        corto_getenv("BAKE_VERSION"),
+        NULL);
 
     /* Initialize benchmark constants */
     CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");
@@ -1298,7 +1301,7 @@ int corto_start(char *appName) {
 #endif
 
     /* Load configuration, if available */
-    corto_debug("load configurgation");
+    corto_debug("load configuration");
     corto_loadConfig();
 
     /* Pop init log component */

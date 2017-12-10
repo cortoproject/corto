@@ -7353,7 +7353,7 @@ corto_object corto_objectlistGet(corto_objectlist list, corto_uint32 index) {
 }
 
 corto_uint32 corto_objectlistSize(corto_objectlist list) {
-    return corto_ll_size(list);
+    return corto_ll_count(list);
 }
 
 void corto_objectlistClear(corto_objectlist list) {
@@ -7490,7 +7490,7 @@ corto_string corto_stringlistGet(corto_stringlist list, corto_uint32 index) {
 }
 
 corto_uint32 corto_stringlistSize(corto_stringlist list) {
-    return corto_ll_size(list);
+    return corto_ll_count(list);
 }
 
 void corto_stringlistClear(corto_stringlist list) {

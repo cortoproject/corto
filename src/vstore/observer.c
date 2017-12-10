@@ -74,7 +74,7 @@ void corto_observerDelayedAdminRemove(
                 corto_ll_remove(admin, elem);
             }
         }
-        if (!corto_ll_size(admin)) {
+        if (!corto_ll_count(admin)) {
             corto_ll_free(admin);
             corto_tls_set(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
@@ -102,7 +102,7 @@ void corto_observerDelayedAdminDefine(
                 corto_ll_remove(admin, elem);
             }
         }
-        if (!corto_ll_size(admin)) {
+        if (!corto_ll_count(admin)) {
             corto_ll_free(admin);
             corto_tls_set(CORTO_KEY_LISTEN_ADMIN, NULL);
         }
@@ -203,7 +203,7 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
 static corto__observer** corto_observersArrayNew(corto_ll list) {
     corto__observer** array;
 
-    array = corto_alloc((corto_ll_size(list) + 2) * sizeof(corto__observer*));
+    array = corto_alloc((corto_ll_count(list) + 2) * sizeof(corto__observer*));
     corto_observersCopyOut(list, &array[1]);
 
     /* Observers start from the second element */

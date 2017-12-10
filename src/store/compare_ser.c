@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -240,10 +240,10 @@ static corto_uint32 corto_ser_getCollectionSize(corto_any this) {
         result = ((corto_objectseq*)this.value)->length;
         break;
     case CORTO_LIST:
-        result = corto_ll_size(*(corto_ll*)this.value);
+        result = corto_ll_count(*(corto_ll*)this.value);
         break;
     case CORTO_MAP:
-        result = corto_rb_size(*(corto_rb*)this.value);
+        result = corto_rb_count(*(corto_rb*)this.value);
         break;
     }
     return result;

@@ -174,18 +174,18 @@ corto_resultIter corto_loader_onQuery_v(
     CORTO_UNUSED(this);
 
     corto_string targetPath, homePath, globalPath;
-    targetPath = corto_envparse("$CORTO_TARGET/lib/corto/%s.%s/%s",
-      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+    targetPath = corto_envparse("$BAKE_TARGET/lib/corto/%s.%s/%s",
+      BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
       query->from);
     corto_path_clean(targetPath, targetPath);
 
-    homePath = corto_envparse("$CORTO_HOME/lib/corto/%s.%s/%s",
-      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+    homePath = corto_envparse("$BAKE_HOME/lib/corto/%s.%s/%s",
+      BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
       query->from);
     corto_path_clean(homePath, homePath);
 
     globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
-      CORTO_VERSION_MAJOR, CORTO_VERSION_MINOR,
+      BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
       query->from);
     corto_path_clean(globalPath, globalPath);
 

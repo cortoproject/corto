@@ -590,7 +590,7 @@ void test_StringSerializer_tc_serStructArrayStruct(
     test_assert(str != NULL);
     test_assertstr(str, "{{{10,20},{30,40},{50,60}}}");
     corto_dealloc(str);
-    
+
 }
 
 void test_StringSerializer_tc_serStructInherit(
@@ -666,7 +666,7 @@ void test_StringSerializer_tc_serStructListStruct(
     test_StringSerializer this)
 {
     test_struct_listInt v;
-    test_Point 
+    test_Point
         p = {10, 20},
         q = {30, 40},
         r = {50, 60};
@@ -763,7 +763,7 @@ void test_StringSerializer_tc_serStructObservableSequence(
     test_struct_observableSequence v;
 
     corto_ptr_init(&v, test_struct_observableSequence_o);
-    test_IntSequenceSize(v.m, 3);
+    test_IntSequenceResize(v.m, 3);
     v.m->buffer[0] = 10;
     v.m->buffer[1] = 20;
     v.m->buffer[2] = 30;
@@ -1018,7 +1018,7 @@ void test_StringSerializer_tc_serStructSequenceInt(
 
     corto_ptr_init(&v, test_struct_sequenceInt_o);
 
-    corto_ptr_size(&v.m, test_IntSequence_o, 3);
+    corto_ptr_resize(&v.m, test_IntSequence_o, 3);
     v.m.buffer[0] = 10;
     v.m.buffer[1] = 20;
     v.m.buffer[2] = 30;
@@ -1039,7 +1039,7 @@ void test_StringSerializer_tc_serStructSequenceReference(
 
     corto_ptr_init(&v, test_struct_sequenceReference_o);
 
-    corto_ptr_size(&v.m, test_ReferenceSequence_o, 3);
+    corto_ptr_resize(&v.m, test_ReferenceSequence_o, 3);
     corto_ptr_setref(&v.m.buffer[0], corto_o);
     corto_ptr_setref(&v.m.buffer[1], corto_lang_o);
     corto_ptr_setref(&v.m.buffer[2], corto_class_o);
@@ -1060,7 +1060,7 @@ void test_StringSerializer_tc_serStructSequenceString(
 
     corto_ptr_init(&v, test_struct_sequenceString_o);
 
-    corto_ptr_size(&v.m, test_StringSequence_o, 3);
+    corto_ptr_resize(&v.m, test_StringSequence_o, 3);
     corto_ptr_setstr(&v.m.buffer[0], "Hello");
     corto_ptr_setstr(&v.m.buffer[1], "World");
     corto_ptr_setstr(&v.m.buffer[2], "Foo");
@@ -1081,7 +1081,7 @@ void test_StringSerializer_tc_serStructSequenceStruct(
 
     corto_ptr_init(&v, test_struct_sequenceStruct_o);
 
-    corto_ptr_size(&v.m, test_CompositeSequence_o, 3);
+    corto_ptr_resize(&v.m, test_CompositeSequence_o, 3);
     v.m.buffer[0] = (test_Point){10, 20};
     v.m.buffer[1] = (test_Point){30, 40};
     v.m.buffer[2] = (test_Point){50, 60};
@@ -1218,19 +1218,19 @@ void test_StringSerializer_tc_serStructTargetSequence(
 
     corto_ptr_init(&v, test_struct_targetSequence_o);
 
-    corto_ptr_size(&v.m->actual, test_IntSequence_o, 4);
+    corto_ptr_resize(&v.m->actual, test_IntSequence_o, 4);
     v.m->actual.buffer[0] = 10;
     v.m->actual.buffer[1] = 20;
     v.m->actual.buffer[2] = 30;
     v.m->actual.buffer[3] = 40;
 
-    corto_ptr_size(&v.m->target, test_IntSequence_o, 4);
+    corto_ptr_resize(&v.m->target, test_IntSequence_o, 4);
     v.m->target.buffer[0] = 50;
     v.m->target.buffer[1] = 60;
     v.m->target.buffer[2] = 70;
     v.m->target.buffer[3] = 80;
 
-    corto_ptr_size(&v.m->objective, test_IntSequence_o, 4);
+    corto_ptr_resize(&v.m->objective, test_IntSequence_o, 4);
     v.m->objective.buffer[0] = 90;
     v.m->objective.buffer[1] = 100;
     v.m->objective.buffer[2] = 110;
@@ -1361,4 +1361,3 @@ void test_StringSerializer_tc_serUint8(
     corto_dealloc(result);
 
 }
-

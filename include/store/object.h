@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@
 extern "C" {
 #endif
 
-typedef struct corto_contentType *corto_contentType;
+typedef struct corto_contentType_s *corto_contentType;
 
 /* TODO: REMOVE */
 CORTO_EXPORT corto_object corto_createFromContent(char *contentType, char *content);
@@ -982,17 +982,16 @@ CORTO_EXPORT
 corto_contentType corto_load_contentType(
     corto_string contentType);
 
-typedef enum corto_kind {
-    CORTO_DO_DECLARE = 0x1,
-    CORTO_DO_RECURSIVE_DECLARE = 0x3,
-    CORTO_DO_DEFINE = 0x4,
-    CORTO_DO_UPDATE = 0x8,
-    CORTO_DO_ORPHAN = 0x10,
-    CORTO_DO_RESUME = 0x20,
-    CORTO_DO_FORCE_TYPE = 0x40,
-    CORTO_DO_LOOKUP_TYPE = 0x80,
-    CORTO_DO_ASSERT_SUCCESS = 0x100
-} corto_kind;
+typedef uint32_t corto_kind;
+    #define CORTO_DO_DECLARE (0x1)
+    #define CORTO_DO_RECURSIVE_DECLARE (0x3)
+    #define CORTO_DO_DEFINE (0x4)
+    #define CORTO_DO_UPDATE (0x8)
+    #define CORTO_DO_ORPHAN (0x10)
+    #define CORTO_DO_RESUME (0x20)
+    #define CORTO_DO_FORCE_TYPE (0x40)
+    #define CORTO_DO_LOOKUP_TYPE (0x80)
+    #define CORTO_DO_ASSERT_SUCCESS (0x100)
 
 /** Function that provides low-level access to the corto store.
  *

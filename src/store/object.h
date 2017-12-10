@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017 the corto developers
+/* Copyright (c) 2010-2018 the corto developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ corto_object corto_resumePersistent(corto_object o);
 
 #define FIND(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, 0)
 
-struct corto_contentType {
+struct corto_contentType_s {
     corto_string name;
     bool isBinary;
 
