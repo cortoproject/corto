@@ -2117,7 +2117,9 @@ void corto_drop(
                     }
                 } else {
                     corto_drop(collected, delete);
-                    corto_release(collected);
+                    if (!resumed) {
+                        corto_release(collected);
+                    }
                 }
 
                 if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();

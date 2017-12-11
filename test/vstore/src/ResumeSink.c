@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_ResumeSink_onDeclare(
     corto_observerEvent *e)
 {
@@ -1925,3 +1924,19 @@ void test_ResumeSink_teardown(
     corto_release(mount);
 }
 
+void test_ResumeSink_tc_cleanupResumedParentOfCreatedChild(
+    test_ResumeSink this)
+{
+    /* Create a mount that mounts data under / */
+    corto_object mount = test_VirtualSinkMountCreate("/");
+    test_assert(mount != NULL);
+
+    corto_object parent = corto_lookup(NULL, "x/a");
+    test_assert(parent != NULL);
+    test_assertstr(corto_fullpath(NULL, parent), "/x/a");
+
+    /* Create object with parent */
+    corto_object child = corto_createChild(parent, "child", corto_void_o);
+    test_assert(child != NULL);
+    test_assert(corto_release(parent) == 1);
+}
