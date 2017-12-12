@@ -275,9 +275,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, target),\
     SSO_OP_CLASS(lang_, quantity),\
     SSO_OP_CLASS(lang_, unit),\
-    SSO_OP_CLASS(vstore_, package),\
-    SSO_OP_CLASS(vstore_, application),\
-    SSO_OP_CLASS(vstore_, tool),\
+    SSO_OP_CLASS(lang_, package),\
+    SSO_OP_CLASS(lang_, application),\
+    SSO_OP_CLASS(lang_, tool),\
     SSO_OP_CLASS(vstore_, router),\
     SSO_OP_CLASS(vstore_, routerimpl),\
     SSO_OP_CLASS(vstore_, mount),\
@@ -875,18 +875,18 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_result_fromcontent_),\
     SSO_OP_OBJ(vstore_result_contentof_),\
     /* package */\
-    SSO_OP_OBJ(vstore_package_description),\
-    SSO_OP_OBJ(vstore_package_version),\
-    SSO_OP_OBJ(vstore_package_author),\
-    SSO_OP_OBJ(vstore_package_organization),\
-    SSO_OP_OBJ(vstore_package_url),\
-    SSO_OP_OBJ(vstore_package_repository),\
-    SSO_OP_OBJ(vstore_package_license),\
-    SSO_OP_OBJ(vstore_package_icon),\
-    SSO_OP_OBJ(vstore_package_use),\
-    SSO_OP_OBJ(vstore_package_public),\
-    SSO_OP_OBJ(vstore_package_managed),\
-    SSO_OP_OBJ(vstore_package_construct_),\
+    SSO_OP_OBJ(lang_package_description),\
+    SSO_OP_OBJ(lang_package_version),\
+    SSO_OP_OBJ(lang_package_author),\
+    SSO_OP_OBJ(lang_package_organization),\
+    SSO_OP_OBJ(lang_package_url),\
+    SSO_OP_OBJ(lang_package_repository),\
+    SSO_OP_OBJ(lang_package_license),\
+    SSO_OP_OBJ(lang_package_icon),\
+    SSO_OP_OBJ(lang_package_use),\
+    SSO_OP_OBJ(lang_package_public),\
+    SSO_OP_OBJ(lang_package_managed),\
+    SSO_OP_OBJ(lang_package_construct_),\
     /* time */\
     SSO_OP_OBJ(vstore_time_sec),\
     SSO_OP_OBJ(vstore_time_nanosec),\

@@ -1077,6 +1077,38 @@ int16_t _corto_override_init(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
+int16_t _corto_package_construct(
+    corto_package _this);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_package_construct(_this) _corto_package_construct(corto_package(_this))
+#else
+#define corto_package_construct _corto_package_construct
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_package_construct(_this) _corto_package_construct(corto_package(_this))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
+int16_t _corto_package_init(
+    corto_package _this);
+
+/* implicit type-safe macro (not available for project implementation) */
+#ifndef BUILDING_CORTO
+#define corto_package_init(_this) _corto_package_init(corto_package(_this))
+#else
+#define corto_package_init _corto_package_init
+#endif
+
+/* explicit type-safe macro */
+#define safe_corto_package_init(_this) _corto_package_init(corto_package(_this))
+
+/* forward declaration of the function. the '_' in front of the name allows
+ * insertion of type-safe casts */
+CORTO_EXPORT
 bool _corto_primitive_castable_v(
     corto_primitive _this,
     corto_type type);
@@ -1690,4 +1722,3 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
-

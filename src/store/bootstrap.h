@@ -130,8 +130,8 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ATTR_SSOO {{1, 0, 1, 0, 1, 0, 0}}
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, 1, 0, 0}}
-#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, description, version, author, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&vstore_package__o.v}}, {description, version, author, "cortoproject", uri}
+#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&lang_package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, description, version, author, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}},{NULL,NULL,{CORTO_RWMUTEX_INITIALIZER},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&lang_package__o.v}}, {description, version, author, "cortoproject", uri}
 #define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 #define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INITIALIZER}},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
@@ -420,7 +420,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* Forward declarations of classes */
 CORTO_FWDECL(class, alias);
-CORTO_FWDECL_VSTORE(class, application);
+CORTO_FWDECL(class, application);
 CORTO_FWDECL(class, array);
 CORTO_FWDECL(class, binary);
 CORTO_FWDECL(class, bitmask);
@@ -448,7 +448,7 @@ CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
 CORTO_FWDECL_VSTORE(class, mount);
 CORTO_FWDECL_VSTORE(class, notifyEvent);
-CORTO_FWDECL_VSTORE(class, package);
+CORTO_FWDECL(class, package);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
 CORTO_FWDECL(class, quantity);
@@ -614,23 +614,25 @@ CORTO_TYPE_O(lang, void, CORTO_VOID, FALSE);
 CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
 
 /* Package type */
-CORTO_FW_C(vstore, package);
-CORTO_CLASS_NOBASE_O(vstore, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_C);
-    CORTO_MEMBER_O(vstore_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, organization, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, repository, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, license, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, icon, lang_string, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, use, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, public, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_MEMBER_O(vstore_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_METHOD_O(vstore_package, construct, "()", lang_int16, corto_package_construct);
+CORTO_FW_IC(lang, package);
+CORTO_CLASS_NOBASE_O(lang, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
+    CORTO_MEMBER_O(lang_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, organization, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, url, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, repository, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, license, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, icon, lang_string, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, use, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, public, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_MEMBER_O(lang_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
+    CORTO_METHOD_O(lang_package, construct, "()", lang_int16, corto_package_construct);
+    CORTO_METHOD_O(lang_package, init, "()", lang_int16, corto_package_init);
 
-CORTO_CLASS_O(vstore, application, vstore_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-CORTO_CLASS_O(vstore, tool, vstore_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
+
+CORTO_CLASS_O(lang, application, lang_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
+CORTO_CLASS_O(lang, tool, lang_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
 
 /* Enumerations */
 CORTO_ENUM_O(lang, width);

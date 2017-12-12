@@ -13,8 +13,6 @@ extern "C" {
 #endif
 
 /* Casting macro's */
-#define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
-#define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
 #define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
 #define corto_handleAction(o) ((corto_handleAction*)corto_assertType((corto_type)corto_handleAction_o, o))
 #define corto_event(o) ((corto_event*)corto_assertType((corto_type)corto_event_o, o))
@@ -50,36 +48,12 @@ extern "C" {
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
 #define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assertType((corto_type)corto_subscriberEvent_o, o))
 #define corto_subscriberEventIter(o) ((corto_subscriberEventIter*)corto_assertType((corto_type)corto_subscriberEventIter_o, o))
-#define corto_tool(o) ((corto_tool)corto_assertType((corto_type)corto_tool_o, o))
 
 /* Native types */
 #ifndef CORTO_VSTORE_H
 #endif
 
 /* Type definitions */
-/*  /corto/vstore/package */
-typedef struct corto_package_s *corto_package;
-
-struct corto_package_s {
-    corto_string description;
-    corto_string version;
-    corto_string author;
-    corto_string organization;
-    corto_string url;
-    corto_string repository;
-    corto_string license;
-    corto_string icon;
-    corto_stringlist use;
-    bool _public;
-    bool managed;
-};
-
-/*  /corto/vstore/application */
-typedef struct corto_application_s *corto_application;
-
-struct corto_application_s {
-    struct corto_package_s super;
-};
 
 /*  /corto/vstore/dispatcher */
 typedef void *corto_dispatcher;
@@ -437,13 +411,6 @@ struct corto_subscriberEvent {
 };
 
 typedef corto_iter corto_subscriberEventIter;
-
-/*  /corto/vstore/tool */
-typedef struct corto_tool_s *corto_tool;
-
-struct corto_tool_s {
-    struct corto_package_s super;
-};
 
 #ifdef __cplusplus
 }

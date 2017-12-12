@@ -22,6 +22,9 @@ CORTO_EXPORT extern corto_package corto_o;
 CORTO_EXPORT extern corto_package corto_lang_o;
 
 /* Forward declarations of classes */
+CORTO_META_OBJECT(class, package);
+CORTO_META_OBJECT(class, application);
+CORTO_META_OBJECT(class, tool);
 CORTO_META_OBJECT(class, type);
 CORTO_META_OBJECT(class, primitive);
 CORTO_META_OBJECT(class, collection);

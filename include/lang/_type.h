@@ -13,6 +13,9 @@ extern "C" {
 #endif
 
 /* Casting macro's */
+#define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
+#define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
+#define corto_tool(o) ((corto_tool)corto_assertType((corto_type)corto_tool_o, o))
 #define corto_typeKind(o) ((corto_typeKind*)corto_assertType((corto_type)corto_typeKind_o, o))
 #define corto_bool(o) ((bool*)corto_assertType((corto_type)corto_bool_o, o))
 #define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
@@ -694,8 +697,38 @@ typedef void corto_void;
 
 typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq;
 
+/*  /corto/vstore/package */
+typedef struct corto_package_s *corto_package;
+
+struct corto_package_s {
+    corto_string description;
+    corto_string version;
+    corto_string author;
+    corto_string organization;
+    corto_string url;
+    corto_string repository;
+    corto_string license;
+    corto_string icon;
+    corto_stringlist use;
+    bool _public;
+    bool managed;
+};
+
+/*  /corto/vstore/application */
+typedef struct corto_application_s *corto_application;
+
+struct corto_application_s {
+    struct corto_package_s super;
+};
+
+/*  /corto/vstore/tool */
+typedef struct corto_tool_s *corto_tool;
+
+struct corto_tool_s {
+    struct corto_package_s super;
+};
+
 #ifdef __cplusplus
 }
 #endif
 #endif
-

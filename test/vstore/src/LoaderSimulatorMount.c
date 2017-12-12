@@ -7,7 +7,7 @@ int16_t test_LoaderSimulatorMount_construct(
 {
     corto_ptr_setstr(&corto_subscriber(this)->query.select, "//*");
     corto_ptr_setstr(&corto_subscriber(this)->query.from, "/");
-    corto_ptr_setstr(&corto_subscriber(this)->query.type, "/corto/vstore/package");
+    corto_ptr_setstr(&corto_subscriber(this)->query.type, "package");
     corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
@@ -18,7 +18,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "corto",
         NULL,
         ".",
-        "/corto/vstore/package",
+        "package",
         0,
         CORTO_RESULT_HIDDEN
     );
@@ -28,7 +28,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "p",
         NULL,
         ".",
-        "/corto/vstore/package",
+        "package",
         0,
         FALSE
     );
@@ -38,7 +38,7 @@ int16_t test_LoaderSimulatorMount_construct(
         "q",
         NULL,
         "p",
-        "/corto/vstore/package",
+        "package",
         0,
         FALSE
     );
@@ -48,17 +48,17 @@ int16_t test_LoaderSimulatorMount_construct(
         "r",
         NULL,
         "corto",
-        "/corto/vstore/package",
+        "package",
         0,
         FALSE
     );
-    
+
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
         "u",
         NULL,
         "corto/r",
-        "/corto/vstore/package",
+        "package",
         0,
         FALSE
     );
@@ -119,4 +119,3 @@ corto_resultIter test_LoaderSimulatorMount_onQuery(
     /* Return persistent iterator to request */
     return result;
 }
-

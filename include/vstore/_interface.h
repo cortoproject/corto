@@ -946,38 +946,6 @@ int16_t _corto_observerEvent_init(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
-int16_t _corto_package_construct(
-    corto_package _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_package_construct(_this) _corto_package_construct(corto_package(_this))
-#else
-#define corto_package_construct _corto_package_construct
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_package_construct(_this) _corto_package_construct(corto_package(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-int16_t _corto_package_init(
-    corto_package _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_package_init(_this) _corto_package_init(corto_package(_this))
-#else
-#define corto_package_init _corto_package_init
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_package_init(_this) _corto_package_init(corto_package(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
 uint32_t _corto_query_cardinality(
     corto_query* _this);
 

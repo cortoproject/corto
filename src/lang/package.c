@@ -41,3 +41,10 @@ int16_t corto_package_construct(
 error:
     return -1;
 }
+
+int16_t corto_package_init(
+    corto_package this)
+{
+    this->_public = true;
+    return 0;
+}

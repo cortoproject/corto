@@ -32,7 +32,7 @@ void test_SelectMount_tc_selectGrandparentFromVirtualScope(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "");
     test_assertstr(result->parent, "../..");
-    test_assertstr(result->type, "/corto/vstore/package");
+    test_assertstr(result->type, "package");
 
     test_assert(!corto_iter_hasNext(&iter));
 
@@ -109,7 +109,7 @@ void test_SelectMount_tc_selectIteratorPartialRelease(
 
     corto_iter it;
     corto_int32 i = 0;
-    
+
     corto_int16 ret = corto_select("*").from("/mount").iter( &it );
     test_assert(ret == 0);
 
@@ -138,7 +138,7 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
 
     test_MountIterCount mountB = test_MountIterCountCreate(mount);
     test_assert(mountB != NULL);
-    
+
     corto_int16 ret = corto_select("*").from("/mount").iter( &it );
     test_assert(ret == 0);
 
@@ -168,7 +168,7 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
 
     corto_iter it;
     corto_int32 i = 0;
-    
+
     corto_int16 ret = corto_select("//").from("/mount").iter( &it );
     test_assert(ret == 0);
 
@@ -194,7 +194,7 @@ void test_SelectMount_tc_selectIteratorRelease(
     test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
     corto_iter it;
     corto_int32 count = 0;
-    
+
     corto_int16 ret = corto_select("*").from("/mount").iter( &it );
     test_assert(ret == 0);
 
@@ -225,7 +225,7 @@ void test_SelectMount_tc_selectParentFromScope(
     test_assert(result->id != NULL);
     test_assertstr(result->id, "");
     test_assertstr(result->parent, "..");
-    test_assertstr(result->type, "/corto/vstore/package");
+    test_assertstr(result->type, "package");
 
     test_assert(!corto_iter_hasNext(&iter));
 
@@ -1514,17 +1514,17 @@ void test_SelectMount_tc_selectFromPartialMatchedElement(
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "uint32");
 
-    test_assert(corto_iter_hasNext(&it));    
+    test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assertstr(r->id, "b");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "uint32");
 
-    test_assert(corto_iter_hasNext(&it));    
+    test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assertstr(r->id, "c");
     test_assertstr(r->parent, ".");
-    test_assertstr(r->type, "uint32"); 
+    test_assertstr(r->type, "uint32");
 
     test_assert(!corto_iter_hasNext(&it));
 }
@@ -1562,4 +1562,3 @@ void test_SelectMount_tc_selectFromRootNoInitialSlashInFrom(
 
     test_assert(!corto_iter_hasNext(&it));
 }
-

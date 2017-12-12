@@ -282,7 +282,7 @@ void test_Select_tc_selectEmptyParentAst(
     test_assert(r != NULL);
     test_assertstr(r->id, "corto");
     test_assertstr(r->parent, "");
-    test_assertstr(r->type, "/corto/vstore/package");
+    test_assertstr(r->type, "package");
 
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
@@ -324,7 +324,7 @@ void test_Select_tc_selectEmptyParentAst(
     test_assert(r != NULL);
     test_assertstr(r->id, "test");
     test_assertstr(r->parent, "");
-    test_assertstr(r->type, "/corto/vstore/package");
+    test_assertstr(r->type, "package");
 
     test_assert(!corto_iter_hasNext(&it));
 
@@ -339,7 +339,7 @@ void test_Select_tc_selectEmptyParentString(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, "", "corto", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "package"));
 }
 
 void test_Select_tc_selectEmptyQueryString(
@@ -351,7 +351,7 @@ void test_Select_tc_selectEmptyQueryString(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, ".", "", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, ".", "", "package"));
 }
 
 void test_Select_tc_selectEmptyStrings(
@@ -363,7 +363,7 @@ void test_Select_tc_selectEmptyStrings(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, "", "", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "", "", "package"));
 }
 
 void test_Select_tc_selectFilterAsterisk(
@@ -375,7 +375,7 @@ void test_Select_tc_selectFilterAsterisk(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 3);
 
-    test_assert(test_Select_hasObject(results, "", "corto", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "package"));
     test_assert(test_Select_hasObject(results, "", "karto", "void"));
     test_assert(test_Select_hasObject(results, "", "korto", "void"));
 
@@ -390,7 +390,7 @@ void test_Select_tc_selectFilterWildcard(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 2);
 
-    test_assert(test_Select_hasObject(results, "", "corto", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "package"));
     test_assert(test_Select_hasObject(results, "", "korto", "void"));
 
 }
@@ -404,7 +404,7 @@ void test_Select_tc_selectFromCorto(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, ".", "lang", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, ".", "lang", "package"));
 
 }
 
@@ -431,7 +431,7 @@ void test_Select_tc_selectFromNull(
 
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "/corto", "lang", "package"));
 
 }
 
@@ -444,7 +444,7 @@ void test_Select_tc_selectFromRoot(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, "corto", "lang", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "corto", "lang", "package"));
 
 }
 
@@ -708,7 +708,7 @@ void test_Select_tc_selectObject(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, "", "corto", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "package"));
 
 }
 
@@ -745,7 +745,7 @@ void test_Select_tc_selectObjectPrefixScope(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, "", "corto", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "", "corto", "package"));
 }
 
 void test_Select_tc_selectObjectPrefixTrailingScope(
@@ -757,11 +757,11 @@ void test_Select_tc_selectObjectPrefixTrailingScope(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 5);
 
-    test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "vstore", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "native", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "secure", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "test", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "/corto", "lang", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "vstore", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "native", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "secure", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "test", "package"));
 
 }
 
@@ -786,11 +786,11 @@ void test_Select_tc_selectObjectTrailingScope(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 5);
 
-    test_assert(test_Select_hasObject(results, "/corto", "lang", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "vstore", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "native", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "secure", "/corto/vstore/package"));
-    test_assert(test_Select_hasObject(results, "/corto", "test", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, "/corto", "lang", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "vstore", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "native", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "secure", "package"));
+    test_assert(test_Select_hasObject(results, "/corto", "test", "package"));
 
 }
 
@@ -1163,7 +1163,7 @@ void test_Select_tc_selectParent(
     test_assert(item != NULL);
     (test_assertstr(item->parent, ".."));
     (test_assertstr(item->name, ""));
-    (test_assertstr(item->type, "/corto/vstore/package"));
+    (test_assertstr(item->type, "package"));
 
     corto_release(a);
 
@@ -1178,7 +1178,7 @@ void test_Select_tc_selectParentNoSlash(
     test_assert(results != NULL);
     test_assertint(corto_ll_count(results), 1);
 
-    test_assert(test_Select_hasObject(results, ".", "lang", "/corto/vstore/package"));
+    test_assert(test_Select_hasObject(results, ".", "lang", "package"));
 
 }
 
@@ -1250,7 +1250,7 @@ void test_Select_tc_selectScopedParent(
     test_assert(item != NULL);
     (test_assertstr(item->parent, ""));
     (test_assertstr(item->name, ""));
-    (test_assertstr(item->type, "/corto/vstore/package"));
+    (test_assertstr(item->type, "package"));
 
 }
 

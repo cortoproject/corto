@@ -132,7 +132,7 @@ void corto_loader_addDir(
                     corto_result_fromcontent(result, "text/json", json);
                 } else {
                     result->id = corto_strdup(f);
-                    result->type = corto_strdup("/corto/vstore/package");
+                    result->type = corto_strdup("package");
                     result->value = (uintptr_t)strdup("{}");
                 }
 

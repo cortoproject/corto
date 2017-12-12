@@ -22,9 +22,6 @@ CORTO_EXPORT extern corto_package corto_o;
 CORTO_EXPORT extern corto_package corto_vstore_o;
 
 /* Forward declarations of classes */
-CORTO_META_OBJECT(class, package);
-CORTO_META_OBJECT(class, application);
-CORTO_META_OBJECT(class, tool);
 CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
 CORTO_META_OBJECT(struct, queuePolicy);
