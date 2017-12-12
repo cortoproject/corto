@@ -5225,7 +5225,9 @@ corto_object _corto(
         if (isDefine || isUpdate) {
             if (contentType) {
                 corto_assert(value != NULL, "contentType specified but no value provided");
-                if (contentType->toObject(&result, (uintptr_t)value)) {
+
+                corto_value v = corto_value_object(result, type);
+                if (contentType->toValue(&v, (uintptr_t)value)) {
                     goto error;
                 }
             }
