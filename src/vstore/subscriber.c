@@ -72,6 +72,7 @@ void corto_subscriber_addToAlignQueue(
     } else {
         corto_ll_append(s->alignQueue, event);
     }
+    corto_claim(event);
 }
 
 static
