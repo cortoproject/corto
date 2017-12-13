@@ -173,7 +173,7 @@ corto_resultIter corto_loader_onQuery_v(
 
     CORTO_UNUSED(this);
 
-    corto_string targetPath, homePath, globalPath;
+    corto_string targetPath, homePath;
     targetPath = corto_envparse("$BAKE_TARGET/lib/corto/%s.%s/%s",
       BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
       query->from);
@@ -184,19 +184,10 @@ corto_resultIter corto_loader_onQuery_v(
       query->from);
     corto_path_clean(homePath, homePath);
 
-    globalPath = corto_envparse("/usr/local/lib/corto/%s.%s/%s",
-      BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
-      query->from);
-    corto_path_clean(globalPath, globalPath);
-
     corto_loader_addDir(data, targetPath, query);
 
     if (strcmp(targetPath, homePath)) {
         corto_loader_addDir(data, homePath, query);
-    }
-
-    if (strcmp(targetPath, globalPath) && strcmp(homePath, globalPath)) {
-        corto_loader_addDir(data, globalPath, query);
     }
 
     /* Allocate persistent iterator. Set a custom release function so that the
@@ -206,7 +197,6 @@ corto_resultIter corto_loader_onQuery_v(
 
     corto_dealloc(targetPath);
     corto_dealloc(homePath);
-    corto_dealloc(globalPath);
 
     corto_log_pop();
 

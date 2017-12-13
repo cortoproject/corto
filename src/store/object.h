@@ -94,11 +94,6 @@ typedef struct corto__object {
     corto_type type;
 } corto__object;
 
-typedef struct corto__ols {
-    int8_t key;
-    void *value;
-} corto__ols;
-
 typedef struct corto__scope {
     corto_object parent;
     char *id;
@@ -166,16 +161,6 @@ struct corto__persistent {
      * will be set to false. */
     bool resumed;
 };
-
-typedef struct corto_mount_olsData_t {
-    corto_mount mount;
-    corto_eventMask mask;
-} corto_mount_olsData_t;
-
-typedef struct corto_augment_olsData_t {
-    corto_mount mount;
-    corto_string id;
-} corto_augment_olsData_t;
 
 /* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
