@@ -1439,6 +1439,7 @@ static corto_resultIter corto_selectPrepareIterator (
     /* Split expression on ,. Expressions with multiple segments should be
      * evaluated sequentially. */
     char *ptr = data->expr, *prev = ptr;
+    (void)prev;
     while ((ptr = strchr(ptr, ','))) {
         *ptr = '\0';
         ptr++;

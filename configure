@@ -1,6 +1,0 @@
-#!/bin/sh
-export BAKE_HOME="$HOME/.corto"
-export BAKE_TARGET="$HOME/.corto"
-export BAKE_VERSION=2.0
-export PATH="$BAKE_TARGET/bin:$PATH"
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH-}:$BAKE_HOME/lib"

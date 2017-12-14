@@ -538,6 +538,11 @@ void corto_mount_post(
         {
             corto_subscriberEvent *e2;
 
+            /* Keep track of how often an event is added to a queue. If added to
+             * only one queue, refcount does not need to be increased. If added
+             * to two queues, refcount must be increased. */
+            int appended = 0;
+
             /* Append new event to queue */
             if (corto_lock(this)) {
                 corto_throw(NULL);
@@ -549,7 +554,7 @@ void corto_mount_post(
             lastQueueSize = this->lastQueueSize;
             if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 corto_ll_append(this->historicalEvents, e);
-                corto_claim(e);
+                appended ++;
                 size = corto_ll_count(this->historicalEvents);
             }
 
@@ -564,13 +569,16 @@ void corto_mount_post(
                     corto_release(e2);
                 } else {
                     corto_ll_append(this->events, e);
-                    corto_claim(e);
+                    appended ++;
                 }
 
                 if (!size) {
                     size = corto_ll_count(this->events);
                 }
+            }
 
+            if (appended == 2) {
+                corto_claim(e);
             }
 
             if (corto_unlock(this)) {
