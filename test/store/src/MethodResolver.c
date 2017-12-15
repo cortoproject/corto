@@ -208,7 +208,7 @@ void test_MethodResolver_tc_redeclare(
     test_MethodResolver this)
 {
 
-    corto_struct s = corto_structDeclareChild(NULL, "TestStruct");
+    corto_struct s = corto_structDeclareChild(root_o, "TestStruct");
     test_assert(s != NULL);
 
     corto_object m = corto_methodDeclareChild(s, "bar()");

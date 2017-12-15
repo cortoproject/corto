@@ -184,6 +184,77 @@ corto_any* _corto_anyAssign(corto_any* _this, corto_type type, void *value) {
     return _this;
 }
 
+corto_application _corto_applicationCreate(void) {
+    corto_application _this;
+    _this = (corto_application)corto_declare(corto_application_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_application _corto_applicationCreateChild(corto_object _parent, corto_string _id) {
+    corto_application _this;
+    _this = (corto_application)corto_declareChild(_parent, _id, corto_application_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_applicationUpdate(corto_application _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        corto_update_end(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_application _corto_applicationDeclare(void) {
+    corto_application _this;
+    _this = (corto_application)corto_declare(corto_application_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_application _corto_applicationDeclareChild(corto_object _parent, corto_string _id) {
+    corto_application _this;
+    _this = (corto_application)corto_declareChild(_parent, _id, corto_application_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_applicationDefine(corto_application _this) {
+    CORTO_UNUSED(_this);
+    return corto_define(_this);
+}
+
+corto_application _corto_applicationAssign(corto_application _this) {
+    CORTO_UNUSED(_this);
+    return _this;
+}
+
 corto_array _corto_arrayCreate(corto_type elementType, uint32_t max) {
     corto_array _this;
     _this = (corto_array)corto_declare(corto_array_o);
@@ -1736,6 +1807,7 @@ corto_int16 corto_destructActionInitC(corto_destructAction *d, corto_void ___ (*
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "()");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -1747,6 +1819,7 @@ corto_int16 corto_destructActionInitCInstance(corto_destructAction *d, corto_obj
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "(object instance)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -2339,6 +2412,7 @@ corto_int16 corto_initActionInitC(corto_initAction *d, corto_int16 ___ (*callbac
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_int16_o);
     corto_function_parseParamString(d->super.procedure, "()");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -2350,6 +2424,7 @@ corto_int16 corto_initActionInitCInstance(corto_initAction *d, corto_object inst
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_int16_o);
     corto_function_parseParamString(d->super.procedure, "(object instance)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -2683,7 +2758,7 @@ corto_int32seq* _corto_int32seqCreate(corto_uint32 length, int32_t* elements) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_int32seqSize(_this, length);
+        corto_int32seqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             _this->buffer[i] = elements[i];
@@ -2703,7 +2778,7 @@ corto_int32seq* _corto_int32seqCreateChild(corto_object _parent, corto_string _i
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_int32seqSize(_this, length);
+        corto_int32seqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             _this->buffer[i] = elements[i];
@@ -2720,13 +2795,13 @@ corto_int16 _corto_int32seqUpdate(corto_int32seq* _this, corto_uint32 length, in
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_int32seqSize(((corto_int32seq*)CORTO_OFFSET(_this, ((corto_type)corto_int32seq_o)->size)), length);
+            corto_int32seqResize(((corto_int32seq*)CORTO_OFFSET(_this, ((corto_type)corto_int32seq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 ((corto_int32seq*)CORTO_OFFSET(_this, ((corto_type)corto_int32seq_o)->size))->buffer[i] = elements[i];
             }
         } else {
-            corto_int32seqSize(_this, length);
+            corto_int32seqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 _this->buffer[i] = elements[i];
@@ -2759,7 +2834,7 @@ corto_int32seq* _corto_int32seqDeclareChild(corto_object _parent, corto_string _
 
 corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, int32_t* elements) {
     CORTO_UNUSED(_this);
-    corto_int32seqSize(_this, length);
+    corto_int32seqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         _this->buffer[i] = elements[i];
@@ -2769,7 +2844,7 @@ corto_int16 _corto_int32seqDefine(corto_int32seq* _this, corto_uint32 length, in
 
 corto_int32seq* _corto_int32seqAssign(corto_int32seq* _this, corto_uint32 length, int32_t* elements) {
     CORTO_UNUSED(_this);
-    corto_int32seqSize(_this, length);
+    corto_int32seqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         _this->buffer[i] = elements[i];
@@ -3015,7 +3090,7 @@ corto_interfaceseq* _corto_interfaceseqCreate(corto_uint32 length, corto_interfa
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_interfaceseqSize(_this, length);
+        corto_interfaceseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -3035,7 +3110,7 @@ corto_interfaceseq* _corto_interfaceseqCreateChild(corto_object _parent, corto_s
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_interfaceseqSize(_this, length);
+        corto_interfaceseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -3052,13 +3127,13 @@ corto_int16 _corto_interfaceseqUpdate(corto_interfaceseq* _this, corto_uint32 le
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_interfaceseqSize(((corto_interfaceseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceseq_o)->size)), length);
+            corto_interfaceseqResize(((corto_interfaceseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceseq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 corto_ptr_setref(&((corto_interfaceseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceseq_o)->size))->buffer[i], elements[i]);
             }
         } else {
-            corto_interfaceseqSize(_this, length);
+            corto_interfaceseqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -3091,7 +3166,7 @@ corto_interfaceseq* _corto_interfaceseqDeclareChild(corto_object _parent, corto_
 
 corto_int16 _corto_interfaceseqDefine(corto_interfaceseq* _this, corto_uint32 length, corto_interface* elements) {
     CORTO_UNUSED(_this);
-    corto_interfaceseqSize(_this, length);
+    corto_interfaceseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -3101,7 +3176,7 @@ corto_int16 _corto_interfaceseqDefine(corto_interfaceseq* _this, corto_uint32 le
 
 corto_interfaceseq* _corto_interfaceseqAssign(corto_interfaceseq* _this, corto_uint32 length, corto_interface* elements) {
     CORTO_UNUSED(_this);
-    corto_interfaceseqSize(_this, length);
+    corto_interfaceseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -3199,7 +3274,7 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqCreate(corto_uint32 length, c
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_interfaceVectorseqSize(_this, length);
+        corto_interfaceVectorseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
@@ -3221,7 +3296,7 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqCreateChild(corto_object _par
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_interfaceVectorseqSize(_this, length);
+        corto_interfaceVectorseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
@@ -3240,7 +3315,7 @@ corto_int16 _corto_interfaceVectorseqUpdate(corto_interfaceVectorseq* _this, cor
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_interfaceVectorseqSize(((corto_interfaceVectorseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVectorseq_o)->size)), length);
+            corto_interfaceVectorseqResize(((corto_interfaceVectorseq*)CORTO_OFFSET(_this, ((corto_type)corto_interfaceVectorseq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
@@ -3248,7 +3323,7 @@ corto_int16 _corto_interfaceVectorseqUpdate(corto_interfaceVectorseq* _this, cor
                 }
             }
         } else {
-            corto_interfaceVectorseqSize(_this, length);
+            corto_interfaceVectorseqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
@@ -3283,7 +3358,7 @@ corto_interfaceVectorseq* _corto_interfaceVectorseqDeclareChild(corto_object _pa
 
 corto_int16 _corto_interfaceVectorseqDefine(corto_interfaceVectorseq* _this, corto_uint32 length, corto_interfaceVector* elements) {
     CORTO_UNUSED(_this);
-    corto_interfaceVectorseqSize(_this, length);
+    corto_interfaceVectorseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
@@ -3295,7 +3370,7 @@ corto_int16 _corto_interfaceVectorseqDefine(corto_interfaceVectorseq* _this, cor
 
 corto_interfaceVectorseq* _corto_interfaceVectorseqAssign(corto_interfaceVectorseq* _this, corto_uint32 length, corto_interfaceVector* elements) {
     CORTO_UNUSED(_this);
-    corto_interfaceVectorseqSize(_this, length);
+    corto_interfaceVectorseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
@@ -4111,6 +4186,7 @@ corto_int16 corto_nameActionInitC(corto_nameAction *d, corto_string ___ (*callba
     d->super.instance = NULL;
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_string_o);
     corto_function_parseParamString(d->super.procedure, "()");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -4122,6 +4198,7 @@ corto_int16 corto_nameActionInitCInstance(corto_nameAction *d, corto_object inst
     corto_claim(instance);
     d->super.procedure = corto_declare(corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
+    corto_ptr_setref(&d->super.procedure->returnType, corto_string_o);
     corto_function_parseParamString(d->super.procedure, "(object instance)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -4263,7 +4340,7 @@ corto_objectseq* _corto_objectseqCreate(corto_uint32 length, corto_object* eleme
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_objectseqSize(_this, length);
+        corto_objectseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -4283,7 +4360,7 @@ corto_objectseq* _corto_objectseqCreateChild(corto_object _parent, corto_string 
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_objectseqSize(_this, length);
+        corto_objectseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -4300,13 +4377,13 @@ corto_int16 _corto_objectseqUpdate(corto_objectseq* _this, corto_uint32 length, 
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_objectseqSize(((corto_objectseq*)CORTO_OFFSET(_this, ((corto_type)corto_objectseq_o)->size)), length);
+            corto_objectseqResize(((corto_objectseq*)CORTO_OFFSET(_this, ((corto_type)corto_objectseq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 corto_ptr_setref(&((corto_objectseq*)CORTO_OFFSET(_this, ((corto_type)corto_objectseq_o)->size))->buffer[i], elements[i]);
             }
         } else {
-            corto_objectseqSize(_this, length);
+            corto_objectseqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -4339,7 +4416,7 @@ corto_objectseq* _corto_objectseqDeclareChild(corto_object _parent, corto_string
 
 corto_int16 _corto_objectseqDefine(corto_objectseq* _this, corto_uint32 length, corto_object* elements) {
     CORTO_UNUSED(_this);
-    corto_objectseqSize(_this, length);
+    corto_objectseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -4349,7 +4426,7 @@ corto_int16 _corto_objectseqDefine(corto_objectseq* _this, corto_uint32 length, 
 
 corto_objectseq* _corto_objectseqAssign(corto_objectseq* _this, corto_uint32 length, corto_object* elements) {
     CORTO_UNUSED(_this);
-    corto_objectseqSize(_this, length);
+    corto_objectseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         corto_ptr_setref(&_this->buffer[i], elements[i]);
@@ -4624,6 +4701,77 @@ corto_override _corto_overrideAssign(corto_override _this, corto_type returnType
     return _this;
 }
 
+corto_package _corto_packageCreate(void) {
+    corto_package _this;
+    _this = (corto_package)corto_declare(corto_package_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_package _corto_packageCreateChild(corto_object _parent, corto_string _id) {
+    corto_package _this;
+    _this = (corto_package)corto_declareChild(_parent, _id, corto_package_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_packageUpdate(corto_package _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        corto_update_end(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_package _corto_packageDeclare(void) {
+    corto_package _this;
+    _this = (corto_package)corto_declare(corto_package_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_package _corto_packageDeclareChild(corto_object _parent, corto_string _id) {
+    corto_package _this;
+    _this = (corto_package)corto_declareChild(_parent, _id, corto_package_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_packageDefine(corto_package _this) {
+    CORTO_UNUSED(_this);
+    return corto_define(_this);
+}
+
+corto_package _corto_packageAssign(corto_package _this) {
+    CORTO_UNUSED(_this);
+    return _this;
+}
+
 corto_parameter* _corto_parameterCreate(corto_string name, corto_type type, corto_inout inout, bool passByReference) {
     corto_parameter* _this;
     _this = (corto_parameter*)corto_declare(corto_parameter_o);
@@ -4726,7 +4874,7 @@ corto_parameterseq* _corto_parameterseqCreate(corto_uint32 length, corto_paramet
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_parameterseqSize(_this, length);
+        corto_parameterseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
@@ -4748,7 +4896,7 @@ corto_parameterseq* _corto_parameterseqCreateChild(corto_object _parent, corto_s
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_parameterseqSize(_this, length);
+        corto_parameterseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             if (&elements[i]) {
@@ -4767,7 +4915,7 @@ corto_int16 _corto_parameterseqUpdate(corto_parameterseq* _this, corto_uint32 le
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_parameterseqSize(((corto_parameterseq*)CORTO_OFFSET(_this, ((corto_type)corto_parameterseq_o)->size)), length);
+            corto_parameterseqResize(((corto_parameterseq*)CORTO_OFFSET(_this, ((corto_type)corto_parameterseq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
@@ -4775,7 +4923,7 @@ corto_int16 _corto_parameterseqUpdate(corto_parameterseq* _this, corto_uint32 le
                 }
             }
         } else {
-            corto_parameterseqSize(_this, length);
+            corto_parameterseqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 if (&elements[i]) {
@@ -4810,7 +4958,7 @@ corto_parameterseq* _corto_parameterseqDeclareChild(corto_object _parent, corto_
 
 corto_int16 _corto_parameterseqDefine(corto_parameterseq* _this, corto_uint32 length, corto_parameter* elements) {
     CORTO_UNUSED(_this);
-    corto_parameterseqSize(_this, length);
+    corto_parameterseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
@@ -4822,7 +4970,7 @@ corto_int16 _corto_parameterseqDefine(corto_parameterseq* _this, corto_uint32 le
 
 corto_parameterseq* _corto_parameterseqAssign(corto_parameterseq* _this, corto_uint32 length, corto_parameter* elements) {
     CORTO_UNUSED(_this);
-    corto_parameterseqSize(_this, length);
+    corto_parameterseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         if (&elements[i]) {
@@ -5491,7 +5639,7 @@ corto_stringseq* _corto_stringseqCreate(corto_uint32 length, corto_string* eleme
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_stringseqSize(_this, length);
+        corto_stringseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             corto_ptr_setstr(&_this->buffer[i], elements[i]);
@@ -5511,7 +5659,7 @@ corto_stringseq* _corto_stringseqCreateChild(corto_object _parent, corto_string 
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_stringseqSize(_this, length);
+        corto_stringseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             corto_ptr_setstr(&_this->buffer[i], elements[i]);
@@ -5528,13 +5676,13 @@ corto_int16 _corto_stringseqUpdate(corto_stringseq* _this, corto_uint32 length, 
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_stringseqSize(((corto_stringseq*)CORTO_OFFSET(_this, ((corto_type)corto_stringseq_o)->size)), length);
+            corto_stringseqResize(((corto_stringseq*)CORTO_OFFSET(_this, ((corto_type)corto_stringseq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 corto_ptr_setstr(&((corto_stringseq*)CORTO_OFFSET(_this, ((corto_type)corto_stringseq_o)->size))->buffer[i], elements[i]);
             }
         } else {
-            corto_stringseqSize(_this, length);
+            corto_stringseqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 corto_ptr_setstr(&_this->buffer[i], elements[i]);
@@ -5567,7 +5715,7 @@ corto_stringseq* _corto_stringseqDeclareChild(corto_object _parent, corto_string
 
 corto_int16 _corto_stringseqDefine(corto_stringseq* _this, corto_uint32 length, corto_string* elements) {
     CORTO_UNUSED(_this);
-    corto_stringseqSize(_this, length);
+    corto_stringseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         corto_ptr_setstr(&_this->buffer[i], elements[i]);
@@ -5577,7 +5725,7 @@ corto_int16 _corto_stringseqDefine(corto_stringseq* _this, corto_uint32 length, 
 
 corto_stringseq* _corto_stringseqAssign(corto_stringseq* _this, corto_uint32 length, corto_string* elements) {
     CORTO_UNUSED(_this);
-    corto_stringseqSize(_this, length);
+    corto_stringseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         corto_ptr_setstr(&_this->buffer[i], elements[i]);
@@ -6003,6 +6151,77 @@ corto_text _corto_textAssign(corto_text _this, corto_width charWidth, uint64_t l
     CORTO_UNUSED(_this);
     ((corto_text)_this)->charWidth = charWidth;
     ((corto_text)_this)->length = length;
+    return _this;
+}
+
+corto_tool _corto_toolCreate(void) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declare(corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_tool _corto_toolCreateChild(corto_object _parent, corto_string _id) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declareChild(_parent, _id, corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_checkState(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_toolUpdate(corto_tool _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        corto_update_end(_this);
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_tool _corto_toolDeclare(void) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declare(corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_tool _corto_toolDeclareChild(corto_object _parent, corto_string _id) {
+    corto_tool _this;
+    _this = (corto_tool)corto_declareChild(_parent, _id, corto_tool_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_toolDefine(corto_tool _this) {
+    CORTO_UNUSED(_this);
+    return corto_define(_this);
+}
+
+corto_tool _corto_toolAssign(corto_tool _this) {
+    CORTO_UNUSED(_this);
     return _this;
 }
 
@@ -7101,7 +7320,7 @@ corto_wordseq* _corto_wordseqCreate(corto_uint32 length, uintptr_t* elements) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_wordseqSize(_this, length);
+        corto_wordseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             _this->buffer[i] = elements[i];
@@ -7121,7 +7340,7 @@ corto_wordseq* _corto_wordseqCreateChild(corto_object _parent, corto_string _id,
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
-        corto_wordseqSize(_this, length);
+        corto_wordseqResize(_this, length);
         corto_uint32 i = 0;
         for (i = 0; i < length; i ++) {
             _this->buffer[i] = elements[i];
@@ -7138,13 +7357,13 @@ corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, uint
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_wordseqSize(((corto_wordseq*)CORTO_OFFSET(_this, ((corto_type)corto_wordseq_o)->size)), length);
+            corto_wordseqResize(((corto_wordseq*)CORTO_OFFSET(_this, ((corto_type)corto_wordseq_o)->size)), length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 ((corto_wordseq*)CORTO_OFFSET(_this, ((corto_type)corto_wordseq_o)->size))->buffer[i] = elements[i];
             }
         } else {
-            corto_wordseqSize(_this, length);
+            corto_wordseqResize(_this, length);
             corto_uint32 i = 0;
             for (i = 0; i < length; i ++) {
                 _this->buffer[i] = elements[i];
@@ -7177,7 +7396,7 @@ corto_wordseq* _corto_wordseqDeclareChild(corto_object _parent, corto_string _id
 
 corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements) {
     CORTO_UNUSED(_this);
-    corto_wordseqSize(_this, length);
+    corto_wordseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         _this->buffer[i] = elements[i];
@@ -7187,7 +7406,7 @@ corto_int16 _corto_wordseqDefine(corto_wordseq* _this, corto_uint32 length, uint
 
 corto_wordseq* _corto_wordseqAssign(corto_wordseq* _this, corto_uint32 length, uintptr_t* elements) {
     CORTO_UNUSED(_this);
-    corto_wordseqSize(_this, length);
+    corto_wordseqResize(_this, length);
     corto_uint32 i = 0;
     for (i = 0; i < length; i ++) {
         _this->buffer[i] = elements[i];
@@ -7212,7 +7431,7 @@ int32_t* corto_int32seqAppendAlloc(corto_int32seq *seq) {
     return &seq->buffer[seq->length-1];
 }
 
-void corto_int32seqSize(corto_int32seq *seq, corto_uint32 length) {
+void corto_int32seqResize(corto_int32seq *seq, corto_uint32 length) {
     corto_uint32 size;
     seq->buffer = (int32_t*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_int32_o))));
     if (length > seq->length) {
@@ -7222,7 +7441,7 @@ void corto_int32seqSize(corto_int32seq *seq, corto_uint32 length) {
 }
 
 void corto_int32seqClear(corto_int32seq *seq) {
-    corto_int32seqSize(seq, 0);
+    corto_int32seqResize(seq, 0);
 }
 
 corto_interface* corto_interfaceseqAppend(corto_interfaceseq *seq, corto_interface element) {
@@ -7242,7 +7461,7 @@ corto_interface* corto_interfaceseqAppendAlloc(corto_interfaceseq *seq) {
     return &seq->buffer[seq->length-1];
 }
 
-void corto_interfaceseqSize(corto_interfaceseq *seq, corto_uint32 length) {
+void corto_interfaceseqResize(corto_interfaceseq *seq, corto_uint32 length) {
     corto_uint32 size;
     seq->buffer = (corto_interface*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_interface_o))));
     if (length > seq->length) {
@@ -7260,7 +7479,7 @@ void corto_interfaceseqSize(corto_interfaceseq *seq, corto_uint32 length) {
 }
 
 void corto_interfaceseqClear(corto_interfaceseq *seq) {
-    corto_interfaceseqSize(seq, 0);
+    corto_interfaceseqResize(seq, 0);
 }
 
 corto_interfaceVector* corto_interfaceVectorseqAppend(corto_interfaceVectorseq *seq, corto_interfaceVector element) {
@@ -7290,7 +7509,7 @@ corto_interfaceVector* corto_interfaceVectorseqAppendAlloc(corto_interfaceVector
     return &seq->buffer[seq->length-1];
 }
 
-void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 length) {
+void corto_interfaceVectorseqResize(corto_interfaceVectorseq *seq, corto_uint32 length) {
     corto_uint32 size;
     if (length < seq->length) {
         corto_uint32 i;
@@ -7318,7 +7537,7 @@ void corto_interfaceVectorseqSize(corto_interfaceVectorseq *seq, corto_uint32 le
 }
 
 void corto_interfaceVectorseqClear(corto_interfaceVectorseq *seq) {
-    corto_interfaceVectorseqSize(seq, 0);
+    corto_interfaceVectorseqResize(seq, 0);
 }
 
 void corto_objectlistInsert(corto_objectlist list, corto_object element) {
@@ -7352,10 +7571,6 @@ corto_object corto_objectlistGet(corto_objectlist list, corto_uint32 index) {
     return (corto_object)(corto_word)corto_ll_get(list, index);
 }
 
-corto_uint32 corto_objectlistSize(corto_objectlist list) {
-    return corto_ll_count(list);
-}
-
 void corto_objectlistClear(corto_objectlist list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
@@ -7382,7 +7597,7 @@ corto_object* corto_objectseqAppendAlloc(corto_objectseq *seq) {
     return &seq->buffer[seq->length-1];
 }
 
-void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length) {
+void corto_objectseqResize(corto_objectseq *seq, corto_uint32 length) {
     corto_uint32 size;
     seq->buffer = (corto_object*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_object_o))));
     if (length > seq->length) {
@@ -7400,7 +7615,7 @@ void corto_objectseqSize(corto_objectseq *seq, corto_uint32 length) {
 }
 
 void corto_objectseqClear(corto_objectseq *seq) {
-    corto_objectseqSize(seq, 0);
+    corto_objectseqResize(seq, 0);
 }
 
 corto_parameter* corto_parameterseqAppend(corto_parameterseq *seq, corto_parameter element) {
@@ -7430,7 +7645,7 @@ corto_parameter* corto_parameterseqAppendAlloc(corto_parameterseq *seq) {
     return &seq->buffer[seq->length-1];
 }
 
-void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
+void corto_parameterseqResize(corto_parameterseq *seq, corto_uint32 length) {
     corto_uint32 size;
     if (length < seq->length) {
         corto_uint32 i;
@@ -7458,7 +7673,7 @@ void corto_parameterseqSize(corto_parameterseq *seq, corto_uint32 length) {
 }
 
 void corto_parameterseqClear(corto_parameterseq *seq) {
-    corto_parameterseqSize(seq, 0);
+    corto_parameterseqResize(seq, 0);
 }
 
 void corto_stringlistInsert(corto_stringlist list, corto_string element) {
@@ -7489,10 +7704,6 @@ corto_string corto_stringlistGet(corto_stringlist list, corto_uint32 index) {
     return (corto_string)(corto_word)corto_ll_get(list, index);
 }
 
-corto_uint32 corto_stringlistSize(corto_stringlist list) {
-    return corto_ll_count(list);
-}
-
 void corto_stringlistClear(corto_stringlist list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
@@ -7519,7 +7730,7 @@ corto_string* corto_stringseqAppendAlloc(corto_stringseq *seq) {
     return &seq->buffer[seq->length-1];
 }
 
-void corto_stringseqSize(corto_stringseq *seq, corto_uint32 length) {
+void corto_stringseqResize(corto_stringseq *seq, corto_uint32 length) {
     corto_uint32 size;
     seq->buffer = (corto_string*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_string_o))));
     if (length > seq->length) {
@@ -7529,7 +7740,7 @@ void corto_stringseqSize(corto_stringseq *seq, corto_uint32 length) {
 }
 
 void corto_stringseqClear(corto_stringseq *seq) {
-    corto_stringseqSize(seq, 0);
+    corto_stringseqResize(seq, 0);
 }
 
 uintptr_t* corto_wordseqAppend(corto_wordseq *seq, uintptr_t element) {
@@ -7549,7 +7760,7 @@ uintptr_t* corto_wordseqAppendAlloc(corto_wordseq *seq) {
     return &seq->buffer[seq->length-1];
 }
 
-void corto_wordseqSize(corto_wordseq *seq, corto_uint32 length) {
+void corto_wordseqResize(corto_wordseq *seq, corto_uint32 length) {
     corto_uint32 size;
     seq->buffer = (uintptr_t*)corto_realloc(seq->buffer, length * (size=corto_type_sizeof(corto_type(corto_word_o))));
     if (length > seq->length) {
@@ -7559,6 +7770,6 @@ void corto_wordseqSize(corto_wordseq *seq, corto_uint32 length) {
 }
 
 void corto_wordseqClear(corto_wordseq *seq) {
-    corto_wordseqSize(seq, 0);
+    corto_wordseqResize(seq, 0);
 }
 

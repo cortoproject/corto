@@ -6,7 +6,7 @@ void test_RelativeName_setup(
     test_RelativeName this)
 {
 
-    corto_ptr_setref(&this->tier1, corto_voidCreateChild(NULL, "tier1"));
+    corto_ptr_setref(&this->tier1, corto_voidCreateChild(root_o, "tier1"));
     corto_ptr_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
     corto_ptr_setref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
     corto_ptr_setref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));

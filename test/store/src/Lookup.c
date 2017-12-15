@@ -250,7 +250,7 @@ void test_Lookup_tc_lookupParenthesesNoFunction(
     test_Lookup this)
 {
 
-    corto_object o = corto_voidCreateChild(NULL, "o()");
+    corto_object o = corto_voidCreateChild(root_o, "o()");
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o()"));
 
@@ -267,7 +267,7 @@ void test_Lookup_tc_lookupParenthesesNoFunctionArgs(
     test_Lookup this)
 {
 
-    corto_object o = corto_voidCreateChild(NULL, "o(uint32 a)");
+    corto_object o = corto_voidCreateChild(root_o, "o(uint32 a)");
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o(uint32 a)"));
 
@@ -283,7 +283,7 @@ void test_Lookup_tc_lookupParenthesesNoFunctionArgs(
 void test_Lookup_tc_lookupParenthesesNoFunctionArgsScoped(
     test_Lookup this)
 {
-    corto_object parent = corto_voidCreateChild(NULL, "parent");
+    corto_object parent = corto_voidCreateChild(root_o, "parent");
     test_assert(parent != NULL);
 
     corto_object o = corto_voidCreateChild(parent, "o(uint32 a)");
@@ -305,7 +305,7 @@ void test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgs(
     test_Lookup this)
 {
 
-    corto_object o = corto_voidCreateChild(NULL, "o(uint32 a)");
+    corto_object o = corto_voidCreateChild(root_o, "o(uint32 a)");
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o(uint32 a)"));
 
@@ -319,7 +319,7 @@ void test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgs(
 void test_Lookup_tc_lookupParenthesesNoFunctionMatchingArgsScoped(
     test_Lookup this)
 {
-    corto_object parent = corto_voidCreateChild(NULL, "parent");
+    corto_object parent = corto_voidCreateChild(root_o, "parent");
     test_assert(parent != NULL);
 
     corto_object o = corto_voidCreateChild(parent, "o(uint32 a)");
@@ -340,7 +340,7 @@ void test_Lookup_tc_lookupParenthesesNoFunctionScoped(
 {
     corto_id id;
 
-    corto_object parent = corto_voidCreateChild(NULL, "parent");
+    corto_object parent = corto_voidCreateChild(root_o, "parent");
     test_assert(parent != NULL);
 
     corto_object o = corto_voidCreateChild(parent, "o()");

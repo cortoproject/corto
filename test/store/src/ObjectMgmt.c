@@ -13,7 +13,7 @@ void test_ObjectMgmt_setup(
 void test_ObjectMgmt_tc_createChildFoo(
     test_ObjectMgmt this)
 {
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -49,7 +49,7 @@ void test_ObjectMgmt_tc_createChildFooAttr0(
 {
 
     corto_setAttr(0);
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -84,7 +84,7 @@ void test_ObjectMgmt_tc_createChildInitFail(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_createChild(NULL, "o", test_Bar_o);
+    corto_object o = corto_createChild(root_o, "o", test_Bar_o);
     test_assert(o == NULL);
     test_assert(corto_catch());
 }
@@ -93,7 +93,7 @@ void test_ObjectMgmt_tc_createChildInt(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_createChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_createChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -121,7 +121,7 @@ void test_ObjectMgmt_tc_createChildIntAttr0(
 {
 
     corto_setAttr(0);
-    corto_object o = corto_createChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_createChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -148,7 +148,7 @@ void test_ObjectMgmt_tc_createChildInvalidType(
     test_ObjectMgmt this)
 {
 
-    corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_checkState(t, CORTO_DECLARED));
@@ -170,7 +170,7 @@ void test_ObjectMgmt_tc_createChildNested(
     test_ObjectMgmt this)
 {
 
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -226,7 +226,7 @@ void test_ObjectMgmt_tc_createChildNullType(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_createChild(NULL, "o", NULL);
+    corto_object o = corto_createChild(root_o, "o", NULL);
     test_assert(o == NULL);
     test_assert(corto_catch());
 }
@@ -235,7 +235,7 @@ void test_ObjectMgmt_tc_createChildParentStateErr(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_VALID));
@@ -256,7 +256,7 @@ void test_ObjectMgmt_tc_createChildParentTypeErr(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_VALID));
@@ -276,7 +276,7 @@ void test_ObjectMgmt_tc_createChildVoid(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_void_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_void_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -304,7 +304,7 @@ void test_ObjectMgmt_tc_createChildVoidAttr0(
 {
 
     corto_setAttr(0);
-    corto_object o = corto_createChild(NULL, "o", corto_void_o);
+    corto_object o = corto_createChild(root_o, "o", corto_void_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -428,7 +428,7 @@ void test_ObjectMgmt_tc_createInvalidType(
     test_ObjectMgmt this)
 {
 
-    corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_checkState(t, CORTO_DECLARED));
@@ -664,7 +664,7 @@ void test_ObjectMgmt_tc_declareChildFoo(
     test_ObjectMgmt this)
 {
 
-    test_Foo o = corto_declareChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_declareChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -700,7 +700,7 @@ void test_ObjectMgmt_tc_declareChildFooAttr0(
 {
 
     corto_setAttr(0);
-    test_Foo o = corto_declareChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_declareChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -735,7 +735,7 @@ void test_ObjectMgmt_tc_declareChildInitFail(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", test_Bar_o);
+    corto_object o = corto_declareChild(root_o, "o", test_Bar_o);
     test_assert(o == NULL);
     test_assert(corto_catch());
 }
@@ -744,7 +744,7 @@ void test_ObjectMgmt_tc_declareChildInt(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -760,7 +760,7 @@ void test_ObjectMgmt_tc_declareChildInt(
     test_assert(o == p);
     corto_release(p);
 
-    p = corto_declareChild(NULL, "o", corto_int32_o);
+    p = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o == p);
     corto_delete(p);
 
@@ -776,7 +776,7 @@ void test_ObjectMgmt_tc_declareChildIntAttr0(
 {
 
     corto_setAttr(0);
-    corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -803,7 +803,7 @@ void test_ObjectMgmt_tc_declareChildInvalidType(
     test_ObjectMgmt this)
 {
 
-    corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_checkState(t, CORTO_DECLARED));
@@ -816,7 +816,7 @@ void test_ObjectMgmt_tc_declareChildInvalidType(
     corto_invalidate(t);
     test_assert(!corto_checkState(t, CORTO_VALID));
 
-    corto_object o = corto_declareChild(NULL, "foo", t);
+    corto_object o = corto_declareChild(root_o, "foo", t);
     test_assert(o == NULL);
     test_assert(corto_catch());
 }
@@ -825,7 +825,7 @@ void test_ObjectMgmt_tc_declareChildNullType(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", NULL);
+    corto_object o = corto_declareChild(root_o, "o", NULL);
     test_assert(o == NULL);
     test_assert(corto_catch());
 }
@@ -834,7 +834,7 @@ void test_ObjectMgmt_tc_declareChildParentStateErr(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_VALID));
@@ -854,7 +854,7 @@ void test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_int32_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(corto_checkState(o, CORTO_DECLARED));
     test_assert(!corto_checkState(o, CORTO_VALID));
@@ -875,7 +875,7 @@ void test_ObjectMgmt_tc_declareChildVoid(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_declareChild(NULL, "o", corto_void_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_void_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -903,7 +903,7 @@ void test_ObjectMgmt_tc_declareChildVoidAttr0(
 {
 
     corto_setAttr(0);
-    corto_object o = corto_declareChild(NULL, "o", corto_void_o);
+    corto_object o = corto_declareChild(root_o, "o", corto_void_o);
     test_assert(o != NULL);
     test_assert(!strcmp(corto_idof(o), "o"));
     test_assert(corto_parentof(o) == root_o);
@@ -930,7 +930,7 @@ void test_ObjectMgmt_tc_declareExistingWithParentState(
     test_ObjectMgmt this)
 {
 
-    corto_struct s = corto_structDeclareChild(NULL, "s");
+    corto_struct s = corto_structDeclareChild(root_o, "s");
     test_assert(s != NULL);
 
     corto_member m = corto_memberCreateChild(s, "m", corto_type(corto_uint32_o), CORTO_GLOBAL);
@@ -1051,7 +1051,7 @@ void test_ObjectMgmt_tc_declareIntAttr0(
 void test_ObjectMgmt_tc_declareInvalidType(
     test_ObjectMgmt this)
 {
-    corto_type t = corto_type(corto_intCreateChild(NULL, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_checkState(t, CORTO_DECLARED));
@@ -1544,7 +1544,7 @@ void test_ObjectMgmt_tc_deleteRedeclaration(
     test_ObjectMgmt this)
 {
     corto_int16 result;
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assertint(corto_countof(o), 1);
 
@@ -1553,7 +1553,7 @@ void test_ObjectMgmt_tc_deleteRedeclaration(
     test_assert(*test_destructCalled_o == 0);
 
     /* Redeclare object */
-    test_Foo o2 = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o2 = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o2 != NULL);
     test_assert(o == o2);
     test_assertint(corto_countof(o), 2);
@@ -1612,7 +1612,7 @@ void test_ObjectMgmt_tc_deleteSingle(
     test_ObjectMgmt this)
 {
     corto_int16 result;
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
 
     test_EventTest e = test_EventTestCreate(o);
@@ -1653,7 +1653,7 @@ void test_ObjectMgmt_tc_deleteTreeExplicit(
     test_ObjectMgmt this)
 {
     corto_int16 result;
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
 
     test_Foo o_o = corto_createChild(o, "o", test_Foo_o);
@@ -1735,7 +1735,7 @@ void test_ObjectMgmt_tc_deleteTreeImplicit(
     test_ObjectMgmt this)
 {
     corto_int16 result;
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
 
     test_Foo o_o = corto_createChild(o, "o", test_Foo_o);
@@ -1797,7 +1797,7 @@ void test_ObjectMgmt_tc_deleteWithReference(
     test_ObjectMgmt this)
 {
     corto_int16 result;
-    test_Foo o = corto_createChild(NULL, "o", test_Foo_o);
+    test_Foo o = corto_createChild(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
     test_assertint(corto_countof(o), 1);
 
@@ -2006,19 +2006,19 @@ void test_ObjectMgmt_tc_nameofOverride(
 void test_ObjectMgmt_tc_redeclareWithDifferentType(
     test_ObjectMgmt this)
 {
-    corto_float32DeclareChild(NULL, "a");
-    corto_float32DeclareChild(NULL, "b");
-    corto_float32DeclareChild(NULL, "c");
+    corto_float32DeclareChild(root_o, "a");
+    corto_float32DeclareChild(root_o, "b");
+    corto_float32DeclareChild(root_o, "c");
 
-    corto_object a = corto_float64DeclareChild(NULL, "a");
+    corto_object a = corto_float64DeclareChild(root_o, "a");
     test_assert(a == NULL);
     test_assert(corto_catch());
 
-    corto_object b = corto_float64DeclareChild(NULL, "b");
+    corto_object b = corto_float64DeclareChild(root_o, "b");
     test_assert(b == NULL);
     test_assert(corto_catch());
 
-    corto_object c = corto_float64DeclareChild(NULL, "c");
+    corto_object c = corto_float64DeclareChild(root_o, "c");
     test_assert(c == NULL);
     test_assert(corto_catch());
 }

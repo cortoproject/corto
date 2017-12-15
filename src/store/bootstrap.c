@@ -195,7 +195,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(vstore_, sampleIter),\
     SSO_OP_VALUE(vstore_, subscriberEventIter),\
     SSO_OP_VALUE(vstore_, result),\
-    SSO_OP_VALUE(vstore_, mountStats),\
     SSO_OP_VALUE(vstore_, queuePolicy),\
     SSO_OP_VALUE(vstore_, mountPolicy),\
     SSO_OP_VALUE(lang_, delegatedata),\
@@ -316,11 +315,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* dispatcher */\
     SSO_OP_OBJ(vstore_dispatcher_post),\
     /* event */\
-    SSO_OP_OBJ(vstore_event_kind),\
-    SSO_OP_OBJ(vstore_event_handled),\
     SSO_OP_OBJ(vstore_event_handleAction),\
     SSO_OP_OBJ(vstore_event_handle_),\
-    SSO_OP_OBJ(vstore_event_uniqueKind),\
     /* observerEvent */\
     SSO_OP_OBJ(vstore_observerEvent_observer),\
     SSO_OP_OBJ(vstore_observerEvent_instance),\
@@ -634,10 +630,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_tableinstance_type),\
     /* table */\
     SSO_OP_OBJ(lang_table_construct_),\
-    /* mountStats */\
-    SSO_OP_OBJ(vstore_mountStats_declares),\
-    SSO_OP_OBJ(vstore_mountStats_updates),\
-    SSO_OP_OBJ(vstore_mountStats_deletes),\
     /* queuePolicy */\
     SSO_OP_OBJ(vstore_queuePolicy_max),\
     /* mountPolicy */\
@@ -709,9 +701,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mount_policy),\
     SSO_OP_OBJ(vstore_mount_mount),\
     SSO_OP_OBJ(vstore_mount_attr),\
-    SSO_OP_OBJ(vstore_mount_sent),\
-    SSO_OP_OBJ(vstore_mount_received),\
-    SSO_OP_OBJ(vstore_mount_sentDiscarded),\
     SSO_OP_OBJ(vstore_mount_subscriptions),\
     SSO_OP_OBJ(vstore_mount_events),\
     SSO_OP_OBJ(vstore_mount_historicalEvents),\
@@ -788,7 +777,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_unit_fromQuantity),\
     SSO_OP_OBJ(lang_unit_init_),\
     SSO_OP_OBJ(lang_unit_construct_),\
-    SSO_OP_OBJ(lang_unit_destruct_),\
     /* array */\
     SSO_OP_OBJ(lang_array_elementType),\
     SSO_OP_OBJ(lang_array_init_),\
@@ -819,16 +807,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_member_construct_),\
     /* alias */\
     SSO_OP_OBJ(lang_alias_member),\
-    SSO_OP_OBJ(lang_alias_init_),\
     SSO_OP_OBJ(lang_alias_construct_),\
     /* case */\
     SSO_OP_OBJ(lang_case_discriminator),\
     SSO_OP_OBJ(lang_case_type),\
     SSO_OP_OBJ(lang_case_modifiers),\
-    SSO_OP_OBJ(lang_case_construct_),\
     /* default */\
     SSO_OP_OBJ(lang_default_type),\
-    SSO_OP_OBJ(lang_default_construct_),\
     /* parameter */\
     SSO_OP_OBJ(lang_parameter_name),\
     SSO_OP_OBJ(lang_parameter_type),\
@@ -862,6 +847,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_package_use),\
     SSO_OP_OBJ(lang_package_public),\
     SSO_OP_OBJ(lang_package_managed),\
+    SSO_OP_OBJ(lang_package_init_),\
     SSO_OP_OBJ(lang_package_construct_),\
     /* time */\
     SSO_OP_OBJ(vstore_time_sec),\

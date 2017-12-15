@@ -455,22 +455,6 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     }
     corto_observerAdmin *admin = corto_observerAdminGet();
 
-    corto_object owner = NULL;
-    if ((owner = corto_getOwner())) {
-        if (corto_instanceof(corto_mount_o, owner)) {
-            corto_mount m = owner;
-            if (mask & CORTO_DECLARE) {
-                m->received.declares ++;
-            }
-            if (mask & (CORTO_UPDATE | CORTO_DEFINE)) {
-                m->received.updates ++;
-            }
-            if (mask & CORTO_DELETE) {
-                m->received.deletes ++;
-            }
-        }
-    }
-
     /* Notify direct observers */
     if (_o) {
         /* Notify observers of observable */

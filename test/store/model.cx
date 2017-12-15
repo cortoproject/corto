@@ -678,8 +678,6 @@ test/Suite Ownership:/
     void tc_deleteOwned()
     void tc_releaseOwned()
 
-    void tc_declareNotOwned()
-    void tc_createNotOwned()
     void tc_updateNotOwned()
     void tc_updateNotOwnedTarget()
     void tc_deleteNotOwned()

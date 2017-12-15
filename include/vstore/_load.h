@@ -26,7 +26,6 @@ CORTO_META_OBJECT(class, router);
 CORTO_META_OBJECT(class, routerimpl);
 CORTO_META_OBJECT(struct, queuePolicy);
 CORTO_META_OBJECT(class, mount);
-CORTO_META_OBJECT(struct, mountStats);
 CORTO_META_OBJECT(struct, mountPolicy);
 CORTO_META_OBJECT(struct, mountSubscription);
 CORTO_META_OBJECT(class, loader);

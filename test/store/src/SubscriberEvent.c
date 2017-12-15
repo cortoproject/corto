@@ -10,8 +10,8 @@ void test_SubscriberEvent_setup(
 {
 
     this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
-    corto_voidCreateChild(NULL, "shouldNotBeMatched");
-    testScope = corto_voidCreateChild(NULL, "testScope");
+    corto_voidCreateChild(root_o, "shouldNotBeMatched");
+    testScope = corto_voidCreateChild(root_o, "testScope");
     test_assert(testScope != NULL);
     test_SubscriberTest st = test_SubscriberTestCreate();
     test_assert(st != NULL);

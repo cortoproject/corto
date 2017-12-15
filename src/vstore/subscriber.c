@@ -32,38 +32,32 @@ corto_entityAdmin corto_subscriber_admin = {
 };
 
 static
-corto_subscriberEvent* corto_subscriber_findEvent(
-    corto_ll events,
-    corto_subscriberEvent *e)
+int corto_subscriber_findEvent(
+    void *o1,
+    void *o2)
 {
-    corto_iter iter = corto_ll_iter(events);
-    corto_subscriberEvent *e2;
-    while ((corto_iter_hasNext(&iter))) {
-        e2 = corto_iter_next(&iter);
-        if (!strcmp(e2->data.id, e->data.id) &&
-            !strcmp(e2->data.parent, e->data.parent))
-        {
-            return e2;
-        }
+    corto_subscriberEvent *e1 = o1, *e2 = o2;
+    if (!strcmp(e2->data.id, e1->data.id) &&
+        !strcmp(e2->data.parent, e1->data.parent))
+    {
+        return false;
     }
-    return NULL;
+    return true;
 }
 
 static
 void corto_subscriber_addToAlignQueue(
-    corto_subscriber s,
-    corto_subscriberEvent *event)
+    corto_subscriber this,
+    corto_subscriberEvent *e)
 {
-    corto_subscriberEvent *oldEvent =
-        corto_subscriber_findEvent(s->alignQueue, event);
-
-    if (oldEvent) {
-        corto_ll_replace(s->alignQueue, oldEvent, event);
-        corto_assert(corto_release(oldEvent) == 0, "subscriber event leaks");
+    void *ptr = corto_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
+    if (ptr) {
+        corto_release(*(void**)ptr);
+        *(void**)ptr = e;
     } else {
-        corto_ll_append(s->alignQueue, event);
+        corto_ll_append(this->alignQueue, e);
     }
-    corto_claim(event);
+    corto_claim(e);
 }
 
 static

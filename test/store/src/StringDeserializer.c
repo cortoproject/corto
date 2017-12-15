@@ -1297,7 +1297,7 @@ void test_StringDeserializer_tc_deserTargetAnonymousNotOwned(
 {
     corto_object owner = corto_create(corto_mount_o);
     corto_setOwner(owner);
-    test_ReferenceMember *o = corto_createChild(NULL, "o", test_ReferenceMember_o);
+    test_ReferenceMember *o = corto_createChild(root_o, "o", test_ReferenceMember_o);
     test_assert(o != NULL);
 
     /* Deserializer can't assign anonymous object because member 'm' won't be
@@ -1334,7 +1334,7 @@ void test_StringDeserializer_tc_deserTargetAnonymousOwned(
 {
     corto_object owner = corto_create(corto_mount_o);
     corto_setOwner(owner);
-    test_ReferenceMember *o = corto_createChild(NULL, "o", test_ReferenceMember_o);
+    test_ReferenceMember *o = corto_createChild(root_o, "o", test_ReferenceMember_o);
     test_assert(o != NULL);
 
     corto_int16 ret = corto_fromStr(&o, "{m=<1>/test/TargetActual{target=10, actual=20}, n=10}");
@@ -1360,7 +1360,7 @@ void test_StringDeserializer_tc_deserTargetMemberNotOwned(
 {
     corto_object owner = corto_create(corto_mount_o);
     corto_setOwner(owner);
-    test_TargetActualMember *o = corto_createChild(NULL, "o", test_TargetActualMember_o);
+    test_TargetActualMember *o = corto_createChild(root_o, "o", test_TargetActualMember_o);
 
     corto_setOwner(NULL);
     corto_int16 ret = corto_fromStr(&o, "{m={target=10, actual=20}, n=10}");
@@ -1385,7 +1385,7 @@ void test_StringDeserializer_tc_deserTargetMemberOwned(
 {
     corto_object owner = corto_create(corto_mount_o);
     corto_setOwner(owner);
-    test_TargetActualMember *o = corto_createChild(NULL, "o", test_TargetActualMember_o);
+    test_TargetActualMember *o = corto_createChild(root_o, "o", test_TargetActualMember_o);
 
     corto_int16 ret = corto_fromStr(&o, "{m={target=10, actual=20}, n=10}");
     test_assert(o != NULL);
@@ -1409,7 +1409,7 @@ void test_StringDeserializer_tc_deserTargetNotOwned(
 {
     corto_object owner = corto_create(corto_mount_o);
     corto_setOwner(owner);
-    test_TargetActual o = corto_createChild(NULL, "o", test_TargetActual_o);
+    test_TargetActual o = corto_createChild(root_o, "o", test_TargetActual_o);
 
     corto_setOwner(NULL);
     corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
@@ -1490,7 +1490,7 @@ void test_StringDeserializer_tc_deserTargetOwnedMount(
     corto_object owner = corto_create(corto_mount_o);
 
     corto_setOwner(owner);
-    test_TargetActual o = corto_createChild(NULL, "o", test_TargetActual_o);
+    test_TargetActual o = corto_createChild(root_o, "o", test_TargetActual_o);
 
     corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
     test_assert(o != NULL);
@@ -1515,7 +1515,7 @@ void test_StringDeserializer_tc_deserTargetOwnedObj(
     corto_object owner = corto_create(corto_void_o);
 
     corto_setOwner(owner);
-    test_TargetActual o = corto_createChild(NULL, "o", test_TargetActual_o);
+    test_TargetActual o = corto_createChild(root_o, "o", test_TargetActual_o);
     corto_int16 ret = corto_fromStr(&o, "test/TargetActual{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -1536,7 +1536,7 @@ void test_StringDeserializer_tc_deserTargetRefAnonymousMemberNotOwned(
     corto_object owner = corto_create(corto_mount_o);
 
     corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
 
     corto_setOwner(NULL);
     corto_int16 ret = corto_fromStr(&o, "{m={target=int32{10}, actual=int32{20}}, 10}");
@@ -1564,7 +1564,7 @@ void test_StringDeserializer_tc_deserTargetRefAnonymousMemberOwned(
     corto_object owner = corto_create(corto_mount_o);
 
     corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
 
     corto_int16 ret = corto_fromStr(&o, "{m={target=int32{10}, actual=int32{20}}, n=10}");
     test_assert(o != NULL);
@@ -1588,11 +1588,11 @@ void test_StringDeserializer_tc_deserTargetRefMemberNotOwned(
     test_StringDeserializer this)
 {
     corto_object owner = corto_create(corto_mount_o);
-    corto_object a = corto_createChild(NULL, "a", corto_int32_o);
-    corto_object b = corto_createChild(NULL, "b", corto_int32_o);
+    corto_object a = corto_createChild(root_o, "a", corto_int32_o);
+    corto_object b = corto_createChild(root_o, "b", corto_int32_o);
 
     corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
 
     corto_setOwner(NULL);
     corto_int16 ret = corto_fromStr(&o, "{m={target=/a, actual=/b}, n=10}");
@@ -1618,11 +1618,11 @@ void test_StringDeserializer_tc_deserTargetRefMemberOwned(
     test_StringDeserializer this)
 {
     corto_object owner = corto_create(corto_mount_o);
-    corto_object a = corto_createChild(NULL, "a", corto_int32_o);
-    corto_object b = corto_createChild(NULL, "b", corto_int32_o);
+    corto_object a = corto_createChild(root_o, "a", corto_int32_o);
+    corto_object b = corto_createChild(root_o, "b", corto_int32_o);
 
     corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(NULL, "o", test_ReferenceTargetMember_o);
+    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
 
     corto_int16 ret = corto_fromStr(&o, "{m={target=/a, actual=/b}, n=10}");
     test_assert(o != NULL);

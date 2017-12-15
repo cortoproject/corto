@@ -13,7 +13,7 @@ void test_Event_setup(
     test_Event this)
 {
     this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
-    testScope = corto_voidCreateChild(NULL, "testScope");
+    testScope = corto_voidCreateChild(root_o, "testScope");
     test_assert(testScope != NULL);
     test_EventTest et = test_EventTestCreate(testScope);
     test_assert(et != NULL);
@@ -2214,7 +2214,7 @@ void test_Event_tc_updateVoid(
     test_Event this)
 {
 
-    corto_object o = corto_int32CreateChild(NULL, "o", 10);
+    corto_object o = corto_int32CreateChild(root_o, "o", 10);
     test_assert(o != NULL);
 
     corto_int16 ret = corto_update(o);

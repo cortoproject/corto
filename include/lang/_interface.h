@@ -33,22 +33,6 @@ int16_t _corto_alias_construct(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
-int16_t _corto_alias_init(
-    corto_alias _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_alias_init(_this) _corto_alias_init(corto_alias(_this))
-#else
-#define corto_alias_init _corto_alias_init
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_alias_init(_this) _corto_alias_init(corto_alias(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
 int16_t _corto_array_construct(
     corto_array _this);
 
@@ -141,22 +125,6 @@ int16_t _corto_boolean_init(
 
 /* explicit type-safe macro */
 #define safe_corto_boolean_init(_this) _corto_boolean_init(corto_boolean(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-int16_t _corto_case_construct(
-    corto_case _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_case_construct(_this) _corto_case_construct(corto_case(_this))
-#else
-#define corto_case_construct _corto_case_construct
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_case_construct(_this) _corto_case_construct(corto_case(_this))
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
@@ -366,22 +334,6 @@ int16_t _corto_container_construct(
 
 /* explicit type-safe macro */
 #define safe_corto_container_construct(_this) _corto_container_construct(corto_container(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-int16_t _corto_default_construct(
-    corto_default _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_default_construct(_this) _corto_default_construct(corto_default(_this))
-#else
-#define corto_default_construct _corto_default_construct
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_default_construct(_this) _corto_default_construct(corto_default(_this))
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
@@ -1624,22 +1576,6 @@ int16_t _corto_unit_construct(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
-void _corto_unit_destruct(
-    corto_unit _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_unit_destruct(_this) _corto_unit_destruct(corto_unit(_this))
-#else
-#define corto_unit_destruct _corto_unit_destruct
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_unit_destruct(_this) _corto_unit_destruct(corto_unit(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
 int16_t _corto_unit_init(
     corto_unit _this);
 
@@ -1674,3 +1610,4 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
+

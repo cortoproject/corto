@@ -21,7 +21,7 @@ void test_Attributes_tc_isDefaultScopedPersistent(
     test_assert(i != NULL);
     test_assert(corto_checkAttr(i, CORTO_ATTR_PERSISTENT));
     corto_delete(i);
-    
+
 }
 
 void test_Attributes_tc_testDefaultSet(
@@ -36,7 +36,7 @@ void test_Attributes_tc_testTargetAttr(
     test_Attributes this)
 {
 
-    corto_object o = corto_createChild(NULL, "a", test_TargetActual_o);
+    corto_object o = corto_createChild(root_o, "a", test_TargetActual_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_TargetActual_o));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
@@ -48,7 +48,7 @@ void test_Attributes_tc_testTargetOrphanAttr(
     test_Attributes this)
 {
 
-    test_TargetActualMember* o = corto_createChild(NULL, "a", test_TargetActualMember_o);
+    test_TargetActualMember* o = corto_createChild(root_o, "a", test_TargetActualMember_o);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_TargetActualMember_o));
     test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
@@ -67,4 +67,3 @@ void test_Attributes_tc_typeOverridesAttributes(
     test_assert(corto_delete(o) == 0);
 
 }
-

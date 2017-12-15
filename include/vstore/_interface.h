@@ -56,21 +56,6 @@ void _corto_event_handle(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
-int16_t _corto_event_uniqueKind(void);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_event_uniqueKind() _corto_event_uniqueKind()
-#else
-#define corto_event_uniqueKind _corto_event_uniqueKind
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_event_uniqueKind() _corto_event_uniqueKind()
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
 corto_time _corto_frame_getTime(
     corto_frame* _this);
 
@@ -428,23 +413,18 @@ void _corto_mount_onNotify(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
-void _corto_mount_onPoll_v(
+void _corto_mount_onPoll(
     corto_mount _this);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
-#define corto_mount_onPoll_v(_this) _corto_mount_onPoll_v(corto_mount(_this))
+#define corto_mount_onPoll(_this) _corto_mount_onPoll(corto_mount(_this))
 #else
-#define corto_mount_onPoll_v _corto_mount_onPoll_v
+#define corto_mount_onPoll _corto_mount_onPoll
 #endif
 
 /* explicit type-safe macro */
-#define safe_corto_mount_onPoll_v(_this) _corto_mount_onPoll_v(corto_mount(_this))
-
-#define corto_mount_onPoll(_this) _corto_mount_onPoll(corto_mount(_this))
-CORTO_EXPORT
-void _corto_mount_onPoll(
-    corto_mount _this);
+#define safe_corto_mount_onPoll(_this) _corto_mount_onPoll(corto_mount(_this))
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
@@ -1217,7 +1197,6 @@ int16_t _corto_subscriber_construct(
 /* explicit type-safe macro */
 #define safe_corto_subscriber_construct(_this) _corto_subscriber_construct(corto_subscriber(_this))
 
-
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
@@ -1233,7 +1212,6 @@ void _corto_subscriber_define(
 
 /* explicit type-safe macro */
 #define safe_corto_subscriber_define(_this) _corto_subscriber_define(corto_subscriber(_this))
-
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */

@@ -26,7 +26,6 @@ extern "C" {
 #define corto_mountMask(o) ((corto_mountMask*)corto_assertType((corto_type)corto_mountMask_o, o))
 #define corto_queuePolicy(o) ((corto_queuePolicy*)corto_assertType((corto_type)corto_queuePolicy_o, o))
 #define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
-#define corto_mountStats(o) ((corto_mountStats*)corto_assertType((corto_type)corto_mountStats_o, o))
 #define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
 #define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assertType((corto_type)corto_mountSubscriptionList_o, o))
 #define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
@@ -54,7 +53,6 @@ extern "C" {
 #endif
 
 /* Type definitions */
-
 /*  /corto/vstore/dispatcher */
 typedef void *corto_dispatcher;
 
@@ -70,8 +68,6 @@ struct corto_handleAction {
 typedef struct corto_event corto_event;
 
 struct corto_event {
-    uint16_t kind;
-    bool handled;
     corto_handleAction handleAction;
 };
 
@@ -149,7 +145,7 @@ struct corto_subscriber_s {
     uintptr_t idmatch;
     bool isAligning;
     uintptr_t alignMutex;
-    corto_ll alignQueue;
+    corto_objectlist alignQueue;
 };
 
 /* /corto/vstore/ownership */
@@ -191,15 +187,6 @@ struct corto_mountPolicy {
     bool filterResults;
 };
 
-/*  /corto/vstore/mountStats */
-typedef struct corto_mountStats corto_mountStats;
-
-struct corto_mountStats {
-    uint64_t declares;
-    uint64_t updates;
-    uint64_t deletes;
-};
-
 /*  /corto/vstore/mountSubscription */
 typedef struct corto_mountSubscription corto_mountSubscription;
 
@@ -232,9 +219,6 @@ struct corto_mount_s {
     corto_mountPolicy policy;
     corto_object mount;
     corto_attr attr;
-    corto_mountStats sent;
-    corto_mountStats received;
-    corto_mountStats sentDiscarded;
     corto_mountSubscriptionList subscriptions;
     corto_objectlist events;
     corto_objectlist historicalEvents;
@@ -416,3 +400,4 @@ typedef corto_iter corto_subscriberEventIter;
 }
 #endif
 #endif
+

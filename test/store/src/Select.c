@@ -68,7 +68,7 @@ bool test_Select_hasObject(
 void test_Select_setup(
     test_Select this)
 {
-    corto_object a = corto_voidCreateChild(NULL, "a");
+    corto_object a = corto_voidCreateChild(root_o, "a");
     corto_voidCreateChild(a, "b");
     corto_object c = corto_voidCreateChild(a, "c");
 
@@ -80,8 +80,8 @@ void test_Select_setup(
     corto_voidCreateChild(a, "Abab"); /* For caps testing */
     corto_voidCreateChild(a, "ab_ab"); /* Testing underscores */
     corto_voidCreateChild(a, "ab01234567890"); /* Testing numbers */
-    corto_voidCreateChild(NULL, "korto"); /* For testing wildcard */
-    corto_voidCreateChild(NULL, "karto"); /* For testing asterisk */
+    corto_voidCreateChild(root_o, "korto"); /* For testing wildcard */
+    corto_voidCreateChild(root_o, "karto"); /* For testing asterisk */
 
     /* Objects to test trees */
     corto_object _1 = corto_voidCreateChild(c, "b");

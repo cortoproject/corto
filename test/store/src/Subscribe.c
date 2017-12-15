@@ -611,9 +611,9 @@ void test_Subscribe_tc_subscribeOwnerSet(
 {
     corto_object owner = corto_voidCreate();
     corto_object prevOwner = corto_setOwner(owner);
-    corto_object a = corto_createChild(NULL, "a", corto_int32_o);
+    corto_object a = corto_createChild(root_o, "a", corto_int32_o);
     corto_setOwner(prevOwner);
-    corto_object b = corto_createChild(NULL, "b", corto_int32_o);
+    corto_object b = corto_createChild(root_o, "b", corto_int32_o);
 
     corto_subscriber s = corto_subscribe("a,b").from("/")
       .instance(this)

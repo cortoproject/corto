@@ -81,7 +81,6 @@ void corto_mount_notify(corto_subscriberEvent *e) {
 
         switch(event) {
         case CORTO_DEFINE:
-            this->sent.updates ++;
             if (this->policy.mask & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
@@ -95,10 +94,8 @@ void corto_mount_notify(corto_subscriberEvent *e) {
 
             break;
         case CORTO_UPDATE:
-            this->sent.updates ++;
             break;
         case CORTO_DELETE:
-            this->sent.deletes ++;
             if (this->policy.mask & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
@@ -437,7 +434,7 @@ void corto_mount_onNotify_v(
     CORTO_UNUSED(event);
 }
 
-void corto_mount_onPoll_v(
+void corto_mount_onPoll(
     corto_mount this)
 {
     corto_event *e;
@@ -503,24 +500,18 @@ void corto_mount_onPoll_v(
 }
 
 static
-corto_subscriberEvent* corto_mount_findEvent(
-    corto_mount this,
-    corto_subscriberEvent *e)
+int corto_mount_findEvent(
+    void *o1,
+    void *o2)
 {
-    corto_iter iter = corto_ll_iter(this->events);
-    corto_subscriberEvent *e2;
-    while ((corto_iter_hasNext(&iter))) {
-        e2 = corto_iter_next(&iter);
-        if (!strcmp(e2->data.id, e->data.id) &&
-            !strcmp(e2->data.parent, e->data.parent) &&
-            (e2->subscriber == e->subscriber))
-        {
-            return e2;
-        }
-
+    corto_subscriberEvent *e1 = o1, *e2 = o2;
+    if (!strcmp(e2->data.id, e1->data.id) &&
+        !strcmp(e2->data.parent, e1->data.parent) &&
+        (e2->subscriber == e1->subscriber))
+    {
+        return false;
     }
-
-    return NULL;
+    return true;
 }
 
 void corto_mount_post(
@@ -536,8 +527,6 @@ void corto_mount_post(
     {
         if (this->policy.sampleRate)
         {
-            corto_subscriberEvent *e2;
-
             /* Keep track of how often an event is added to a queue. If added to
              * only one queue, refcount does not need to be increased. If added
              * to two queues, refcount must be increased. */
@@ -561,12 +550,10 @@ void corto_mount_post(
             if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
                 /* Check if there is already another event in the queue for the same object.
                  * if so, replace event with latest update. */
-                if ((e2 = corto_mount_findEvent(this, corto_subscriberEvent(e)))) {
-                    corto_ll_replace(this->events, e2, e);
-                    if (e2->event & CORTO_DECLARE) this->sentDiscarded.declares++;
-                    if (e2->event & (CORTO_DEFINE | CORTO_UPDATE)) this->sentDiscarded.updates++;
-                    if (e2->event & CORTO_DELETE) this->sentDiscarded.deletes++;
-                    corto_release(e2);
+                void *ptr = corto_ll_findPtr(this->events, corto_mount_findEvent, e);
+                if (ptr) {
+                    corto_release(*(void**)ptr);
+                    *(void**)ptr = e;
                 } else {
                     corto_ll_append(this->events, e);
                     appended ++;

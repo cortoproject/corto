@@ -13,9 +13,6 @@ extern "C" {
 #endif
 
 /* Casting macro's */
-#define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
-#define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
-#define corto_tool(o) ((corto_tool)corto_assertType((corto_type)corto_tool_o, o))
 #define corto_typeKind(o) ((corto_typeKind*)corto_assertType((corto_type)corto_typeKind_o, o))
 #define corto_bool(o) ((bool*)corto_assertType((corto_type)corto_bool_o, o))
 #define corto_attr(o) ((corto_attr*)corto_assertType((corto_type)corto_attr_o, o))
@@ -42,6 +39,9 @@ extern "C" {
 #define corto_member(o) ((corto_member)corto_assertType((corto_type)corto_member_o, o))
 #define corto_alias(o) ((corto_alias)corto_assertType((corto_type)corto_alias_o, o))
 #define corto_any(o) ((corto_any*)corto_assertType((corto_type)corto_any_o, o))
+#define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
+#define corto_package(o) ((corto_package)corto_assertType((corto_type)corto_package_o, o))
+#define corto_application(o) ((corto_application)corto_assertType((corto_type)corto_application_o, o))
 #define corto_collectionKind(o) ((corto_collectionKind*)corto_assertType((corto_type)corto_collectionKind_o, o))
 #define corto_collection(o) ((corto_collection)corto_assertType((corto_type)corto_collection_o, o))
 #define corto_array(o) ((corto_array)corto_assertType((corto_type)corto_array_o, o))
@@ -90,12 +90,12 @@ extern "C" {
 #define corto_override(o) ((corto_override)corto_assertType((corto_type)corto_override_o, o))
 #define corto_procedure(o) ((corto_procedure)corto_assertType((corto_type)corto_procedure_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assertType((corto_type)corto_sequence_o, o))
-#define corto_stringlist(o) ((corto_stringlist*)corto_assertType((corto_type)corto_stringlist_o, o))
 #define corto_table(o) ((corto_table)corto_assertType((corto_type)corto_table_o, o))
 #define corto_tableinstance(o) ((corto_tableinstance)corto_assertType((corto_type)corto_tableinstance_o, o))
 #define corto_target(o) ((corto_target)corto_assertType((corto_type)corto_target_o, o))
 #define corto_uint64(o) ((uint64_t*)corto_assertType((corto_type)corto_uint64_o, o))
 #define corto_text(o) ((corto_text)corto_assertType((corto_type)corto_text_o, o))
+#define corto_tool(o) ((corto_tool)corto_assertType((corto_type)corto_tool_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
 #define corto_verbatim(o) ((corto_verbatim)corto_assertType((corto_type)corto_verbatim_o, o))
@@ -297,6 +297,35 @@ struct corto_alias_s {
 
 /* any */
 typedef struct corto_any {corto_type type; void *value; uint8_t owner;} corto_any;
+
+#ifndef corto_stringlist_DEFINED
+#define corto_stringlist_DEFINED
+typedef corto_ll corto_stringlist;
+#endif
+
+/*  package */
+typedef struct corto_package_s *corto_package;
+
+struct corto_package_s {
+    corto_string description;
+    corto_string version;
+    corto_string author;
+    corto_string organization;
+    corto_string url;
+    corto_string repository;
+    corto_string license;
+    corto_string icon;
+    corto_stringlist use;
+    bool _public;
+    bool managed;
+};
+
+/*  application */
+typedef struct corto_application_s *corto_application;
+
+struct corto_application_s {
+    struct corto_package_s super;
+};
 
 /* collectionKind */
 typedef enum corto_collectionKind {
@@ -628,11 +657,6 @@ struct corto_sequence_s {
     struct corto_collection_s super;
 };
 
-#ifndef corto_stringlist_DEFINED
-#define corto_stringlist_DEFINED
-typedef corto_ll corto_stringlist;
-#endif
-
 /*  table */
 typedef struct corto_table_s *corto_table;
 
@@ -667,6 +691,13 @@ struct corto_text_s {
     uint64_t length;
 };
 
+/*  tool */
+typedef struct corto_tool_s *corto_tool;
+
+struct corto_tool_s {
+    struct corto_package_s super;
+};
+
 /*  uint */
 typedef struct corto_uint_s *corto_uint;
 
@@ -697,38 +728,8 @@ typedef void corto_void;
 
 typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq;
 
-/*  /corto/vstore/package */
-typedef struct corto_package_s *corto_package;
-
-struct corto_package_s {
-    corto_string description;
-    corto_string version;
-    corto_string author;
-    corto_string organization;
-    corto_string url;
-    corto_string repository;
-    corto_string license;
-    corto_string icon;
-    corto_stringlist use;
-    bool _public;
-    bool managed;
-};
-
-/*  /corto/vstore/application */
-typedef struct corto_application_s *corto_application;
-
-struct corto_application_s {
-    struct corto_package_s super;
-};
-
-/*  /corto/vstore/tool */
-typedef struct corto_tool_s *corto_tool;
-
-struct corto_tool_s {
-    struct corto_package_s super;
-};
-
 #ifdef __cplusplus
 }
 #endif
 #endif
+

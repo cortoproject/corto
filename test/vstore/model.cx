@@ -50,6 +50,13 @@ test/Suite SelectContentType:/
 class FooDispatcher: implements={dispatcher}:/
     void post(event e)
 
+// Test dispatchers
+test/Suite Dispatcher:/
+    void tc_subscriberDispatcher()
+    void tc_subscriberDispatcherMulti()
+    void tc_observerDispatcher()
+    void tc_observerDispatcherMulti()
+
 // Test content types with subscribers
 test/Suite SubscribeContentType:/
     eventsReceived: int32
