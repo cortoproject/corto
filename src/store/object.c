@@ -1676,11 +1676,6 @@ corto_object corto_declareChildRecursive_intern(
         id ++;
     }
 
-    corto_log("declareChildRecursive_intern '%s' => '%s'\n",
-        corto_fullpath(NULL, parent),
-        id);
-    corto_backtrace(stderr);
-
     /* lastFound is an optimization to mark whether or not we should make the
      * expensive check to verify if the FIND result object is valid. It is
      * possible that FIND returns an invalid object that was not declared by
