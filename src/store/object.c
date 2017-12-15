@@ -1640,6 +1640,7 @@ corto_int16 corto_defineDeclared(
 static
 corto_int16 corto_notifyDefined(
     corto_object o,
+    bool resume,
     corto_eventMask mask)
 {
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -1664,6 +1665,11 @@ corto_int16 corto_notifyDefined(
         corto_callDestructDelegate(&((corto_class)t)->define, t, o);
     }
 
+    /* Define contained objects */
+    if (corto_defineContainer(o, resume)) {
+        goto error;
+    }
+
     /* Remove object from declared admin and unlock object */
     if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
         corto_declaredByMeRemove(o);
@@ -1672,6 +1678,8 @@ corto_int16 corto_notifyDefined(
     }
 
     return 0;
+error:
+    return -1;
 }
 
 static
@@ -1771,7 +1779,7 @@ corto_object corto_declareChildRecursive_intern(
                 if (result) {
                     for (i = 0; i < sp; i++) {
                         if (masks[i]) {
-                            corto_notifyDefined(stack[i], masks[i]);
+                            corto_notifyDefined(stack[i], resume, masks[i]);
                         }
                     }
                 }
@@ -1894,13 +1902,13 @@ corto_int16 corto_define_intern(
         bool resumed = corto_resumeDeclared(o, resume);
         result = corto_defineDeclared(o);
         if (!result) {
-            result = corto_notifyDefined(o, resumed ? CORTO_RESUME : CORTO_DEFINE);
+            result = corto_notifyDefined(o, resume, resumed ? CORTO_RESUME : CORTO_DEFINE);
         }
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("define", o, NULL);
-    }
-
-    if (corto_defineContainer(o, resume)) {
-        goto error;
+    } else {
+        if (corto_defineContainer(o, resume)) {
+            goto error;
+        }
     }
 
     return result;
@@ -3709,7 +3717,7 @@ corto_int16 corto_update(corto_object o) {
             mask |= corto_resumeDeclared(o, true) ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
-                result = corto_notifyDefined(o, mask);
+                result = corto_notifyDefined(o, true, mask);
             }
         } else {
             if (corto_notifySecured(o, CORTO_UPDATE)) {
@@ -3721,7 +3729,7 @@ corto_int16 corto_update(corto_object o) {
             mask |= corto_resumeDeclared(o, true) ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
-                result = corto_notifyDefined(o, mask);
+                result = corto_notifyDefined(o, true, mask);
             }
         } else {
             if (corto_notify(o, CORTO_UPDATE)) {
@@ -3843,7 +3851,7 @@ corto_int16 corto_update_end(
 
         result = corto_defineDeclared(observable);
         if (!result) {
-            result = corto_notifyDefined(observable, mask);
+            result = corto_notifyDefined(observable, true, mask);
         }
     } else {
         if (corto_secured()) {
