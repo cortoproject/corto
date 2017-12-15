@@ -1307,6 +1307,12 @@ corto_object corto_declareChild_intern(
 
                             corto_read_begin(o);
                             corto_bool destructed = corto_checkState(o, CORTO_DELETED);
+                            if (!destructed) {
+                                corto_assert(
+                                    corto_checkState(o, CORTO_VALID),
+                                        "thread unblocked but object is still not valid"
+                                );
+                            }
                             corto_read_end(o);
 
                             corto_debug(
@@ -1699,9 +1705,15 @@ corto_object corto_declareChildRecursive_intern(
         id ++;
     }
 
+    /* lastFound is an optimization to mark whether or not we should make the
+     * expensive check to verify if the FIND result object is valid. It is
+     * possible that FIND returns an invalid object that was not declared by
+     * this thread */
+    corto_object lastFound = NULL;
     if (id && (next = strelem(id)) && (*next != '(')) {
         corto_id buf;
         char *cur = buf;
+        char *lastId = buf;
         strcpy(buf, id);
         corto_object stack[CORTO_MAX_SCOPE_DEPTH];
         corto_object firstNonExist = NULL;
@@ -1710,6 +1722,7 @@ corto_object corto_declareChildRecursive_intern(
         next = &cur[next - id];
         *next = '\0';
         next ++;
+
 
         do {
             /* Try to resume parent objects first, in case they have another type */
@@ -1732,6 +1745,8 @@ corto_object corto_declareChildRecursive_intern(
                     }
                 }
             } else {
+                lastFound = result;
+                lastId = cur;
                 corto_release(result);
             }
 
@@ -1743,6 +1758,7 @@ corto_object corto_declareChildRecursive_intern(
                 *next = '\0';
                 next ++;
             }
+
         } while (result && cur);
 
         int i;
@@ -1788,6 +1804,42 @@ corto_object corto_declareChildRecursive_intern(
             /* Recursively delete objects */
             if (firstNonExist) {
                 corto_delete(firstNonExist);
+            }
+        }
+
+        /* Verify FIND `result` was declared in this thread */
+        if (lastFound == result) {
+            corto_bool destructed = false;
+            if (!corto_checkState(result, CORTO_VALID)) {
+                if (!corto_declaredAdminCheck(result)) {
+                    /* Result not declared in this thread */
+                    corto_read_begin(result);
+                    destructed = corto_checkState(result, CORTO_DELETED);
+                    if (!destructed) {
+                        corto_assert(
+                            corto_checkState(result, CORTO_VALID),
+                                "thread unblocked but object is still not valid"
+                        );
+                    }
+                    corto_read_end(result);
+
+                    if (destructed) {
+                        result = corto_declareChild_intern(
+                            parent,
+                            lastId,
+                            type,
+                            orphan,
+                            forceType,
+                            TRUE);
+                    } else {
+                        corto_assert(corto_checkState(result, CORTO_VALID),
+                            "Object should be valid.");
+                    }
+                }
+            }
+            if (!destructed) {
+                /* FIND result is always released above. Claim if lastFound */
+                corto_claim(result);
             }
         }
     } else {
