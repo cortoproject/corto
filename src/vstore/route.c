@@ -103,7 +103,7 @@ int16_t corto_route_construct(
     corto_ptr_setref(&corto_function(this)->returnType, routerBase->returnType);
     corto_function(this)->parameters.length = count;
 
-    return safe_corto_method_construct(this);
+    return safe_corto_function_construct(this);
 error:
     return -1;
 }
@@ -117,8 +117,7 @@ int16_t corto_route_init(
         goto error;
     }
 
-    return safe_corto_method_init(this);
+    return safe_corto_function_init(this);
 error:
     return -1;
 }
-

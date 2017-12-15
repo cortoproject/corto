@@ -289,13 +289,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_function_destruct_),\
     SSO_OP_OBJ(lang_function_stringToParameterSeq),\
     SSO_OP_OBJ(lang_function_parseParamString_),\
-    /* method */\
-    SSO_OP_OBJ(lang_method_init_),\
-    SSO_OP_OBJ(lang_method_construct_),\
     /* overridable */\
     SSO_OP_OBJ(lang_overridable_init_),\
-    /* override */\
-    SSO_OP_OBJ(lang_override_init_),\
     /* observer */\
     SSO_OP_OBJ(vstore_observer_mask),\
     SSO_OP_OBJ(vstore_observer_observable),\

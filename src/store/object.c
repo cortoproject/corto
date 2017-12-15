@@ -1209,9 +1209,7 @@ corto_object corto_declareChild_intern(
     corto_assertObject(parent);
     corto_assertObject(type);
 
-    if (!parent) {
-        parent = root_o;
-    }
+    corto_assert(parent != NULL, "no parent provided to corto_declareChild");
 
     if (!corto_checkAttr(parent, CORTO_ATTR_NAMED) && !orphan) {
         corto_throw("object provided to 'parent' parameter is not scoped");
@@ -1268,25 +1266,6 @@ corto_object corto_declareChild_intern(
                      * can't be deallocated until it is explicitly deleted by the
                      * code that redeclared it. */
                     corto_claim(o);
-
-                    /* The object already exists. Check if the existing object is
-                     * owned by the same owner as the one registered */
-                    corto_object owner = corto_ownerof(o);
-                    if (owner && corto_instanceof(corto_mount_o, owner)) {
-                        if (owner != corto_getOwner()) {
-                            if (corto_getOwner() || corto_mount(owner)->policy.ownership != CORTO_LOCAL_OWNER) {
-                                if (forceType) {
-                                    corto_release(o);
-                                    corto_throw(
-                                      "owner '%s' of existing object '%s' does not match owner '%s'",
-                                      corto_fullpath(NULL, owner),
-                                      corto_fullpath(NULL, o),
-                                      corto_fullpath(NULL, corto_getOwner()));
-                                    goto owner_error;
-                                }
-                            }
-                        }
-                    }
 
                     /* If the object just has been declared and not by this thread,
                      * block until the object becomes either defined or deleted */
@@ -1345,12 +1324,11 @@ corto_object corto_declareChild_intern(
                 goto error;
             }
 
-            /* Notify parent of new object */
+            /* Notify of new object */
             if (!orphan) {
                 corto_notify(o, CORTO_DECLARE);
             } else {
-                /* Orphaned objects don't generate DECLARE and DEFINE events. To
-                 * indicate that an object is orphaned, the DECLARE flag is removed. */
+                /* Orphaned objects don't generate DECLARE and DEFINE events. */
                 _o->align.attrs.state = 0;
             }
 
@@ -1375,11 +1353,8 @@ ok:
     if (mountId) corto_dealloc(mountId);
     return o;
 error:
-    if (o) {
-        corto_delete(o);
-    }
+    if (o) corto_delete(o);
 access_error:
-owner_error:
     if (mountId) corto_dealloc(mountId);
     return NULL;
 }

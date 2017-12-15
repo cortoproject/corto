@@ -1093,10 +1093,7 @@ CORTO_PROCEDURE_NOBASE_O(lang, function, FALSE, NULL, NULL, CORTO_DECLARED | COR
     CORTO_METHOD_O(lang_function, parseParamString, "(string params)", lang_int16, corto_function_parseParamString);
 
 /* /corto/lang/method */
-CORTO_FW_IC(lang, method);
-CORTO_PROCEDURE_O(lang, method, TRUE, NULL, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_IC);
-    CORTO_METHOD_O(lang_method, init, "()", lang_int16, corto_method_init);
-    CORTO_METHOD_O(lang_method, construct, "()", lang_int16, corto_method_construct);
+CORTO_PROCEDURE_O(lang, method, TRUE, NULL, lang_function, CORTO_GLOBAL, NULL, CORTO_DECLARED, CORTO_NODELEGATE);
 
 /* /corto/lang/overridable */
 CORTO_FW_I(lang, overridable);
@@ -1104,9 +1101,7 @@ CORTO_PROCEDURE_O(lang, overridable, TRUE, NULL, lang_method, CORTO_GLOBAL, CORT
     CORTO_METHOD_O(lang_overridable, init, "()", lang_int16, corto_overridable_init);
 
 /* /corto/lang/override */
-CORTO_FW_I(lang, override);
-CORTO_PROCEDURE_O(lang, override, TRUE, NULL, lang_method, CORTO_GLOBAL, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, CORTO_I);
-    CORTO_METHOD_O(lang_override, init, "()", lang_int16, corto_override_init);
+CORTO_PROCEDURE_O(lang, override, TRUE, NULL, lang_method, CORTO_GLOBAL, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, CORTO_NODELEGATE);
 
 /* /corto/lang/metaprocedure */
 CORTO_FW_C(lang, metaprocedure);

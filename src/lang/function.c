@@ -154,9 +154,6 @@ finish:
 int16_t corto_function_init(
     corto_function this)
 {
-    extern int CORTO_BENCHMARK_FUNCTION_INIT;
-    corto_benchmark_start(CORTO_BENCHMARK_FUNCTION_INIT);
-
     if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
         if (!corto_instanceof(corto_interface_o, corto_parentof(this)) &&
             !corto_instanceof(corto_method_o, this))
@@ -197,12 +194,9 @@ int16_t corto_function_init(
             goto error;
         }
     }
-
-    corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return 0;
 error:
     this->parameters.length = 0;
-    corto_benchmark_stop(CORTO_BENCHMARK_FUNCTION_INIT);
     return -1;
 }
 

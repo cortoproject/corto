@@ -1013,38 +1013,6 @@ int16_t _corto_metaprocedure_construct(
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
-int16_t _corto_method_construct(
-    corto_method _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_method_construct(_this) _corto_method_construct(corto_method(_this))
-#else
-#define corto_method_construct _corto_method_construct
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_method_construct(_this) _corto_method_construct(corto_method(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-int16_t _corto_method_init(
-    corto_method _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_method_init(_this) _corto_method_init(corto_method(_this))
-#else
-#define corto_method_init _corto_method_init
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_method_init(_this) _corto_method_init(corto_method(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
 int16_t _corto_overridable_init(
     corto_overridable _this);
 
@@ -1057,22 +1025,6 @@ int16_t _corto_overridable_init(
 
 /* explicit type-safe macro */
 #define safe_corto_overridable_init(_this) _corto_overridable_init(corto_overridable(_this))
-
-/* forward declaration of the function. the '_' in front of the name allows
- * insertion of type-safe casts */
-CORTO_EXPORT
-int16_t _corto_override_init(
-    corto_override _this);
-
-/* implicit type-safe macro (not available for project implementation) */
-#ifndef BUILDING_CORTO
-#define corto_override_init(_this) _corto_override_init(corto_override(_this))
-#else
-#define corto_override_init _corto_override_init
-#endif
-
-/* explicit type-safe macro */
-#define safe_corto_override_init(_this) _corto_override_init(corto_override(_this))
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
