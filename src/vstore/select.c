@@ -51,6 +51,7 @@ typedef struct corto_selectRequest {
     corto_mount mount;
     corto_mountMask mountMask;
     bool isHistoricalQuery;
+    bool queryVstore;
 } corto_selectRequest;
 
 typedef struct corto_select_data corto_select_data;
@@ -125,6 +126,7 @@ struct corto_select_data {
     corto_frame from;
     corto_frame to;
     bool isHistoricalQuery;
+    bool queryVstore;
 
     /* Filters */
     corto_string typeFilter;
@@ -431,7 +433,7 @@ corto_resultIter corto_selectRequestMount(
     corto_select_data *data,
     corto_mount mount)
 {
-    if (data->mountAction || !data->quit) {
+    if (data->mountAction || (!data->quit && data->queryVstore)) {
         char *expr = data->mask == CORTO_ON_TREE ? "*" : data->filter ? data->filter : "*";
         corto_query *q = &corto_subscriber(mount)->query;
         char *parent = corto_selectRelativeParent(q, data);
@@ -441,6 +443,7 @@ corto_resultIter corto_selectRequestMount(
           parent,
           corto_fullpath(NULL, mount),
           data->location);
+
 
         corto_query r = {
           .from = parent,
@@ -466,7 +469,7 @@ corto_resultIter corto_selectRequestMount(
         }
 
         /* If this is a dry run, don't request data from mount */
-        if (data->quit) {
+        if (data->quit || !data->queryVstore) {
             return CORTO_ITER_EMPTY;
         } else {
             if (data->isHistoricalQuery) {
@@ -1414,6 +1417,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->from = r->from;
     data->to = r->to;
     data->isHistoricalQuery = r->isHistoricalQuery;
+    data->queryVstore = r->queryVstore;
     data->item.parent = data->parent;
     data->item.name = data->name;
     data->item.type = data->type;
@@ -1877,6 +1881,17 @@ static corto_select__fluent corto_selectorFrom(char *scope)
     return corto_select__fluentGet();
 }
 
+static corto_select__fluent corto_selectorVstore(bool enable)
+{
+    corto_selectRequest *request =
+      corto_tls_get(CORTO_KEY_FLUENT);
+    if (request) {
+        request->queryVstore = enable;
+        corto_debug("QUERY_VSTORE '%s'", enable ? "true" : "false");
+    }
+    return corto_select__fluentGet();
+}
+
 static corto_select__fluent corto_select__fluentGet(void)
 {
     corto_select__fluent result;
@@ -1901,6 +1916,7 @@ static corto_select__fluent corto_select__fluentGet(void)
     result.count = corto_selectorCount;
     result.instance = corto_selectorInstance;
     result.mount = corto_selectorMount;
+    result.vstore = corto_selectorVstore;
     return result;
 }
 
@@ -1914,8 +1930,10 @@ corto_select__fluent corto_select(
     if (!request) {
         request = corto_calloc(sizeof(corto_selectRequest));
         corto_tls_set(CORTO_KEY_FLUENT, request);
+        request->queryVstore = true;
     } else {
         memset(request, 0, sizeof(corto_selectRequest));
+        request->queryVstore = true;
     }
 
     if (expr) {

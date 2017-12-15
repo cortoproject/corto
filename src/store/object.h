@@ -37,6 +37,8 @@ void corto_drop(corto_object o, corto_bool delete);
 corto_object corto_resumePersistent(corto_object o);
 
 #define FIND(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, 0)
+#define RESOLVE(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, CORTO_DO_LOOKUP_TYPE)
+
 
 struct corto_contentType_s {
     corto_string name;

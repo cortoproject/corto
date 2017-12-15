@@ -657,7 +657,10 @@ static uint16_t corto_subscriber_unsubscribeIntern(
 
     /* Unsubscribe outside of lock for every instance that is unsubscribed */
     for (i = 0; i < count; i ++) {
-        corto_select(this->query.select).from(this->query.from).instance(this).unsubscribe();
+        corto_select(this->query.select)
+        .from(this->query.from)
+        .instance(this)
+        .unsubscribe();
     }
 
     if (!removeAll) {

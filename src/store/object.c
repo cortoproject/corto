@@ -1013,7 +1013,7 @@ error:
 
 /* Create new object with attributes */
 static
-corto_object corto_declareIntern(
+corto_object corto_declare_intern(
     corto_type type,
     corto_bool orphan)
 {
@@ -1168,7 +1168,7 @@ error:
 corto_object _corto_declare(
     corto_type type)
 {
-    return corto_declareIntern(type, FALSE);
+    return corto_declare_intern(type, FALSE);
 }
 
 static
@@ -1248,7 +1248,7 @@ corto_object corto_declareChild_intern(
     /* Create new object */
     do {
         corto_attr oldAttr = corto_setAttr(corto_getAttr()|CORTO_ATTR_NAMED);
-        o = corto_declareIntern(type, orphan);
+        o = corto_declare_intern(type, orphan);
         corto_setAttr(oldAttr);
 
         if (o) {
@@ -1675,6 +1675,11 @@ corto_object corto_declareChildRecursive_intern(
         parent = root_o;
         id ++;
     }
+
+    corto_log("declareChildRecursive_intern '%s' => '%s'\n",
+        corto_fullpath(NULL, parent),
+        id);
+    corto_backtrace(stderr);
 
     /* lastFound is an optimization to mark whether or not we should make the
      * expensive check to verify if the FIND result object is valid. It is
@@ -4319,7 +4324,7 @@ corto_type corto_overloadParamType(corto_object object, corto_int32 i, corto_boo
         if (reference) *reference = FALSE;
     }
 
-    result = corto_resolve(corto_parentof(object), buffer);
+    result = RESOLVE(corto_parentof(object), buffer);
     if (!result) {
         corto_throw(
           "unresolved type '%s' in signature '%s'", buffer, signature);
@@ -4569,7 +4574,7 @@ corto_int16 corto_overload(corto_object object, corto_string requested, corto_in
 
             if (strcmp(r_typeName, o_typeName) || (flags != o_flags)) {
                 if (!(flags & (CORTO_PARAMETER_WILDCARD | CORTO_PARAMETER_NULL))) {
-                    r_type = corto_resolve(NULL, r_typeName);
+                    r_type = RESOLVE(NULL, r_typeName);
                     if (r_type) {
                         r_type = corto_type(r_type);
                     } else {

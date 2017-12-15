@@ -324,7 +324,7 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
             } else if (mask == CORTO_DELETE) {
                 corto_id id;
                 corto_fullpath(id, observable);
-                corto_select("//").from(id).unsubscribe();
+                corto_select("//").from(id).vstore(false).unsubscribe();
             }
 
             corto_log_pop();
@@ -1016,6 +1016,7 @@ int16_t corto_observer_observe(
                 mask & CORTO_ON_SCOPE ? "/" : "//")
               .from(observableId)
               .instance(this)
+              .vstore(false) /* Don't send queries to mounts */
               .subscribe(&it);
             if (ret) {
                 corto_throw("observer: failed to notify mounts of subscription");

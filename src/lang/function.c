@@ -271,7 +271,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 }
 
                 /* Assign type */
-                result.buffer[i].type = corto_resolve(scope, id);
+                result.buffer[i].type = RESOLVE(scope, id);
                 if (!result.buffer[i].type) {
                     corto_throw("unresolved type '%s'", id);
                     goto error;
