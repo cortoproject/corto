@@ -61,22 +61,17 @@ extern corto_tls CORTO_KEY_DECLARED_ADMIN;
 extern corto_tls CORTO_KEY_OWNER;
 extern corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
-extern int CORTO_BENCHMARK_DECLARE;
-extern int CORTO_BENCHMARK_DECLARECHILD;
-extern int CORTO_BENCHMARK_INIT;
-extern int CORTO_BENCHMARK_DEFINE;
-extern int CORTO_BENCHMARK_DELETE;
-
 int16_t corto_init(corto_object o);
 int16_t corto_deinit(corto_object o);
 
-void corto_declaredAdminFree(void *admin) {
+void corto_declaredByMeFree(void *admin) {
     if (admin) {
         corto_ll_free(admin);
     }
 }
 
-corto_bool corto_declaredAdminCheck(corto_object o) {
+static
+bool corto_declaredByMeCheck(corto_object o) {
     corto_assertObject(o);
     corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (!admin) {
@@ -86,7 +81,8 @@ corto_bool corto_declaredAdminCheck(corto_object o) {
     }
 }
 
-static void corto_declaredAdminAdd(corto_object o) {
+static
+void corto_declaredByMeAdd(corto_object o) {
     corto_assertObject(o);
     corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (!admin) {
@@ -96,7 +92,8 @@ static void corto_declaredAdminAdd(corto_object o) {
     corto_ll_append(admin, o);
 }
 
-static corto_bool corto_declaredAdminRemove(corto_object o) {
+static
+bool corto_declaredByMeRemove(corto_object o) {
     corto_assertObject(o);
     corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
     if (admin) {
@@ -260,7 +257,7 @@ static corto_object corto__initScope(
         }
     } else {
         result = o;
-        corto_declaredAdminAdd(o);
+        corto_declaredByMeAdd(o);
         corto_lock_intern(o);
     }
 
@@ -666,7 +663,7 @@ static void corto_memtrace(corto_string oper, corto_object o, corto_string conte
     if ((CORTO_TRACE_OBJECT == o) || (CORTO_TRACE_ID && !strcmp(path, CORTO_TRACE_ID))) {
         memtraceCount ++;
 
-        printf("%d: %s: %s (count = %d, destructed = %d)\n",
+        printf("%d: %s: %s (count = %d, deleted = %d)\n",
             memtraceCount,
             oper,
             path,
@@ -820,7 +817,7 @@ static corto_object corto_adopt(corto_object parent, corto_object child, corto_b
                 /* Add the object to the declared admin, which ensures that this
                  * thread will be able to resolve / redeclare the object, but
                  * other threads will only see the object after it is defined. */
-                corto_declaredAdminAdd(child);
+                corto_declaredByMeAdd(child);
             }
 
             /* Parent must not be deleted before all childs are gone. */
@@ -1020,8 +1017,6 @@ corto_object corto_declareIntern(
     corto_type type,
     corto_bool orphan)
 {
-    corto_benchmark_start(CORTO_BENCHMARK_DECLARE);
-
     corto_uint32 size, headerSize;
     corto__object* o = NULL;
     void *mem = NULL;
@@ -1160,7 +1155,6 @@ corto_object corto_declareIntern(
         }
     }
 
-    corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
     return CORTO_OFFSET(o, sizeof(corto__object));
 error_init: {
     corto_throw("%s/init failed", corto_fullpath(NULL, type));
@@ -1168,8 +1162,6 @@ error_init: {
 }
 error:
     if (mem) corto_dealloc(mem);
-
-    corto_benchmark_stop(CORTO_BENCHMARK_DECLARE);
     return NULL;
 }
 
@@ -1210,7 +1202,6 @@ corto_object corto_declareChild_intern(
     bool forceType,
     bool defineVoid)
 {
-    corto_benchmark_start(CORTO_BENCHMARK_DECLARECHILD);
     corto_object o = NULL;
     corto_bool retry = FALSE;
     corto_string mountId = NULL;
@@ -1298,16 +1289,16 @@ corto_object corto_declareChild_intern(
                     }
 
                     /* If the object just has been declared and not by this thread,
-                     * block until the object becomes either defined or destructed */
+                     * block until the object becomes either defined or deleted */
                     if (!corto_checkState(o, CORTO_VALID) && !corto_checkState(o, CORTO_DELETED)) {
-                        if (!corto_declaredAdminCheck(o)) {
+                        if (!corto_declaredByMeCheck(o)) {
                             corto_debug(
                               "corto: declareChild: %s declared in other thread, waiting",
                               id);
 
                             corto_read_begin(o);
-                            corto_bool destructed = corto_checkState(o, CORTO_DELETED);
-                            if (!destructed) {
+                            corto_bool deleted = corto_checkState(o, CORTO_DELETED);
+                            if (!deleted) {
                                 corto_assert(
                                     corto_checkState(o, CORTO_VALID),
                                         "thread unblocked but object is still not valid"
@@ -1316,8 +1307,8 @@ corto_object corto_declareChild_intern(
                             corto_read_end(o);
 
                             corto_debug(
-                              "corto: declareChild: %s defined in other thread (destructed = %d)",
-                              id, destructed);
+                              "corto: declareChild: %s defined in other thread (deleted = %d)",
+                              id, deleted);
 
                             /* If the object has been deleted after unlocking,
                              * this means that corto_delete was called instead
@@ -1326,7 +1317,7 @@ corto_object corto_declareChild_intern(
                              * VALID object (at least), it cannot return the
                              * DESTRUCTED object. Therefore, the function will
                              * retry declaring a new object. */
-                            if (destructed) {
+                            if (deleted) {
                                 corto_release(o);
                                 retry = TRUE;
                             }
@@ -1382,8 +1373,6 @@ corto_object corto_declareChild_intern(
 
 ok:
     if (mountId) corto_dealloc(mountId);
-    corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
-
     return o;
 error:
     if (o) {
@@ -1392,7 +1381,6 @@ error:
 access_error:
 owner_error:
     if (mountId) corto_dealloc(mountId);
-    corto_benchmark_stop(CORTO_BENCHMARK_DECLARECHILD);
     return NULL;
 }
 
@@ -1678,7 +1666,7 @@ corto_int16 corto_notifyDefined(
 
     /* Remove object from declared admin and unlock object */
     if (corto_checkAttr(o, CORTO_ATTR_NAMED)) {
-        corto_declaredAdminRemove(o);
+        corto_declaredByMeRemove(o);
     } else {
         corto_unlock(o);
     }
@@ -1723,10 +1711,10 @@ corto_object corto_declareChildRecursive_intern(
         *next = '\0';
         next ++;
 
-
         do {
-            /* Try to resume parent objects first, in case they have another type */
+            /* Check if object exists */
             if (!(result = FIND(parent, cur))) {
+                /* Check if parent objects can be resumed */
                 if (!next || !resume || !(result = corto_resume(parent, cur, NULL))) {
                     /* If object was not resumed, declare it */
                     result = corto_declareChild_intern(
@@ -1809,13 +1797,13 @@ corto_object corto_declareChildRecursive_intern(
 
         /* Verify FIND `result` was declared in this thread */
         if (lastFound == result) {
-            corto_bool destructed = false;
+            corto_bool deleted = false;
             if (!corto_checkState(result, CORTO_VALID)) {
-                if (!corto_declaredAdminCheck(result)) {
+                if (!corto_declaredByMeCheck(result)) {
                     /* Result not declared in this thread */
                     corto_read_begin(result);
-                    destructed = corto_checkState(result, CORTO_DELETED);
-                    if (!destructed) {
+                    deleted = corto_checkState(result, CORTO_DELETED);
+                    if (!deleted) {
                         corto_assert(
                             corto_checkState(result, CORTO_VALID),
                                 "thread unblocked but object is still not valid"
@@ -1823,7 +1811,7 @@ corto_object corto_declareChildRecursive_intern(
                     }
                     corto_read_end(result);
 
-                    if (destructed) {
+                    if (deleted) {
                         result = corto_declareChild_intern(
                             parent,
                             lastId,
@@ -1837,7 +1825,7 @@ corto_object corto_declareChildRecursive_intern(
                     }
                 }
             }
-            if (!destructed) {
+            if (!deleted) {
                 /* FIND result is always released above. Claim if lastFound */
                 corto_claim(result);
             }
@@ -1884,8 +1872,6 @@ corto_int16 corto_define_intern(
     corto_object o,
     bool resume)
 {
-    corto_benchmark_start(CORTO_BENCHMARK_DEFINE);
-
     corto_int16 result = 0;
 
     corto_assertObject(o);
@@ -1898,7 +1884,7 @@ corto_int16 corto_define_intern(
     /* Only define undefined objects */
     if (!corto_checkState(o, CORTO_VALID)) {
         if (corto_childof(root_o, o) && !corto_isbuiltin(o)) {
-            if (!corto_declaredAdminCheck(o) && !corto_isorphan(o)) {
+            if (!corto_declaredByMeCheck(o) && !corto_isorphan(o)) {
                 corto_throw("corto: cannot define object '%s' because it was not declared in same thread",
                   corto_fullpath(NULL, o));
                 goto error;
@@ -1913,15 +1899,12 @@ corto_int16 corto_define_intern(
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("define", o, NULL);
     }
 
-    corto_benchmark_stop(CORTO_BENCHMARK_DEFINE);
-
     if (corto_defineContainer(o, resume)) {
         goto error_container;
     }
 
     return result;
 error:
-    corto_benchmark_stop(CORTO_BENCHMARK_DEFINE);
 error_container:
     return -1;
 }
@@ -1947,20 +1930,18 @@ corto_bool corto_destruct(
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     if (!isBuiltin) corto_ainc(&_o->refcount);
 
-    corto_benchmark_start(CORTO_BENCHMARK_DELETE);
-
     if (!corto_checkState(o, CORTO_DELETED)) {
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("destruct", o, NULL);
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
 
         bool defined = corto_checkState(o, CORTO_VALID);
 
-        /* Call destructor before marking object state as destructed */
+        /* Call destructor before marking object state as deleted */
         if (defined && corto_owned(o)) {
             corto__destructor(o);
         }
 
-        /* From here, object is marked as destructed. */
+        /* From here, object is marked as deleted. */
         _o->align.attrs.state |= CORTO_DELETED;
 
         if (!isBuiltin && named) {
@@ -1993,7 +1974,7 @@ corto_bool corto_destruct(
                 }
             } else {
                 /* If object wasn't defined, remove it from the declared admin */
-                if (named && !corto_declaredAdminRemove(o)) {
+                if (named && !corto_declaredByMeRemove(o)) {
                     /* Throw a warning only if deleting the object. If this is not a
                      * delete, then the object was released, which may be done by
                      * anyone. */
@@ -2016,7 +1997,7 @@ corto_bool corto_destruct(
             corto__orphan(o);
         }
 
-        /* Indicate that object has been destructed */
+        /* Indicate that object has been deleted */
         result = TRUE;
         if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
     }
@@ -2081,7 +2062,6 @@ corto_bool corto_destruct(
         result = FALSE;
     }
 
-    corto_benchmark_stop(CORTO_BENCHMARK_DELETE);
     return result;
 }
 
@@ -3380,9 +3360,7 @@ corto_object corto_lookup(corto_object scope, corto_string id)
     return corto_lookup_intern(scope, id, TRUE);
 }
 
-extern int CORTO_BENCHMARK_RESOLVE;
-
-corto_bool corto_declaredAdminCheck(corto_object o);
+corto_bool corto_declaredByMeCheck(corto_object o);
 
 /* Resolve anonymous object */
 static corto_char* corto_resolveAnonymous(corto_object scope, corto_object o, corto_string str, corto_object* out) {
@@ -3427,7 +3405,6 @@ corto_object corto_resolve_intern(
     corto_string str,
     bool shouldResume)
 {
-    corto_benchmark_start(CORTO_BENCHMARK_RESOLVE);
     corto_object scope, _scope_start, o, lookup;
     const char* ptr;
     char *bptr, *bptrLc;
@@ -3620,20 +3597,18 @@ repeat:
     }
 
     /* If object is not defined and not declared by this thread, don't return */
-    if (o && !corto_checkState(o, CORTO_VALID) && !corto_declaredAdminCheck(o)) {
+    if (o && !corto_checkState(o, CORTO_VALID) && !corto_declaredByMeCheck(o)) {
         corto_debug(
             "corto: resolved undefined object '%s' is declared by another thread (%d)",
-            corto_fullpath(NULL, o), corto_declaredAdminCheck(o));
+            corto_fullpath(NULL, o), corto_declaredByMeCheck(o));
         corto_release(o);
         o = NULL;
     }
 
-    corto_benchmark_stop(CORTO_BENCHMARK_RESOLVE);
     return o;
 access_error:
     corto_release(o);
 error:
-    corto_benchmark_stop(CORTO_BENCHMARK_RESOLVE);
     return NULL;
 }
 
@@ -3784,7 +3759,7 @@ corto_int16 corto_update_begin_intern(
         goto error;
     }
 
-    if (!corto_checkState(o, CORTO_VALID) && !corto_declaredAdminCheck(o)) {
+    if (!corto_checkState(o, CORTO_VALID) && !corto_declaredByMeCheck(o)) {
         corto_throw("updateBegin: cannot update '%s', object is being defined by other thread",
             corto_fullpath(NULL, o));
         goto error;
@@ -4041,7 +4016,7 @@ corto_int16 corto_lock(
 {
     corto_assertObject(object);
     if (!corto_checkState(object, CORTO_VALID)) {
-        if (corto_declaredAdminCheck(object)) {
+        if (corto_declaredByMeCheck(object)) {
             /* Don't lock if object is being defined */
             return 0;
         }
@@ -4072,7 +4047,7 @@ corto_int16 corto_unlock(
     corto_assertObject(object);
 
     if (!corto_checkState(object, CORTO_VALID)) {
-        if (corto_declaredAdminCheck(object)) {
+        if (corto_declaredByMeCheck(object)) {
             /* Don't lock if object is being defined */
             return 0;
         }
@@ -4986,7 +4961,6 @@ corto_equalityKind corto_compare(corto_object o1, corto_object o2) {
 }
 
 corto_int16 corto_init(corto_object o) {
-    corto_benchmark_start(CORTO_BENCHMARK_INIT);
     corto_assertObject(o);
     corto_int16 result = 0;
     corto_type type = corto_typeof(o);
@@ -5004,7 +4978,6 @@ corto_int16 corto_init(corto_object o) {
     }
     return result;
 error:
-    corto_benchmark_stop(CORTO_BENCHMARK_INIT);
     return -1;
 }
 

@@ -39,7 +39,7 @@ void corto_call_cdecl(corto_function f, corto_void* result, void* args);
 /* TLS callback to cleanup observer administration */
 void corto_observerAdminFree(void *admin);
 void corto_subscriberAdminFree(void *admin);
-void corto_declaredAdminFree(void *admin);
+void corto_declaredByMeFree(void *admin);
 
 #ifdef CORTO_VM
 void corto_call_vm(corto_function f, corto_void* result, void* args);
@@ -113,25 +113,6 @@ int8_t CORTO_TRACE_NOTIFICATIONS = 0;
 
 /* When set, the runtime will break at specified breakpoint */
 int32_t CORTO_MEMTRACE_BREAKPOINT;
-
-/* Benchmark tags */
-int CORTO_BENCHMARK_DECLARE;
-int CORTO_BENCHMARK_DECLARECHILD;
-int CORTO_BENCHMARK_INIT;
-int CORTO_BENCHMARK_FUNCTION_INIT;
-int CORTO_BENCHMARK_METHOD_INIT;
-int CORTO_BENCHMARK_DEFINE;
-int CORTO_BENCHMARK_DELETE;
-int CORTO_BENCHMARK_RESOLVE;
-
-int S_B_NOTIFY;
-int S_B_INIT;
-int S_B_FINI;
-int S_B_MATCH;
-int S_B_PATHID;
-int S_B_INVOKE;
-int S_B_MATCHPARENT;
-int S_B_CONTENTTYPE;
 
 /*
  * Indicator for whether corto is operational
@@ -1075,7 +1056,7 @@ int corto_start(char *appName) {
 
     /* Initialize TLS keys */
     corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
-    corto_tls_new(&CORTO_KEY_DECLARED_ADMIN, corto_declaredAdminFree);
+    corto_tls_new(&CORTO_KEY_DECLARED_ADMIN, corto_declaredByMeFree);
     corto_tls_new(&CORTO_KEY_LISTEN_ADMIN, NULL);
     corto_tls_new(&CORTO_KEY_OWNER, NULL);
     corto_tls_new(&CORTO_KEY_ATTR, corto_genericTlsFree);
@@ -1099,25 +1080,6 @@ int corto_start(char *appName) {
         corto_getenv("BAKE_HOME"),
         corto_getenv("BAKE_VERSION"),
         NULL);
-
-    /* Initialize benchmark constants */
-    CORTO_BENCHMARK_DECLARE = corto_benchmark_init("corto_declare");
-    CORTO_BENCHMARK_DECLARECHILD = corto_benchmark_init("corto_declareChild");
-    CORTO_BENCHMARK_INIT = corto_benchmark_init("corto_init");
-    CORTO_BENCHMARK_FUNCTION_INIT = corto_benchmark_init("corto_function_init");
-    CORTO_BENCHMARK_METHOD_INIT = corto_benchmark_init("corto_method_init");
-    CORTO_BENCHMARK_DEFINE = corto_benchmark_init("corto_define");
-    CORTO_BENCHMARK_DELETE = corto_benchmark_init("corto_delete");
-    CORTO_BENCHMARK_RESOLVE = corto_benchmark_init("corto_resolve");
-
-    S_B_NOTIFY = corto_benchmark_init("S_B_NOTIFY");
-    S_B_INIT = corto_benchmark_init("S_B_INIT");
-    S_B_FINI = corto_benchmark_init("S_B_FINI");
-    S_B_MATCH = corto_benchmark_init("S_B_MATCH");
-    S_B_PATHID = corto_benchmark_init("S_B_PATHID");
-    S_B_INVOKE = corto_benchmark_init("S_B_INVOKE");
-    S_B_MATCHPARENT = corto_benchmark_init("S_B_MATCHPARENT");
-    S_B_CONTENTTYPE = corto_benchmark_init("S_B_CONTENTTYPE");
 
     /* Initialize security */
     corto_debug("init security");
@@ -1399,24 +1361,6 @@ int corto_stop(void) {
     corto_log_pop();
 
     CORTO_APP_STATUS = 3; /* Shut down */
-
-    corto_benchmark_fini(CORTO_BENCHMARK_DECLARE);
-    corto_benchmark_fini(CORTO_BENCHMARK_DECLARECHILD);
-    corto_benchmark_fini(CORTO_BENCHMARK_INIT);
-    corto_benchmark_fini(CORTO_BENCHMARK_FUNCTION_INIT);
-    corto_benchmark_fini(CORTO_BENCHMARK_METHOD_INIT);
-    corto_benchmark_fini(CORTO_BENCHMARK_DEFINE);
-    corto_benchmark_fini(CORTO_BENCHMARK_DELETE);
-    corto_benchmark_fini(CORTO_BENCHMARK_RESOLVE);
-
-    corto_benchmark_fini(S_B_NOTIFY);
-    corto_benchmark_fini(S_B_INIT);
-    corto_benchmark_fini(S_B_MATCHPARENT);
-    corto_benchmark_fini(S_B_MATCH);
-    corto_benchmark_fini(S_B_PATHID);
-    corto_benchmark_fini(S_B_CONTENTTYPE);
-    corto_benchmark_fini(S_B_INVOKE);
-    corto_benchmark_fini(S_B_FINI);
 
     return 0;
 error:

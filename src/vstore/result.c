@@ -46,8 +46,5 @@ error:
 corto_string corto_result_getText(
     corto_result* this)
 {
-
     return (corto_string)this->value;
-
 }
-

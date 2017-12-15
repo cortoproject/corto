@@ -11,15 +11,6 @@ extern corto_tls CORTO_KEY_FLUENT;
 
 extern corto_rwmutex_s corto_subscriberLock;
 
-extern int S_B_NOTIFY;
-extern int S_B_INIT;
-extern int S_B_FINI;
-extern int S_B_MATCH;
-extern int S_B_PATHID;
-extern int S_B_INVOKE;
-extern int S_B_MATCHPARENT;
-extern int S_B_CONTENTTYPE;
-
 /* Fluent request */
 typedef struct corto_subscribeRequest {
     corto_int16 err;
@@ -276,9 +267,6 @@ corto_int16 corto_notifySubscribersId(
         return 0;
     }
 
-    corto_benchmark_start(S_B_NOTIFY);
-
-    corto_benchmark_start(S_B_INIT);
     corto_object intermediate = NULL;
     corto_value intermediateValue = corto_value_empty();
     corto_contentType contentTypeHandle = NULL;
@@ -320,7 +308,6 @@ corto_int16 corto_notifySubscribersId(
         ;
 
     corto_int16 depth = corto_entityAdmin_getDepthFromId(path);
-    corto_benchmark_stop(S_B_INIT);
 
     corto_entityAdmin *admin = corto_entityAdmin_get(&corto_subscriber_admin);
     if (!admin) {
@@ -335,12 +322,10 @@ corto_int16 corto_notifySubscribersId(
             corto_entityPerParent *subPerParent = &admin->entities[depth].buffer[sp];
             corto_bool relativeParentSet = FALSE;
 
-            corto_benchmark_start(S_B_MATCHPARENT);
             char *expr = corto_matchParent(subPerParent->parent, path);
             if (!expr) {
                 continue;
             }
-            corto_benchmark_stop(S_B_MATCHPARENT);
 
             for (s = 0; s < subPerParent->entities.length; s ++) {
                 corto_entity *sub = &subPerParent->entities.buffer[s];
@@ -365,12 +350,9 @@ corto_int16 corto_notifySubscribersId(
                  * evaluate this simple expression here. */
                 corto_idmatch_program match = (corto_idmatch_program)s->idmatch;
                 if (match->kind != 3) {
-                    corto_benchmark_start(S_B_MATCH);
                     if (!corto_idmatch_run(match, expr)) {
-                        corto_benchmark_stop(S_B_MATCH);
                         continue;
                     }
-                    corto_benchmark_stop(S_B_MATCH);
                 } else if ((sep > expr) || expr[0] == '.') {
                     continue;
                 }
@@ -379,7 +361,6 @@ corto_int16 corto_notifySubscribersId(
                 if (s->contentType && contentType && !strcmp(s->contentType, contentType)) {
                     content = value;
                 } else if (s->contentTypeHandle && value && type) {
-                    corto_benchmark_start(S_B_CONTENTTYPE);
 
                     /* Check if contentType has already been loaded */
                     corto_int32 i;
@@ -424,13 +405,11 @@ corto_int16 corto_notifySubscribersId(
                         content = contentTypes[i].value;
                         contentTypesCount ++;
                     }
-                    corto_benchmark_stop(S_B_CONTENTTYPE);
                 }
 
                 /* Relative parent will be the same for each subscriber at same depth */
                 char *parentPtr = relativeParent;
                 if (!relativeParentSet) {
-                    corto_benchmark_start(S_B_PATHID);
                     char *fromptr = subPerParent->parent;
                     /* If 'from' is '/', move up one character, This ensures that
                      * the same relativeParent buffer can be used for subscribers
@@ -439,7 +418,6 @@ corto_int16 corto_notifySubscribersId(
                         fromptr ++;
                     }
                     corto_pathstr(relativeParent, fromptr, parent, sepLength);
-                    corto_benchmark_stop(S_B_PATHID);
                     relativeParentSet = TRUE;
                 }
 
@@ -465,7 +443,6 @@ corto_int16 corto_notifySubscribersId(
                   .owner = objectOwner
                 };
 
-                corto_benchmark_start(S_B_INVOKE);
                 if (s->isAligning) {
                     if (corto_mutex_lock((corto_mutex)s->alignMutex)) {
                         goto error;
@@ -479,12 +456,9 @@ corto_int16 corto_notifySubscribersId(
                 } else {
                     corto_subscriber_invoke(instance, mask, &r, s, NULL);
                 }
-                corto_benchmark_stop(S_B_INVOKE);
             }
         }
     } while (--depth >= 0);
-
-    corto_benchmark_start(S_B_FINI);
 
     /* Free up resources */
     corto_int32 i;
@@ -496,10 +470,6 @@ corto_int16 corto_notifySubscribersId(
     if (intermediate && contentType) {
         corto_release(intermediate);
     }
-
-    corto_benchmark_stop(S_B_FINI);
-
-    corto_benchmark_stop(S_B_NOTIFY);
 
     return 0;
 error:
