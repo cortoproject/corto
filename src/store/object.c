@@ -1796,7 +1796,7 @@ corto_object corto_declareChildRecursive_intern(
         }
 
         /* Verify FIND `result` was declared in this thread */
-        if (lastFound == result) {
+        if (result && (lastFound == result)) {
             corto_bool deleted = false;
             if (!corto_checkState(result, CORTO_VALID)) {
                 if (!corto_declaredByMeCheck(result)) {
@@ -1900,12 +1900,11 @@ corto_int16 corto_define_intern(
     }
 
     if (corto_defineContainer(o, resume)) {
-        goto error_container;
+        goto error;
     }
 
     return result;
 error:
-error_container:
     return -1;
 }
 
