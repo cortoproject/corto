@@ -48,14 +48,17 @@ test/Suite SelectContentType:/
     void tc_selectBinaryFromJson()
 
 class FooDispatcher: implements={dispatcher}:/
-    void post(event e)
+    void post(vstore/event e)
 
 // Test dispatchers
 test/Suite Dispatcher:/
+    observerPosted: bool
+    subscriberPosted: bool
     void tc_subscriberDispatcher()
     void tc_subscriberDispatcherMulti()
     void tc_observerDispatcher()
     void tc_observerDispatcherMulti()
+    void tc_observerSubscriberDispatcher()
 
 // Test content types with subscribers
 test/Suite SubscribeContentType:/
