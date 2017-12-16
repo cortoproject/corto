@@ -229,6 +229,10 @@ int16_t corto_mount_construct(
         this->policy.mask &= ~CORTO_MOUNT_BATCH_NOTIFY;
     }
 
+    if (!corto_mount_hasMethod(this, "onHistoryBatchNotify")) {
+        this->policy.mask &= ~CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
+    }
+
     if (!corto_mount_hasMethod(this, "onInvoke")) {
         this->policy.mask &= ~CORTO_MOUNT_INVOKE;
     }
@@ -321,6 +325,16 @@ void corto_mount_destruct(
 
     if (this->thread) {
         corto_thread_join((corto_thread)this->thread, NULL);
+    }
+
+    if (corto_ll_count(this->events)) {
+        corto_trace("there were %d events left in the mount event queue",
+            corto_ll_count(this->events));
+    }
+
+    if (corto_ll_count(this->historicalEvents)) {
+        corto_trace("there were %d historical events left in the mount event queue",
+            corto_ll_count(this->historicalEvents));
     }
 
     safe_corto_subscriber_destruct(this);
@@ -925,7 +939,16 @@ corto_object corto_mount_resume(
                 if (parent_o) {
                     corto_object type_o = corto_resolve(NULL, iterResult->type);
                     if (type_o) {
-                        o = corto_declareChild(parent_o, iterResult->id, type_o);
+                        /* Use non-recursive declare */
+                        o = corto(
+                            parent_o,
+                            iterResult->id,
+                            type_o,
+                            NULL,
+                            NULL,
+                            NULL,
+                            -1,
+                            CORTO_DO_DECLARE|CORTO_DO_FORCE_TYPE);
                         if (!o) {
                             corto_throw("failed to create object %s/%s",
                               parent, name);
@@ -949,7 +972,6 @@ corto_object corto_mount_resume(
                         name);
                     goto error;
                 }
-
             }
 
             if (o) {
@@ -960,7 +982,8 @@ corto_object corto_mount_resume(
                 }
 
                 if (newObject) {
-                    corto_define(o);
+                    /* Use define that won't resume */
+                    corto(NULL, NULL, NULL, o, NULL, NULL, -1, CORTO_DO_DEFINE);
                 }
 
                 result = o;

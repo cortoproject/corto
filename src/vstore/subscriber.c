@@ -97,7 +97,7 @@ int16_t corto_subscriber_invoke(
         }
     } else {
         if (!eptr) {
-            eptr = corto_declare(corto_subscriberEvent_o);
+            eptr = corto(NULL, NULL, corto_subscriberEvent_o, NULL, NULL, NULL, 0, CORTO_DO_DECLARE);
             corto_ptr_setref(&eptr->subscriber, s);
             corto_ptr_setref(&eptr->instance, instance);
             corto_ptr_setref(&eptr->source, NULL);
@@ -603,6 +603,38 @@ static corto_subscriber corto_subscribeCallback(
     return result;
 }
 
+static corto_mount corto_subscribeMount(
+    corto_class type,
+    corto_mountPolicy *policy,
+    const char *value)
+{
+    corto_subscribeRequest *r = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_contentType ctHandle = NULL;
+    if (value) {
+        ctHandle = corto_load_contentType("text/corto");
+    }
+
+    /* declareChild */
+    corto_mount m = corto(NULL, NULL, type, NULL, NULL, NULL, -1,
+        CORTO_DO_DECLARE|CORTO_DO_FORCE_TYPE);
+
+    corto_subscriber s = corto_subscriber(m);
+    corto_query *q = &s->query;
+    corto_ptr_setstr(&q->from, r->scope);
+    corto_ptr_setstr(&q->select, r->expr);
+    corto_ptr_setstr(&q->type, r->type);
+    corto_ptr_setstr(&s->contentType, r->contentType);
+    ((corto_observer)s)->enabled = true;
+    m->policy = *policy;
+
+    corto_tls_set(CORTO_KEY_FLUENT, NULL);
+    free(r);
+
+    /* define & set value if provided */
+    return corto(NULL, NULL, NULL, m, ctHandle, (char*)value, -1,
+        CORTO_DO_DEFINE);
+}
+
 static corto_subscribe__fluent corto_subscribe__fluentGet(void)
 {
     corto_subscribe__fluent result;
@@ -613,6 +645,7 @@ static corto_subscribe__fluent corto_subscribe__fluentGet(void)
     result.disabled = corto_subscribeDisabled;
     result.type = corto_subscribeType;
     result.dispatcher = corto_subscribeDispatcher;
+    result.mount = corto_subscribeMount;
     return result;
 }
 

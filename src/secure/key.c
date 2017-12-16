@@ -5,13 +5,19 @@
 
 static corto_secure_key corto_secure_keyInstance;
 static corto_string corto_secure_token;
-static corto_ll corto_secure_locks[CORTO_MAX_SCOPE_DEPTH];
 static corto_thread corto_secure_mainThread;
 
-extern corto_mutex_s corto_adminLock;
+static
+corto_entityAdmin corto_lock_admin = {
+    .key = 0,
+    .count = 0,
+    .lock = CORTO_RWMUTEX_INITIALIZER,
+    .changed = 0
+};
 
 void corto_secure_init(void) {
     corto_secure_mainThread = corto_thread_self();
+    corto_tls_new(&corto_lock_admin.key, corto_entityAdmin_free);
 }
 
 corto_bool corto_secured(void) {
@@ -27,14 +33,16 @@ corto_string corto_login(corto_string username, corto_string password) {
 }
 
 corto_string corto_authenticate(corto_string key) {
-    if (corto_mutex_lock(&corto_adminLock)) {
+    if (corto_rwmutex_write(&corto_lock_admin.lock)) {
+        corto_throw(NULL);
         goto error;
     }
 
     corto_string prev = corto_secure_token;
     corto_secure_token = key;
 
-    if (corto_mutex_unlock(&corto_adminLock)) {
+    if (corto_rwmutex_unlock(&corto_lock_admin.lock)) {
+        corto_throw(NULL);
         goto error;
     }
 
@@ -43,28 +51,26 @@ error:
     return key;
 }
 
-static corto_int16 corto_secure_getObjectDepth(corto_id id) {
-    corto_int16 result = 0;
-    char *ptr = id;
-    while ((ptr = strchr(ptr + 1, '/'))) {
-        result ++;
-    }
-    return result;
-}
+int16_t corto_secure_registerLock(corto_secure_lock lock) {
 
-corto_int16 corto_secure_registerLock(corto_secure_lock lock) {
     if (corto_secure_mainThread == corto_thread_self()) {
-        corto_int16 depth = corto_secure_getObjectDepth(lock->mount);
-        if (depth >= CORTO_MAX_SCOPE_DEPTH) {
-            corto_throw("invalid identifier for mount-member of lock");
-            goto error;
-        }
-        if (!corto_secure_locks[depth]) {
-            corto_secure_locks[depth] = corto_ll_new();
-        }
-        corto_ll_append(corto_secure_locks[depth], lock);
+        corto_entityAdmin_add(&corto_lock_admin, lock->mount, lock, NULL);
     } else {
         corto_throw("locks can only be created in mainthread");
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+int16_t corto_secure_unregisterLock(corto_secure_lock lock) {
+
+    if (corto_secure_mainThread == corto_thread_self()) {
+        corto_entityAdmin_remove(&corto_lock_admin, lock->mount, lock, NULL, FALSE);
+    } else {
+        corto_throw("locks can only be removed from mainthread");
         goto error;
     }
 
@@ -88,19 +94,24 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
     corto_secure_accessKind allowed = CORTO_SECURE_ACCESS_UNDEFINED;
 
     if (corto_secure_keyInstance) {
-        corto_int32 depth = corto_secure_getObjectDepth(objectId);
+        corto_int32 depth = corto_entityAdmin_getDepthFromId(objectId);
         corto_uint16 currentDepth = 0;
         corto_int16 priority = 0;
+
+        /* Walk over locks in the lock admin */
+        corto_entityAdmin *admin = corto_entityAdmin_get(&corto_lock_admin);
         do {
-            corto_ll locks = corto_secure_locks[depth];
-            if (locks) {
-                corto_iter it = corto_ll_iter(locks);
-                while (corto_iter_hasNext(&it)) {
-                    corto_secure_lock lock = corto_iter_next(&it);
-                    char *expr;
-                    if (!(expr = corto_matchParent(lock->mount, objectId))) {
-                        continue;
-                    }
+            int ep, e;
+            for (ep = 0; ep < admin->entities[depth].length; ep ++) {
+                corto_entityPerParent *perParent = &admin->entities[depth].buffer[ep];
+                char *expr;
+                if (!(expr = corto_matchParent(perParent->parent, objectId))) {
+                    continue;
+                }
+
+                for (e = 0; e < perParent->entities.length; e ++) {
+                    corto_entity *entity = &perParent->entities.buffer[e];
+                    corto_secure_lock lock = entity->e;
 
                     if (lock->expr && *expr && !corto_idmatch(lock->expr, expr)) {
                         continue;
@@ -184,4 +195,3 @@ void corto_secure_key_destruct(
     corto_secure_keyInstance = NULL;
 
 }
-

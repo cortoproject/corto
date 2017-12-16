@@ -38,7 +38,6 @@ void corto_call_cdecl(corto_function f, corto_void* result, void* args);
 
 /* TLS callback to cleanup observer administration */
 void corto_observerAdminFree(void *admin);
-void corto_subscriberAdminFree(void *admin);
 void corto_declaredByMeFree(void *admin);
 
 #ifdef CORTO_VM
@@ -1179,6 +1178,11 @@ int corto_start(char *appName) {
     /* Patch sequences- these aren't set statically since sequences are
      * allocated on the heap */
     corto_patchSequences();
+
+    /* Mark the tableinstance type as a container. Even though it does not
+     * inherit from the container base class, object management should treat it
+     * as one (automatically defining / declaring child objects) */
+    ((corto_type)corto_tableinstance_o)->flags |= CORTO_TYPE_IS_CONTAINER;
 
     /* Manually assign two function objects that are used as delegate callbacks */
     corto_observerEvent_handle_o = &vstore_observerEvent_handle__o.v;

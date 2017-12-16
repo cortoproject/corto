@@ -7,14 +7,14 @@
 /* Not all types that inherit from from function are necessarily procedures. Find
  * the first procedure type in the inheritance hierarchy. */
 corto_procedure corto_function_getProcedureType(corto_function this) {
-    corto_interface t = corto_interface(corto_typeof(this));
+    corto_interface t = (corto_interface)corto_typeof(this);
 
     while (!corto_instanceof(corto_procedure_o, t)) {
         t = t->base;
         corto_assert(t != NULL, "no procedure type in inheritance hierarchy of function");
     }
 
-    return corto_procedure(t);
+    return (corto_procedure)t;
 }
 
 int16_t corto_delegate_validate(
@@ -24,19 +24,17 @@ int16_t corto_function_construct(
     corto_function this)
 {
     /* If no returntype is set, make it void */
-    if (!this->returnType) {
-        corto_ptr_setref(&this->returnType, corto_void_o);
-    }
+    corto_procedure procedure = corto_function_getProcedureType(this);
 
-    if (this->returnType->reference) {
+    if (!this->returnType) {
+        this->returnType = corto_void_o; /* No claim needed- builtin object */
+    } else if (this->returnType->reference) {
         this->returnsReference = TRUE;
     }
 
     /* Count the size based on the parameters and store parameters in slots */
 
     if (!this->size) {
-        corto_procedure procedure = corto_function_getProcedureType(this);
-
         /* Add size of this-pointer */
         if (procedure->hasThis) {
             if (procedure->thisType) {
@@ -48,12 +46,12 @@ int16_t corto_function_construct(
 
         corto_uint32 i;
         for(i=0; i<this->parameters.length; i++) {
-            if (this->parameters.buffer[i].passByReference ||
-                this->parameters.buffer[i].inout)
+            corto_parameter *p = &this->parameters.buffer[i];
+            if (p->passByReference || p->inout)
             {
                 this->size += sizeof(corto_word);
             } else {
-                corto_type paramType = this->parameters.buffer[i].type;
+                corto_type paramType = p->type;
                 switch(paramType->kind) {
                 case CORTO_ANY:
                     this->size += sizeof(corto_any);
@@ -75,7 +73,7 @@ int16_t corto_function_construct(
     }
 
     /* Validate delegate */
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_checkAttr(this, CORTO_ATTR_NAMED) && procedure->hasThis) {
         if (corto_delegate_validate(this)) {
             goto error;
         }
@@ -190,8 +188,11 @@ int16_t corto_function_init(
 
     /* Bind with interface if possible */
     if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
-        if (corto_delegate_bind(this)) {
-            goto error;
+        corto_procedure p = corto_function_getProcedureType(this);
+        if (p->hasThis) {
+            if (corto_delegate_bind(this)) {
+                goto error;
+            }
         }
     }
     return 0;

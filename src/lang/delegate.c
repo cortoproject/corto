@@ -48,18 +48,22 @@ bool corto_delegate_compatible_v(
 
 static corto_member corto_delegate_find(corto_function object) {
     corto_object parent = corto_parentof(object);
-    
-    if (corto_class_instanceof(corto_interface_o, corto_typeof(parent))) {
-        corto_interface type = corto_interface(corto_typeof(parent));
-        corto_id functionName;
-        corto_member m = NULL;
+    corto_type parentType = corto_typeof(parent);
 
-        /* Get function name, lookup delegate, assign function */
-        corto_signatureName(corto_idof(object), functionName);
-        if (corto_checkState(corto_type_o, CORTO_VALID) && (m = corto_interface_resolveMember(type, functionName)) &&
-            (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE)) 
-        {
-            return m;
+    if (corto_class_instanceof(corto_interface_o, parentType)) {
+        corto_interface type = (corto_interface)parentType;
+
+        if (((corto_type)type)->flags & CORTO_TYPE_HAS_DELEGATE) {
+            corto_id functionName;
+            corto_member m = NULL;
+
+            /* Get function name, lookup delegate, assign function */
+            corto_signatureName(corto_idof(object), functionName);
+            if (corto_checkState(corto_type_o, CORTO_VALID) && (m = corto_interface_resolveMember(type, functionName)) &&
+                (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE))
+            {
+                return m;
+            }
         }
     }
     return NULL;
@@ -184,4 +188,3 @@ bool corto_delegate_instanceof(
 
     return result;
 }
-

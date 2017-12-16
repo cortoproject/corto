@@ -25,6 +25,10 @@ int16_t corto_member_construct(
         ((corto_type)corto_parentof(this))->flags |= CORTO_TYPE_HAS_TARGET;
     }
 
+    if ((this->type->kind == CORTO_COMPOSITE) && ((corto_interface)this->type)->kind == CORTO_DELEGATE) {
+        ((corto_type)corto_parentof(this))->flags |= CORTO_TYPE_HAS_DELEGATE;
+    }
+
     if (corto_typeof(this->type) == (corto_type)corto_target_o) {
         this->modifiers |= CORTO_OBSERVABLE;
     }
@@ -67,4 +71,3 @@ int16_t corto_member_init(
 error:
     return -1;
 }
-

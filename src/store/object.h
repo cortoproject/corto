@@ -168,24 +168,14 @@ struct corto__persistent {
 void corto__newSSO(corto_object sso);
 corto_int16 corto__freeSSO(corto_object sso);
 
-/* Adopt static scoped object */
-int corto__adoptSSO(corto_object sso);
-
-/* Orphan object */
-void corto__orphan(corto_object o);
-
 /* Set state on object */
 void corto__setState(corto_object o, corto_uint8 state);
-
-/* Provide extra debug information to release */
-corto_int32 corto_release_ext(corto_object src, corto_object o, corto_string context);
 
 corto_bool corto_destruct(corto_object o, corto_bool delete);
 
 /* Get & lock scope */
 corto__scope *corto__scopeClaim(corto_object o);
 void corto__scopeRelease(corto_object o);
-void* corto_olsFind(corto__scope *scope, corto_int8 key);
 
 /* Get scope tree */
 corto_rb corto_scopeof(corto_object o);

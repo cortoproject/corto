@@ -8,7 +8,7 @@ int16_t corto_container_construct(
 
     /* Containers are always scoped */
     corto_type(this)->attr = CORTO_ATTR_DEFAULT|CORTO_ATTR_NAMED;
+    corto_type(this)->flags |= CORTO_TYPE_IS_CONTAINER;
 
     return safe_corto_class_construct(this);
 }
-

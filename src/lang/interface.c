@@ -213,7 +213,7 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
             if ((m->type->flags & CORTO_TYPE_HAS_RESOURCES) || m->type->reference) {
                 corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
             }
-            if (m->type->flags & CORTO_TYPE_NEEDS_INIT) {
+            if (!m->type->reference && m->type->flags & CORTO_TYPE_NEEDS_INIT) {
                 corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
             }
             if (m->modifiers & CORTO_OBSERVABLE) {
@@ -583,6 +583,12 @@ int16_t corto_interface_construct(
         corto_type(this)->flags |= CORTO_TYPE_HAS_DEINIT;
     }
 
+    if (this->base) {
+        if (corto_type(this->base)->flags & CORTO_TYPE_HAS_DELEGATE) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_DELEGATE;
+        }
+    }
+
     return safe_corto_type_construct(this);
 error:
     return -1;
@@ -595,7 +601,7 @@ void corto_interface_destruct(
 
     /* Free members */
     for (i=0; i<this->members.length; i++) {
-        corto_ptr_setref(&this->members.buffer[i], NULL);      
+        corto_ptr_setref(&this->members.buffer[i], NULL);
     }
 
     if (this->members.buffer) {
@@ -633,20 +639,21 @@ corto_member corto_interface_resolveMember_v(
 {
     corto_uint32 i;
     corto_member result = NULL;
+    char *dot = strchr(name, '.');
 
     for (i=0; i<this->members.length; i++) {
-        if (!tokicmp(&name, corto_idof(this->members.buffer[i]), '.')) {
+        if (!strcmp(name, corto_idof(this->members.buffer[i]))) {
             result = this->members.buffer[i];
             break;
         }
     }
 
-    if (name[0] && result) {
+    if (dot && result) {
         if (result->type->kind == CORTO_COMPOSITE) {
-            result = corto_interface_resolveMember(result->type, name + 1);
+            result = corto_interface_resolveMember(result->type, dot + 1);
         } else {
             corto_throw("cannot resolve member '%s' on non-composite type '%s'",
-                name + 1,
+                dot + 1,
                 corto_fullpath(NULL, result->type));
             goto error;
         }

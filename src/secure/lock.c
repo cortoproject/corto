@@ -3,7 +3,8 @@
 #include <corto/corto.h>
 
 
-corto_int16 corto_secure_registerLock(corto_secure_lock lock);
+int16_t corto_secure_registerLock(corto_secure_lock lock);
+int16_t corto_secure_unregisterLock(corto_secure_lock lock);
 
 corto_secure_accessKind corto_secure_lock_authorize_v(
     corto_secure_lock this,
@@ -34,8 +35,5 @@ error:
 void corto_secure_lock_destruct(
     corto_secure_lock this)
 {
-
-    CORTO_UNUSED(this);
-
+    corto_assert(corto_secure_unregisterLock(this) == 0);
 }
-

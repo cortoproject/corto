@@ -285,6 +285,16 @@ typedef struct corto_subscribe__fluent {
     struct corto_subscribe__fluent (*type)(
         char *type);
 
+    /** Create a mount of the specified type.
+     *
+     * @param type A mount type.
+     * @param policy A mount policy.
+     * @param value A corto string to set additional members of the mount.
+     * @return A new mount object
+     */
+    corto_mount ___ (*mount)(
+        corto_class type, corto_mountPolicy* policy, const char *value);
+
     /** Specify callback, create subscriber.
      * Provide a callback function that is invoked when a matching event occurs.
      * This function returns a new subscriber based on the specified parameters.

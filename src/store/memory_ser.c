@@ -157,13 +157,7 @@ corto_int16 corto_ser_freeReference(corto_walk_opt* s, corto_value* v, void* use
             }
         }
         if (!weak) {
-            if (CORTO_TRACE_OBJECT) {
-                corto_id buff;
-                corto_value_exprStr(v, buff, sizeof(buff));
-                corto_release_ext(NULL, o, buff);
-            } else {
-                corto_release(o);
-            }
+            corto_release(o);
         }
     }
 
@@ -230,6 +224,6 @@ corto_walk_opt corto_ser_freeResources(corto_modifier access, corto_operatorKind
     s.metaprogram[CORTO_MEMBER] = corto_ser_freeMember;
     s.reference = corto_ser_freeReference;
     s.observable = corto_ser_freeReference;
-    
+
     return s;
 }
