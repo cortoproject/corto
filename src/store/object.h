@@ -33,7 +33,7 @@ extern "C" {
 void corto_operatorInit(void);
 void corto_ptr_castInit(void);
 
-void corto_drop(corto_object o, corto_bool delete);
+void corto_drop(corto_object o, bool delete);
 corto_object corto_resumePersistent(corto_object o);
 
 #define FIND(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, 0)
@@ -46,15 +46,15 @@ struct corto_contentType_s {
 
     /* Translate values to and from a contentType value */
     corto_word ___ (*fromValue)(corto_value *v);
-    corto_int16 ___ (*toValue)(corto_value *v, corto_word content);
+    int16_t ___ (*toValue)(corto_value *v, corto_word content);
 
     /* Translate results to and from self-contained contentType values */
     corto_word ___ (*fromResult)(corto_result *o);
-    corto_int16 ___ (*toResult)(corto_result* o, corto_word content);
+    int16_t ___ (*toResult)(corto_result* o, corto_word content);
 
     /* Translate objects to and from self-contained contentType values */
     corto_word ___ (*fromObject)(corto_object o);
-    corto_int16 ___ (*toObject)(corto_object* o, corto_word content);
+    int16_t ___ (*toObject)(corto_object* o, corto_word content);
 
     /* Duplicate a contentType value */
     corto_word ___ (*copy)(corto_word content);
@@ -164,14 +164,9 @@ struct corto__persistent {
     bool resumed;
 };
 
-/* Initialize static scoped object */
 void corto__newSSO(corto_object sso);
-corto_int16 corto__freeSSO(corto_object sso);
-
-/* Set state on object */
-void corto__setState(corto_object o, corto_uint8 state);
-
-corto_bool corto_destruct(corto_object o, corto_bool delete);
+int16_t corto__freeSSO(corto_object sso);
+bool corto_destruct(corto_object o, bool delete);
 
 /* Get & lock scope */
 corto__scope *corto__scopeClaim(corto_object o);
@@ -180,8 +175,8 @@ void corto__scopeRelease(corto_object o);
 /* Get scope tree */
 corto_rb corto_scopeof(corto_object o);
 
-corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o);
-corto_int16 corto_notifySubscribersId(
+int16_t corto_notifySubscribers(corto_eventMask mask, corto_object o);
+int16_t corto_notifySubscribersId(
     corto_eventMask mask,
     corto_string path,
     corto_string type,
@@ -189,15 +184,15 @@ corto_int16 corto_notifySubscribersId(
     corto_word value);
 
 corto__observable* corto__objectObservable(corto__object* o);
-corto_int16 corto_notify(corto_object observable, corto_uint32 mask);
-corto_int16 corto_notifySecured(corto_object observable, corto_uint32 mask);
+int16_t corto_notify(corto_object observable, corto_uint32 mask);
+int16_t corto_notifySecured(corto_object observable, corto_uint32 mask);
 void corto_notifyObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
 void corto_notifyParentObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
 void corto_observerDelayedAdminDefine(corto_object instance);
 
 corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
-corto_int16 corto_suspend(corto_object o);
-int corto_load_intern(corto_string str, int argc, char* argv[], corto_bool _try, corto_bool ignoreRecursive);
+int16_t corto_suspend(corto_object o);
+int corto_load_intern(corto_string str, int argc, char* argv[], bool _try, bool ignoreRecursive);
 
 corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, char *id);
 
@@ -209,18 +204,18 @@ typedef struct ext_corto_expr {
 typedef struct ext_corto_expr_opt {
     corto_object scope;
     corto_type returnType;
-    corto_bool returnsReference;
-    corto_bool inverse;
+    bool returnsReference;
+    bool inverse;
 } ext_corto_expr_opt;
 
 ext_corto_expr* ext_corto_expr_alloc(void);
-corto_int16 ext_corto_expr_compb(ext_corto_expr *out, ext_corto_expr_opt *opt, char *expr, char **types);
-corto_int16 ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **args);
-corto_int16 ext_corto_expr_free(ext_corto_expr *expr);
+int16_t ext_corto_expr_compb(ext_corto_expr *out, ext_corto_expr_opt *opt, char *expr, char **types);
+int16_t ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **args);
+int16_t ext_corto_expr_free(ext_corto_expr *expr);
 
 corto_procedure corto_function_getProcedureType(corto_function this);
 
-corto_int16 corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine);
+int16_t corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine);
 void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_object o);
 
 extern corto_entityAdmin corto_subscriber_admin;
@@ -237,13 +232,6 @@ CORTO_EXPORT char* corto_pathFromFullname(corto_id buffer);
 
 /* Check if object is a builtin package */
 CORTO_EXPORT bool corto_isBuiltinPackage(corto_object o);
-
-/* Check if object is a builtin object */
-CORTO_EXPORT bool corto_isBuiltin(corto_object o);
-
-/* Obtain documentation objects */
-CORTO_EXPORT char* corto_manId(corto_object o, corto_id buffer);
-CORTO_EXPORT corto_object corto_man(corto_object o);
 
 /* Obtain pointer and type for deserializing member */
 CORTO_EXPORT void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);

@@ -3730,35 +3730,6 @@ corto_int16 corto_update_begin(
     return corto_update_begin_intern(o, TRUE);
 }
 
-corto_int16 corto_update_try(
-    corto_object observable)
-{
-    corto_assertObject(observable);
-
-    corto__writable* _wr;
-
-    /* Notify fails if process isn't authorized to update observable */
-    if (!corto_authorized(observable, CORTO_SECURE_ACTION_UPDATE)) {
-        goto error;
-    }
-
-    _wr = corto__objectWritable(CORTO_OFFSET(observable, -sizeof(corto__object)));
-    if (_wr) {
-        if (corto_rwmutex_tryWrite(&_wr->align.lock) == CORTO_LOCK_BUSY) {
-            goto busy;
-        }
-    } else {
-        corto_warning("calling updateTry for non-writable object '%s' is useless.",
-            corto_fullpath(NULL, observable));
-    }
-
-    return 0;
-error:
-    return -1;
-busy:
-    return CORTO_LOCK_BUSY;
-}
-
 corto_int16 corto_update_end(
     corto_object observable)
 {
@@ -3834,77 +3805,6 @@ corto_int16 corto_update_cancel(corto_object observable) {
     return 0;
 error:
     return -1;
-}
-
-/* REPL functionality */
-corto_int16 corto_expr(corto_object scope, corto_string expr, corto_value *value) {
-    corto_assertObject(scope);
-
-    corto_object o = corto_resolve(scope, expr);
-    if (o) {
-        *value = corto_value_object(o, NULL);
-    }
-
-    /* eventually this function will use the parser to evaluate expressions */
-
-    return o == NULL;
-}
-
-static char* corto_manIdEscape(corto_object from, corto_object o, corto_id buffer) {
-    corto_assertObject(from);
-    corto_assertObject(o);
-
-    corto_path(buffer, from, o, "_");
-
-    return &buffer[strlen(buffer)];
-}
-
-char* corto_manId(corto_object o, corto_id buffer) {
-    corto_assertObject(o);
-
-    corto_object parents[CORTO_MAX_SCOPE_DEPTH];
-    corto_uint32 count = 0;
-    corto_object p = o;
-    corto_object from = NULL;
-    char *ptr = buffer + 5;
-
-    strcpy(buffer, "/doc/");
-
-    do {
-        parents[count] = p;
-        count++;
-    } while(!corto_instanceof(corto_package_o, p) && (p = corto_parentof(p)));
-
-    do{
-        count--;
-        p = parents[count];
-        if (corto_instanceof(corto_package_o, p)) {
-            ptr = corto_manIdEscape(NULL, p, ptr);
-            from = p;
-        } else if (corto_instanceof(corto_type_o, p)) {
-            if (from && !corto_instanceof(corto_package_o, from)) {
-                *(ptr++) = '_';
-            } else {
-                *(ptr++) = '/';
-            }
-            ptr = corto_manIdEscape(from, p, ptr);
-            from = p;
-        } else {
-            *(ptr++) = '/';
-            ptr = corto_manIdEscape(parents[count + 1], p, ptr);
-        }
-    } while (count);
-
-    return buffer;
-}
-
-/* Documentation */
-corto_object corto_man(corto_object o) {
-    corto_assertObject(o);
-
-    corto_id id;
-    corto_manId(o, id);
-    return corto_resolve(NULL, id);
 }
 
 /* Thread-safe reading */

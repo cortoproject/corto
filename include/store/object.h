@@ -108,25 +108,6 @@ corto_object _corto_createChild(
     char *id,
     corto_type type);
 
-/** Create a new orphan object.
- * Equivalent to corto_declareOrphan + corto_define.
- *
- * @param parent The parent for the new object.
- * @param id The object id. If NULL, a random unique id is generated. A name may contain
- *     multiple elements, separated by the '/' character. If one or more elements
- *     do not yet exist, they are created with the specified type.
- * @param type The type of the object to create.
- * @return The new object, NULL if failed.
- * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_findOrCreate
- * @see corto_define corto_delete corto_release
- */
-CORTO_EXPORT
-corto_object _corto_createOrphan(
-    corto_object parent,
-    char *id,
-    corto_type type);
-
 /** Declare a new anonymous object.
  * This function returns an object in the DECLARED state, allowing for setting
  * the object value before invoking the type constructor with corto_define. The
@@ -262,24 +243,6 @@ int16_t corto_update(
  */
 CORTO_EXPORT
 int16_t corto_update_begin(
-    corto_object o);
-
-/** Try start updating an object.
- * This function locks the object for thread-safe updating only when no other
- * thread is locking the object. Use this function when updating the object has
- * to be as non-intrusive as possible to the application.
- *
- * This function fails if the current context does not own the object or if the
- * object passed to was not created with ATTR_OBSERVABLE, or when
- * the object is already locked.
- *
- * @param o The object to be updated.
- * @return 0 if success, nonzero if failed.
- * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
- */
-CORTO_EXPORT
-int16_t corto_update_try(
     corto_object o);
 
 /** Update an object.
