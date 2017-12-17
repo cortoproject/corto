@@ -487,7 +487,7 @@ void test_ObjectMgmt_tc_createNested(
     test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(b), "b");
     test_assert(corto_checkState(b, CORTO_DECLARED));
-    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(!corto_checkState(b, CORTO_VALID));
 
     corto_object a = corto_lookup(root_o, "a");
     test_assert(a != NULL);
@@ -495,61 +495,15 @@ void test_ObjectMgmt_tc_createNested(
     test_assert(corto_typeof(a) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(a), "a");
     test_assert(corto_checkState(a, CORTO_DECLARED));
-    test_assert(corto_checkState(a, CORTO_VALID));
+    test_assert(!corto_checkState(a, CORTO_VALID));
 
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(o) == 0);
 
     test_assertint(counter->declareCount, 3);
-    test_assertint(counter->defineCount, 3);
+    test_assertint(counter->defineCount, 1);
     test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 3);
-
-}
-
-void test_ObjectMgmt_tc_createNestedFirstFail(
-    test_ObjectMgmt this)
-{
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
-    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
-        .instance(counter)
-        .callback(onCreateNested);
-    test_assert(o != NULL);
-
-    /* Reset counter so aligned objects don't pollute result */
-    counter->declareCount = 0;
-    counter->defineCount = 0;
-    counter->updateCount = 0;
-    counter->deleteCount = 0;
-
-    /* This object will be constructed in the next statement, and fail */
-    corto_object a = corto_declareChild(root_o, "a", test_NestedConstructFail_o);
-    test_assert(a != NULL);
-
-    test_assertint(counter->declareCount, 1);
-    test_assertint(counter->defineCount, 0);
-    test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 0);
-
-    corto_object c = corto_createChild(root_o, "a/b/c", corto_void_o);
-    test_assert(c == NULL);
-
-    test_assertint(counter->declareCount, 3);
-    test_assertint(counter->defineCount, 0);
-    test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 0);
-
-    test_assert(corto_lookup(root_o, "a/b") == NULL);
-
-    /* a should not still exist, because it was declared before the statement
-     * failed */
-    test_assert(corto_lookup(root_o, "a") != NULL);
-    test_assert(corto_delete(o) == 0);
-
-    test_assertint(counter->declareCount, 3);
-    test_assertint(counter->defineCount, 0);
-    test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 0);
+    test_assertint(counter->deleteCount, 1);
 
 }
 
@@ -577,40 +531,6 @@ void test_ObjectMgmt_tc_createNestedLastFail(
 
     test_assertint(counter->declareCount, 3);
     test_assertint(counter->defineCount, 0);
-    test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 0);
-
-}
-
-void test_ObjectMgmt_tc_createNestedSecondFail(
-    test_ObjectMgmt this)
-{
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
-    corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
-        .instance(counter)
-        .callback(onCreateNested);
-    test_assert(o != NULL);
-
-    /* Reset counter so aligned objects don't pollute result */
-    counter->declareCount = 0;
-    counter->defineCount = 0;
-    counter->updateCount = 0;
-    counter->deleteCount = 0;
-
-    corto_declareChild(root_o, "a/b", test_NestedConstructFail_o);
-
-    corto_object c = corto_createChild(root_o, "a/b/c", corto_int32_o);
-    test_assert(c == NULL);
-
-    /* a and a/b should still be there, because they were declared before the
-     * statement failed. */
-    test_assert(corto_lookup(root_o, "a/b") != NULL);
-    test_assert(corto_lookup(root_o, "a") != NULL);
-
-    test_assert(corto_delete(o) == 0);
-
-    test_assertint(counter->declareCount, 3);
-    test_assertint(counter->defineCount, 1);
     test_assertint(counter->updateCount, 0);
     test_assertint(counter->deleteCount, 0);
 
@@ -1109,7 +1029,7 @@ void test_ObjectMgmt_tc_declareNested(
     test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(b), "b");
     test_assert(corto_checkState(b, CORTO_DECLARED));
-    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(!corto_checkState(b, CORTO_VALID));
 
     corto_object a = corto_lookup(root_o, "a");
     test_assert(a != NULL);
@@ -1117,15 +1037,15 @@ void test_ObjectMgmt_tc_declareNested(
     test_assert(corto_typeof(a) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(a), "a");
     test_assert(corto_checkState(a, CORTO_DECLARED));
-    test_assert(corto_checkState(a, CORTO_VALID));
+    test_assert(!corto_checkState(a, CORTO_VALID));
 
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(o) == 0);
 
     test_assertint(counter->declareCount, 3);
-    test_assertint(counter->defineCount, 2); // for void objects
+    test_assertint(counter->defineCount, 0);
     test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 2);
+    test_assertint(counter->deleteCount, 0);
 }
 
 void test_ObjectMgmt_tc_declareNestedFirstFail(
@@ -2061,7 +1981,7 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
     test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(b), "b");
     test_assert(corto_checkState(b, CORTO_DECLARED));
-    test_assert(corto_checkState(b, CORTO_VALID));
+    test_assert(!corto_checkState(b, CORTO_VALID));
 
     corto_object a = corto_lookup(root_o, "a");
     test_assert(a != NULL);
@@ -2075,9 +1995,9 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
     test_assert(corto_delete(o) == 0);
 
     test_assertint(counter->declareCount, 3);
-    test_assertint(counter->defineCount, 1); /* one for void object */
+    test_assertint(counter->defineCount, 0);
     test_assertint(counter->updateCount, 0);
-    test_assertint(counter->deleteCount, 1); /* one for void object */
+    test_assertint(counter->deleteCount, 0); /* one for void object */
 }
 
 void test_ObjectMgmt_tc_declareNestedLastExists(

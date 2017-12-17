@@ -1184,7 +1184,8 @@ corto_object corto_declareChild_intern(
     corto_type type,
     bool orphan,
     bool forceType,
-    bool defineVoid)
+    bool defineVoid,
+    bool *newobject)
 {
     corto_object o = NULL;
     corto_bool retry = FALSE;
@@ -1246,6 +1247,10 @@ corto_object corto_declareChild_intern(
                     corto_dealloc(corto__objectStartAddr(CORTO_OFFSET(o,-sizeof(corto__object))));
                     o = o_ret;
 
+                    if (newobject) {
+                        *newobject = false;
+                    }
+
                     /* Redeclaring an object results in a claim so that the object
                      * can't be deallocated until it is explicitly deleted by the
                      * code that redeclared it. */
@@ -1289,6 +1294,10 @@ corto_object corto_declareChild_intern(
                         }
                     }
                     goto ok;
+                } else {
+                    if (newobject) {
+                        *newobject = true;
+                    }
                 }
             } else {
                 corto__deinitScope(o);
@@ -1317,7 +1326,7 @@ corto_object corto_declareChild_intern(
             }
 
             /* void objects are instantly valid because they have no value */
-            if (type->kind == CORTO_VOID) {
+            if (type->kind == CORTO_VOID && !type->reference) {
                 if (defineVoid) {
                     /* Never resume void objects - there's nothing to resume */
                     int rc = corto_define_intern(o, FALSE);
@@ -1668,95 +1677,49 @@ corto_object corto_declareChildRecursive_intern(
         id ++;
     }
 
-    /* lastFound is an optimization to mark whether or not we should make the
-     * expensive check to verify if the FIND result object is valid. It is
-     * possible that FIND returns an invalid object that was not declared by
-     * this thread */
-    corto_object lastFound = NULL;
     if (id && (next = strelem(id)) && (*next != '(')) {
         corto_id buf;
         char *cur = buf;
-        char *lastId = buf;
         strcpy(buf, id);
-        corto_object stack[CORTO_MAX_SCOPE_DEPTH];
         corto_object firstNonExist = NULL;
-        corto_int32 sp = 0;
+        bool newobject;
 
         next = &cur[next - id];
         *next = '\0';
         next ++;
 
         do {
-            /* Check if object exists */
-            if (!(result = FIND(parent, cur))) {
-                /* Check if parent objects can be resumed */
-                if (!next || !resume || !(result = corto_resume(parent, cur, NULL))) {
-                    /* If object was not resumed, declare it */
-                    result = corto_declareChild_intern(
-                        parent,
-                        cur,
-                        next ? corto_unknown_o : type,
-                        orphan,
-                        next ? FALSE : forceType,
-                        FALSE /* prevent sending VALID event for void objects */);
+            newobject = false;
+            result = corto_declareChild_intern(
+                parent,
+                cur,
+                next ? corto_unknown_o : type,
+                orphan,
+                next ? FALSE : forceType,
+                FALSE /* prevent sending VALID event for void objects */,
+                &newobject);
 
-                    /* Keep track of first non-existing object. If something
-                     * goes wrong, all objects, starting from this object, must
-                     * be deleted. */
-                    if (!firstNonExist) {
-                        firstNonExist = result;
-                    }
-                }
-            } else {
-                lastFound = result;
-                lastId = cur;
-                corto_release(result);
+            /* Keep track of first non-existing object. If something
+             * goes wrong objects starting from here must be deleted. */
+            if (!firstNonExist && newobject) {
+                firstNonExist = result;
             }
 
             parent = result;
-            stack[sp ++] = result;
 
             cur = next;
             if (cur && (next = strelem(cur))) {
                 *next = '\0';
                 next ++;
             }
-
         } while (result && cur);
 
-        int i;
         if (result) {
-            if (define) {
-                corto_eventMask masks[CORTO_MAX_SCOPE_DEPTH];
-
-                /* First ensure all constructors are successfully called */
-                for (i = 0; i < (sp - !defineSelf); i++) {
-                    if (!corto_checkState(stack[i], CORTO_VALID)) {
-                        masks[i] = corto_resumeDeclared(stack[i], resume) ? CORTO_RESUME : CORTO_DEFINE;
-                        if (corto_defineDeclared(stack[i])) {
-                            result = NULL; /* Signal failure */
-                            break;
-                        }
-                    } else {
-                        masks[i] = 0;
-                    }
-                }
-
-                /* Send notifications for all objects */
-                if (result) {
-                    for (i = 0; i < sp; i++) {
-                        if (masks[i]) {
-                            corto_notifyDefined(stack[i], resume, masks[i]);
-                        }
-                    }
-                }
-
-            /* If all objects were successfully initialized but no define is
-             * required, ensure that all void objects are defined */
-            } else {
-                for (i = 0; i < sp; i++) {
-                    if (corto_typeof(stack[i])->kind == CORTO_VOID && !corto_typeof(stack[i])->reference) {
-                        corto_define_intern(stack[i], FALSE);
+            if (defineSelf) {
+                /* Call constructor */
+                if (!corto_checkState(result, CORTO_VALID)) {
+                    if (corto_define_intern(result, resume)) {
+                        result = NULL; /* Signal failure */
                     }
                 }
             }
@@ -1769,44 +1732,8 @@ corto_object corto_declareChildRecursive_intern(
                 corto_delete(firstNonExist);
             }
         }
-
-        /* Verify FIND `result` was declared in this thread */
-        if (result && (lastFound == result)) {
-            corto_bool deleted = false;
-            if (!corto_checkState(result, CORTO_VALID)) {
-                if (!corto_declaredByMeCheck(result)) {
-                    /* Result not declared in this thread */
-                    corto_read_begin(result);
-                    deleted = corto_checkState(result, CORTO_DELETED);
-                    if (!deleted) {
-                        corto_assert(
-                            corto_checkState(result, CORTO_VALID),
-                                "thread unblocked but object is still not valid"
-                        );
-                    }
-                    corto_read_end(result);
-
-                    if (deleted) {
-                        result = corto_declareChild_intern(
-                            parent,
-                            lastId,
-                            type,
-                            orphan,
-                            forceType,
-                            TRUE);
-                    } else {
-                        corto_assert(corto_checkState(result, CORTO_VALID),
-                            "Object should be valid.");
-                    }
-                }
-            }
-            if (!deleted) {
-                /* FIND result is always released above. Claim if lastFound */
-                corto_claim(result);
-            }
-        }
     } else {
-        result = corto_declareChild_intern(parent, id, type, orphan, forceType, TRUE);
+        result = corto_declareChild_intern(parent, id, type, orphan, forceType, TRUE, NULL);
         if (defineSelf) {
             result = corto_create_intern(result, resume);
         }
@@ -5049,7 +4976,8 @@ corto_object _corto(
                         type,
                         kind & CORTO_DO_ORPHAN,
                         kind & CORTO_DO_FORCE_TYPE,
-                        kind & CORTO_DO_DEFINE);
+                        kind & CORTO_DO_DEFINE,
+                        NULL);
                 }
                 childDeclared = true;
             } else {
