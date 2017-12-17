@@ -155,6 +155,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, constant),\
     SSO_OP_VALUE(lang_, any),\
     SSO_OP_VOID(lang_, void),\
+    SSO_OP_VOID(lang_, unknown),\
     SSO_OP_VALUE(lang_, object),\
     SSO_OP_VALUE(lang_, width),\
     SSO_OP_VALUE(lang_, typeKind),\
