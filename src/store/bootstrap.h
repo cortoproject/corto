@@ -506,6 +506,7 @@ CORTO_FWDECL(text, string);
 static CORTO_FWDECL(type, any);
 static CORTO_FWDECL(type, object);
 static CORTO_FWDECL(type, void);
+static CORTO_FWDECL(type, unknown);
 
 CORTO_FWDECL(procedure, function);
 CORTO_FWDECL(procedure, metaprocedure);

@@ -1695,7 +1695,7 @@ corto_object corto_declareChildRecursive_intern(
                     result = corto_declareChild_intern(
                         parent,
                         cur,
-                        next ? corto_void_o : type,
+                        next ? corto_unknown_o : type,
                         orphan,
                         next ? FALSE : forceType,
                         FALSE /* prevent sending VALID event for void objects */);
