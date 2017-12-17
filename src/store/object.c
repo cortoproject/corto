@@ -350,6 +350,17 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     return ostate & state;
 }
 
+static
+int corto_adopt_updateParents(
+    corto_object object,
+    void *ctx)
+{
+    corto__object *_o = CORTO_OFFSET(object, -sizeof(corto__object));
+    corto__scope *_scope = corto__objectScope(_o);
+    _scope->parent = ctx;
+    return 1;
+}
+
 /* Adopt an object */
 static
 corto_object corto_adopt(
@@ -387,9 +398,40 @@ corto_object corto_adopt(
                 p_scope->scope = corto_rb_new((corto_equals_cb)corto_compareDefault, NULL);
             }
 
-            corto_object existing = corto_rb_findOrSet(p_scope->scope, c_scope->id, child);
+            void *ptr = corto_rb_findOrSetPtr(p_scope->scope, c_scope->id);
+            corto_object existing = *(corto_object*)ptr;
+
+            /* If existing is of unknown type and child is not, move scope from
+             * existing to child, and destruct existing object. */
+            if (existing) {
+                corto_type e_type = corto_typeof(existing);
+                if (e_type == corto_unknown_o) {
+                    if (childType != corto_unknown_o) {
+                        /* Move scope of the existing object to new object */
+                        corto__object *_existing = CORTO_OFFSET(existing, -sizeof(corto__object));
+                        corto__scope *e_scope = corto__objectScope(_existing);
+                        c_scope->scope = e_scope->scope;
+                        e_scope->scope = NULL;
+                        e_scope->parent = NULL; /* orphan object */
+                        /* Update parent pointers of child */
+                        if (c_scope->scope) {
+                            corto_rb_walk(c_scope->scope, corto_adopt_updateParents, child);
+                        }
+                        corto_destruct(existing, TRUE);
+                        existing = child;
+                        *(corto_object*)ptr = child;
+                    }
+                }
+            } else {
+                existing = child;
+                *(corto_object*)ptr = child;
+            }
+
             if (existing && (existing != child)) {
-                corto_unlock_intern(child);
+                if (corto_unlock_intern(child)) {
+                    corto_throw(NULL);
+                    goto err_existing;
+                }
                 if (forceType && (corto_typeof(existing) != corto_typeof(child))) {
                     corto_throw("'%s' is already declared with type '%s'",
                       c_scope->id,
@@ -465,8 +507,9 @@ corto_object corto_adopt(
             corto_claim(parent);
             if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
 
-            if (corto_rwmutex_unlock(&p_scope->align.scopeLock))
+            if (corto_rwmutex_unlock(&p_scope->align.scopeLock)) {
                 corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");
+            }
         } else {
             corto_critical("corto_adopt: child-object is not scoped");
         }
@@ -1326,7 +1369,7 @@ corto_object corto_declareChild_intern(
             }
 
             /* void objects are instantly valid because they have no value */
-            if (type->kind == CORTO_VOID && !type->reference) {
+            if (type != corto_unknown_o && (type->kind == CORTO_VOID && !type->reference)) {
                 if (defineVoid) {
                     /* Never resume void objects - there's nothing to resume */
                     int rc = corto_define_intern(o, FALSE);
@@ -1591,6 +1634,12 @@ corto_int16 corto_defineDeclared(
     corto_int16 result = 0;
     corto_type t = corto_typeof(o);
 
+    if (t == corto_unknown_o) {
+        corto_throw("cannot define object '%s' of unknown type",
+            corto_fullpath(NULL, o));
+        goto error;
+    }
+
     /* Don't invoke constructor if object is not locally owned */
     if (t->flags & CORTO_TYPE_HAS_CONSTRUCT) {
         if (corto_ownerMatch(corto_ownerof(o), NULL)) {
@@ -1602,6 +1651,8 @@ corto_int16 corto_defineDeclared(
     }
 
     return result;
+error:
+    return -1;
 }
 
 /* Send DEFINE or RESUME notification for new object */

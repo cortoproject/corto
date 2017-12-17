@@ -2269,3 +2269,46 @@ void test_ObjectMgmt_tc_lifecycleValidateFail(
 
     test_assert(corto_delete(a) == 0);
 }
+
+void test_ObjectMgmt_tc_redeclareNestedUnknown(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declareChild(root_o, "foo/bar", corto_string_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == (corto_type)corto_string_o);
+
+    corto_object p = corto_parentof(o);
+    test_assert(p != NULL);
+    test_assert(!corto_checkState(p, CORTO_VALID));
+    test_assert(corto_typeof(p) == corto_unknown_o);
+
+    corto_object q = corto_declareChild(root_o, "foo", corto_uint32_o);
+    test_assert(q != NULL);
+    test_assert(q != p);
+    test_assert(!corto_checkState(q, CORTO_VALID));
+    test_assert(corto_typeof(q) == (corto_type)corto_uint32_o);
+    test_assertstr(corto_fullpath(NULL, q), "/foo");
+    test_assert(corto_parentof(o) == q);
+
+    test_assert(!corto_delete(q));
+}
+
+void test_ObjectMgmt_tc_redeclareUnknown(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declareChild(root_o, "foo", corto_unknown_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == corto_unknown_o);
+    test_assertstr(corto_fullpath(NULL, o), "/foo");
+
+    corto_object p = corto_declareChild(root_o, "foo", corto_uint32_o);
+    test_assert(p != NULL);
+    test_assert(p != o);
+    test_assert(!corto_checkState(p, CORTO_VALID));
+    test_assert(corto_typeof(p) == (corto_type)corto_uint32_o);
+    test_assertstr(corto_fullpath(NULL, p), "/foo");
+
+    test_assert(!corto_delete(p));
+}
