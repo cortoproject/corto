@@ -88,7 +88,7 @@ CORTO_META_OBJECT(binary, word);
 CORTO_META_OBJECT(int, constant);
 
 CORTO_META_OBJECT(type, any);
-CORTO_META_OBJECT(class, alias);
+CORTO_META_OBJECT(type, unknown);
 CORTO_META_OBJECT(type, void);
 CORTO_META_OBJECT(type, object);
 

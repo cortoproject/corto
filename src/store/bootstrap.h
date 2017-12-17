@@ -220,9 +220,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_PACKAGE_O_SCOPE(parent, name, uri, description) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(parent, #name, uri, NULL, "Sander Mertens", description)}
 
 /* type object */
-#define CORTO_TYPE_O(parent, name, kind, reference)\
+#define CORTO_TYPE_O(parent, name, kind, reference, attr)\
     static sso_type parent##_##name##__o = \
-    {CORTO_SSO_V(parent, #name, lang_type), CORTO_TYPE_V(parent, name, kind, reference, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE)}
+    {CORTO_SSO_V(parent, #name, lang_type), CORTO_TYPE_V(parent, name, kind, reference, attr, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE)}
 
 /* primitive object */
 #define CORTO_PRIMITIVE_O(parent, name, kind, width)\
@@ -604,13 +604,16 @@ CORTO_INT_O(lang, constant, CORTO_WIDTH_32, 0, MAX_INT32, CORTO_TYPE_ID(lang_enu
     CORTO_METHOD_O(lang_constant, init, "()", lang_int16, corto_constant_init);
 
 /* Any type */
-CORTO_TYPE_O(lang, any, CORTO_ANY, FALSE);
+CORTO_TYPE_O(lang, any, CORTO_ANY, FALSE, CORTO_ATTR_DEFAULT);
 
 /* Void type */
-CORTO_TYPE_O(lang, void, CORTO_VOID, FALSE);
+CORTO_TYPE_O(lang, void, CORTO_VOID, FALSE, CORTO_ATTR_DEFAULT);
+
+/* Unknown type */
+CORTO_TYPE_O(lang, unknown, CORTO_VOID, FALSE, CORTO_ATTR_NAMED);
 
 /* Object type */
-CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE);
+CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE, CORTO_ATTR_DEFAULT);
 
 /* Package type */
 CORTO_FW_IC(lang, package);
