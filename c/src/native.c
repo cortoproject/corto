@@ -46,7 +46,9 @@ corto_int16 _corto_native_typeUpdate(corto_native_type _this, corto_string name)
         } else {
             corto_ptr_setstr(&((corto_native_type)_this)->name, name);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }

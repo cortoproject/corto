@@ -106,4 +106,3 @@ int16_t corto_union_init(
 error:
     return -1;
 }
-

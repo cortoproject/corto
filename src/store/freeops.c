@@ -34,7 +34,7 @@ typedef struct freeops_op {
     corto_type subtype;
 #ifdef DEBUG_FREEOPS
     corto_member member;
-#endif    
+#endif
 } freeops_op;
 
 /* freeops program (Free Operations) */
@@ -44,7 +44,7 @@ struct freeops {
     uint32_t opcount;
 #ifdef DEBUG_FREEOPS
     corto_type type;
-#endif    
+#endif
 };
 
 #ifdef DEBUG_FREEOPS
@@ -54,19 +54,19 @@ static char* freeops_tostr(freeops_kind kind) {
     case FREEOPS_REF: return "REF";
     case FREEOPS_OPTIONAL: return "OPTIONAL";
     case FREEOPS_ARRAY_STRING: return "ARRAY_STRING";
-    case FREEOPS_ARRAY_REF: return "ARRAY_REF";  
+    case FREEOPS_ARRAY_REF: return "ARRAY_REF";
     case FREEOPS_ARRAY_W_RES: return "ARRAY_W_RES";
-    case FREEOPS_ARRAY_STRUCT: return "ARRAY_STRUCT";    
-    case FREEOPS_SEQ: return "SEQ";        
-    case FREEOPS_SEQ_STRING: return "SEQ_STRING"; 
-    case FREEOPS_SEQ_REF: return "SEQ_REF";    
-    case FREEOPS_SEQ_W_RES: return "SEQ_W_RES";  
-    case FREEOPS_SEQ_STRUCT: return "SEQ_STRUCT"; 
-    case FREEOPS_LIST: return "LIST";       
+    case FREEOPS_ARRAY_STRUCT: return "ARRAY_STRUCT";
+    case FREEOPS_SEQ: return "SEQ";
+    case FREEOPS_SEQ_STRING: return "SEQ_STRING";
+    case FREEOPS_SEQ_REF: return "SEQ_REF";
+    case FREEOPS_SEQ_W_RES: return "SEQ_W_RES";
+    case FREEOPS_SEQ_STRUCT: return "SEQ_STRUCT";
+    case FREEOPS_LIST: return "LIST";
     case FREEOPS_LIST_NO_RES: return "LIST_NO_RES";
-    case FREEOPS_LIST_W_RES: return "LIST_W_RES"; 
+    case FREEOPS_LIST_W_RES: return "LIST_W_RES";
     case FREEOPS_LIST_STRING: return "LIST_STRING";
-    case FREEOPS_LIST_REF: return "LIST_REF";   
+    case FREEOPS_LIST_REF: return "LIST_REF";
     case FREEOPS_LIST_STRUCT: return "LIST_STRUCT";
     case FREEOPS_UNION: return "UNION";
     default: return "???";
@@ -107,7 +107,7 @@ static int16_t freeops_primitive(corto_walk_opt *s, corto_value *info, void *ctx
         op->subtype = NULL;
 #ifdef DEBUG_FREEOPS
         op->member = info->is.member.t;
-#endif        
+#endif
     }
     return 0;
 }
@@ -123,7 +123,7 @@ static int16_t freeops_reference(corto_walk_opt *s, corto_value *info, void *ctx
     op->subtype = NULL;
 #ifdef DEBUG_FREEOPS
     op->member = info->is.member.t;
-#endif    
+#endif
     return 0;
 }
 
@@ -140,7 +140,7 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
         bool elemIsStr = elementType->kind == CORTO_PRIMITIVE && corto_primitive(elementType)->kind == CORTO_TEXT;
         bool elemIsRef = elementType->reference;
         bool elemHasRes = elementType->flags & CORTO_TYPE_HAS_RESOURCES;
-            
+
         switch(t->kind) {
         case CORTO_ARRAY:
             if (elemIsStr) {
@@ -150,7 +150,7 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
                 op = freeops_add(r);
                 op->kind = FREEOPS_ARRAY_REF;
             } else if (elemHasRes) {
-                op = freeops_add(r);                                    
+                op = freeops_add(r);
                 if (corto_instanceof(corto_struct_o, elementType)) {
                     op->kind = FREEOPS_ARRAY_STRUCT;
                 } else {
@@ -160,7 +160,7 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
             op->count = t->max;
             break;
         case CORTO_SEQUENCE:
-            op = freeops_add(r);        
+            op = freeops_add(r);
             if (elemIsStr) {
                 op->kind = FREEOPS_SEQ_STRING;
             } else if (elemIsRef) {
@@ -175,9 +175,9 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
                 op->kind = FREEOPS_SEQ;
             }
             op->count = 0;
-            break;            
+            break;
         case CORTO_LIST:
-            op = freeops_add(r);        
+            op = freeops_add(r);
             if (elemIsStr) {
                 op->kind = FREEOPS_LIST_STRING;
             } else if (elemIsRef) {
@@ -186,7 +186,7 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
                 if (elemHasRes) {
                     op->kind = FREEOPS_LIST_STRUCT;
                 } else {
-                    op->kind = FREEOPS_LIST_NO_RES;             
+                    op->kind = FREEOPS_LIST_NO_RES;
                 }
             } else {
                 if (elemHasRes) {
@@ -201,7 +201,7 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
             }
             op->count = 0;
             break;
-        default: 
+        default:
             break;
         }
 
@@ -210,7 +210,7 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
             op->subtype = elementType;
 #ifdef DEBUG_FREEOPS
             op->member = info->is.member.t;
-#endif                
+#endif
         }
     }
 
@@ -222,7 +222,7 @@ static int16_t freeops_member(corto_walk_opt *s, corto_value *info, void *ctx) {
     CORTO_UNUSED(s);
     freeops *r = ctx;
     corto_member m = info->is.member.t;
-    
+
     if (m->modifiers & CORTO_OPTIONAL) {
         freeops_op* op = freeops_add(r);
         op->kind = FREEOPS_REF;
@@ -230,7 +230,7 @@ static int16_t freeops_member(corto_walk_opt *s, corto_value *info, void *ctx) {
         op->subtype = m->type;
 #ifdef DEBUG_FREEOPS
         op->member = info->is.member.t;
-#endif    
+#endif
     } else if (m->type->kind == CORTO_COMPOSITE && corto_interface(m->type)->kind == CORTO_UNION) {
         freeops_op* op = freeops_add(r);
         op->kind = FREEOPS_UNION;
@@ -238,7 +238,7 @@ static int16_t freeops_member(corto_walk_opt *s, corto_value *info, void *ctx) {
         op->subtype = m->type;
 #ifdef DEBUG_FREEOPS
         op->member = info->is.member.t;
-#endif            
+#endif
     } else {
         corto_walk_value(s, info, ctx);
     }
@@ -249,20 +249,20 @@ static int16_t freeops_member(corto_walk_opt *s, corto_value *info, void *ctx) {
 /* Create new freeops program */
 void freeops_create(freeops *r, corto_type type) {
     corto_walk_opt s;
-    
+
     corto_walk_init(&s);
 
     s.access = 0;
     s.accessKind = CORTO_NOT;
     s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
-    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;    
+    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
     s.program[CORTO_PRIMITIVE] = freeops_primitive;
     s.program[CORTO_COLLECTION] = freeops_collection;
     s.metaprogram[CORTO_MEMBER] = freeops_member;
     s.reference = freeops_reference;
     s.observable = freeops_reference;
 
-    freeops *result = r 
+    freeops *result = r
         ? r
         : corto_calloc(sizeof(freeops))
         ;
@@ -271,7 +271,7 @@ void freeops_create(freeops *r, corto_type type) {
 
 #ifdef DEBUG_FREEOPS
     result->type = type;
-#endif    
+#endif
 
     if (!r) ((corto_struct)type)->freeops = (uintptr_t)result;
 }
@@ -325,7 +325,7 @@ CORTO_SEQUENCE(dummySeq,void*,);
 #define ARRAY_OPS(op, size_of, action)\
     case FREEOPS_ARRAY##op: ARRAY_OP(size_of, action);\
     case FREEOPS_SEQ##op: SEQ_OP(size_of, action);\
-  
+
 #define ARRAY_OPS_NOITER(op, size_of, action)\
     case FREEOPS_SEQ##op: SEQ_PREP(); SEQ_FREE();
 
@@ -350,7 +350,7 @@ static void freeops_run(freeops *r, void *v) {
     void *aptr, *elem, *end, *deref;
     dummySeq *seq;
 
-#ifdef DEBUG_FREEOPS    
+#ifdef DEBUG_FREEOPS
     printf(">> free %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
 #endif
     for (i = 0; i < r->opcount; i++) {
@@ -371,7 +371,7 @@ static void freeops_run(freeops *r, void *v) {
         /* Collections */
         ARRAY_OPS_NOITER(, op->subtype->size,);
         ARRAY_OPS(_STRING, sizeof(char*), deref_mem_free(elem));
-        ARRAY_OPS(_REF, sizeof(corto_object), deref_ref_free(elem));        
+        ARRAY_OPS(_REF, sizeof(corto_object), deref_ref_free(elem));
         ARRAY_OPS(_W_RES, op->subtype->size, (freeops_ptr_free(op->subtype, elem)));
         ARRAY_OPS(_STRUCT, op->subtype->size, (freeops_run(nestops, elem)));
 
@@ -397,7 +397,7 @@ static void freeops_run(freeops *r, void *v) {
         }
     }
 
-#ifdef DEBUG_FREEOPS    
+#ifdef DEBUG_FREEOPS
     printf("<< done with %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
 #endif
 }
@@ -410,16 +410,21 @@ void freeops_ptr_free(corto_type t, void *ptr) {
             corto_critical("cannot free instance of '%s', instructions not defined",
                 corto_fullpath(NULL, t));
         }
-#ifdef DEBUG_FREEOPS        
+#ifdef DEBUG_FREEOPS
         printf(">> free instance of '%s'\n", corto_fullpath(NULL, t));
 #endif
         freeops_run(r, ptr);
     } else {
-        /* Generate program on the fly */
-        freeops_op op;
-        freeops ops = {&op, 1, 0};
-        freeops_create(&ops, t);
-        freeops_run(&ops, ptr);
+        if (t->reference && t->kind == CORTO_VOID) {
+            corto_object obj = *(corto_object*)ptr;
+            if (obj) corto_release(obj);
+        } else {
+            /* Generate program on the fly */
+            freeops_op op;
+            freeops ops = {&op, 1, 0};
+            freeops_create(&ops, t);
+            freeops_run(&ops, ptr);
+        }
     }
 }
 
@@ -433,4 +438,3 @@ void freeops_delete(corto_struct t) {
     free(r);
     s->freeops = 0;
 }
-

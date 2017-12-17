@@ -26,7 +26,6 @@
 
 #include <corto/store/value.h>
 #include <corto/store/walk.h>
-#include <corto/store/depresolver.h>
 #include <corto/store/object.h>
 #include <corto/store/ptr.h>
 #include <corto/store/string_deser.h>

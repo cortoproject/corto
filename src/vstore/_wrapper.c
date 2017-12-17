@@ -85,7 +85,7 @@ corto_resultIter _corto_loader_onQuery(
     } else {
         corto_call(corto_function(_method), &_result, _this, query);
     }
-
+    
     return _result;
 }
 void _corto_mount_onBatchNotify(
@@ -169,7 +169,7 @@ corto_resultIter _corto_mount_onHistoryQuery(
     } else {
         corto_call(corto_function(_method), &_result, _this, query);
     }
-
+    
     return _result;
 }
 corto_string _corto_mount_onId(
@@ -198,7 +198,7 @@ corto_string _corto_mount_onId(
     } else {
         corto_call(corto_function(_method), &_result, _this);
     }
-
+    
     return _result;
 }
 void _corto_mount_onInvoke(
@@ -258,7 +258,7 @@ uintptr_t _corto_mount_onMount(
     } else {
         corto_call(corto_function(_method), &_result, _this, query, ctx);
     }
-
+    
     return _result;
 }
 void _corto_mount_onNotify(
@@ -315,7 +315,7 @@ corto_resultIter _corto_mount_onQuery(
     } else {
         corto_call(corto_function(_method), &_result, _this, query);
     }
-
+    
     return _result;
 }
 corto_object _corto_mount_onResume(
@@ -347,7 +347,7 @@ corto_object _corto_mount_onResume(
     } else {
         corto_call(corto_function(_method), &_result, _this, parent, id, object);
     }
-
+    
     return _result;
 }
 uintptr_t _corto_mount_onSubscribe(
@@ -378,7 +378,7 @@ uintptr_t _corto_mount_onSubscribe(
     } else {
         corto_call(corto_function(_method), &_result, _this, query, ctx);
     }
-
+    
     return _result;
 }
 uintptr_t _corto_mount_onTransactionBegin(
@@ -407,7 +407,7 @@ uintptr_t _corto_mount_onTransactionBegin(
     } else {
         corto_call(corto_function(_method), &_result, _this);
     }
-
+    
     return _result;
 }
 void _corto_mount_onTransactionEnd(
@@ -524,7 +524,7 @@ corto_route _corto_routerimpl_findRoute(
     } else {
         corto_call(corto_function(_method), &_result, _this, instance, pattern, param, routerData);
     }
-
+    
     return _result;
 }
 int32_t _corto_routerimpl_matchRoute(
@@ -557,6 +557,6 @@ int32_t _corto_routerimpl_matchRoute(
     } else {
         corto_call(corto_function(_method), &_result, _this, route, pattern, param, routerData);
     }
-
+    
     return _result;
 }

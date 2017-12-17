@@ -46,7 +46,9 @@ corto_int16 _corto_aliasUpdate(corto_alias _this, corto_member member) {
         } else {
             corto_ptr_setref(&((corto_alias)_this)->member, member);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -139,7 +141,9 @@ corto_int16 _corto_anyUpdate(corto_any* _this, corto_type type, void *value) {
             _this->owner = TRUE;
             corto_ptr_copy(_this, corto_any_o, &v);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -220,7 +224,9 @@ corto_int16 _corto_applicationUpdate(corto_application _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -299,7 +305,9 @@ corto_int16 _corto_arrayUpdate(corto_array _this, corto_type elementType, uint32
             corto_ptr_setref(&((corto_collection)_this)->elementType, elementType);
             ((corto_collection)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -378,7 +386,9 @@ corto_int16 _corto_attrUpdate(corto_attr* _this, corto_attr value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -455,7 +465,9 @@ corto_int16 _corto_binaryUpdate(corto_binary _this, corto_width width) {
         } else {
             ((corto_primitive)_this)->width = width;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -528,7 +540,9 @@ corto_int16 _corto_bitmaskUpdate(corto_bitmask _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -603,7 +617,9 @@ corto_int16 _corto_boolUpdate(bool* _this, bool value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -676,7 +692,9 @@ corto_int16 _corto_booleanUpdate(corto_boolean _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -759,7 +777,9 @@ corto_int16 _corto_caseUpdate(corto_case _this, corto_int32seq discriminator, co
             corto_ptr_setref(&((corto_member)_this)->type, type);
             ((corto_member)_this)->modifiers = modifiers;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -840,7 +860,9 @@ corto_int16 _corto_charUpdate(char* _this, char value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -917,7 +939,9 @@ corto_int16 _corto_characterUpdate(corto_character _this, corto_width width) {
         } else {
             ((corto_primitive)_this)->width = width;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1002,7 +1026,9 @@ corto_int16 _corto_classUpdate(corto_class _this, corto_interface base, corto_mo
             ((corto_struct)_this)->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1087,7 +1113,9 @@ corto_int16 _corto_collectionUpdate(corto_collection _this, corto_type elementTy
             corto_ptr_setref(&((corto_collection)_this)->elementType, elementType);
             ((corto_collection)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1166,7 +1194,9 @@ corto_int16 _corto_collectionKindUpdate(corto_collectionKind* _this, corto_colle
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1243,7 +1273,9 @@ corto_int16 _corto_compositeKindUpdate(corto_compositeKind* _this, corto_composi
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1320,7 +1352,9 @@ corto_int16 _corto_constantUpdate(int32_t* _this, int32_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1413,7 +1447,9 @@ corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, 
             corto_ptr_setref(&((corto_container)_this)->type, type);
             corto_ptr_setstr(&((corto_container)_this)->value, value);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1498,7 +1534,9 @@ corto_int16 _corto_defaultUpdate(corto_default _this, corto_type type) {
         } else {
             corto_ptr_setref(&((corto_member)_this)->type, type);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1583,7 +1621,9 @@ corto_int16 _corto_delegateUpdate(corto_delegate _this, corto_type returnType, b
             ((corto_delegate)_this)->returnsReference = returnsReference;
             corto_ptr_copy(&((corto_delegate)_this)->parameters, corto_parameterseq_o, &parameters);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1668,7 +1708,9 @@ corto_int16 _corto_delegatedataUpdate(corto_delegatedata* _this, corto_object in
             corto_ptr_setref(&((corto_delegatedata*)_this)->instance, instance);
             corto_ptr_setref(&((corto_delegatedata*)_this)->procedure, procedure);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1751,7 +1793,9 @@ corto_int16 _corto_destructActionUpdate(corto_destructAction* _this, corto_objec
             corto_ptr_setref(&((corto_delegatedata*)_this)->instance, instance);
             corto_ptr_setref(&((corto_delegatedata*)_this)->procedure, procedure);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1862,7 +1906,9 @@ corto_int16 _corto_enumUpdate(corto_enum _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1937,7 +1983,9 @@ corto_int16 _corto_equalityKindUpdate(corto_equalityKind* _this, corto_equalityK
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2022,7 +2070,9 @@ corto_int16 _corto_floatUpdate(corto_float _this, corto_width width, double min,
             ((corto_float)_this)->min = min;
             ((corto_float)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2103,7 +2153,9 @@ corto_int16 _corto_float32Update(float* _this, float value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2180,7 +2232,9 @@ corto_int16 _corto_float64Update(double* _this, double value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2269,7 +2323,9 @@ corto_int16 _corto_functionUpdate(corto_function _this, corto_type returnType, b
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2356,7 +2412,9 @@ corto_int16 _corto_initActionUpdate(corto_initAction* _this, corto_object instan
             corto_ptr_setref(&((corto_delegatedata*)_this)->instance, instance);
             corto_ptr_setref(&((corto_delegatedata*)_this)->procedure, procedure);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2471,7 +2529,9 @@ corto_int16 _corto_inoutUpdate(corto_inout* _this, corto_inout value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2556,7 +2616,9 @@ corto_int16 _corto_intUpdate(corto_int _this, corto_width width, int64_t min, in
             ((corto_int)_this)->min = min;
             ((corto_int)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2637,7 +2699,9 @@ corto_int16 _corto_int16Update(int16_t* _this, int16_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2714,7 +2778,9 @@ corto_int16 _corto_int32Update(int32_t* _this, int32_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2807,7 +2873,9 @@ corto_int16 _corto_int32seqUpdate(corto_int32seq* _this, corto_uint32 length, in
                 _this->buffer[i] = elements[i];
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2892,7 +2960,9 @@ corto_int16 _corto_int64Update(int64_t* _this, int64_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2969,7 +3039,9 @@ corto_int16 _corto_int8Update(int8_t* _this, int8_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3046,7 +3118,9 @@ corto_int16 _corto_interfaceUpdate(corto_interface _this, corto_interface base) 
         } else {
             corto_ptr_setref(&((corto_interface)_this)->base, base);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3139,7 +3213,9 @@ corto_int16 _corto_interfaceseqUpdate(corto_interfaceseq* _this, corto_uint32 le
                 corto_ptr_setref(&_this->buffer[i], elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3228,7 +3304,9 @@ corto_int16 _corto_interfaceVectorUpdate(corto_interfaceVector* _this, corto_int
             corto_ptr_setref(&((corto_interfaceVector*)_this)->interface, interface);
             corto_ptr_copy(&((corto_interfaceVector*)_this)->vector, corto_objectseq_o, &vector);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3331,7 +3409,9 @@ corto_int16 _corto_interfaceVectorseqUpdate(corto_interfaceVectorseq* _this, cor
                 }
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3420,7 +3500,9 @@ corto_int16 _corto_iteratorUpdate(corto_iterator _this, corto_type elementType) 
         } else {
             corto_ptr_setref(&((corto_iterator)_this)->elementType, elementType);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3513,7 +3595,9 @@ corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modi
             corto_ptr_setref(&((corto_container)_this)->type, type);
             corto_ptr_setstr(&((corto_container)_this)->value, value);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3602,7 +3686,9 @@ corto_int16 _corto_listUpdate(corto_list _this, corto_type elementType, uint32_t
             corto_ptr_setref(&((corto_collection)_this)->elementType, elementType);
             ((corto_collection)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3689,7 +3775,9 @@ corto_int16 _corto_mapUpdate(corto_map _this, corto_type elementType, corto_type
             corto_ptr_setref(&((corto_map)_this)->keyType, keyType);
             ((corto_map)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3774,7 +3862,9 @@ corto_int16 _corto_memberUpdate(corto_member _this, corto_type type, corto_modif
             corto_ptr_setref(&((corto_member)_this)->type, type);
             ((corto_member)_this)->modifiers = modifiers;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3869,7 +3959,9 @@ corto_int16 _corto_metaprocedureUpdate(corto_metaprocedure _this, corto_type ret
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3966,7 +4058,9 @@ corto_int16 _corto_methodUpdate(corto_method _this, corto_type returnType, bool 
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4049,7 +4143,9 @@ corto_int16 _corto_modifierUpdate(corto_modifier* _this, corto_modifier value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4130,7 +4226,9 @@ corto_int16 _corto_nameActionUpdate(corto_nameAction* _this, corto_object instan
             corto_ptr_setref(&((corto_delegatedata*)_this)->instance, instance);
             corto_ptr_setref(&((corto_delegatedata*)_this)->procedure, procedure);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4205,31 +4303,83 @@ corto_int16 corto_nameActionInitCInstance(corto_nameAction *d, corto_object inst
     return 0;
 }
 
-corto_object _corto_objectCreate(void) {
+corto_object _corto_objectCreate(corto_object value) {
     corto_object _this;
     _this = (corto_object)corto_declare(corto_object_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
+        corto_ptr_setref(_this, value);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
 
-corto_object _corto_objectCreateChild(corto_object _parent, corto_string _id) {
+corto_object _corto_objectCreateChild(corto_object _parent, corto_string _id, corto_object value) {
     corto_object _this;
     _this = (corto_object)corto_declareChild(_parent, _id, corto_object_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_checkState(_this, CORTO_VALID)) {
+        corto_ptr_setref(_this, value);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
     }
     return _this;
 }
 
-corto_int16 _corto_objectUpdate(corto_object _this) {
+corto_int16 _corto_objectUpdate(corto_object _this, corto_object value) {
     CORTO_UNUSED(_this);
-    return corto_update(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            corto_ptr_setref(((corto_object)CORTO_OFFSET(_this, ((corto_type)corto_object_o)->size)), value);
+        } else {
+            corto_ptr_setref(_this, value);
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_object _corto_objectDeclare(void) {
+    corto_object _this;
+    _this = (corto_object)corto_declare(corto_object_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_object _corto_objectDeclareChild(corto_object _parent, corto_string _id) {
+    corto_object _this;
+    _this = (corto_object)corto_declareChild(_parent, _id, corto_object_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_objectDefine(corto_object _this, corto_object value) {
+    CORTO_UNUSED(_this);
+    corto_ptr_setref(_this, value);
+    return corto_define(_this);
+}
+
+corto_object _corto_objectAssign(corto_object _this, corto_object value) {
+    CORTO_UNUSED(_this);
+    corto_ptr_setref(_this, value);
+    return _this;
 }
 
 corto_objectlist* _corto_objectlistCreate(corto_uint32 length, corto_object* elements) {
@@ -4288,7 +4438,9 @@ corto_int16 _corto_objectlistUpdate(corto_objectlist* _this, corto_uint32 length
                 corto_objectlistAppend(*_this, elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4389,7 +4541,9 @@ corto_int16 _corto_objectseqUpdate(corto_objectseq* _this, corto_uint32 length, 
                 corto_ptr_setref(&_this->buffer[i], elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4474,7 +4628,9 @@ corto_int16 _corto_octetUpdate(uint8_t* _this, uint8_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4563,7 +4719,9 @@ corto_int16 _corto_overridableUpdate(corto_overridable _this, corto_type returnT
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4658,7 +4816,9 @@ corto_int16 _corto_overrideUpdate(corto_override _this, corto_type returnType, b
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4737,7 +4897,9 @@ corto_int16 _corto_packageUpdate(corto_package _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4824,7 +4986,9 @@ corto_int16 _corto_parameterUpdate(corto_parameter* _this, corto_string name, co
             ((corto_parameter*)_this)->inout = inout;
             ((corto_parameter*)_this)->passByReference = passByReference;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -4931,7 +5095,9 @@ corto_int16 _corto_parameterseqUpdate(corto_parameterseq* _this, corto_uint32 le
                 }
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5020,7 +5186,9 @@ corto_int16 _corto_primitiveUpdate(corto_primitive _this, corto_width width) {
         } else {
             ((corto_primitive)_this)->width = width;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5097,7 +5265,9 @@ corto_int16 _corto_primitiveKindUpdate(corto_primitiveKind* _this, corto_primiti
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5178,7 +5348,9 @@ corto_int16 _corto_procedureUpdate(corto_procedure _this, bool hasThis, corto_ty
             ((corto_procedure)_this)->hasThis = hasThis;
             corto_ptr_setref(&((corto_procedure)_this)->thisType, thisType);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5257,7 +5429,9 @@ corto_int16 _corto_quantityUpdate(corto_quantity _this, corto_string description
         } else {
             corto_ptr_setstr(&((corto_quantity)_this)->description, description);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5338,7 +5512,9 @@ corto_int16 _corto_sequenceUpdate(corto_sequence _this, corto_type elementType, 
             corto_ptr_setref(&((corto_collection)_this)->elementType, elementType);
             ((corto_collection)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5417,7 +5593,9 @@ corto_int16 _corto_stateUpdate(corto_state* _this, corto_state value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5494,7 +5672,9 @@ corto_int16 _corto_stringUpdate(corto_string* _this, corto_string value) {
         } else {
             corto_ptr_setstr(_this, value);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5587,7 +5767,9 @@ corto_int16 _corto_stringlistUpdate(corto_stringlist* _this, corto_uint32 length
                 corto_stringlistAppend(*_this, elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5688,7 +5870,9 @@ corto_int16 _corto_stringseqUpdate(corto_stringseq* _this, corto_uint32 length, 
                 corto_ptr_setstr(&_this->buffer[i], elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5777,7 +5961,9 @@ corto_int16 _corto_structUpdate(corto_struct _this, corto_interface base, corto_
             corto_ptr_setref(&((corto_interface)_this)->base, base);
             ((corto_struct)_this)->baseAccess = baseAccess;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5872,7 +6058,9 @@ corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_mo
             corto_ptr_setref(&((corto_container)_this)->type, type);
             corto_ptr_setstr(&((corto_container)_this)->value, value);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -5957,7 +6145,9 @@ corto_int16 _corto_tableinstanceUpdate(corto_tableinstance _this, corto_struct t
         } else {
             corto_ptr_setref(&((corto_tableinstance)_this)->type, type);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6034,7 +6224,9 @@ corto_int16 _corto_targetUpdate(corto_target _this, corto_type type) {
         } else {
             corto_ptr_setref(&((corto_target)_this)->type, type);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6115,7 +6307,9 @@ corto_int16 _corto_textUpdate(corto_text _this, corto_width charWidth, uint64_t 
             ((corto_text)_this)->charWidth = charWidth;
             ((corto_text)_this)->length = length;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6190,7 +6384,9 @@ corto_int16 _corto_toolUpdate(corto_tool _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6273,7 +6469,9 @@ corto_int16 _corto_typeUpdate(corto_type _this, corto_typeKind kind, bool refere
             ((corto_type)_this)->reference = reference;
             ((corto_type)_this)->attr = attr;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6354,7 +6552,9 @@ corto_int16 _corto_typeKindUpdate(corto_typeKind* _this, corto_typeKind value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6443,7 +6643,9 @@ corto_int16 _corto_typeOptionsUpdate(corto_typeOptions* _this, corto_type parent
             corto_ptr_setref(&((corto_typeOptions*)_this)->defaultType, defaultType);
             corto_ptr_setref(&((corto_typeOptions*)_this)->defaultProcedureType, defaultProcedureType);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6534,7 +6736,9 @@ corto_int16 _corto_uintUpdate(corto_uint _this, corto_width width, uint64_t min,
             ((corto_uint)_this)->min = min;
             ((corto_uint)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6615,7 +6819,9 @@ corto_int16 _corto_uint16Update(uint16_t* _this, uint16_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6692,7 +6898,9 @@ corto_int16 _corto_uint32Update(uint32_t* _this, uint32_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6769,7 +6977,9 @@ corto_int16 _corto_uint64Update(uint64_t* _this, uint64_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6846,7 +7056,9 @@ corto_int16 _corto_uint8Update(uint8_t* _this, uint8_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -6923,7 +7135,9 @@ corto_int16 _corto_unionUpdate(corto_union _this, corto_type discriminator) {
         } else {
             corto_ptr_setref(&((corto_union)_this)->discriminator, discriminator);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -7012,7 +7226,9 @@ corto_int16 _corto_unitUpdate(corto_unit _this, corto_quantity quantity, corto_s
             corto_ptr_setstr(&((corto_unit)_this)->conversion, conversion);
             corto_ptr_setref(&((corto_unit)_this)->type, type);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -7095,7 +7311,9 @@ corto_int16 _corto_verbatimUpdate(corto_verbatim _this, corto_string contentType
         } else {
             corto_ptr_setstr(&((corto_verbatim)_this)->contentType, contentType);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -7199,7 +7417,9 @@ corto_int16 _corto_widthUpdate(corto_width* _this, corto_width value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -7276,7 +7496,9 @@ corto_int16 _corto_wordUpdate(uintptr_t* _this, uintptr_t value) {
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -7369,7 +7591,9 @@ corto_int16 _corto_wordseqUpdate(corto_wordseq* _this, corto_uint32 length, uint
                 _this->buffer[i] = elements[i];
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }

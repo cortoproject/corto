@@ -133,7 +133,7 @@ void corto_type_destruct(
         this->metaprocedures.buffer = NULL;
     }
 
-    
+
 }
 
 int16_t corto_type_init(
@@ -144,6 +144,9 @@ int16_t corto_type_init(
     }
     if (!this->attr) {
         this->attr = CORTO_ATTR_DEFAULT;
+    }
+    if (this->reference && this->kind == CORTO_VOID) {
+        this->flags |= CORTO_TYPE_HAS_RESOURCES;
     }
     return 0;
 }

@@ -42,7 +42,9 @@ corto_int16 _corto_dispatcherUpdate(corto_dispatcher _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -113,7 +115,9 @@ corto_int16 _corto_eventUpdate(corto_event* _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -188,7 +192,9 @@ corto_int16 _corto_eventMaskUpdate(corto_eventMask* _this, corto_eventMask value
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -269,7 +275,9 @@ corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind kind, int64_t
             ((corto_frame*)_this)->kind = kind;
             ((corto_frame*)_this)->value = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -348,7 +356,9 @@ corto_int16 _corto_frameKindUpdate(corto_frameKind* _this, corto_frameKind value
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -429,7 +439,9 @@ corto_int16 _corto_handleActionUpdate(corto_handleAction* _this, corto_object in
             corto_ptr_setref(&((corto_delegatedata*)_this)->instance, instance);
             corto_ptr_setref(&((corto_delegatedata*)_this)->procedure, procedure);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -556,7 +568,9 @@ corto_int16 _corto_invokeEventUpdate(corto_invokeEvent* _this, corto_mount mount
             corto_ptr_setref(&((corto_invokeEvent*)_this)->function, function);
             ((corto_invokeEvent*)_this)->args = args;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -639,7 +653,9 @@ corto_int16 _corto_loaderUpdate(corto_loader _this, bool autoLoad) {
         } else {
             ((corto_loader)_this)->autoLoad = autoLoad;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -740,7 +756,9 @@ corto_int16 _corto_mountUpdate(corto_mount _this, corto_query* query, corto_stri
                 corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -829,7 +847,9 @@ corto_int16 _corto_mountMaskUpdate(corto_mountMask* _this, corto_mountMask value
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -934,7 +954,9 @@ corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership o
             ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
             ((corto_mountPolicy*)_this)->filterResults = filterResults;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1049,7 +1071,9 @@ corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto
             ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
             ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1154,7 +1178,9 @@ corto_int16 _corto_mountSubscriptionListUpdate(corto_mountSubscriptionList* _thi
                 corto_mountSubscriptionListAppend(*_this, &elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1235,7 +1261,9 @@ corto_int16 _corto_objectIterUpdate(corto_objectIter* _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1338,7 +1366,9 @@ corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, co
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1449,7 +1479,9 @@ corto_int16 _corto_observerEventUpdate(corto_observerEvent* _this, corto_observe
             corto_ptr_setref(&((corto_observerEvent*)_this)->data, data);
             ((corto_observerEvent*)_this)->thread = thread;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1536,7 +1568,9 @@ corto_int16 _corto_operatorKindUpdate(corto_operatorKind* _this, corto_operatorK
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1613,7 +1647,9 @@ corto_int16 _corto_ownershipUpdate(corto_ownership* _this, corto_ownership value
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1746,7 +1782,9 @@ corto_int16 _corto_queryUpdate(corto_query* _this, corto_string select, corto_st
                 corto_ptr_copy(&((corto_query*)_this)->timeEnd, corto_frame_o, timeEnd);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1851,7 +1889,9 @@ corto_int16 _corto_queuePolicyUpdate(corto_queuePolicy* _this, uint32_t max) {
         } else {
             ((corto_queuePolicy*)_this)->max = max;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -1940,7 +1980,9 @@ corto_int16 _corto_remoteUpdate(corto_remote _this, corto_type returnType, bool 
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2043,7 +2085,9 @@ corto_int16 _corto_resultUpdate(corto_result* _this, corto_string id, corto_stri
             ((corto_result*)_this)->value = value;
             ((corto_result*)_this)->flags = flags;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2126,7 +2170,9 @@ corto_int16 _corto_resultIterUpdate(corto_resultIter* _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2217,7 +2263,9 @@ corto_int16 _corto_resultListUpdate(corto_resultList* _this, corto_uint32 length
                 corto_resultListAppend(*_this, &elements[i]);
             }
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2302,7 +2350,9 @@ corto_int16 _corto_resultMaskUpdate(corto_resultMask* _this, corto_resultMask va
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2387,7 +2437,9 @@ corto_int16 _corto_routeUpdate(corto_route _this, corto_string pattern, void(*_i
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2488,7 +2540,9 @@ corto_int16 _corto_routerUpdate(corto_router _this, corto_type returnType, corto
             corto_ptr_setstr(&((corto_router)_this)->routerDataName, routerDataName);
             corto_ptr_setstr(&((corto_router)_this)->elementSeparator, elementSeparator);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2583,7 +2637,9 @@ corto_int16 _corto_routerimplUpdate(corto_routerimpl _this, corto_interface base
             ((corto_struct)_this)->baseAccess = baseAccess;
             corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2676,7 +2732,9 @@ corto_int16 _corto_sampleUpdate(corto_sample* _this, corto_time* timestamp, uint
             }
             ((corto_sample*)_this)->value = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2755,7 +2813,9 @@ corto_int16 _corto_sampleIterUpdate(corto_sampleIter* _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2862,7 +2922,9 @@ corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_query* query, 
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -2983,7 +3045,9 @@ corto_int16 _corto_subscriberEventUpdate(corto_subscriberEvent* _this, corto_sub
             }
             ((corto_subscriberEvent*)_this)->contentTypeHandle = contentTypeHandle;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3070,7 +3134,9 @@ corto_int16 _corto_subscriberEventIterUpdate(corto_subscriberEventIter* _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -3149,7 +3215,9 @@ corto_int16 _corto_timeUpdate(corto_time* _this, int32_t sec, uint32_t nanosec) 
             ((corto_time*)_this)->sec = sec;
             ((corto_time*)_this)->nanosec = nanosec;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }

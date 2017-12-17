@@ -115,6 +115,7 @@ corto_int16 _corto_ptr_init(
 corto_int16 _corto_ptr_deinit(void *p, corto_type type) {
     corto_assertObject(type);
     corto_value v;
+
     v = corto_value_value(p, type);
     return corto_value_deinit(&v);
 }

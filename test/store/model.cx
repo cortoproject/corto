@@ -209,10 +209,10 @@ enum TypeKind :/
     OptionalSequence,
     OptionalList
 
-union unionTypes: test/TypeKind::
+union unionTypes: test/TypeKind:/
     m_int: {TypeKind/Int}, int32
     m_string: {TypeKind/String}, string
-    m_composite: {TypeKind/Composite}, Point
+    m_composite: {test/TypeKind/Composite}, Point
     m_reference: {TypeKind/Reference}, object
     m_array: {TypeKind/Array}, IntArray
     m_sequence: {TypeKind/Sequence}, IntSequence
@@ -597,7 +597,6 @@ test/Suite Copy:/
     void tc_structWithTargetArray()
     void tc_structWithTargetSequence()
     void tc_structWithTargetList()
-    void tc_union()
     void tc_unionWithInt()
     void tc_unionWithString()
     void tc_unionWithReference()

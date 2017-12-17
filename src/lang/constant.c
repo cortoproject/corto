@@ -35,4 +35,3 @@ int16_t corto_constant_init(
     return 0;
 error:
     return -1;}
-

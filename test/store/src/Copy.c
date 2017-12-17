@@ -1628,21 +1628,13 @@ void test_Copy_tc_structWithTargetStruct(
     test_assert(corto_ptr_deinit(&v2, test_struct_targetStruct_o) == 0);
 }
 
-void test_Copy_tc_union(
-    test_Copy this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
 void test_Copy_tc_unionWithArray(
     test_Copy this)
 {
-    /*test_unionTypes v1, v2;
+    test_unionTypes v1, v2;
 
     int32_t array[] = {10, 20, 30, 40};
-    test_unionTypesAssign_m_array(&v1, Test_Array, 4, array);
+    test_unionTypesAssign_m_array(&v1, Test_Array, array);
     corto_ptr_init(&v2, test_unionTypes_o);
 
     corto_ptr_copy(&v2, test_unionTypes_o, &v1);
@@ -1653,9 +1645,7 @@ void test_Copy_tc_unionWithArray(
     test_assertint(v2.is.m_array[3], 40);
 
     corto_ptr_deinit(&v1, test_unionTypes_o);
-    corto_ptr_deinit(&v2, test_unionTypes_o);*/
-
-
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithInt(
@@ -1678,93 +1668,285 @@ void test_Copy_tc_unionWithInt(
 void test_Copy_tc_unionWithList(
     test_Copy this)
 {
+    test_unionTypes v1 = {}, v2 = {};
+    test_IntList list = corto_ll_new();
 
+    test_IntListAppend(list, 10);
+    test_IntListAppend(list, 20);
+    test_IntListAppend(list, 30);
+    test_IntListAppend(list, 40);
+
+    corto_ptr_init(&v1, test_unionTypes_o);
+    corto_ptr_init(&v2, test_unionTypes_o);
+
+    test_unionTypesAssign_m_list(&v1, Test_List, list);
+
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_List);
+    test_assert(v2.is.m_list != list);
+    test_assertint(test_IntListGet(v2.is.m_list, 0), 10);
+    test_assertint(test_IntListGet(v2.is.m_list, 1), 20);
+    test_assertint(test_IntListGet(v2.is.m_list, 2), 30);
+    test_assertint(test_IntListGet(v2.is.m_list, 3), 40);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithOptionalArray(
     test_Copy this)
 {
+    int32_t list[] = {10, 20, 30, 40};
 
-    /* << Insert implementation >> */
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
+    test_unionTypesAssign_m_optionalArray(&v1, Test_OptionalArray, Set(4, list));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalArray);
+    test_assert(v2.is.m_optionalArray != NULL);
+    test_assertint((*v2.is.m_optionalArray)[0], 10);
+    test_assertint((*v2.is.m_optionalArray)[1], 20);
+    test_assertint((*v2.is.m_optionalArray)[2], 30);
+    test_assertint((*v2.is.m_optionalArray)[3], 40);
+
+    test_unionTypesAssign_m_optionalArray(&v1, Test_OptionalArray, NotSet);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalArray);
+    test_assert(v2.is.m_optionalArray == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithOptionalInt(
     test_Copy this)
 {
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
-    /* << Insert implementation >> */
+    test_unionTypesAssign_m_optionalInt(&v1, Test_OptionalInt, Set(10));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalInt);
+    test_assert(v2.is.m_optionalInt != NULL);
+    test_assertint(*v2.is.m_optionalInt, 10);
+
+    test_unionTypesAssign_m_optionalInt(&v1, Test_OptionalInt, NotSet);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalInt);
+    test_assert(v2.is.m_optionalInt == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 
 }
 
 void test_Copy_tc_unionWithOptionalList(
     test_Copy this)
 {
+    int32_t list[] = {10, 20, 30, 40};
 
-    /* << Insert implementation >> */
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
+    test_unionTypesAssign_m_optionalList(&v1, Test_OptionalList, Set(4, list));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalList);
+    test_assert(v2.is.m_optionalList != NULL);
+    test_assert(*v2.is.m_optionalList != NULL);
+    test_assertint(test_IntListGet(*v2.is.m_optionalList, 0), 10);
+    test_assertint(test_IntListGet(*v2.is.m_optionalList, 1), 20);
+    test_assertint(test_IntListGet(*v2.is.m_optionalList, 2), 30);
+    test_assertint(test_IntListGet(*v2.is.m_optionalList, 3), 40);
+
+    test_unionTypesAssign_m_optionalList(&v1, Test_OptionalList, NotSet);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalList);
+    test_assert(v2.is.m_optionalList == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithOptionalReference(
     test_Copy this)
 {
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
-    /* << Insert implementation >> */
+    corto_object obj = corto_create(corto_void_o);
+    test_assert(obj != NULL);
+    test_assert(corto_countof(obj) == 1);
 
+    test_unionTypesAssign_m_optionalReference(&v1, Test_OptionalReference, Set(obj));
+    test_assert(corto_countof(obj) == 2);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalReference);
+    test_assert(v2.is.m_optionalReference != NULL);
+    test_assert(*v2.is.m_optionalReference == obj);
+    test_assertint(corto_countof(obj), 3);
+
+    test_unionTypesAssign_m_optionalReference(&v1, Test_OptionalReference, NotSet);
+    test_assertint(corto_countof(obj), 2);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalReference);
+    test_assert(v2.is.m_optionalReference == NULL);
+    test_assert(corto_countof(obj) == 1);
+
+    test_unionTypesAssign_m_optionalReference(&v1, Test_OptionalReference, Set(NULL));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalReference);
+    test_assert(v2.is.m_optionalReference != NULL);
+    test_assert(*v2.is.m_optionalReference == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
+    test_assert(corto_delete(obj) == 0);
 }
 
 void test_Copy_tc_unionWithOptionalSequence(
     test_Copy this)
 {
+    int32_t list[] = {10, 20, 30, 40};
 
-    /* << Insert implementation >> */
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
+    test_unionTypesAssign_m_optionalSequence(&v1, Test_OptionalSequence, Set(4, list));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalSequence);
+    test_assert(v2.is.m_optionalSequence != NULL);
+    test_assertint(v2.is.m_optionalSequence->length, 4);
+    test_assertint(v2.is.m_optionalSequence->buffer[0], 10);
+    test_assertint(v2.is.m_optionalSequence->buffer[1], 20);
+    test_assertint(v2.is.m_optionalSequence->buffer[2], 30);
+    test_assertint(v2.is.m_optionalSequence->buffer[3], 40);
+
+    test_unionTypesAssign_m_optionalSequence(&v1, Test_OptionalSequence, NotSet);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalSequence);
+    test_assert(v2.is.m_optionalSequence == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithOptionalString(
     test_Copy this)
 {
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
-    /* << Insert implementation >> */
+    test_unionTypesAssign_m_optionalString(&v1, Test_OptionalString, Set("Hello World"));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalString);
+    test_assert(v2.is.m_optionalString != NULL);
+    test_assertstr(*v2.is.m_optionalString, "Hello World");
 
+    test_unionTypesAssign_m_optionalString(&v1, Test_OptionalString, NotSet);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalString);
+    test_assert(v2.is.m_optionalString == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithOptionalStruct(
     test_Copy this)
 {
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
-    /* << Insert implementation >> */
+    test_unionTypesAssign_m_optionalComposite(&v1, Test_OptionalComposite, Set(10, 20));
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalComposite);
+    test_assert(v2.is.m_optionalComposite != NULL);
+    test_assertint(v2.is.m_optionalComposite->x, 10);
+    test_assertint(v2.is.m_optionalComposite->y, 20);
 
+    test_unionTypesAssign_m_optionalComposite(&v1, Test_OptionalComposite, NotSet);
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_OptionalComposite);
+    test_assert(v2.is.m_optionalComposite == NULL);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithReference(
     test_Copy this)
 {
+    test_unionTypes v1 = {}, v2 = {};
 
-    /* << Insert implementation >> */
+    test_unionTypesAssign_m_reference(&v1, Test_Reference, corto_class_o);
+    corto_ptr_init(&v2, test_unionTypes_o);
 
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_Reference);
+    test_assert(v2.is.m_reference == corto_class_o);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithSequence(
     test_Copy this)
 {
+    test_IntSequence list = {
+        4,
+        (int32_t[]){10, 20, 30, 40}
+    };
 
-    /* << Insert implementation >> */
+    test_unionTypes v1={}, v2={};
+    corto_ptr_init(&v2, test_unionTypes_o);
 
+    test_unionTypesAssign_m_sequence(&v1, Test_Sequence, list);
+    corto_ptr_init(&v2, test_unionTypes_o);
+
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_Sequence);
+    test_assertint(v2.is.m_sequence.length, 4);
+    test_assertint(v2.is.m_sequence.buffer[0], 10);
+    test_assertint(v2.is.m_sequence.buffer[1], 20);
+    test_assertint(v2.is.m_sequence.buffer[2], 30);
+    test_assertint(v2.is.m_sequence.buffer[3], 40);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithString(
     test_Copy this)
 {
+    test_unionTypes v1 = {}, v2 = {};
 
-    /* << Insert implementation >> */
+    test_unionTypesAssign_m_string(&v1, Test_String, "Hello World");
+    corto_ptr_init(&v2, test_unionTypes_o);
 
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_String);
+    test_assertstr(v2.is.m_string, "Hello World");
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 }
 
 void test_Copy_tc_unionWithStruct(
     test_Copy this)
 {
+    test_unionTypes v1 = {}, v2 = {};
+    Point p = {10, 20};
 
-    /* << Insert implementation >> */
+    test_unionTypesAssign_m_composite(&v1, Test_Composite, &p);
+    corto_ptr_init(&v2, test_unionTypes_o);
+
+    corto_ptr_copy(&v2, test_unionTypes_o, &v1);
+    test_assert(v2.d == Test_Composite);
+    test_assertint(v2.is.m_composite.x, 10);
+    test_assertint(v2.is.m_composite.y, 20);
+
+    corto_ptr_deinit(&v1, test_unionTypes_o);
+    corto_ptr_deinit(&v2, test_unionTypes_o);
 
 }

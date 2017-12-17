@@ -22,7 +22,7 @@
 #include <corto/corto.h>
 #include "copy_ser.h"
 
-static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_any(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_any *ptr = corto_value_ptrof(info);
     corto_copy_ser_t *data = userData, privateData;
     corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
@@ -47,7 +47,7 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value *info, void *use
     return 0;
 }
 
-static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_type type = corto_value_typeof(info);
     corto_copy_ser_t *data = userData;
     void *ptr = corto_value_ptrof(info);
@@ -64,7 +64,7 @@ static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value *info, voi
     return 0;
 }
 
-static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_reference(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
     void *ptr = corto_value_ptrof(info);
     void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
@@ -75,14 +75,39 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value *info, voi
     return 0;
 }
 
-static corto_int16 corto_ser_composite(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_composite(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
     void *ptr = corto_value_ptrof(info);
     void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
     corto_type t = corto_value_typeof(info);
 
     if (corto_interface(t)->kind == CORTO_UNION) {
-        *(corto_int32*)value = *(corto_int32*)ptr;
+        int32_t oldDiscriminator = *(int32_t*)value;
+        int32_t newDiscriminator = *(int32_t*)ptr;
+
+        /* If discriminators are different, we need to potentially deinitialize
+         * and reinitialize the value with the new type. This will ensure that
+         * for exampe list members are initialized properly with an empty list
+         * object. */
+        if (oldDiscriminator != newDiscriminator) {
+            corto_member m = safe_corto_union_findCase(t, oldDiscriminator);
+            if (m->modifiers & CORTO_OPTIONAL) {
+                corto_ptr_free(*(void**)CORTO_OFFSET(value, m->offset), m->type);
+            } else if (m->type->flags & CORTO_TYPE_NEEDS_INIT) {
+                corto_ptr_deinit(CORTO_OFFSET(value, m->offset), m->type);
+            }
+
+            m = safe_corto_union_findCase(t, newDiscriminator);
+            if (!(m->modifiers & CORTO_OPTIONAL)) {
+                if (m->type->flags & CORTO_TYPE_NEEDS_INIT) {
+                    corto_ptr_init(CORTO_OFFSET(value, m->offset), m->type);
+                }
+            } else {
+                *(void**)CORTO_OFFSET(value, m->offset) = NULL;
+            }
+        }
+
+        *(int32_t*)value = newDiscriminator;
     }
 
     return corto_walk_members(s, info, userData);
@@ -99,9 +124,9 @@ void corto_collection_deinitElement(corto_collection t, void *ptr) {
     corto_value_deinit(&v);
 }
 
-static corto_int16 corto_collection_copyListToArray(corto_collection t, void *array, corto_uint32 elementSize, corto_ll list, corto_bool reverse) {
+static int16_t corto_collection_copyListToArray(corto_collection t, void *array, uint32_t elementSize, corto_ll list, corto_bool reverse) {
     corto_equalityKind result = 0;
-    corto_uint32 i=0;
+    uint32_t i=0;
     corto_iter iter;
     void *e1, *e2;
     corto_type elementType = t->elementType;
@@ -133,7 +158,7 @@ static corto_int16 corto_collection_copyListToArray(corto_collection t, void *ar
 }
 
 /* TODO: should new elements be initialized? Should all elements be deinitialized first and then initialized? */
-static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll dst, corto_ll src) {
+static int16_t corto_collection_copyListToList(corto_collection t, corto_ll dst, corto_ll src) {
     corto_equalityKind result = 0;
     corto_iter dstIter, srcIter;
     void *dstElem, *srcElem;
@@ -162,14 +187,14 @@ static corto_int16 corto_collection_copyListToList(corto_collection t, corto_ll 
 }
 
 /* Resize list */
-static void corto_collection_resizeList(corto_collection t, corto_ll list, corto_uint32 size) {
-    corto_uint32 ownSize = corto_ll_count(list);
+static void corto_collection_resizeList(corto_collection t, corto_ll list, uint32_t size) {
+    uint32_t ownSize = corto_ll_count(list);
     corto_type elementType = t->elementType;
     bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
 
     /* If there are more elements in the destination, remove superfluous elements */
     if (ownSize > size) {
-        corto_uint32 i;
+        uint32_t i;
         void *ptr;
         for(i=size; i<ownSize; i++) {
             ptr = corto_ll_takeFirst(list);
@@ -177,7 +202,7 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
         }
     /* If there are less elements in the destination, add new elements */
     } else if (ownSize < size) {
-        corto_uint32 i;
+        uint32_t i;
         for(i=ownSize; i<size; i++) {
             void *elem = NULL;
             if (requiresAlloc) {
@@ -193,20 +218,19 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, corto
     }
 }
 
-
 /* Resize list */
-static void* corto_collection_resizeArray(corto_collection t, void* sequence, corto_uint32 size) {
+static void* corto_collection_resizeArray(corto_collection t, void* sequence, uint32_t size) {
     void *result = sequence;
 
     /* Only sequences can be resized */
     if (t->kind == CORTO_SEQUENCE) {
-        corto_uint32 ownSize = ((corto_objectseq*)sequence)->length;
+        uint32_t ownSize = ((corto_objectseq*)sequence)->length;
         corto_type elementType = t->elementType;
         result = ((corto_objectseq*)sequence)->buffer;
 
         /* If there are more elements in the destination, remove superfluous elements */
         if (ownSize > size) {
-            corto_uint32 i;
+            uint32_t i;
             for(i = size; i < ownSize; i++) {
                 corto_ptr_deinit(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i), elementType);
             }
@@ -230,12 +254,12 @@ static void* corto_collection_resizeArray(corto_collection t, void* sequence, co
 }
 
 /* Copy collections */
-static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, void* userData) {
+static int16_t corto_ser_collection(corto_walk_opt* s, corto_value *info, void* userData) {
     corto_type t1, t2;
     void *src, *dst;
-    corto_uint32 size1 = 0;
+    uint32_t size1 = 0;
     corto_copy_ser_t *data = userData;
-    corto_uint32 result = 0;
+    uint32_t result = 0;
     corto_bool v1IsArray = FALSE, v2IsArray = FALSE;
 
     CORTO_UNUSED(s);
@@ -259,7 +283,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
     {
         void *array1 = NULL, *array2 = NULL;
         corto_ll srcList = NULL, dstList = NULL;
-        corto_uint32 elementSize = 0;
+        uint32_t elementSize = 0;
 
         elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
 
@@ -338,9 +362,9 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
     return result;
 }
 
-static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_construct(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
-    corto_int16 ret;
+    int16_t ret;
     CORTO_UNUSED(s);
 
     corto_type t1 = corto_value_typeof(info);
@@ -357,7 +381,7 @@ static corto_int16 corto_ser_construct(corto_walk_opt* s, corto_value *info, voi
     return ret;
 }
 
-static corto_int16 corto_ser_member(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_member(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
     corto_member m = info->is.member.t;
 
@@ -393,7 +417,7 @@ static corto_int16 corto_ser_member(corto_walk_opt* s, corto_value *info, void *
     }
 }
 
-static corto_int16 corto_ser_observable(corto_walk_opt* s, corto_value *info, void *userData) {
+static int16_t corto_ser_observable(corto_walk_opt* s, corto_value *info, void *userData) {
     corto_copy_ser_t *data = userData;
 
     corto_type type = corto_value_typeof(info);

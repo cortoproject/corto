@@ -46,7 +46,9 @@ corto_int16 _corto_secure_accessKindUpdate(corto_secure_accessKind* _this, corto
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -123,7 +125,9 @@ corto_int16 _corto_secure_actionKindUpdate(corto_secure_actionKind* _this, corto
         } else {
             *_this = value;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -196,7 +200,9 @@ corto_int16 _corto_secure_keyUpdate(corto_secure_key _this) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
         } else {
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
@@ -279,7 +285,9 @@ corto_int16 _corto_secure_lockUpdate(corto_secure_lock _this, corto_string mount
             corto_ptr_setstr(&((corto_secure_lock)_this)->expr, expr);
             ((corto_secure_lock)_this)->priority = priority;
         }
-        corto_update_end(_this);
+        if (corto_update_end(_this)) {
+            return -1;
+        }
     } else {
         return -1;
     }
