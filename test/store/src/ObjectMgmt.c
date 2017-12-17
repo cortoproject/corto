@@ -484,7 +484,7 @@ void test_ObjectMgmt_tc_createNested(
     corto_object b = corto_lookup(root_o, "a/b");
     test_assert(b != NULL);
     test_assert(corto_parentof(c) == b);
-    test_assert(corto_typeof(b) == corto_type(corto_void_o));
+    test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(b), "b");
     test_assert(corto_checkState(b, CORTO_DECLARED));
     test_assert(corto_checkState(b, CORTO_VALID));
@@ -492,7 +492,7 @@ void test_ObjectMgmt_tc_createNested(
     corto_object a = corto_lookup(root_o, "a");
     test_assert(a != NULL);
     test_assert(corto_parentof(b) == a);
-    test_assert(corto_typeof(a) == corto_type(corto_void_o));
+    test_assert(corto_typeof(a) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(a), "a");
     test_assert(corto_checkState(a, CORTO_DECLARED));
     test_assert(corto_checkState(a, CORTO_VALID));
@@ -1106,7 +1106,7 @@ void test_ObjectMgmt_tc_declareNested(
     corto_object b = corto_lookup(root_o, "a/b");
     test_assert(b != NULL);
     test_assert(corto_parentof(c) == b);
-    test_assert(corto_typeof(b) == corto_type(corto_void_o));
+    test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(b), "b");
     test_assert(corto_checkState(b, CORTO_DECLARED));
     test_assert(corto_checkState(b, CORTO_VALID));
@@ -1114,7 +1114,7 @@ void test_ObjectMgmt_tc_declareNested(
     corto_object a = corto_lookup(root_o, "a");
     test_assert(a != NULL);
     test_assert(corto_parentof(b) == a);
-    test_assert(corto_typeof(a) == corto_type(corto_void_o));
+    test_assert(corto_typeof(a) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(a), "a");
     test_assert(corto_checkState(a, CORTO_DECLARED));
     test_assert(corto_checkState(a, CORTO_VALID));
@@ -2058,7 +2058,7 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
     corto_object b = corto_lookup(root_o, "a/b");
     test_assert(b != NULL);
     test_assert(corto_parentof(c) == b);
-    test_assert(corto_typeof(b) == corto_type(corto_void_o));
+    test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
     test_assertstr(corto_idof(b), "b");
     test_assert(corto_checkState(b, CORTO_DECLARED));
     test_assert(corto_checkState(b, CORTO_VALID));
