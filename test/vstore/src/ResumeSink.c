@@ -331,8 +331,7 @@ void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
-    test_assert(corto_ownerof(x) == mount);
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(x) == 0);
