@@ -111,7 +111,7 @@ class MountIterCount: mount, hidden:/
 
 class VirtualMount: mount, hidden:/
     mount: string
-    data: list{result},private
+    data: resultList,private
     resultIter onQuery(vstore/query query) override
     int16 construct()
 
@@ -244,7 +244,7 @@ class LoaderSimulatorMount : vstore/mount, hidden:/
     int16 construct()
     resultIter onQuery(vstore/query query) override
     queryCount: int32, private
-    items: list{vstore/result}, private
+    items: resultList, private
 
 // Request data from a SINK mount
 test/Suite SelectSink:/
