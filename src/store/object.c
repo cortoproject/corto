@@ -350,15 +350,133 @@ static corto_bool corto__checkStateXOR(corto_object o, corto_uint8 state) {
     return ostate & state;
 }
 
+struct corto_adopt_updateParents_t {
+    corto_object old;
+    corto_object new;
+};
+
 static
 int corto_adopt_updateParents(
     corto_object object,
     void *ctx)
 {
+    struct corto_adopt_updateParents_t *data = ctx;
     corto__object *_o = CORTO_OFFSET(object, -sizeof(corto__object));
     corto__scope *_scope = corto__objectScope(_o);
-    _scope->parent = ctx;
+    _scope->parent = data->new;
+    corto_claim(data->new);
+    corto_release(data->old);
     return 1;
+}
+
+static
+int16_t corto_adopt_checkConstraints(
+    corto_type parent,
+    corto_type child)
+{
+    corto_type childType = corto_typeof(child);
+
+    /* Check if parentType matches scopeType of child type */
+    if (childType->options.parentType) {
+        corto_type parentType = corto_typeof(parent);
+        if ((childType->options.parentType != parentType) &&
+           !corto_instanceof(childType->options.parentType, parent))
+        {
+            corto_throw("type of '%s' is not '%s'",
+                    corto_fullpath(NULL, parent),
+                    corto_fullpath(NULL, childType->options.parentType));
+            goto error;
+        }
+    }
+
+    /* If parentType is a tableinstance, check if child type matches
+     * table type */
+    if (corto_instanceof(corto_tableinstance_o, parent)) {
+        if (childType != corto_type(corto_tableinstance_o)) {
+            corto_struct tableType = corto_tableinstance(parent)->type;
+            if ((corto_type(tableType) != childType)) {
+                if (!corto_instanceof(childType, corto_container_o)) {
+                    corto_throw("type '%s' does not match tabletype '%s' of '%s'",
+                        corto_fullpath(NULL, childType),
+                        corto_fullpath(NULL, tableType),
+                        corto_fullpath(NULL, parent));
+                    goto error;
+                }
+            }
+        }
+    }
+
+    /* If parentType is a leaf, no childs are allowed */
+    if (corto_instanceof(corto_leaf_o, corto_typeof(parent))) {
+        corto_throw("cannot add children to leaf node '%s'",
+            corto_fullpath(NULL, parent));
+        goto error;
+    }
+
+    /* Check if parentState matches scopeState of child type */
+    if (childType->options.parentState &&
+        !corto__checkStateXOR(parent, childType->options.parentState))
+    {
+        corto_uint32 childState = childType->options.parentState;
+        corto_uint32 parentState = corto_stateof(parent);
+        char *parentStateStr = corto_ptr_str(&parentState, corto_state_o, 0);
+        char *childStateStr = corto_ptr_str(&childState, corto_state_o, 0);
+        corto_throw("parent '%s' is %s, must be %s",
+            corto_fullpath(NULL, parent),
+            parentStateStr,
+            childStateStr);
+        corto_dealloc(parentStateStr);
+        corto_dealloc(childStateStr);
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+
+/* Replace unknown object with object that has a known type */
+static
+void corto_adopt_replaceUnknown(
+    corto_object existing,
+    corto_object child,
+    corto__scope *c_scope)
+{
+    /* Move scope of the existing object to new object */
+    corto__object *_existing = CORTO_OFFSET(existing, -sizeof(corto__object));
+    corto__scope *e_scope = corto__objectScope(_existing);
+
+    /* Set scope of existing (unknown) object to scope of new object */
+    free(c_scope->id);
+    c_scope->id = e_scope->id; /* Use existing id as it's the key in the tree */
+    c_scope->scope = e_scope->scope;
+
+    /* Manually orphan object. This ensures that corto_destruct won't try to
+     * cleanup scope administration */
+    e_scope->scope = NULL;
+    e_scope->parent = NULL; /* orphan object */
+    e_scope->id = NULL;
+
+    /* Update parent pointers & transfer refcounts of childs */
+    if (c_scope->scope) {
+        struct corto_adopt_updateParents_t data = {.old = existing, .new = child};
+        corto_rb_walk(c_scope->scope, corto_adopt_updateParents, &data);
+    }
+
+    /* If refcount of existing object is not 0 after releasing it, other objects
+     * have references to it. Should not happen. */
+    if(corto_release(existing) != 0) {
+        corto_throw(
+            "%d invalid reference(s) to '%s' [%p] of unknown type",
+            corto_countof(existing),
+            c_scope->id,
+            existing);
+
+        /* Immediately raise, so an application can stop
+         * execution here to debug */
+        corto_raise();
+    }
 }
 
 /* Adopt an object */
@@ -370,7 +488,6 @@ corto_object corto_adopt(
 {
     corto__object *_parent, *_child;
     corto__scope *p_scope, *c_scope;
-    corto_type parentType;
     corto_type childType;
 
     corto_assertObject(parent);
@@ -385,6 +502,7 @@ corto_object corto_adopt(
     if (p_scope) {
         c_scope = corto__objectScope(_child);
         if (c_scope) {
+            bool claimParent = true;
 
             /* Lock object before locking parent-scope, this ensures that
              * locking order isn't violated when defining the object. */
@@ -407,17 +525,8 @@ corto_object corto_adopt(
                 corto_type e_type = corto_typeof(existing);
                 if (e_type == corto_unknown_o) {
                     if (childType != corto_unknown_o) {
-                        /* Move scope of the existing object to new object */
-                        corto__object *_existing = CORTO_OFFSET(existing, -sizeof(corto__object));
-                        corto__scope *e_scope = corto__objectScope(_existing);
-                        c_scope->scope = e_scope->scope;
-                        e_scope->scope = NULL;
-                        e_scope->parent = NULL; /* orphan object */
-                        /* Update parent pointers of child */
-                        if (c_scope->scope) {
-                            corto_rb_walk(c_scope->scope, corto_adopt_updateParents, child);
-                        }
-                        corto_destruct(existing, TRUE);
+                        corto_adopt_replaceUnknown(existing, child, c_scope);
+                        claimParent = false;
                         existing = child;
                         *(corto_object*)ptr = child;
                     }
@@ -427,72 +536,28 @@ corto_object corto_adopt(
                 *(corto_object*)ptr = child;
             }
 
+            /* If existing object has been found, return it */
             if (existing && (existing != child)) {
                 if (corto_unlock_intern(child)) {
-                    corto_throw(NULL);
                     goto err_existing;
                 }
+
+                /* Check if the type of the existing & new object match */
                 if (forceType && (corto_typeof(existing) != corto_typeof(child))) {
                     corto_throw("'%s' is already declared with type '%s'",
                       c_scope->id,
                       corto_fullpath(NULL, corto_typeof(existing)));
                     goto err_existing;
-                } else {
-                    child = existing;
                 }
+
+                child = existing;
+                claimParent = false; /* No need to reclaim the parent as no new
+                                      * object is added to its scope */
             } else {
-                /* Check if parentType matches scopeType of child type */
-                if (childType->options.parentType) {
-                    parentType = corto_typeof(parent);
-                    if ((childType->options.parentType != parentType) &&
-                       !corto_instanceof(childType->options.parentType, parent))
-                    {
-                        corto_throw("type of '%s' is not '%s'",
-                                corto_fullpath(NULL, parent),
-                                corto_fullpath(NULL, childType->options.parentType));
-                        goto err_invalid_parent;
-                    }
-                }
-
-                /* If parentType is a tableinstance, check if child type matches
-                 * table type */
-                if (corto_instanceof(corto_tableinstance_o, parent)) {
-                    if (childType != corto_type(corto_tableinstance_o)) {
-                        corto_struct tableType = corto_tableinstance(parent)->type;
-                        if ((corto_type(tableType) != childType)) {
-                            if (!corto_instanceof(childType, corto_container_o)) {
-                                corto_throw("type '%s' does not match tabletype '%s' of '%s'",
-                                    corto_fullpath(NULL, childType),
-                                    corto_fullpath(NULL, tableType),
-                                    corto_fullpath(NULL, parent));
-                                goto err_invalid_child;
-                            }
-                        }
-                    }
-                }
-
-                /* If parentType is a leaf, no childs are allowed */
-                if (corto_instanceof(corto_leaf_o, corto_typeof(parent))) {
-                    corto_throw("cannot add children to leaf node '%s'",
-                        corto_fullpath(NULL, parent));
-                    goto err_invalid_parent_leaf;
-                }
-
-                /* Check if parentState matches scopeState of child type */
-                if (childType->options.parentState &&
-                    !corto__checkStateXOR(parent, childType->options.parentState))
-                {
-                    corto_uint32 childState = childType->options.parentState;
-                    corto_uint32 parentState = corto_stateof(parent);
-                    char *parentStateStr = corto_ptr_str(&parentState, corto_state_o, 0);
-                    char *childStateStr = corto_ptr_str(&childState, corto_state_o, 0);
-                    corto_throw("parent '%s' is %s, must be %s",
-                        corto_fullpath(NULL, parent),
-                        parentStateStr,
-                        childStateStr);
-                    corto_dealloc(parentStateStr);
-                    corto_dealloc(childStateStr);
-                    goto err_invalid_parent;
+                /* Check if no constraints are violated by adding the child to
+                 * the scope */
+                if (corto_adopt_checkConstraints(parent, child)) {
+                    goto error_constraints;
                 }
 
                 /* Add the object to the declared admin, which ensures that this
@@ -501,10 +566,10 @@ corto_object corto_adopt(
                 corto_declaredByMeAdd(child);
             }
 
-            /* Parent must not be deleted before all childs are gone. */
             if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("declare", child, NULL);
             if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
-            corto_claim(parent);
+            /* Parent must not be deleted before all childs are gone. */
+            if (claimParent) corto_claim(parent);
             if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
 
             if (corto_rwmutex_unlock(&p_scope->align.scopeLock)) {
@@ -518,9 +583,7 @@ corto_object corto_adopt(
     }
 
     return child;
-err_invalid_parent:
-err_invalid_child:
-err_invalid_parent_leaf:
+error_constraints:
     c_scope->parent = NULL;
     corto_rb_remove(p_scope->scope, c_scope->id);
 err_existing:
@@ -658,7 +721,7 @@ error:
     return NULL;
 }
 
-static void corto__deinitScope(corto_object o) {
+static void corto_deinit_scope(corto_object o) {
     corto__object *_o;
     corto__scope* scope;
 
@@ -668,7 +731,7 @@ static void corto__deinitScope(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     scope = corto__objectScope(_o);
     corto_assert(scope != NULL,
-        "corto__deinitScope: called on non-scoped object <%p>.", o);
+        "corto_deinit_scope: called on non-scoped object <%p>.", o);
 
     /* Free parent */
     if (scope->parent && !corto_isorphan(o)) {
@@ -1343,7 +1406,7 @@ corto_object corto_declareChild_intern(
                     }
                 }
             } else {
-                corto__deinitScope(o);
+                corto_deinit_scope(o);
                 if (corto_countof(o) != 1) {
                     corto_throw(
                       "object '%s/%s' is referenced after initializer failed",
@@ -1755,6 +1818,9 @@ corto_object corto_declareChildRecursive_intern(
             if (!firstNonExist && newobject) {
                 firstNonExist = result;
             }
+            if (!newobject && result) {
+                corto_release(result);
+            }
 
             parent = result;
 
@@ -1766,6 +1832,10 @@ corto_object corto_declareChildRecursive_intern(
         } while (result && cur);
 
         if (result) {
+            if (!newobject) {
+                corto_claim(result);
+            }
+
             if (defineSelf) {
                 /* Call constructor */
                 if (!corto_checkState(result, CORTO_VALID)) {
@@ -1993,7 +2063,7 @@ corto_bool corto_destruct(
             /* Deinit scope not before refcount goes to zero. The data in the scope
              * administration is required to determine whether this object is
              * a builtin object. */
-            corto__deinitScope(o);
+            corto_deinit_scope(o);
 
             _o = CORTO_OFFSET(o, -sizeof(corto__object));
              corto__scope *scope = corto__objectScope(_o);

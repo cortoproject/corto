@@ -2312,3 +2312,162 @@ void test_ObjectMgmt_tc_redeclareUnknown(
 
     test_assert(!corto_delete(p));
 }
+
+void test_ObjectMgmt_tc_redeclareOutOfOrder(
+    test_ObjectMgmt this)
+{
+    corto_object world = corto_declareChild(root_o, "foo/bar/hello/world", corto_string_o);
+    test_assert(world != NULL);
+    test_assert(!corto_checkState(world, CORTO_VALID));
+    test_assert(corto_typeof(world) == (corto_type)corto_string_o);
+    test_assertint(corto_countof(world), 1);
+
+    corto_object bar = corto_declareChild(root_o, "foo/bar", corto_bool_o);
+    test_assert(bar != NULL);
+    test_assert(!corto_checkState(bar, CORTO_VALID));
+    test_assert(corto_typeof(bar) == (corto_type)corto_bool_o);
+    test_assertint(corto_countof(bar), 2);
+    test_assertint(corto_countof(world), 1);
+
+    corto_object hello = corto_declareChild(root_o, "foo/bar/hello", corto_uint64_o);
+    test_assert(hello != NULL);
+    test_assert(!corto_checkState(hello, CORTO_VALID));
+    test_assert(corto_typeof(hello) == (corto_type)corto_uint64_o);
+    test_assertint(corto_countof(hello), 2);
+    test_assertint(corto_countof(bar), 2);
+    test_assertint(corto_countof(world), 1);
+
+    corto_object foo = corto_declareChild(root_o, "foo", corto_char_o);
+    test_assert(foo != NULL);
+    test_assert(!corto_checkState(foo, CORTO_VALID));
+    test_assert(corto_typeof(foo) == (corto_type)corto_char_o);
+    test_assertint(corto_countof(foo), 2);
+    test_assertint(corto_countof(bar), 2);
+    test_assertint(corto_countof(hello), 2);
+    test_assertint(corto_countof(world), 1);
+
+    test_assert(corto_parentof(world) == hello);
+    test_assert(corto_parentof(hello) == bar);
+    test_assert(corto_parentof(bar) == foo);
+    test_assert(corto_parentof(foo) == root_o);
+
+    test_assert(corto_delete(foo) == 0);
+}
+
+void test_ObjectMgmt_tc_defineUnknown(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declareChild(root_o, "foo", corto_unknown_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == corto_unknown_o);
+    test_assertstr(corto_fullpath(NULL, o), "/foo");
+
+    test_assert(corto_define(o) != 0);
+    test_assert(corto_catch());
+    test_assert(!corto_checkState(o, CORTO_VALID));
+}
+
+void test_ObjectMgmt_tc_recreatedOutOfOrder(
+    test_ObjectMgmt this)
+{
+    corto_object world = corto_createChild(root_o, "foo/bar/hello/world", corto_string_o);
+    test_assert(world != NULL);
+    test_assert(corto_checkState(world, CORTO_VALID));
+    test_assert(corto_typeof(world) == (corto_type)corto_string_o);
+    test_assertint(corto_countof(world), 1);
+
+    corto_object bar = corto_createChild(root_o, "foo/bar", corto_bool_o);
+    test_assert(bar != NULL);
+    test_assert(corto_checkState(bar, CORTO_VALID));
+    test_assert(corto_typeof(bar) == (corto_type)corto_bool_o);
+    test_assertint(corto_countof(bar), 2);
+    test_assertint(corto_countof(world), 1);
+
+    corto_object hello = corto_createChild(root_o, "foo/bar/hello", corto_uint64_o);
+    test_assert(hello != NULL);
+    test_assert(corto_checkState(hello, CORTO_VALID));
+    test_assert(corto_typeof(hello) == (corto_type)corto_uint64_o);
+    test_assertint(corto_countof(hello), 2);
+    test_assertint(corto_countof(bar), 2);
+    test_assertint(corto_countof(world), 1);
+
+    corto_object foo = corto_createChild(root_o, "foo", corto_char_o);
+    test_assert(foo != NULL);
+    test_assert(corto_checkState(foo, CORTO_VALID));
+    test_assert(corto_typeof(foo) == (corto_type)corto_char_o);
+    test_assertint(corto_countof(foo), 2);
+    test_assertint(corto_countof(bar), 2);
+    test_assertint(corto_countof(hello), 2);
+    test_assertint(corto_countof(world), 1);
+
+    test_assert(corto_parentof(world) == hello);
+    test_assert(corto_parentof(hello) == bar);
+    test_assert(corto_parentof(bar) == foo);
+    test_assert(corto_parentof(foo) == root_o);
+
+    test_assert(corto_delete(foo) == 0);
+}
+
+void test_ObjectMgmt_tc_recreateNestedUnknown(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declareChild(root_o, "foo/bar", corto_string_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == (corto_type)corto_string_o);
+
+    corto_object p = corto_parentof(o);
+    test_assert(p != NULL);
+    test_assert(!corto_checkState(p, CORTO_VALID));
+    test_assert(corto_typeof(p) == corto_unknown_o);
+
+    corto_object q = corto_createChild(root_o, "foo", corto_uint32_o);
+    test_assert(q != NULL);
+    test_assert(q != p);
+    test_assert(corto_checkState(q, CORTO_VALID));
+    test_assert(corto_typeof(q) == (corto_type)corto_uint32_o);
+    test_assertstr(corto_fullpath(NULL, q), "/foo");
+    test_assert(corto_parentof(o) == q);
+
+    test_assert(!corto_delete(q));
+}
+
+void test_ObjectMgmt_tc_recreateUnknown(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declareChild(root_o, "foo", corto_unknown_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == corto_unknown_o);
+    test_assertstr(corto_fullpath(NULL, o), "/foo");
+
+    corto_object p = corto_createChild(root_o, "foo", corto_uint32_o);
+    test_assert(p != NULL);
+    test_assert(p != o);
+    test_assert(corto_checkState(p, CORTO_VALID));
+    test_assert(corto_typeof(p) == (corto_type)corto_uint32_o);
+    test_assertstr(corto_fullpath(NULL, p), "/foo");
+
+    test_assert(!corto_delete(p));
+}
+
+void test_ObjectMgmt_tc_defineRedeclaredUnknown(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declareChild(root_o, "foo", corto_unknown_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == corto_unknown_o);
+    test_assertstr(corto_fullpath(NULL, o), "/foo");
+
+    o = corto_declareChild(root_o, "foo", corto_uint32_o);
+    test_assert(o != NULL);
+    test_assert(!corto_checkState(o, CORTO_VALID));
+    test_assert(corto_typeof(o) == (corto_type)corto_uint32_o);
+
+    test_assert(corto_define(o) == 0);
+    test_assert(corto_checkState(o, CORTO_VALID));
+
+    test_assert(corto_delete(o) == 0);
+}

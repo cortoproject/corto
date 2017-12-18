@@ -518,6 +518,12 @@ test/Suite ObjectMgmt:/
 
     void tc_redeclareUnknown()
     void tc_redeclareNestedUnknown()
+    void tc_redeclareOutOfOrder()
+    void tc_recreateUnknown()
+    void tc_recreateNestedUnknown()
+    void tc_recreatedOutOfOrder()
+    void tc_defineUnknown()
+    void tc_defineRedeclaredUnknown()
 
     void tc_lifecycle()
     void tc_lifecycleInitFail()
