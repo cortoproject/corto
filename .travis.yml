@@ -29,9 +29,6 @@ addons:
 
 install:
   - curl https://corto.io/ci-dev | sh
-  - cd corto-src/corto
-  - source configure
-  - cd ..
 
 script:
-  - cd corto && corto test && cd -
+  - cd corto-src/corto && corto test
