@@ -93,10 +93,9 @@ int16_t corto_struct_construct(
                     corto_fullpath(NULL, this));
                 goto error;
             }
+
         } while ((base = (corto_struct)((corto_interface)base)->base));
-
         base = (corto_struct)corto_interface(this)->base;
-
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
             corto_throw("struct '%s' inherits from non-struct type '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, base));
@@ -107,7 +106,9 @@ int16_t corto_struct_construct(
             if (alignment < corto_type(base)->alignment) {
                 alignment = corto_type(base)->alignment;
             }
+
         }
+
     }
 
     /* Set alignment of self */
@@ -226,7 +227,7 @@ error:
 
 corto_member corto_struct_resolveMember_v(
     corto_struct this,
-    corto_string name)
+    const char *name)
 {
     corto_interface base;
     corto_member m;
@@ -244,3 +245,4 @@ void corto_struct_destruct(
 {
     freeops_delete(this);
 }
+

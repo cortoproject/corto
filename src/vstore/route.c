@@ -21,7 +21,7 @@ int16_t corto_route_construct(
     corto_int32 count = 0, elementCount = 0;
     corto_routerimpl router = corto_route_findRouterImpl(this);
     corto_router routerBase = corto_router(corto_typeof(router));
-    char *elements[CORTO_MAX_SCOPE_DEPTH];
+    const char *elements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 i;
     corto_parameterseq *params = &corto_function(this)->parameters;
 

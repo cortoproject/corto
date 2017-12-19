@@ -98,6 +98,7 @@ extern "C" {
 #define corto_tool(o) ((corto_tool)corto_assertType((corto_type)corto_tool_o, o))
 #define corto_uint(o) ((corto_uint)corto_assertType((corto_type)corto_uint_o, o))
 #define corto_union(o) ((corto_union)corto_assertType((corto_type)corto_union_o, o))
+#define corto_unknown(o) ((void*)o)
 #define corto_verbatim(o) ((corto_verbatim)corto_assertType((corto_type)corto_verbatim_o, o))
 #define corto_void(o) ((void*)o)
 #define corto_wordseq(o) ((corto_wordseq*)corto_assertType((corto_type)corto_wordseq_o, o))
@@ -714,6 +715,9 @@ struct corto_union_s {
     struct corto_interface_s super;
     corto_type discriminator;
 };
+
+/* unknown */
+typedef void corto_unknown;
 
 /*  verbatim */
 typedef struct corto_verbatim_s *corto_verbatim;

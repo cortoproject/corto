@@ -454,8 +454,8 @@ corto_resultIter _corto_mount_onQuery(
 CORTO_EXPORT
 corto_object _corto_mount_onResume_v(
     corto_mount _this,
-    corto_string parent,
-    corto_string id,
+    const char *parent,
+    const char *id,
     corto_object object);
 
 /* implicit type-safe macro (not available for project implementation) */
@@ -472,8 +472,8 @@ corto_object _corto_mount_onResume_v(
 CORTO_EXPORT
 corto_object _corto_mount_onResume(
     corto_mount _this,
-    corto_string parent,
-    corto_string id,
+    const char *parent,
+    const char *id,
     corto_object object);
 
 /* forward declaration of the function. the '_' in front of the name allows
@@ -620,9 +620,9 @@ CORTO_EXPORT
 void _corto_mount_publish(
     corto_mount _this,
     corto_eventMask event,
-    corto_string from,
-    corto_string id,
-    corto_string type,
+    const char *from,
+    const char *id,
+    const char *type,
     uintptr_t value);
 
 /* implicit type-safe macro (not available for project implementation) */
@@ -657,8 +657,8 @@ corto_resultIter _corto_mount_query(
 CORTO_EXPORT
 corto_object _corto_mount_resume(
     corto_mount _this,
-    corto_string parent,
-    corto_string name,
+    const char *parent,
+    const char *name,
     corto_object o);
 
 /* implicit type-safe macro (not available for project implementation) */
@@ -693,7 +693,7 @@ void _corto_mount_return(
 CORTO_EXPORT
 int16_t _corto_mount_setContentType(
     corto_mount _this,
-    corto_string type);
+    const char *type);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -710,7 +710,7 @@ int16_t _corto_mount_setContentType(
 CORTO_EXPORT
 int16_t _corto_mount_setContentTypeIn(
     corto_mount _this,
-    corto_string type);
+    const char *type);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -727,7 +727,7 @@ int16_t _corto_mount_setContentTypeIn(
 CORTO_EXPORT
 int16_t _corto_mount_setContentTypeOut(
     corto_mount _this,
-    corto_string type);
+    const char *type);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -961,7 +961,7 @@ bool _corto_query_match(
 CORTO_EXPORT
 corto_string _corto_result_contentof(
     corto_result* _this,
-    corto_string contentType);
+    const char *contentType);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -978,8 +978,8 @@ corto_string _corto_result_contentof(
 CORTO_EXPORT
 int16_t _corto_result_fromcontent(
     corto_result* _this,
-    corto_string contentType,
-    corto_string content);
+    const char *contentType,
+    const char *content);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -1076,7 +1076,7 @@ int16_t _corto_router_init(
 CORTO_EXPORT
 int16_t _corto_router_match(
     corto_object instance,
-    corto_string request,
+    const char *request,
     corto_any param,
     corto_any result,
     corto_route *matched);

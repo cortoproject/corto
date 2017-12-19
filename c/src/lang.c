@@ -1391,7 +1391,7 @@ int32_t* _corto_constantAssign(int32_t* _this, int32_t value) {
     return _this;
 }
 
-corto_container _corto_containerCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_container _corto_containerCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     corto_container _this;
     _this = (corto_container)corto_declare(NULL, NULL, corto_container_o);
     if (!_this) {
@@ -1411,7 +1411,7 @@ corto_container _corto_containerCreate(corto_interface base, corto_modifier base
     return _this;
 }
 
-corto_container _corto_containerCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_container _corto_containerCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     corto_container _this;
     _this = (corto_container)corto_declare(_parent, _id, corto_container_o);
     if (!_this) {
@@ -1431,7 +1431,7 @@ corto_container _corto_containerCreateChild(corto_object _parent, corto_string _
     return _this;
 }
 
-corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_int16 _corto_containerUpdate(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -1474,7 +1474,7 @@ corto_container _corto_containerDeclareChild(corto_object _parent, corto_string 
     return _this;
 }
 
-corto_int16 _corto_containerDefine(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_int16 _corto_containerDefine(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
@@ -1484,7 +1484,7 @@ corto_int16 _corto_containerDefine(corto_container _this, corto_interface base, 
     return corto_define(_this);
 }
 
-corto_container _corto_containerAssign(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_container _corto_containerAssign(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
@@ -3539,7 +3539,7 @@ corto_iterator _corto_iteratorAssign(corto_iterator _this, corto_type elementTyp
     return _this;
 }
 
-corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     corto_leaf _this;
     _this = (corto_leaf)corto_declare(NULL, NULL, corto_leaf_o);
     if (!_this) {
@@ -3559,7 +3559,7 @@ corto_leaf _corto_leafCreate(corto_interface base, corto_modifier baseAccess, co
     return _this;
 }
 
-corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     corto_leaf _this;
     _this = (corto_leaf)corto_declare(_parent, _id, corto_leaf_o);
     if (!_this) {
@@ -3579,7 +3579,7 @@ corto_leaf _corto_leafCreateChild(corto_object _parent, corto_string _id, corto_
     return _this;
 }
 
-corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_int16 _corto_leafUpdate(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -3622,7 +3622,7 @@ corto_leaf _corto_leafDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_leafDefine(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_int16 _corto_leafDefine(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
@@ -3632,7 +3632,7 @@ corto_int16 _corto_leafDefine(corto_leaf _this, corto_interface base, corto_modi
     return corto_define(_this);
 }
 
-corto_leaf _corto_leafAssign(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_leaf _corto_leafAssign(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
@@ -4934,7 +4934,7 @@ corto_package _corto_packageAssign(corto_package _this) {
     return _this;
 }
 
-corto_parameter* _corto_parameterCreate(corto_string name, corto_type type, corto_inout inout, bool passByReference) {
+corto_parameter* _corto_parameterCreate(const char * name, corto_type type, corto_inout inout, bool passByReference) {
     corto_parameter* _this;
     _this = (corto_parameter*)corto_declare(NULL, NULL, corto_parameter_o);
     if (!_this) {
@@ -4953,7 +4953,7 @@ corto_parameter* _corto_parameterCreate(corto_string name, corto_type type, cort
     return _this;
 }
 
-corto_parameter* _corto_parameterCreateChild(corto_object _parent, corto_string _id, corto_string name, corto_type type, corto_inout inout, bool passByReference) {
+corto_parameter* _corto_parameterCreateChild(corto_object _parent, corto_string _id, const char * name, corto_type type, corto_inout inout, bool passByReference) {
     corto_parameter* _this;
     _this = (corto_parameter*)corto_declare(_parent, _id, corto_parameter_o);
     if (!_this) {
@@ -4972,7 +4972,7 @@ corto_parameter* _corto_parameterCreateChild(corto_object _parent, corto_string 
     return _this;
 }
 
-corto_int16 _corto_parameterUpdate(corto_parameter* _this, corto_string name, corto_type type, corto_inout inout, bool passByReference) {
+corto_int16 _corto_parameterUpdate(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool passByReference) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -5013,7 +5013,7 @@ corto_parameter* _corto_parameterDeclareChild(corto_object _parent, corto_string
     return _this;
 }
 
-corto_int16 _corto_parameterDefine(corto_parameter* _this, corto_string name, corto_type type, corto_inout inout, bool passByReference) {
+corto_int16 _corto_parameterDefine(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool passByReference) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_parameter*)_this)->name, name);
     corto_ptr_setref(&((corto_parameter*)_this)->type, type);
@@ -5022,7 +5022,7 @@ corto_int16 _corto_parameterDefine(corto_parameter* _this, corto_string name, co
     return corto_define(_this);
 }
 
-corto_parameter* _corto_parameterAssign(corto_parameter* _this, corto_string name, corto_type type, corto_inout inout, bool passByReference) {
+corto_parameter* _corto_parameterAssign(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool passByReference) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_parameter*)_this)->name, name);
     corto_ptr_setref(&((corto_parameter*)_this)->type, type);
@@ -5389,7 +5389,7 @@ corto_procedure _corto_procedureAssign(corto_procedure _this, bool hasThis, cort
     return _this;
 }
 
-corto_quantity _corto_quantityCreate(corto_string description) {
+corto_quantity _corto_quantityCreate(const char * description) {
     corto_quantity _this;
     _this = (corto_quantity)corto_declare(NULL, NULL, corto_quantity_o);
     if (!_this) {
@@ -5405,7 +5405,7 @@ corto_quantity _corto_quantityCreate(corto_string description) {
     return _this;
 }
 
-corto_quantity _corto_quantityCreateChild(corto_object _parent, corto_string _id, corto_string description) {
+corto_quantity _corto_quantityCreateChild(corto_object _parent, corto_string _id, const char * description) {
     corto_quantity _this;
     _this = (corto_quantity)corto_declare(_parent, _id, corto_quantity_o);
     if (!_this) {
@@ -5421,7 +5421,7 @@ corto_quantity _corto_quantityCreateChild(corto_object _parent, corto_string _id
     return _this;
 }
 
-corto_int16 _corto_quantityUpdate(corto_quantity _this, corto_string description) {
+corto_int16 _corto_quantityUpdate(corto_quantity _this, const char * description) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -5456,13 +5456,13 @@ corto_quantity _corto_quantityDeclareChild(corto_object _parent, corto_string _i
     return _this;
 }
 
-corto_int16 _corto_quantityDefine(corto_quantity _this, corto_string description) {
+corto_int16 _corto_quantityDefine(corto_quantity _this, const char * description) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_quantity)_this)->description, description);
     return corto_define(_this);
 }
 
-corto_quantity _corto_quantityAssign(corto_quantity _this, corto_string description) {
+corto_quantity _corto_quantityAssign(corto_quantity _this, const char * description) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_quantity)_this)->description, description);
     return _this;
@@ -6002,7 +6002,7 @@ corto_struct _corto_structAssign(corto_struct _this, corto_interface base, corto
     return _this;
 }
 
-corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     corto_table _this;
     _this = (corto_table)corto_declare(NULL, NULL, corto_table_o);
     if (!_this) {
@@ -6022,7 +6022,7 @@ corto_table _corto_tableCreate(corto_interface base, corto_modifier baseAccess, 
     return _this;
 }
 
-corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     corto_table _this;
     _this = (corto_table)corto_declare(_parent, _id, corto_table_o);
     if (!_this) {
@@ -6042,7 +6042,7 @@ corto_table _corto_tableCreateChild(corto_object _parent, corto_string _id, cort
     return _this;
 }
 
-corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_int16 _corto_tableUpdate(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -6085,7 +6085,7 @@ corto_table _corto_tableDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_tableDefine(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_int16 _corto_tableDefine(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
@@ -6095,7 +6095,7 @@ corto_int16 _corto_tableDefine(corto_table _this, corto_interface base, corto_mo
     return corto_define(_this);
 }
 
-corto_table _corto_tableAssign(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, corto_string value) {
+corto_table _corto_tableAssign(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_interface)_this)->base, base);
     ((corto_struct)_this)->baseAccess = baseAccess;
@@ -7174,7 +7174,7 @@ corto_union _corto_unionAssign(corto_union _this, corto_type discriminator) {
     return _this;
 }
 
-corto_unit _corto_unitCreate(corto_quantity quantity, corto_string symbol, corto_string conversion, corto_type type) {
+corto_unit _corto_unitCreate(corto_quantity quantity, const char * symbol, const char * conversion, corto_type type) {
     corto_unit _this;
     _this = (corto_unit)corto_declare(NULL, NULL, corto_unit_o);
     if (!_this) {
@@ -7193,7 +7193,7 @@ corto_unit _corto_unitCreate(corto_quantity quantity, corto_string symbol, corto
     return _this;
 }
 
-corto_unit _corto_unitCreateChild(corto_object _parent, corto_string _id, corto_quantity quantity, corto_string symbol, corto_string conversion, corto_type type) {
+corto_unit _corto_unitCreateChild(corto_object _parent, corto_string _id, corto_quantity quantity, const char * symbol, const char * conversion, corto_type type) {
     corto_unit _this;
     _this = (corto_unit)corto_declare(_parent, _id, corto_unit_o);
     if (!_this) {
@@ -7212,7 +7212,7 @@ corto_unit _corto_unitCreateChild(corto_object _parent, corto_string _id, corto_
     return _this;
 }
 
-corto_int16 _corto_unitUpdate(corto_unit _this, corto_quantity quantity, corto_string symbol, corto_string conversion, corto_type type) {
+corto_int16 _corto_unitUpdate(corto_unit _this, corto_quantity quantity, const char * symbol, const char * conversion, corto_type type) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -7253,7 +7253,7 @@ corto_unit _corto_unitDeclareChild(corto_object _parent, corto_string _id) {
     return _this;
 }
 
-corto_int16 _corto_unitDefine(corto_unit _this, corto_quantity quantity, corto_string symbol, corto_string conversion, corto_type type) {
+corto_int16 _corto_unitDefine(corto_unit _this, corto_quantity quantity, const char * symbol, const char * conversion, corto_type type) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_unit)_this)->quantity, quantity);
     corto_ptr_setstr(&((corto_unit)_this)->symbol, symbol);
@@ -7262,7 +7262,7 @@ corto_int16 _corto_unitDefine(corto_unit _this, corto_quantity quantity, corto_s
     return corto_define(_this);
 }
 
-corto_unit _corto_unitAssign(corto_unit _this, corto_quantity quantity, corto_string symbol, corto_string conversion, corto_type type) {
+corto_unit _corto_unitAssign(corto_unit _this, corto_quantity quantity, const char * symbol, const char * conversion, corto_type type) {
     CORTO_UNUSED(_this);
     corto_ptr_setref(&((corto_unit)_this)->quantity, quantity);
     corto_ptr_setstr(&((corto_unit)_this)->symbol, symbol);
@@ -7271,7 +7271,34 @@ corto_unit _corto_unitAssign(corto_unit _this, corto_quantity quantity, corto_st
     return _this;
 }
 
-corto_verbatim _corto_verbatimCreate(corto_string contentType) {
+void* _corto_unknownCreate(void) {
+    void* _this;
+    _this = (void*)corto_declare(NULL, NULL, corto_unknown_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+    }
+    return _this;
+}
+
+void* _corto_unknownCreateChild(corto_object _parent, corto_string _id) {
+    void* _this;
+    _this = (void*)corto_declare(_parent, _id, corto_unknown_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+    }
+    return _this;
+}
+
+corto_int16 _corto_unknownUpdate(void* _this) {
+    CORTO_UNUSED(_this);
+    return corto_update(_this);
+}
+
+corto_verbatim _corto_verbatimCreate(const char * contentType) {
     corto_verbatim _this;
     _this = (corto_verbatim)corto_declare(NULL, NULL, corto_verbatim_o);
     if (!_this) {
@@ -7287,7 +7314,7 @@ corto_verbatim _corto_verbatimCreate(corto_string contentType) {
     return _this;
 }
 
-corto_verbatim _corto_verbatimCreateChild(corto_object _parent, corto_string _id, corto_string contentType) {
+corto_verbatim _corto_verbatimCreateChild(corto_object _parent, corto_string _id, const char * contentType) {
     corto_verbatim _this;
     _this = (corto_verbatim)corto_declare(_parent, _id, corto_verbatim_o);
     if (!_this) {
@@ -7303,7 +7330,7 @@ corto_verbatim _corto_verbatimCreateChild(corto_object _parent, corto_string _id
     return _this;
 }
 
-corto_int16 _corto_verbatimUpdate(corto_verbatim _this, corto_string contentType) {
+corto_int16 _corto_verbatimUpdate(corto_verbatim _this, const char * contentType) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -7338,13 +7365,13 @@ corto_verbatim _corto_verbatimDeclareChild(corto_object _parent, corto_string _i
     return _this;
 }
 
-corto_int16 _corto_verbatimDefine(corto_verbatim _this, corto_string contentType) {
+corto_int16 _corto_verbatimDefine(corto_verbatim _this, const char * contentType) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_verbatim)_this)->contentType, contentType);
     return corto_define(_this);
 }
 
-corto_verbatim _corto_verbatimAssign(corto_verbatim _this, corto_string contentType) {
+corto_verbatim _corto_verbatimAssign(corto_verbatim _this, const char * contentType) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_verbatim)_this)->contentType, contentType);
     return _this;

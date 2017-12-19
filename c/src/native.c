@@ -6,7 +6,7 @@
 
 #include <corto/c/c.h>
 
-corto_native_type _corto_native_typeCreate(corto_string name) {
+corto_native_type _corto_native_typeCreate(const char * name) {
     corto_native_type _this;
     _this = (corto_native_type)corto_declare(NULL, NULL, corto_native_type_o);
     if (!_this) {
@@ -22,7 +22,7 @@ corto_native_type _corto_native_typeCreate(corto_string name) {
     return _this;
 }
 
-corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_string _id, corto_string name) {
+corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_string _id, const char * name) {
     corto_native_type _this;
     _this = (corto_native_type)corto_declare(_parent, _id, corto_native_type_o);
     if (!_this) {
@@ -38,7 +38,7 @@ corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_stri
     return _this;
 }
 
-corto_int16 _corto_native_typeUpdate(corto_native_type _this, corto_string name) {
+corto_int16 _corto_native_typeUpdate(corto_native_type _this, const char * name) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -73,13 +73,13 @@ corto_native_type _corto_native_typeDeclareChild(corto_object _parent, corto_str
     return _this;
 }
 
-corto_int16 _corto_native_typeDefine(corto_native_type _this, corto_string name) {
+corto_int16 _corto_native_typeDefine(corto_native_type _this, const char * name) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_native_type)_this)->name, name);
     return corto_define(_this);
 }
 
-corto_native_type _corto_native_typeAssign(corto_native_type _this, corto_string name) {
+corto_native_type _corto_native_typeAssign(corto_native_type _this, const char * name) {
     CORTO_UNUSED(_this);
     corto_ptr_setstr(&((corto_native_type)_this)->name, name);
     return _this;

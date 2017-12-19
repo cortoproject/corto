@@ -27,7 +27,7 @@ void _corto_dispatcher_post(
     corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_event*))((corto_function)_method)->fptr)(_this, e);
+        ((void ___ (*)(corto_object, corto_event *))((corto_function)_method)->fptr)(_this, e);
     } else {
         corto_call(corto_function(_method), NULL, _this, e);
     }
@@ -81,7 +81,7 @@ corto_resultIter _corto_loader_onQuery(
     corto_assert(_method != NULL, "unresolved method '%s::onQuery(/corto/vstore/query query)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_resultIter ___ (*)(corto_object, corto_query*))((corto_function)_method)->fptr)(_this, query);
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_query *))((corto_function)_method)->fptr)(_this, query);
     } else {
         corto_call(corto_function(_method), &_result, _this, query);
     }
@@ -165,7 +165,7 @@ corto_resultIter _corto_mount_onHistoryQuery(
     corto_assert(_method != NULL, "unresolved method '%s::onHistoryQuery(/corto/vstore/query query)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_resultIter ___ (*)(corto_object, corto_query*))((corto_function)_method)->fptr)(_this, query);
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_query *))((corto_function)_method)->fptr)(_this, query);
     } else {
         corto_call(corto_function(_method), &_result, _this, query);
     }
@@ -225,7 +225,7 @@ void _corto_mount_onInvoke(
     corto_assert(_method != NULL, "unresolved method '%s::onInvoke(object instance,function proc,word argptrs)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_object, corto_function, corto_word))((corto_function)_method)->fptr)(_this, instance, proc, argptrs);
+        ((void ___ (*)(corto_object, corto_object, corto_function, uintptr_t))((corto_function)_method)->fptr)(_this, instance, proc, argptrs);
     } else {
         corto_call(corto_function(_method), NULL, _this, instance, proc, argptrs);
     }
@@ -254,7 +254,7 @@ uintptr_t _corto_mount_onMount(
     corto_assert(_method != NULL, "unresolved method '%s::onMount(vstore/query query,lang/word ctx)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((uintptr_t ___ (*)(corto_object, corto_query*, corto_word))((corto_function)_method)->fptr)(_this, query, ctx);
+        _result = ((uintptr_t ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
         corto_call(corto_function(_method), &_result, _this, query, ctx);
     }
@@ -283,7 +283,7 @@ void _corto_mount_onNotify(
     corto_assert(_method != NULL, "unresolved method '%s::onNotify(vstore/subscriberEvent event)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_subscriberEvent*))((corto_function)_method)->fptr)(_this, event);
+        ((void ___ (*)(corto_object, corto_subscriberEvent *))((corto_function)_method)->fptr)(_this, event);
     } else {
         corto_call(corto_function(_method), NULL, _this, event);
     }
@@ -311,7 +311,7 @@ corto_resultIter _corto_mount_onQuery(
     corto_assert(_method != NULL, "unresolved method '%s::onQuery(/corto/vstore/query query)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_resultIter ___ (*)(corto_object, corto_query*))((corto_function)_method)->fptr)(_this, query);
+        _result = ((corto_resultIter ___ (*)(corto_object, corto_query *))((corto_function)_method)->fptr)(_this, query);
     } else {
         corto_call(corto_function(_method), &_result, _this, query);
     }
@@ -320,8 +320,8 @@ corto_resultIter _corto_mount_onQuery(
 }
 corto_object _corto_mount_onResume(
     corto_mount _this,
-    corto_string parent,
-    corto_string id,
+    const char *parent,
+    const char *id,
     corto_object object)
 
 {
@@ -343,7 +343,7 @@ corto_object _corto_mount_onResume(
     corto_assert(_method != NULL, "unresolved method '%s::onResume(string parent,string id,object object)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_object ___ (*)(corto_object, corto_string, corto_string, corto_object))((corto_function)_method)->fptr)(_this, parent, id, object);
+        _result = ((corto_object ___ (*)(corto_object, const char *, const char *, corto_object))((corto_function)_method)->fptr)(_this, parent, id, object);
     } else {
         corto_call(corto_function(_method), &_result, _this, parent, id, object);
     }
@@ -374,7 +374,7 @@ uintptr_t _corto_mount_onSubscribe(
     corto_assert(_method != NULL, "unresolved method '%s::onSubscribe(vstore/query query,lang/word ctx)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((uintptr_t ___ (*)(corto_object, corto_query*, corto_word))((corto_function)_method)->fptr)(_this, query, ctx);
+        _result = ((uintptr_t ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
         corto_call(corto_function(_method), &_result, _this, query, ctx);
     }
@@ -433,7 +433,7 @@ void _corto_mount_onTransactionEnd(
     corto_assert(_method != NULL, "unresolved method '%s::onTransactionEnd(vstore/subscriberEventIter events,word ctx)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_subscriberEventIter, corto_word))((corto_function)_method)->fptr)(_this, events, ctx);
+        ((void ___ (*)(corto_object, corto_subscriberEventIter, uintptr_t))((corto_function)_method)->fptr)(_this, events, ctx);
     } else {
         corto_call(corto_function(_method), NULL, _this, events, ctx);
     }
@@ -461,7 +461,7 @@ void _corto_mount_onUnmount(
     corto_assert(_method != NULL, "unresolved method '%s::onUnmount(vstore/query query,lang/word ctx)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_query*, corto_word))((corto_function)_method)->fptr)(_this, query, ctx);
+        ((void ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
         corto_call(corto_function(_method), NULL, _this, query, ctx);
     }
@@ -489,7 +489,7 @@ void _corto_mount_onUnsubscribe(
     corto_assert(_method != NULL, "unresolved method '%s::onUnsubscribe(vstore/query query,lang/word ctx)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        ((void ___ (*)(corto_object, corto_query*, corto_word))((corto_function)_method)->fptr)(_this, query, ctx);
+        ((void ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
         corto_call(corto_function(_method), NULL, _this, query, ctx);
     }
@@ -520,7 +520,7 @@ corto_route _corto_routerimpl_findRoute(
     corto_assert(_method != NULL, "unresolved method '%s::findRoute(object instance,stringseq pattern,any param,out:any routerData)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_route ___ (*)(corto_object, corto_object, corto_stringseq, corto_any, corto_any*))((corto_function)_method)->fptr)(_this, instance, pattern, param, routerData);
+        _result = ((corto_route ___ (*)(corto_object, corto_object, corto_stringseq, corto_any, corto_any *))((corto_function)_method)->fptr)(_this, instance, pattern, param, routerData);
     } else {
         corto_call(corto_function(_method), &_result, _this, instance, pattern, param, routerData);
     }
@@ -553,7 +553,7 @@ int32_t _corto_routerimpl_matchRoute(
     corto_assert(_method != NULL, "unresolved method '%s::matchRoute(vstore/route route,stringseq pattern,any param,out:any routerData)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((int32_t ___ (*)(corto_object, corto_route, corto_stringseq, corto_any, corto_any*))((corto_function)_method)->fptr)(_this, route, pattern, param, routerData);
+        _result = ((int32_t ___ (*)(corto_object, corto_route, corto_stringseq, corto_any, corto_any *))((corto_function)_method)->fptr)(_this, route, pattern, param, routerData);
     } else {
         corto_call(corto_function(_method), &_result, _this, route, pattern, param, routerData);
     }

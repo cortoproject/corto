@@ -157,7 +157,7 @@ bool _corto_interface_compatible(
 }
 corto_member _corto_interface_resolveMember(
     corto_interface _this,
-    corto_string name)
+    const char *name)
 
 {
     static corto_uint32 _methodId;
@@ -178,7 +178,7 @@ corto_member _corto_interface_resolveMember(
     corto_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_member ___ (*)(corto_object, corto_string))((corto_function)_method)->fptr)(_this, name);
+        _result = ((corto_member ___ (*)(corto_object, const char *))((corto_function)_method)->fptr)(_this, name);
     } else {
         corto_call(corto_function(_method), &_result, _this, name);
     }
@@ -367,7 +367,7 @@ bool _corto_struct_compatible(
 }
 corto_member _corto_struct_resolveMember(
     corto_struct _this,
-    corto_string name)
+    const char *name)
 
 {
     static corto_uint32 _methodId;
@@ -388,7 +388,7 @@ corto_member _corto_struct_resolveMember(
     corto_assert(_method != NULL, "unresolved method '%s::resolveMember(string name)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_member ___ (*)(corto_object, corto_string))((corto_function)_method)->fptr)(_this, name);
+        _result = ((corto_member ___ (*)(corto_object, const char *))((corto_function)_method)->fptr)(_this, name);
     } else {
         corto_call(corto_function(_method), &_result, _this, name);
     }

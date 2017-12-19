@@ -2,8 +2,6 @@
 
 #include <corto/corto.h>
 #include "src/store/object.h"
-
-
 /* Not all types that inherit from from function are necessarily procedures. Find
  * the first procedure type in the inheritance hierarchy. */
 corto_procedure corto_function_getProcedureType(corto_function this) {
@@ -19,7 +17,6 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
 
 int16_t corto_delegate_validate(
     corto_function object);
-
 int16_t corto_function_construct(
     corto_function this)
 {
@@ -33,7 +30,6 @@ int16_t corto_function_construct(
     }
 
     /* Count the size based on the parameters and store parameters in slots */
-
     if (!this->size) {
         /* Add size of this-pointer */
         if (procedure->hasThis) {
@@ -42,6 +38,7 @@ int16_t corto_function_construct(
             } else {
                 this->size += sizeof(corto_object);
             }
+
         }
 
         corto_uint32 i;
@@ -64,12 +61,16 @@ int16_t corto_function_construct(
                         this->size += sizeof(corto_objectseq);
                         break;
                     }
+
                 default:
                     this->size += sizeof(void*);
                     break;
                 }
+
             }
+
         }
+
     }
 
     /* Validate delegate */
@@ -77,6 +78,7 @@ int16_t corto_function_construct(
         if (corto_delegate_validate(this)) {
             goto error;
         }
+
     }
 
     /* Initialize binding-specific data */
@@ -109,19 +111,15 @@ void corto_function_destruct(
     this->parameters.length = 0;
 }
 
-
 typedef struct corto_functionLookup_t {
     corto_function f;
     corto_bool error;
     corto_id name;
 }corto_functionLookup_t;
-
 static int corto_functionLookupWalk(corto_object o, void* userData) {
     corto_functionLookup_t* data;
     corto_int32 d;
-
     data = userData;
-
     if (o != data->f) {
         char *id = corto_idof(data->f);
         if (corto_overload(o, id, &d)) {
@@ -138,10 +136,12 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
                 data->error = TRUE;
                 goto finish;
             }
+
         } else if (d > 0 || d == CORTO_OVERLOAD_NOMATCH_OVERLOAD) {
             corto_function(o)->overloaded = TRUE;
             data->f->overloaded = TRUE;
         }
+
     }
 
     return 1;
@@ -158,21 +158,20 @@ int16_t corto_function_init(
         {
             corto_functionLookup_t walkData = {.f = this, .error = FALSE};
             corto_uint32 i;
-
             corto_objectseq scope =
                 corto_scopeClaimWithFilter(
                     corto_parentof(this),
                     NULL,
                     corto_idof(this)
                 );
-
-
             corto_signatureName(corto_idof(this), walkData.name);
             for (i = 0; i < scope.length; i++) {
                 if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
                     break;
                 }
+
             }
+
             if (walkData.error) {
                 goto error;
             }
@@ -184,6 +183,7 @@ int16_t corto_function_init(
         if (corto_function_parseParamString(this, corto_idof(this))) {
             goto error;
         }
+
     }
 
     /* Bind with interface if possible */
@@ -193,8 +193,11 @@ int16_t corto_function_init(
             if (corto_delegate_bind(this)) {
                 goto error;
             }
+
         }
+
     }
+
     return 0;
 error:
     this->parameters.length = 0;
@@ -203,7 +206,7 @@ error:
 
 int16_t corto_function_parseParamString(
     corto_function this,
-    corto_string params)
+    const char *params)
 {
     corto_object scope;
 
@@ -221,23 +224,19 @@ int16_t corto_function_parseParamString(
 }
 
 corto_parameterseq corto_function_stringToParameterSeq(
-    corto_string name,
+    const char *name,
     corto_object scope)
 {
     corto_parameterseq result = {0, NULL};
-
     corto_char* ptr;
-
     ptr = strchr(name, '(');
     if (ptr) {
         ptr++;
-
         /* Check if function has arguments */
         if (*ptr != ')') {
             corto_int32 count = 0, i = 0;
             corto_id id;
             int flags = 0;
-
             /* Count number of parameters for function */
             count = corto_signatureParamCount(name);
             if (count == -1) {
@@ -247,7 +246,6 @@ corto_parameterseq corto_function_stringToParameterSeq(
             /* Allocate size for parameters */
             result.length = count;
             result.buffer = corto_calloc(sizeof(corto_parameter) * count);
-
             /* Parse arguments */
             for(i = 0; i < count; i++) {
                 if (corto_signatureParamType(name, i, id, &flags)) {
@@ -260,7 +258,6 @@ corto_parameterseq corto_function_stringToParameterSeq(
 
                 /* Set reference */
                 result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
-
                 if ((flags & (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) ==
                              (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT))
                 {
@@ -297,7 +294,9 @@ corto_parameterseq corto_function_stringToParameterSeq(
 
                 result.buffer[i].name = corto_strdup(id);
             }
+
         }
+
     }
 
     return result;
@@ -307,3 +306,4 @@ error:
     result.buffer = NULL;
     return result;
 }
+

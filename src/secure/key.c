@@ -1,12 +1,9 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
 static corto_secure_key corto_secure_keyInstance;
 static const char *corto_secure_token;
 static corto_thread corto_secure_mainThread;
-
 static
 corto_entityAdmin corto_lock_admin = {
     .key = 0,
@@ -14,7 +11,6 @@ corto_entityAdmin corto_lock_admin = {
     .lock = CORTO_RWMUTEX_INITIALIZER,
     .changed = 0
 };
-
 void corto_secure_init(void) {
     corto_secure_mainThread = corto_thread_self();
     corto_tls_new(&corto_lock_admin.key, corto_entityAdmin_free);
@@ -36,6 +32,7 @@ const char* corto_login(
     } else {
         return NULL;
     }
+
 }
 
 const char* corto_set_session(
@@ -48,7 +45,6 @@ const char* corto_set_session(
 
     const char* prev = corto_secure_token;
     corto_secure_token = key;
-
     if (corto_rwmutex_unlock(&corto_lock_admin.lock)) {
         corto_throw(NULL);
         goto error;
@@ -100,6 +96,7 @@ bool corto_authorize(
     } else {
         return TRUE;
     }
+
 }
 
 bool corto_authorize_id(
@@ -127,7 +124,6 @@ bool corto_authorize_id(
                 for (e = 0; e < perParent->entities.length; e ++) {
                     corto_entity *entity = &perParent->entities.buffer[e];
                     corto_secure_lock lock = entity->e;
-
                     if (lock->expr && *expr && !corto_idmatch(lock->expr, expr)) {
                         continue;
                     }
@@ -135,7 +131,6 @@ bool corto_authorize_id(
                     /* Priority of lock must be at least of the same priority or
                      * higher than set value. */
                     if (lock->priority >= priority) {
-
                         /* More specific locks take precedence over less specific
                          * locks, unless priority is higher */
                         if ((allowed == CORTO_SECURE_ACCESS_UNDEFINED) ||
@@ -143,10 +138,8 @@ bool corto_authorize_id(
                             (lock->priority > priority))
                         {
                             corto_secure_accessKind result;
-
                             result = corto_secure_lock_authorize(
                                 lock, (char*)corto_secure_token, access);
-
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
                              * a higher priority than what was set */
@@ -158,20 +151,27 @@ bool corto_authorize_id(
                                       priority = lock->priority;
                                       currentDepth = depth;
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         } while (--depth >= 0);
     }
+
     return allowed != CORTO_SECURE_ACCESS_DENIED;
 }
 
 corto_string corto_secure_key_authenticate_v(
     corto_secure_key this,
-    corto_string user,
-    corto_string password)
+    const char *user,
+    const char *password)
 {
 
     CORTO_UNUSED(this);
@@ -196,7 +196,6 @@ int16_t corto_secure_key_construct(
     }
 
     corto_secure_keyInstance = this;
-
     return 0;
 error:
     return -1;
@@ -211,3 +210,4 @@ void corto_secure_key_destruct(
     corto_secure_keyInstance = NULL;
 
 }
+

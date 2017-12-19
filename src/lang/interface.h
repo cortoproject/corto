@@ -19,7 +19,7 @@ corto_int16 corto__interface_insertMembers(corto_interface _this);
 corto_uint16 corto__interface_calculateAlignment(corto_interface _this);
 corto_uint32 corto__interface_calculateSize(corto_interface _this, corto_uint32 base);
 corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_function o2);
-corto_function* corto_vtableLookup(corto_objectseq* vtable, corto_string member, corto_int32* d_out);
+corto_function* corto_vtableLookup(corto_objectseq* vtable, const char *member, corto_int32* d_out);
 corto_bool corto_vtableInsert(corto_objectseq* vtable, corto_function method);
 corto_objectseq corto_interface_vtableFromBase(corto_interface this);
 bool corto_interface_pullDelegate(corto_interface this, corto_member member);

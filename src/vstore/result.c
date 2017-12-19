@@ -1,12 +1,10 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
 #include "src/store/object.h"
-
 corto_string corto_result_contentof(
     corto_result* this,
-    corto_string contentType)
+    const char *contentType)
 {
     corto_string result = NULL;
 
@@ -26,8 +24,8 @@ error:
 
 int16_t corto_result_fromcontent(
     corto_result* this,
-    corto_string contentType,
-    corto_string content)
+    const char *contentType,
+    const char *content)
 {
     corto_fmt type = corto_fmt_lookup(contentType);
     if (!type) {
@@ -48,3 +46,4 @@ corto_string corto_result_getText(
 {
     return (corto_string)this->value;
 }
+

@@ -1,17 +1,13 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
 #include "interface.h"
 #include "sequence.h"
-
 corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     corto_interface base;
     corto_uint32 size;
 
     corto_objectseq *baseTable, myTable = {0, NULL};
-
     /* Lookup first vtable in inheritance hierarchy */
     base = corto_interface(this);
     baseTable = NULL;
@@ -22,38 +18,35 @@ corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     /* If found, copy it */
     if (baseTable) {
         size = baseTable->length * sizeof(corto_method);
-
         /* Create own vtable. */
         myTable.length = 0;
         myTable.buffer = NULL;
-
         /* Copy from base vtable. */
         if (size) {
             corto_uint32 i;
             myTable.buffer = corto_alloc(size);
             myTable.length = baseTable->length;
             memcpy(myTable.buffer, baseTable->buffer, size);
-
             for (i=0; i<myTable.length; i++) {
                 corto_claim(myTable.buffer[i]);
             }
+
         } else {
             myTable.buffer = NULL;
         }
+
     }
 
     return myTable;
 }
 
 /* Lookup method in table */
-corto_function* corto_vtableLookup(corto_objectseq* vtable, corto_string member, corto_int32* d_out) {
+corto_function* corto_vtableLookup(corto_objectseq* vtable, const char *member, corto_int32* d_out) {
     corto_objectseq s;
     corto_function *result;
     s.buffer = (corto_object *)vtable->buffer;
     s.length = vtable->length;
-
     result = (corto_function*)corto_lookupFunctionFromSequence(s, member, d_out, NULL);
-
     return result;
 }
 
@@ -66,7 +59,9 @@ corto_bool corto_vtableInsert(corto_objectseq* vtable, corto_function method) {
         if (vtable->buffer[i] == method) {
             break;
         }
+
     }
+
     if (i != vtable->length) {
         goto found;
     }
@@ -76,6 +71,7 @@ corto_bool corto_vtableInsert(corto_objectseq* vtable, corto_function method) {
         if (!vtable->buffer[i]) {
             break;
         }
+
     }
 
     if (i == vtable->length) {
@@ -84,7 +80,6 @@ corto_bool corto_vtableInsert(corto_objectseq* vtable, corto_function method) {
     }
 
     vtable->buffer[i] = method;
-
     return TRUE;
 found:
     return FALSE;
@@ -108,11 +103,12 @@ bool corto_interface_pullDelegate(corto_interface this, corto_member m) {
             if (delegate->procedure && delegate->procedure->kind == CORTO_PROCEDURE_STUB) {
                 delegate = NULL;
             }
-        } while ((!delegate || !delegate->procedure) && (base = corto_interface(base)->base));
 
+        } while ((!delegate || !delegate->procedure) && (base = corto_interface(base)->base));
         if (base && (base != this) && corto_instanceof(corto_parentof(m), base)) {
             corto_ptr_setref(&myDelegate->procedure, delegate->procedure);
         }
+
     }
 
     return myDelegate->procedure != NULL;
@@ -127,6 +123,7 @@ int corto_interface_walkScope(corto_object o, void* userData) {
         if (corto_interface_bindMethod(this, o)) {
             goto error;
         }
+
     }
 
     return 1;
@@ -158,16 +155,19 @@ corto_uint16 corto__interface_calculateAlignment(corto_interface this) {
         } else {
             memberAlignment = corto_type_alignmentof(member->type);
         }
+
         if (memberAlignment) {
             if (memberAlignment > alignment) {
                 alignment = memberAlignment;
             }
+
         } else {
             corto_throw("member '%s' has type '%s' with zero-alignment.",
                 corto_fullpath(NULL, member),
                 corto_fullpath(NULL, member->type));
             goto error;
         }
+
     }
 
     return alignment;
@@ -196,6 +196,7 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
             } else {
                 memberSize = corto_type_sizeof(memberType);
             }
+
             if (!memberSize) {
                 corto_throw("member '%s' of type '%s' is of invalid type '%s'",
                     corto_idof(m),
@@ -208,17 +209,20 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
             if (!alignment) {
                 goto error;
             }
-            size = CORTO_ALIGN(size, alignment);
 
+            size = CORTO_ALIGN(size, alignment);
             if ((m->type->flags & CORTO_TYPE_HAS_RESOURCES) || m->type->reference) {
                 corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
             }
+
             if (!m->type->reference && m->type->flags & CORTO_TYPE_NEEDS_INIT) {
                 corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
             }
+
             if (m->modifiers & CORTO_OBSERVABLE) {
                 corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
             }
+
             if (m->modifiers & CORTO_OPTIONAL) {
                 corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
             }
@@ -228,6 +232,7 @@ corto_uint32 corto__interface_calculateSize(corto_interface this, corto_uint32 b
         } else {
             m->offset = corto_alias(m)->member->offset;
         }
+
     }
 
     return interfaceAlignment ? CORTO_ALIGN(size, interfaceAlignment) : 0;
@@ -237,7 +242,6 @@ error:
 
 static int corto_interface_validateAlias(corto_alias this) {
     corto_modifier m = 0;
-
     /* Find the member we're aliassing and verify access */
     if (!this->member) {
         corto_throw("alias '%s' does not point to a member",
@@ -249,6 +253,7 @@ static int corto_interface_validateAlias(corto_alias this) {
                 corto_fullpath(NULL, this));
             goto error;
         }
+
         if (this->member->modifiers & (CORTO_PRIVATE|CORTO_LOCAL|CORTO_READONLY|CORTO_CONST)) {
             corto_throw("alias '%s' doesn't have write-access to member '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
@@ -288,11 +293,11 @@ static int corto_interface_insertMemberAction(void* o, void* userData) {
     /* If object is a member, add it to members sequence */
     if (corto_class_instanceof(corto_member_o, o)) {
         corto_member m = o;
-
         if (corto_instanceof(corto_alias_o, m)) {
             if (corto_interface_validateAlias(corto_alias(m))) {
                 goto error;
             }
+
         }
 
         if (!m->type) {
@@ -323,10 +328,10 @@ corto_int16 corto__interface_insertMembers(corto_interface this) {
         if (!corto_scopeWalk(this, corto_interface_insertMemberAction, this)) {
             goto error;
         }
+
     }
 
     corto_assert(this->nextMemberId == this->members.length, "not all members were added to interface object.");
-
     return 0;
 error:
     return -1;
@@ -335,9 +340,7 @@ error:
 /* Check if parameters of procedures match */
 static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, corto_function o2) {
     corto_bool result;
-
     result = TRUE;
-
     if (o1->parameters.length != o2->parameters.length) {
         corto_throw("number of parameters does not match for functions '%s' (%d) and '%s' (%d)",
             corto_fullpath(NULL, o1), o1->parameters.length,
@@ -345,7 +348,6 @@ static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, c
         result = FALSE;
     } else {
         corto_uint32 i;
-
         for (i=0; i<o1->parameters.length; i++) {
             corto_type p1, p2;
             /* Check if names of parameters are compatible */
@@ -374,7 +376,9 @@ static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, c
                                 o2->parameters.buffer[i].name);
                             result = FALSE;
                         }
+
                     }
+
                 } else if (!corto_type_castable(p1, p2)) { /* This virtual function can only be called after the bootstrap is complete. */
                     corto_throw("type of parameter %s of function '%s' is incompatible with function '%s'",
                         corto_idof(o2->parameters.buffer[i].type),
@@ -382,13 +386,13 @@ static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, c
                         corto_fullpath(NULL, o1));
                     result = FALSE;
                 }
+
             }
 
             /* Check if both parameters have equal reference semantics */
             if (o1->parameters.buffer[i].passByReference != o2->parameters.buffer[i].passByReference) {
                 if ((((p1->kind == CORTO_VOID) && (p1->reference)) && o2->parameters.buffer[i].passByReference) ||
                     (((p2->kind == CORTO_VOID) && (p2->reference)) && o1->parameters.buffer[i].passByReference)) {
-
                 } else {
                     corto_throw("parameter '%s' of function '%s' and '%s' has conflicting pass-by-reference semantics.",
                         o1->parameters.buffer[i].name,
@@ -396,8 +400,11 @@ static corto_int16 corto_interface_checkProcedureParameters(corto_function o1, c
                         corto_fullpath(NULL, o2));
                     result = FALSE;
                 }
+
             }
+
         }
+
     }
 
     return result;
@@ -422,17 +429,18 @@ corto_bool corto_interface_checkProcedureCompatibility(corto_function o1, corto_
                 corto_fullpath(NULL, returnType2));
             result = FALSE; /* Returntypes must match exactly (save for typedefs) */
         }
+
     } else {
         if (o1->overridable) {
             result = corto_interface_checkProcedureParameters(o1, o2);
         } else {
             result = FALSE;
         }
+
     }
 
     return result;
 }
-
 
 int16_t corto_interface_baseof(
     corto_interface this,
@@ -465,6 +473,7 @@ int16_t corto_interface_bindMethod(
                 corto_fullpath(NULL, method));
             goto error;
         }
+
     }
 
     /* Check if an overridable method exists in the vtable */
@@ -486,6 +495,7 @@ int16_t corto_interface_bindMethod(
                 corto_throw("no overridable method found for '%s'",
                     corto_fullpath(NULL, method));
             }
+
             goto error;
         } else if (*found && (*found != (corto_function)method) && !(*found)->overridable) {
             corto_throw("method '%s' is not overridable by '%s'",
@@ -493,6 +503,7 @@ int16_t corto_interface_bindMethod(
                 corto_fullpath(NULL, method));
             goto error;
         }
+
     }
 
     /* Function is reentrant */
@@ -509,7 +520,9 @@ int16_t corto_interface_bindMethod(
                     {
                         goto error;
                     }
+
                 }
+
                 corto_ptr_setref(found, method);
                 added = TRUE;
             } else {
@@ -520,8 +533,11 @@ int16_t corto_interface_bindMethod(
                     corto_throw("method '%s' conflicts with '%s'", id, id2);
                     goto error;
                 }
+
             }
+
         }
+
     }
 
     if (!added) {
@@ -529,9 +545,11 @@ int16_t corto_interface_bindMethod(
             (*found)->overloaded = TRUE;
             corto_function(method)->overloaded = TRUE;
         }
+
         if (corto_vtableInsert(&this->methods, corto_function(method))) {
             corto_claim(method);
         }
+
     }
 
     return 0;
@@ -556,8 +574,11 @@ bool corto_interface_compatible_v(
                 if (corto_class(type)->implements.buffer[i] == this) {
                     result = TRUE;
                 }
+
             }
+
         }
+
     }
 
     return result;
@@ -579,6 +600,7 @@ int16_t corto_interface_construct(
     if (corto_interface_pullDelegate(this, corto_type_init_o)) {
         corto_type(this)->flags |= CORTO_TYPE_HAS_INIT;
     }
+
     if (corto_interface_pullDelegate(this, corto_type_deinit_o)) {
         corto_type(this)->flags |= CORTO_TYPE_HAS_DEINIT;
     }
@@ -587,6 +609,7 @@ int16_t corto_interface_construct(
         if (corto_type(this->base)->flags & CORTO_TYPE_HAS_DELEGATE) {
             corto_type(this)->flags |= CORTO_TYPE_HAS_DELEGATE;
         }
+
     }
 
     return safe_corto_type_construct(this);
@@ -635,7 +658,7 @@ int16_t corto_interface_init(
 
 corto_member corto_interface_resolveMember_v(
     corto_interface this,
-    corto_string name)
+    const char *name)
 {
     corto_uint32 i;
     corto_member result = NULL;
@@ -646,6 +669,7 @@ corto_member corto_interface_resolveMember_v(
             result = this->members.buffer[i];
             break;
         }
+
     }
 
     if (dot && result) {
@@ -657,6 +681,7 @@ corto_member corto_interface_resolveMember_v(
                 corto_fullpath(NULL, result->type));
             goto error;
         }
+
     }
 
     return result;
@@ -666,7 +691,7 @@ error:
 
 corto_method corto_interface_resolveMethod(
     corto_interface this,
-    corto_string name)
+    const char *name)
 {
     corto_method result;
     corto_method* found;
@@ -707,6 +732,7 @@ corto_method corto_interface_resolveMethodById(
         for (i=0; i<vtable->length; i++) {
             printf("  (%d) %s\n", i+1, corto_fullpath(NULL, vtable->buffer[i]));
         }
+
     }
 
     return result;
@@ -714,7 +740,7 @@ corto_method corto_interface_resolveMethodById(
 
 uint32_t corto_interface_resolveMethodId(
     corto_interface this,
-    corto_string name)
+    const char *name)
 {
     corto_int32 result;
     corto_function *f;
