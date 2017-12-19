@@ -1580,7 +1580,10 @@ corto_object corto_resume(
         return NULL;
     }
 
-    corto_debug("try resume '%s' from '%s'", expr, corto_fullpath(NULL, parent));
+    corto_debug("try resume '%s' from '%s' (%s)",
+        expr,
+        corto_fullpath(NULL, parent),
+        corto_fullpath(NULL, corto_typeof(parent)));
 
     corto_id exprBuff;
 
@@ -3222,8 +3225,8 @@ corto_object corto_lookup_intern(
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rb tree;
-    corto_object prev = NULL;
-    char ch, *next, *ptr = id;
+    corto_object prev = NULL, known_prev = NULL;
+    char ch, *next, *ptr = id, *last_known_ptr = id;
 
     if (!id || !id[0]) {
         corto_throw("invalid identifier");
@@ -3278,7 +3281,10 @@ corto_object corto_lookup_intern(
 
                     if (o) corto_release(o);
                 } else {
-                    corto_rwmutex_read(&scope->align.scopeLock);
+                    if (corto_rwmutex_read(&scope->align.scopeLock)) {
+                        corto_throw(NULL);
+                        goto error;
+                    }
                     if (!corto_rb_hasKey_w_cmp(
                           tree,
                           ptr,
@@ -3307,7 +3313,10 @@ corto_object corto_lookup_intern(
                             }
                         }
                     }
-                    corto_rwmutex_unlock(&scope->align.scopeLock);
+                    if (corto_rwmutex_unlock(&scope->align.scopeLock)) {
+                        corto_throw(NULL);
+                        goto error;
+                    }
                 }
             } else {
                 o = NULL;
@@ -3344,14 +3353,26 @@ corto_object corto_lookup_intern(
         }
 
         ptr = next;
+
+        /* Keep track of object with last known type in case we must resume */
+        if (corto_typeof(o) != corto_unknown_o) {
+            known_prev = o;
+            last_known_ptr = ptr;
+            if (last_known_ptr[0] == '/') {
+                last_known_ptr ++;
+            }
+        }
     } while (ch);
 
     if (resume && parent != corto_lang_o) {
-        if (!prev) {
-            prev = parent;
+        if (!known_prev) {
+            known_prev = parent;
+        }
+        if (!last_known_ptr) {
+            last_known_ptr = id;
         }
         if (!o) {
-            o = corto_resume(prev, ptr, NULL);
+            o = corto_resume(known_prev, last_known_ptr, NULL);
         }
     }
 
