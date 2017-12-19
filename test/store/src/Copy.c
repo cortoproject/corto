@@ -1774,7 +1774,7 @@ void test_Copy_tc_unionWithOptionalReference(
     test_unionTypes v1={}, v2={};
     corto_ptr_init(&v2, test_unionTypes_o);
 
-    corto_object obj = corto_create(corto_void_o);
+    corto_object obj = corto_create(NULL, NULL, corto_void_o);
     test_assert(obj != NULL);
     test_assert(corto_countof(obj) == 1);
 

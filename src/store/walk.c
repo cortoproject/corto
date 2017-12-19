@@ -152,7 +152,7 @@ int16_t corto_walk(corto_walk_opt* this, corto_object o, void* userData) {
     {
         corto_id id, id2;
         printf("%*sserialize(%s : %s // %s)\n",
-               indent, " ", corto_fullname(o, id), corto_fullname(corto_typeof(o), id2), corto_checkState(o, CORTO_DELETED)?"destructed":"valid"); fflush(stdout);
+               indent, " ", corto_fullname(o, id), corto_fullname(corto_typeof(o), id2), corto_check_state(o, CORTO_DELETED)?"destructed":"valid"); fflush(stdout);
         indent++;
     }
 #endif

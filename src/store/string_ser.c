@@ -162,7 +162,7 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
     /* Obtain fully scoped name */
     corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        if (corto_checkAttr(object, CORTO_ATTR_NAMED)) {
+        if (corto_check_attr(object, CORTO_ATTR_NAMED)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_idof(object));
                 str = id;
@@ -358,7 +358,7 @@ static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* use
 
         if (str) {
             o = corto_value_objectof(v);
-            if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_NAMED)) {
+            if (corto_check_attr(corto_typeof(o), CORTO_ATTR_NAMED)) {
                 corto_fullpath(typeId, corto_typeof(o));
             } else {
                 corto_walk_opt typeSer;

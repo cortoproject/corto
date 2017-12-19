@@ -40,7 +40,11 @@ typedef struct corto_string_ser_t {
     corto_ll anonymousObjects;
 } corto_string_ser_t;
 
-CORTO_EXPORT corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
+CORTO_EXPORT
+corto_walk_opt corto_string_ser(
+    corto_modifier access,
+    corto_operatorKind accessKind,
+    corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
 
 
 static corto_secure_key corto_secure_keyInstance;
-static corto_string corto_secure_token;
+static const char *corto_secure_token;
 static corto_thread corto_secure_mainThread;
 
 static
@@ -24,21 +24,29 @@ corto_bool corto_secured(void) {
     return corto_secure_keyInstance != NULL;
 }
 
-corto_string corto_login(corto_string username, corto_string password) {
+const char* corto_login(
+    const char *username,
+    const char *password)
+{
     if (corto_secure_keyInstance) {
-        return corto_secure_key_authenticate(corto_secure_keyInstance, username, password);
+        return corto_secure_key_authenticate(
+            corto_secure_keyInstance,
+            (char*)username,
+            (char*)password);
     } else {
         return NULL;
     }
 }
 
-corto_string corto_authenticate(corto_string key) {
+const char* corto_set_session(
+    const char *key)
+{
     if (corto_rwmutex_write(&corto_lock_admin.lock)) {
         corto_throw(NULL);
         goto error;
     }
 
-    corto_string prev = corto_secure_token;
+    const char* prev = corto_secure_token;
     corto_secure_token = key;
 
     if (corto_rwmutex_unlock(&corto_lock_admin.lock)) {
@@ -51,8 +59,9 @@ error:
     return key;
 }
 
-int16_t corto_secure_registerLock(corto_secure_lock lock) {
-
+int16_t corto_secure_registerLock(
+    corto_secure_lock lock)
+{
     if (corto_secure_mainThread == corto_thread_self()) {
         corto_entityAdmin_add(&corto_lock_admin, lock->mount, lock, NULL);
     } else {
@@ -65,8 +74,9 @@ error:
     return -1;
 }
 
-int16_t corto_secure_unregisterLock(corto_secure_lock lock) {
-
+int16_t corto_secure_unregisterLock(
+    corto_secure_lock lock)
+{
     if (corto_secure_mainThread == corto_thread_self()) {
         corto_entityAdmin_remove(&corto_lock_admin, lock->mount, lock, NULL, FALSE);
     } else {
@@ -79,24 +89,29 @@ error:
     return -1;
 }
 
-corto_bool corto_authorized(corto_object object, corto_secure_actionKind access)
+bool corto_authorize(
+    corto_object object,
+    corto_secure_actionKind access)
 {
-    if (corto_checkAttr(object, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(object, CORTO_ATTR_NAMED)) {
         corto_id objectId;
         corto_fullpath(objectId, object);
-        return corto_authorizedId(objectId, access);
+        return corto_authorize_id(objectId, access);
     } else {
         return TRUE;
     }
 }
 
-corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind access) {
+bool corto_authorize_id(
+    const char *objectId,
+    corto_secure_actionKind access)
+{
     corto_secure_accessKind allowed = CORTO_SECURE_ACCESS_UNDEFINED;
 
     if (corto_secure_keyInstance) {
-        corto_int32 depth = corto_entityAdmin_getDepthFromId(objectId);
-        corto_uint16 currentDepth = 0;
-        corto_int16 priority = 0;
+        int32_t depth = corto_entityAdmin_getDepthFromId(objectId);
+        uint16_t currentDepth = 0;
+        int16_t priority = 0;
 
         /* Walk over locks in the lock admin */
         corto_entityAdmin *admin = corto_entityAdmin_get(&corto_lock_admin);
@@ -104,7 +119,7 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
             int ep, e;
             for (ep = 0; ep < admin->entities[depth].length; ep ++) {
                 corto_entityPerParent *perParent = &admin->entities[depth].buffer[ep];
-                char *expr;
+                const char *expr;
                 if (!(expr = corto_matchParent(perParent->parent, objectId))) {
                     continue;
                 }
@@ -129,7 +144,8 @@ corto_bool corto_authorizedId(corto_string objectId, corto_secure_actionKind acc
                         {
                             corto_secure_accessKind result;
 
-                            result = corto_secure_lock_authorize(lock, corto_secure_token, access);
+                            result = corto_secure_lock_authorize(
+                                lock, (char*)corto_secure_token, access);
 
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has

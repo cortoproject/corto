@@ -71,23 +71,12 @@
 extern "C" {
 #endif
 
-typedef struct corto_contentType_s *corto_contentType;
 
-/* TODO: REMOVE */
-CORTO_EXPORT corto_object corto_createFromContent(char *contentType, char *content);
+typedef struct corto_fmt_s *corto_fmt;
 
-/** Create a new anonymous object.
- * Equivalent to calling corto_declare + corto_define.
- *
- * @param type The type of the object to create.
- * @return The new object, NULL if failed.
- * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_define corto_delete corto_release
- */
-CORTO_EXPORT
-corto_object _corto_create(
-    corto_type type);
+
+/* -- LIFECYCLE API -- */
+
 
 /** Create a new named object.
  * Equivalent to calling corto_declareChild + corto_define.
@@ -103,24 +92,9 @@ corto_object _corto_create(
  * @see corto_define corto_delete corto_release
  */
 CORTO_EXPORT
-corto_object _corto_createChild(
+corto_object _corto_create(
     corto_object parent,
-    char *id,
-    corto_type type);
-
-/** Declare a new anonymous object.
- * This function returns an object in the DECLARED state, allowing for setting
- * the object value before invoking the type constructor with corto_define. The
- * function fails if the type initializer fails.
- *
- * @param type The type of the object to create.
- * @return The new object, NULL if failed.
- * @see corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_define corto_delete corto_release
- */
-CORTO_EXPORT
-corto_object _corto_declare(
+    const char *id,
     corto_type type);
 
 /** Declare a new object.
@@ -140,7 +114,7 @@ corto_object _corto_declare(
  * This function will block if there is another thread that has declared, but not
  * defined the same object. Once the other thread defines the object, the function
  * will unblock, and return an object in the DEFINED state. The calling thread can
- * (and should) check the state of the returned object using corto_checkState to
+ * (and should) check the state of the returned object using corto_check_state to
  * determine if it needs to initialize the object. The same thread may declare
  * an object multiple times before it is defined.
  *
@@ -155,9 +129,9 @@ corto_object _corto_declare(
  * @see corto_define corto_delete corto_release
  */
 CORTO_EXPORT
-corto_object _corto_declareChild(
+corto_object _corto_declare(
     corto_object parent,
-    char *id,
+    const char *id,
     corto_type type);
 
 /** Define an object.
@@ -293,6 +267,40 @@ CORTO_EXPORT
 int16_t corto_invalidate(
     corto_object o);
 
+
+typedef uint32_t corto_kind;
+    #define CORTO_DO_DECLARE (0x1)
+    #define CORTO_DO_RECURSIVE_DECLARE (0x3)
+    #define CORTO_DO_DEFINE (0x4)
+    #define CORTO_DO_UPDATE (0x8)
+    #define CORTO_DO_ORPHAN (0x10)
+    #define CORTO_DO_RESUME (0x20)
+    #define CORTO_DO_FORCE_TYPE (0x40)
+    #define CORTO_DO_LOOKUP_TYPE (0x80)
+    #define CORTO_DO_ASSERT_SUCCESS (0x100)
+
+/** Function that provides low-level access to the corto store.
+ *
+ * UNSTABLE API
+ *
+ * When applications require more flexibility than what is provided by the
+ * regular API, they can use the corto() function.
+ */
+CORTO_EXPORT
+corto_object _corto(
+    corto_object parent,
+    const char *id,
+    corto_type type,
+    corto_object ref,
+    corto_fmt contentType,
+    void *value,
+    corto_attr attrs,
+    corto_kind kind);
+
+
+/* -- MEMORY MANAGEMENT -- */
+
+
 /** Claim an object.
  * This function increases the reference count of an object, which will prevent
  * it from being deallocated.
@@ -320,73 +328,25 @@ CORTO_EXPORT
 int32_t corto_release(
     corto_object o);
 
-/** Set object attributes for the current thread.
- * This function sets the attributes of objects that will be created in the
- * current thread. For valid attribute values see the corto/lang/attr type.
- *
- * Attributes were introduced to reduce footprint of corto objects by disabling
- * features that are not used. For example, if an object does not need to be
- * observed, it can be created without the CORTO_ATTR_OBSERVABLE attribute.
- *
- * @param attr A mask containing the attributes for the current thread.
- * @return The previous attribute mask for this thread.
- * @see corto_getAttr corto_attrof corto_checkAttr
- */
-CORTO_EXPORT
-corto_attr corto_setAttr(
-    corto_attr attr);
 
-/** Get the object attributes for the current thread.
- * This function returns the current object attributes that are set for this
- * thread.
- *
- * @return The object attributes for the current thread.
- * @see corto_setAttr corto_attrof corto_checkAttr
- */
-CORTO_EXPORT
-corto_attr corto_getAttr(void);
+/* -- REFLECTION -- */
+
 
 /** Get the type of an object.
  * @param o The object for which to obtain the type.
  * @return The object type.
- * @see corto_instanceof corto_instanceofType
+ * @see corto_instanceof corto_type_instanceof
  */
 CORTO_EXPORT
 corto_type corto_typeof(
     corto_object o);
-
-/** Check if object is an instance of a specified type.
- * This function returns true when types exactly match, when o is of a type that
- * is a subtype of type, when o is of a type that implements type, and when o is of
- * target{type}.
- *
- * @param type The type against which to check.
- * @param o The object to check.
- * @return true if o is an instance of type, otherwise false.
- * @see corto_typeof corto_instanceofType
- */
-CORTO_EXPORT
-bool _corto_instanceof(
-    corto_type type,
-    corto_object o);
-
-/** Check if objects of a type are an instance of another type.
- * @param type The type against which to check.
- * @param valueType The type to check.
- * @return true if objects of valueType are an instance of type, otherwise false.
- * @see corto_typeof corto_instanceof
- */
-CORTO_EXPORT
-bool _corto_instanceofType(
-    corto_type type,
-    corto_type valueType);
 
 /** Obtain the current state mask of the object.
  * Object state changes as an object is declared, defined and ultimately deleted.
  *
  * @param o The object of which to obtain the state.
  * @return The state mask of the current object.
- * @see corto_checkState
+ * @see corto_check_state
  */
 CORTO_EXPORT
 corto_state corto_stateof(
@@ -397,44 +357,18 @@ corto_state corto_stateof(
  *
  * @param o The object of which to obtain the attributes.
  * @return The attribute mask of the current object.
- * @see corto_checkAttr corto_getAttr corto_setAttr
+ * @see corto_check_attr corto_get_attr corto_set_attr
  */
 CORTO_EXPORT
 corto_attr corto_attrof(
     corto_object o);
-
-/** Check if an object is of a specified state.
- * Object state changes as an object is declared, defined and ultimately deleted.
- *
- * @param o The object for which to check the state.
- * @param state The state to look for.
- * @return true if the object is in the specified state, otherwise false.
- * @see corto_checkState
- */
-CORTO_EXPORT
-bool corto_checkState(
-    corto_object o,
-    corto_state state);
-
-/** Check if an object is of a specified attribute.
- * Object attributes are static after an object is declared.
- *
- * @param o The object for which to check the attribute.
- * @param state The attribute to look for.
- * @return true if the object has the specified attribute, otherwise false.
- * @see corto_attrof corto_getAttr corto_setAttr
- */
-CORTO_EXPORT
-bool corto_checkAttr(
-    corto_object o,
-    corto_attr attr);
 
 /** Check if an object is an orphan.
  * Orphans are objects that not registered with their parents.
  *
  * @param o The object to check
  * @return true if the object is an orphan.
- * @see isbuiltin corto_checkState corto_checkAttr
+ * @see isbuiltin corto_check_state corto_check_attr
  */
 CORTO_EXPORT
 bool corto_isorphan(
@@ -445,7 +379,7 @@ bool corto_isorphan(
  *
  * @param o The object to check
  * @return true if the object is builtin.
- * @see isorphan corto_checkState corto_checkAttr
+ * @see isorphan corto_check_state corto_check_attr
  */
 CORTO_EXPORT
 bool corto_isbuiltin(
@@ -517,144 +451,23 @@ CORTO_EXPORT
 corto_object corto_parentof(
     corto_object o);
 
-/** Check if object is a child of the specified parent.
- * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
- * undefined.
- *
- * @param p The parent object.
- * @param o The child object.
- * @return true if o is a child of p, otherwise false.
- * @see corto_parentof
- */
-CORTO_EXPORT
-bool corto_childof(
-    corto_object p,
-    corto_object o);
-
-/** Returns the number of child objects in a scope.
- * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
- * undefined.
- *
- * This function must be used with care as it only returns number of objects that
- * are currently loaded in the object store. If there are mounted objects in this
- * scope that are not loaded in the store they will not be counted. To obtain an
- * accurate count, use corto_select().count().
- *
- * @param o A named object.
- * @return The number of objects in the scope of the object.
- */
-CORTO_EXPORT
-uint32_t corto_scopeSize(
-    corto_object o);
-
-/** Returns a sequence with the objects in the current scope.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
- * undefined.
- *
- * This function must be used with care as it only returns objects that are
- * currently loaded in the object store. If there are mounted objects in this
- * scope that are not loaded in the store they will not be returned. To obtain a
- * full list of objects count, use corto_select().iterObjects().
- *
- * @param o A named object.
- * @return A sequence with the objects in the scope of the object.
- * @see corto_scopeRelease
- */
-CORTO_EXPORT
-corto_objectseq corto_scopeClaim(
-    corto_object o);
-
-/** Release a sequence obtained by corto_scopeClaim.
- * @param scope A sequence obtained by corto_scopeClaim.
- * @see corto_scopeClaim
- */
-CORTO_EXPORT
-void corto_scopeRelease(
-    corto_objectseq scope);
-
-/** Invoke a callback for each object in a scope.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
- * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
- * undefined.
- *
- * Usage of this function is generally NOT recommended as it locks the scope
- * which is a very intrusive operation. The lock is still being held when the
- * action is called, so care must be taken not to introduce any deadlocks while
- * in the action.
- *
- * Use this function only for fast, low-level operations. For all other operations
- * that need to walk a scope, use the safer corto_scopeClaim and corto_scopeRelease.
- *
- * @param o A named object.
- * @return A sequence with the objects in the scope of the object.
- * @see corto_scopeClaim corto_scopeRelease
- */
-CORTO_EXPORT
-int16_t corto_scopeWalk(
-    corto_object o,
-    corto_scopeWalk_cb action,
-    void *userData);
-
-/** Returns the owner for an object.
- * Only objects created with CORTO_ATTR_PERSISTENT can explicitly set an owner. If
+/** Returns the source for an object.
+ * Only objects created with CORTO_ATTR_PERSISTENT can explicitly set an source. If
  * the object is not PERSISTENT and is an orphan (created with either corto_declareOrphan
- * or corto_createOrphan) the function will obtain the owner of the parent. In
+ * or corto_createOrphan) the function will obtain the source of the parent. In
  * all other scenarios the function will return NULL.
  *
  * @param o A valid object.
- * @return The owner of the object.
- * @see corto_owned corto_setOwner corto_getOwner
+ * @return The source of the object.
+ * @see corto_owned corto_set_source corto_get_source
  */
 CORTO_EXPORT
-corto_object corto_ownerof(
+corto_object corto_sourceof(
     corto_object o);
 
-/** Check if object is owned by current thread.
- * Corto uses this function to check if a thread is allowed to change an object
- * through corto_update or corto_delete functions. The rules for ownership are
- * as follows:
- *
- * 1. If the object owner is NULL, the object is owned by the application. A SOURCE
- * mount will not be able to modify the object.
- * 2. If the object owner is not NULL and not an instance of corto/vstore/mount, the
- * rule 1 applies. This mode can be used to emit notifications from a non-mount
- * instance without an observer for that instance receiving the notification.
- * 3. If the object owner is an instance of corto/vstore/mount, the mount owns the
- * object. If the mount is a SINK, it shares ownership with the application. If
- * the mount is a SOURCE, only that mount will be able to change the object.
- *
- * The owner is determined as specified by corto_ownerof.
- *
- * @param o A valid object.
- * @return The owner of the object.
- * @see corto_owned corto_setOwner corto_getOwner
- */
-CORTO_EXPORT
-bool corto_owned(
-    corto_object o);
 
-/** Set the owner for the current thread.
- * @param owner A valid object.
- * @return The previous owner of the thread.
- * @see corto_ownerof corto_owned corto_getOwner
- */
-CORTO_EXPORT
-corto_object corto_setOwner(
-    corto_object owner);
+/* STORE LOOKUP */
 
-/** Get the owner for the current thread.
- * @return The owner of the current thread.
- * @see corto_ownerof corto_owned corto_setOwner
- */
-CORTO_EXPORT
-corto_object corto_getOwner(void);
 
 /** Lookup an object.
  * This function looks up an object and obtains a reference to it. If the object
@@ -681,7 +494,7 @@ corto_object corto_getOwner(void);
 CORTO_EXPORT
 corto_object corto_lookup(
     corto_object scope,
-    char *id);
+    const char *id);
 
 /** Resolve an object.
  * This function is similar to corto_lookup, but follows a set of rules that is
@@ -716,89 +529,11 @@ corto_object corto_lookup(
 CORTO_EXPORT
 corto_object corto_resolve(
     corto_object scope,
-    char *id);
+    const char *id);
 
-/** Obtain a full path identifier to an object.
- * This function returns the shortest path that will lead to resolving the object
- * using a corto_resolve where the root is specified as scope.
- *
- * In practice this means that for objects in corto/lang it will only return the
- * object id (int32) while for all other objects the function will a forward slash ('/')
- * separated list of ids as obtained by corto_idof (/grandparent/parent/object).
- * @param str An id buffer in which to store the id. If NULL, a corto-managed
- * string is returned which may change with subsequent calls to corto_fullpath and
- * other functions that use the corto stringcache.
- *
- * @param o The object for which to obtain the id.
- * @return The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
- * @see corto_idof corto_fullname corto_path corto_pathname
- */
-CORTO_EXPORT
-char *corto_fullpath(
-    corto_id str,
-    corto_object o);
 
-/** Obtain a full path identifier to an object using corto_nameof.
- * This function is equivalent to corto_fullpath, but uses corto_nameof instead
- * of corto_idof.
- *
- * @param o The object for which to obtain the id.
- * @return The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
- * @see corto_idof corto_fullpath corto_path corto_pathname
- */
-CORTO_EXPORT
-char *corto_fullname(
-    corto_id str,
-    corto_object o);
+/* -- NOTIFICATIONS -- */
 
-/** Obtain a relative path identifier to an object.
- * This function returns the shortest path from the specified from object to the
- * to object, separated by sep. If to is a parent of from, this function will insert
- * the appropriate number of '..' operators. This function uses corto_idof to determine
- * the object ids.
- *
- * The result of this function can be used with corto_lookup to lookup the to object,
- * where from is specifed as scope and result as id.
- *
- * If NULL is specified for from, an initial forward slash will be added to the
- * resulting path. If root_o is specified for from, no initial slash will be added
- * to the resulting path.
- * @param str An id buffer in which to store the id. If NULL, a corto-managed
- * string is returned which may change with subsequent calls to corto_fullpath and
- * other functions that use the corto stringcache.
- *
- * @param from The object from the path should be offset.
- * @param o The object to which to generate the path.
- * @param sep The path separator.
- * @return The path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
- * @see corto_idof corto_fullname corto_path corto_pathname
- */
-CORTO_EXPORT
-char *corto_path(
-    corto_id str,
-    corto_object from,
-    corto_object to,
-    const char* sep);
-
-/** Obtain a relative path identifier to an object.
- * This function is equivalent to corto_path, but uses corto_nameof instead of
- * corto_idof.
- * @param str An id buffer in which to store the id. If NULL, a corto-managed
- * string is returned which may change with subsequent calls to corto_fullpath and
- * other functions that use the corto stringcache.
- *
- * @param from The object from the path should be offset.
- * @param o The object to which to generate the path.
- * @param sep The path separator.
- * @return The path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
- * @see corto_idof corto_fullname corto_path corto_pathname
- */
-CORTO_EXPORT
-char *corto_pathname(
-    corto_id str,
-    corto_object from,
-    corto_object o,
-    const char* sep);
 
 /* Observe objects for an observable matching an eventmask */
 typedef struct corto_observe__fluent {
@@ -845,6 +580,7 @@ typedef struct corto_observe__fluent {
     corto_observer ___ (*callback)(
         void (*r)(corto_observerEvent*));
 } corto_observe__fluent;
+
 
 /** Create an observer.
  * Observers enable an application to listen for events from the object store, such
@@ -917,7 +653,7 @@ struct corto_observe__fluent corto_observe(
 @verbatim
 ```c
 void myDispatcher_post(corto_observerEvent *e) {
-    if (!corto_checkState(e->observer, CORTO_DELETED)) {
+    if (!corto_check_state(e->observer, CORTO_DELETED)) {
         corto_event_handle(e);
     } else {
         // Do nothing
@@ -933,83 +669,542 @@ CORTO_EXPORT
 int16_t corto_unobserve(
     corto_observer observer);
 
-/** Obtain handle to a content type.
+
+/* -- SERIALIZATION -- */
+
+
+/** Serialize object to a registered serialization format
+ *
+ * This serializes an object and its metadata to a registered serialization
+ * format. Serialization formats are packages stored in driver/fmt.
+ *
+ * @param o The object to serialize.
+ * @param fmtId The serialization format identifier (for example: "text/json").
+ * @return The serialized value.
+ */
+CORTO_EXPORT
+char *corto_serialize(
+    corto_object o,
+    const char *fmtId);
+
+/** Deserialize object from a registered serialization format
+ *
+ * This deserializes a value in a registered serialization format to an object.
+ * The function accepts a pointer to an object reference, which may be NULL. If
+ * the pointer is NULL, a new object will be created.
+ *
+ * If the pointer is not NULL and the serialized data does not match with the
+ * specified object identifier or type, the function will fail.
+ *
+ * @param o The object to deserialize into.
+ * @param fmtId The serialization format identifier (for example: "text/json").
+ * @param data Value formatted in the specified serialization format.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT
+int16_t corto_deserialize(
+    corto_object *o,
+    const char *fmtId,
+    const char *data);
+
+/** Serialize object value to a registered serialization format
+ *
+ * This serializes an object value to a registered serialization
+ * format. This function does not serialize object metadata, like type and id.
+ * Serialization formats are packages stored in driver/fmt.
+ *
+ * @param o The object to serialize.
+ * @param fmtId The serialization format identifier (for example: "text/json").
+ * @return The serialized value.
+ */
+CORTO_EXPORT
+char *corto_serialize_value(
+    corto_object o,
+    const char *fmtId);
+
+/** Deserialize object value from a registered serialization format
+ *
+ * This deserializes a value in a registered serialization format to an object.
+ *
+ * @param o The object to deserialize into.
+ * @param fmtId The serialization format identifier (for example: "text/json").
+ * @param data Value formatted in the specified serialization format.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT
+int16_t corto_deserialize_value(
+    corto_object o,
+    const char *fmtId,
+    const char *data);
+
+
+/** Obtain handle to a serialization format plugin.
  *
  * This function provides a high(er) performance alternative to looking up
- * content types by string, by returning a handle to a contentType that can be
- * reused.
+ * serialization formats by id, by returning a handle to a contentType that can
+ * be reused.
  *
- * UNSTABLE API
+ * @param fmtId The serialization format identifier.
+ * @return Handle to a serialization format plugin. NULL if failed.
  */
 CORTO_EXPORT
-corto_contentType corto_load_contentType(
-    corto_string contentType);
+corto_fmt corto_fmt_lookup(
+    const char *fmtId);
 
-typedef uint32_t corto_kind;
-    #define CORTO_DO_DECLARE (0x1)
-    #define CORTO_DO_RECURSIVE_DECLARE (0x3)
-    #define CORTO_DO_DEFINE (0x4)
-    #define CORTO_DO_UPDATE (0x8)
-    #define CORTO_DO_ORPHAN (0x10)
-    #define CORTO_DO_RESUME (0x20)
-    #define CORTO_DO_FORCE_TYPE (0x40)
-    #define CORTO_DO_LOOKUP_TYPE (0x80)
-    #define CORTO_DO_ASSERT_SUCCESS (0x100)
 
-/** Function that provides low-level access to the corto store.
+/* -- LOCKING -- */
+
+
+/** Read-lock object.
  *
- * UNSTABLE API
+ * This guarantees that the object will not be modified while the application
+ * holds the readlock. Multiple threads may obtain a readlock at the same time.
  *
- * When applications require more flexibility than what is provided by the
- * regular API, they can use the corto() function.
+ * @param o The object to readlock.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
-corto_object _corto(
-    corto_object parent,
+int16_t corto_read_begin(
+    corto_object o);
+
+/** Release readlock.
+ *
+ * Release lock on an object previously locked by corto_read_begin.
+ *
+ * @param o The object to unlock.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT
+int16_t corto_read_end(
+    corto_object o);
+
+/** Write-lock object.
+ *
+ * This guarantees that the object will not be read while the application
+ * holds the writelock, and that no other threads are modifying the object. Only
+ * one thread may hold a writelock at the same time.
+ *
+ * @param o The object to readlock.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT
+int16_t corto_lock(
+    corto_object o);
+
+/** Release writelock.
+ *
+ * Release lock on an object previously locked by corto_write_begin.
+ *
+ * @param o The object to unlock.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT
+int16_t corto_unlock(
+    corto_object o);
+
+
+/* -- THREAD-SPECIFIC CONFIGURATION -- */
+
+
+/** Set object attributes for the current thread.
+ * This function sets the attributes of objects that will be created in the
+ * current thread. For valid attribute values see the corto/lang/attr type.
+ *
+ * Attributes were introduced to reduce footprint of corto objects by disabling
+ * features that are not used. For example, if an object does not need to be
+ * observed, it can be created without the CORTO_ATTR_OBSERVABLE attribute.
+ *
+ * @param attr A mask containing the attributes for the current thread.
+ * @return The previous attribute mask for this thread.
+ * @see corto_get_attr corto_attrof corto_check_attr
+ */
+CORTO_EXPORT
+corto_attr corto_set_attr(
+    corto_attr attr);
+
+/** Get the object attributes for the current thread.
+ * This function returns the current object attributes that are set for this
+ * thread.
+ *
+ * @return The object attributes for the current thread.
+ * @see corto_set_attr corto_attrof corto_check_attr
+ */
+CORTO_EXPORT
+corto_attr corto_get_attr(void);
+
+/** Set the source for the current thread.
+ * @param source A valid object.
+ * @return The previous source of the thread.
+ * @see corto_sourceof corto_owned corto_get_source
+ */
+CORTO_EXPORT
+corto_object corto_set_source(
+    corto_object source);
+
+/** Get the source for the current thread.
+ * @return The source of the current thread.
+ * @see corto_sourceof corto_owned corto_set_source
+ */
+CORTO_EXPORT
+corto_object corto_get_source(void);
+
+
+/* -- SECURITY API -- */
+
+
+/** Login to a new session.
+ * A login creates a new session, identified by a session token. After logging
+ * in the session is not yet active. To activate a session, pass the session
+ * token to the corto_set_session function.
+ *
+ * A typical example of a session token can be an API key.
+ *
+ * @param username The username of the user logging in.
+ * @param password The password of the user logging in.
+ * @return The session token if login is valid. NULL if the login failed.
+ */
+CORTO_EXPORT
+const char *corto_login(
+    const char *username,
+    const char *password);
+
+/** Logout of a session.
+ * After logging out, a session token is no longer guaranteed to authenticate
+ * a user.
+ *
+ * @param token An existing session token.
+ * @see corto_login
+ */
+CORTO_EXPORT
+void corto_logout(
+    const char *token);
+
+/** Set active session.
+ * This sets the global session variable for the corto process. All
+ * authorization requests will use the specified session token.
+ *
+ * Certain corto mechanisms (like subscribers) are associated with their own
+ * session token that they obtained at creation time. This allows a corto
+ * process to be multi-tenant.
+ *
+ * @param token An existing session token.
+ * @return The previous session token.
+ * @see corto_login
+ */
+CORTO_EXPORT
+const char *corto_set_session(
+    const char *token);
+
+/** Authorize the current session for an action on an object.
+ *
+ * @param o The object for which to authorize.
+ * @param action The action to authorize.
+ * @return true when authorized, false when not authorized.
+ * @see corto_set_session
+ */
+CORTO_EXPORT
+bool corto_authorize(
+    corto_object object,
+    corto_secure_actionKind action);
+
+/** Authorize the current session for an action on an object identifier.
+ *
+ * @param id The object identifier for which to authorize.
+ * @param action The action to authorize.
+ * @return true when authorized, false when not authorized.
+ * @see corto_set_session
+ */
+CORTO_EXPORT
+bool corto_authorize_id(
     const char *id,
+    corto_secure_actionKind access);
+
+/** Register a new user.
+ *
+ * @param userId The user identifier.
+ * @param password The password for the user.
+ * @param group The group of the user.
+ * @param home The home scope of the user.
+ * @return 0 when success, non-zero when failed.
+ * @see corto_userdel corto_login corto_logout
+ */
+CORTO_EXPORT
+int16_t corto_useradd(
+    const char *userId,
+    const char *password,
+    const char *group,
+    const char *home);
+
+/** Unregister a user.
+ *
+ * @param userId The user identifier.
+ * @return 0 when success, non-zero when failed.
+ * @see corto_useradd corto_login corto_logout
+ */
+CORTO_EXPORT
+int16_t corto_userdel(
+    const char *userId);
+
+/** Test if process is secured.
+ * This function provides a quick check to see if the process is secured. If the
+ * process is not secured, security-related functions will fail, and all
+ * requests for authorization are disabled.
+ *
+ * @return true when secured, false when not secured.
+ */
+CORTO_EXPORT
+bool corto_secured(void);
+
+
+/* -- UTILITY FUNCTIONS -- */
+
+
+/** Check if an object is of a specified state.
+ * Object state changes as an object is declared, defined and ultimately deleted.
+ *
+ * @param o The object for which to check the state.
+ * @param state The state to look for.
+ * @return true if the object is in the specified state, otherwise false.
+ * @see corto_stateof corto_set_state corto_get_state
+ */
+CORTO_EXPORT
+bool corto_check_state(
+    corto_object o,
+    corto_state state);
+
+/** Check if an object is of a specified attribute.
+ * Object attributes are static after an object is declared.
+ *
+ * @param o The object for which to check the attribute.
+ * @param state The attribute to look for.
+ * @return true if the object has the specified attribute, otherwise false.
+ * @see corto_attrof corto_get_attr corto_set_attr
+ */
+CORTO_EXPORT
+bool corto_check_attr(
+    corto_object o,
+    corto_attr attr);
+
+/** Deep-copy value of source object to destination object.
+ * The function accepts a pointer to an object reference. If the pointer points
+ * to a NULL value, the function will create a new object.
+ *
+ * If the pointer contains a reference to an object, the function will verify if
+ * the type of the destination object is compatible with the source object. If
+ * it is not compatible, the function will fail.
+ *
+ * @param dst A pointer to the destination object.
+ * @param src The source object.
+ * @return 0 if success, non-zero if failed.
+ */
+CORTO_EXPORT
+int16_t _corto_copy(
+    corto_object *dst,
+    corto_object src);
+
+/** Compare value of two objects.
+ * This function can be used to perform ordering on objects, as it will return
+ * whether objects are lesser, equal or larger than the other object.
+ *
+ * @param o1 The object to compare.
+ * @param o2 The object to compare with.
+ * @return 0 if equal, 1 if o1 is larger than o2, -1 if o1 is smaller than o2.
+ */
+CORTO_EXPORT
+int corto_compare(
+    corto_object o1,
+    corto_object o2);
+
+/** Check if object is an instance of a specified type.
+ * This function returns true when types exactly match, when o is of a type that
+ * is a subtype of type, when o is of a type that implements type, and when o is of
+ * target{type}.
+ *
+ * @param type The type against which to check.
+ * @param o The object to check.
+ * @return true if o is an instance of type, otherwise false.
+ * @see corto_typeof corto_type_instanceof
+ */
+CORTO_EXPORT
+bool _corto_instanceof(
     corto_type type,
-    corto_object ref,
-    corto_contentType contentType,
-    void *value,
-    corto_attr attrs,
-    corto_kind kind);
+    corto_object o);
 
-/* Serialize object value to contentType */
+/** Check if objects of a type are an instance of another type.
+ * @param type The type against which to check.
+ * @param valueType The type to check.
+ * @return true if objects of valueType are an instance of type, otherwise false.
+ * @see corto_typeof corto_instanceof
+ */
 CORTO_EXPORT
-char *corto_contentof(
+bool _corto_type_instanceof(
+    corto_type type,
+    corto_type valueType);
+
+/** Obtain a full path identifier to an object.
+ * This function returns the shortest path that will lead to resolving the object
+ * using a corto_resolve where the root is specified as scope.
+ *
+ * In practice this means that for objects in corto/lang it will only return the
+ * object id (int32) while for all other objects the function will a forward slash ('/')
+ * separated list of ids as obtained by corto_idof (/grandparent/parent/object).
+ * @param str An id buffer in which to store the id. If NULL, a corto-managed
+ * string is returned which may change with subsequent calls to corto_fullpath and
+ * other functions that use the corto stringcache.
+ *
+ * @param o The object for which to obtain the id.
+ * @return The full path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
+ * @see corto_idof corto_fullname corto_path corto_pathname
+ */
+CORTO_EXPORT
+char *corto_fullpath(
+    corto_id str,
+    corto_object o);
+
+/** Obtain a relative path identifier to an object.
+ * This function returns the shortest path from the specified from object to the
+ * to object, separated by sep. If to is a parent of from, this function will insert
+ * the appropriate number of '..' operators. This function uses corto_idof to determine
+ * the object ids.
+ *
+ * The result of this function can be used with corto_lookup to lookup the to object,
+ * where from is specifed as scope and result as id.
+ *
+ * If NULL is specified for from, an initial forward slash will be added to the
+ * resulting path. If root_o is specified for from, no initial slash will be added
+ * to the resulting path.
+ * @param str An id buffer in which to store the id. If NULL, a corto-managed
+ * string is returned which may change with subsequent calls to corto_fullpath and
+ * other functions that use the corto stringcache.
+ *
+ * @param from The object from the path should be offset.
+ * @param o The object to which to generate the path.
+ * @param sep The path separator.
+ * @return The path. If str is NULL, the returned string is not owned by the application. Otherwise, str is returned.
+ * @see corto_idof corto_fullname corto_path corto_pathname
+ */
+CORTO_EXPORT
+char *corto_path(
+    corto_id str,
+    corto_object from,
+    corto_object to,
+    const char* sep);
+
+/** Check if object is a child of the specified parent.
+ * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
+ * object that is created with declareChild or createChild has this attribute. If
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
+ * undefined.
+ *
+ * @param p The parent object.
+ * @param o The child object.
+ * @return true if o is a child of p, otherwise false.
+ * @see corto_parentof
+ */
+CORTO_EXPORT
+bool corto_childof(
+    corto_object p,
+    corto_object o);
+
+/** Check if object is owned by current thread.
+ * Corto uses this function to check if a thread is allowed to change an object
+ * through corto_update or corto_delete functions. The rules for sourceship are
+ * as follows:
+ *
+ * 1. If the object source is NULL, the object is owned by the application. A SOURCE
+ * mount will not be able to modify the object.
+ * 2. If the object source is not NULL and not an instance of corto/vstore/mount, the
+ * rule 1 applies. This mode can be used to emit notifications from a non-mount
+ * instance without an observer for that instance receiving the notification.
+ * 3. If the object source is an instance of corto/vstore/mount, the mount owns the
+ * object. If the mount is a SINK, it shares sourceship with the application. If
+ * the mount is a SOURCE, only that mount will be able to change the object.
+ *
+ * The source is determined as specified by corto_sourceof.
+ *
+ * @param o A valid object.
+ * @return The source of the object.
+ * @see corto_owned corto_set_source corto_get_source
+ */
+CORTO_EXPORT
+bool corto_owned(
+    corto_object o);
+
+
+/** Returns the number of child objects in a scope.
+ * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
+ * object that is created with declareChild or createChild has this attribute. If
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
+ * undefined.
+ *
+ * This function must be used with care as it only returns number of objects that
+ * are currently loaded in the object store. If there are mounted objects in this
+ * scope that are not loaded in the store they will not be counted. To obtain an
+ * accurate count, use corto_select().count().
+ *
+ * @param o A named object.
+ * @return The number of objects in the scope of the object.
+ */
+CORTO_EXPORT
+uint32_t corto_scopeSize(
+    corto_object o);
+
+/** Returns a sequence with the objects in the current scope.
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
+ * object that is created with declareChild or createChild has this attribute. If
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
+ * undefined.
+ *
+ * This function must be used with care as it only returns objects that are
+ * currently loaded in the object store. If there are mounted objects in this
+ * scope that are not loaded in the store they will not be returned. To obtain a
+ * full list of objects count, use corto_select().iterObjects().
+ *
+ * @param o A named object.
+ * @return A sequence with the objects in the scope of the object.
+ * @see corto_scopeRelease
+ */
+CORTO_EXPORT
+corto_objectseq corto_scopeClaim(
+    corto_object o);
+
+/** Release a sequence obtained by corto_scopeClaim.
+ * @param scope A sequence obtained by corto_scopeClaim.
+ * @see corto_scopeClaim
+ */
+CORTO_EXPORT
+void corto_scopeRelease(
+    corto_objectseq scope);
+
+/** Invoke a callback for each object in a scope.
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
+ * object that is created with declareChild or createChild has this attribute. If
+ * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
+ * undefined.
+ *
+ * Usage of this function is generally NOT recommended as it locks the scope
+ * which is a very intrusive operation. The lock is still being held when the
+ * action is called, so care must be taken not to introduce any deadlocks while
+ * in the action.
+ *
+ * Use this function only for fast, low-level operations. For all other operations
+ * that need to walk a scope, use the safer corto_scopeClaim and corto_scopeRelease.
+ *
+ * @param o A named object.
+ * @return A sequence with the objects in the scope of the object.
+ * @see corto_scopeClaim corto_scopeRelease
+ */
+CORTO_EXPORT
+int16_t corto_scopeWalk(
     corto_object o,
-    char *contentType);
+    corto_scopeWalk_cb action,
+    void *userData);
 
-CORTO_EXPORT
-int16_t corto_fromcontent(
-    corto_object o,
-    char *contentType,
-    char *content, ...);
 
-/* Serialize object to contentType */
-CORTO_EXPORT
-char *corto_object_contentof(
-    corto_object o,
-    char *contentType);
 
-CORTO_EXPORT
-int16_t corto_object_fromcontent(
-    corto_object *o,
-    char *contentType,
-    char *content, ...);
-
-/* Read locking */
-CORTO_EXPORT int16_t corto_read_begin(corto_object object);
-CORTO_EXPORT int16_t corto_read_end(corto_object object);
-
-/* Write locking */
-CORTO_EXPORT int16_t corto_lock(corto_object object);
-CORTO_EXPORT int16_t corto_unlock(corto_object object);
 
 CORTO_EXPORT char *corto_str(corto_object object, uint32_t maxLength);
 CORTO_EXPORT int16_t corto_fromStr(void *o, char *string);
-CORTO_EXPORT int16_t _corto_copy(corto_object *dst, corto_object src);
-CORTO_EXPORT corto_equalityKind corto_compare(corto_object o1, corto_object o2);
 
 /* Call base initalizer / constructor / destructor */
 CORTO_EXPORT int16_t corto_super_init(corto_object o);
@@ -1017,32 +1212,16 @@ CORTO_EXPORT int16_t corto_super_deinit(corto_object o);
 CORTO_EXPORT int16_t corto_super_construct(corto_object o);
 CORTO_EXPORT void corto_super_destruct(corto_object o);
 
-/* Security */
-CORTO_EXPORT int16_t corto_useradd(char *userId, char *password, char *group, char *home);
-CORTO_EXPORT int16_t corto_userdel(char *userId);
-CORTO_EXPORT char *corto_login(char *username, char *password);
-CORTO_EXPORT void corto_logout(char *token);
-CORTO_EXPORT char *corto_authenticate(char *key);
-CORTO_EXPORT bool corto_authorized(corto_object object, corto_secure_actionKind access);
-CORTO_EXPORT bool corto_authorizedId(char *id, corto_secure_actionKind access);
-CORTO_EXPORT bool corto_secured(void);
 
 /* Macro's that automate casting of parameters */
-#define corto_create(type) _corto_create(corto_type(type))
-#define corto_createChild(parent, name, type) _corto_createChild(parent, name, corto_type(type))
-#define corto_declare(type) _corto_declare(corto_type(type))
-#define corto_declareChild(parent, name, type) _corto_declareChild(parent, name, corto_type(type))
+#define corto_create(parent, name, type) _corto_create(parent, name, corto_type(type))
+#define corto_declare(parent, name, type) _corto_declare(parent, name, corto_type(type))
 #define corto_copy(dst, src) _corto_copy((corto_object*)dst, src)
 #define corto_instanceof(type, o) _corto_instanceof((corto_type)type, o)
-#define corto_instanceofType(type, valueType) _corto_instanceofType((corto_type)type, (corto_type)valueType)
+#define corto_type_instanceof(type, valueType) _corto_type_instanceof((corto_type)type, (corto_type)valueType)
 #define corto(parent, id, type, ref, contentType, value, attrs, kind)\
     _corto(parent, id, corto_type(type), ref, contentType, value, attrs, kind)
 
-/* Backwards compatibility macro's */
-#define corto_updateBegin corto_update_begin
-#define corto_updateTry corto_update_try
-#define corto_updateCancel corto_update_cancel
-#define corto_updateEnd corto_update_end
 
 /* Overload functions */
 
@@ -1060,7 +1239,11 @@ CORTO_EXPORT bool corto_secured(void);
 #define CORTO_OVERLOAD_NOMATCH_OVERLOAD    (-3)
 
 /* Calculate the distance between a function and a request signature */
-CORTO_EXPORT int16_t corto_overload(corto_object object, char* name, int32_t* distance);
+CORTO_EXPORT
+int16_t corto_overload(
+    corto_object object,
+    const char* name,
+    int32_t* distance);
 
 /* Obtain information from signature.
  *   Signatures can be of the following form:
@@ -1070,13 +1253,13 @@ CORTO_EXPORT int16_t corto_overload(corto_object object, char* name, int32_t* di
  *
  *   No extra whitespaces are allowed.
  */
-CORTO_EXPORT int32_t corto_signatureName(char* signature, corto_id buffer);
-CORTO_EXPORT int32_t corto_signatureParamCount(char* signature);
-CORTO_EXPORT int32_t corto_signatureParamName(char* signature, uint32_t id, corto_id buffer);
-CORTO_EXPORT int32_t corto_signatureParamType(char* signature, uint32_t id, corto_id buffer, int* reference);
+CORTO_EXPORT int32_t corto_signatureName(const char* signature, corto_id buffer);
+CORTO_EXPORT int32_t corto_signatureParamCount(const char* signature);
+CORTO_EXPORT int32_t corto_signatureParamName(const char* signature, uint32_t id, corto_id buffer);
+CORTO_EXPORT int32_t corto_signatureParamType(const char* signature, uint32_t id, corto_id buffer, int* reference);
 
 /* Create request signature */
-CORTO_EXPORT char* corto_signatureOpen(char* name);
+CORTO_EXPORT char* corto_signatureOpen(const char* name);
 CORTO_EXPORT char* corto_signatureAdd(char* sig, corto_type type, int flags);
 CORTO_EXPORT char* corto_signatureAddWildcard(char* sig, bool isReference);
 CORTO_EXPORT char* corto_signatureClose(char* sig);
@@ -1085,8 +1268,8 @@ CORTO_EXPORT char* corto_signatureClose(char* sig);
 CORTO_EXPORT char* corto_signature(corto_object o, corto_id buffer);
 
 /* Find a function that matches a signature */
-CORTO_EXPORT corto_object corto_lookupFunction(corto_object scope, char* requested, int32_t *d, int32_t *diff);
-CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, char* requested, int32_t* d, int32_t *diff);
+CORTO_EXPORT corto_object corto_lookupFunction(corto_object scope, const char* requested, int32_t *d, int32_t *diff);
+CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, const char* requested, int32_t* d, int32_t *diff);
 
 #ifdef __cplusplus
 }

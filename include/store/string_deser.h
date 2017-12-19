@@ -51,7 +51,9 @@ typedef struct corto_string_deser_t {
 }corto_string_deser_t;
 
 /* Deserialize string */
-corto_string corto_string_deser(corto_string str, corto_string_deser_t* data);
+const char* corto_string_deser(
+    const char *str,
+    corto_string_deser_t* data);
 
 #ifdef __cplusplus
 }

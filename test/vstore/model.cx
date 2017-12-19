@@ -284,6 +284,7 @@ test/Suite SelectSink:/
     void tc_selectLoaderRootTree()
     void tc_selectLoaderCortoTree()
     void tc_selectLoaderNestedTree()
+    void tc_selectLoaderLookupFromUnknown()
 
 // Resume data from SINK mount
 test/Suite ResumeSink:/

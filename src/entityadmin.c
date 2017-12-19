@@ -23,8 +23,11 @@
 
 /* Free all entityscriptoins, but do not free corto_entityAdmin itself so
  * it can be reused when a thread needs to copy global entities */
-static void corto_entityAdmin_freeEntities(corto_entityAdmin *data) {
-    corto_int32 depth, sp;
+static
+void corto_entityAdmin_freeEntities(
+    corto_entityAdmin *data)
+{
+    int32_t depth, sp;
 
     for (depth = 0; depth < CORTO_MAX_SCOPE_DEPTH; depth ++) {
         for (sp = 0; sp < data->entities[depth].length; sp++) {
@@ -38,7 +41,9 @@ static void corto_entityAdmin_freeEntities(corto_entityAdmin *data) {
 }
 
 /* Free all data when thread shuts down */
-void corto_entityAdmin_free(void *admin) {
+void corto_entityAdmin_free(
+    void *admin)
+{
     corto_entityAdmin *data = admin;
     if (data) {
         corto_entityAdmin_freeEntities(data);
@@ -47,8 +52,12 @@ void corto_entityAdmin_free(void *admin) {
 }
 
 /* Copy data from global admin to (local) thread admin */
-static corto_int16 corto_entityAdmin_copyIn(corto_entityAdmin *src, corto_entityAdmin *dst) {
-    corto_int32 depth, sp;
+static
+int16_t corto_entityAdmin_copyIn(
+    corto_entityAdmin *src,
+    corto_entityAdmin *dst)
+{
+    int32_t depth, sp;
 
     if (src->count) {
         if (corto_rwmutex_read(&src->lock)) {
@@ -57,7 +66,7 @@ static corto_int16 corto_entityAdmin_copyIn(corto_entityAdmin *src, corto_entity
 
         for (depth = 0; depth < CORTO_MAX_SCOPE_DEPTH; depth ++) {
             dst->entities[depth].length = src->entities[depth].length;
-            dst->entities[depth].buffer = 
+            dst->entities[depth].buffer =
                 corto_alloc(dst->entities[depth].length * sizeof(corto_entityPerParent));
 
             for (sp = 0; sp < src->entities[depth].length; sp++) {
@@ -66,12 +75,12 @@ static corto_int16 corto_entityAdmin_copyIn(corto_entityAdmin *src, corto_entity
 
                 dstSubParent->parent = srcSubParent->parent;
                 dstSubParent->entities.length = srcSubParent->entities.length;
-                dstSubParent->entities.buffer = 
+                dstSubParent->entities.buffer =
                     corto_alloc(dstSubParent->entities.length * sizeof(corto_entity));
 
                 memcpy (
-                    dstSubParent->entities.buffer, 
-                    srcSubParent->entities.buffer, 
+                    dstSubParent->entities.buffer,
+                    srcSubParent->entities.buffer,
                     srcSubParent->entities.length * sizeof(corto_entity));
             }
         }
@@ -86,7 +95,9 @@ error:
     return -1;
 }
 
-corto_entityAdmin* corto_entityAdmin_get(corto_entityAdmin *this) {
+corto_entityAdmin* corto_entityAdmin_get(
+    corto_entityAdmin *this)
+{
     corto_entityAdmin *result = corto_tls_get(this->key);
     if (!result) {
         result = corto_calloc(sizeof(corto_entityAdmin));
@@ -106,10 +117,12 @@ error:
     return NULL;
 }
 
-corto_int16 corto_entityAdmin_getDepthFromId(char *id) {
-    corto_int16 result = 0;
+int16_t corto_entityAdmin_getDepthFromId(
+    const char *id)
+{
+    int16_t result = 0;
     if (id) {
-        char *ptr = id;
+        const char *ptr = id;
         while ((ptr = strchr(ptr + 1, '/'))) {
             result ++;
         }
@@ -117,7 +130,13 @@ corto_int16 corto_entityAdmin_getDepthFromId(char *id) {
     return result;
 }
 
-int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction action, char *parent, bool recursive, void *userData) {
+int corto_entityAdmin_walk(
+    corto_entityAdmin *this,
+    corto_entityWalkAction action,
+    const char *parent,
+    bool recursive,
+    void *userData)
+{
     int result = 1;
     int depthStart = 0;
     int depthStop = CORTO_MAX_SCOPE_DEPTH;
@@ -174,28 +193,28 @@ int corto_entityAdmin_walk(corto_entityAdmin *this, corto_entityWalkAction actio
 }
 
 int16_t corto_entityAdmin_add(
-    corto_entityAdmin *this, 
-    char *parent, 
-    corto_object e, 
-    corto_object instance) 
+    corto_entityAdmin *this,
+    const char *parent,
+    corto_object e,
+    corto_object instance)
 {
     if (!parent || !parent[0]) {
         parent = "/";
     }
-    
-    corto_int16 depth = corto_entityAdmin_getDepthFromId(parent);
+
+    int16_t depth = corto_entityAdmin_getDepthFromId(parent);
 
     if (corto_rwmutex_write(&this->lock)) {
         goto error;
     }
 
     /* First, find an existing subscription sequence for parent of subscriber */
-    corto_uint32 sp;
+    uint32_t sp;
     corto_entityPerParent *entitiesPerParent = NULL;
     for (sp = 0; sp < this->entities[depth].length; sp++) {
         entitiesPerParent = &this->entities[depth].buffer[sp];
-        if ((!parent && !entitiesPerParent->parent) || 
-            (parent && entitiesPerParent->parent && !stricmp(parent, entitiesPerParent->parent))) 
+        if ((!parent && !entitiesPerParent->parent) ||
+            (parent && entitiesPerParent->parent && !stricmp(parent, entitiesPerParent->parent)))
         {
             break;
         } else {
@@ -205,7 +224,7 @@ int16_t corto_entityAdmin_add(
 
     /* If no entity sequence is found for parent, create one */
     if (!entitiesPerParent) {
-        corto_uint32 length = this->entities[depth].length + 1;
+        uint32_t length = this->entities[depth].length + 1;
         this->entities[depth].buffer =
           corto_realloc(this->entities[depth].buffer, length * sizeof(corto_entityPerParent));
 
@@ -214,7 +233,7 @@ int16_t corto_entityAdmin_add(
         } else {
             this->entities[depth].buffer[length - 1].parent = strdup(parent);
         }
-                
+
         this->entities[depth].buffer[length - 1].entities.length = 0;
         this->entities[depth].buffer[length - 1].entities.buffer = NULL;
         this->entities[depth].length ++;
@@ -224,7 +243,7 @@ int16_t corto_entityAdmin_add(
     corto_entitySeq *seq = &entitiesPerParent->entities;
 
     /* Add subscriber to subscription sequence */
-    corto_uint32 length = seq->length + 1;
+    uint32_t length = seq->length + 1;
     seq->buffer = corto_realloc(seq->buffer, length * sizeof(corto_entity));
     seq->buffer[length - 1].e = e;
     seq->buffer[length - 1].instance = instance;
@@ -242,21 +261,21 @@ error:
 }
 
 int corto_entityAdmin_remove(
-    corto_entityAdmin *this, 
-    char *parent,
+    corto_entityAdmin *this,
+    const char *parent,
     corto_object e,
-    corto_object instance, 
-    corto_bool removeAll) 
+    corto_object instance,
+    bool removeAll)
 {
-    corto_int32 count = 0;
-    corto_int16 depth = corto_entityAdmin_getDepthFromId(parent);
+    int32_t count = 0;
+    int16_t depth = corto_entityAdmin_getDepthFromId(parent);
 
     if (corto_rwmutex_write(&this->lock)) {
         goto error;
     }
 
     /* Find subscriber */
-    corto_uint32 s, sp;
+    uint32_t s, sp;
     for (sp = 0; sp < this->entities[depth].length; sp++) {
         corto_entityPerParent *entitiesPerParent = &this->entities[depth].buffer[sp];
         corto_entitySeq *seq = &entitiesPerParent->entities;

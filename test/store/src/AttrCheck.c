@@ -13,10 +13,10 @@ void test_AttrCheck_tc_constructorAttr(
     ret = corto_delete(o);
     test_assert(ret == 0);
 
-    corto_attr prev = corto_setAttr(CORTO_ATTR_PERSISTENT);
+    corto_attr prev = corto_set_attr(CORTO_ATTR_PERSISTENT);
     o = test_AttrConstructorTestCreate();
     test_assert(o != NULL);
-    corto_setAttr(prev);
+    corto_set_attr(prev);
 
     ret = corto_delete(o);
     test_assert(ret == 0);

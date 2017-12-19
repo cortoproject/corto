@@ -786,7 +786,7 @@ corto_int16 corto_valueExpr_getTypeForBinary(
     }
 
     /* If objects are not scoped, verify whether they're equal */
-    if (!corto_checkAttr(leftType, CORTO_ATTR_NAMED) && !corto_checkAttr(rightType, CORTO_ATTR_NAMED)) {
+    if (!corto_check_attr(leftType, CORTO_ATTR_NAMED) && !corto_check_attr(rightType, CORTO_ATTR_NAMED)) {
         if (corto_compare(leftType, rightType) == CORTO_EQ) {
             equal = TRUE;
         }
@@ -1031,7 +1031,7 @@ void corto_value_free(corto_value *v) {
 }
 
 corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content) {
-    corto_contentType ct = corto_load_contentType(contentType);
+    corto_fmt ct = corto_fmt_lookup(contentType);
     if (!ct) {
         corto_throw("unknown contentType '%s'", contentType);
         goto error;
@@ -1047,7 +1047,7 @@ error:
 }
 
 corto_string corto_value_contentof(corto_value *v, corto_string contentType) {
-    corto_contentType ct = corto_load_contentType(contentType);
+    corto_fmt ct = corto_fmt_lookup(contentType);
     corto_string result;
 
     if (!ct) {
@@ -1123,7 +1123,7 @@ corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
 
     if (!corto_value_ptrof(dst)) {
         corto_type t = corto_value_typeof(src);
-        *dst = corto_value_value(corto_declare(t), t);
+        *dst = corto_value_value(corto_declare(NULL, NULL, t), t);
         newObject = TRUE;
     }
 

@@ -39,7 +39,7 @@ void subscribeAlignSelf(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeAlignSelf(
     test_Subscribe this)
 {
-    corto_createChild(root_o, "o", corto_void_o);
+    corto_create(root_o, "o", corto_void_o);
 
     corto_subscriber s = corto_subscribe("o")
       .instance(this)
@@ -62,9 +62,9 @@ void subscribeAlignType(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeAlignType(
     test_Subscribe this)
 {
-    corto_createChild(root_o, "o", corto_int32_o);
-    corto_createChild(root_o, "p", corto_float32_o);
-    corto_createChild(root_o, "q", corto_string_o);
+    corto_create(root_o, "o", corto_int32_o);
+    corto_create(root_o, "p", corto_float32_o);
+    corto_create(root_o, "q", corto_string_o);
 
     corto_subscriber s = corto_subscribe("*")
       .instance(this)
@@ -87,7 +87,7 @@ void subscribeResultTest(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeFromEmpty(
     test_Subscribe this)
 {
-    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    corto_int32 *a = corto_create(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -111,7 +111,7 @@ void test_Subscribe_tc_subscribeFromEmpty(
 void test_Subscribe_tc_subscribeFromImplicit(
     test_Subscribe this)
 {
-    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    corto_int32 *a = corto_create(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -135,9 +135,9 @@ void test_Subscribe_tc_subscribeFromImplicit(
 void test_Subscribe_tc_subscribeFromNested(
     test_Subscribe this)
 {
-    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
-    corto_object nested = corto_createChild(scope, "nested", corto_void_o);
-    corto_int32 *a = corto_createChild(nested, "a", corto_int32_o);
+    corto_object scope = corto_create(root_o, "scope", corto_void_o);
+    corto_object nested = corto_create(scope, "nested", corto_void_o);
+    corto_int32 *a = corto_create(nested, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -162,9 +162,9 @@ void test_Subscribe_tc_subscribeFromNested(
 void test_Subscribe_tc_subscribeFromNestedNoInitialSlash(
     test_Subscribe this)
 {
-    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
-    corto_object nested = corto_createChild(scope, "nested", corto_void_o);
-    corto_int32 *a = corto_createChild(nested, "a", corto_int32_o);
+    corto_object scope = corto_create(root_o, "scope", corto_void_o);
+    corto_object nested = corto_create(scope, "nested", corto_void_o);
+    corto_int32 *a = corto_create(nested, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -189,7 +189,7 @@ void test_Subscribe_tc_subscribeFromNestedNoInitialSlash(
 void test_Subscribe_tc_subscribeFromNull(
     test_Subscribe this)
 {
-    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    corto_int32 *a = corto_create(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -214,7 +214,7 @@ void test_Subscribe_tc_subscribeFromNull(
 void test_Subscribe_tc_subscribeFromRoot(
     test_Subscribe this)
 {
-    corto_int32 *a = corto_createChild(root_o, "a", corto_int32_o);
+    corto_int32 *a = corto_create(root_o, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -239,8 +239,8 @@ void test_Subscribe_tc_subscribeFromRoot(
 void test_Subscribe_tc_subscribeFromScope(
     test_Subscribe this)
 {
-    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
-    corto_int32 *a = corto_createChild(scope, "a", corto_int32_o);
+    corto_object scope = corto_create(root_o, "scope", corto_void_o);
+    corto_int32 *a = corto_create(scope, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -265,8 +265,8 @@ void test_Subscribe_tc_subscribeFromScope(
 void test_Subscribe_tc_subscribeFromScopeNoInitialSlash(
     test_Subscribe this)
 {
-    corto_object scope = corto_createChild(root_o, "scope", corto_void_o);
-    corto_int32 *a = corto_createChild(scope, "a", corto_int32_o);
+    corto_object scope = corto_create(root_o, "scope", corto_void_o);
+    corto_int32 *a = corto_create(scope, "a", corto_int32_o);
     test_assert(a != NULL);
 
     corto_subscriber s = corto_subscribe("*")
@@ -297,10 +297,10 @@ void subscribeInvertCaseOnUpdate(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeInvertCase(
     test_Subscribe this)
 {
-    corto_object a = corto_createChild(root_o, "a", corto_void_o);
+    corto_object a = corto_create(root_o, "a", corto_void_o);
     test_assert(a != NULL);
 
-    corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
+    corto_object xyz = corto_create(a, "xyz", corto_void_o);
     test_assert(xyz != NULL);
 
     corto_subscriber s = corto_subscribe("XYZ").from("/a")
@@ -325,10 +325,10 @@ void subscribeInvertCaseFilterOnUpdate(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeInvertCaseFilter(
     test_Subscribe this)
 {
-    corto_object a = corto_createChild(root_o, "a", corto_void_o);
+    corto_object a = corto_create(root_o, "a", corto_void_o);
     test_assert(a != NULL);
 
-    corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
+    corto_object xyz = corto_create(a, "xyz", corto_void_o);
     test_assert(xyz != NULL);
 
     corto_subscriber s = corto_subscribe("XY?").from("/a")
@@ -399,10 +399,10 @@ void subscribeInvertCaseParentOnUpdate(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeInvertCaseParent(
     test_Subscribe this)
 {
-    corto_object a = corto_createChild(root_o, "a", corto_void_o);
+    corto_object a = corto_create(root_o, "a", corto_void_o);
     test_assert(a != NULL);
 
-    corto_object xyz = corto_createChild(a, "xyz", corto_void_o);
+    corto_object xyz = corto_create(a, "xyz", corto_void_o);
     test_assert(xyz != NULL);
 
     corto_subscriber s = corto_subscribe("xyz").from("/A")
@@ -488,10 +488,10 @@ void test_Subscribe_tc_subscribeMultiDifferentParent(
         .callback(MultiDifferentParent3);
 
     /* Create data scope */
-    corto_object data = corto_createChild(root_o, "data", corto_void_o);
+    corto_object data = corto_create(root_o, "data", corto_void_o);
 
     /* Create foo object in data (triggers subscribers) */
-    corto_createChild(data, "foo", corto_void_o);
+    corto_create(data, "foo", corto_void_o);
     test_assertint(this->triggered, 4);
 
     test_assert(corto_delete(s0) == 0);
@@ -610,10 +610,10 @@ void test_Subscribe_tc_subscribeOwnerSet(
     test_Subscribe this)
 {
     corto_object owner = corto_voidCreate();
-    corto_object prevOwner = corto_setOwner(owner);
-    corto_object a = corto_createChild(root_o, "a", corto_int32_o);
-    corto_setOwner(prevOwner);
-    corto_object b = corto_createChild(root_o, "b", corto_int32_o);
+    corto_object prevOwner = corto_set_source(owner);
+    corto_object a = corto_create(root_o, "a", corto_int32_o);
+    corto_set_source(prevOwner);
+    corto_object b = corto_create(root_o, "b", corto_int32_o);
 
     corto_subscriber s = corto_subscribe("a,b").from("/")
       .instance(this)
@@ -629,9 +629,9 @@ void test_Subscribe_tc_subscribeOwnerSet(
 
     test_assert(corto_delete(b) == 0);
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     test_assert(corto_delete(a) == 0);
-    corto_setOwner(prevOwner);
+    corto_set_source(prevOwner);
 
     test_assert(corto_delete(s) == 0);
 
@@ -657,7 +657,7 @@ void test_Subscribe_tc_subscribePartialMatchingParent(
 void test_Subscribe_tc_subscribePartialMatchingParentObject(
     test_Subscribe this)
 {
-    corto_object foobar = corto_createChild(root_o, "foobar", corto_void_o);
+    corto_object foobar = corto_create(root_o, "foobar", corto_void_o);
     test_assert(foobar != NULL);
 
     corto_subscriber s = corto_subscribe("/").from("/foo")

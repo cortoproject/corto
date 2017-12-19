@@ -8,11 +8,11 @@
 
 corto_native_type _corto_native_typeCreate(corto_string name) {
     corto_native_type _this;
-    _this = (corto_native_type)corto_declare(corto_native_type_o);
+    _this = (corto_native_type)corto_declare(NULL, NULL, corto_native_type_o);
     if (!_this) {
         return NULL;
     }
-    if (!corto_checkState(_this, CORTO_VALID)) {
+    if (!corto_check_state(_this, CORTO_VALID)) {
         corto_ptr_setstr(&((corto_native_type)_this)->name, name);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -24,11 +24,11 @@ corto_native_type _corto_native_typeCreate(corto_string name) {
 
 corto_native_type _corto_native_typeCreateChild(corto_object _parent, corto_string _id, corto_string name) {
     corto_native_type _this;
-    _this = (corto_native_type)corto_declareChild(_parent, _id, corto_native_type_o);
+    _this = (corto_native_type)corto_declare(_parent, _id, corto_native_type_o);
     if (!_this) {
         return NULL;
     }
-    if (!corto_checkState(_this, CORTO_VALID)) {
+    if (!corto_check_state(_this, CORTO_VALID)) {
         corto_ptr_setstr(&((corto_native_type)_this)->name, name);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -57,7 +57,7 @@ corto_int16 _corto_native_typeUpdate(corto_native_type _this, corto_string name)
 
 corto_native_type _corto_native_typeDeclare(void) {
     corto_native_type _this;
-    _this = (corto_native_type)corto_declare(corto_native_type_o);
+    _this = (corto_native_type)corto_declare(NULL, NULL, corto_native_type_o);
     if (!_this) {
         return NULL;
     }
@@ -66,7 +66,7 @@ corto_native_type _corto_native_typeDeclare(void) {
 
 corto_native_type _corto_native_typeDeclareChild(corto_object _parent, corto_string _id) {
     corto_native_type _this;
-    _this = (corto_native_type)corto_declareChild(_parent, _id, corto_native_type_o);
+    _this = (corto_native_type)corto_declare(_parent, _id, corto_native_type_o);
     if (!_this) {
         return NULL;
     }

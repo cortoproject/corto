@@ -9,7 +9,7 @@ void test_BinaryOperators_tc_compareStringEqual(
     corto_string targetNull = NULL;
 
     corto_string *str = corto_stringCreate("ABC");
-    corto_string *strNull = (corto_string *)corto_create(corto_string_o);
+    corto_string *strNull = (corto_string *)corto_create(NULL, NULL, corto_string_o);
 
     corto_type type = corto_typeof(str);
 
@@ -34,7 +34,7 @@ void test_BinaryOperators_tc_compareStringNotEqual(
     corto_string targetNull = NULL;
 
     corto_string *str = corto_stringCreate("ABC");
-    corto_string *strNull = (corto_string *)corto_create(corto_string_o);
+    corto_string *strNull = (corto_string *)corto_create(NULL, NULL, corto_string_o);
 
     corto_type type = corto_typeof(str);
 

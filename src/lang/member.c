@@ -44,7 +44,7 @@ int16_t corto_member_init(
     corto_object parent;
     corto_type parentType;
 
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         parent = corto_parentof(this);
         parentType = corto_typeof(parent);
 
@@ -55,7 +55,7 @@ int16_t corto_member_init(
             }
 
             /* Set default member-modifiers - not during bootstrap */
-            if (corto_checkState(corto_type_o, CORTO_VALID)) {
+            if (corto_check_state(corto_type_o, CORTO_VALID)) {
                 this->modifiers = CORTO_GLOBAL;
                 this->state = CORTO_DECLARED | CORTO_VALID;
             }

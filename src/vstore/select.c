@@ -112,7 +112,7 @@ struct corto_select_data {
     corto_int16 mountsLoaded;
 
     /* Serializer for requested content type */
-    corto_contentType dstSer;
+    corto_fmt dstSer;
 
     /* Limit results */
     corto_uint64 offset;
@@ -167,8 +167,8 @@ struct corto_select_data {
     corto_result *next;
 };
 
-static corto_contentType corto_selectSrcContentType(corto_select_data *data) {
-    return (corto_contentType)
+static corto_fmt corto_selectSrcContentType(corto_select_data *data) {
+    return (corto_fmt)
       data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeOutHandle;
 }
 
@@ -183,7 +183,7 @@ static corto_word corto_selectConvert(
         return 0;
     }
 
-    corto_contentType srcType = corto_selectSrcContentType(data);
+    corto_fmt srcType = corto_selectSrcContentType(data);
 
     if (!srcType && value) {
         corto_warning("mount '%s' provides value but no contentType",
@@ -199,7 +199,7 @@ static corto_word corto_selectConvert(
             corto_throw("unresolved type '%s'", type);
             goto error;
         } else {
-            corto_object o = corto_create(t);
+            corto_object o = corto_create(NULL, NULL, t);
 
             /* Convert from source format to object */
             corto_value v = corto_value_object(o, NULL);
@@ -261,10 +261,10 @@ static void corto_setItemData(
         item->name[0] = '\0';
     }
 
-    item->owner = corto_ownerof(o);
+    item->owner = corto_sourceof(o);
     corto_ptr_setref(&item->object, o);
 
-    if (corto_checkAttr(corto_typeof(o), CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(corto_typeof(o), CORTO_ATTR_NAMED)) {
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
     } else {
         corto_string_ser_t serData;
@@ -308,14 +308,14 @@ static corto_bool corto_selectMatch(
 
     if (corto_secured()) {
         if (o) {
-            if (!corto_authorized(o, CORTO_SECURE_ACTION_READ)) {
+            if (!corto_authorize(o, CORTO_SECURE_ACTION_READ)) {
                 goto access_error;
             }
         } else {
             corto_id id;
             sprintf(id, "%s/%s", item->parent, item->id);
             corto_path_clean(id, id);
-            if (!corto_authorizedId(id, CORTO_SECURE_ACTION_READ)) {
+            if (!corto_authorize_id(id, CORTO_SECURE_ACTION_READ)) {
                 goto access_error;
             }
         }
@@ -363,7 +363,7 @@ static corto_bool corto_selectMatch(
 
                     /* Do the same for attributes */
                     if (o && r->attr) {
-                        if (corto_checkAttr(o, r->attr)) {
+                        if (corto_check_attr(o, r->attr)) {
                             result = FALSE;
                         } else {
                             /* If result was set to FALSE by type, reset to TRUE */
@@ -596,7 +596,7 @@ static bool corto_selectIterMount(
     }
 
     /* If src & dst contentTypes are different, translate */
-    corto_contentType srcType = corto_selectSrcContentType(data);
+    corto_fmt srcType = corto_selectSrcContentType(data);
     if (data->dstSer && (data->dstSer != srcType)) {
         /* Convert value */
         data->dstSer->release(data->item.value);
@@ -653,12 +653,12 @@ static bool corto_selectIterMount(
             goto resume_failed;
         }
 
-        corto_contentType contentTypeHandle = (corto_contentType)mount->contentTypeOutHandle;
-        corto_object prev = corto_setOwner(mount);
+        corto_fmt contentTypeHandle = (corto_fmt)mount->contentTypeOutHandle;
+        corto_object prev = corto_set_source(mount);
         corto_object ref =
         corto(parent, result->id, type, NULL, contentTypeHandle, (void*)result->value, -1,
             CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
-        corto_setOwner(prev);
+        corto_set_source(prev);
         corto_release(type);
         corto_release(parent);
 
@@ -1430,7 +1430,7 @@ static corto_resultIter corto_selectPrepareIterator (
     data->mountMask = r->mountMask;
 
     if (data->contentType) {
-        if (!(data->dstSer = corto_load_contentType(data->contentType))) {
+        if (!(data->dstSer = corto_fmt_lookup(data->contentType))) {
             goto error;
         }
     }
@@ -1625,7 +1625,7 @@ error:
 
 static int corto_mountAction_subscribe(corto_mount m, corto_query *r, void *ctx) {
     CORTO_UNUSED(ctx);
-    if (corto_getOwner() != m) {
+    if (corto_get_source() != m) {
         _corto_mount_subscribe(m, r);
     }
     return 1;
@@ -1654,7 +1654,7 @@ error:
 
 static int corto_mountAction_unsubscribe(corto_mount m, corto_query *r, void *ctx) {
     CORTO_UNUSED(ctx);
-    if (corto_getOwner() != m) {
+    if (corto_get_source() != m) {
         _corto_mount_unsubscribe(m, r);
     }
     return 1;

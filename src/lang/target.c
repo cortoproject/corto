@@ -10,7 +10,7 @@ int16_t corto_target_construct(
     if (!actual) {
         goto error;
     }
-    if (!corto_checkState(actual, CORTO_VALID)) {
+    if (!corto_check_state(actual, CORTO_VALID)) {
         corto_ptr_setref(&actual->type, this->type);
         if (!corto(NULL, NULL, NULL, actual, NULL, NULL, -1, CORTO_DO_DEFINE)) {
             goto error;
@@ -21,7 +21,7 @@ int16_t corto_target_construct(
     if (!target) {
         goto error;
     }
-    if (!corto_checkState(target, CORTO_VALID)) {
+    if (!corto_check_state(target, CORTO_VALID)) {
         corto_ptr_setref(&target->type, this->type);
         if (!corto(NULL, NULL, NULL, target, NULL, NULL, -1, CORTO_DO_DEFINE)) {
             goto error;
@@ -32,7 +32,7 @@ int16_t corto_target_construct(
     if (!objective) {
         goto error;
     }
-    if (!corto_checkState(objective, CORTO_VALID)) {
+    if (!corto_check_state(objective, CORTO_VALID)) {
         corto_ptr_setref(&objective->type, this->type);
         if (!corto(NULL, NULL, NULL, objective, NULL, NULL, -1, CORTO_DO_DEFINE)) {
             goto error;

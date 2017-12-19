@@ -1295,7 +1295,7 @@ int corto_stop(void) {
 
     corto_trace("shutting down...");
 
-    if (corto_getOwner()) {
+    if (corto_get_source()) {
         corto_error("owner has not been reset to NULL before shutting down");
         abort();
     }
@@ -1388,7 +1388,7 @@ corto_bool corto_enableload(corto_bool enable) {
         }
     } else {
         if (!corto_loaderInstance) {
-            corto_loaderInstance = corto_createChild(
+            corto_loaderInstance = corto_create(
                 root_o, "config/loader", corto_loader_o);
         } else {
             prev = TRUE;

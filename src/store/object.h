@@ -40,7 +40,7 @@ corto_object corto_resumePersistent(corto_object o);
 #define RESOLVE(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, CORTO_DO_LOOKUP_TYPE)
 
 
-struct corto_contentType_s {
+struct corto_fmt_s {
     corto_string name;
     bool isBinary;
 
@@ -178,9 +178,9 @@ corto_rb corto_scopeof(corto_object o);
 int16_t corto_notifySubscribers(corto_eventMask mask, corto_object o);
 int16_t corto_notifySubscribersId(
     corto_eventMask mask,
-    corto_string path,
-    corto_string type,
-    corto_string contentType,
+    const char *path,
+    const char *type,
+    const char *fmtId,
     corto_word value);
 
 corto__observable* corto__objectObservable(corto__object* o);
@@ -190,7 +190,7 @@ void corto_notifyObservers(corto__observable* _o, corto_object observable, corto
 void corto_notifyParentObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
 void corto_observerDelayedAdminDefine(corto_object instance);
 
-corto_object corto_resume(corto_object parent, corto_string expr, corto_object o);
+corto_object corto_resume(corto_object parent, const char *expr, corto_object o);
 int16_t corto_suspend(corto_object o);
 int corto_load_intern(corto_string str, int argc, char* argv[], bool _try, bool ignoreRecursive);
 

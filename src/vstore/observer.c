@@ -312,7 +312,7 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
     /* If there are no subscribers, then there are no mounts that are potentially
      * interested in subscriptions */
 
-    if (corto_subscriber_admin.count && corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
+    if (corto_subscriber_admin.count && corto_check_attr(observable, CORTO_ATTR_NAMED)) {
         if (observerMask & CORTO_ON_TREE) {
             corto_log_push("update-subscription");
 
@@ -387,9 +387,9 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
         corto_dispatcher dispatcher = observer->dispatcher;
 
         if (!data->_this || (data->_this != source)) {
-            corto_attr oldAttr = corto_setAttr(0);
-            corto_observerEvent *event = corto_declare(corto_type(corto_observerEvent_o));
-            corto_setAttr(oldAttr);
+            corto_attr oldAttr = corto_set_attr(0);
+            corto_observerEvent *event = corto_declare(NULL, NULL, corto_type(corto_observerEvent_o));
+            corto_set_attr(oldAttr);
 
             corto_ptr_setref(&event->observer, observer);
             corto_ptr_setref(&event->instance, data->_this);
@@ -408,7 +408,7 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
 static void corto_notifyObserversIntern(corto__observer** observers, corto_object observable, corto_uint32 mask, int depth) {
     corto__observer* data;
 
-    corto_object prev = corto_setOwner(NULL);
+    corto_object prev = corto_set_source(NULL);
     while((data = *observers)) {
 #ifndef NDEBUG
         if (CORTO_TRACE_NOTIFICATIONS) {
@@ -432,7 +432,7 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
 
         observers++;
     }
-    corto_setOwner(prev);
+    corto_set_source(prev);
 }
 
 corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
@@ -512,7 +512,7 @@ error:
 }
 
 corto_int16 corto_notifySecured(corto_object observable, corto_uint32 mask) {
-    if (!corto_authorized(observable, CORTO_SECURE_ACTION_READ)) {
+    if (!corto_authorize(observable, CORTO_SECURE_ACTION_READ)) {
         return 0;
     }
     return corto_notify(observable, mask);
@@ -534,16 +534,16 @@ int corto_observerAlignScope(corto_object o, void *userData) {
 
     corto_observerAlignData *data = userData;
 
-    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+    if (corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
         if ((data->mask & CORTO_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
         {
             corto_notifyObserver(data->observer, o, o, CORTO_DECLARE, data->depth);
         }
     }
 
-    if (corto_checkAttr(o, CORTO_ATTR_PERSISTENT)) {
+    if (corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
         if ((data->mask & CORTO_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
-            corto_checkState(o, CORTO_VALID))
+            corto_check_state(o, CORTO_VALID))
         {
             corto_notifyObserver(data->observer, o, o, CORTO_DEFINE, data->depth);
         }
@@ -578,14 +578,14 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     walkData.mask = mask;
     walkData.depth = 0;
 
-    if (corto_checkAttr(observable, CORTO_ATTR_PERSISTENT)) {
+    if (corto_check_attr(observable, CORTO_ATTR_PERSISTENT)) {
         if ((mask & CORTO_DECLARE) && (mask & CORTO_ON_SELF))
         {
             corto_notifyObserver(observer, observable, observable, CORTO_DECLARE, 0);
         }
 
         if ((mask & CORTO_DEFINE) && (mask & CORTO_ON_SELF) &&
-            corto_checkState(observable, CORTO_VALID))
+            corto_check_state(observable, CORTO_VALID))
         {
             corto_notifyObserver(observer, observable, observable, CORTO_DEFINE, 0);
         }
@@ -604,7 +604,7 @@ static corto_observe__fluent corto_observe__fluentGet(void);
 
 static corto_observer corto_observeObserve(corto_observeRequest *r)
 {
-    corto_observer result = corto_declare(corto_observer_o);
+    corto_observer result = corto_declare(NULL, NULL, corto_observer_o);
 
     result->mask = r->mask;
     corto_ptr_setref(&result->observable, r->observable);
@@ -728,7 +728,7 @@ int16_t corto_observer_construct(
     corto_log_push("observe");
 
     if (!corto_function(this)->parameters.length) {
-        if (!corto_checkAttr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
+        if (!corto_check_attr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
             corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
             corto_function(this)->parameters.length = 1;
             corto_parameter *p;
@@ -786,7 +786,7 @@ int16_t corto_observer_init(
     corto_ptr_setref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED) && strchr(corto_idof(this), '(')) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED) && strchr(corto_idof(this), '(')) {
         /* id of function contains a parameter list, parse in function/init */
         corto_int16 result = safe_corto_function_init(this);
         if (result) {
@@ -819,7 +819,7 @@ int16_t corto_observer_observe(
     corto_bool added = FALSE;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         corto_debug("ID '%s'", corto_fullpath(NULL, this));
     }
     if (corto_log_verbosityGet() <= CORTO_DEBUG) {
@@ -876,14 +876,14 @@ int16_t corto_observer_observe(
 
     /* Test for error conditions before making changes */
     if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-        if (!corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
+        if (!corto_check_attr(observable, CORTO_ATTR_NAMED)) {
             corto_throw(
                 "invalid nested subscription, observable is not scoped");
             goto error;
         }
     }
 
-    if (!corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
+    if (!corto_check_attr(observable, CORTO_ATTR_OBSERVABLE)) {
         corto_throw(
             "'%s' is not an observable",
             corto_fullpath(NULL, observable));
@@ -891,7 +891,7 @@ int16_t corto_observer_observe(
     }
 
     /* If instance has not yet been defined, postpone listen */
-    if (instance && !corto_checkState(instance, CORTO_VALID)) {
+    if (instance && !corto_check_state(instance, CORTO_VALID)) {
         corto_observerDelayedAdminAdd(
             instance,
             this,
@@ -1005,7 +1005,7 @@ int16_t corto_observer_observe(
         this->enabled = TRUE;
 
         /* Let mounts know of observer */
-        if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
+        if (corto_check_attr(observable, CORTO_ATTR_NAMED)) {
             corto_iter it;
             corto_id observableId;
             corto_fullpath(observableId, observable);
@@ -1092,9 +1092,9 @@ bool corto_observer_observing(
         }
 
         if (!result) {
-            if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
+            if (corto_check_attr(observable, CORTO_ATTR_OBSERVABLE)) {
                 if ((this->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE))) {
-                    if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
+                    if (corto_check_attr(observable, CORTO_ATTR_NAMED)) {
                         corto_rwmutex_write(&_o->align.selfLock);
                         observerData = corto_observerFind(_o->onChild, this, instance);
                         if (observerData) {
@@ -1133,7 +1133,7 @@ int16_t corto_observer_unobserve(
     }
 
     /* If instance has not yet been defined, undo delayed listen */
-    if (instance && !corto_checkState(instance, CORTO_VALID)) {
+    if (instance && !corto_check_state(instance, CORTO_VALID)) {
         corto_observerDelayedAdminRemove(
             instance,
             this
@@ -1143,11 +1143,11 @@ int16_t corto_observer_unobserve(
 
     /* Observers don't necessarily take a refcount on their observables, and if
      * the observable has already been destructed, it has already been silenced. */
-    if (corto_checkState(observable, CORTO_DELETED)) {
+    if (corto_check_state(observable, CORTO_DELETED)) {
         goto ignore;
     }
 
-    if (corto_checkAttr(observable, CORTO_ATTR_OBSERVABLE)) {
+    if (corto_check_attr(observable, CORTO_ATTR_OBSERVABLE)) {
         _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         observerData = NULL;
 
@@ -1182,7 +1182,7 @@ int16_t corto_observer_unobserve(
 
         /* If observer triggered on updates of childs, remove from onChilds list */
         if (mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) {
-            if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
+            if (corto_check_attr(observable, CORTO_ATTR_NAMED)) {
                 if (corto_rwmutex_write(&_o->align.selfLock)) {
                     goto error;
                 }
@@ -1217,7 +1217,7 @@ int16_t corto_observer_unobserve(
             this->enabled = FALSE;
         }
 
-        if (corto_checkAttr(observable, CORTO_ATTR_NAMED)) {
+        if (corto_check_attr(observable, CORTO_ATTR_NAMED)) {
             corto_id observableId;
             corto_fullpath(observableId, observable);
             corto_log_push("align-unsubscribe");

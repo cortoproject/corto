@@ -82,7 +82,7 @@ void test_Lookup_tc_lookupIdEndsWithDot(
     test_Lookup this)
 {
 
-    corto_object o = corto_createChild(root_o, "dot.", corto_void_o);
+    corto_object o = corto_create(root_o, "dot.", corto_void_o);
     test_assert(o != NULL);
 
     corto_object l = corto_lookup(root_o, "dot.");
@@ -128,7 +128,7 @@ void test_Lookup_tc_lookupIdStartsWithDot(
     test_Lookup this)
 {
 
-    corto_object o = corto_createChild(root_o, ".dot", corto_void_o);
+    corto_object o = corto_create(root_o, ".dot", corto_void_o);
     test_assert(o != NULL);
 
     corto_object l = corto_lookup(root_o, ".dot");
@@ -164,9 +164,9 @@ void test_Lookup_tc_lookupNested2FromScope(
     test_Lookup this)
 {
 
-    corto_object parent = corto_createChild(corto_o, "parent", corto_void_o);
-    corto_object child = corto_createChild(parent, "child", corto_void_o);
-    corto_object grandchild = corto_createChild(child, "grandchild", corto_void_o);
+    corto_object parent = corto_create(corto_o, "parent", corto_void_o);
+    corto_object child = corto_create(parent, "child", corto_void_o);
+    corto_object grandchild = corto_create(child, "grandchild", corto_void_o);
 
     corto_object o = corto_lookup(corto_o, "parent/child/grandchild");
     test_assert(o != NULL);

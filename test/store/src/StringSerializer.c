@@ -24,7 +24,7 @@ void test_StringSerializer_tc_serAnonymous(
 void test_StringSerializer_tc_serAnonymousComplex(
     test_StringSerializer this)
 {
-    test_Point *anonymous = corto_create(test_Point_o);
+    test_Point *anonymous = corto_create(NULL, NULL, test_Point_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
@@ -46,7 +46,7 @@ void test_StringSerializer_tc_serAnonymousComplex(
 void test_StringSerializer_tc_serAnonymousComplexString(
     test_StringSerializer this)
 {
-    test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
+    test_CompositeWithString *anonymous = corto_create(NULL, NULL, test_CompositeWithString_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
@@ -70,7 +70,7 @@ void test_StringSerializer_tc_serAnonymousComplexString(
 void test_StringSerializer_tc_serAnonymousComplexStringEsc(
     test_StringSerializer this)
 {
-    test_CompositeWithString *anonymous = corto_create(test_CompositeWithString_o);
+    test_CompositeWithString *anonymous = corto_create(NULL, NULL, test_CompositeWithString_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTestCreate(objList);
@@ -234,7 +234,7 @@ void test_StringSerializer_tc_serCycle(
     test_StringSerializer this)
 {
     corto_string result;
-    test_ReferenceMember *o = corto_create(test_ReferenceMember_o);
+    test_ReferenceMember *o = corto_create(NULL, NULL, test_ReferenceMember_o);
     test_assert(o != NULL);
 
     corto_ptr_setref(&o->m, o);

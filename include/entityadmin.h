@@ -24,7 +24,11 @@
 
 #include <corto/base.h>
 
-typedef int (*corto_entityWalkAction)(corto_object e, corto_object instance, void *userData);
+typedef
+int (*corto_entityWalkAction)(
+    corto_object e,
+    corto_object instance,
+    void *userData);
 
 typedef struct corto_entity {
     corto_object e;
@@ -60,11 +64,33 @@ typedef struct corto_entityAdmin {
     corto_entityPerParentSeq entities[CORTO_MAX_SCOPE_DEPTH];
 } corto_entityAdmin;
 
-corto_int16 corto_entityAdmin_getDepthFromId(char *id);
-corto_entityAdmin* corto_entityAdmin_get(corto_entityAdmin *_this);
-int16_t corto_entityAdmin_add(corto_entityAdmin *_this, char *parent, corto_object e, corto_object instance);
-int corto_entityAdmin_remove(corto_entityAdmin *_this, char *parent, corto_object e, corto_object instance, corto_bool removeAll);
-int corto_entityAdmin_walk(corto_entityAdmin *_this, corto_entityWalkAction action, char *parent, bool recursive, void *userData);
-void corto_entityAdmin_free(void *admin);
+corto_int16 corto_entityAdmin_getDepthFromId(
+    const char *id);
+
+corto_entityAdmin* corto_entityAdmin_get(
+    corto_entityAdmin *_this);
+
+int16_t corto_entityAdmin_add(
+    corto_entityAdmin *_this,
+    const char *parent,
+    corto_object e,
+    corto_object instance);
+
+int corto_entityAdmin_remove(
+    corto_entityAdmin *_this,
+    const char *parent,
+    corto_object e,
+    corto_object instance,
+    bool removeAll);
+
+int corto_entityAdmin_walk(
+    corto_entityAdmin *_this,
+    corto_entityWalkAction action,
+    const char *parent,
+    bool recursive,
+    void *userData);
+
+void corto_entityAdmin_free(
+    void *admin);
 
 #endif

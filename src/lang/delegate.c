@@ -59,7 +59,7 @@ static corto_member corto_delegate_find(corto_function object) {
 
             /* Get function name, lookup delegate, assign function */
             corto_signatureName(corto_idof(object), functionName);
-            if (corto_checkState(corto_type_o, CORTO_VALID) && (m = corto_interface_resolveMember(type, functionName)) &&
+            if (corto_check_state(corto_type_o, CORTO_VALID) && (m = corto_interface_resolveMember(type, functionName)) &&
                 (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE))
             {
                 return m;

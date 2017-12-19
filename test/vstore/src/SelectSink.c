@@ -10,7 +10,7 @@ void test_SelectSink_setup(
     test_SinkMountCreateChild_auto(root_o, sinkMount, mount, NULL, NULL);
 
     /* Ensure all objects are created with persistency enabled */
-    corto_setAttr(CORTO_ATTR_PERSISTENT);
+    corto_set_attr(CORTO_ATTR_PERSISTENT);
 }
 
 void test_SelectSink_tc_selectLoaderCortoScope(

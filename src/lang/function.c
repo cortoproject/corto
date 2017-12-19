@@ -73,7 +73,7 @@ int16_t corto_function_construct(
     }
 
     /* Validate delegate */
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED) && procedure->hasThis) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED) && procedure->hasThis) {
         if (corto_delegate_validate(this)) {
             goto error;
         }
@@ -152,7 +152,7 @@ finish:
 int16_t corto_function_init(
     corto_function this)
 {
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         if (!corto_instanceof(corto_interface_o, corto_parentof(this)) &&
             !corto_instanceof(corto_method_o, this))
         {
@@ -187,7 +187,7 @@ int16_t corto_function_init(
     }
 
     /* Bind with interface if possible */
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         corto_procedure p = corto_function_getProcedureType(this);
         if (p->hasThis) {
             if (corto_delegate_bind(this)) {
@@ -207,7 +207,7 @@ int16_t corto_function_parseParamString(
 {
     corto_object scope;
 
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         scope = corto_parentof(this);
     } else {
         scope = root_o;

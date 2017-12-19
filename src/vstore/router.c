@@ -19,7 +19,7 @@ int16_t corto_router_construct(
     if (!corto_interface(this)->base) {
         corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
-        if (!corto_instanceofType(corto_routerimpl_o, corto_interface(this)->base)) {
+        if (!corto_type_instanceof(corto_routerimpl_o, corto_interface(this)->base)) {
             corto_throw("router must inherit from 'routerimpl'");
             goto error;
         }

@@ -13,7 +13,7 @@ extern corto_rwmutex_s corto_subscriberLock;
 
 /* Fluent request */
 typedef struct corto_subscribeRequest {
-    corto_int16 err;
+    int16_t err;
     corto_object instance;
     corto_string scope;
     corto_string expr;
@@ -107,7 +107,7 @@ int16_t corto_subscriber_invoke(
             corto_ptr_setstr(&eptr->data.parent, r->parent);
             if (r->value) {
                 eptr->data.value =
-                  ((corto_contentType)s->contentTypeHandle)->copy(r->value);
+                  ((corto_fmt)s->contentTypeHandle)->copy(r->value);
             }
             eptr->contentTypeHandle = s->contentTypeHandle;
             if (corto_define(eptr)) {
@@ -146,9 +146,9 @@ error:
 }
 
 static
-char tochar(
-    char *to,
-    char *ptr,
+const char tochar(
+    const char *to,
+    const char *ptr,
     int len)
 {
     if (len > 0) {
@@ -175,8 +175,8 @@ static bool chicmp(char ch1, char ch2) {
  * a correct full path to an object. */
 void corto_pathstr(
     char *out,
-    char *from,
-    char *to,
+    const char *from,
+    const char *to,
     int tolen)
 {
     char *outptr = out, *firstid = out;
@@ -197,8 +197,8 @@ void corto_pathstr(
         }
     }
 
-    char *fptr = from ? from[0] == '/' ? &from[1] : from : "";
-    char *tptr = to ? to[0] == '/' ? &to[1] : to : "";
+    const char *fptr = from ? from[0] == '/' ? &from[1] : from : "";
+    const char *tptr = to ? to[0] == '/' ? &to[1] : to : "";
 
     /* First, move ptrs until paths diverge */
     while (fptr[0] && chicmp(fptr[0], tch)) {
@@ -240,11 +240,11 @@ void corto_pathstr(
     outptr[0] = '\0';
 }
 
-corto_int16 corto_notifySubscribersId(
+int16_t corto_notifySubscribersId(
     corto_eventMask mask,
-    corto_string path,
-    corto_string type,
-    corto_string contentType,
+    const char *path,
+    const char *type,
+    const char *contentType,
     corto_word value)
 {
     if (!corto_subscriber_admin.count) {
@@ -263,13 +263,13 @@ corto_int16 corto_notifySubscribersId(
 
     corto_object intermediate = NULL;
     corto_value intermediateValue = corto_value_empty();
-    corto_contentType contentTypeHandle = NULL;
-    corto_object owner = corto_getOwner();
+    corto_fmt contentTypeHandle = NULL;
+    corto_object owner = corto_get_source();
     corto_object objectOwner = owner;
     bool valueIsObject = false;
 
     struct {
-        corto_contentType ct;
+        corto_fmt ct;
         corto_word value;
     } contentTypes[CORTO_MAX_CONTENTTYPE];
     corto_int32 contentTypesCount = 0;
@@ -277,12 +277,12 @@ corto_int16 corto_notifySubscribersId(
     if (!contentType && value) {
         intermediate = (corto_object)value;
         intermediateValue = corto_value_object(intermediate, NULL);
-        objectOwner = corto_ownerof(intermediate);
+        objectOwner = corto_sourceof(intermediate);
         valueIsObject = true;
     }
 
-    char *sep = NULL, *id = strrchr(path, '/');
-    char *parent = NULL;
+    const char *sep = NULL, *id = strrchr(path, '/');
+    const char *parent = NULL;
     if (id) {
         if (id != path) {
             sep = id;
@@ -301,7 +301,7 @@ corto_int16 corto_notifySubscribersId(
         : 0
         ;
 
-    corto_int16 depth = corto_entityAdmin_getDepthFromId(path);
+    int16_t depth = corto_entityAdmin_getDepthFromId(path);
 
     corto_entityAdmin *admin = corto_entityAdmin_get(&corto_subscriber_admin);
     if (!admin) {
@@ -316,7 +316,7 @@ corto_int16 corto_notifySubscribersId(
             corto_entityPerParent *subPerParent = &admin->entities[depth].buffer[sp];
             corto_bool relativeParentSet = FALSE;
 
-            char *expr = corto_matchParent(subPerParent->parent, path);
+            const char *expr = corto_matchParent(subPerParent->parent, path);
             if (!expr) {
                 continue;
             }
@@ -371,7 +371,7 @@ corto_int16 corto_notifySubscribersId(
                         /* Has source contentType been loaded? */
                         if (contentType && !contentTypeHandle) {
                             /* Load contentType */
-                            contentTypeHandle = corto_load_contentType(contentType);
+                            contentTypeHandle = corto_fmt_lookup(contentType);
                             if (!contentTypeHandle) {
                                 goto error;
                             }
@@ -384,7 +384,7 @@ corto_int16 corto_notifySubscribersId(
                             }
 
                             /* Create intermediate object */
-                            if (!(intermediate = corto_create(t))) {
+                            if (!(intermediate = corto_create(NULL, NULL, t))) {
                                 goto error;
                             }
                             corto_release(t);
@@ -394,7 +394,7 @@ corto_int16 corto_notifySubscribersId(
                             }
                         }
 
-                        contentTypes[i].ct = (corto_contentType)s->contentTypeHandle;
+                        contentTypes[i].ct = (corto_fmt)s->contentTypeHandle;
                         contentTypes[i].value = contentTypes[i].ct->fromValue(&intermediateValue);
                         content = contentTypes[i].value;
                         contentTypesCount ++;
@@ -427,10 +427,10 @@ corto_int16 corto_notifySubscribersId(
                 }
 
                 corto_result r = {
-                  .id = id,
+                  .id = (char*)id,
                   .name = NULL,
                   .parent = parentPtr,
-                  .type = type,
+                  .type = (char*)type,
                   .value = content,
                   .flags = 0,
                   .object = valueIsObject ? intermediate : NULL,
@@ -474,10 +474,10 @@ error:
     return -1;
 }
 
-corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
-    corto_int16 result = 0;
+int16_t corto_notifySubscribers(corto_eventMask mask, corto_object o) {
+    int16_t result = 0;
 
-    if (corto_subscriber_admin.count && corto_checkAttr(o, CORTO_ATTR_NAMED)) {
+    if (corto_subscriber_admin.count && corto_check_attr(o, CORTO_ATTR_NAMED)) {
         corto_id path, type;
 
         result = corto_notifySubscribersId(
@@ -493,7 +493,7 @@ corto_int16 corto_notifySubscribers(corto_eventMask mask, corto_object o) {
 
 static corto_subscriber corto_subscribeSubscribe(corto_subscribeRequest *r)
 {
-    corto_subscriber s = corto_declare(corto_subscriber_o);
+    corto_subscriber s = corto_declare(NULL, NULL, corto_subscriber_o);
     corto_ptr_setstr(&s->query.from, r->scope);
 
     if (r->scope && *r->scope) {
@@ -609,9 +609,9 @@ static corto_mount corto_subscribeMount(
     const char *value)
 {
     corto_subscribeRequest *r = corto_tls_get(CORTO_KEY_FLUENT);
-    corto_contentType ctHandle = NULL;
+    corto_fmt ctHandle = NULL;
     if (value) {
-        ctHandle = corto_load_contentType("text/corto");
+        ctHandle = corto_fmt_lookup("text/corto");
     }
 
     /* declareChild */
@@ -671,7 +671,7 @@ corto_subscribe__fluent corto_subscribe(
     return corto_subscribe__fluentGet();
 }
 
-corto_int16 corto_unsubscribe(corto_subscriber subscriber, corto_object instance) {
+int16_t corto_unsubscribe(corto_subscriber subscriber, corto_object instance) {
     return corto_subscriber_unsubscribe(subscriber, instance);
 }
 
@@ -737,7 +737,7 @@ int16_t corto_subscriber_construct(
     }
 
     if (this->contentType && !this->contentTypeHandle) {
-        this->contentTypeHandle = (corto_word)corto_load_contentType(this->contentType);
+        this->contentTypeHandle = (corto_word)corto_fmt_lookup(this->contentType);
         if (!this->contentTypeHandle) {
             goto error;
         }
@@ -823,7 +823,7 @@ int16_t corto_subscriber_subscribe(
 {
     corto_iter it;
 
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         corto_debug("ID '%s'", corto_fullpath(NULL, this));
     }
 
@@ -845,7 +845,7 @@ int16_t corto_subscriber_subscribe(
         instance);
 
     /* If subscriber was not yet enabled, subscribe to mounts */
-    corto_int16 ret;
+    int16_t ret;
     if (!this->contentType) {
         ret = corto_select(this->query.select)
           .from(this->query.from)

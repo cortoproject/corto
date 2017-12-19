@@ -74,7 +74,7 @@ void corto_mount_notify(corto_subscriberEvent *e) {
     corto_eventMask event = e->event;
     corto_result *r = &e->data;
 
-    if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
+    if (!r->object || (!this->attr || corto_check_attr(r->object, this->attr))) {
         if (this->policy.mask & CORTO_MOUNT_NOTIFY) {
             corto_mount_onNotify(this, e);
         }
@@ -169,7 +169,7 @@ int16_t corto_mount_construct(
     corto_subscriber s = corto_subscriber(this);
 
     /* If mount isn't set, and object is scoped, mount data on itself */
-    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_NAMED) && !s->query.from) {
+    if (!this->mount && corto_check_attr(this, CORTO_ATTR_NAMED) && !s->query.from) {
         corto_ptr_setref(&this->mount, this);
     }
 
@@ -407,14 +407,14 @@ void corto_mount_invoke(
     corto_function proc,
     uintptr_t argptrs)
 {
-    corto_object owner = corto_ownerof(instance);
+    corto_object owner = corto_sourceof(instance);
 
     if (owner == this) {
         corto_mount_onInvoke(this, instance, proc, argptrs);
     } else {
-        corto_object prevowner = corto_setOwner(corto_ownerof(instance));
+        corto_object prevowner = corto_set_source(corto_sourceof(instance));
         corto_callb(proc, NULL, (void**)argptrs);
-        corto_setOwner(prevowner);
+        corto_set_source(prevowner);
     }
 
 }
@@ -893,8 +893,8 @@ corto_object corto_mount_resume(
     corto_log_push(strarg("resume:%s/%s", parent, name));
 
     /* Ensure that if object is created, owner & attributes are set correctly */
-    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
-    corto_object prevOwner = corto_setOwner(this);
+    corto_attr prevAttr = corto_set_attr(CORTO_ATTR_PERSISTENT | corto_get_attr());
+    corto_object prevOwner = corto_set_source(this);
     corto_object result = NULL;
 
     /* Resume object */
@@ -977,7 +977,7 @@ corto_object corto_mount_resume(
             if (o) {
                 corto_value v = corto_value_object(o, NULL);
                 if (this->contentTypeOutHandle && iterResult->value) {
-                    ((corto_contentType)this->contentTypeOutHandle)->toValue(
+                    ((corto_fmt)this->contentTypeOutHandle)->toValue(
                         &v, iterResult->value);
                 }
 
@@ -1006,8 +1006,8 @@ corto_object corto_mount_resume(
     }
 
     /* Restore owner & attributes */
-    corto_setAttr(prevAttr);
-    corto_setOwner(prevOwner);
+    corto_set_attr(prevAttr);
+    corto_set_source(prevOwner);
     if (result) {
         corto_debug("resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
     }
@@ -1084,7 +1084,7 @@ int16_t corto_mount_setContentTypeIn(
 {
 
     corto_ptr_setstr(&corto_subscriber(this)->contentType, type);
-    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_load_contentType(type);
+    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_fmt_lookup(type);
     if (!corto_subscriber(this)->contentTypeHandle) {
         goto error;
     }
@@ -1100,7 +1100,7 @@ int16_t corto_mount_setContentTypeOut(
 {
 
     corto_ptr_setstr(&this->contentTypeOut, type);
-    this->contentTypeOutHandle = (corto_word)corto_load_contentType(type);
+    this->contentTypeOutHandle = (corto_word)corto_fmt_lookup(type);
     if (!this->contentTypeOutHandle) {
         goto error;
     }
@@ -1195,7 +1195,7 @@ void corto_mount_subscribeOrMount(
         return;
     }
 
-    if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
+    if (corto_check_state(this, CORTO_VALID)) corto_lock(this);
     subscription = corto_mount_findSubscription(this, query, &found);
     if (subscription) {
         /* Ensure subscription isn't deleted outside of lock */
@@ -1222,7 +1222,7 @@ void corto_mount_subscribeOrMount(
         corto_ll_append(this->subscriptions, placeHolder);
     }
 
-    if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
+    if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     /* Process callback outside of lock */
     if (!found && (!subscription ||
         (subscribe && subscription->subscriberCtx) ||
@@ -1256,7 +1256,7 @@ void corto_mount_subscribeOrMount(
      * subscription */
     if ((subCtx && (!subscription || (subscription->subscriberCtx != subCtx))) ||
         (mntCtx && (!subscription || (subscription->mountCtx != mntCtx)))) {
-        if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
+        if (corto_check_state(this, CORTO_VALID)) corto_lock(this);
         /* If a new subscription is required, undo increase of refcount of the
          * subscription that was found */
         if (subscription) {
@@ -1285,26 +1285,26 @@ void corto_mount_subscribeOrMount(
 
         if (subscribe) subscription->subscriberCtx = subCtx;
         if (mount) subscription->mountCtx = mntCtx;
-        if (corto_checkState(this, CORTO_VALID))  corto_unlock(this);
+        if (corto_check_state(this, CORTO_VALID))  corto_unlock(this);
     } else if ((subCtx || mntCtx) && !found && subscription) {
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'select' parameter of the
          * subscription is meaningless, so to avoid confusion set it to '*'
          */
-        if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
+        if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
         corto_ptr_setstr(&subscription->query.select, "*");
         /* Doesn't count as new subscription, so undo increase in refcount */
         if (subCtx) subscription->subscriberCount --;
         if (mntCtx) subscription->mountCount --;
-        if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
+        if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     /* If placeholder was added & no (new) subscription is created, remove the
      * placeholder from the list */
     } else if (placeHolder) {
-        if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
+        if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
         corto_ll_remove(this->subscriptions, placeHolder);
         corto_ptr_free(placeHolder, corto_mountSubscription_o);
-        if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
+        if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     }
 
 }

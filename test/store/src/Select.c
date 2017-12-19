@@ -1752,9 +1752,9 @@ void test_Select_tc_selectUnderscore(
 void test_Select_tc_selectFromPartialMatchedElement(
     test_Select this)
 {
-    corto_object a = corto_createChild(root_o, "data/hello/a", corto_void_o);
+    corto_object a = corto_create(root_o, "data/hello/a", corto_void_o);
     test_assert(a != NULL);
-    corto_object b = corto_createChild(root_o, "data/helloworld/b", corto_void_o);
+    corto_object b = corto_create(root_o, "data/helloworld/b", corto_void_o);
     test_assert(b != NULL);
 
     corto_iter it;

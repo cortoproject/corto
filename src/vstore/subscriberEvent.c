@@ -8,7 +8,7 @@ void corto_subscriberEvent_deinit(
     corto_subscriberEvent* this)
 {
     if (this->contentTypeHandle && this->data.value) {
-        ((corto_contentType)this->contentTypeHandle)->release(this->data.value);
+        ((corto_fmt)this->contentTypeHandle)->release(this->data.value);
     }
 }
 

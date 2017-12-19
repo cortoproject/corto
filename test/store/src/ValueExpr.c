@@ -713,7 +713,7 @@ void test_ValueExpr_tc_exprMemValueOut(
 void test_ValueExpr_tc_member(
     test_ValueExpr this)
 {
-    test_Point *p = corto_create(test_Point_o);
+    test_Point *p = corto_create(NULL, NULL, test_Point_o);
     test_assert(p != NULL);
 
     p->x = 10;
@@ -744,7 +744,7 @@ void test_ValueExpr_tc_memberNested(
     test_ValueExpr this)
 {
 
-    test_Line *l = corto_create(test_Line_o);
+    test_Line *l = corto_create(NULL, NULL, test_Line_o);
     test_assert(l != NULL);
 
     l->start.x = 10;

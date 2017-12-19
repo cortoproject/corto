@@ -226,7 +226,7 @@ corto_object test_SinkMount_onResume(
                 if (object) {
                     result = object;
                 } else {
-                    result = corto_declareChild(p, e.id, t);
+                    result = corto_declare(p, e.id, t);
                     if (!result) {
                         corto_throw("cannot create object '%s': %s",
                             e.id, corto_lasterr());

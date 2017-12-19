@@ -219,9 +219,9 @@ void test_Resolver_tc_resolveNested2FromScope(
     test_Resolver this)
 {
 
-    corto_object parent = corto_createChild(corto_o, "parent", corto_void_o);
-    corto_object child = corto_createChild(parent, "child", corto_void_o);
-    corto_object grandchild = corto_createChild(child, "grandchild", corto_void_o);
+    corto_object parent = corto_create(corto_o, "parent", corto_void_o);
+    corto_object child = corto_create(parent, "child", corto_void_o);
+    corto_object grandchild = corto_create(child, "grandchild", corto_void_o);
 
     corto_object o = corto_resolve(corto_o, "parent/child/grandchild");
     test_assert(o != NULL);

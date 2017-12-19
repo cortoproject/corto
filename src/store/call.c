@@ -71,12 +71,12 @@ void corto_callDeinit(corto_function f) {
     /* If process does not own object, forward call */\
     if (corto_instanceof(corto_remote_o, f)) {\
         corto_object instance = *(corto_object*)argptrs[0];\
-        corto_object owner = corto_ownerof(instance);\
+        corto_object owner = corto_sourceof(instance);\
         if (owner \
             && corto_instanceof(corto_mount_o, owner) \
             && (corto_mount(owner)->policy.ownership != CORTO_LOCAL_OWNER)) \
         {\
-            if (!(owner == corto_getOwner())) {\
+            if (!(owner == corto_get_source())) {\
                 corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
                 return;\
             } else {\

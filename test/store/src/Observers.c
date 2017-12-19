@@ -21,10 +21,10 @@ void dispatchObserver_onUpdate(
 void test_Observers_tc_dispatchObserver(
     test_Observers this)
 {
-    corto_object o = corto_create(corto_void_o);
+    corto_object o = corto_create(NULL, NULL, corto_void_o);
     test_assert(o != NULL);
 
-    test_ObserverDispatcher d = corto_create(test_ObserverDispatcher_o);
+    test_ObserverDispatcher d = corto_create(NULL, NULL, test_ObserverDispatcher_o);
     test_assert(d != NULL);
 
     test_assert(o != NULL);
@@ -66,7 +66,7 @@ void test_Observers_tc_notifyReadDenied(
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
     test_AccessRuleListInsert(l->rules, &r);
 
-    corto_object o = corto_createChild(root_o, "o", corto_void_o);
+    corto_object o = corto_create(root_o, "o", corto_void_o);
     test_assert(o != NULL);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, o)
@@ -78,7 +78,7 @@ void test_Observers_tc_notifyReadDenied(
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
-    corto_string prev = corto_authenticate(token);
+    corto_string prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     /* Update will succeed because update is authorized */
@@ -86,7 +86,7 @@ void test_Observers_tc_notifyReadDenied(
     test_assert(this->count == 0);
 
     /* Deauthenticate process */
-    corto_authenticate(prev);
+    corto_set_session(prev);
 
     test_assert(corto_delete(observer) == 0);
     test_assert(corto_delete(o) == 0);
@@ -103,7 +103,7 @@ void test_Observers_tc_notifyUpdateDenied(
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_UPDATE, CORTO_SECURE_ACCESS_DENIED};
     test_AccessRuleListInsert(l->rules, &r);
 
-    corto_object o = corto_createChild(root_o, "o", corto_void_o);
+    corto_object o = corto_create(root_o, "o", corto_void_o);
     test_assert(o != NULL);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, o)
@@ -114,14 +114,14 @@ void test_Observers_tc_notifyUpdateDenied(
     corto_string token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
-    corto_string prev = corto_authenticate(token);
+    corto_string prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     /* Update will fail because not authorized */
     test_assert(corto_update(o) != 0);
 
     /* Deauthenticate process */
-    corto_authenticate(prev);
+    corto_set_session(prev);
 
     test_assert(corto_delete(observer) == 0);
     test_assert(corto_delete(o) == 0);
@@ -152,7 +152,7 @@ void tc_observeAlignCallbackSelf(corto_observerEvent *e) {
 void test_Observers_tc_observeAlignSelf(
     test_Observers this)
 {
-    corto_object o = corto_createChild(root_o, "o", corto_void_o);
+    corto_object o = corto_create(root_o, "o", corto_void_o);
 
     corto_observer observer = corto_observe(CORTO_DEFINE|CORTO_INVALIDATE, o)
       .callback(tc_observeAlignCallbackSelf);
@@ -175,9 +175,9 @@ void tc_observeAlignCallbackType(corto_observerEvent *e) {
 void test_Observers_tc_observeAlignType(
     test_Observers this)
 {
-    corto_object o = corto_createChild(root_o, "o", corto_int32_o);
-    corto_object p = corto_createChild(root_o, "p", corto_float32_o);
-    corto_object q = corto_createChild(root_o, "q", corto_string_o);
+    corto_object o = corto_create(root_o, "o", corto_int32_o);
+    corto_object p = corto_create(root_o, "p", corto_float32_o);
+    corto_object q = corto_create(root_o, "q", corto_string_o);
 
     corto_observer observer = corto_observe(CORTO_DEFINE|CORTO_ON_SCOPE, root_o)
       .type("float32")
@@ -197,7 +197,7 @@ void test_Observers_tc_observeAlignType(
 void test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     test_Observers this)
 {
-    corto_object o = corto_create(corto_void_o);
+    corto_object o = corto_create(NULL, NULL, corto_void_o);
     test_assert(o != NULL);
 
     test_assert(o != NULL);
@@ -214,7 +214,7 @@ void test_Observers_tc_observerMissingObservable(
     test_Observers this)
 {
 
-    corto_object o = corto_create(corto_void_o);
+    corto_object o = corto_create(NULL, NULL, corto_void_o);
     test_assert(o != NULL);
 
     test_assert(o != NULL);
@@ -239,13 +239,13 @@ void observeTypeFilter_onUpdate(corto_observerEvent *e)
 void test_Observers_tc_observeTypeFilter(
     test_Observers this)
 {
-    corto_object testRoot = corto_createChild(root_o, "testRoot", corto_void_o);
+    corto_object testRoot = corto_create(root_o, "testRoot", corto_void_o);
     test_assert(testRoot != NULL);
 
-    corto_object o1 = corto_createChild(testRoot, "o1", corto_float32_o);
+    corto_object o1 = corto_create(testRoot, "o1", corto_float32_o);
     test_assert(o1 != NULL);
 
-    corto_object o2 = corto_createChild(testRoot, "o2", corto_int32_o);
+    corto_object o2 = corto_create(testRoot, "o2", corto_int32_o);
     test_assert(o2 != NULL);
 
     corto_observer observer = corto_observe(CORTO_UPDATE|CORTO_ON_SCOPE, testRoot)
@@ -305,9 +305,9 @@ void observeWithMultipleInstances_onUpdate(
 void test_Observers_tc_observeWithMultipleInstances(
     test_Observers this)
 {
-    corto_object o = corto_create(corto_void_o);
-    corto_object instance1 = corto_create(corto_void_o);
-    corto_object instance2 = corto_create(corto_void_o);
+    corto_object o = corto_create(NULL, NULL, corto_void_o);
+    corto_object instance1 = corto_create(NULL, NULL, corto_void_o);
+    corto_object instance2 = corto_create(NULL, NULL, corto_void_o);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, o)
       .instance(this) // Callback can access this through observer object
@@ -365,8 +365,8 @@ void test_Observers_tc_observingDisabled(
 void test_Observers_tc_observingMultipleInstances(
     test_Observers this)
 {
-    corto_object instance1 = corto_create(corto_void_o);
-    corto_object instance2 = corto_create(corto_void_o);
+    corto_object instance1 = corto_create(NULL, NULL, corto_void_o);
+    corto_object instance2 = corto_create(NULL, NULL, corto_void_o);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .disabled()
@@ -407,7 +407,7 @@ void test_Observers_tc_observingScope(
 void test_Observers_tc_observingSingleInstance(
     test_Observers this)
 {
-    corto_object instance = corto_create(corto_void_o);
+    corto_object instance = corto_create(NULL, NULL, corto_void_o);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, root_o)
       .instance(instance)

@@ -233,9 +233,9 @@ struct corto_select__fluent corto_select(
 CORTO_EXPORT
 int16_t corto_publish(
     corto_eventMask event,
-    char *id,
-    char *type,
-    char *contentType,
+    const char *id,
+    const char *type,
+    const char *contentType,
     void *content);
 
 typedef struct corto_subscribe__fluent {
@@ -339,7 +339,7 @@ struct corto_subscribe__fluent corto_subscribe(
 @verbatim
 ```c
 void myDispatcher_post(corto_subscriberEvent *e) {
-    if (!corto_checkState(e->subscriber, CORTO_DELETED)) {
+    if (!corto_check_state(e->subscriber, CORTO_DELETED)) {
         corto_event_handle(e);
     } else {
         // Do nothing

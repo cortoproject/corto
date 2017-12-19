@@ -10,7 +10,7 @@ corto_string corto_result_contentof(
 {
     corto_string result = NULL;
 
-    corto_contentType type = corto_load_contentType(contentType);
+    corto_fmt type = corto_fmt_lookup(contentType);
     if (!type) {
         goto error;
     }
@@ -29,7 +29,7 @@ int16_t corto_result_fromcontent(
     corto_string contentType,
     corto_string content)
 {
-    corto_contentType type = corto_load_contentType(contentType);
+    corto_fmt type = corto_fmt_lookup(contentType);
     if (!type) {
         goto error;
     }
