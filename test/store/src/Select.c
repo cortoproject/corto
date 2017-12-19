@@ -2,8 +2,8 @@
 
 #include <include/test.h>
 corto_resultList test_Select_collect(
-    corto_string scope,
-    corto_string expr,
+    const char *scope,
+    const char *expr,
     uint64_t offset,
     uint64_t limit)
 {
@@ -34,9 +34,9 @@ error:
 
 bool test_Select_hasObject(
     corto_resultList items,
-    corto_string parent,
-    corto_string name,
-    corto_string type)
+    const char *parent,
+    const char *name,
+    const char *type)
 {
 
     corto_iter iter = corto_ll_iter(items);
@@ -1776,3 +1776,4 @@ void test_Select_teardown(
     /* << Insert implementation >> */
 
 }
+

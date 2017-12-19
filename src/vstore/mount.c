@@ -938,7 +938,7 @@ corto_object corto_mount_resume(
 
                 corto_object type_o = corto_resolve(NULL, iterResult->type);
                 if (type_o) {
-                    o = corto_declareChild(root_o, fullpath, type_o);
+                    o = corto_declare(root_o, fullpath, type_o);
                     if (!o) {
                         corto_throw("failed to create object %s/%s",
                           parent, name);

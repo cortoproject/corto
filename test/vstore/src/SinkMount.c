@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
@@ -140,7 +139,6 @@ int16_t test_SinkMount_construct(
     return corto_mount_construct(this);
 }
 
-
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
@@ -170,23 +168,23 @@ corto_resultIter test_SinkMount_onQuery(
                     e.flags
                 );
             }
+
         }
+
     }
 
     /* Create persistent iterator */
     corto_iter result = corto_ll_iterAlloc(data);
-
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
-
     /* Return persistent iterator to request */
     return result;
 }
 
 corto_object test_SinkMount_onResume(
     test_SinkMount this,
-    corto_string parent,
-    corto_string id,
+    const char *parent,
+    const char *id,
     corto_object object)
 {
     corto_iter iter = corto_ll_iter(this->items);
@@ -232,6 +230,7 @@ corto_object test_SinkMount_onResume(
                             e.id, corto_lasterr());
                         goto error;
                     }
+
                 }
 
                 if (e.value) {
@@ -245,10 +244,13 @@ corto_object test_SinkMount_onResume(
                 corto_release(t);
                 corto_release(p);
             }
+
         }
+
     }
 
     return result;
 error:
     return NULL;
 }
+

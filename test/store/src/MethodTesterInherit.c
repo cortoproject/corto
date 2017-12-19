@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_MethodTesterInherit_overload__test_MethodTesterInherit(
     test_MethodTesterInherit this,
     test_MethodTesterInherit m)
@@ -11,8 +10,8 @@ void test_MethodTesterInherit_overload__test_MethodTesterInherit(
 
 void test_MethodTesterInherit_overload_string_string(
     test_MethodTesterInherit this,
-    corto_string a,
-    corto_string b)
+    const char *a,
+    const char *b)
 {
     /* Insert implementation */
 }

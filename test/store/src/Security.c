@@ -18,7 +18,7 @@ void test_Security_setup(
 void test_Security_tc_authenticate(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
 
@@ -31,7 +31,7 @@ void test_Security_tc_authenticate(
 void test_Security_tc_authenticateFail(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "41");
+    const char *token = corto_login("Ford Prefect", "41");
     test_assert(token == NULL);
 
 }
@@ -39,10 +39,10 @@ void test_Security_tc_authenticateFail(
 void test_Security_tc_authorizeCreate(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b/foo", ".", 0, NULL);
@@ -66,9 +66,9 @@ void test_Security_tc_authorizeCreate(
 void test_Security_tc_authorizeDelete(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b/foo", ".", 0, NULL);
@@ -93,9 +93,9 @@ void test_Security_tc_authorizeDelete(
 void test_Security_tc_authorizeDeniedCreate(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b/foo", ".", 0, NULL);
@@ -118,9 +118,9 @@ void test_Security_tc_authorizeDeniedCreate(
 void test_Security_tc_authorizeDeniedDelete(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b/foo", ".", 0, NULL);
@@ -144,9 +144,9 @@ void test_Security_tc_authorizeDeniedDelete(
 void test_Security_tc_authorizeDeniedLookup(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -164,9 +164,9 @@ void test_Security_tc_authorizeDeniedLookup(
 void test_Security_tc_authorizeDeniedResolve(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -184,9 +184,9 @@ void test_Security_tc_authorizeDeniedResolve(
 void test_Security_tc_authorizeDeniedScopeClaim(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b/c", ".", 0, NULL);
@@ -220,9 +220,9 @@ int test_Security_tc_authorizeDeniedScopeWalk_walk(
 void test_Security_tc_authorizeDeniedScopeWalk(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b/c", ".", 0, NULL);
@@ -246,9 +246,9 @@ void test_Security_tc_authorizeDeniedScopeWalk(
 void test_Security_tc_authorizeDeniedSelect(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -283,9 +283,9 @@ void test_Security_tc_authorizeDeniedSelect(
 void test_Security_tc_authorizeDeniedUpdate(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/d", ".", 0, NULL);
@@ -308,9 +308,9 @@ void test_Security_tc_authorizeDeniedUpdate(
 void test_Security_tc_authorizeDeniedUpdateVoid(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -333,9 +333,9 @@ void test_Security_tc_authorizeDeniedUpdateVoid(
 void test_Security_tc_authorizeLookup(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -354,9 +354,9 @@ void test_Security_tc_authorizeLookup(
 void test_Security_tc_authorizeResolve(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -375,9 +375,9 @@ void test_Security_tc_authorizeResolve(
 void test_Security_tc_authorizeSelect(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -418,9 +418,9 @@ void test_Security_tc_authorizeSelect(
 void test_Security_tc_authorizeUpdate(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/d", ".", 0, NULL);
@@ -443,9 +443,9 @@ void test_Security_tc_authorizeUpdate(
 void test_Security_tc_authorizeUpdateVoid(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock l = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -468,9 +468,9 @@ void test_Security_tc_authorizeUpdateVoid(
 void test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -492,9 +492,9 @@ void test_Security_tc_lockDenyGrantLowerDepthHigherPrio(
 void test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -517,9 +517,9 @@ void test_Security_tc_lockDenyGrantLowerDepthLowerPrio(
 void test_Security_tc_lockDenyGrantLowerDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -542,9 +542,9 @@ void test_Security_tc_lockDenyGrantLowerDepthSamePrio(
 void test_Security_tc_lockDenyGrantSameDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -566,9 +566,9 @@ void test_Security_tc_lockDenyGrantSameDepthHigherPrio(
 void test_Security_tc_lockDenyGrantSameDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -591,9 +591,9 @@ void test_Security_tc_lockDenyGrantSameDepthLowerPrio(
 void test_Security_tc_lockDenyGrantSameDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -615,9 +615,9 @@ void test_Security_tc_lockDenyGrantSameDepthSamePrio(
 void test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -639,9 +639,9 @@ void test_Security_tc_lockDenyUndefinedLowerDepthHigherPrio(
 void test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -663,9 +663,9 @@ void test_Security_tc_lockDenyUndefinedLowerDepthLowerPrio(
 void test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -687,9 +687,9 @@ void test_Security_tc_lockDenyUndefinedLowerDepthSamePrio(
 void test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -711,9 +711,9 @@ void test_Security_tc_lockDenyUndefinedSameDepthHigherPrio(
 void test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -735,9 +735,9 @@ void test_Security_tc_lockDenyUndefinedSameDepthLowerPrio(
 void test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -759,9 +759,9 @@ void test_Security_tc_lockDenyUndefinedSameDepthSamePrio(
 void test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -784,9 +784,9 @@ void test_Security_tc_lockGrantDenyLowerDepthHigherPrio(
 void test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -808,9 +808,9 @@ void test_Security_tc_lockGrantDenyLowerDepthLowerPrio(
 void test_Security_tc_lockGrantDenyLowerDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -832,9 +832,9 @@ void test_Security_tc_lockGrantDenyLowerDepthSamePrio(
 void test_Security_tc_lockGrantDenySameDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -857,9 +857,9 @@ void test_Security_tc_lockGrantDenySameDepthHigherPrio(
 void test_Security_tc_lockGrantDenySameDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -881,9 +881,9 @@ void test_Security_tc_lockGrantDenySameDepthLowerPrio(
 void test_Security_tc_lockGrantDenySameDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -911,16 +911,16 @@ void test_Security_tc_lockSwitchUser(
     test_AccessRule r2 = {"token_user02", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
     test_AccessRuleListInsert(l->rules, &r2);
 
-    corto_string token1 = corto_login("Ford Prefect", "42");
+    const char *token1 = corto_login("Ford Prefect", "42");
     test_assert(token1 != NULL);
-    corto_string prev = corto_set_session(token1);
+    const char *prev = corto_set_session(token1);
     test_assert(prev == NULL);
 
     corto_int32 *b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
     corto_release(b);
 
-    corto_string token2 = corto_login("Marvin", "android");
+    const char *token2 = corto_login("Marvin", "android");
     test_assert(token2 != NULL);
     prev = corto_set_session(token2);
     test_assert(prev == token1);
@@ -936,9 +936,9 @@ void test_Security_tc_lockSwitchUser(
 void test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -960,9 +960,9 @@ void test_Security_tc_lockUndefinedDenyLowerDepthHigherPrio(
 void test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -984,9 +984,9 @@ void test_Security_tc_lockUndefinedDenyLowerDepthLowerPrio(
 void test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -1008,9 +1008,9 @@ void test_Security_tc_lockUndefinedDenyLowerDepthSamePrio(
 void test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);
@@ -1032,9 +1032,9 @@ void test_Security_tc_lockUndefinedDenySameDepthHigherPrio(
 void test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 1, NULL);
@@ -1056,9 +1056,9 @@ void test_Security_tc_lockUndefinedDenySameDepthLowerPrio(
 void test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     test_Security this)
 {
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     test_TestLock upper = test_TestLockCreate("/a/b", ".", 0, NULL);

@@ -40,7 +40,7 @@ void corto_ptr_setref(void* ptr, corto_object value) {
 }
 
 /* Set string field */
-void corto_ptr_setstr(corto_string* ptr, corto_string value) {
+void corto_ptr_setstr(char** ptr, const char *value) {
     char *str = *ptr;
     if (str != value) {
         if (str) {

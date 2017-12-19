@@ -326,7 +326,7 @@ void corto_ptr_setref(
 CORTO_EXPORT
 void corto_ptr_setstr(
     char **ptr,
-    char *str);
+    const char *str);
 
 #define corto_ptr_cast(fromType, from, toType, to) _corto_ptr_cast(corto_type(fromType), from, corto_type(toType), to)
 #define corto_ptr_str(p, type, maxLength) _corto_ptr_str(p, corto_type(type), maxLength)

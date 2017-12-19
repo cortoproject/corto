@@ -75,10 +75,10 @@ void test_Observers_tc_notifyReadDenied(
     test_assert(observer != NULL);
 
     /* Login & authenticate Ford Prefect */
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     /* Update will succeed because update is authorized */
@@ -111,10 +111,10 @@ void test_Observers_tc_notifyUpdateDenied(
     test_assert(observer != NULL);
 
     /* Login & authenticate Ford Prefect */
-    corto_string token = corto_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
-    corto_string prev = corto_set_session(token);
+    const char *prev = corto_set_session(token);
     test_assert(prev == NULL);
 
     /* Update will fail because not authorized */

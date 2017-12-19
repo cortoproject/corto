@@ -44,13 +44,13 @@ typedef struct corto_select__fluent {
      * @param scope A scope identifier.
      */
     struct corto_select__fluent (*from)(
-        char *scope);
+        const char *scope);
 
     /** Request results in a specific contentType.
      * @param contentType A MIME identifier identifying a contentType.
      */
     struct corto_select__fluent (*contentType)(
-        char *contentType);
+        const char *contentType);
 
     /** Enable pagination by specifying an object offset.
      * @param offset Specifies from which nth object results should be returned.
@@ -68,7 +68,7 @@ typedef struct corto_select__fluent {
      * @param filter An id expression matching one or more types.
      */
     struct corto_select__fluent (*type)(
-        char *filter);
+        const char *filter);
 
     /** Filter out results from a specific instance (mount).
      * This is typically useful when using corto_select from a mount, and the
@@ -206,7 +206,7 @@ typedef struct corto_select__fluent {
  */
 CORTO_EXPORT
 struct corto_select__fluent corto_select(
-    char *expr,
+    const char *expr,
     ...);
 
 /** Publish event.
@@ -243,7 +243,7 @@ typedef struct corto_subscribe__fluent {
      * @param scope A scope identifier.
      */
     struct corto_subscribe__fluent (*from)(
-        char *scope);
+        const char *scope);
 
     /** Create disabled subscriber.
      * Disabled observers allow an application to make modifications to the
@@ -275,7 +275,7 @@ typedef struct corto_subscribe__fluent {
      * @param contentType A MIME identifier identifying a contentType.
      */
     struct corto_subscribe__fluent (*contentType)(
-        char *contentType);
+        const char *contentType);
 
     /** Filter objects by type.
      * The subscriber will only trigger on objects of the specified type.
@@ -283,7 +283,7 @@ typedef struct corto_subscribe__fluent {
      * @param type A valid corto type identifier.
      */
     struct corto_subscribe__fluent (*type)(
-        char *type);
+        const char *type);
 
     /** Create a mount of the specified type.
      *
@@ -322,7 +322,7 @@ typedef struct corto_subscribe__fluent {
  */
 CORTO_EXPORT
 struct corto_subscribe__fluent corto_subscribe(
-    char *expr,
+    const char *expr,
     ...);
 
 /** Delete a subscriber.
