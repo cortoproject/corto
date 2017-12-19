@@ -22,7 +22,7 @@ corto_secure_accessKind* _corto_secure_accessKindCreate(corto_secure_accessKind 
     return _this;
 }
 
-corto_secure_accessKind* _corto_secure_accessKindCreateChild(corto_object _parent, corto_string _id, corto_secure_accessKind value) {
+corto_secure_accessKind* _corto_secure_accessKindCreateChild(corto_object _parent, const char *_id, corto_secure_accessKind value) {
     corto_secure_accessKind* _this;
     _this = (corto_secure_accessKind*)corto_declare(_parent, _id, corto_secure_accessKind_o);
     if (!_this) {
@@ -64,7 +64,7 @@ corto_secure_accessKind* _corto_secure_accessKindDeclare(void) {
     return _this;
 }
 
-corto_secure_accessKind* _corto_secure_accessKindDeclareChild(corto_object _parent, corto_string _id) {
+corto_secure_accessKind* _corto_secure_accessKindDeclareChild(corto_object _parent, const char *_id) {
     corto_secure_accessKind* _this;
     _this = (corto_secure_accessKind*)corto_declare(_parent, _id, corto_secure_accessKind_o);
     if (!_this) {
@@ -101,7 +101,7 @@ corto_secure_actionKind* _corto_secure_actionKindCreate(corto_secure_actionKind 
     return _this;
 }
 
-corto_secure_actionKind* _corto_secure_actionKindCreateChild(corto_object _parent, corto_string _id, corto_secure_actionKind value) {
+corto_secure_actionKind* _corto_secure_actionKindCreateChild(corto_object _parent, const char *_id, corto_secure_actionKind value) {
     corto_secure_actionKind* _this;
     _this = (corto_secure_actionKind*)corto_declare(_parent, _id, corto_secure_actionKind_o);
     if (!_this) {
@@ -143,7 +143,7 @@ corto_secure_actionKind* _corto_secure_actionKindDeclare(void) {
     return _this;
 }
 
-corto_secure_actionKind* _corto_secure_actionKindDeclareChild(corto_object _parent, corto_string _id) {
+corto_secure_actionKind* _corto_secure_actionKindDeclareChild(corto_object _parent, const char *_id) {
     corto_secure_actionKind* _this;
     _this = (corto_secure_actionKind*)corto_declare(_parent, _id, corto_secure_actionKind_o);
     if (!_this) {
@@ -179,7 +179,7 @@ corto_secure_key _corto_secure_keyCreate(void) {
     return _this;
 }
 
-corto_secure_key _corto_secure_keyCreateChild(corto_object _parent, corto_string _id) {
+corto_secure_key _corto_secure_keyCreateChild(corto_object _parent, const char *_id) {
     corto_secure_key _this;
     _this = (corto_secure_key)corto_declare(_parent, _id, corto_secure_key_o);
     if (!_this) {
@@ -218,7 +218,7 @@ corto_secure_key _corto_secure_keyDeclare(void) {
     return _this;
 }
 
-corto_secure_key _corto_secure_keyDeclareChild(corto_object _parent, corto_string _id) {
+corto_secure_key _corto_secure_keyDeclareChild(corto_object _parent, const char *_id) {
     corto_secure_key _this;
     _this = (corto_secure_key)corto_declare(_parent, _id, corto_secure_key_o);
     if (!_this) {
@@ -255,7 +255,7 @@ corto_secure_lock _corto_secure_lockCreate(const char * mount, const char * expr
     return _this;
 }
 
-corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, corto_string _id, const char * mount, const char * expr, int16_t priority) {
+corto_secure_lock _corto_secure_lockCreateChild(corto_object _parent, const char *_id, const char * mount, const char * expr, int16_t priority) {
     corto_secure_lock _this;
     _this = (corto_secure_lock)corto_declare(_parent, _id, corto_secure_lock_o);
     if (!_this) {
@@ -303,7 +303,7 @@ corto_secure_lock _corto_secure_lockDeclare(void) {
     return _this;
 }
 
-corto_secure_lock _corto_secure_lockDeclareChild(corto_object _parent, corto_string _id) {
+corto_secure_lock _corto_secure_lockDeclareChild(corto_object _parent, const char *_id) {
     corto_secure_lock _this;
     _this = (corto_secure_lock)corto_declare(_parent, _id, corto_secure_lock_o);
     if (!_this) {

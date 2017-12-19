@@ -16,7 +16,7 @@ extern "C" {
 CORTO_EXPORT corto_dispatcher _corto_dispatcherCreate(void);
 #define corto_dispatcherCreate() _corto_dispatcherCreate()
 #define corto_dispatcherCreate_auto(_id) corto_dispatcher _id = corto_dispatcherCreate(); (void)_id
-CORTO_EXPORT corto_dispatcher _corto_dispatcherCreateChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_dispatcher _corto_dispatcherCreateChild(corto_object _parent, const char *_id);
 #define corto_dispatcherCreateChild(_parent, _id) _corto_dispatcherCreateChild(_parent, _id)
 #define corto_dispatcherCreateChild_auto(_parent, _id) corto_dispatcher _id = corto_dispatcherCreateChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_dispatcherUpdate(corto_dispatcher _this);
@@ -25,7 +25,7 @@ CORTO_EXPORT corto_int16 _corto_dispatcherUpdate(corto_dispatcher _this);
 CORTO_EXPORT corto_dispatcher _corto_dispatcherDeclare(void);
 #define corto_dispatcherDeclare() _corto_dispatcherDeclare()
 #define corto_dispatcherDeclare_auto(_id) corto_dispatcher _id = corto_dispatcherDeclare(); (void)_id
-CORTO_EXPORT corto_dispatcher _corto_dispatcherDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_dispatcher _corto_dispatcherDeclareChild(corto_object _parent, const char *_id);
 #define corto_dispatcherDeclareChild(_parent, _id) _corto_dispatcherDeclareChild(_parent, _id)
 #define corto_dispatcherDeclareChild_auto(_parent, _id) corto_dispatcher _id = corto_dispatcherDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_dispatcherDefine(corto_dispatcher _this);
@@ -42,7 +42,7 @@ CORTO_EXPORT corto_dispatcher _corto_dispatcherAssign(corto_dispatcher _this);
 CORTO_EXPORT corto_event* _corto_eventCreate(void);
 #define corto_eventCreate() _corto_eventCreate()
 #define corto_eventCreate_auto(_id) corto_event* _id = corto_eventCreate(); (void)_id
-CORTO_EXPORT corto_event* _corto_eventCreateChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_event* _corto_eventCreateChild(corto_object _parent, const char *_id);
 #define corto_eventCreateChild(_parent, _id) _corto_eventCreateChild(_parent, _id)
 #define corto_eventCreateChild_auto(_parent, _id) corto_event* _id = corto_eventCreateChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_eventUpdate(corto_event* _this);
@@ -51,7 +51,7 @@ CORTO_EXPORT corto_int16 _corto_eventUpdate(corto_event* _this);
 CORTO_EXPORT corto_event* _corto_eventDeclare(void);
 #define corto_eventDeclare() _corto_eventDeclare()
 #define corto_eventDeclare_auto(_id) corto_event* _id = corto_eventDeclare(); (void)_id
-CORTO_EXPORT corto_event* _corto_eventDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_event* _corto_eventDeclareChild(corto_object _parent, const char *_id);
 #define corto_eventDeclareChild(_parent, _id) _corto_eventDeclareChild(_parent, _id)
 #define corto_eventDeclareChild_auto(_parent, _id) corto_event* _id = corto_eventDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_eventDefine(corto_event* _this);
@@ -68,7 +68,7 @@ CORTO_EXPORT corto_event* _corto_eventAssign(corto_event* _this);
 CORTO_EXPORT corto_eventMask* _corto_eventMaskCreate(corto_eventMask value);
 #define corto_eventMaskCreate(value) _corto_eventMaskCreate(value)
 #define corto_eventMaskCreate_auto(_id, value) corto_eventMask* _id = corto_eventMaskCreate(value); (void)_id
-CORTO_EXPORT corto_eventMask* _corto_eventMaskCreateChild(corto_object _parent, corto_string _id, corto_eventMask value);
+CORTO_EXPORT corto_eventMask* _corto_eventMaskCreateChild(corto_object _parent, const char *_id, corto_eventMask value);
 #define corto_eventMaskCreateChild(_parent, _id, value) _corto_eventMaskCreateChild(_parent, _id, value)
 #define corto_eventMaskCreateChild_auto(_parent, _id, value) corto_eventMask* _id = corto_eventMaskCreateChild(_parent, #_id, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_eventMaskUpdate(corto_eventMask* _this, corto_eventMask value);
@@ -77,7 +77,7 @@ CORTO_EXPORT corto_int16 _corto_eventMaskUpdate(corto_eventMask* _this, corto_ev
 CORTO_EXPORT corto_eventMask* _corto_eventMaskDeclare(void);
 #define corto_eventMaskDeclare() _corto_eventMaskDeclare()
 #define corto_eventMaskDeclare_auto(_id) corto_eventMask* _id = corto_eventMaskDeclare(); (void)_id
-CORTO_EXPORT corto_eventMask* _corto_eventMaskDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_eventMask* _corto_eventMaskDeclareChild(corto_object _parent, const char *_id);
 #define corto_eventMaskDeclareChild(_parent, _id) _corto_eventMaskDeclareChild(_parent, _id)
 #define corto_eventMaskDeclareChild_auto(_parent, _id) corto_eventMask* _id = corto_eventMaskDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_eventMaskDefine(corto_eventMask* _this, corto_eventMask value);
@@ -94,7 +94,7 @@ CORTO_EXPORT corto_eventMask* _corto_eventMaskAssign(corto_eventMask* _this, cor
 CORTO_EXPORT corto_frame* _corto_frameCreate(corto_frameKind kind, int64_t value);
 #define corto_frameCreate(kind, value) _corto_frameCreate(kind, value)
 #define corto_frameCreate_auto(_id, kind, value) corto_frame* _id = corto_frameCreate(kind, value); (void)_id
-CORTO_EXPORT corto_frame* _corto_frameCreateChild(corto_object _parent, corto_string _id, corto_frameKind kind, int64_t value);
+CORTO_EXPORT corto_frame* _corto_frameCreateChild(corto_object _parent, const char *_id, corto_frameKind kind, int64_t value);
 #define corto_frameCreateChild(_parent, _id, kind, value) _corto_frameCreateChild(_parent, _id, kind, value)
 #define corto_frameCreateChild_auto(_parent, _id, kind, value) corto_frame* _id = corto_frameCreateChild(_parent, #_id, kind, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind kind, int64_t value);
@@ -103,7 +103,7 @@ CORTO_EXPORT corto_int16 _corto_frameUpdate(corto_frame* _this, corto_frameKind 
 CORTO_EXPORT corto_frame* _corto_frameDeclare(void);
 #define corto_frameDeclare() _corto_frameDeclare()
 #define corto_frameDeclare_auto(_id) corto_frame* _id = corto_frameDeclare(); (void)_id
-CORTO_EXPORT corto_frame* _corto_frameDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_frame* _corto_frameDeclareChild(corto_object _parent, const char *_id);
 #define corto_frameDeclareChild(_parent, _id) _corto_frameDeclareChild(_parent, _id)
 #define corto_frameDeclareChild_auto(_parent, _id) corto_frame* _id = corto_frameDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_frameDefine(corto_frame* _this, corto_frameKind kind, int64_t value);
@@ -120,7 +120,7 @@ CORTO_EXPORT corto_frame* _corto_frameAssign(corto_frame* _this, corto_frameKind
 CORTO_EXPORT corto_frameKind* _corto_frameKindCreate(corto_frameKind value);
 #define corto_frameKindCreate(value) _corto_frameKindCreate(value)
 #define corto_frameKindCreate_auto(_id, value) corto_frameKind* _id = corto_frameKindCreate(value); (void)_id
-CORTO_EXPORT corto_frameKind* _corto_frameKindCreateChild(corto_object _parent, corto_string _id, corto_frameKind value);
+CORTO_EXPORT corto_frameKind* _corto_frameKindCreateChild(corto_object _parent, const char *_id, corto_frameKind value);
 #define corto_frameKindCreateChild(_parent, _id, value) _corto_frameKindCreateChild(_parent, _id, value)
 #define corto_frameKindCreateChild_auto(_parent, _id, value) corto_frameKind* _id = corto_frameKindCreateChild(_parent, #_id, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_frameKindUpdate(corto_frameKind* _this, corto_frameKind value);
@@ -129,7 +129,7 @@ CORTO_EXPORT corto_int16 _corto_frameKindUpdate(corto_frameKind* _this, corto_fr
 CORTO_EXPORT corto_frameKind* _corto_frameKindDeclare(void);
 #define corto_frameKindDeclare() _corto_frameKindDeclare()
 #define corto_frameKindDeclare_auto(_id) corto_frameKind* _id = corto_frameKindDeclare(); (void)_id
-CORTO_EXPORT corto_frameKind* _corto_frameKindDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_frameKind* _corto_frameKindDeclareChild(corto_object _parent, const char *_id);
 #define corto_frameKindDeclareChild(_parent, _id) _corto_frameKindDeclareChild(_parent, _id)
 #define corto_frameKindDeclareChild_auto(_parent, _id) corto_frameKind* _id = corto_frameKindDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_frameKindDefine(corto_frameKind* _this, corto_frameKind value);
@@ -146,7 +146,7 @@ CORTO_EXPORT corto_frameKind* _corto_frameKindAssign(corto_frameKind* _this, cor
 CORTO_EXPORT corto_handleAction* _corto_handleActionCreate(corto_object instance, corto_function procedure);
 #define corto_handleActionCreate(instance, procedure) _corto_handleActionCreate(instance, corto_function(procedure))
 #define corto_handleActionCreate_auto(_id, instance, procedure) corto_handleAction* _id = corto_handleActionCreate(instance, procedure); (void)_id
-CORTO_EXPORT corto_handleAction* _corto_handleActionCreateChild(corto_object _parent, corto_string _id, corto_object instance, corto_function procedure);
+CORTO_EXPORT corto_handleAction* _corto_handleActionCreateChild(corto_object _parent, const char *_id, corto_object instance, corto_function procedure);
 #define corto_handleActionCreateChild(_parent, _id, instance, procedure) _corto_handleActionCreateChild(_parent, _id, instance, corto_function(procedure))
 #define corto_handleActionCreateChild_auto(_parent, _id, instance, procedure) corto_handleAction* _id = corto_handleActionCreateChild(_parent, #_id, instance, procedure); (void)_id
 CORTO_EXPORT corto_int16 _corto_handleActionUpdate(corto_handleAction* _this, corto_object instance, corto_function procedure);
@@ -155,7 +155,7 @@ CORTO_EXPORT corto_int16 _corto_handleActionUpdate(corto_handleAction* _this, co
 CORTO_EXPORT corto_handleAction* _corto_handleActionDeclare(void);
 #define corto_handleActionDeclare() _corto_handleActionDeclare()
 #define corto_handleActionDeclare_auto(_id) corto_handleAction* _id = corto_handleActionDeclare(); (void)_id
-CORTO_EXPORT corto_handleAction* _corto_handleActionDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_handleAction* _corto_handleActionDeclareChild(corto_object _parent, const char *_id);
 #define corto_handleActionDeclareChild(_parent, _id) _corto_handleActionDeclareChild(_parent, _id)
 #define corto_handleActionDeclareChild_auto(_parent, _id) corto_handleAction* _id = corto_handleActionDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_handleActionDefine(corto_handleAction* _this, corto_object instance, corto_function procedure);
@@ -177,7 +177,7 @@ CORTO_EXPORT corto_int16 corto_handleActionInitCInstance(corto_handleAction *d, 
 CORTO_EXPORT corto_invokeEvent* _corto_invokeEventCreate(corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
 #define corto_invokeEventCreate(mount, instance, function, args) _corto_invokeEventCreate(corto_mount(mount), instance, corto_function(function), args)
 #define corto_invokeEventCreate_auto(_id, mount, instance, function, args) corto_invokeEvent* _id = corto_invokeEventCreate(mount, instance, function, args); (void)_id
-CORTO_EXPORT corto_invokeEvent* _corto_invokeEventCreateChild(corto_object _parent, corto_string _id, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
+CORTO_EXPORT corto_invokeEvent* _corto_invokeEventCreateChild(corto_object _parent, const char *_id, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
 #define corto_invokeEventCreateChild(_parent, _id, mount, instance, function, args) _corto_invokeEventCreateChild(_parent, _id, corto_mount(mount), instance, corto_function(function), args)
 #define corto_invokeEventCreateChild_auto(_parent, _id, mount, instance, function, args) corto_invokeEvent* _id = corto_invokeEventCreateChild(_parent, #_id, mount, instance, function, args); (void)_id
 CORTO_EXPORT corto_int16 _corto_invokeEventUpdate(corto_invokeEvent* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
@@ -186,7 +186,7 @@ CORTO_EXPORT corto_int16 _corto_invokeEventUpdate(corto_invokeEvent* _this, cort
 CORTO_EXPORT corto_invokeEvent* _corto_invokeEventDeclare(void);
 #define corto_invokeEventDeclare() _corto_invokeEventDeclare()
 #define corto_invokeEventDeclare_auto(_id) corto_invokeEvent* _id = corto_invokeEventDeclare(); (void)_id
-CORTO_EXPORT corto_invokeEvent* _corto_invokeEventDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_invokeEvent* _corto_invokeEventDeclareChild(corto_object _parent, const char *_id);
 #define corto_invokeEventDeclareChild(_parent, _id) _corto_invokeEventDeclareChild(_parent, _id)
 #define corto_invokeEventDeclareChild_auto(_parent, _id) corto_invokeEvent* _id = corto_invokeEventDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_invokeEventDefine(corto_invokeEvent* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
@@ -203,7 +203,7 @@ CORTO_EXPORT corto_invokeEvent* _corto_invokeEventAssign(corto_invokeEvent* _thi
 CORTO_EXPORT corto_loader _corto_loaderCreate(bool autoLoad);
 #define corto_loaderCreate(autoLoad) _corto_loaderCreate(autoLoad)
 #define corto_loaderCreate_auto(_id, autoLoad) corto_loader _id = corto_loaderCreate(autoLoad); (void)_id
-CORTO_EXPORT corto_loader _corto_loaderCreateChild(corto_object _parent, corto_string _id, bool autoLoad);
+CORTO_EXPORT corto_loader _corto_loaderCreateChild(corto_object _parent, const char *_id, bool autoLoad);
 #define corto_loaderCreateChild(_parent, _id, autoLoad) _corto_loaderCreateChild(_parent, _id, autoLoad)
 #define corto_loaderCreateChild_auto(_parent, _id, autoLoad) corto_loader _id = corto_loaderCreateChild(_parent, #_id, autoLoad); (void)_id
 CORTO_EXPORT corto_int16 _corto_loaderUpdate(corto_loader _this, bool autoLoad);
@@ -212,7 +212,7 @@ CORTO_EXPORT corto_int16 _corto_loaderUpdate(corto_loader _this, bool autoLoad);
 CORTO_EXPORT corto_loader _corto_loaderDeclare(void);
 #define corto_loaderDeclare() _corto_loaderDeclare()
 #define corto_loaderDeclare_auto(_id) corto_loader _id = corto_loaderDeclare(); (void)_id
-CORTO_EXPORT corto_loader _corto_loaderDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_loader _corto_loaderDeclareChild(corto_object _parent, const char *_id);
 #define corto_loaderDeclareChild(_parent, _id) _corto_loaderDeclareChild(_parent, _id)
 #define corto_loaderDeclareChild_auto(_parent, _id) corto_loader _id = corto_loaderDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_loaderDefine(corto_loader _this, bool autoLoad);
@@ -229,7 +229,7 @@ CORTO_EXPORT corto_loader _corto_loaderAssign(corto_loader _this, bool autoLoad)
 CORTO_EXPORT corto_mount _corto_mountCreate(corto_query* query, const char * contentType, corto_mountPolicy* policy);
 #define corto_mountCreate(query, contentType, policy) _corto_mountCreate(query, contentType, policy)
 #define corto_mountCreate_auto(_id, query, contentType, policy) corto_mount _id = corto_mountCreate(query, contentType, policy); (void)_id
-CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, corto_string _id, corto_query* query, const char * contentType, corto_mountPolicy* policy);
+CORTO_EXPORT corto_mount _corto_mountCreateChild(corto_object _parent, const char *_id, corto_query* query, const char * contentType, corto_mountPolicy* policy);
 #define corto_mountCreateChild(_parent, _id, query, contentType, policy) _corto_mountCreateChild(_parent, _id, query, contentType, policy)
 #define corto_mountCreateChild_auto(_parent, _id, query, contentType, policy) corto_mount _id = corto_mountCreateChild(_parent, #_id, query, contentType, policy); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_query* query, const char * contentType, corto_mountPolicy* policy);
@@ -238,7 +238,7 @@ CORTO_EXPORT corto_int16 _corto_mountUpdate(corto_mount _this, corto_query* quer
 CORTO_EXPORT corto_mount _corto_mountDeclare(void);
 #define corto_mountDeclare() _corto_mountDeclare()
 #define corto_mountDeclare_auto(_id) corto_mount _id = corto_mountDeclare(); (void)_id
-CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_mount _corto_mountDeclareChild(corto_object _parent, const char *_id);
 #define corto_mountDeclareChild(_parent, _id) _corto_mountDeclareChild(_parent, _id)
 #define corto_mountDeclareChild_auto(_parent, _id) corto_mount _id = corto_mountDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountDefine(corto_mount _this, corto_query* query, const char * contentType, corto_mountPolicy* policy);
@@ -255,7 +255,7 @@ CORTO_EXPORT corto_mount _corto_mountAssign(corto_mount _this, corto_query* quer
 CORTO_EXPORT corto_mountMask* _corto_mountMaskCreate(corto_mountMask value);
 #define corto_mountMaskCreate(value) _corto_mountMaskCreate(value)
 #define corto_mountMaskCreate_auto(_id, value) corto_mountMask* _id = corto_mountMaskCreate(value); (void)_id
-CORTO_EXPORT corto_mountMask* _corto_mountMaskCreateChild(corto_object _parent, corto_string _id, corto_mountMask value);
+CORTO_EXPORT corto_mountMask* _corto_mountMaskCreateChild(corto_object _parent, const char *_id, corto_mountMask value);
 #define corto_mountMaskCreateChild(_parent, _id, value) _corto_mountMaskCreateChild(_parent, _id, value)
 #define corto_mountMaskCreateChild_auto(_parent, _id, value) corto_mountMask* _id = corto_mountMaskCreateChild(_parent, #_id, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountMaskUpdate(corto_mountMask* _this, corto_mountMask value);
@@ -264,7 +264,7 @@ CORTO_EXPORT corto_int16 _corto_mountMaskUpdate(corto_mountMask* _this, corto_mo
 CORTO_EXPORT corto_mountMask* _corto_mountMaskDeclare(void);
 #define corto_mountMaskDeclare() _corto_mountMaskDeclare()
 #define corto_mountMaskDeclare_auto(_id) corto_mountMask* _id = corto_mountMaskDeclare(); (void)_id
-CORTO_EXPORT corto_mountMask* _corto_mountMaskDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_mountMask* _corto_mountMaskDeclareChild(corto_object _parent, const char *_id);
 #define corto_mountMaskDeclareChild(_parent, _id) _corto_mountMaskDeclareChild(_parent, _id)
 #define corto_mountMaskDeclareChild_auto(_parent, _id) corto_mountMask* _id = corto_mountMaskDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountMaskDefine(corto_mountMask* _this, corto_mountMask value);
@@ -281,7 +281,7 @@ CORTO_EXPORT corto_mountMask* _corto_mountMaskAssign(corto_mountMask* _this, cor
 CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreate(corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
 #define corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime, filterResults)
 #define corto_mountPolicyCreate_auto(_id, ownership, mask, sampleRate, queue, expiryTime, filterResults) corto_mountPolicy* _id = corto_mountPolicyCreate(ownership, mask, sampleRate, queue, expiryTime, filterResults); (void)_id
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, corto_string _id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyCreateChild(corto_object _parent, const char *_id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
 #define corto_mountPolicyCreateChild(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicyCreateChild(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults)
 #define corto_mountPolicyCreateChild_auto(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults) corto_mountPolicy* _id = corto_mountPolicyCreateChild(_parent, #_id, ownership, mask, sampleRate, queue, expiryTime, filterResults); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
@@ -290,7 +290,7 @@ CORTO_EXPORT corto_int16 _corto_mountPolicyUpdate(corto_mountPolicy* _this, cort
 CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclare(void);
 #define corto_mountPolicyDeclare() _corto_mountPolicyDeclare()
 #define corto_mountPolicyDeclare_auto(_id) corto_mountPolicy* _id = corto_mountPolicyDeclare(); (void)_id
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyDeclareChild(corto_object _parent, const char *_id);
 #define corto_mountPolicyDeclareChild(_parent, _id) _corto_mountPolicyDeclareChild(_parent, _id)
 #define corto_mountPolicyDeclareChild_auto(_parent, _id) corto_mountPolicy* _id = corto_mountPolicyDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountPolicyDefine(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
@@ -307,7 +307,7 @@ CORTO_EXPORT corto_mountPolicy* _corto_mountPolicyAssign(corto_mountPolicy* _thi
 CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreate(corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
 #define corto_mountSubscriptionCreate(query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionCreate(query, mountCount, subscriberCount, mountCtx, subscriberCtx)
 #define corto_mountSubscriptionCreate_auto(_id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscriptionCreate(query, mountCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, corto_string _id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionCreateChild(corto_object _parent, const char *_id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
 #define corto_mountSubscriptionCreateChild(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscriptionCreateChild(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
 #define corto_mountSubscriptionCreateChild_auto(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscriptionCreateChild(_parent, #_id, query, mountCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
@@ -316,7 +316,7 @@ CORTO_EXPORT corto_int16 _corto_mountSubscriptionUpdate(corto_mountSubscription*
 CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclare(void);
 #define corto_mountSubscriptionDeclare() _corto_mountSubscriptionDeclare()
 #define corto_mountSubscriptionDeclare_auto(_id) corto_mountSubscription* _id = corto_mountSubscriptionDeclare(); (void)_id
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionDeclareChild(corto_object _parent, const char *_id);
 #define corto_mountSubscriptionDeclareChild(_parent, _id) _corto_mountSubscriptionDeclareChild(_parent, _id)
 #define corto_mountSubscriptionDeclareChild_auto(_parent, _id) corto_mountSubscription* _id = corto_mountSubscriptionDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountSubscriptionDefine(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
@@ -333,7 +333,7 @@ CORTO_EXPORT corto_mountSubscription* _corto_mountSubscriptionAssign(corto_mount
 CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListCreate(corto_uint32 length, corto_mountSubscription* elements);
 #define corto_mountSubscriptionListCreate(length, elements) _corto_mountSubscriptionListCreate(length, elements)
 #define corto_mountSubscriptionListCreate_auto(_id, length, elements) corto_mountSubscriptionList* _id = corto_mountSubscriptionListCreate(length, elements); (void)_id
-CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_mountSubscription* elements);
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListCreateChild(corto_object _parent, const char *_id, corto_uint32 length, corto_mountSubscription* elements);
 #define corto_mountSubscriptionListCreateChild(_parent, _id, length, elements) _corto_mountSubscriptionListCreateChild(_parent, _id, length, elements)
 #define corto_mountSubscriptionListCreateChild_auto(_parent, _id, length, elements) corto_mountSubscriptionList* _id = corto_mountSubscriptionListCreateChild(_parent, #_id, length, elements); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountSubscriptionListUpdate(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
@@ -342,7 +342,7 @@ CORTO_EXPORT corto_int16 _corto_mountSubscriptionListUpdate(corto_mountSubscript
 CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListDeclare(void);
 #define corto_mountSubscriptionListDeclare() _corto_mountSubscriptionListDeclare()
 #define corto_mountSubscriptionListDeclare_auto(_id) corto_mountSubscriptionList* _id = corto_mountSubscriptionListDeclare(); (void)_id
-CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListDeclareChild(corto_object _parent, const char *_id);
 #define corto_mountSubscriptionListDeclareChild(_parent, _id) _corto_mountSubscriptionListDeclareChild(_parent, _id)
 #define corto_mountSubscriptionListDeclareChild_auto(_parent, _id) corto_mountSubscriptionList* _id = corto_mountSubscriptionListDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_mountSubscriptionListDefine(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
@@ -359,7 +359,7 @@ CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionListAssign(cor
 CORTO_EXPORT corto_objectIter* _corto_objectIterCreate(void);
 #define corto_objectIterCreate() _corto_objectIterCreate()
 #define corto_objectIterCreate_auto(_id) corto_objectIter* _id = corto_objectIterCreate(); (void)_id
-CORTO_EXPORT corto_objectIter* _corto_objectIterCreateChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_objectIter* _corto_objectIterCreateChild(corto_object _parent, const char *_id);
 #define corto_objectIterCreateChild(_parent, _id) _corto_objectIterCreateChild(_parent, _id)
 #define corto_objectIterCreateChild_auto(_parent, _id) corto_objectIter* _id = corto_objectIterCreateChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_objectIterUpdate(corto_objectIter* _this);
@@ -368,7 +368,7 @@ CORTO_EXPORT corto_int16 _corto_objectIterUpdate(corto_objectIter* _this);
 CORTO_EXPORT corto_objectIter* _corto_objectIterDeclare(void);
 #define corto_objectIterDeclare() _corto_objectIterDeclare()
 #define corto_objectIterDeclare_auto(_id) corto_objectIter* _id = corto_objectIterDeclare(); (void)_id
-CORTO_EXPORT corto_objectIter* _corto_objectIterDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_objectIter* _corto_objectIterDeclareChild(corto_object _parent, const char *_id);
 #define corto_objectIterDeclareChild(_parent, _id) _corto_objectIterDeclareChild(_parent, _id)
 #define corto_objectIterDeclareChild_auto(_parent, _id) corto_objectIter* _id = corto_objectIterDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_objectIterDefine(corto_objectIter* _this);
@@ -385,7 +385,7 @@ CORTO_EXPORT corto_objectIter* _corto_objectIterAssign(corto_objectIter* _this);
 CORTO_EXPORT corto_observer _corto_observerCreate(corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_type type, bool enabled, void(*_impl)(void));
 #define corto_observerCreate(mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerCreate(mask, observable, instance, corto_dispatcher(dispatcher), corto_type(type), enabled, (void(*)(void))_impl)
 #define corto_observerCreate_auto(_id, mask, observable, instance, dispatcher, type, enabled, _impl) corto_observer _id = corto_observerCreate(mask, observable, instance, dispatcher, type, enabled, _impl); (void)_id
-CORTO_EXPORT corto_observer _corto_observerCreateChild(corto_object _parent, corto_string _id, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_type type, bool enabled, void(*_impl)(void));
+CORTO_EXPORT corto_observer _corto_observerCreateChild(corto_object _parent, const char *_id, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_type type, bool enabled, void(*_impl)(void));
 #define corto_observerCreateChild(_parent, _id, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observerCreateChild(_parent, _id, mask, observable, instance, corto_dispatcher(dispatcher), corto_type(type), enabled, (void(*)(void))_impl)
 #define corto_observerCreateChild_auto(_parent, _id, mask, observable, instance, dispatcher, type, enabled, _impl) corto_observer _id = corto_observerCreateChild(_parent, #_id, mask, observable, instance, dispatcher, type, enabled, _impl); (void)_id
 CORTO_EXPORT corto_int16 _corto_observerUpdate(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_type type, bool enabled, void(*_impl)(void));
@@ -394,7 +394,7 @@ CORTO_EXPORT corto_int16 _corto_observerUpdate(corto_observer _this, corto_event
 CORTO_EXPORT corto_observer _corto_observerDeclare(void);
 #define corto_observerDeclare() _corto_observerDeclare()
 #define corto_observerDeclare_auto(_id) corto_observer _id = corto_observerDeclare(); (void)_id
-CORTO_EXPORT corto_observer _corto_observerDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_observer _corto_observerDeclareChild(corto_object _parent, const char *_id);
 #define corto_observerDeclareChild(_parent, _id) _corto_observerDeclareChild(_parent, _id)
 #define corto_observerDeclareChild_auto(_parent, _id) corto_observer _id = corto_observerDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_observerDefine(corto_observer _this, corto_eventMask mask, corto_object observable, corto_object instance, corto_dispatcher dispatcher, corto_type type, bool enabled, void(*_impl)(void));
@@ -411,7 +411,7 @@ CORTO_EXPORT corto_observer _corto_observerAssign(corto_observer _this, corto_ev
 CORTO_EXPORT corto_observerEvent* _corto_observerEventCreate(corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
 #define corto_observerEventCreate(observer, instance, source, event, data, thread) _corto_observerEventCreate(corto_observer(observer), instance, source, event, data, thread)
 #define corto_observerEventCreate_auto(_id, observer, instance, source, event, data, thread) corto_observerEvent* _id = corto_observerEventCreate(observer, instance, source, event, data, thread); (void)_id
-CORTO_EXPORT corto_observerEvent* _corto_observerEventCreateChild(corto_object _parent, corto_string _id, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+CORTO_EXPORT corto_observerEvent* _corto_observerEventCreateChild(corto_object _parent, const char *_id, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
 #define corto_observerEventCreateChild(_parent, _id, observer, instance, source, event, data, thread) _corto_observerEventCreateChild(_parent, _id, corto_observer(observer), instance, source, event, data, thread)
 #define corto_observerEventCreateChild_auto(_parent, _id, observer, instance, source, event, data, thread) corto_observerEvent* _id = corto_observerEventCreateChild(_parent, #_id, observer, instance, source, event, data, thread); (void)_id
 CORTO_EXPORT corto_int16 _corto_observerEventUpdate(corto_observerEvent* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
@@ -420,7 +420,7 @@ CORTO_EXPORT corto_int16 _corto_observerEventUpdate(corto_observerEvent* _this, 
 CORTO_EXPORT corto_observerEvent* _corto_observerEventDeclare(void);
 #define corto_observerEventDeclare() _corto_observerEventDeclare()
 #define corto_observerEventDeclare_auto(_id) corto_observerEvent* _id = corto_observerEventDeclare(); (void)_id
-CORTO_EXPORT corto_observerEvent* _corto_observerEventDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_observerEvent* _corto_observerEventDeclareChild(corto_object _parent, const char *_id);
 #define corto_observerEventDeclareChild(_parent, _id) _corto_observerEventDeclareChild(_parent, _id)
 #define corto_observerEventDeclareChild_auto(_parent, _id) corto_observerEvent* _id = corto_observerEventDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_observerEventDefine(corto_observerEvent* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
@@ -437,7 +437,7 @@ CORTO_EXPORT corto_observerEvent* _corto_observerEventAssign(corto_observerEvent
 CORTO_EXPORT corto_operatorKind* _corto_operatorKindCreate(corto_operatorKind value);
 #define corto_operatorKindCreate(value) _corto_operatorKindCreate(value)
 #define corto_operatorKindCreate_auto(_id, value) corto_operatorKind* _id = corto_operatorKindCreate(value); (void)_id
-CORTO_EXPORT corto_operatorKind* _corto_operatorKindCreateChild(corto_object _parent, corto_string _id, corto_operatorKind value);
+CORTO_EXPORT corto_operatorKind* _corto_operatorKindCreateChild(corto_object _parent, const char *_id, corto_operatorKind value);
 #define corto_operatorKindCreateChild(_parent, _id, value) _corto_operatorKindCreateChild(_parent, _id, value)
 #define corto_operatorKindCreateChild_auto(_parent, _id, value) corto_operatorKind* _id = corto_operatorKindCreateChild(_parent, #_id, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_operatorKindUpdate(corto_operatorKind* _this, corto_operatorKind value);
@@ -446,7 +446,7 @@ CORTO_EXPORT corto_int16 _corto_operatorKindUpdate(corto_operatorKind* _this, co
 CORTO_EXPORT corto_operatorKind* _corto_operatorKindDeclare(void);
 #define corto_operatorKindDeclare() _corto_operatorKindDeclare()
 #define corto_operatorKindDeclare_auto(_id) corto_operatorKind* _id = corto_operatorKindDeclare(); (void)_id
-CORTO_EXPORT corto_operatorKind* _corto_operatorKindDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_operatorKind* _corto_operatorKindDeclareChild(corto_object _parent, const char *_id);
 #define corto_operatorKindDeclareChild(_parent, _id) _corto_operatorKindDeclareChild(_parent, _id)
 #define corto_operatorKindDeclareChild_auto(_parent, _id) corto_operatorKind* _id = corto_operatorKindDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_operatorKindDefine(corto_operatorKind* _this, corto_operatorKind value);
@@ -463,7 +463,7 @@ CORTO_EXPORT corto_operatorKind* _corto_operatorKindAssign(corto_operatorKind* _
 CORTO_EXPORT corto_ownership* _corto_ownershipCreate(corto_ownership value);
 #define corto_ownershipCreate(value) _corto_ownershipCreate(value)
 #define corto_ownershipCreate_auto(_id, value) corto_ownership* _id = corto_ownershipCreate(value); (void)_id
-CORTO_EXPORT corto_ownership* _corto_ownershipCreateChild(corto_object _parent, corto_string _id, corto_ownership value);
+CORTO_EXPORT corto_ownership* _corto_ownershipCreateChild(corto_object _parent, const char *_id, corto_ownership value);
 #define corto_ownershipCreateChild(_parent, _id, value) _corto_ownershipCreateChild(_parent, _id, value)
 #define corto_ownershipCreateChild_auto(_parent, _id, value) corto_ownership* _id = corto_ownershipCreateChild(_parent, #_id, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_ownershipUpdate(corto_ownership* _this, corto_ownership value);
@@ -472,7 +472,7 @@ CORTO_EXPORT corto_int16 _corto_ownershipUpdate(corto_ownership* _this, corto_ow
 CORTO_EXPORT corto_ownership* _corto_ownershipDeclare(void);
 #define corto_ownershipDeclare() _corto_ownershipDeclare()
 #define corto_ownershipDeclare_auto(_id) corto_ownership* _id = corto_ownershipDeclare(); (void)_id
-CORTO_EXPORT corto_ownership* _corto_ownershipDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_ownership* _corto_ownershipDeclareChild(corto_object _parent, const char *_id);
 #define corto_ownershipDeclareChild(_parent, _id) _corto_ownershipDeclareChild(_parent, _id)
 #define corto_ownershipDeclareChild_auto(_parent, _id) corto_ownership* _id = corto_ownershipDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_ownershipDefine(corto_ownership* _this, corto_ownership value);
@@ -489,7 +489,7 @@ CORTO_EXPORT corto_ownership* _corto_ownershipAssign(corto_ownership* _this, cor
 CORTO_EXPORT corto_query* _corto_queryCreate(const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
 #define corto_queryCreate(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryCreate(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
 #define corto_queryCreate_auto(_id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) corto_query* _id = corto_queryCreate(select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd); (void)_id
-CORTO_EXPORT corto_query* _corto_queryCreateChild(corto_object _parent, corto_string _id, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
+CORTO_EXPORT corto_query* _corto_queryCreateChild(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
 #define corto_queryCreateChild(_parent, _id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_queryCreateChild(_parent, _id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
 #define corto_queryCreateChild_auto(_parent, _id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) corto_query* _id = corto_queryCreateChild(_parent, #_id, select, from, type, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd); (void)_id
 CORTO_EXPORT corto_int16 _corto_queryUpdate(corto_query* _this, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
@@ -498,7 +498,7 @@ CORTO_EXPORT corto_int16 _corto_queryUpdate(corto_query* _this, const char * sel
 CORTO_EXPORT corto_query* _corto_queryDeclare(void);
 #define corto_queryDeclare() _corto_queryDeclare()
 #define corto_queryDeclare_auto(_id) corto_query* _id = corto_queryDeclare(); (void)_id
-CORTO_EXPORT corto_query* _corto_queryDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_query* _corto_queryDeclareChild(corto_object _parent, const char *_id);
 #define corto_queryDeclareChild(_parent, _id) _corto_queryDeclareChild(_parent, _id)
 #define corto_queryDeclareChild_auto(_parent, _id) corto_query* _id = corto_queryDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_queryDefine(corto_query* _this, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
@@ -515,7 +515,7 @@ CORTO_EXPORT corto_query* _corto_queryAssign(corto_query* _this, const char * se
 CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyCreate(uint32_t max);
 #define corto_queuePolicyCreate(max) _corto_queuePolicyCreate(max)
 #define corto_queuePolicyCreate_auto(_id, max) corto_queuePolicy* _id = corto_queuePolicyCreate(max); (void)_id
-CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyCreateChild(corto_object _parent, corto_string _id, uint32_t max);
+CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyCreateChild(corto_object _parent, const char *_id, uint32_t max);
 #define corto_queuePolicyCreateChild(_parent, _id, max) _corto_queuePolicyCreateChild(_parent, _id, max)
 #define corto_queuePolicyCreateChild_auto(_parent, _id, max) corto_queuePolicy* _id = corto_queuePolicyCreateChild(_parent, #_id, max); (void)_id
 CORTO_EXPORT corto_int16 _corto_queuePolicyUpdate(corto_queuePolicy* _this, uint32_t max);
@@ -524,7 +524,7 @@ CORTO_EXPORT corto_int16 _corto_queuePolicyUpdate(corto_queuePolicy* _this, uint
 CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyDeclare(void);
 #define corto_queuePolicyDeclare() _corto_queuePolicyDeclare()
 #define corto_queuePolicyDeclare_auto(_id) corto_queuePolicy* _id = corto_queuePolicyDeclare(); (void)_id
-CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyDeclareChild(corto_object _parent, const char *_id);
 #define corto_queuePolicyDeclareChild(_parent, _id) _corto_queuePolicyDeclareChild(_parent, _id)
 #define corto_queuePolicyDeclareChild_auto(_parent, _id) corto_queuePolicy* _id = corto_queuePolicyDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_queuePolicyDefine(corto_queuePolicy* _this, uint32_t max);
@@ -541,7 +541,7 @@ CORTO_EXPORT corto_queuePolicy* _corto_queuePolicyAssign(corto_queuePolicy* _thi
 CORTO_EXPORT corto_remote _corto_remoteCreate(corto_type returnType, bool returnsReference, void(*_impl)(void));
 #define corto_remoteCreate(returnType, returnsReference, _impl) _corto_remoteCreate(corto_type(returnType), returnsReference, (void(*)(void))_impl)
 #define corto_remoteCreate_auto(_id, returnType, returnsReference, _impl) corto_remote _id = corto_remoteCreate(returnType, returnsReference, _impl); (void)_id
-CORTO_EXPORT corto_remote _corto_remoteCreateChild(corto_object _parent, corto_string _id, corto_type returnType, bool returnsReference, void(*_impl)(void));
+CORTO_EXPORT corto_remote _corto_remoteCreateChild(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
 #define corto_remoteCreateChild(_parent, _id, returnType, returnsReference, _impl) _corto_remoteCreateChild(_parent, _id, corto_type(returnType), returnsReference, (void(*)(void))_impl)
 #define corto_remoteCreateChild_auto(_parent, _id, returnType, returnsReference, _impl) corto_remote _id = corto_remoteCreateChild(_parent, #_id, returnType, returnsReference, _impl); (void)_id
 CORTO_EXPORT corto_int16 _corto_remoteUpdate(corto_remote _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
@@ -550,7 +550,7 @@ CORTO_EXPORT corto_int16 _corto_remoteUpdate(corto_remote _this, corto_type retu
 CORTO_EXPORT corto_remote _corto_remoteDeclare(void);
 #define corto_remoteDeclare() _corto_remoteDeclare()
 #define corto_remoteDeclare_auto(_id) corto_remote _id = corto_remoteDeclare(); (void)_id
-CORTO_EXPORT corto_remote _corto_remoteDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_remote _corto_remoteDeclareChild(corto_object _parent, const char *_id);
 #define corto_remoteDeclareChild(_parent, _id) _corto_remoteDeclareChild(_parent, _id)
 #define corto_remoteDeclareChild_auto(_parent, _id) corto_remote _id = corto_remoteDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_remoteDefine(corto_remote _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
@@ -567,7 +567,7 @@ CORTO_EXPORT corto_remote _corto_remoteAssign(corto_remote _this, corto_type ret
 CORTO_EXPORT corto_result* _corto_resultCreate(const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_resultMask flags);
 #define corto_resultCreate(id, name, parent, type, value, flags) _corto_resultCreate(id, name, parent, type, value, flags)
 #define corto_resultCreate_auto(_id, id, name, parent, type, value, flags) corto_result* _id = corto_resultCreate(id, name, parent, type, value, flags); (void)_id
-CORTO_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, corto_string _id, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_resultMask flags);
+CORTO_EXPORT corto_result* _corto_resultCreateChild(corto_object _parent, const char *_id, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_resultMask flags);
 #define corto_resultCreateChild(_parent, _id, id, name, parent, type, value, flags) _corto_resultCreateChild(_parent, _id, id, name, parent, type, value, flags)
 #define corto_resultCreateChild_auto(_parent, _id, id, name, parent, type, value, flags) corto_result* _id = corto_resultCreateChild(_parent, #_id, id, name, parent, type, value, flags); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_resultMask flags);
@@ -576,7 +576,7 @@ CORTO_EXPORT corto_int16 _corto_resultUpdate(corto_result* _this, const char * i
 CORTO_EXPORT corto_result* _corto_resultDeclare(void);
 #define corto_resultDeclare() _corto_resultDeclare()
 #define corto_resultDeclare_auto(_id) corto_result* _id = corto_resultDeclare(); (void)_id
-CORTO_EXPORT corto_result* _corto_resultDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_result* _corto_resultDeclareChild(corto_object _parent, const char *_id);
 #define corto_resultDeclareChild(_parent, _id) _corto_resultDeclareChild(_parent, _id)
 #define corto_resultDeclareChild_auto(_parent, _id) corto_result* _id = corto_resultDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultDefine(corto_result* _this, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_resultMask flags);
@@ -593,7 +593,7 @@ CORTO_EXPORT corto_result* _corto_resultAssign(corto_result* _this, const char *
 CORTO_EXPORT corto_resultIter* _corto_resultIterCreate(void);
 #define corto_resultIterCreate() _corto_resultIterCreate()
 #define corto_resultIterCreate_auto(_id) corto_resultIter* _id = corto_resultIterCreate(); (void)_id
-CORTO_EXPORT corto_resultIter* _corto_resultIterCreateChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_resultIter* _corto_resultIterCreateChild(corto_object _parent, const char *_id);
 #define corto_resultIterCreateChild(_parent, _id) _corto_resultIterCreateChild(_parent, _id)
 #define corto_resultIterCreateChild_auto(_parent, _id) corto_resultIter* _id = corto_resultIterCreateChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultIterUpdate(corto_resultIter* _this);
@@ -602,7 +602,7 @@ CORTO_EXPORT corto_int16 _corto_resultIterUpdate(corto_resultIter* _this);
 CORTO_EXPORT corto_resultIter* _corto_resultIterDeclare(void);
 #define corto_resultIterDeclare() _corto_resultIterDeclare()
 #define corto_resultIterDeclare_auto(_id) corto_resultIter* _id = corto_resultIterDeclare(); (void)_id
-CORTO_EXPORT corto_resultIter* _corto_resultIterDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_resultIter* _corto_resultIterDeclareChild(corto_object _parent, const char *_id);
 #define corto_resultIterDeclareChild(_parent, _id) _corto_resultIterDeclareChild(_parent, _id)
 #define corto_resultIterDeclareChild_auto(_parent, _id) corto_resultIter* _id = corto_resultIterDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultIterDefine(corto_resultIter* _this);
@@ -619,7 +619,7 @@ CORTO_EXPORT corto_resultIter* _corto_resultIterAssign(corto_resultIter* _this);
 CORTO_EXPORT corto_resultList* _corto_resultListCreate(corto_uint32 length, corto_result* elements);
 #define corto_resultListCreate(length, elements) _corto_resultListCreate(length, elements)
 #define corto_resultListCreate_auto(_id, length, elements) corto_resultList* _id = corto_resultListCreate(length, elements); (void)_id
-CORTO_EXPORT corto_resultList* _corto_resultListCreateChild(corto_object _parent, corto_string _id, corto_uint32 length, corto_result* elements);
+CORTO_EXPORT corto_resultList* _corto_resultListCreateChild(corto_object _parent, const char *_id, corto_uint32 length, corto_result* elements);
 #define corto_resultListCreateChild(_parent, _id, length, elements) _corto_resultListCreateChild(_parent, _id, length, elements)
 #define corto_resultListCreateChild_auto(_parent, _id, length, elements) corto_resultList* _id = corto_resultListCreateChild(_parent, #_id, length, elements); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultListUpdate(corto_resultList* _this, corto_uint32 length, corto_result* elements);
@@ -628,7 +628,7 @@ CORTO_EXPORT corto_int16 _corto_resultListUpdate(corto_resultList* _this, corto_
 CORTO_EXPORT corto_resultList* _corto_resultListDeclare(void);
 #define corto_resultListDeclare() _corto_resultListDeclare()
 #define corto_resultListDeclare_auto(_id) corto_resultList* _id = corto_resultListDeclare(); (void)_id
-CORTO_EXPORT corto_resultList* _corto_resultListDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_resultList* _corto_resultListDeclareChild(corto_object _parent, const char *_id);
 #define corto_resultListDeclareChild(_parent, _id) _corto_resultListDeclareChild(_parent, _id)
 #define corto_resultListDeclareChild_auto(_parent, _id) corto_resultList* _id = corto_resultListDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultListDefine(corto_resultList* _this, corto_uint32 length, corto_result* elements);
@@ -645,7 +645,7 @@ CORTO_EXPORT corto_resultList* _corto_resultListAssign(corto_resultList* _this, 
 CORTO_EXPORT corto_resultMask* _corto_resultMaskCreate(corto_resultMask value);
 #define corto_resultMaskCreate(value) _corto_resultMaskCreate(value)
 #define corto_resultMaskCreate_auto(_id, value) corto_resultMask* _id = corto_resultMaskCreate(value); (void)_id
-CORTO_EXPORT corto_resultMask* _corto_resultMaskCreateChild(corto_object _parent, corto_string _id, corto_resultMask value);
+CORTO_EXPORT corto_resultMask* _corto_resultMaskCreateChild(corto_object _parent, const char *_id, corto_resultMask value);
 #define corto_resultMaskCreateChild(_parent, _id, value) _corto_resultMaskCreateChild(_parent, _id, value)
 #define corto_resultMaskCreateChild_auto(_parent, _id, value) corto_resultMask* _id = corto_resultMaskCreateChild(_parent, #_id, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultMaskUpdate(corto_resultMask* _this, corto_resultMask value);
@@ -654,7 +654,7 @@ CORTO_EXPORT corto_int16 _corto_resultMaskUpdate(corto_resultMask* _this, corto_
 CORTO_EXPORT corto_resultMask* _corto_resultMaskDeclare(void);
 #define corto_resultMaskDeclare() _corto_resultMaskDeclare()
 #define corto_resultMaskDeclare_auto(_id) corto_resultMask* _id = corto_resultMaskDeclare(); (void)_id
-CORTO_EXPORT corto_resultMask* _corto_resultMaskDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_resultMask* _corto_resultMaskDeclareChild(corto_object _parent, const char *_id);
 #define corto_resultMaskDeclareChild(_parent, _id) _corto_resultMaskDeclareChild(_parent, _id)
 #define corto_resultMaskDeclareChild_auto(_parent, _id) corto_resultMask* _id = corto_resultMaskDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_resultMaskDefine(corto_resultMask* _this, corto_resultMask value);
@@ -671,7 +671,7 @@ CORTO_EXPORT corto_resultMask* _corto_resultMaskAssign(corto_resultMask* _this, 
 CORTO_EXPORT corto_route _corto_routeCreate(const char * pattern, void(*_impl)(void));
 #define corto_routeCreate(pattern, _impl) _corto_routeCreate(pattern, (void(*)(void))_impl)
 #define corto_routeCreate_auto(_id, pattern, _impl) corto_route _id = corto_routeCreate(pattern, _impl); (void)_id
-CORTO_EXPORT corto_route _corto_routeCreateChild(corto_object _parent, corto_string _id, const char * pattern, void(*_impl)(void));
+CORTO_EXPORT corto_route _corto_routeCreateChild(corto_object _parent, const char *_id, const char * pattern, void(*_impl)(void));
 #define corto_routeCreateChild(_parent, _id, pattern, _impl) _corto_routeCreateChild(_parent, _id, pattern, (void(*)(void))_impl)
 #define corto_routeCreateChild_auto(_parent, _id, pattern, _impl) corto_route _id = corto_routeCreateChild(_parent, #_id, pattern, _impl); (void)_id
 CORTO_EXPORT corto_int16 _corto_routeUpdate(corto_route _this, const char * pattern, void(*_impl)(void));
@@ -680,7 +680,7 @@ CORTO_EXPORT corto_int16 _corto_routeUpdate(corto_route _this, const char * patt
 CORTO_EXPORT corto_route _corto_routeDeclare(void);
 #define corto_routeDeclare() _corto_routeDeclare()
 #define corto_routeDeclare_auto(_id) corto_route _id = corto_routeDeclare(); (void)_id
-CORTO_EXPORT corto_route _corto_routeDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_route _corto_routeDeclareChild(corto_object _parent, const char *_id);
 #define corto_routeDeclareChild(_parent, _id) _corto_routeDeclareChild(_parent, _id)
 #define corto_routeDeclareChild_auto(_parent, _id) corto_route _id = corto_routeDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_routeDefine(corto_route _this, const char * pattern, void(*_impl)(void));
@@ -697,7 +697,7 @@ CORTO_EXPORT corto_route _corto_routeAssign(corto_route _this, const char * patt
 CORTO_EXPORT corto_router _corto_routerCreate(corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
 #define corto_routerCreate(returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) _corto_routerCreate(corto_type(returnType), corto_type(paramType), paramName, corto_type(routerDataType), routerDataName, elementSeparator)
 #define corto_routerCreate_auto(_id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) corto_router _id = corto_routerCreate(returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator); (void)_id
-CORTO_EXPORT corto_router _corto_routerCreateChild(corto_object _parent, corto_string _id, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
+CORTO_EXPORT corto_router _corto_routerCreateChild(corto_object _parent, const char *_id, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
 #define corto_routerCreateChild(_parent, _id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) _corto_routerCreateChild(_parent, _id, corto_type(returnType), corto_type(paramType), paramName, corto_type(routerDataType), routerDataName, elementSeparator)
 #define corto_routerCreateChild_auto(_parent, _id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) corto_router _id = corto_routerCreateChild(_parent, #_id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator); (void)_id
 CORTO_EXPORT corto_int16 _corto_routerUpdate(corto_router _this, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
@@ -706,7 +706,7 @@ CORTO_EXPORT corto_int16 _corto_routerUpdate(corto_router _this, corto_type retu
 CORTO_EXPORT corto_router _corto_routerDeclare(void);
 #define corto_routerDeclare() _corto_routerDeclare()
 #define corto_routerDeclare_auto(_id) corto_router _id = corto_routerDeclare(); (void)_id
-CORTO_EXPORT corto_router _corto_routerDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_router _corto_routerDeclareChild(corto_object _parent, const char *_id);
 #define corto_routerDeclareChild(_parent, _id) _corto_routerDeclareChild(_parent, _id)
 #define corto_routerDeclareChild_auto(_parent, _id) corto_router _id = corto_routerDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_routerDefine(corto_router _this, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
@@ -723,7 +723,7 @@ CORTO_EXPORT corto_router _corto_routerAssign(corto_router _this, corto_type ret
 CORTO_EXPORT corto_routerimpl _corto_routerimplCreate(corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
 #define corto_routerimplCreate(base, baseAccess, implements) _corto_routerimplCreate(corto_interface(base), baseAccess, implements)
 #define corto_routerimplCreate_auto(_id, base, baseAccess, implements) corto_routerimpl _id = corto_routerimplCreate(base, baseAccess, implements); (void)_id
-CORTO_EXPORT corto_routerimpl _corto_routerimplCreateChild(corto_object _parent, corto_string _id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
+CORTO_EXPORT corto_routerimpl _corto_routerimplCreateChild(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
 #define corto_routerimplCreateChild(_parent, _id, base, baseAccess, implements) _corto_routerimplCreateChild(_parent, _id, corto_interface(base), baseAccess, implements)
 #define corto_routerimplCreateChild_auto(_parent, _id, base, baseAccess, implements) corto_routerimpl _id = corto_routerimplCreateChild(_parent, #_id, base, baseAccess, implements); (void)_id
 CORTO_EXPORT corto_int16 _corto_routerimplUpdate(corto_routerimpl _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
@@ -732,7 +732,7 @@ CORTO_EXPORT corto_int16 _corto_routerimplUpdate(corto_routerimpl _this, corto_i
 CORTO_EXPORT corto_routerimpl _corto_routerimplDeclare(void);
 #define corto_routerimplDeclare() _corto_routerimplDeclare()
 #define corto_routerimplDeclare_auto(_id) corto_routerimpl _id = corto_routerimplDeclare(); (void)_id
-CORTO_EXPORT corto_routerimpl _corto_routerimplDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_routerimpl _corto_routerimplDeclareChild(corto_object _parent, const char *_id);
 #define corto_routerimplDeclareChild(_parent, _id) _corto_routerimplDeclareChild(_parent, _id)
 #define corto_routerimplDeclareChild_auto(_parent, _id) corto_routerimpl _id = corto_routerimplDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_routerimplDefine(corto_routerimpl _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
@@ -749,7 +749,7 @@ CORTO_EXPORT corto_routerimpl _corto_routerimplAssign(corto_routerimpl _this, co
 CORTO_EXPORT corto_sample* _corto_sampleCreate(corto_time* timestamp, uintptr_t value);
 #define corto_sampleCreate(timestamp, value) _corto_sampleCreate(timestamp, value)
 #define corto_sampleCreate_auto(_id, timestamp, value) corto_sample* _id = corto_sampleCreate(timestamp, value); (void)_id
-CORTO_EXPORT corto_sample* _corto_sampleCreateChild(corto_object _parent, corto_string _id, corto_time* timestamp, uintptr_t value);
+CORTO_EXPORT corto_sample* _corto_sampleCreateChild(corto_object _parent, const char *_id, corto_time* timestamp, uintptr_t value);
 #define corto_sampleCreateChild(_parent, _id, timestamp, value) _corto_sampleCreateChild(_parent, _id, timestamp, value)
 #define corto_sampleCreateChild_auto(_parent, _id, timestamp, value) corto_sample* _id = corto_sampleCreateChild(_parent, #_id, timestamp, value); (void)_id
 CORTO_EXPORT corto_int16 _corto_sampleUpdate(corto_sample* _this, corto_time* timestamp, uintptr_t value);
@@ -758,7 +758,7 @@ CORTO_EXPORT corto_int16 _corto_sampleUpdate(corto_sample* _this, corto_time* ti
 CORTO_EXPORT corto_sample* _corto_sampleDeclare(void);
 #define corto_sampleDeclare() _corto_sampleDeclare()
 #define corto_sampleDeclare_auto(_id) corto_sample* _id = corto_sampleDeclare(); (void)_id
-CORTO_EXPORT corto_sample* _corto_sampleDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_sample* _corto_sampleDeclareChild(corto_object _parent, const char *_id);
 #define corto_sampleDeclareChild(_parent, _id) _corto_sampleDeclareChild(_parent, _id)
 #define corto_sampleDeclareChild_auto(_parent, _id) corto_sample* _id = corto_sampleDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_sampleDefine(corto_sample* _this, corto_time* timestamp, uintptr_t value);
@@ -775,7 +775,7 @@ CORTO_EXPORT corto_sample* _corto_sampleAssign(corto_sample* _this, corto_time* 
 CORTO_EXPORT corto_sampleIter* _corto_sampleIterCreate(void);
 #define corto_sampleIterCreate() _corto_sampleIterCreate()
 #define corto_sampleIterCreate_auto(_id) corto_sampleIter* _id = corto_sampleIterCreate(); (void)_id
-CORTO_EXPORT corto_sampleIter* _corto_sampleIterCreateChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_sampleIter* _corto_sampleIterCreateChild(corto_object _parent, const char *_id);
 #define corto_sampleIterCreateChild(_parent, _id) _corto_sampleIterCreateChild(_parent, _id)
 #define corto_sampleIterCreateChild_auto(_parent, _id) corto_sampleIter* _id = corto_sampleIterCreateChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_sampleIterUpdate(corto_sampleIter* _this);
@@ -784,7 +784,7 @@ CORTO_EXPORT corto_int16 _corto_sampleIterUpdate(corto_sampleIter* _this);
 CORTO_EXPORT corto_sampleIter* _corto_sampleIterDeclare(void);
 #define corto_sampleIterDeclare() _corto_sampleIterDeclare()
 #define corto_sampleIterDeclare_auto(_id) corto_sampleIter* _id = corto_sampleIterDeclare(); (void)_id
-CORTO_EXPORT corto_sampleIter* _corto_sampleIterDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_sampleIter* _corto_sampleIterDeclareChild(corto_object _parent, const char *_id);
 #define corto_sampleIterDeclareChild(_parent, _id) _corto_sampleIterDeclareChild(_parent, _id)
 #define corto_sampleIterDeclareChild_auto(_parent, _id) corto_sampleIter* _id = corto_sampleIterDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_sampleIterDefine(corto_sampleIter* _this);
@@ -801,7 +801,7 @@ CORTO_EXPORT corto_sampleIter* _corto_sampleIterAssign(corto_sampleIter* _this);
 CORTO_EXPORT corto_subscriber _corto_subscriberCreate(corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
 #define corto_subscriberCreate(query, contentType, instance, dispatcher, enabled, _impl) _corto_subscriberCreate(query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
 #define corto_subscriberCreate_auto(_id, query, contentType, instance, dispatcher, enabled, _impl) corto_subscriber _id = corto_subscriberCreate(query, contentType, instance, dispatcher, enabled, _impl); (void)_id
-CORTO_EXPORT corto_subscriber _corto_subscriberCreateChild(corto_object _parent, corto_string _id, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
+CORTO_EXPORT corto_subscriber _corto_subscriberCreateChild(corto_object _parent, const char *_id, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
 #define corto_subscriberCreateChild(_parent, _id, query, contentType, instance, dispatcher, enabled, _impl) _corto_subscriberCreateChild(_parent, _id, query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
 #define corto_subscriberCreateChild_auto(_parent, _id, query, contentType, instance, dispatcher, enabled, _impl) corto_subscriber _id = corto_subscriberCreateChild(_parent, #_id, query, contentType, instance, dispatcher, enabled, _impl); (void)_id
 CORTO_EXPORT corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
@@ -810,7 +810,7 @@ CORTO_EXPORT corto_int16 _corto_subscriberUpdate(corto_subscriber _this, corto_q
 CORTO_EXPORT corto_subscriber _corto_subscriberDeclare(void);
 #define corto_subscriberDeclare() _corto_subscriberDeclare()
 #define corto_subscriberDeclare_auto(_id) corto_subscriber _id = corto_subscriberDeclare(); (void)_id
-CORTO_EXPORT corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_subscriber _corto_subscriberDeclareChild(corto_object _parent, const char *_id);
 #define corto_subscriberDeclareChild(_parent, _id) _corto_subscriberDeclareChild(_parent, _id)
 #define corto_subscriberDeclareChild_auto(_parent, _id) corto_subscriber _id = corto_subscriberDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_subscriberDefine(corto_subscriber _this, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
@@ -827,7 +827,7 @@ CORTO_EXPORT corto_subscriber _corto_subscriberAssign(corto_subscriber _this, co
 CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventCreate(corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
 #define corto_subscriberEventCreate(subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventCreate(corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
 #define corto_subscriberEventCreate_auto(_id, subscriber, instance, source, event, data, contentTypeHandle) corto_subscriberEvent* _id = corto_subscriberEventCreate(subscriber, instance, source, event, data, contentTypeHandle); (void)_id
-CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventCreateChild(corto_object _parent, corto_string _id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventCreateChild(corto_object _parent, const char *_id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
 #define corto_subscriberEventCreateChild(_parent, _id, subscriber, instance, source, event, data, contentTypeHandle) _corto_subscriberEventCreateChild(_parent, _id, corto_subscriber(subscriber), instance, source, event, data, contentTypeHandle)
 #define corto_subscriberEventCreateChild_auto(_parent, _id, subscriber, instance, source, event, data, contentTypeHandle) corto_subscriberEvent* _id = corto_subscriberEventCreateChild(_parent, #_id, subscriber, instance, source, event, data, contentTypeHandle); (void)_id
 CORTO_EXPORT corto_int16 _corto_subscriberEventUpdate(corto_subscriberEvent* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
@@ -836,7 +836,7 @@ CORTO_EXPORT corto_int16 _corto_subscriberEventUpdate(corto_subscriberEvent* _th
 CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventDeclare(void);
 #define corto_subscriberEventDeclare() _corto_subscriberEventDeclare()
 #define corto_subscriberEventDeclare_auto(_id) corto_subscriberEvent* _id = corto_subscriberEventDeclare(); (void)_id
-CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventDeclareChild(corto_object _parent, const char *_id);
 #define corto_subscriberEventDeclareChild(_parent, _id) _corto_subscriberEventDeclareChild(_parent, _id)
 #define corto_subscriberEventDeclareChild_auto(_parent, _id) corto_subscriberEvent* _id = corto_subscriberEventDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_subscriberEventDefine(corto_subscriberEvent* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, uintptr_t contentTypeHandle);
@@ -853,7 +853,7 @@ CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEventAssign(corto_subscribe
 CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterCreate(void);
 #define corto_subscriberEventIterCreate() _corto_subscriberEventIterCreate()
 #define corto_subscriberEventIterCreate_auto(_id) corto_subscriberEventIter* _id = corto_subscriberEventIterCreate(); (void)_id
-CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterCreateChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterCreateChild(corto_object _parent, const char *_id);
 #define corto_subscriberEventIterCreateChild(_parent, _id) _corto_subscriberEventIterCreateChild(_parent, _id)
 #define corto_subscriberEventIterCreateChild_auto(_parent, _id) corto_subscriberEventIter* _id = corto_subscriberEventIterCreateChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_subscriberEventIterUpdate(corto_subscriberEventIter* _this);
@@ -862,7 +862,7 @@ CORTO_EXPORT corto_int16 _corto_subscriberEventIterUpdate(corto_subscriberEventI
 CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterDeclare(void);
 #define corto_subscriberEventIterDeclare() _corto_subscriberEventIterDeclare()
 #define corto_subscriberEventIterDeclare_auto(_id) corto_subscriberEventIter* _id = corto_subscriberEventIterDeclare(); (void)_id
-CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterDeclareChild(corto_object _parent, const char *_id);
 #define corto_subscriberEventIterDeclareChild(_parent, _id) _corto_subscriberEventIterDeclareChild(_parent, _id)
 #define corto_subscriberEventIterDeclareChild_auto(_parent, _id) corto_subscriberEventIter* _id = corto_subscriberEventIterDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_subscriberEventIterDefine(corto_subscriberEventIter* _this);
@@ -879,7 +879,7 @@ CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIterAssign(corto_s
 CORTO_EXPORT corto_time* _corto_timeCreate(int32_t sec, uint32_t nanosec);
 #define corto_timeCreate(sec, nanosec) _corto_timeCreate(sec, nanosec)
 #define corto_timeCreate_auto(_id, sec, nanosec) corto_time* _id = corto_timeCreate(sec, nanosec); (void)_id
-CORTO_EXPORT corto_time* _corto_timeCreateChild(corto_object _parent, corto_string _id, int32_t sec, uint32_t nanosec);
+CORTO_EXPORT corto_time* _corto_timeCreateChild(corto_object _parent, const char *_id, int32_t sec, uint32_t nanosec);
 #define corto_timeCreateChild(_parent, _id, sec, nanosec) _corto_timeCreateChild(_parent, _id, sec, nanosec)
 #define corto_timeCreateChild_auto(_parent, _id, sec, nanosec) corto_time* _id = corto_timeCreateChild(_parent, #_id, sec, nanosec); (void)_id
 CORTO_EXPORT corto_int16 _corto_timeUpdate(corto_time* _this, int32_t sec, uint32_t nanosec);
@@ -888,7 +888,7 @@ CORTO_EXPORT corto_int16 _corto_timeUpdate(corto_time* _this, int32_t sec, uint3
 CORTO_EXPORT corto_time* _corto_timeDeclare(void);
 #define corto_timeDeclare() _corto_timeDeclare()
 #define corto_timeDeclare_auto(_id) corto_time* _id = corto_timeDeclare(); (void)_id
-CORTO_EXPORT corto_time* _corto_timeDeclareChild(corto_object _parent, corto_string _id);
+CORTO_EXPORT corto_time* _corto_timeDeclareChild(corto_object _parent, const char *_id);
 #define corto_timeDeclareChild(_parent, _id) _corto_timeDeclareChild(_parent, _id)
 #define corto_timeDeclareChild_auto(_parent, _id) corto_time* _id = corto_timeDeclareChild(_parent, #_id); (void)_id
 CORTO_EXPORT corto_int16 _corto_timeDefine(corto_time* _this, int32_t sec, uint32_t nanosec);
