@@ -938,16 +938,7 @@ corto_object corto_mount_resume(
 
                 corto_object type_o = corto_resolve(NULL, iterResult->type);
                 if (type_o) {
-                    /* Use non-recursive declare */
-                    o = corto(
-                        root_o,
-                        fullpath,
-                        type_o,
-                        NULL,
-                        NULL,
-                        NULL,
-                        -1,
-                        CORTO_DO_RECURSIVE_DECLARE|CORTO_DO_FORCE_TYPE);
+                    o = corto_declareChild(root_o, fullpath, type_o);
                     if (!o) {
                         corto_throw("failed to create object %s/%s",
                           parent, name);
