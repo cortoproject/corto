@@ -45,6 +45,16 @@ int16_t test_LoaderSimulatorMount_construct(
 
     corto_resultAssign(
         corto_resultListAppendAlloc(this->items),
+        "s",
+        NULL,
+        "p/q",
+        "package",
+        0,
+        FALSE
+    );
+
+    corto_resultAssign(
+        corto_resultListAppendAlloc(this->items),
         "r",
         NULL,
         "corto",

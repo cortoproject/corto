@@ -932,44 +932,25 @@ corto_object corto_mount_resume(
                     goto error;
                 }
 
-                corto_id fullparent;
-                sprintf(fullparent, "%s/%s", corto_subscriber(this)->query.from, iterResult->parent);
-                corto_path_clean(fullparent, fullparent);
-                corto_object parent_o = corto_lookup(NULL, fullparent);
-                if (parent_o) {
-                    corto_object type_o = corto_resolve(NULL, iterResult->type);
-                    if (type_o) {
-                        /* Use non-recursive declare */
-                        o = corto(
-                            parent_o,
-                            iterResult->id,
-                            type_o,
-                            NULL,
-                            NULL,
-                            NULL,
-                            -1,
-                            CORTO_DO_DECLARE|CORTO_DO_FORCE_TYPE);
-                        if (!o) {
-                            corto_throw("failed to create object %s/%s",
-                              parent, name);
-                        }
+                corto_id fullpath;
+                sprintf(fullpath, "%s/%s/%s", corto_subscriber(this)->query.from, iterResult->parent, iterResult->id);
+                corto_path_clean(fullpath, fullpath);
 
-                        newObject = TRUE;
-                        corto_release(type_o);
-                    } else {
-                        corto_throw("unresolved type '%s' of object '%s' returned by '%s'",
-                            iterResult->type,
-                            iterResult->id,
-                            corto_fullpath(NULL, this));
-                        goto error;
+                corto_object type_o = corto_resolve(NULL, iterResult->type);
+                if (type_o) {
+                    o = corto_declareChild(root_o, fullpath, type_o);
+                    if (!o) {
+                        corto_throw("failed to create object %s/%s",
+                          parent, name);
                     }
 
-                    corto_release(parent_o);
+                    newObject = TRUE;
+                    corto_release(type_o);
                 } else {
-                    corto_throw("parent '%s' is not provided by any mount, cannot resume '%s/%s'",
-                        fullparent,
-                        parent,
-                        name);
+                    corto_throw("unresolved type '%s' of object '%s' returned by '%s'",
+                        iterResult->type,
+                        iterResult->id,
+                        corto_fullpath(NULL, this));
                     goto error;
                 }
             }

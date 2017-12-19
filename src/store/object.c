@@ -1643,7 +1643,7 @@ corto_object corto_resume(
         expr,
         corto_fullpath(NULL, parent),
         corto_fullpath(NULL, corto_typeof(parent)));
-        
+
     corto_id exprBuff;
 
     corto_resumeWalk_t walkData = {
@@ -3251,9 +3251,9 @@ corto_object corto_lookup_intern(
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rb tree;
-    corto_object prev = NULL;
+    corto_object prev = NULL, known_prev = NULL;;
     char ch;
-    const char *next, *ptr = id;
+    const char *next, *ptr = id, *last_known_ptr = id;
 
     if (!id || !id[0]) {
         corto_throw("invalid identifier");
@@ -3308,7 +3308,10 @@ corto_object corto_lookup_intern(
 
                     if (o) corto_release(o);
                 } else {
-                    corto_rwmutex_read(&scope->align.scopeLock);
+                    if (corto_rwmutex_read(&scope->align.scopeLock)) {
+                        corto_throw(NULL);
+                        goto error;
+                    }
                     if (!corto_rb_hasKey_w_cmp(
                           tree,
                           ptr,
@@ -3337,7 +3340,10 @@ corto_object corto_lookup_intern(
                             }
                         }
                     }
-                    corto_rwmutex_unlock(&scope->align.scopeLock);
+                    if (corto_rwmutex_unlock(&scope->align.scopeLock)) {
+                        corto_throw(NULL);
+                        goto error;
+                    }
                 }
             } else {
                 o = NULL;
@@ -3374,14 +3380,25 @@ corto_object corto_lookup_intern(
         }
 
         ptr = next;
+
+        if (corto_typeof(o) != corto_unknown_o) {
+            known_prev = o;
+            last_known_ptr = ptr;
+        }
     } while (ch);
 
     if (resume && parent != corto_lang_o) {
-        if (!prev) {
-            prev = parent;
+        if (!known_prev) {
+            known_prev = parent;
+        }
+        if (!last_known_ptr) {
+            last_known_ptr = id;
+        }
+        if (last_known_ptr[0] == '/') {
+            last_known_ptr ++;
         }
         if (!o) {
-            o = corto_resume(prev, ptr, NULL);
+            o = corto_resume(known_prev, last_known_ptr, NULL);
         }
     }
 
