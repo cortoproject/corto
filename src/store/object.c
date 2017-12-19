@@ -3354,13 +3354,9 @@ corto_object corto_lookup_intern(
 
         ptr = next;
 
-        /* Keep track of object with last known type in case we must resume */
         if (corto_typeof(o) != corto_unknown_o) {
             known_prev = o;
             last_known_ptr = ptr;
-            if (last_known_ptr[0] == '/') {
-                last_known_ptr ++;
-            }
         }
     } while (ch);
 
@@ -3370,6 +3366,9 @@ corto_object corto_lookup_intern(
         }
         if (!last_known_ptr) {
             last_known_ptr = id;
+        }
+        if (last_known_ptr[0] == '/') {
+            last_known_ptr ++;
         }
         if (!o) {
             o = corto_resume(known_prev, last_known_ptr, NULL);

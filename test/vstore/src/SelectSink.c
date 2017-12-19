@@ -418,6 +418,12 @@ void test_SelectSink_tc_selectLoaderRootTree(
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
+    test_assertstr(r->id, "s");
+    test_assertstr(r->parent, "/p/q");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
     test_assertstr(r->id, "v");
     test_assertstr(r->parent, "");
 
@@ -447,6 +453,26 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(q) == 0);
 }
+
+void test_SelectSink_tc_selectLoaderLookupNestedInitialSlash(
+    test_SelectSink this)
+{
+    /* Disable package loader to ensure test results are predictable */
+    corto_enableload(false);
+
+    /* Create loader simulator mount */
+    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+
+    corto_object q = corto_lookup(NULL, "/p/q");
+    test_assert(q != NULL);
+
+    corto_object s = corto_lookup(NULL, "/p/q/s");
+    test_assert(s != NULL);
+
+    test_assert(corto_delete(m) == 0);
+    test_assert(corto_delete(q) == 0);
+}
+
 
 void test_SelectSink_tc_selectMixedScope(
     test_SelectSink this)
