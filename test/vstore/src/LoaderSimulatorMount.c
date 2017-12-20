@@ -10,7 +10,7 @@ int16_t test_LoaderSimulatorMount_construct(
     corto_ptr_setstr(&corto_subscriber(this)->query.type, "package");
     corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
     corto_mount(this)->policy.filterResults = false;
 
     corto_resultAssign(

@@ -29,7 +29,7 @@ void _corto_dispatcher_post(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_event *))((corto_function)_method)->fptr)(_this, e);
     } else {
-        corto_call(corto_function(_method), NULL, _this, e);
+        corto_invoke(corto_function(_method), NULL, _this, e);
     }
 }
 void _corto_invokeEvent_handle(
@@ -55,7 +55,7 @@ void _corto_invokeEvent_handle(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object))((corto_function)_method)->fptr)(_this);
     } else {
-        corto_call(corto_function(_method), NULL, _this);
+        corto_invoke(corto_function(_method), NULL, _this);
     }
 }
 corto_resultIter _corto_loader_onQuery(
@@ -83,7 +83,7 @@ corto_resultIter _corto_loader_onQuery(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_resultIter ___ (*)(corto_object, corto_query *))((corto_function)_method)->fptr)(_this, query);
     } else {
-        corto_call(corto_function(_method), &_result, _this, query);
+        corto_invoke(corto_function(_method), &_result, _this, query);
     }
     
     return _result;
@@ -112,7 +112,7 @@ void _corto_mount_onBatchNotify(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_subscriberEventIter))((corto_function)_method)->fptr)(_this, events);
     } else {
-        corto_call(corto_function(_method), NULL, _this, events);
+        corto_invoke(corto_function(_method), NULL, _this, events);
     }
 }
 void _corto_mount_onHistoryBatchNotify(
@@ -139,7 +139,7 @@ void _corto_mount_onHistoryBatchNotify(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_subscriberEventIter))((corto_function)_method)->fptr)(_this, events);
     } else {
-        corto_call(corto_function(_method), NULL, _this, events);
+        corto_invoke(corto_function(_method), NULL, _this, events);
     }
 }
 corto_resultIter _corto_mount_onHistoryQuery(
@@ -167,7 +167,7 @@ corto_resultIter _corto_mount_onHistoryQuery(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_resultIter ___ (*)(corto_object, corto_query *))((corto_function)_method)->fptr)(_this, query);
     } else {
-        corto_call(corto_function(_method), &_result, _this, query);
+        corto_invoke(corto_function(_method), &_result, _this, query);
     }
     
     return _result;
@@ -196,7 +196,7 @@ corto_string _corto_mount_onId(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_string ___ (*)(corto_object))((corto_function)_method)->fptr)(_this);
     } else {
-        corto_call(corto_function(_method), &_result, _this);
+        corto_invoke(corto_function(_method), &_result, _this);
     }
     
     return _result;
@@ -227,7 +227,7 @@ void _corto_mount_onInvoke(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_object, corto_function, uintptr_t))((corto_function)_method)->fptr)(_this, instance, proc, argptrs);
     } else {
-        corto_call(corto_function(_method), NULL, _this, instance, proc, argptrs);
+        corto_invoke(corto_function(_method), NULL, _this, instance, proc, argptrs);
     }
 }
 uintptr_t _corto_mount_onMount(
@@ -256,7 +256,7 @@ uintptr_t _corto_mount_onMount(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((uintptr_t ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
-        corto_call(corto_function(_method), &_result, _this, query, ctx);
+        corto_invoke(corto_function(_method), &_result, _this, query, ctx);
     }
     
     return _result;
@@ -285,7 +285,7 @@ void _corto_mount_onNotify(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_subscriberEvent *))((corto_function)_method)->fptr)(_this, event);
     } else {
-        corto_call(corto_function(_method), NULL, _this, event);
+        corto_invoke(corto_function(_method), NULL, _this, event);
     }
 }
 corto_resultIter _corto_mount_onQuery(
@@ -313,7 +313,7 @@ corto_resultIter _corto_mount_onQuery(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_resultIter ___ (*)(corto_object, corto_query *))((corto_function)_method)->fptr)(_this, query);
     } else {
-        corto_call(corto_function(_method), &_result, _this, query);
+        corto_invoke(corto_function(_method), &_result, _this, query);
     }
     
     return _result;
@@ -345,7 +345,7 @@ corto_object _corto_mount_onResume(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_object ___ (*)(corto_object, const char *, const char *, corto_object))((corto_function)_method)->fptr)(_this, parent, id, object);
     } else {
-        corto_call(corto_function(_method), &_result, _this, parent, id, object);
+        corto_invoke(corto_function(_method), &_result, _this, parent, id, object);
     }
     
     return _result;
@@ -376,7 +376,7 @@ uintptr_t _corto_mount_onSubscribe(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((uintptr_t ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
-        corto_call(corto_function(_method), &_result, _this, query, ctx);
+        corto_invoke(corto_function(_method), &_result, _this, query, ctx);
     }
     
     return _result;
@@ -405,7 +405,7 @@ uintptr_t _corto_mount_onTransactionBegin(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((uintptr_t ___ (*)(corto_object))((corto_function)_method)->fptr)(_this);
     } else {
-        corto_call(corto_function(_method), &_result, _this);
+        corto_invoke(corto_function(_method), &_result, _this);
     }
     
     return _result;
@@ -435,7 +435,7 @@ void _corto_mount_onTransactionEnd(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_subscriberEventIter, uintptr_t))((corto_function)_method)->fptr)(_this, events, ctx);
     } else {
-        corto_call(corto_function(_method), NULL, _this, events, ctx);
+        corto_invoke(corto_function(_method), NULL, _this, events, ctx);
     }
 }
 void _corto_mount_onUnmount(
@@ -463,7 +463,7 @@ void _corto_mount_onUnmount(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
-        corto_call(corto_function(_method), NULL, _this, query, ctx);
+        corto_invoke(corto_function(_method), NULL, _this, query, ctx);
     }
 }
 void _corto_mount_onUnsubscribe(
@@ -491,7 +491,7 @@ void _corto_mount_onUnsubscribe(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_query *, uintptr_t))((corto_function)_method)->fptr)(_this, query, ctx);
     } else {
-        corto_call(corto_function(_method), NULL, _this, query, ctx);
+        corto_invoke(corto_function(_method), NULL, _this, query, ctx);
     }
 }
 corto_route _corto_routerimpl_findRoute(
@@ -522,7 +522,7 @@ corto_route _corto_routerimpl_findRoute(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_route ___ (*)(corto_object, corto_object, corto_stringseq, corto_any, corto_any *))((corto_function)_method)->fptr)(_this, instance, pattern, param, routerData);
     } else {
-        corto_call(corto_function(_method), &_result, _this, instance, pattern, param, routerData);
+        corto_invoke(corto_function(_method), &_result, _this, instance, pattern, param, routerData);
     }
     
     return _result;
@@ -555,7 +555,7 @@ int32_t _corto_routerimpl_matchRoute(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((int32_t ___ (*)(corto_object, corto_route, corto_stringseq, corto_any, corto_any *))((corto_function)_method)->fptr)(_this, route, pattern, param, routerData);
     } else {
-        corto_call(corto_function(_method), &_result, _this, route, pattern, param, routerData);
+        corto_invoke(corto_function(_method), &_result, _this, route, pattern, param, routerData);
     }
     
     return _result;

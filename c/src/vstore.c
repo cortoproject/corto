@@ -483,9 +483,9 @@ corto_handleAction* _corto_handleActionAssign(corto_handleAction* _this, corto_o
 corto_int16 corto_handleActionCall(corto_handleAction *_delegate, corto_event* event) {
     if (_delegate->super.procedure) {
         if (_delegate->super.instance) {
-            corto_call(_delegate->super.procedure, NULL, _delegate->super.instance, event);
+            corto_invoke(_delegate->super.procedure, NULL, _delegate->super.instance, event);
         } else {
-            corto_call(_delegate->super.procedure, NULL, event);
+            corto_invoke(_delegate->super.procedure, NULL, event);
         }
     } else {
         return -1;

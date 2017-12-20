@@ -93,11 +93,11 @@ int16_t corto_subscriber_invoke(
             }
         } else {
             void *args[] = {&eptr};
-            corto_callb((corto_function)s, NULL, args);
+            corto_invokeb((corto_function)s, NULL, args);
         }
     } else {
         if (!eptr) {
-            eptr = corto(NULL, NULL, corto_subscriberEvent_o, NULL, NULL, NULL, 0, CORTO_DO_DECLARE);
+            eptr = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o});
             corto_ptr_setref(&eptr->subscriber, s);
             corto_ptr_setref(&eptr->instance, instance);
             corto_ptr_setref(&eptr->source, NULL);
@@ -621,14 +621,13 @@ corto_mount corto_subscribeMount(
     const char *value)
 {
     corto_subscribeRequest *r = corto_tls_get(CORTO_KEY_FLUENT);
-    corto_fmt ctHandle = NULL;
+    corto_fmt fmt = NULL;
     if (value) {
-        ctHandle = corto_fmt_lookup("text/corto");
+        fmt = corto_fmt_lookup("text/corto");
     }
 
     /* declareChild */
-    corto_mount m = corto(NULL, NULL, type, NULL, NULL, NULL, -1,
-        CORTO_DO_DECLARE|CORTO_DO_FORCE_TYPE);
+    corto_mount m = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {.type = type});
 
     corto_subscriber s = corto_subscriber(m);
     corto_query *q = &s->query;
@@ -643,8 +642,7 @@ corto_mount corto_subscribeMount(
     free(r);
 
     /* define & set value if provided */
-    return corto(NULL, NULL, NULL, m, ctHandle, (char*)value, -1,
-        CORTO_DO_DEFINE);
+    return corto(CORTO_DEFINE, {.object = m, .fmt = fmt, .value = value});
 }
 
 static

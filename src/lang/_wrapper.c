@@ -30,7 +30,7 @@ bool _corto_collection_castable(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -60,7 +60,7 @@ bool _corto_collection_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -90,7 +90,7 @@ bool _corto_delegate_castable(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -120,7 +120,7 @@ bool _corto_delegate_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -150,7 +150,7 @@ bool _corto_interface_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -180,7 +180,7 @@ corto_member _corto_interface_resolveMember(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_member ___ (*)(corto_object, const char *))((corto_function)_method)->fptr)(_this, name);
     } else {
-        corto_call(corto_function(_method), &_result, _this, name);
+        corto_invoke(corto_function(_method), &_result, _this, name);
     }
     
     return _result;
@@ -210,7 +210,7 @@ bool _corto_iterator_castable(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -240,7 +240,7 @@ bool _corto_iterator_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -270,7 +270,7 @@ bool _corto_primitive_castable(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -300,7 +300,7 @@ bool _corto_primitive_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -330,7 +330,7 @@ bool _corto_struct_castable(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -360,7 +360,7 @@ bool _corto_struct_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -390,7 +390,7 @@ corto_member _corto_struct_resolveMember(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((corto_member ___ (*)(corto_object, const char *))((corto_function)_method)->fptr)(_this, name);
     } else {
-        corto_call(corto_function(_method), &_result, _this, name);
+        corto_invoke(corto_function(_method), &_result, _this, name);
     }
     
     return _result;
@@ -420,7 +420,7 @@ bool _corto_type_castable(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;
@@ -450,7 +450,7 @@ bool _corto_type_compatible(
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         _result = ((bool ___ (*)(corto_object, corto_type))((corto_function)_method)->fptr)(_this, type);
     } else {
-        corto_call(corto_function(_method), &_result, _this, type);
+        corto_invoke(corto_function(_method), &_result, _this, type);
     }
     
     return _result;

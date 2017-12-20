@@ -1837,9 +1837,9 @@ corto_destructAction* _corto_destructActionAssign(corto_destructAction* _this, c
 corto_int16 corto_destructActionCall(corto_destructAction *_delegate) {
     if (_delegate->super.procedure) {
         if (_delegate->super.instance) {
-            corto_call(_delegate->super.procedure, NULL, _delegate->super.instance);
+            corto_invoke(_delegate->super.procedure, NULL, _delegate->super.instance);
         } else {
-            corto_call(_delegate->super.procedure, NULL);
+            corto_invoke(_delegate->super.procedure, NULL);
         }
     } else {
         return -1;
@@ -2456,9 +2456,9 @@ corto_initAction* _corto_initActionAssign(corto_initAction* _this, corto_object 
 corto_int16 corto_initActionCall(corto_initAction *_delegate, corto_int16* _result) {
     if (_delegate->super.procedure) {
         if (_delegate->super.instance) {
-            corto_call(_delegate->super.procedure, _result, _delegate->super.instance);
+            corto_invoke(_delegate->super.procedure, _result, _delegate->super.instance);
         } else {
-            corto_call(_delegate->super.procedure, _result);
+            corto_invoke(_delegate->super.procedure, _result);
         }
     } else {
         return -1;
@@ -4270,9 +4270,9 @@ corto_nameAction* _corto_nameActionAssign(corto_nameAction* _this, corto_object 
 corto_int16 corto_nameActionCall(corto_nameAction *_delegate, corto_string* _result) {
     if (_delegate->super.procedure) {
         if (_delegate->super.instance) {
-            corto_call(_delegate->super.procedure, _result, _delegate->super.instance);
+            corto_invoke(_delegate->super.procedure, _result, _delegate->super.instance);
         } else {
-            corto_call(_delegate->super.procedure, _result);
+            corto_invoke(_delegate->super.procedure, _result);
         }
     } else {
         return -1;

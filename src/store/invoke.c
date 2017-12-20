@@ -29,10 +29,10 @@
 #include "ffi.h"
 #endif
 
-typedef struct corto_callHandler {
-    corto_callInit_f init;
-    corto_callDeinit_f deinit;
-} corto_callHandler;
+typedef struct corto_invokeHandler {
+    corto_invoke_init_f init;
+    corto_invoke_deinit_f deinit;
+} corto_invokeHandler;
 
 corto_int16 corto_stubInit(corto_function f) {
     CORTO_UNUSED(f);
@@ -43,13 +43,13 @@ void corto_stubDeinit(corto_function f) {
 }
 
 static int languageId = 1;
-static corto_callHandler handlers[CORTO_MAX_BINDINGS] =
+static corto_invokeHandler handlers[CORTO_MAX_BINDINGS] =
 {
   {corto_stubInit, corto_stubDeinit}
 };
 
 /* Register language */
-int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit) {
+int corto_invoke_register(corto_invoke_init_f init, corto_invoke_deinit_f deinit) {
     int nextId;
 
     nextId = corto_ainc(&languageId)-1;
@@ -59,11 +59,11 @@ int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit) {
     return nextId;
 }
 
-corto_int16 corto_callInit(corto_function f) {
+corto_int16 corto_invoke_init(corto_function f) {
     return handlers[f->kind].init(f);
 }
 
-void corto_callDeinit(corto_function f) {
+void corto_invoke_deinit(corto_function f) {
     handlers[f->kind].deinit(f);
 }
 
@@ -74,7 +74,7 @@ void corto_callDeinit(corto_function f) {
         corto_object owner = corto_sourceof(instance);\
         if (owner \
             && corto_instanceof(corto_mount_o, owner) \
-            && (corto_mount(owner)->policy.ownership != CORTO_LOCAL_OWNER)) \
+            && (corto_mount(owner)->policy.ownership != CORTO_LOCAL_SOURCE)) \
         {\
             if (!(owner == corto_get_source())) {\
                 corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
@@ -86,7 +86,7 @@ void corto_callDeinit(corto_function f) {
         }\
     }\
     if (f->kind != CORTO_PROCEDURE_STUB) {\
-        ((corto_callInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);\
+        ((corto_invokeInvoke)f->impl)((void*)f->fdata, (void*)f->fptr, result, argptrs);\
     }
 
 #define argcpytype(args, dst, src) \
@@ -160,12 +160,12 @@ void corto_callDeinit(corto_function f) {
     CORTO_CALL
 
 /* Call with variable argument list */
-void _corto_callv(corto_function f, corto_void* result, va_list args) {
+void _corto_invokev(corto_function f, corto_void* result, va_list args) {
     CORTO_CALLV
 }
 
 /* Call with variable arguments */
-void _corto_call(corto_function f, corto_void* result, ...) {
+void _corto_invoke(corto_function f, corto_void* result, ...) {
     va_list args;
 
     va_start(args, result);
@@ -174,6 +174,6 @@ void _corto_call(corto_function f, corto_void* result, ...) {
 }
 
 /* Call with buffer */
-void _corto_callb(corto_function f, corto_void* result, void** argptrs) {
+void _corto_invokeb(corto_function f, corto_void* result, void** argptrs) {
     CORTO_CALL
 }

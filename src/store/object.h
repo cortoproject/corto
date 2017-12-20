@@ -36,9 +36,8 @@ void corto_ptr_castInit(void);
 void corto_drop(corto_object o, bool delete);
 corto_object corto_resumePersistent(corto_object o);
 
-#define FIND(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, 0)
-#define RESOLVE(parent, id) corto(parent, id, NULL, NULL, NULL, NULL, -1, CORTO_DO_LOOKUP_TYPE)
-
+#define FIND(p, i) corto(CORTO_LOOKUP, {.parent=p, .id=i})
+#define RESOLVE(p, i) corto(CORTO_LOOKUP_TYPE, {.parent=p, .id=i})
 
 struct corto_fmt_s {
     corto_string name;
@@ -215,8 +214,8 @@ int16_t ext_corto_expr_free(ext_corto_expr *expr);
 
 corto_procedure corto_function_getProcedureType(corto_function this);
 
-int16_t corto_callInitDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine);
-void corto_callDestructDelegate(corto_destructAction *d, corto_type t, corto_object o);
+int16_t corto_invoke_initDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine);
+void corto_invokeDestructDelegate(corto_destructAction *d, corto_type t, corto_object o);
 
 extern corto_entityAdmin corto_subscriber_admin;
 extern corto_entityAdmin corto_mount_admin;

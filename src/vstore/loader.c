@@ -12,7 +12,7 @@ int16_t corto_loader_construct(
         corto_ptr_setstr(&q->select, "//*");
         corto_ptr_setstr(&q->from, "/");
         corto_ptr_setstr(&q->type, "package");
-        corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+        corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
         if (safe_corto_mount_setContentType(this, "text/json")) {
             return -1;
         }

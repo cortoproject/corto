@@ -21,29 +21,29 @@
 
 /** @file
  * @section buffer Corto
- * @brief Generic corto store functions.
+ * @brief Generic corto functions.
  */
 
 #ifndef CORTO_H
 #define CORTO_H
 
 /* $header() */
-#include <corto/base.h>
 
+/* Generic functionality (os abstraction, lockless admin) */
+#include <corto/base.h>
+#include <corto/entityadmin.h>
+
+/* Types must be included first because builtin packages cross reference */
+#include <corto/vstore/_type.h>
+#include <corto/lang/_type.h>
+#include <corto/secure/_type.h>
+
+/* Include main headers from builtin packages */
 #include <corto/lang/lang.h>
 #include <corto/vstore/vstore.h>
 #include <corto/native/native.h>
 #include <corto/secure/secure.h>
-
-/* Callback used to walk contents of scope */
-typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
-
-#include <corto/util.h>
-#include <corto/entityadmin.h>
-#include <corto/rb.h>
-
 #include <corto/store/store.h>
-#include <corto/vstore/vstore.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,7 +72,7 @@ int corto_stop(void);
  * be discovered with corto_select and resolved with corto_lookup and
  * corto_resolve.
  *
- * @param enable Specifiies whether to enable mounting package data.
+ * @param enable Specifies whether to enable mounting package data.
  * @return Previous value.
  */
 CORTO_EXPORT
@@ -97,16 +97,7 @@ bool corto_autoload(
  * @return String that uniquely identifies the current corto build
  */
 CORTO_EXPORT
-char* corto_getBuild(void);
-
-/** Get filename of corto library that current process links with.
- * This function can be used to debug scenarios in which a package has a corto
- * build that does not match the build of the application.
- *
- * @return path + filename of the corto library that the application links with.
- */
-CORTO_EXPORT
-char* corto_getLibrary(void);
+char* corto_get_build(void);
 
 /** Specify function to be executed when corto exits.
  *
@@ -114,63 +105,31 @@ char* corto_getLibrary(void);
  */
 CORTO_EXPORT
 void corto_onexit(
-    void(*handler)(void*), void* userData);
-
-/* ffi_call compatible signature */
-typedef void (*corto_callInvoke)(void *fdata, void *fptr, corto_void *rvalue, void **args);
-
-typedef corto_int16 ___ (*corto_callInit_f)(corto_function f);
-typedef void (*corto_callDeinit_f)(corto_function f);
-
-/* Call API */
-CORTO_EXPORT
-void _corto_call(
-    corto_function f,
-    corto_void* result, ...);
-
-CORTO_EXPORT
-void _corto_callv(
-    corto_function f,
-    corto_void* result,
-    va_list args);
-
-CORTO_EXPORT
-void _corto_callb(
-    corto_function f,
-    corto_void* result,
-    void** argptrs);
-
-/* Register binding */
-CORTO_EXPORT int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit);
-CORTO_EXPORT int16_t corto_callInit(corto_function f);
-CORTO_EXPORT void corto_callDeinit(corto_function f);
-
-#define corto_call(f, ...) _corto_call(corto_function(f), __VA_ARGS__)
-#define corto_callv(f, result, args) _corto_callv(corto_function(f), result, args)
-#define corto_callb(f, result, argptrs) _corto_callb(corto_function(f), result, argptrs)
+    void(*handler)(void*),
+    void* userData);
 
 /* Used in type checking macro */
 CORTO_EXPORT
-corto_object _corto_assertType(
+corto_object _corto_assert_type(
     corto_type type,
     corto_object o);
 
 #ifndef NDEBUG
-#define corto_assertType(type, o) _corto_assertType((type), (o))
+#define corto_assert_type(type, o) _corto_assert_type((type), (o))
 #else
-#define corto_assertType(type, o) (o)
+#define corto_assert_type(type, o) (o)
 #endif
 
-/* Throws an assertion when invalid object in debugging */
+/* Throws an assertion when object is invalid when NDEBUG is not defined */
 #ifndef NDEBUG
 CORTO_EXPORT
-void _corto_assertObject(
+void _corto_assert_object(
     char const *file,
     unsigned int line,
     corto_object o);
-#define corto_assertObject(o) _corto_assertObject(__FILE__, __LINE__, o)
+#define corto_assert_object(o) _corto_assert_object(__FILE__, __LINE__, o)
 #else
-#define corto_assertObject(o)
+#define corto_assert_object(o)
 #endif
 
 CORTO_EXPORT extern int8_t CORTO_DEBUG_ENABLED;

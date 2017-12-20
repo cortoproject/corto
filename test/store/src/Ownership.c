@@ -167,7 +167,7 @@ void test_Ownership_tc_invokeNotOwned(
     old = corto_set_source(NULL);
     test_assert(old == r);
 
-    corto_call(corto_function(test_MethodForwardTest_func_o), NULL, o);
+    corto_invoke(corto_function(test_MethodForwardTest_func_o), NULL, o);
     test_assert(o->invoked == 0);
     test_assert(r->invoked == 1);
 
@@ -196,7 +196,7 @@ void test_Ownership_tc_invokeOwned(
     test_assert(corto_sourceof(o) == r);
 
     /* Invoke method in context of mount. Nothing should happen */
-    corto_call(corto_function(test_MethodForwardTest_func_o), NULL, o);
+    corto_invoke(corto_function(test_MethodForwardTest_func_o), NULL, o);
     test_assertint(o->invoked, 0);
     test_assertint(r->invoked, 0);
 

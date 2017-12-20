@@ -174,7 +174,7 @@ int16_t corto_mount_construct(
     if (this->mount) {
         corto_ptr_setstr(&s->query.from, corto_fullpath(NULL, this->mount));
     } else if (s->query.from) {
-        this->mount = corto(NULL, s->query.from, NULL, NULL, NULL, NULL, -1, 0);
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
 
     corto_eventMask mask = corto_observer(this)->mask;
@@ -294,8 +294,12 @@ int16_t corto_mount_construct(
         corto_entityAdmin_remove(&corto_mount_admin, s->query.from, this, this, FALSE);
     } else {
         /* Make it easy to see whether this mount observes a tree, scope or self */
-        corto_observer(this)->mask =
-            corto_match_getScope((corto_idmatch_program)corto_subscriber(this)->idmatch);
+        int scope = corto_idmatch_get_scope(
+            (corto_idmatch_program)corto_subscriber(this)->idmatch);
+
+        corto_observer(this)->mask = scope == 2 ? CORTO_ON_TREE
+                                   : scope == 1 ? CORTO_ON_SCOPE
+                                                : CORTO_ON_SELF;
     }
 
     return ret;
@@ -350,7 +354,7 @@ corto_string corto_mount_id(
 int16_t corto_mount_init(
     corto_mount this)
 {
-    this->policy.ownership = CORTO_REMOTE_OWNER;
+    this->policy.ownership = CORTO_REMOTE_SOURCE;
 
     /* Mount doesn't need to implement a resume callback to resume objects */
     this->policy.mask |= CORTO_MOUNT_RESUME;
@@ -411,7 +415,7 @@ void corto_mount_invoke(
         corto_mount_onInvoke(this, instance, proc, argptrs);
     } else {
         corto_object prevowner = corto_set_source(corto_sourceof(instance));
-        corto_callb(proc, NULL, (void**)argptrs);
+        corto_invokeb(proc, NULL, (void**)argptrs);
         corto_set_source(prevowner);
     }
 
@@ -884,15 +888,17 @@ corto_object corto_mount_resume(
     corto_object o)
 {
     /* If objects from mount are not owned locally they cannot be resumed */
-    if (this->policy.ownership != CORTO_LOCAL_OWNER) {
+    if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
         return NULL;
     }
 
     corto_log_push(strarg("resume:%s/%s", parent, name));
+
     /* Ensure that if object is created, owner & attributes are set correctly */
     corto_attr prevAttr = corto_set_attr(CORTO_ATTR_PERSISTENT | corto_get_attr());
     corto_object prevOwner = corto_set_source(this);
     corto_object result = NULL;
+
     /* Resume object */
     if (this->explicitResume) {
         corto_debug("mount: onResume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
@@ -959,7 +965,7 @@ corto_object corto_mount_resume(
 
                 if (newObject) {
                     /* Use define that won't resume */
-                    corto(NULL, NULL, NULL, o, NULL, NULL, -1, CORTO_DO_DEFINE);
+                    corto(CORTO_DEFINE, {.object = o});
                 }
 
                 result = o;

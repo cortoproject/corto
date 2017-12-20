@@ -724,8 +724,8 @@ CORTO_ENUM_O(vstore, operatorKind);
     CORTO_CONSTANT_O(vstore_operatorKind, REF);
 
 CORTO_ENUM_O(vstore, ownership);
-    CORTO_CONSTANT_O(vstore_ownership, REMOTE_OWNER);
-    CORTO_CONSTANT_O(vstore_ownership, LOCAL_OWNER);
+    CORTO_CONSTANT_O(vstore_ownership, REMOTE_SOURCE);
+    CORTO_CONSTANT_O(vstore_ownership, LOCAL_SOURCE);
     CORTO_CONSTANT_O(vstore_ownership, CACHE_OWNER);
 
 CORTO_BITMASK_O(vstore, mountMask);

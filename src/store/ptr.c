@@ -26,7 +26,7 @@ CORTO_SEQUENCE(dummySeq, char,);
 
 /* Set reference field */
 void corto_ptr_setref(void* ptr, corto_object value) {
-    corto_assertObject(value);
+    corto_assert_object(value);
 
     corto_object old;
     old = *(corto_object*)ptr;
@@ -51,7 +51,7 @@ void corto_ptr_setstr(char** ptr, const char *value) {
 }
 
 char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
-    corto_assertObject(type);
+    corto_assert_object(type);
 
     corto_value v;
     v = corto_value_value(p, type);
@@ -64,7 +64,7 @@ char *_corto_ptr_contentof(void *ptr, corto_type type, char *contentType) {
 }
 
 corto_int16 _corto_ptr_fromStr(void* out, corto_type type, corto_string string) {
-    corto_assertObject(type);
+    corto_assert_object(type);
 
     corto_string_deser_t serData = {
         .out = *(void**)out,
@@ -92,7 +92,7 @@ corto_equalityKind _corto_ptr_compare(
     corto_type type,
     const void *p2)
 {
-    corto_assertObject(type);
+    corto_assert_object(type);
 
     corto_value vdst;
     corto_value vsrc;
@@ -105,7 +105,7 @@ corto_int16 _corto_ptr_init(
     void *p,
     corto_type type)
 {
-    corto_assertObject(type);
+    corto_assert_object(type);
     memset(p, 0, corto_type_sizeof(type));
     corto_value v;
     v = corto_value_value(p, type);
@@ -113,7 +113,7 @@ corto_int16 _corto_ptr_init(
 }
 
 corto_int16 _corto_ptr_deinit(void *p, corto_type type) {
-    corto_assertObject(type);
+    corto_assert_object(type);
     corto_value v;
 
     v = corto_value_value(p, type);
@@ -121,7 +121,7 @@ corto_int16 _corto_ptr_deinit(void *p, corto_type type) {
 }
 
 corto_int16 _corto_ptr_copy(void *dst, corto_type type, void *src) {
-    corto_assertObject(type);
+    corto_assert_object(type);
 
     corto_value vdst;
     corto_value vsrc;

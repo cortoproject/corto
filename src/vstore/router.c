@@ -119,9 +119,9 @@ int16_t corto_router_match(
     }
 
     /* Call route */
-    corto_callb(corto_function(match), result.value, args);
+    corto_invokeb(corto_function(match), result.value, args);
     if (router->matched) {
-        corto_callb(corto_function(router->matched), result.value, args);
+        corto_invokeb(corto_function(router->matched), result.value, args);
     }
 
     if (matched) {

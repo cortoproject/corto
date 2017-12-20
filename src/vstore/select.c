@@ -354,7 +354,7 @@ bool corto_selectMatch(
 
                 /* If a SINK mount doesn't implement the onQuery method, select will
                  * return the contents of the object store */
-                if ((r->policy.ownership == CORTO_LOCAL_OWNER) && !r->passThrough) {
+                if ((r->policy.ownership == CORTO_LOCAL_SOURCE) && !r->passThrough) {
                     if (rType) {
                         /* If the type matches, the object is managed by the
                          * mount. This prevents returning duplicate results. */
@@ -672,9 +672,14 @@ bool corto_selectIterMount(
 
         corto_fmt contentTypeHandle = (corto_fmt)mount->contentTypeOutHandle;
         corto_object prev = corto_set_source(mount);
-        corto_object ref =
-        corto(parent, result->id, type, NULL, contentTypeHandle, (void*)result->value, -1,
-            CORTO_DO_DECLARE | CORTO_DO_DEFINE | CORTO_DO_FORCE_TYPE);
+        corto_object ref = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE, {
+            .parent = parent,
+            .id = result->id,
+            .type = type,
+            .fmt = contentTypeHandle,
+            .value = (void*)result->value
+        });
+
         corto_set_source(prev);
         corto_release(type);
         corto_release(parent);
@@ -1251,8 +1256,9 @@ int16_t corto_selectSplitScope(
                 corto_ptr_setstr(&data->segments[current].expr, ch ? ptr + 1 : NULL);
 
                 /* Lookup object in advance, if it exists */
-                data->segments[current].o = corto(
-                    NULL, data->segments[current].scope, NULL, NULL, NULL, NULL, -1, 0);
+                data->segments[current].o = corto(CORTO_LOOKUP, {
+                    .parent = root_o, .id = data->segments[current].scope
+                });
 
                 *ptr = ch;
 
@@ -1285,8 +1291,10 @@ int16_t corto_selectRun(
     }
 
     strcat(fullscope, data->expr ? data->expr : "");
-
-    data->mask = corto_match_getScope(&data->program);
+    int scope = corto_idmatch_get_scope(&data->program);
+    data->mask = scope == 2 ? CORTO_ON_TREE
+               : scope == 1 ? CORTO_ON_SCOPE
+               : CORTO_ON_SELF;
 
     corto_ptr_setstr(&data->fullscope, fullscope);
     corto_path_clean(data->fullscope, data->fullscope);
@@ -1639,7 +1647,7 @@ int corto_mountAction_id(
 {
     CORTO_UNUSED(r);
 
-    if (m->policy.ownership == CORTO_LOCAL_OWNER) {
+    if (m->policy.ownership == CORTO_LOCAL_SOURCE) {
         corto_select_data *data = ctx;
         corto_string id = _corto_mount_id(m);
         if (id) {

@@ -13,40 +13,40 @@ extern "C" {
 #endif
 
 /* Casting macro's */
-#define corto_dispatcher(o) ((corto_dispatcher)corto_assertType((corto_type)corto_dispatcher_o, o))
-#define corto_handleAction(o) ((corto_handleAction*)corto_assertType((corto_type)corto_handleAction_o, o))
-#define corto_event(o) ((corto_event*)corto_assertType((corto_type)corto_event_o, o))
-#define corto_eventMask(o) ((corto_eventMask*)corto_assertType((corto_type)corto_eventMask_o, o))
-#define corto_frameKind(o) ((corto_frameKind*)corto_assertType((corto_type)corto_frameKind_o, o))
-#define corto_frame(o) ((corto_frame*)corto_assertType((corto_type)corto_frame_o, o))
-#define corto_observer(o) ((corto_observer)corto_assertType((corto_type)corto_observer_o, o))
-#define corto_query(o) ((corto_query*)corto_assertType((corto_type)corto_query_o, o))
-#define corto_subscriber(o) ((corto_subscriber)corto_assertType((corto_type)corto_subscriber_o, o))
-#define corto_ownership(o) ((corto_ownership*)corto_assertType((corto_type)corto_ownership_o, o))
-#define corto_mountMask(o) ((corto_mountMask*)corto_assertType((corto_type)corto_mountMask_o, o))
-#define corto_queuePolicy(o) ((corto_queuePolicy*)corto_assertType((corto_type)corto_queuePolicy_o, o))
-#define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assertType((corto_type)corto_mountPolicy_o, o))
-#define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assertType((corto_type)corto_mountSubscription_o, o))
-#define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assertType((corto_type)corto_mountSubscriptionList_o, o))
-#define corto_time(o) ((corto_time*)corto_assertType((corto_type)corto_time_o, o))
-#define corto_mount(o) ((corto_mount)corto_assertType((corto_type)corto_mount_o, o))
-#define corto_invokeEvent(o) ((corto_invokeEvent*)corto_assertType((corto_type)corto_invokeEvent_o, o))
-#define corto_loader(o) ((corto_loader)corto_assertType((corto_type)corto_loader_o, o))
-#define corto_objectIter(o) ((corto_objectIter*)corto_assertType((corto_type)corto_objectIter_o, o))
-#define corto_observerEvent(o) ((corto_observerEvent*)corto_assertType((corto_type)corto_observerEvent_o, o))
-#define corto_operatorKind(o) ((corto_operatorKind*)corto_assertType((corto_type)corto_operatorKind_o, o))
-#define corto_remote(o) ((corto_remote)corto_assertType((corto_type)corto_remote_o, o))
-#define corto_resultMask(o) ((corto_resultMask*)corto_assertType((corto_type)corto_resultMask_o, o))
-#define corto_sample(o) ((corto_sample*)corto_assertType((corto_type)corto_sample_o, o))
-#define corto_sampleIter(o) ((corto_sampleIter*)corto_assertType((corto_type)corto_sampleIter_o, o))
-#define corto_result(o) ((corto_result*)corto_assertType((corto_type)corto_result_o, o))
-#define corto_resultIter(o) ((corto_resultIter*)corto_assertType((corto_type)corto_resultIter_o, o))
-#define corto_resultList(o) ((corto_resultList*)corto_assertType((corto_type)corto_resultList_o, o))
-#define corto_route(o) ((corto_route)corto_assertType((corto_type)corto_route_o, o))
-#define corto_router(o) ((corto_router)corto_assertType((corto_type)corto_router_o, o))
-#define corto_routerimpl(o) ((corto_routerimpl)corto_assertType((corto_type)corto_routerimpl_o, o))
-#define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assertType((corto_type)corto_subscriberEvent_o, o))
-#define corto_subscriberEventIter(o) ((corto_subscriberEventIter*)corto_assertType((corto_type)corto_subscriberEventIter_o, o))
+#define corto_dispatcher(o) ((corto_dispatcher)corto_assert_type((corto_type)corto_dispatcher_o, o))
+#define corto_handleAction(o) ((corto_handleAction*)corto_assert_type((corto_type)corto_handleAction_o, o))
+#define corto_event(o) ((corto_event*)corto_assert_type((corto_type)corto_event_o, o))
+#define corto_eventMask(o) ((corto_eventMask*)corto_assert_type((corto_type)corto_eventMask_o, o))
+#define corto_frameKind(o) ((corto_frameKind*)corto_assert_type((corto_type)corto_frameKind_o, o))
+#define corto_frame(o) ((corto_frame*)corto_assert_type((corto_type)corto_frame_o, o))
+#define corto_observer(o) ((corto_observer)corto_assert_type((corto_type)corto_observer_o, o))
+#define corto_query(o) ((corto_query*)corto_assert_type((corto_type)corto_query_o, o))
+#define corto_subscriber(o) ((corto_subscriber)corto_assert_type((corto_type)corto_subscriber_o, o))
+#define corto_ownership(o) ((corto_ownership*)corto_assert_type((corto_type)corto_ownership_o, o))
+#define corto_mountMask(o) ((corto_mountMask*)corto_assert_type((corto_type)corto_mountMask_o, o))
+#define corto_queuePolicy(o) ((corto_queuePolicy*)corto_assert_type((corto_type)corto_queuePolicy_o, o))
+#define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assert_type((corto_type)corto_mountPolicy_o, o))
+#define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assert_type((corto_type)corto_mountSubscription_o, o))
+#define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assert_type((corto_type)corto_mountSubscriptionList_o, o))
+#define corto_time(o) ((corto_time*)corto_assert_type((corto_type)corto_time_o, o))
+#define corto_mount(o) ((corto_mount)corto_assert_type((corto_type)corto_mount_o, o))
+#define corto_invokeEvent(o) ((corto_invokeEvent*)corto_assert_type((corto_type)corto_invokeEvent_o, o))
+#define corto_loader(o) ((corto_loader)corto_assert_type((corto_type)corto_loader_o, o))
+#define corto_objectIter(o) ((corto_objectIter*)corto_assert_type((corto_type)corto_objectIter_o, o))
+#define corto_observerEvent(o) ((corto_observerEvent*)corto_assert_type((corto_type)corto_observerEvent_o, o))
+#define corto_operatorKind(o) ((corto_operatorKind*)corto_assert_type((corto_type)corto_operatorKind_o, o))
+#define corto_remote(o) ((corto_remote)corto_assert_type((corto_type)corto_remote_o, o))
+#define corto_resultMask(o) ((corto_resultMask*)corto_assert_type((corto_type)corto_resultMask_o, o))
+#define corto_sample(o) ((corto_sample*)corto_assert_type((corto_type)corto_sample_o, o))
+#define corto_sampleIter(o) ((corto_sampleIter*)corto_assert_type((corto_type)corto_sampleIter_o, o))
+#define corto_result(o) ((corto_result*)corto_assert_type((corto_type)corto_result_o, o))
+#define corto_resultIter(o) ((corto_resultIter*)corto_assert_type((corto_type)corto_resultIter_o, o))
+#define corto_resultList(o) ((corto_resultList*)corto_assert_type((corto_type)corto_resultList_o, o))
+#define corto_route(o) ((corto_route)corto_assert_type((corto_type)corto_route_o, o))
+#define corto_router(o) ((corto_router)corto_assert_type((corto_type)corto_router_o, o))
+#define corto_routerimpl(o) ((corto_routerimpl)corto_assert_type((corto_type)corto_routerimpl_o, o))
+#define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assert_type((corto_type)corto_subscriberEvent_o, o))
+#define corto_subscriberEventIter(o) ((corto_subscriberEventIter*)corto_assert_type((corto_type)corto_subscriberEventIter_o, o))
 
 /* Native types */
 #ifndef CORTO_VSTORE_H
@@ -150,8 +150,8 @@ struct corto_subscriber_s {
 
 /* /corto/vstore/ownership */
 typedef enum corto_ownership {
-    CORTO_REMOTE_OWNER = 0,
-    CORTO_LOCAL_OWNER = 1,
+    CORTO_REMOTE_SOURCE = 0,
+    CORTO_LOCAL_SOURCE = 1,
     CORTO_CACHE_OWNER = 2
 } corto_ownership;
 

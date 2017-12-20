@@ -82,7 +82,7 @@ int16_t corto_function_construct(
     }
 
     /* Initialize binding-specific data */
-    if (corto_callInit(this)) {
+    if (corto_invoke_init(this)) {
         goto error;
     }
 
@@ -96,7 +96,7 @@ void corto_function_destruct(
 {
     corto_uint32 i;
 
-    corto_callDeinit(this);
+    corto_invoke_deinit(this);
 
     /* Deinitialize parameters */
     for(i=0; i<this->parameters.length; i++) {

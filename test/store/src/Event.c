@@ -5,9 +5,8 @@
 
 static corto_object testScope;
 
-#define DECLARE_ORPHAN(parent, id, type)\
-    corto(parent, id, type, NULL, NULL, NULL, -1,\
-        CORTO_DO_DECLARE | CORTO_DO_ORPHAN | CORTO_DO_FORCE_TYPE);
+#define DECLARE_ORPHAN(p, i, t)\
+    corto(CORTO_DECLARE|CORTO_ORPHAN|CORTO_FORCE_TYPE, {.parent=p, .id=i, .type=t})
 
 void test_Event_setup(
     test_Event this)

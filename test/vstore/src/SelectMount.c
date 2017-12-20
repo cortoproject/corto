@@ -11,7 +11,7 @@ void test_SelectMount_setup(
     corto_set_attr(old);
 
     /* Create mount */
-    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_REMOTE_OWNER);
+    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_REMOTE_SOURCE);
 
     corto_enableload(FALSE);
 

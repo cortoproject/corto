@@ -39,6 +39,10 @@
 extern "C" {
 #endif
 
+
+/* -- CORTO_SELECT function -- */
+
+
 typedef struct corto_select__fluent {
     /** Specify a relative scope for the query.
      * @param scope A scope identifier.
@@ -209,34 +213,9 @@ struct corto_select__fluent corto_select(
     const char *expr,
     ...);
 
-/** Publish event.
- * This function enables emitting events for objects that are not loaded in the
- * RAM store. This allows for efficient routing of events between subscribers
- * without the need to (de)marshall object values.
- *
- * If the object is loaded in the RAM store, a call to corto_publish will
- * demarshall the specified value into the object.
- *
- * The function may only emit events of the data kind, which are ON_DEFINE,
- * ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for
- * objects that are loaded in the RAM store.
- *
- * @param event The event to be emitted
- * @param id A string representing the id of the object in the form of 'foo/bar'.
- * @param type A string representing the id of the type as returned by corto_fullpath.
- * @param contentType A string representing the content type (format) of the specified value.
- * @param value A string (or binary value) representing the serialized value of the object.
- * @return 0 if success, nonzero if failed.
- * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
- */
-CORTO_EXPORT
-int16_t corto_publish(
-    corto_eventMask event,
-    const char *id,
-    const char *type,
-    const char *contentType,
-    void *content);
+
+/* -- CORTO_SUBSCRIBE function -- */
+
 
 typedef struct corto_subscribe__fluent {
     /** Specify a relative scope for the subscriber.
@@ -356,17 +335,34 @@ int16_t corto_unsubscribe(
     corto_subscriber subscriber,
     corto_object instance);
 
-/** Determine whether a pattern matches an object, scope or tree.
- * Learns from a compiled pattern if it matches a tree (`foo//`), a
- * scope (`foo/`) or an object (`foo/bar`).
+/** Publish event.
+ * This function enables emitting events for objects that are not loaded in the
+ * RAM store. This allows for efficient routing of events between subscribers
+ * without the need to (de)marshall object values.
  *
- * @param program The program to evaluate
- * @return CORTO_ON_SELF if matching an object, CORTO_ON_SCOPE if matching a
- * scope, and CORTO_ON_TREE if matching a tree.
+ * If the object is loaded in the RAM store, a call to corto_publish will
+ * demarshall the specified value into the object.
+ *
+ * The function may only emit events of the data kind, which are ON_DEFINE,
+ * ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for
+ * objects that are loaded in the RAM store.
+ *
+ * @param event The event to be emitted
+ * @param id A string representing the id of the object in the form of 'foo/bar'.
+ * @param type A string representing the id of the type as returned by corto_fullpath.
+ * @param contentType A string representing the content type (format) of the specified value.
+ * @param value A string (or binary value) representing the serialized value of the object.
+ * @return 0 if success, nonzero if failed.
+ * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
+ * @see corto_observe corto_subscribe
  */
 CORTO_EXPORT
-corto_eventMask corto_match_getScope(
-    corto_idmatch_program program);
+int16_t corto_publish(
+    corto_eventMask event,
+    const char *id,
+    const char *type,
+    const char *contentType,
+    void *content);
 
 #ifdef __cplusplus
 }

@@ -10,7 +10,7 @@ int16_t test_AutoResumeSinkMount_construct(
 
     corto_mount_setContentType(this, "text/corto");
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     // First tier

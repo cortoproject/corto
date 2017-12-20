@@ -178,8 +178,8 @@ static void corto_observersCopyOut(corto_ll list, corto__observer** observers) {
 
 /* Event handling. */
 static corto__observer* corto_observerFind(corto_ll on, corto_observer observer, corto_object instance) {
-    corto_assertObject(observer);
-    corto_assertObject(instance);
+    corto_assert_object(observer);
+    corto_assert_object(instance);
 
     corto__observer* result = NULL;
     corto_iter iter;
@@ -332,7 +332,7 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
     }
 }
 
-static void corto_notifyObserver(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+static void corto_notify_observer(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -350,12 +350,12 @@ static void corto_notifyObserver(corto__observer *data, corto_object observable,
             },
             *ePtr = &e;
             void *args[] = {&ePtr};
-            corto_callb(observer, NULL, args);
+            corto_invokeb(observer, NULL, args);
         }
     }
 }
 
-static void corto_notifyObserverCdecl(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+static void corto_notify_observer_cdecl(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -376,7 +376,7 @@ static void corto_notifyObserverCdecl(corto__observer *data, corto_object observ
     }
 }
 
-static void corto_notifyObserverDispatch(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+static void corto_notify_observer_dispatch(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -405,7 +405,7 @@ static void corto_notifyObserverDispatch(corto__observer *data, corto_object obs
     }
 }
 
-static void corto_notifyObserversIntern(corto__observer** observers, corto_object observable, corto_uint32 mask, int depth) {
+static void corto_notify_observers_intern(corto__observer** observers, corto_object observable, corto_uint32 mask, int depth) {
     corto__observer* data;
 
     corto_object prev = corto_set_source(NULL);
@@ -425,9 +425,9 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
         corto_updateSubscriptions(data->observer->mask, mask, observable);
 
         switch(data->notifyKind) {
-        case 0: corto_notifyObserver(data, observable, prev, mask, depth); break;
-        case 1: corto_notifyObserverCdecl(data, observable, prev, mask, depth); break;
-        case 2: corto_notifyObserverDispatch(data, observable, prev, mask, depth); break;
+        case 0: corto_notify_observer(data, observable, prev, mask, depth); break;
+        case 1: corto_notify_observer_cdecl(data, observable, prev, mask, depth); break;
+        case 2: corto_notify_observer_dispatch(data, observable, prev, mask, depth); break;
         }
 
         observers++;
@@ -436,12 +436,12 @@ static void corto_notifyObserversIntern(corto__observer** observers, corto_objec
 }
 
 corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
-    corto_assertObject(observable);
+    corto_assert_object(observable);
     corto_object *parent;
 
     corto_type t = corto_typeof(observable);
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
-        if (corto_callInitDelegate(&((corto_class)t)->validate, t, observable, true)) {
+        if (corto_invoke_initDelegate(&((corto_class)t)->validate, t, observable, true)) {
             goto error;
         }
     }
@@ -460,7 +460,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
         /* Notify observers of observable */
         corto__observer** observers = corto_observersPush(admin, &_o->onSelfArray);
         if (observers) {
-            corto_notifyObserversIntern(observers, observable, mask, depth);
+            corto_notify_observers_intern(observers, observable, mask, depth);
             if (corto_observersPop(admin)) {
                 corto_observersArrayFree(observers);
             }
@@ -477,7 +477,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
             if (!isOrphan) {
                 corto__observer** observers = corto_observersPush(admin, &_parent->onChildArray);
                 if (observers) {
-                    corto_notifyObserversIntern(observers, observable, mask, depth);
+                    corto_notify_observers_intern(observers, observable, mask, depth);
                     if (corto_observersPop(admin)) {
                         corto_observersArrayFree(observers);
                     }
@@ -485,7 +485,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
             } else {
                 corto__observer** observers = corto_observersPush(admin, &_parent->onSelfArray);
                 if (observers) {
-                    corto_notifyObserversIntern(observers, parent, mask, depth);
+                    corto_notify_observers_intern(observers, parent, mask, depth);
                     if (corto_observersPop(admin)) {
                         corto_observersArrayFree(observers);
                     }
@@ -503,7 +503,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     }
 
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_UPDATE)) {
-        corto_callDestructDelegate(&((corto_class)t)->update, t, observable);
+        corto_invokeDestructDelegate(&((corto_class)t)->update, t, observable);
     }
 
     return 0;
@@ -530,14 +530,14 @@ typedef struct corto_observerAlignData {
 } corto_observerAlignData;
 
 int corto_observerAlignScope(corto_object o, void *userData) {
-    corto_assertObject(o);
+    corto_assert_object(o);
 
     corto_observerAlignData *data = userData;
 
     if (corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
         if ((data->mask & CORTO_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
         {
-            corto_notifyObserver(data->observer, o, o, CORTO_DECLARE, data->depth);
+            corto_notify_observer(data->observer, o, o, CORTO_DECLARE, data->depth);
         }
     }
 
@@ -545,7 +545,7 @@ int corto_observerAlignScope(corto_object o, void *userData) {
         if ((data->mask & CORTO_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
             corto_check_state(o, CORTO_VALID))
         {
-            corto_notifyObserver(data->observer, o, o, CORTO_DEFINE, data->depth);
+            corto_notify_observer(data->observer, o, o, CORTO_DEFINE, data->depth);
         }
     }
 
@@ -567,7 +567,7 @@ int corto_observerAlignScope(corto_object o, void *userData) {
 }
 
 void corto_observerAlign(corto_object observable, corto__observer *observer, int mask) {
-    corto_assertObject(observable);
+    corto_assert_object(observable);
 
     corto_observerAlignData walkData;
     corto_objectseq scope;
@@ -581,13 +581,13 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     if (corto_check_attr(observable, CORTO_ATTR_PERSISTENT)) {
         if ((mask & CORTO_DECLARE) && (mask & CORTO_ON_SELF))
         {
-            corto_notifyObserver(observer, observable, observable, CORTO_DECLARE, 0);
+            corto_notify_observer(observer, observable, observable, CORTO_DECLARE, 0);
         }
 
         if ((mask & CORTO_DEFINE) && (mask & CORTO_ON_SELF) &&
             corto_check_state(observable, CORTO_VALID))
         {
-            corto_notifyObserver(observer, observable, observable, CORTO_DEFINE, 0);
+            corto_notify_observer(observer, observable, observable, CORTO_DEFINE, 0);
         }
     }
 

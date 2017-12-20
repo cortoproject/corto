@@ -133,7 +133,7 @@ int16_t test_SinkMount_construct(
         FALSE
     );
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     return corto_mount_construct(this);

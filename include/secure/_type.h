@@ -13,10 +13,10 @@ extern "C" {
 #endif
 
 /* Casting macro's */
-#define corto_secure_accessKind(o) ((corto_secure_accessKind*)corto_assertType((corto_type)corto_secure_accessKind_o, o))
-#define corto_secure_actionKind(o) ((corto_secure_actionKind*)corto_assertType((corto_type)corto_secure_actionKind_o, o))
-#define corto_secure_key(o) ((corto_secure_key)corto_assertType((corto_type)corto_secure_key_o, o))
-#define corto_secure_lock(o) ((corto_secure_lock)corto_assertType((corto_type)corto_secure_lock_o, o))
+#define corto_secure_accessKind(o) ((corto_secure_accessKind*)corto_assert_type((corto_type)corto_secure_accessKind_o, o))
+#define corto_secure_actionKind(o) ((corto_secure_actionKind*)corto_assert_type((corto_type)corto_secure_actionKind_o, o))
+#define corto_secure_key(o) ((corto_secure_key)corto_assert_type((corto_type)corto_secure_key_o, o))
+#define corto_secure_lock(o) ((corto_secure_lock)corto_assert_type((corto_type)corto_secure_lock_o, o))
 
 /* Native types */
 #ifndef CORTO_SECURE_H
