@@ -10,7 +10,7 @@ Linux/OSX | Windows | Coverity
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | not yet available | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
 
 ## Getting Started
-These instructions will get the project up and running on your local machine for development and testing purposes. Check out the deployment section for notes on how to deploy corto to a live system.
+These instructions will get the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 A Linux or macOS system with `curl` installed. That's all!
@@ -20,34 +20,44 @@ Installing the corto development environment is simple. Just run this command to
 ```
 curl https://corto.io/install-dev-src | sh
 ```
-If you'd rather not install to `/usr/local` but to a location of your own choosing, run this:
-```
-curl https://corto.io/build-dev | sh
-```
-This command downloads the source code to `{current working directory}/corto-src`.
 
-The development environment contains the corto runtime, development tools and some goodies to get you started quickly. When you want to actually deploy an application, know that you can strip most of these packages from your deployment! Also note that these commands build a `development` version. Development versions are slow because they enable lots of checking. To install a `release` version, just replace `dev` by `release`!
+### Code example
+To get started quickly, run the following command after installing corto:
+```
+corto create MyApp
+```
+In the generated `MyApp` directory you will find a source directory with a file
+called `MyApp.c`. In the main routine of this application, enter the following
+hello world program:
+
+```
+int32_t* obj = corto_create(root_o, "MyFirstObject", corto_int32_o);
+*obj = 10;
+
+char *str_value = corto_serialize_value(obj, "text/corto");
+printf("object %s of type %s has value %s\n",
+    corto_fullpath(NULL, obj),
+    corto_fullpath(NULL, corto_typeof(obj)),
+    str_value);
+
+free(str_value);
+corto_delete(obj);
+```
 
 ### Running the tests
 To make sure that corto is running smoothly on your system, it is always a good idea to run the tests. To run them, you need a local copy of the corto runtime repository. Running these commands in sequence will run the corto runtime testsuites:
 
 ```
-curl https://corto.io/build-dev | sh
-cd corto-src/corto
+curl https://corto.io/install-dev-src | sh
+cd ~/.corto/src/corto
 corto test
 ```
 Don't worry if you see some `missing implementation` messages. This just means we have some work ahead of us. What is important is that after the test run, you see a message that says that everything is ok!
 
-If the tests fail, please submit a bug report (check out [CONTRIBUTING.md](CONTRIBUTING.md)). 
-
-### Deployment
-If you are deploying corto, you will want to use a release version of the code. Release versions are smaller, have less checking and as such have much better performance. To install a release version of the code, do:
-```
-curl https://corto.io/install-release-src | sh
-```
+If the tests fail, please submit a bug report (check out [CONTRIBUTING.md](CONTRIBUTING.md)).
 
 ## Built With
-* [rake](https://github.com/ruby/rake) - The bedrock of our buildsystem
+* [bake](https://github.com/cortoproject/bake) - The tailor-made buildsystem for corto.
 * [libffi](https://github.com/libffi/libffi) - We harness the powerful magic of libffi to call functions dynamically
 
 ## Contributing
@@ -73,4 +83,3 @@ The following people (in chronological order of appearance) need a callout as co
 * **Pepijn van Kesteren** - *Ever willing to ask the hard questions & able to offer advice on all of them*
 * **Nathan Petkus** - *True™ corto believer. Perpetually in the business of rallying good people for the good cause*
 * **Luke Peng** - *Reliable source of (sometimes painful) reminders that it is not just about the code*
-

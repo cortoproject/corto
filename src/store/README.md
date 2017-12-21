@@ -14,48 +14,48 @@ An overview of the files, and what they do:
 | file | description |
 |------|-------------|
 | bootstrap.c | Contains the code that starts and stops corto |
-| call.c | Interface for dynamically calling various kinds of functions |
 | cdeclhandler.c | Implementation of call interface for native (C/C++) functions |
-| contentType.c | Utility to load serializers (uses packages in `driver/fmt`) |
 | convert.c | Utility to cast between primitive types |
 | copy_ser.c | Serializer for doing deep object copies |
 | depresolver.c | Serialize a (cyclic) object graph to operations that recreate the graph |
 | expr.c | Stub for `corto/expr` package that allows the core to evaluate expressions |
+| fmt.c | Utility to load serializers (uses packages in `driver/fmt`) |
+| freeops.c | Optimized serializer for freeing objects. |
 | init_ser.c | Serializer that initializes object values |
-| load.c | The corto file loader (uses packages in `driver/ext`) |
+| invoke.c | Interface for dynamically calling various kinds of functions |
 | memory_ser.c | Serializer that frees resources in an object value |
 | metawalk.c | Serialize over a virtual instance of a type |
 | object.c | Functions to manipulate contents of the object store |
 | operator.c | Utility to perform operators on primitive values |
 | ptr.c | Functions that accept raw pointers to corto values |
-| resolver.c | Implementation of the `corto_resolve` function |
 | string_deser.c | Deserializer for corto string format |
 | string_ser.c | Serializer for corto string format |
-| value.c | Widely used type that encapsulates a corto value with metadata |
-| walk.c | Extensive ramework for walking over object values |
+| time.c | Utility functions for the corto_time type |
+| value.c | Type that encapsulates a corto value with metadata |
+| walk.c | Framework for walking over object values |
 
 ## Bootstrapping corto
-Because corto uses a self-referential typesystem (the typesystem is defined in 
+Because corto uses a self-referential typesystem (the typesystem is defined in
 itself), the bootstrap of corto happens in a carefully orchestrated series of
 actions.
 
 Objects that are created in the bootstrap are so called "builtin" objects. They
 are special, because they are not allocated on the heap like regular objects.
 Instead, the builtin objects are statically defined as global variables in the
-process. This makes booting up corto super fast (hardly any allocs!), and 
+process. This makes booting up corto super fast (hardly any allocs!), and
 reduces the amount of setup code to a minimum.
 
 Still, quite a bit of code has to be written in order to add an object to the
 core. This section guides you through it.
 
 Generally you will not need this information unless the maintainers of this project
-have been part of some kind of tragic accident, or you've crossed off everything 
+have been part of some kind of tragic accident, or you've crossed off everything
 from your bucket list and are looking for a new challenge.
 
 ### 1. Adding a new type
 New types are first defined in the `bootstrap.h` file. This file is quite large,
 and contains all the type definitions for the corto runtime. The file is very
-macro-heavy to keep the definitions somewhat clean, but it also inevitably 
+macro-heavy to keep the definitions somewhat clean, but it also inevitably
 obscures what is exactly happening. For now, lets look at a simple type definition:
 
 ```c
@@ -86,7 +86,7 @@ you want to achieve, and tailor it to your own definition.
 ### 2. Create a C type definition
 We now need to create the equivalent type in C. Usually corto does this for us
 with code generators, but since we are bootstrapping, we can't do that here.
-Part of the bootstrap is validating that the calculated size of the type 
+Part of the bootstrap is validating that the calculated size of the type
 metadata is the same as the actual type, and for that we need an actual type.
 
 For the type we defined earlier, this is what the C definition looks like:
@@ -98,8 +98,8 @@ struct corto_time {
 ```
 This type needs to be added to `vstore/include/_type.h`.
 
-You'll notice that `vstore` does not show up here anywhere. That is because 
-packages can define their own rules for how package names are encoded in 
+You'll notice that `vstore` does not show up here anywhere. That is because
+packages can define their own rules for how package names are encoded in
 typenames. The golden rule here is: just follow the mapping of the other types
 and don't think too hard about this.
 
@@ -112,9 +112,9 @@ need to define a global variable that points to the type. For this, go to the
 CORTO_META_OBJECT(struct, time);
 ```
 
-This will forward declare a variable called `corto_time_o` that points to the 
+This will forward declare a variable called `corto_time_o` that points to the
 type object. We haven't actually defined this variable yet however. For that we
-need to add the following definition to `bootstrap.h` (just add it alongside 
+need to add the following definition to `bootstrap.h` (just add it alongside
 with the other forward declarations):
 
 ```c
@@ -122,7 +122,7 @@ CORTO_FWDECL_VSTORE(struct, time);
 ```
 
 ### 4. Add the type to the bootstrap
-We're almost done. The only thing left is to add the types to the bootstrap 
+We're almost done. The only thing left is to add the types to the bootstrap
 code. This ensures that the objects are properly defined and added to the
 hierarchy (encoding a binary tree in static memory was too much trouble). First,
 add the struct object to the `SSO_OP_TYPE` macro with this line:
@@ -147,13 +147,13 @@ parent object they belong. That keeps the bootstrap (somewhat more) readable.
 The type should now be added to the core! Rebuild the core by going to the root
 of this repository and type:
 ```
-rake clobber default
+bake rebuild
 ```
 
 Now start the corto shell by doing:
 ```
 corto sh
-``` 
+```
 If all is well you did not get any errors. If you did, it probably complains about
 a size mismatch between the metadata and the C type. That means you made a mistake
 in the type mapping. No worries- as long as nobody is using your type (and since
@@ -196,17 +196,12 @@ Regenerating the core is super easy, but because it can nuke your core if you do
 it wrong, ** MAKE A BACKUP **. You wouldn't believe how often I kicked myself for
 forgetting to do this, and having to manually correct the mess I made for myself.
 
-To backup the runtime source, do something like this (from the root):
+To backup the source, do something like this (from the root):
 ```
-cp -r runtime runtime_tmp
-```
-
-Now go to the runtime directory:
-```
-cd runtime
+cp -r corto .corto_tmp
 ```
 
-and run this command:
+Now, from the corto project root run this command:
 ```
 corto pp --core
 ```
@@ -216,16 +211,10 @@ code has been regenerated, it just has to be rebuilt. From the root of the
 repository do yet again:
 
 ```
-rake clobber default
+bake rebuild
 ```
 Now repeat the steps to display your object in the corto shell. If all is well,
 you should no longer see any errors, and your type is showing up nicely alongside
 the rest of the corto types!
 
 If not... happy debugging :-p
-
-
-
-
-
-
