@@ -43,6 +43,11 @@ printf("object %s of type %s has value %s\n",
 free(str_value);
 corto_delete(obj);
 ```
+You can now build the project by running this command from the project root:
+```
+bake
+```
+After the build is finished, you can run the executable in the `bin/<platform>` directory!
 
 ### Running the tests
 To make sure that corto is running smoothly on your system, it is always a good idea to run the tests. To run them, you need a local copy of the corto runtime repository. Running these commands in sequence will run the corto runtime testsuites:
