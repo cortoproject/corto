@@ -526,7 +526,7 @@ static corto_int16 corto_string_deserParseValue(
         }
 
         if (o || !strcmp(value, "null")) {
-            if (offset) corto_ptr_setref(offset, o);
+            if (offset) corto_set_ref(offset, o);
             if (o) corto_release(o);
         } else {
             corto_throw("unresolved reference to '%s' for member '%s'", value,
@@ -554,7 +554,7 @@ static corto_int16 corto_string_deserParseValue(
                 deserialized = NULL;
             }
 
-            corto_ptr_setstr(offset, deserialized);
+            corto_set_str(offset, deserialized);
         }
     }
 
@@ -744,7 +744,7 @@ const char* corto_string_parseAnonymous(
         }
     }
 
-    if (offset) corto_ptr_setref(offset, o);
+    if (offset) corto_set_ref(offset, o);
     if (o) corto_release(o);
 
     return ptr;

@@ -78,8 +78,8 @@ static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) 
     sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
 }
 static void CORTO_NAME_BINARYOP(string,assign)(void* op1, void* op2, void* result) {
-    corto_ptr_setstr((corto_string*)result, *(corto_string*)op2);
-    corto_ptr_setstr((corto_string*)op1, *(corto_string*)op2);
+    corto_set_str((corto_string*)result, *(corto_string*)op2);
+    corto_set_str((corto_string*)op1, *(corto_string*)op2);
 }
 
 
@@ -262,7 +262,7 @@ CORTO_STRING_OP_INIT(CORTO_COND_NEQ, cond_neq)\
 CORTO_STRING_OP_INIT(CORTO_ASSIGN, assign)\
 CORTO_STRING_OP_INIT(CORTO_ADD, add)
 
-void corto_operatorInit(void) {
+void corto_ptr_operatorInit(void) {
     CORTO_UNARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_NOT, bool, cond_not);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_EQ, bool, cond_eq);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_NEQ, bool, cond_neq);

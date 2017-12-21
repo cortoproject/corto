@@ -5,10 +5,10 @@
 int16_t test_LoaderSimulatorMount_construct(
     test_LoaderSimulatorMount this)
 {
-    corto_ptr_setstr(&corto_subscriber(this)->query.select, "//*");
-    corto_ptr_setstr(&corto_subscriber(this)->query.from, "/");
-    corto_ptr_setstr(&corto_subscriber(this)->query.type, "package");
-    corto_ptr_setstr(&corto_subscriber(this)->contentType, "text/json");
+    corto_set_str(&corto_subscriber(this)->query.select, "//*");
+    corto_set_str(&corto_subscriber(this)->query.from, "/");
+    corto_set_str(&corto_subscriber(this)->query.type, "package");
+    corto_set_str(&corto_subscriber(this)->contentType, "text/json");
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
     corto_mount(this)->policy.filterResults = false;

@@ -168,11 +168,11 @@ int16_t corto_mount_construct(
 
     /* If mount isn't set, and object is scoped, mount data on itself */
     if (!this->mount && corto_check_attr(this, CORTO_ATTR_NAMED) && !s->query.from) {
-        corto_ptr_setref(&this->mount, this);
+        corto_set_ref(&this->mount, this);
     }
 
     if (this->mount) {
-        corto_ptr_setstr(&s->query.from, corto_fullpath(NULL, this->mount));
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
     } else if (s->query.from) {
         this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
@@ -182,13 +182,13 @@ int16_t corto_mount_construct(
     if (!s->query.select) {
         /* Set the expression according to the mask */
         if (mask & CORTO_ON_TREE) {
-            corto_ptr_setstr(&s->query.select, "//");
+            corto_set_str(&s->query.select, "//");
         } else if (mask & CORTO_ON_SCOPE) {
-            corto_ptr_setstr(&s->query.select, "/");
+            corto_set_str(&s->query.select, "/");
         } else if (mask & CORTO_ON_SELF) {
-            corto_ptr_setstr(&s->query.select, ".");
+            corto_set_str(&s->query.select, ".");
         } else {
-            corto_ptr_setstr(&s->query.select, "/");
+            corto_set_str(&s->query.select, "/");
         }
 
     }
@@ -250,8 +250,8 @@ int16_t corto_mount_construct(
     /* Set the callback function */
     corto_function(this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(this)->fptr = (corto_word)corto_mount_notify;
-    corto_ptr_setref(&corto_observer(this)->instance, this);
-    corto_ptr_setref(&corto_observer(this)->dispatcher, dispatcher);
+    corto_set_ref(&corto_observer(this)->instance, this);
+    corto_set_ref(&corto_observer(this)->dispatcher, dispatcher);
     /* Enable subscriber only when mount implements onNotify */
     if (this->policy.mask & CORTO_MOUNT_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY ||
@@ -263,7 +263,7 @@ int16_t corto_mount_construct(
     corto_observer(this)->mask |=
       CORTO_DECLARE|CORTO_DEFINE|CORTO_UPDATE|CORTO_DELETE;
     if (!s->query.select) {
-        corto_ptr_setstr(&s->query.select, "//");
+        corto_set_str(&s->query.select, "//");
     }
 
     if (s->contentType)
@@ -1065,7 +1065,7 @@ int16_t corto_mount_setContentTypeIn(
     const char *type)
 {
 
-    corto_ptr_setstr(&corto_subscriber(this)->contentType, type);
+    corto_set_str(&corto_subscriber(this)->contentType, type);
     corto_subscriber(this)->contentTypeHandle = (corto_word)corto_fmt_lookup(type);
     if (!corto_subscriber(this)->contentTypeHandle) {
         goto error;
@@ -1081,7 +1081,7 @@ int16_t corto_mount_setContentTypeOut(
     const char *type)
 {
 
-    corto_ptr_setstr(&this->contentTypeOut, type);
+    corto_set_str(&this->contentTypeOut, type);
     this->contentTypeOutHandle = (corto_word)corto_fmt_lookup(type);
     if (!this->contentTypeOutHandle) {
         goto error;
@@ -1275,7 +1275,7 @@ void corto_mount_subscribeOrMount(
          * subscription is meaningless, so to avoid confusion set it to '*'
          */
         if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
-        corto_ptr_setstr(&subscription->query.select, "*");
+        corto_set_str(&subscription->query.select, "*");
         /* Doesn't count as new subscription, so undo increase in refcount */
         if (subCtx) subscription->subscriberCount --;
         if (mntCtx) subscription->mountCount --;

@@ -81,7 +81,7 @@ void corto_observerDelayedAdminRemove(
     }
 }
 
-void corto_observerDelayedAdminDefine(
+void corto_observer_delayedAdminDefine(
     corto_object instance)
 {
     corto_ll admin = corto_tls_get(CORTO_KEY_LISTEN_ADMIN);
@@ -391,10 +391,10 @@ static void corto_notify_observer_dispatch(corto__observer *data, corto_object o
             corto_observerEvent *event = corto_declare(NULL, NULL, corto_type(corto_observerEvent_o));
             corto_set_attr(oldAttr);
 
-            corto_ptr_setref(&event->observer, observer);
-            corto_ptr_setref(&event->instance, data->_this);
-            corto_ptr_setref(&event->data, observable);
-            corto_ptr_setref(&event->source, source);
+            corto_set_ref(&event->observer, observer);
+            corto_set_ref(&event->instance, data->_this);
+            corto_set_ref(&event->data, observable);
+            corto_set_ref(&event->source, source);
             event->event = mask;
 
             /* Set thread handle so the dispatcher can figure out whether a
@@ -441,7 +441,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
 
     corto_type t = corto_typeof(observable);
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
-        if (corto_invoke_initDelegate(&((corto_class)t)->validate, t, observable, true)) {
+        if (corto_invoke_preDelegate(&((corto_class)t)->validate, t, observable, true)) {
             goto error;
         }
     }
@@ -471,7 +471,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     parent = observable;
     while((parent = corto_parentof(parent))) {
         corto__observable *_parent =
-          corto__objectObservable(CORTO_OFFSET(parent, -sizeof(corto__object)));
+          corto_hdr_observable(CORTO_OFFSET(parent, -sizeof(corto__object)));
 
         if (_parent) {
             if (!isOrphan) {
@@ -498,12 +498,12 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
         isOrphan = corto_isorphan(parent);
     }
 
-    if (corto_notifySubscribers(mask, observable)) {
+    if (corto_notify_subscribers(mask, observable)) {
         goto error;
     }
 
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_UPDATE)) {
-        corto_invokeDestructDelegate(&((corto_class)t)->update, t, observable);
+        corto_invoke_postDelegate(&((corto_class)t)->update, t, observable);
     }
 
     return 0;
@@ -511,7 +511,7 @@ error:
     return -1;
 }
 
-corto_int16 corto_notifySecured(corto_object observable, corto_uint32 mask) {
+corto_int16 corto_notify_secured(corto_object observable, corto_uint32 mask) {
     if (!corto_authorize(observable, CORTO_SECURE_ACTION_READ)) {
         return 0;
     }
@@ -554,11 +554,11 @@ int corto_observerAlignScope(corto_object o, void *userData) {
         corto_objectseq scope;
         corto_uint32 i;
         data->depth++;
-        scope = corto_scopeClaim(o);
+        scope = corto_scope_claim(o);
         for(i = 0; i < scope.length; i++) {
             result = corto_observerAlignScope(scope.buffer[i], userData);
         }
-        corto_scopeRelease(scope);
+        corto_scope_release(scope);
         data->depth--;
         return result;
     } else {
@@ -591,12 +591,12 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
         }
     }
 
-    scope = corto_scopeClaim(observable);
+    scope = corto_scope_claim(observable);
     corto_int32 i;
     for (i = 0; i < scope.length; i++) {
         corto_observerAlignScope(scope.buffer[i], &walkData);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 }
 
 
@@ -607,9 +607,9 @@ static corto_observer corto_observeObserve(corto_observeRequest *r)
     corto_observer result = corto_declare(NULL, NULL, corto_observer_o);
 
     result->mask = r->mask;
-    corto_ptr_setref(&result->observable, r->observable);
-    corto_ptr_setref(&result->instance, r->instance);
-    corto_ptr_setref(&result->dispatcher, r->dispatcher);
+    corto_set_ref(&result->observable, r->observable);
+    corto_set_ref(&result->instance, r->instance);
+    corto_set_ref(&result->dispatcher, r->dispatcher);
     result->enabled = r->enabled;
     ((corto_function)result)->fptr = (corto_word)r->callback;
     ((corto_function)result)->kind = CORTO_PROCEDURE_CDECL;
@@ -623,7 +623,7 @@ static corto_observer corto_observeObserve(corto_observeRequest *r)
             corto_throw("'%s' is not a type", r->type);
             goto error;
         }
-        corto_ptr_setref(&result->type, type);
+        corto_set_ref(&result->type, type);
     }
 
     if (corto_define(result)) {
@@ -737,7 +737,7 @@ int16_t corto_observer_construct(
             p = &corto_function(this)->parameters.buffer[0];
             p->name = corto_strdup("e");
             p->passByReference = FALSE;
-            corto_ptr_setref(&p->type, corto_observerEvent_o);
+            corto_set_ref(&p->type, corto_observerEvent_o);
         }
     }
 
@@ -783,7 +783,7 @@ void corto_observer_destruct(
 int16_t corto_observer_init(
     corto_observer this)
 {
-    corto_ptr_setref(&corto_function(this)->returnType, corto_void_o);
+    corto_set_ref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
     if (corto_check_attr(this, CORTO_ATTR_NAMED) && strchr(corto_idof(this), '(')) {
@@ -915,7 +915,7 @@ int16_t corto_observer_observe(
         goto postponed;
     }
 
-    _o = corto__objectObservable(
+    _o = corto_hdr_observable(
         CORTO_OFFSET(observable, -sizeof(corto__object)));
 
     #ifndef NDEBUG
@@ -1078,7 +1078,7 @@ bool corto_observer_observing(
     corto__observable* _o;
     corto_bool result = FALSE;
 
-    _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
+    _o = corto_hdr_observable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     observerData = NULL;
 
     if (_o) {
@@ -1148,7 +1148,7 @@ int16_t corto_observer_unobserve(
     }
 
     if (corto_check_attr(observable, CORTO_ATTR_OBSERVABLE)) {
-        _o = corto__objectObservable(CORTO_OFFSET(observable, -sizeof(corto__object)));
+        _o = corto_hdr_observable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         observerData = NULL;
 
         /* If observer triggered on updates of me, remove from onSelf list */

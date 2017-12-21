@@ -41,6 +41,6 @@ error:
 int16_t corto_unit_init(
     corto_unit this)
 {
-    corto_ptr_setref(&this->type, corto_float64_o);
+    corto_set_ref(&this->type, corto_float64_o);
     return 0;
 }

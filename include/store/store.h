@@ -70,14 +70,13 @@
 #include <corto/store/value.h>
 #include <corto/store/walk.h>
 
-#include <corto/store/string_deser.h>
 #include <corto/store/string_ser.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
+typedef int (*corto_scope_walk_cb)(corto_object o, void* userData);
 typedef struct corto_fmt_s *corto_fmt;
 
 
@@ -1155,7 +1154,7 @@ bool corto_owned(
  * @return The number of objects in the scope of the object.
  */
 CORTO_EXPORT
-uint32_t corto_scopeSize(
+uint32_t corto_scope_size(
     corto_object o);
 
 /** Returns a sequence with the objects in the current scope.
@@ -1171,18 +1170,18 @@ uint32_t corto_scopeSize(
  *
  * @param o A named object.
  * @return A sequence with the objects in the scope of the object.
- * @see corto_scopeRelease
+ * @see corto_scope_release
  */
 CORTO_EXPORT
-corto_objectseq corto_scopeClaim(
+corto_objectseq corto_scope_claim(
     corto_object o);
 
-/** Release a sequence obtained by corto_scopeClaim.
- * @param scope A sequence obtained by corto_scopeClaim.
- * @see corto_scopeClaim
+/** Release a sequence obtained by corto_scope_claim.
+ * @param scope A sequence obtained by corto_scope_claim.
+ * @see corto_scope_claim
  */
 CORTO_EXPORT
-void corto_scopeRelease(
+void corto_scope_release(
     corto_objectseq scope);
 
 /** Invoke a callback for each object in a scope.
@@ -1197,23 +1196,43 @@ void corto_scopeRelease(
  * in the action.
  *
  * Use this function only for fast, low-level operations. For all other operations
- * that need to walk a scope, use the safer corto_scopeClaim and corto_scopeRelease.
+ * that need to walk a scope, use the safer corto_scope_claim and corto_scope_release.
  *
  * @param o A named object.
  * @return A sequence with the objects in the scope of the object.
- * @see corto_scopeClaim corto_scopeRelease
+ * @see corto_scope_claim corto_scope_release
  */
 CORTO_EXPORT
-int16_t corto_scopeWalk(
+int16_t corto_scope_walk(
     corto_object o,
-    corto_scopeWalk_cb action,
+    corto_scope_walk_cb action,
     void *userData);
 
+/* Set a reference value.
+ * This function will increase the refcount of the specified object, assign the
+ * object to the value, and decrease the refcount of the old object, in that order.
+ * Both value (not ptr!) and object can be null.
+ *
+ * @param ptr A pointer to the value.
+ * @param object The object reference to assign to the value.
+ */
+CORTO_EXPORT
+void corto_set_ref(
+    void* ptr,
+    corto_object object);
 
-
-
-CORTO_EXPORT char *corto_str(corto_object object, uint32_t maxLength);
-CORTO_EXPORT int16_t corto_fromStr(void *o, char *string);
+/* Set a string value.
+ * This function will duplicate the the specified string, assign the
+ * string to the value, and deallocate the old string, in that order.
+ * Both value (not ptr!) and object can be null.
+ *
+ * @param ptr A pointer to the value.
+ * @param str The string to assign to the value.
+ */
+CORTO_EXPORT
+void corto_set_str(
+    char **ptr,
+    const char *str);
 
 /* Call base initalizer / constructor / destructor */
 CORTO_EXPORT int16_t corto_super_init(corto_object o);
@@ -1259,23 +1278,30 @@ int16_t corto_overload(
  *
  *   No extra whitespaces are allowed.
  */
-CORTO_EXPORT int32_t corto_signatureName(const char* signature, corto_id buffer);
-CORTO_EXPORT int32_t corto_signatureParamCount(const char* signature);
-CORTO_EXPORT int32_t corto_signatureParamName(const char* signature, uint32_t id, corto_id buffer);
-CORTO_EXPORT int32_t corto_signatureParamType(const char* signature, uint32_t id, corto_id buffer, int* reference);
+CORTO_EXPORT int32_t corto_sig_name(const char* signature, corto_id buffer);
+CORTO_EXPORT int32_t corto_sig_paramCount(const char* signature);
+CORTO_EXPORT int32_t corto_sig_paramName(const char* signature, uint32_t id, corto_id buffer);
+CORTO_EXPORT int32_t corto_sig_paramType(const char* signature, uint32_t id, corto_id buffer, int* reference);
 
 /* Create request signature */
-CORTO_EXPORT char* corto_signatureOpen(const char* name);
-CORTO_EXPORT char* corto_signatureAdd(char* sig, corto_type type, int flags);
-CORTO_EXPORT char* corto_signatureAddWildcard(char* sig, bool isReference);
-CORTO_EXPORT char* corto_signatureClose(char* sig);
+CORTO_EXPORT char* corto_sig_open(const char* name);
+CORTO_EXPORT char* corto_sig_add(char* sig, corto_type type, int flags);
+CORTO_EXPORT char* corto_sig_addWildcard(char* sig, bool isReference);
+CORTO_EXPORT char* corto_sig_close(char* sig);
 
 /* Obtain signature from object */
-CORTO_EXPORT char* corto_signature(corto_object o, corto_id buffer);
+CORTO_EXPORT
+char* corto_sig(
+    corto_object o,
+    corto_id buffer);
 
 /* Find a function that matches a signature */
-CORTO_EXPORT corto_object corto_lookupFunction(corto_object scope, const char* requested, int32_t *d, int32_t *diff);
-CORTO_EXPORT corto_object *corto_lookupFunctionFromSequence(corto_objectseq scopeContents, const char* requested, int32_t* d, int32_t *diff);
+CORTO_EXPORT
+corto_object corto_lookup_function(
+    corto_object scope,
+    const char* requested,
+    int32_t *d,
+    int32_t *diff);
 
 #ifdef __cplusplus
 }

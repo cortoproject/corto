@@ -16,7 +16,7 @@ int16_t corto_router_construct(
     corto_router this)
 {
     if (!corto_interface(this)->base) {
-        corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
+        corto_set_ref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
         if (!corto_type_instanceof(corto_routerimpl_o, corto_interface(this)->base)) {
             corto_throw("router must inherit from 'routerimpl'");
@@ -25,7 +25,7 @@ int16_t corto_router_construct(
 
     }
 
-    corto_ptr_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
+    corto_set_ref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
     return safe_corto_class_construct(this);
 error:
     return -1;
@@ -34,7 +34,7 @@ error:
 int16_t corto_router_init(
     corto_router this)
 {
-    corto_ptr_setstr(&this->elementSeparator, "/");
+    corto_set_str(&this->elementSeparator, "/");
     return safe_corto_class_init(this);
 }
 

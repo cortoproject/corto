@@ -159,12 +159,12 @@ int16_t corto_function_init(
             corto_functionLookup_t walkData = {.f = this, .error = FALSE};
             corto_uint32 i;
             corto_objectseq scope =
-                corto_scopeClaimWithFilter(
+                corto_scope_claimWithFilter(
                     corto_parentof(this),
                     NULL,
                     corto_idof(this)
                 );
-            corto_signatureName(corto_idof(this), walkData.name);
+            corto_sig_name(corto_idof(this), walkData.name);
             for (i = 0; i < scope.length; i++) {
                 if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
                     break;
@@ -176,7 +176,7 @@ int16_t corto_function_init(
                 goto error;
             }
 
-            corto_scopeRelease(scope);
+            corto_scope_release(scope);
         }
 
         /* Parse arguments from name */
@@ -238,7 +238,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
             corto_id id;
             int flags = 0;
             /* Count number of parameters for function */
-            count = corto_signatureParamCount(name);
+            count = corto_sig_paramCount(name);
             if (count == -1) {
                 goto error;
             }
@@ -248,7 +248,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
             result.buffer = corto_calloc(sizeof(corto_parameter) * count);
             /* Parse arguments */
             for(i = 0; i < count; i++) {
-                if (corto_signatureParamType(name, i, id, &flags)) {
+                if (corto_sig_paramType(name, i, id, &flags)) {
                     corto_throw(
                         "error occurred while parsing type of parameter '%d' for signature '%s'",
                         i,
@@ -285,7 +285,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 }
 
                 /* Parse name */
-                if (corto_signatureParamName(name, i, id)) {
+                if (corto_sig_paramName(name, i, id)) {
                     corto_throw(
                         "error occurred while parsing name of argument '%s' for signature '%s'",
                         name);

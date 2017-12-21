@@ -118,9 +118,9 @@ CORTO_META_OBJECT(list, resultList);
 CORTO_META_OBJECT(list, objectlist);
 CORTO_META_OBJECT(list, stringlist);
 
-CORTO_META_OBJECT(delegate, initAction);
-CORTO_META_OBJECT(delegate, nameAction);
-CORTO_META_OBJECT(delegate, destructAction);
+CORTO_META_OBJECT(delegate, pre_action);
+CORTO_META_OBJECT(delegate, name_action);
+CORTO_META_OBJECT(delegate, post_action);
 CORTO_META_OBJECT(delegate, notifyAction);
 CORTO_META_OBJECT(delegate, invokeAction);
 CORTO_META_OBJECT(delegate, requestAction);

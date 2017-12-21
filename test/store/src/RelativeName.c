@@ -6,12 +6,12 @@ void test_RelativeName_setup(
     test_RelativeName this)
 {
 
-    corto_ptr_setref(&this->tier1, corto_voidCreateChild(root_o, "tier1"));
-    corto_ptr_setref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
-    corto_ptr_setref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
-    corto_ptr_setref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
-    corto_ptr_setref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
-    corto_ptr_setref(&this->child, corto_voidCreateChild(this->obj, "child"));
+    corto_set_ref(&this->tier1, corto_voidCreateChild(root_o, "tier1"));
+    corto_set_ref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
+    corto_set_ref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
+    corto_set_ref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
+    corto_set_ref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
+    corto_set_ref(&this->child, corto_voidCreateChild(this->obj, "child"));
 
     test_assert(this->tier1 != NULL);
     test_assert(this->tier2 != NULL);
@@ -194,12 +194,12 @@ void test_RelativeName_teardown(
 {
 
     corto_delete(this->tier1);
-    corto_ptr_setref(&this->tier1, NULL);
-    corto_ptr_setref(&this->tier2, NULL);
-    corto_ptr_setref(&this->tier3, NULL);
-    corto_ptr_setref(&this->obj, NULL);
-    corto_ptr_setref(&this->disjunct, NULL);
-    corto_ptr_setref(&this->child, NULL);
+    corto_set_ref(&this->tier1, NULL);
+    corto_set_ref(&this->tier2, NULL);
+    corto_set_ref(&this->tier3, NULL);
+    corto_set_ref(&this->obj, NULL);
+    corto_set_ref(&this->disjunct, NULL);
+    corto_set_ref(&this->child, NULL);
 
 }
 

@@ -19,14 +19,24 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO_INIT_SER_H_
-#define CORTO_INIT_SER_H_
+#ifndef CORTO_EXPR
+#define CORTO_EXPR
 
-#include <corto/store/walk.h>
+/* proxy for corto/expr functions */
+typedef struct ext_corto_expr {
+    corto_function function;
+} ext_corto_expr;
 
-corto_walk_opt corto_ser_init(
-    corto_modifier access,
-    corto_operatorKind accessKind,
-    corto_walk_traceKind trace);
+typedef struct ext_corto_expr_opt {
+    corto_object scope;
+    corto_type returnType;
+    bool returnsReference;
+    bool inverse;
+} ext_corto_expr_opt;
 
-#endif /* CORTO_INIT_SER_H_ */
+ext_corto_expr* ext_corto_expr_alloc(void);
+int16_t ext_corto_expr_compb(ext_corto_expr *out, ext_corto_expr_opt *opt, char *expr, char **types);
+int16_t ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **args);
+int16_t ext_corto_expr_free(ext_corto_expr *expr);
+
+#endif

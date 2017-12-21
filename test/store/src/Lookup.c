@@ -17,12 +17,12 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
     test_assert(r == o);
     corto_release(r);
 
-    corto_objectseq scope = corto_scopeClaim(o);
+    corto_objectseq scope = corto_scope_claim(o);
     int i;
     for (i = 0; i < scope.length; i ++) {
         tc_lookupAllWalk(scope.buffer[i], NULL);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 
     return 1;
 }
@@ -30,12 +30,12 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
 void test_Lookup_tc_lookupAll(
     test_Lookup this)
 {
-    corto_objectseq scope = corto_scopeClaim(root_o);
+    corto_objectseq scope = corto_scope_claim(root_o);
     int i;
     for (i = 0; i < scope.length; i ++) {
         tc_lookupAllWalk(scope.buffer[i], NULL);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 }
 
 void test_Lookup_tc_lookupCaseInsensitive(

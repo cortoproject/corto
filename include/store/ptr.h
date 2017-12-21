@@ -161,17 +161,6 @@ uint64_t _corto_ptr_count(
     void *ptr,
     corto_type type);
 
-/** Serialize pointer to a specified format.
- * @param ptr A pointer to the value.
- * @param type The type of the value.
- * @param contentType The contentType to serialize to.
- * @return A serialized string for the value. Must be deallocated with free.
- * @see corto_ptr_str
- */
-CORTO_EXPORT
-char *_corto_ptr_contentof(
-    void *ptr, corto_type type, char *contentType);
-
 /** Get a corto string representation for value.
  * This function is equivalent to calling `corto_ptr_contentof` with content
  * type `text/corto`.
@@ -185,19 +174,6 @@ char *_corto_ptr_contentof(
 CORTO_EXPORT
 char *_corto_ptr_str(
     void *ptr, corto_type type, uint32_t maxLength);
-
-/** Deserialize a string into a value.
- * @param ptr A pointer to the value.
- * @param type The type of the value.
- * @param str The string to deserialize into the value.
- * @return A serialized corto string for the value. Must be deallocated with free.
- * @see corto_ptr_str
- */
-CORTO_EXPORT
-int16_t _corto_ptr_fromStr(
-    void *ptr,
-    corto_type type,
-    char *str);
 
 /** Copy value into another value.
  * @param dst A pointer to the destination value.
@@ -301,32 +277,6 @@ CORTO_EXPORT
 int16_t _corto_ptr_deinit(
     void *ptr,
     corto_type type);
-
-/* Set a reference value.
- * This function will increase the refcount of the specified object, assign the
- * object to the value, and decrease the refcount of the old object, in that order.
- * Both value (not ptr!) and object can be null.
- *
- * @param ptr A pointer to the value.
- * @param object The object reference to assign to the value.
- */
-CORTO_EXPORT
-void corto_ptr_setref(
-    void* ptr,
-    corto_object object);
-
-/* Set a string value.
- * This function will duplicate the the specified string, assign the
- * string to the value, and deallocate the old string, in that order.
- * Both value (not ptr!) and object can be null.
- *
- * @param ptr A pointer to the value.
- * @param str The string to assign to the value.
- */
-CORTO_EXPORT
-void corto_ptr_setstr(
-    char **ptr,
-    const char *str);
 
 #define corto_ptr_cast(fromType, from, toType, to) _corto_ptr_cast(corto_type(fromType), from, corto_type(toType), to)
 #define corto_ptr_str(p, type, maxLength) _corto_ptr_str(p, corto_type(type), maxLength)

@@ -5,7 +5,7 @@ int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
 
-    corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
+    corto_set_str(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
       this->type ? this->type : "int32";
 
@@ -234,7 +234,7 @@ corto_object test_SinkMount_onResume(
                 }
 
                 if (e.value) {
-                    corto_fromStr(&result, (corto_string)e.value);
+                    corto_deserialize_value(&result, "text/corto", (corto_string)e.value);
                 }
 
                 if (!object) {
@@ -253,4 +253,3 @@ corto_object test_SinkMount_onResume(
 error:
     return NULL;
 }
-

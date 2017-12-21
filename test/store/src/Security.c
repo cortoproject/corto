@@ -196,12 +196,12 @@ void test_Security_tc_authorizeDeniedScopeClaim(
     corto_object b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
 
-    corto_objectseq seq = corto_scopeClaim(b);
+    corto_objectseq seq = corto_scope_claim(b);
     int i;
     for (i = 0; i < seq.length; i ++) {
         test_assert(strcmp(corto_idof(seq.buffer[i]), "c"));
     }
-    corto_scopeRelease(seq);
+    corto_scope_release(seq);
 
     prev = corto_set_session(prev);
     test_assert(prev == token);
@@ -232,7 +232,7 @@ void test_Security_tc_authorizeDeniedScopeWalk(
     corto_object b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
 
-    corto_int16 ret = corto_scopeWalk(
+    corto_int16 ret = corto_scope_walk(
         b, test_Security_tc_authorizeDeniedScopeWalk_walk, NULL);
     test_assert(ret == 1);
 

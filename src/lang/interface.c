@@ -3,6 +3,8 @@
 #include <corto/corto.h>
 #include "interface.h"
 #include "sequence.h"
+#include "src/store/object.h"
+
 corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     corto_interface base;
     corto_uint32 size;
@@ -46,7 +48,7 @@ corto_function* corto_vtableLookup(corto_objectseq* vtable, const char *member, 
     corto_function *result;
     s.buffer = (corto_object *)vtable->buffer;
     s.length = vtable->length;
-    result = (corto_function*)corto_lookupFunctionFromSequence(s, member, d_out, NULL);
+    result = (corto_function*)corto_lookup_functionFromSequence(s, member, d_out, NULL);
     return result;
 }
 
@@ -106,7 +108,7 @@ bool corto_interface_pullDelegate(corto_interface this, corto_member m) {
 
         } while ((!delegate || !delegate->procedure) && (base = corto_interface(base)->base));
         if (base && (base != this) && corto_instanceof(corto_parentof(m), base)) {
-            corto_ptr_setref(&myDelegate->procedure, delegate->procedure);
+            corto_set_ref(&myDelegate->procedure, delegate->procedure);
         }
 
     }
@@ -325,7 +327,7 @@ corto_int16 corto__interface_insertMembers(corto_interface this) {
         }
 
         /* Fill interface.members with members in scope */
-        if (!corto_scopeWalk(this, corto_interface_insertMemberAction, this)) {
+        if (!corto_scope_walk(this, corto_interface_insertMemberAction, this)) {
             goto error;
         }
 
@@ -523,7 +525,7 @@ int16_t corto_interface_bindMethod(
 
                 }
 
-                corto_ptr_setref(found, method);
+                corto_set_ref(found, method);
                 added = TRUE;
             } else {
                 corto_id id, id2;
@@ -589,7 +591,7 @@ int16_t corto_interface_construct(
 {
     this->methods = corto_interface_vtableFromBase(this);
 
-    if (!corto_scopeWalk(this, corto_interface_walkScope, this)) {
+    if (!corto_scope_walk(this, corto_interface_walkScope, this)) {
         goto error;
     }
 
@@ -624,7 +626,7 @@ void corto_interface_destruct(
 
     /* Free members */
     for (i=0; i<this->members.length; i++) {
-        corto_ptr_setref(&this->members.buffer[i], NULL);
+        corto_set_ref(&this->members.buffer[i], NULL);
     }
 
     if (this->members.buffer) {
@@ -635,7 +637,7 @@ void corto_interface_destruct(
 
     /* Free methods */
     for (i=0; i<this->methods.length; i++) {
-        corto_ptr_setref(&this->methods.buffer[i], NULL);
+        corto_set_ref(&this->methods.buffer[i], NULL);
     }
 
     if (this->methods.buffer) {

@@ -29,9 +29,9 @@ extern "C" {
 #define corto_word(o) ((uintptr_t*)corto_assert_type((corto_type)corto_word_o, o))
 #define corto_function(o) ((corto_function)corto_assert_type((corto_type)corto_function_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assert_type((corto_type)corto_delegatedata_o, o))
-#define corto_initAction(o) ((corto_initAction*)corto_assert_type((corto_type)corto_initAction_o, o))
-#define corto_destructAction(o) ((corto_destructAction*)corto_assert_type((corto_type)corto_destructAction_o, o))
-#define corto_nameAction(o) ((corto_nameAction*)corto_assert_type((corto_type)corto_nameAction_o, o))
+#define corto_pre_action(o) ((corto_pre_action*)corto_assert_type((corto_type)corto_pre_action_o, o))
+#define corto_post_action(o) ((corto_post_action*)corto_assert_type((corto_type)corto_post_action_o, o))
+#define corto_name_action(o) ((corto_name_action*)corto_assert_type((corto_type)corto_name_action_o, o))
 #define corto_type(o) ((corto_type)corto_assert_type((corto_type)corto_type_o, o))
 #define corto_modifier(o) ((corto_modifier*)corto_assert_type((corto_type)corto_modifier_o, o))
 #define corto_quantity(o) ((corto_quantity)corto_assert_type((corto_type)corto_quantity_o, o))
@@ -209,23 +209,23 @@ struct corto_delegatedata {
 };
 
 /*  initAction */
-typedef struct corto_initAction corto_initAction;
+typedef struct corto_pre_action corto_pre_action;
 
-struct corto_initAction {
+struct corto_pre_action {
     corto_delegatedata super;
 };
 
 /*  destructAction */
-typedef struct corto_destructAction corto_destructAction;
+typedef struct corto_post_action corto_post_action;
 
-struct corto_destructAction {
+struct corto_post_action {
     corto_delegatedata super;
 };
 
-/*  nameAction */
-typedef struct corto_nameAction corto_nameAction;
+/*  corto_name_action */
+typedef struct corto_name_action corto_name_action;
 
-struct corto_nameAction {
+struct corto_name_action {
     corto_delegatedata super;
 };
 
@@ -238,9 +238,9 @@ struct corto_type_s {
     uint32_t size;
     uint16_t alignment;
     corto_objectseq metaprocedures;
-    corto_initAction init;
-    corto_destructAction deinit;
-    corto_nameAction nameof;
+    corto_pre_action init;
+    corto_post_action deinit;
+    corto_name_action nameof;
 };
 
 /* modifier */
@@ -495,12 +495,12 @@ struct corto_class_s {
     struct corto_struct_s super;
     corto_interfaceseq implements;
     corto_interfaceVectorseq interfaceVector;
-    corto_initAction construct;
-    corto_destructAction define;
-    corto_initAction validate;
-    corto_destructAction update;
-    corto_destructAction destruct;
-    corto_destructAction _delete;
+    corto_pre_action construct;
+    corto_post_action define;
+    corto_pre_action validate;
+    corto_post_action update;
+    corto_post_action destruct;
+    corto_post_action _delete;
 };
 
 /* constant */
@@ -736,4 +736,3 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
-

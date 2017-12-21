@@ -7,7 +7,7 @@ int16_t test_IdMount_construct(
 {
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
-    corto_ptr_setstr(&corto_subscriber(this)->query.select, "//");
+    corto_set_str(&corto_subscriber(this)->query.select, "//");
 
     return corto_mount_construct(this);
 }

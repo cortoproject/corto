@@ -4,7 +4,7 @@
 int16_t test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
-    corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
+    corto_set_str(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
       this->type ? this->type : "int32";
 

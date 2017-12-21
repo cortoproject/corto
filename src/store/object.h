@@ -22,61 +22,67 @@
 #ifndef CORTO__OBJECT_H_
 #define CORTO__OBJECT_H_
 
+/* -- INTERNAL STORE APIs & DATATYPES -- */
+
 #include <corto/corto.h>
 #include <corto/store/store.h>
 #include <corto/entityadmin.h>
+#include "string_deser.h"
+#include "init_ser.h"
+#include "compare_ser.h"
+#include "copy_ser.h"
+#include "memory_ser.h"
+#include "freeops.h"
+#include "fmt.h"
+#include "expr.h"
+#include "cdeclhandler.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void corto_operatorInit(void);
-void corto_ptr_castInit(void);
+/* Get address to header of an object */
+#define corto_hdr(o)  CORTO_OFFSET(o, -sizeof(corto__object))
 
-void corto_drop(corto_object o, bool delete);
-corto_object corto_resumePersistent(corto_object o);
-
+/* lookup & resolve that do not attempt to resume objects from the vstore */
 #define FIND(p, i) corto(CORTO_LOOKUP, {.parent=p, .id=i})
 #define RESOLVE(p, i) corto(CORTO_LOOKUP_TYPE, {.parent=p, .id=i})
 
-struct corto_fmt_s {
-    corto_string name;
-    bool isBinary;
 
-    /* Translate values to and from a contentType value */
-    corto_word ___ (*fromValue)(corto_value *v);
-    int16_t ___ (*toValue)(corto_value *v, corto_word content);
+/* -- GLOBAL ADMIN -- */
 
-    /* Translate results to and from self-contained contentType values */
-    corto_word ___ (*fromResult)(corto_result *o);
-    int16_t ___ (*toResult)(corto_result* o, corto_word content);
+extern corto_entityAdmin corto_subscriber_admin;
+extern corto_entityAdmin corto_mount_admin;
+extern corto_mutex_s corto_adminLock;
 
-    /* Translate objects to and from self-contained contentType values */
-    corto_word ___ (*fromObject)(corto_object o);
-    int16_t ___ (*toObject)(corto_object* o, corto_word content);
 
-    /* Duplicate a contentType value */
-    corto_word ___ (*copy)(corto_word content);
+/* -- THREAD LOCAL STORAGE KEYS -- */
 
-    /* Free a contentType value */
-    void (*release)(corto_word content);
-};
+extern corto_tls CORTO_KEY_ATTR;
+extern corto_tls CORTO_KEY_DECLARED_ADMIN;
+extern corto_tls CORTO_KEY_OWNER;
+extern corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
+
+/* -- OBJECT HEADER TYPES -- */
+
+/* object attributes and state */
 typedef struct corto__attr {
     /* attributes */
-    unsigned scope:1;
-    unsigned write:1;
-    unsigned observable:1;
-    unsigned persistent:1;
+    unsigned scope:1;       /* can an object contain other objects */
+    unsigned write:1;       /* can the object be locked for writing */
+    unsigned observable:1;  /* can the object be observed */
+    unsigned persistent:1;  /* can the object be synchronized across stores */
 
     /* built-in attributes */
-    unsigned builtin:1;
-    unsigned orphan:1;
+    unsigned builtin:1;     /* is this a builtin (ROM) object */
+    unsigned orphan:1;      /* is this an orphaned object */
 
     /* state */
-    unsigned state: 2;
+    unsigned state: 2;       /* object state (VALID | DESTRUCTED) */
 }corto__attr;
 
+/* base object header - every object has these fields */
 struct corto__object;
 typedef struct corto__object {
     /* Force max alignment to be used for struct. This ensures that the
@@ -95,35 +101,35 @@ typedef struct corto__object {
     corto_type type;
 } corto__object;
 
+/* scope object header - only scoped objects have these fields */
 typedef struct corto__scope {
     corto_object parent;
     char *id;
     corto_rb scope;
 
-    /* See corto__object */
+    /* See corto__object for why this union exists*/
     union {
         struct corto_rwmutex_s scopeLock;
         int64_t dummy;
     } align;
 } corto__scope;
 
+/* writable object header - only writable objects have these fields */
 typedef struct corto__writable {
-    /* See corto__object */
+    /* See corto__object for why this union exists */
     union {
         struct corto_rwmutex_s lock;
         int64_t dummy;
     } align;
 } corto__writable;
 
-typedef struct corto__observer corto__observer;
-typedef void (*corto__notifyCallback)(corto__observer* data, corto_object _this, corto_object observable, corto_uint32 mask);
-
-struct corto__observer {
+/* observable object header - only observable objects have these fields */
+typedef struct corto__observer {
     corto_object _this;
     corto_observer observer;
     char notifyKind;
     int32_t count;
-};
+} corto__observer;
 
 typedef struct corto__observable corto__observable;
 struct corto__observable {
@@ -145,6 +151,7 @@ struct corto__observable {
     corto__observer **onChildArray;
 };
 
+/* persistent object header - only persistent objects have these fields */
 typedef struct corto__persistent corto__persistent;
 struct corto__persistent {
     /* This struct is 32 bit on 32 bit architectures, and could result in extra
@@ -163,77 +170,125 @@ struct corto__persistent {
     bool resumed;
 };
 
-void corto__newSSO(corto_object sso);
-int16_t corto__freeSSO(corto_object sso);
-bool corto_destruct(corto_object o, bool delete);
 
-/* Get & lock scope */
-corto__scope *corto__scopeClaim(corto_object o);
-void corto__scopeRelease(corto_object o);
+CORTO_EXPORT
+bool corto_isbuiltin_package(corto_object o);
 
-/* Get scope tree */
-corto_rb corto_scopeof(corto_object o);
+CORTO_EXPORT
+void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
 
-int16_t corto_notifySubscribers(corto_eventMask mask, corto_object o);
-int16_t corto_notifySubscribersId(
+
+/* -- OBJECT LIFECYCLE -- */
+
+void corto_init_builtin(
+    corto_object sso);
+
+int16_t corto_deinit_builtin(
+    corto_object sso);
+
+int16_t corto_invoke_preDelegate(
+    corto_pre_action *d,
+    corto_type t,
+    corto_object o,
+    bool isDefine);
+
+void corto_invoke_postDelegate(
+    corto_post_action *d,
+    corto_type t,
+    corto_object o);
+
+int16_t corto_init(
+    corto_object o);
+
+int16_t corto_deinit(
+    corto_object o);
+
+void corto_drop(
+    corto_object o,
+    bool delete);
+
+bool corto_destruct(
+    corto_object o,
+    bool delete);
+
+corto_object corto_resume(
+    corto_object parent,
+    const char *expr,
+    corto_object o);
+
+int16_t corto_suspend(
+    corto_object o);
+
+
+/* -- SCOPE ACTIONS -- */
+
+corto_rb corto_scopeof(
+    corto_object o);
+
+corto__scope *corto_scope_lock(
+    corto_object o);
+
+void corto_scope_unlock(
+    corto_object o);
+
+corto_objectseq corto_scope_claimWithFilter(
+    corto_object scope,
+    corto_type type,
+    char *id);
+
+
+/* -- NOTIFICATIONS -- */
+
+int16_t corto_notify(
+    corto_object observable,
+    corto_uint32 mask);
+
+int16_t corto_notify_secured(
+    corto_object observable,
+    corto_uint32 mask);
+
+void corto_observer_delayedAdminDefine(
+    corto_object instance);
+
+int16_t corto_notify_subscribers(
+    corto_eventMask mask,
+    corto_object o);
+
+int16_t corto_notify_subscribersById(
     corto_eventMask mask,
     const char *path,
     const char *type,
     const char *fmtId,
     corto_word value);
 
-corto__observable* corto__objectObservable(corto__object* o);
-int16_t corto_notify(corto_object observable, corto_uint32 mask);
-int16_t corto_notifySecured(corto_object observable, corto_uint32 mask);
-void corto_notifyObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
-void corto_notifyParentObservers(corto__observable* _o, corto_object observable, corto_object source, corto_uint32 mask, int depth);
-void corto_observerDelayedAdminDefine(corto_object instance);
 
-corto_object corto_resume(corto_object parent, const char *expr, corto_object o);
-int16_t corto_suspend(corto_object o);
-int corto_load_intern(corto_string str, int argc, char* argv[], bool _try, bool ignoreRecursive);
+/* -- CORE INITIALIZATION -- */
 
-corto_objectseq corto_scopeClaimWithFilter(corto_object scope, corto_type type, char *id);
+void corto_ptr_operatorInit(void);
 
-/* proxy for corto/expr functions */
-typedef struct ext_corto_expr {
-    corto_function function;
-} ext_corto_expr;
+void corto_ptr_castInit(void);
 
-typedef struct ext_corto_expr_opt {
-    corto_object scope;
-    corto_type returnType;
-    bool returnsReference;
-    bool inverse;
-} ext_corto_expr_opt;
 
-ext_corto_expr* ext_corto_expr_alloc(void);
-int16_t ext_corto_expr_compb(ext_corto_expr *out, ext_corto_expr_opt *opt, char *expr, char **types);
-int16_t ext_corto_expr_runb(ext_corto_expr *expr, corto_value *out, void **args);
-int16_t ext_corto_expr_free(ext_corto_expr *expr);
+/* -- MISC -- */
 
-corto_procedure corto_function_getProcedureType(corto_function this);
+corto__observable* corto_hdr_observable(
+    corto__object* o);
 
-int16_t corto_invoke_initDelegate(corto_initAction *d, corto_type t, corto_object o, bool isDefine);
-void corto_invokeDestructDelegate(corto_destructAction *d, corto_type t, corto_object o);
+corto_procedure corto_function_getProcedureType(
+    corto_function this);
 
-extern corto_entityAdmin corto_subscriber_admin;
-extern corto_entityAdmin corto_mount_admin;
+corto_object *corto_lookup_functionFromSequence(
+    corto_objectseq scopeContents,
+    const char* requested,
+    int32_t* d,
+    int32_t *diff);
 
-typedef struct freeops freeops;
-
-void freeops_ptr_free(corto_type t, void *ptr);
-void freeops_create(freeops *r, corto_type type);
-void freeops_delete(corto_struct t);
-
-/* In place replacelemt of '::' with '/' */
-CORTO_EXPORT char* corto_pathFromFullname(corto_id buffer);
-
-/* Check if object is a builtin package */
-CORTO_EXPORT bool corto_isBuiltinPackage(corto_object o);
-
-/* Obtain pointer and type for deserializing member */
-CORTO_EXPORT void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m);
+int corto_load_intern(
+    corto_string str,
+    int argc,
+    char* argv[],
+    bool _try,
+    bool ignoreRecursive);
 
 #ifdef __cplusplus
 }

@@ -19,12 +19,17 @@
  * THE SOFTWARE.
  */
 
+/* This file contains all the builtin-objects, which are defined in process
+ * memory instead of the heap, to speed up boottime of corto. As the datatypes
+ * for some of the objects are complex, the code heavily uses macro's to
+ * improve readability.
+ */
+
 #ifndef CORTO_BOOTSTRAP_H_
 #define CORTO_BOOTSTRAP_H_
 
 #include <corto/corto.h>
 #include "object.h"
-#include "equals.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */
 #ifdef __MACH__
@@ -552,9 +557,9 @@ CORTO_FWDECL(list, objectlist);
 CORTO_FWDECL(list, stringlist);
 CORTO_FWDECL_VSTORE(list, mountSubscriptionList);
 
-CORTO_FWDECL(delegate, destructAction);
-CORTO_FWDECL(delegate, initAction);
-CORTO_FWDECL(delegate, nameAction);
+CORTO_FWDECL(delegate, post_action);
+CORTO_FWDECL(delegate, pre_action);
+CORTO_FWDECL(delegate, name_action);
 CORTO_FWDECL_VSTORE(delegate, handleAction);
 
 CORTO_FWDECL_VSTORE(iterator, resultIter);
@@ -812,9 +817,9 @@ CORTO_LIST_O(vstore, resultList, vstore_result, 0);
 CORTO_LIST_O(vstore, mountSubscriptionList, vstore_mountSubscription, 0);
 
 /* Delegate types */
-CORTO_DELEGATE_O(lang, initAction, lang_int16);
-CORTO_DELEGATE_O(lang, nameAction, lang_string);
-CORTO_DELEGATE_O(lang, destructAction, lang_void);
+CORTO_DELEGATE_O(lang, pre_action, lang_int16);
+CORTO_DELEGATE_O(lang, name_action, lang_string);
+CORTO_DELEGATE_O(lang, post_action, lang_void);
 CORTO_DELEGATE_O(vstore, handleAction, lang_void);
 
 /* Iterator types */
@@ -841,9 +846,9 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_MEMBER_O(lang_type, size, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, metaprocedures, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_type, init, lang_initAction, CORTO_LOCAL | CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_type, deinit, lang_destructAction, CORTO_LOCAL | CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_type, nameof, lang_nameAction, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_type, init, lang_pre_action, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_type, deinit, lang_post_action, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_type, nameof, lang_name_action, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_METHOD_O(lang_type, sizeof, "()", lang_uint32, corto_type_sizeof);
     CORTO_METHOD_O(lang_type, alignmentof, "()", lang_uint16, corto_type_alignmentof);
     CORTO_OVERRIDABLE_O(lang_type, castable, "(type type)", lang_bool, corto_type_castable_v);
@@ -1002,12 +1007,12 @@ CORTO_CLASS_O(lang, class, lang_struct, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, 
     CORTO_ALIAS_O (lang_class, baseAccess, lang_struct_baseAccess, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_class, implements, lang_interfaceseq, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_class, interfaceVector, lang_interfaceVectorseq, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, construct, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, define, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, validate, lang_initAction, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, update, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, destruct, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
-    CORTO_MEMBER_O(lang_class, delete, lang_destructAction, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, construct, lang_pre_action, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, define, lang_post_action, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, validate, lang_pre_action, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, update, lang_post_action, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, destruct, lang_post_action, CORTO_LOCAL|CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_class, delete, lang_post_action, CORTO_LOCAL|CORTO_PRIVATE);
     CORTO_METHOD_O(lang_class, init, "()", lang_int16, corto_class_init);
     CORTO_METHOD_O(lang_class, construct, "()", lang_int16, corto_class_construct);
     CORTO_METHOD_O(lang_class, destruct, "()", lang_void, corto_class_destruct);

@@ -603,7 +603,7 @@ void test_Subscribe_tc_subscribeNestedScopeFromRoot(
 void tc_subscribeOwnerSet(corto_subscriberEvent *e)
 {
     test_Subscribe this = e->instance;
-    corto_ptr_setref(&this->owner, e->data.owner);
+    corto_set_ref(&this->owner, e->data.owner);
 }
 
 void test_Subscribe_tc_subscribeOwnerSet(
@@ -619,7 +619,7 @@ void test_Subscribe_tc_subscribeOwnerSet(
       .instance(this)
       .callback(tc_subscribeOwnerSet);
  
-    corto_ptr_setref(&this->owner, NULL);
+    corto_set_ref(&this->owner, NULL);
 
     test_assert(corto_update(a) == 0);
     test_assert(this->owner == owner);

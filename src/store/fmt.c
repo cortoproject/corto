@@ -34,17 +34,13 @@ corto_word corto_fmt_ptr_fromValue(
 {
     corto_type t = corto_value_typeof(v);
     void *ptr = corto_mem_new(t);
-    corto_value dst = corto_value_mem(ptr, t);
-    if (t->flags & CORTO_TYPE_NEEDS_INIT) {
-        corto_walk_opt s =
-            corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        if (corto_walk_value(&s, &dst, NULL)) {
-            goto error;
-        }
+
+    if (corto_ptr_init(ptr, t)) {
+        goto error;
     }
 
     if (t->flags & CORTO_TYPE_HAS_RESOURCES) {
-        if (corto_value_copy(&dst, v)) {
+        if (corto_ptr_copy(ptr, t, corto_value_ptrof(v))) {
             return 0;
         }
     } else {
@@ -88,7 +84,9 @@ static
 corto_word corto_fmt_str_fromValue(
     corto_value *v)
 {
-    return (corto_word)corto_value_str(v, 0);
+    corto_type type = corto_value_typeof(v);
+    void *ptr = corto_value_ptrof(v);
+    return (corto_word)corto_ptr_str(ptr, type, 0);
 }
 
 static
@@ -96,7 +94,25 @@ corto_int16 corto_fmt_str_toValue(
     corto_value *v,
     corto_word str)
 {
-    return corto_value_fromStr(v, (char*)str);
+    corto_string_deser_t serData = {
+        .out = corto_value_ptrof(v),
+        .type = corto_value_typeof(v),
+        .isObject = v->kind == CORTO_OBJECT
+    };
+
+    if (!corto_string_deser((char*)str, &serData)) {
+        corto_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    if (serData.out) {
+        corto_value_ptrset(v, serData.out);
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 static

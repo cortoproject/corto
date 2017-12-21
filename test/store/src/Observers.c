@@ -14,8 +14,8 @@ void dispatchObserver_onUpdate(
 {
     test_Observers this = e->instance;
     this->mask = e->event;
-    corto_ptr_setref(&this->observable, e->data);
-    corto_ptr_setref(&this->observer, e->observer);
+    corto_set_ref(&this->observable, e->data);
+    corto_set_ref(&this->observer, e->observer);
 }
 
 void test_Observers_tc_dispatchObserver(
@@ -52,8 +52,8 @@ void notifyReadDenied_onUpdate(corto_observerEvent *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
-    corto_ptr_setref(&this->observable, e->data);
-    corto_ptr_setref(&this->observer, e->observer);
+    corto_set_ref(&this->observable, e->data);
+    corto_set_ref(&this->observer, e->observer);
     this->count ++;
 }
 
@@ -169,7 +169,7 @@ void tc_observeAlignCallbackType(corto_observerEvent *e) {
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "p");
     test_assert(e->event == CORTO_DEFINE);
-    corto_ptr_setref(&this->observable, e->data);
+    corto_set_ref(&this->observable, e->data);
 }
 
 void test_Observers_tc_observeAlignType(
@@ -232,8 +232,8 @@ void observeTypeFilter_onUpdate(corto_observerEvent *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
-    corto_ptr_setref(&this->observable, e->data);
-    corto_ptr_setref(&this->observer, e->observer);
+    corto_set_ref(&this->observable, e->data);
+    corto_set_ref(&this->observer, e->observer);
 }
 
 void test_Observers_tc_observeTypeFilter(
@@ -297,8 +297,8 @@ void observeWithMultipleInstances_onUpdate(
 {
     test_Observers this = corto_observer(e->observer)->instance;
     this->mask = e->event;
-    corto_ptr_setref(&this->observable, e->data);
-    corto_ptr_setref(&this->observer, e->observer);
+    corto_set_ref(&this->observable, e->data);
+    corto_set_ref(&this->observer, e->observer);
     this->count ++;
 }
 

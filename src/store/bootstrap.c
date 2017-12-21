@@ -199,9 +199,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(vstore_, mountPolicy),\
     SSO_OP_VALUE(lang_, delegatedata),\
     SSO_OP_VOID(vstore_, dispatcher),\
-    SSO_OP_VALUE(lang_, initAction),\
-    SSO_OP_VALUE(lang_, nameAction),\
-    SSO_OP_VALUE(lang_, destructAction),\
+    SSO_OP_VALUE(lang_, pre_action),\
+    SSO_OP_VALUE(lang_, name_action),\
+    SSO_OP_VALUE(lang_, post_action),\
     SSO_OP_VALUE(vstore_, handleAction),\
     SSO_OP_VALUE(vstore_, resultIter),\
     SSO_OP_VALUE(vstore_, objectIter),\
@@ -889,7 +889,7 @@ corto_bootstrapElement objects[] = {
 
 /* Creation and destruction of objects */
 static void corto_createObject(corto_object o) {
-    corto__newSSO(o);
+    corto_init_builtin(o);
 }
 
 /* Initialization of objects */
@@ -899,7 +899,7 @@ static void corto_initObject(corto_object o) {
         corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_walk(&s, o, NULL);
     corto_type t = corto_typeof(o);
-    corto_invoke_initDelegate(&t->init, t, o, false);
+    corto_invoke_preDelegate(&t->init, t, o, false);
 }
 
 /* Define object */
@@ -935,8 +935,8 @@ static void corto_patchSequences(void) {
     corto_handleAction_o->parameters.length = 1;
     corto_handleAction_o->parameters.buffer = corto_calloc(sizeof(corto_parameter));
     corto_parameter *p = &corto_handleAction_o->parameters.buffer[0];
-    corto_ptr_setref(&p->type, corto_event_o);
-    corto_ptr_setstr(&p->name, "event");
+    corto_set_ref(&p->type, corto_event_o);
+    corto_set_str(&p->name, "event");
 }
 
 void corto_environment_init(void) {
@@ -1198,7 +1198,7 @@ int corto_start(char *appName) {
     corto_ptr_castInit();
 #endif
 #ifdef CORTO_OPERATORS
-    corto_operatorInit();
+    corto_ptr_operatorInit();
 #endif
 
     /* Register exit-handler */
@@ -1330,14 +1330,14 @@ int corto_stop(void) {
     for (i = 0; (o = objects[i].o); i++) corto_destruct(o, FALSE);
 
     /* Free objects */
-    for (i = 0; (o = objects[i].o); i++) corto__freeSSO(o);
-    for (i = 0; (o = types[i].o); i++) corto__freeSSO(o);
+    for (i = 0; (o = objects[i].o); i++) corto_deinit_builtin(o);
+    for (i = 0; (o = types[i].o); i++) corto_deinit_builtin(o);
 
-    if (corto__freeSSO(corto_native_o)) goto error;
-    if (corto__freeSSO(corto_vstore_o)) goto error;
-    if (corto__freeSSO(corto_lang_o)) goto error;
-    if (corto__freeSSO(corto_o)) goto error;
-    if (corto__freeSSO(root_o)) goto error;
+    if (corto_deinit_builtin(corto_native_o)) goto error;
+    if (corto_deinit_builtin(corto_vstore_o)) goto error;
+    if (corto_deinit_builtin(corto_lang_o)) goto error;
+    if (corto_deinit_builtin(corto_o)) goto error;
+    if (corto_deinit_builtin(root_o)) goto error;
 
     /* Deinit adminLock */
     corto_debug("cleanup global administration");
@@ -1397,7 +1397,7 @@ corto_bool corto_enableload(corto_bool enable) {
 #ifndef NDEBUG
 void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
     if (o) {
-        corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
+        corto__object *_o = corto_hdr(o);
         if (_o->magic != CORTO_MAGIC) {
             if (_o->magic == CORTO_MAGIC_DESTRUCT) {
                 corto_critical_fl(file, line, "address <%p> points to an object that is already deleted", o);

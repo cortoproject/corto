@@ -168,7 +168,7 @@ CORTO_EXPORT corto_handleAction* _corto_handleActionAssign(corto_handleAction* _
 #define corto_handleActionAssign(_this, instance, procedure) _corto_handleActionAssign(_this, instance, corto_function(procedure))
 #define corto_handleActionSet(_this, instance, procedure) _this = _this ? _this : (corto_handleAction*)corto_ptr_new(corto_handleAction_o); _corto_handleActionAssign(_this, instance, corto_function(procedure))
 
-corto_int16 corto_handleActionCall(corto_handleAction *_delegate, corto_event* event);
+corto_int16 corto_handleActionCall(corto_handleAction *_delegate, corto_event * event);
 #define corto_handleActionInitC_auto(d, callback) corto_handleAction d; corto_handleActionInitC(&d, callback)
 CORTO_EXPORT corto_int16 corto_handleActionInitC(corto_handleAction *d, corto_void ___ (*callback)(corto_event*));
 #define corto_handleActionInitCInstance_auto(d, instance, callback)corto_handleAction d; corto_handleActionInitCInstance(&d, instance, callback)

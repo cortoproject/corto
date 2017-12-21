@@ -6,7 +6,7 @@
 
 corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_check_state(corto_type_o, CORTO_VALID)) {
-        *c = corto_scopeSize(this) - 1;
+        *c = corto_scope_size(this) - 1;
     }
     this->constants.buffer = corto_realloc(this->constants.buffer, (this->constants.length+1) * sizeof(corto_constant*));
     this->constants.buffer[this->constants.length] = c;
@@ -42,7 +42,7 @@ corto_object corto_enum_constant(
     /* Walk scope */
     walkData.value = value;
     walkData.o = NULL;
-    corto_scopeWalk(this, corto_enum_findConstant, &walkData);
+    corto_scope_walk(this, corto_enum_findConstant, &walkData);
 
     return walkData.o;
 }

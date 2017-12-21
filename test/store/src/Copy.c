@@ -719,7 +719,7 @@ void test_Copy_tc_reference(
     corto_ptr_init(&v1, corto_object_o);
     corto_ptr_init(&v2, corto_object_o);
 
-    corto_ptr_setref(&v1, corto_lang_o);
+    corto_set_ref(&v1, corto_lang_o);
 
     corto_ptr_copy(&v2, corto_object_o, &v1);
     test_assert(v2 == corto_lang_o);
@@ -1192,7 +1192,7 @@ void test_Copy_tc_structWithObservableReference(
     test_assert(corto_ptr_init(&v1, test_struct_observableReference_o) == 0);
     test_assert(corto_ptr_init(&v2, test_struct_observableReference_o) == 0);
 
-    corto_ptr_setref(v1.m, corto_class_o);
+    corto_set_ref(v1.m, corto_class_o);
 
     corto_ptr_copy(&v2, test_struct_observableReference_o, &v1);
     test_assert(v2.m != NULL);
@@ -1238,7 +1238,7 @@ void test_Copy_tc_structWithObservableString(
     test_assert(corto_ptr_init(&v1, test_struct_observableString_o) == 0);
     test_assert(corto_ptr_init(&v2, test_struct_observableString_o) == 0);
 
-    corto_ptr_setstr(v1.m, "Hello World");
+    corto_set_str(v1.m, "Hello World");
 
     corto_ptr_copy(&v2, test_struct_observableString_o, &v1);
     test_assert(v2.m != NULL);
@@ -1358,7 +1358,7 @@ void test_Copy_tc_structWithOptionalReference(
     test_assert(corto_ptr_init(&v2, test_struct_optionalReference_o) == 0);
 
     v1.m = corto_ptr_new(corto_object_o);
-    corto_ptr_setref(v1.m, corto_class_o);
+    corto_set_ref(v1.m, corto_class_o);
 
     corto_ptr_copy(&v2, test_struct_optionalReference_o, &v1);
     test_assert(v2.m != NULL);
@@ -1535,7 +1535,7 @@ void test_Copy_tc_structWithTargetReference(
     test_assert(corto_ptr_init(&v1, test_struct_targetReference_o) == 0);
     test_assert(corto_ptr_init(&v2, test_struct_targetReference_o) == 0);
 
-    corto_ptr_setref(&v1.m->actual, corto_class_o);
+    corto_set_ref(&v1.m->actual, corto_class_o);
 
     corto_ptr_copy(&v2, test_struct_targetReference_o, &v1);
 

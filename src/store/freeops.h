@@ -19,14 +19,14 @@
  * THE SOFTWARE.
  */
 
-#ifndef CORTO_INIT_SER_H_
-#define CORTO_INIT_SER_H_
+#ifndef CORTO_FREEOPS
+#define CORTO_FREEOPS
 
-#include <corto/store/walk.h>
+typedef struct freeops freeops;
+typedef struct freeops_op freeops_op;
 
-corto_walk_opt corto_ser_init(
-    corto_modifier access,
-    corto_operatorKind accessKind,
-    corto_walk_traceKind trace);
+void freeops_create(freeops *r, corto_type type);
+void freeops_delete(corto_struct t);
+void freeops_ptr_free(corto_type t, void *ptr);
 
 #endif /* CORTO_INIT_SER_H_ */

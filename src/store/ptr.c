@@ -21,70 +21,81 @@
 
 #include <corto/corto.h>
 #include "init_ser.h"
+#include "object.h"
 
 CORTO_SEQUENCE(dummySeq, char,);
 
-/* Set reference field */
-void corto_ptr_setref(void* ptr, corto_object value) {
-    corto_assert_object(value);
-
-    corto_object old;
-    old = *(corto_object*)ptr;
-    if (value) {
-        corto_claim(value);
-    }
-    *(corto_object*)ptr = value;
-    if (old) {
-        corto_release(old);
-    }
-}
-
-/* Set string field */
-void corto_ptr_setstr(char** ptr, const char *value) {
-    char *str = *ptr;
-    if (str != value) {
-        if (str) {
-            corto_dealloc(*ptr);
-        }
-        *ptr = value ? corto_strdup(value) : NULL;
-    }
-}
-
 char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
     corto_assert_object(type);
+    corto_string_ser_t serData;
+    corto_walk_opt s;
+    corto_value v = corto_value_value(p, type);
 
-    corto_value v;
-    v = corto_value_value(p, type);
-    return corto_value_str(&v, maxLength);
+    serData.buffer = CORTO_BUFFER_INIT;
+    serData.buffer.max = maxLength;
+    serData.compactNotation = TRUE;
+    serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
+
+    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+    corto_walk_value(&s, &v, &serData);
+    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_walk_deinit(&s, &serData);
+    return result;
 }
 
-char *_corto_ptr_contentof(void *ptr, corto_type type, char *contentType) {
-    corto_value v = corto_value_mem(ptr, type);
-    return corto_value_contentof(&v, contentType);
-}
-
-corto_int16 _corto_ptr_fromStr(void* out, corto_type type, corto_string string) {
+corto_int16 _corto_ptr_init(
+    void *p,
+    corto_type type)
+{
     corto_assert_object(type);
+    corto_value v = corto_value_value(p, type);
 
-    corto_string_deser_t serData = {
-        .out = *(void**)out,
-        .type = type,
-        .isObject = FALSE
-    };
+    memset(p, 0, corto_type_sizeof(type));
 
-    if (!corto_string_deser(string, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
+    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+        corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        if (corto_walk_value(&s, &v, NULL)) {
+            return -1;
+        }
     }
 
-    if (serData.out) {
-        *(void**)out = serData.out;
+    if (type->flags & CORTO_TYPE_HAS_INIT) {
+        return corto_invoke_preDelegate(&type->init, type, p, false);
     } else {
-        goto error;
+        return 0;
+    }
+}
+
+corto_int16 _corto_ptr_deinit(
+    void *p,
+    corto_type type)
+{
+    corto_assert_object(type);
+
+    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+        freeops_ptr_free(type, p);
+    }
+    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
+        corto_invoke_postDelegate(&type->deinit, type, p);
     }
 
     return 0;
-error:
-    return -1;
+}
+
+corto_int16 _corto_ptr_copy(
+    void *dst,
+    corto_type type,
+    void *src)
+{
+    corto_assert_object(type);
+
+    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_copy_ser_t data;
+
+    data.value = corto_value_value(dst, type);
+
+    return corto_walk_ptr(&s, src, type, &data);;
 }
 
 corto_equalityKind _corto_ptr_compare(
@@ -93,46 +104,20 @@ corto_equalityKind _corto_ptr_compare(
     const void *p2)
 {
     corto_assert_object(type);
+    corto_compare_ser_t data;
+    corto_walk_opt s;
 
-    corto_value vdst;
-    corto_value vsrc;
-    vdst = corto_value_value((void*)p1, type);
-    vsrc = corto_value_value((void*)p2, type);
-    return corto_value_compare(&vdst, &vsrc);
+    data.value = corto_value_value((void*)p2, type);;
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+
+    corto_walk_ptr(&s, (void*)p1, type, &data);
+
+    return data.result;
 }
 
-corto_int16 _corto_ptr_init(
-    void *p,
+void* _corto_ptr_new(
     corto_type type)
 {
-    corto_assert_object(type);
-    memset(p, 0, corto_type_sizeof(type));
-    corto_value v;
-    v = corto_value_value(p, type);
-    return corto_value_init(&v);
-}
-
-corto_int16 _corto_ptr_deinit(void *p, corto_type type) {
-    corto_assert_object(type);
-    corto_value v;
-
-    v = corto_value_value(p, type);
-    return corto_value_deinit(&v);
-}
-
-corto_int16 _corto_ptr_copy(void *dst, corto_type type, void *src) {
-    corto_assert_object(type);
-
-    corto_value vdst;
-    corto_value vsrc;
-    corto_int16 result;
-    vdst = corto_value_value(dst, type);
-    vsrc = corto_value_value(src, type);
-    result = corto_value_copy(&vdst, &vsrc);
-    return result;
-}
-
-void* _corto_ptr_new(corto_type type) {
     void *result = NULL;
 
     result = corto_calloc(corto_type_sizeof(type));
@@ -147,7 +132,10 @@ error:
     return NULL;
 }
 
-void _corto_ptr_free(void *ptr, corto_type type) {
+void _corto_ptr_free(
+    void *ptr,
+    corto_type type)
+{
     corto_ptr_deinit(ptr, type);
     corto_dealloc(ptr);
 }
@@ -189,7 +177,11 @@ corto_type corto_mem_typeof(
     return *(corto_type*)ptr;
 }
 
-int16_t _corto_ptr_resize(void *ptr, corto_type type, uint32_t size) {
+int16_t _corto_ptr_resize(
+    void *ptr,
+    corto_type type,
+    uint32_t size)
+{
     corto_assert(type->kind == CORTO_COLLECTION, "corto_ptr_resize is only valid for collection types");
     corto_collection collectionType = corto_collection(type);
     corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)",

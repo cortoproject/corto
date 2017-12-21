@@ -269,7 +269,7 @@ void corto_setItemData(
     }
 
     item->owner = corto_sourceof(o);
-    corto_ptr_setref(&item->object, o);
+    corto_set_ref(&item->object, o);
 
     if (corto_check_attr(corto_typeof(o), CORTO_ATTR_NAMED)) {
         strcpy(item->type, corto_fullpath(NULL, corto_typeof(o)));
@@ -300,7 +300,7 @@ void corto_setItemData(
         item->value = data->dstSer->fromValue(&v);
     }
 
-    if (corto_scopeSize(o)) {
+    if (corto_scope_size(o)) {
         item->flags = CORTO_RESULT_LEAF;
     }
 }
@@ -646,7 +646,7 @@ bool corto_selectIterMount(
             result->parent, result->id, result->type);
 
         if (corto_observer(mount)->type) {
-            corto_ptr_setref(&type, corto_observer(mount)->type);
+            corto_set_ref(&type, corto_observer(mount)->type);
         } else {
             if (!(type = corto_resolve(NULL, result->type))) {
                 corto_warning(
@@ -695,7 +695,7 @@ bool corto_selectIterMount(
 
         corto_ok("resumed '%s'", corto_fullpath(NULL, ref));
 
-        corto_ptr_setref(&result->object, ref);
+        corto_set_ref(&result->object, ref);
         if (!data->resumeKeep) {
             corto_release(ref);
         }
@@ -723,7 +723,7 @@ bool corto_selectIterNext(
         /* Don't walk over objects if a frame contains a expr or if the
          * frame is already walking over a mount */
         if (!frame->cur->expr && (frame->currentMount == frame->firstMount)) {
-            corto__scopeClaim(frame->o);
+            corto_scope_lock(frame->o);
 
             if ((data->mask == CORTO_ON_SELF) && !data->filter) {
                 result = frame->o;
@@ -755,7 +755,7 @@ bool corto_selectIterNext(
                 hasData = TRUE;
                 corto_claim(result);
             }
-            corto__scopeRelease(frame->o);
+            corto_scope_unlock(frame->o);
         }
     }
 
@@ -949,7 +949,7 @@ int16_t corto_selectTree(
             /* Cache name as next line might delete object */
             if (frame->o) {
                 strcpy(data->item.name, corto_idof(frame->o));
-                corto_ptr_setref(&frame->o, NULL);
+                corto_set_ref(&frame->o, NULL);
             }
 
             data->sp --;
@@ -993,7 +993,7 @@ int16_t corto_selectTree(
                 frame->firstMount = data->mountsLoaded;
                 frame->currentMount = frame->firstMount;
                 frame->cur = prevFrame->cur;
-                corto_ptr_setref(&frame->o, o);
+                corto_set_ref(&frame->o, o);
 
                 if (o) {
                     corto_rb scope = corto_scopeof(o);
@@ -1039,7 +1039,7 @@ void corto_selectReset(
     }
 
     if (data->item.object) {
-        corto_ptr_setref(&data->item.object, NULL);
+        corto_set_ref(&data->item.object, NULL);
     }
 
     if (data->item.history.release) {
@@ -1059,7 +1059,7 @@ int16_t corto_selectPrepareFrame(
     uint32_t segment)
 {
     frame->cur = &data->segments[segment];
-    corto_ptr_setref(&frame->o, frame->cur->o);
+    corto_set_ref(&frame->o, frame->cur->o);
     frame->currentMount = 0;
     frame->firstMount = 0;
 
@@ -1184,16 +1184,16 @@ void corto_selectRelease(
     /* Free iterators */
     int32_t i;
     for (i = 0; i <= data->sp; i ++) {
-        corto_ptr_setref(&data->stack[i].o, NULL);
+        corto_set_ref(&data->stack[i].o, NULL);
         corto_iter_release(&data->stack[i].iter);
     }
 
     /* Free segments */
     i = 0;
     while (data->segments[i].scope) {
-        corto_ptr_setstr(&data->segments[i].scope, NULL);
-        corto_ptr_setstr(&data->segments[i].expr, NULL);
-        corto_ptr_setref(&data->segments[i].o, NULL);
+        corto_set_str(&data->segments[i].scope, NULL);
+        corto_set_str(&data->segments[i].expr, NULL);
+        corto_set_ref(&data->segments[i].o, NULL);
         i++;
     }
 
@@ -1238,9 +1238,9 @@ int16_t corto_selectSplitScope(
     }
 
     /* Set first scope to root */
-    corto_ptr_setstr(&data->segments[0].scope, "/");
-    corto_ptr_setstr(&data->segments[0].expr, *ptr ? ptr : NULL);
-    corto_ptr_setref(&data->segments[0].o, root_o);
+    corto_set_str(&data->segments[0].scope, "/");
+    corto_set_str(&data->segments[0].expr, *ptr ? ptr : NULL);
+    corto_set_ref(&data->segments[0].o, root_o);
     current ++;
 
     corto_debug("segment added: scope = '%s', expr = '%s', o = %p",
@@ -1252,8 +1252,8 @@ int16_t corto_selectSplitScope(
             if ((!ch && ptr != scope) || ch == '/') {
                 *ptr = '\0';
 
-                corto_ptr_setstr(&data->segments[current].scope, scope);
-                corto_ptr_setstr(&data->segments[current].expr, ch ? ptr + 1 : NULL);
+                corto_set_str(&data->segments[current].scope, scope);
+                corto_set_str(&data->segments[current].expr, ch ? ptr + 1 : NULL);
 
                 /* Lookup object in advance, if it exists */
                 data->segments[current].o = corto(CORTO_LOOKUP, {
@@ -1296,7 +1296,7 @@ int16_t corto_selectRun(
                : scope == 1 ? CORTO_ON_SCOPE
                : CORTO_ON_SELF;
 
-    corto_ptr_setstr(&data->fullscope, fullscope);
+    corto_set_str(&data->fullscope, fullscope);
     corto_path_clean(data->fullscope, data->fullscope);
 
     /* Does expression contain a filter? */

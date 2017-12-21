@@ -30,7 +30,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
         /* Check if procedures are compatible */
         if (m_class && !distance) {
             if ((compatible = corto_interface_checkProcedureCompatibility(corto_function(m_interface), corto_function(m_class)))) {
-                corto_ptr_setref(&vtable->buffer[i], m_class);
+                corto_set_ref(&vtable->buffer[i], m_class);
             }
         } else {
             corto_throw(

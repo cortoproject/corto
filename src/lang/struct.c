@@ -64,7 +64,7 @@ int16_t corto_struct_construct(
             corto_critical("failed to declare dummy member");
         }
 
-        corto_ptr_setref(&m->type, corto_int8_o);
+        corto_set_ref(&m->type, corto_int8_o);
         m->modifiers = CORTO_PRIVATE|CORTO_LOCAL;
         corto(CORTO_DEFINE, {.object = m});
     }

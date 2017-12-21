@@ -98,13 +98,13 @@ int16_t corto_subscriber_invoke(
     } else {
         if (!eptr) {
             eptr = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o});
-            corto_ptr_setref(&eptr->subscriber, s);
-            corto_ptr_setref(&eptr->instance, instance);
-            corto_ptr_setref(&eptr->source, NULL);
+            corto_set_ref(&eptr->subscriber, s);
+            corto_set_ref(&eptr->instance, instance);
+            corto_set_ref(&eptr->source, NULL);
             eptr->event = mask;
-            corto_ptr_setstr(&eptr->data.id, r->id);
-            corto_ptr_setstr(&eptr->data.type, r->type);
-            corto_ptr_setstr(&eptr->data.parent, r->parent);
+            corto_set_str(&eptr->data.id, r->id);
+            corto_set_str(&eptr->data.type, r->type);
+            corto_set_str(&eptr->data.parent, r->parent);
             if (r->value) {
                 eptr->data.value =
                   ((corto_fmt)s->contentTypeHandle)->copy(r->value);
@@ -240,7 +240,7 @@ void corto_pathstr(
     outptr[0] = '\0';
 }
 
-int16_t corto_notifySubscribersId(
+int16_t corto_notify_subscribersById(
     corto_eventMask mask,
     const char *path,
     const char *type,
@@ -474,13 +474,13 @@ error:
     return -1;
 }
 
-int16_t corto_notifySubscribers(corto_eventMask mask, corto_object o) {
+int16_t corto_notify_subscribers(corto_eventMask mask, corto_object o) {
     int16_t result = 0;
 
     if (corto_subscriber_admin.count && corto_check_attr(o, CORTO_ATTR_NAMED)) {
         corto_id path, type;
 
-        result = corto_notifySubscribersId(
+        result = corto_notify_subscribersById(
           mask,
           corto_fullpath(path, o),
           corto_fullpath(type, corto_typeof(o)),
@@ -496,7 +496,7 @@ corto_subscriber corto_subscribeSubscribe(
     corto_subscribeRequest *r)
 {
     corto_subscriber s = corto_declare(NULL, NULL, corto_subscriber_o);
-    corto_ptr_setstr(&s->query.from, r->scope);
+    corto_set_str(&s->query.from, r->scope);
 
     if (r->scope && *r->scope) {
         if (*r->scope != '/') {
@@ -508,11 +508,11 @@ corto_subscriber corto_subscribeSubscribe(
         s->query.from = NULL;
     }
 
-    corto_ptr_setstr(&s->query.select, r->expr);
-    corto_ptr_setstr(&s->contentType, r->contentType);
-    corto_ptr_setref(&((corto_observer)s)->instance, r->instance);
-    corto_ptr_setref(&((corto_observer)s)->dispatcher, r->dispatcher);
-    corto_ptr_setstr(&s->query.type, r->type);
+    corto_set_str(&s->query.select, r->expr);
+    corto_set_str(&s->contentType, r->contentType);
+    corto_set_ref(&((corto_observer)s)->instance, r->instance);
+    corto_set_ref(&((corto_observer)s)->dispatcher, r->dispatcher);
+    corto_set_str(&s->query.type, r->type);
     ((corto_observer)s)->enabled = r->enabled;
     ((corto_function)s)->fptr = (corto_word)r->callback;
     ((corto_function)s)->kind = CORTO_PROCEDURE_CDECL;
@@ -631,10 +631,10 @@ corto_mount corto_subscribeMount(
 
     corto_subscriber s = corto_subscriber(m);
     corto_query *q = &s->query;
-    corto_ptr_setstr(&q->from, r->scope);
-    corto_ptr_setstr(&q->select, r->expr);
-    corto_ptr_setstr(&q->type, r->type);
-    corto_ptr_setstr(&s->contentType, r->contentType);
+    corto_set_str(&q->from, r->scope);
+    corto_set_str(&q->select, r->expr);
+    corto_set_str(&q->type, r->type);
+    corto_set_str(&s->contentType, r->contentType);
     ((corto_observer)s)->enabled = true;
     m->policy = *policy;
 
@@ -767,14 +767,14 @@ int16_t corto_subscriber_construct(
                 corto_throw("'%s' is not a type", this->query.type);
                 goto error;
             }
-            corto_ptr_setref(&corto_observer(this)->type, type);
+            corto_set_ref(&corto_observer(this)->type, type);
             corto_release(type);
         }
 
     } else if (corto_observer(this)->type) {
         corto_id id;
         corto_fullpath(id, corto_observer(this)->type);
-        corto_ptr_setstr(&this->query.type, id);
+        corto_set_str(&this->query.type, id);
     }
 
     int16_t result = safe_corto_observer_construct(this);
@@ -817,7 +817,7 @@ int16_t corto_subscriber_init(
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("e");
     p->passByReference = FALSE;
-    corto_ptr_setref(&p->type, corto_subscriberEvent_o);
+    corto_set_ref(&p->type, corto_subscriberEvent_o);
 
     this->alignMutex = (uintptr_t)corto_alloc(sizeof(corto_mutex_s));
     if (corto_mutex_new((corto_mutex)this->alignMutex)) {

@@ -1061,7 +1061,7 @@ void test_ObjectMgmt_tc_declareNestedFirstFail(
      * so that the first created object will fail, as it will be a void. */
     corto_tableinstance myRoot = corto_declare(root_o, "myRoot", corto_tableinstance_o);
     test_assert(myRoot != NULL);
-    corto_ptr_setref(&myRoot->type, corto_int32_o);
+    corto_set_ref(&myRoot->type, corto_int32_o);
     test_assert(corto_define(myRoot) == 0);
 
     /* Reset counter so aligned objects don't pollute result */
@@ -1127,7 +1127,7 @@ void test_ObjectMgmt_tc_declareNestedSecondFail(
      * so that the first created object will fail, as it will be a void. */
     corto_tableinstance myRoot = corto_declare(root_o, "a", corto_tableinstance_o);
     test_assert(myRoot != NULL);
-    corto_ptr_setref(&myRoot->type, corto_int32_o);
+    corto_set_ref(&myRoot->type, corto_int32_o);
     test_assert(corto_define(myRoot) == 0);
 
     /* Reset counter so aligned objects don't pollute result */
@@ -1206,13 +1206,13 @@ void test_ObjectMgmt_tc_declareScoped(
     /* Create members in scope of anonymous object */
     corto_member x = corto_declare(s, "x", corto_member_o);
     test_assert(x != NULL);
-    corto_ptr_setref(&x->type, corto_int32_o);
+    corto_set_ref(&x->type, corto_int32_o);
     ret = corto_define(x);
     test_assert(ret == 0);
 
     corto_member y = corto_declare(s, "y", corto_member_o);
     test_assert(y != NULL);
-    corto_ptr_setref(&y->type, corto_int32_o);
+    corto_set_ref(&y->type, corto_int32_o);
     ret = corto_define(y);
     test_assert(ret == 0);
 
