@@ -30,7 +30,7 @@ In the generated `MyApp` directory you will find a source directory with a file
 called `MyApp.c`. In the main routine of this application, enter the following
 hello world program:
 
-```
+```c
 int32_t* obj = corto_create(root_o, "MyFirstObject", corto_int32_o);
 *obj = 10;
 
