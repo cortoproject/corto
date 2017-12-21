@@ -31,17 +31,18 @@ called `MyApp.c`. In the main routine of this application, enter the following
 hello world program:
 
 ```c
-int32_t* obj = corto_create(root_o, "MyFirstObject", corto_int32_o);
-*obj = 10;
+corto_object home = corto_create(root_o, "MyHome", corto_void_o);
+float32_t *temp = corto_create(home, "RoomTemperature", corto_float32_o);
+*temp = 71.5;
 
-char *str_value = corto_serialize_value(obj, "text/corto");
+char *str_value = corto_serialize_value(temp, "text/corto");
 printf("object %s of type %s has value %s\n",
-    corto_fullpath(NULL, obj),
-    corto_fullpath(NULL, corto_typeof(obj)),
+    corto_fullpath(NULL, temp),
+    corto_fullpath(NULL, corto_typeof(temp)),
     str_value);
 
 free(str_value);
-corto_delete(obj);
+corto_delete(home);
 ```
 You can now build the project by running this command from the project root:
 ```
