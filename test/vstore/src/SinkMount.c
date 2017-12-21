@@ -234,7 +234,7 @@ corto_object test_SinkMount_onResume(
                 }
 
                 if (e.value) {
-                    corto_deserialize_value(&result, "text/corto", (corto_string)e.value);
+                    corto_deserialize_value(result, "text/corto", (corto_string)e.value);
                 }
 
                 if (!object) {

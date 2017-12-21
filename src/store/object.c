@@ -2385,7 +2385,7 @@ int16_t corto_deserialize_value(
     }
 
     corto_value v = corto_value_object(o, NULL);
-    return type->toValue(&v, (corto_word)data);;
+    return type->toValue(&v, (corto_word)data);
 error:
     return -1;
 }
