@@ -704,14 +704,14 @@ char *corto_serialize(
  * If the pointer is not NULL and the serialized data does not match with the
  * specified object identifier or type, the function will fail.
  *
- * @param o The object to deserialize into.
+ * @param o Pointer to the object to deserialize into. Object may be NULL.
  * @param fmtId The serialization format identifier (for example: "text/json").
  * @param data Value formatted in the specified serialization format.
  * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_deserialize(
-    corto_object *o,
+    void *o,
     const char *fmtId,
     const char *data);
 

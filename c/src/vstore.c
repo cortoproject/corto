@@ -3260,7 +3260,7 @@ corto_mountSubscription* corto_mountSubscriptionListInsertAlloc(corto_mountSubsc
     corto_mountSubscription* result;
     result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
     {
-        corto_ptr_init(result, corto_typeof(corto_mountSubscription_o));
+        corto_ptr_init(result, corto_mountSubscription_o);
     }
     corto_ll_insert(list, result);
     return result;
@@ -3276,7 +3276,7 @@ corto_mountSubscription* corto_mountSubscriptionListAppendAlloc(corto_mountSubsc
     corto_mountSubscription* result;
     result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
     {
-        corto_ptr_init(result, corto_typeof(corto_mountSubscription_o));
+        corto_ptr_init(result, corto_mountSubscription_o);
     }
     corto_ll_append(list, result);
     return result;
@@ -3314,7 +3314,7 @@ corto_result* corto_resultListInsertAlloc(corto_resultList list) {
     corto_result* result;
     result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
-        corto_ptr_init(result, corto_typeof(corto_result_o));
+        corto_ptr_init(result, corto_result_o);
     }
     corto_ll_insert(list, result);
     return result;
@@ -3330,7 +3330,7 @@ corto_result* corto_resultListAppendAlloc(corto_resultList list) {
     corto_result* result;
     result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
-        corto_ptr_init(result, corto_typeof(corto_result_o));
+        corto_ptr_init(result, corto_result_o);
     }
     corto_ll_append(list, result);
     return result;

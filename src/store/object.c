@@ -2366,7 +2366,7 @@ char* corto_serialize_value(
 
     corto_value v = corto_value_object(o, NULL);
 
-    return (char*)type->fromValue(&v);;
+    return (char*)type->fromValue(&v);
 error:
     return NULL;
 }
@@ -2408,19 +2408,17 @@ error:
 }
 
 int16_t corto_deserialize(
-    corto_object *o,
+    void *o,
     const char *contentType,
     const char *data)
 {
-    corto_fmt type;
-
-    corto_assert_object(o);
+    corto_fmt type = NULL;
 
     if (!(type = corto_fmt_lookup(contentType))) {
         goto error;
     }
 
-    return type->toObject(o, (uintptr_t)data);;
+    return type->toObject(o, (uintptr_t)data);
 error:
     return -1;
 }

@@ -29,7 +29,7 @@ char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
     corto_assert_object(type);
     corto_string_ser_t serData;
     corto_walk_opt s;
-    corto_value v = corto_value_value(p, type);
+    corto_value v = corto_value_mem(p, type);
 
     serData.buffer = CORTO_BUFFER_INIT;
     serData.buffer.max = maxLength;
@@ -49,7 +49,7 @@ corto_int16 _corto_ptr_init(
     corto_type type)
 {
     corto_assert_object(type);
-    corto_value v = corto_value_value(p, type);
+    corto_value v = corto_value_mem(p, type);
 
     memset(p, 0, corto_type_sizeof(type));
 
@@ -93,7 +93,7 @@ corto_int16 _corto_ptr_copy(
     corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
 
-    data.value = corto_value_value(dst, type);
+    data.value = corto_value_mem(dst, type);
 
     return corto_walk_ptr(&s, src, type, &data);;
 }
@@ -107,7 +107,7 @@ corto_equalityKind _corto_ptr_compare(
     corto_compare_ser_t data;
     corto_walk_opt s;
 
-    data.value = corto_value_value((void*)p2, type);;
+    data.value = corto_value_mem((void*)p2, type);;
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
     corto_walk_ptr(&s, (void*)p1, type, &data);

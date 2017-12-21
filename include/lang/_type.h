@@ -208,21 +208,21 @@ struct corto_delegatedata {
     corto_function procedure;
 };
 
-/*  initAction */
+/*  pre_action */
 typedef struct corto_pre_action corto_pre_action;
 
 struct corto_pre_action {
     corto_delegatedata super;
 };
 
-/*  destructAction */
+/*  post_action */
 typedef struct corto_post_action corto_post_action;
 
 struct corto_post_action {
     corto_delegatedata super;
 };
 
-/*  corto_name_action */
+/*  name_action */
 typedef struct corto_name_action corto_name_action;
 
 struct corto_name_action {
@@ -736,3 +736,4 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
+
