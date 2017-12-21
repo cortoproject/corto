@@ -272,7 +272,7 @@ CORTO_EXPORT
 int16_t corto_invalidate(
     corto_object o);
 
-#define CORTO_LOOKUP (0)
+#define CORTO_LOOKUP (0) /* Lookup is the default action */
 /* Conveniently reuse constants from corto_eventMask
 #define CORTO_DECLARE (0x1)
 #define CORTO_DEFINE (0x2)
@@ -1235,10 +1235,22 @@ void corto_set_str(
     const char *str);
 
 /* Call base initalizer / constructor / destructor */
-CORTO_EXPORT int16_t corto_super_init(corto_object o);
-CORTO_EXPORT int16_t corto_super_deinit(corto_object o);
-CORTO_EXPORT int16_t corto_super_construct(corto_object o);
-CORTO_EXPORT void corto_super_destruct(corto_object o);
+
+CORTO_EXPORT
+int16_t corto_super_init(
+    corto_object o);
+
+CORTO_EXPORT
+int16_t corto_super_deinit(
+    corto_object o);
+
+CORTO_EXPORT
+int16_t corto_super_construct(
+    corto_object o);
+
+CORTO_EXPORT
+void corto_super_destruct(
+    corto_object o);
 
 
 /* Macro's that automate casting of parameters */
@@ -1263,6 +1275,14 @@ CORTO_EXPORT void corto_super_destruct(corto_object o);
 #define CORTO_OVERLOAD_NOMATCH             (-2)
 #define CORTO_OVERLOAD_NOMATCH_OVERLOAD    (-3)
 
+/* Find a function that matches a signature (embedded in corto_lookup) */
+CORTO_EXPORT
+corto_object corto_lookup_function(
+    corto_object scope,
+    const char* requested,
+    int32_t *d,
+    int32_t *diff);
+
 /* Calculate the distance between a function and a request signature */
 CORTO_EXPORT
 int16_t corto_overload(
@@ -1278,30 +1298,55 @@ int16_t corto_overload(
  *
  *   No extra whitespaces are allowed.
  */
-CORTO_EXPORT int32_t corto_sig_name(const char* signature, corto_id buffer);
-CORTO_EXPORT int32_t corto_sig_paramCount(const char* signature);
-CORTO_EXPORT int32_t corto_sig_paramName(const char* signature, uint32_t id, corto_id buffer);
-CORTO_EXPORT int32_t corto_sig_paramType(const char* signature, uint32_t id, corto_id buffer, int* reference);
+
+CORTO_EXPORT
+int32_t corto_sig_name(
+    const char* signature,
+    corto_id buffer);
+
+CORTO_EXPORT
+int32_t corto_sig_paramCount(
+    const char* signature);
+
+CORTO_EXPORT
+int32_t corto_sig_paramName(
+    const char* signature,
+    uint32_t id,
+    corto_id buffer);
+
+CORTO_EXPORT
+int32_t corto_sig_paramType(
+    const char* signature,
+    uint32_t id,
+    corto_id buffer,
+    int* reference);
 
 /* Create request signature */
-CORTO_EXPORT char* corto_sig_open(const char* name);
-CORTO_EXPORT char* corto_sig_add(char* sig, corto_type type, int flags);
-CORTO_EXPORT char* corto_sig_addWildcard(char* sig, bool isReference);
-CORTO_EXPORT char* corto_sig_close(char* sig);
 
-/* Obtain signature from object */
+CORTO_EXPORT
+char* corto_sig_open(
+    const char* name);
+
+CORTO_EXPORT
+char* corto_sig_add(
+    char* sig,
+    corto_type type,
+    int flags);
+
+CORTO_EXPORT
+char* corto_sig_addWildcard(
+    char* sig,
+    bool isReference);
+
+CORTO_EXPORT
+char* corto_sig_close(
+    char* sig);
+
+/* Obtain signature from function or delegate */
 CORTO_EXPORT
 char* corto_sig(
     corto_object o,
     corto_id buffer);
-
-/* Find a function that matches a signature */
-CORTO_EXPORT
-corto_object corto_lookup_function(
-    corto_object scope,
-    const char* requested,
-    int32_t *d,
-    int32_t *diff);
 
 #ifdef __cplusplus
 }

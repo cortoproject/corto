@@ -21,7 +21,7 @@
 
 /** @file
  * @section ptr Ptr API
- * @brief API for native pointers.
+ * @brief Low level API for native pointers.
  *
  * This API allows applications to utilize the corto typesystem with values that
  * are either allocated on the stack or the heap. All API functions accept at

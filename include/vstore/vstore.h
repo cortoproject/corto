@@ -26,7 +26,6 @@
 #include <corto/_project.h>
 
 /* $header() */
-/* Enter additional code here. */
 /* $end */
 
 #include <corto/vstore/_type.h>
