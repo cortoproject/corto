@@ -12,7 +12,7 @@ void corto_package_onDefine(corto_observerEvent *e)
     if (owner && corto_instanceof(corto_loader_o, owner)) {
         if (corto_loader(owner)->autoLoad) {
             corto_id id;
-            if (corto_load_intern(corto_fullpath(id, e->data), 0, NULL, FALSE, TRUE)) {
+            if (corto_load_intern(corto_fullpath(id, e->data), 0, NULL, TRUE, FALSE, TRUE)) {
                 corto_throw("unable to auto-load package '%s'", id);
                 corto_raise();
             }

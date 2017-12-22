@@ -282,13 +282,14 @@ corto_object *corto_lookup_functionFromSequence(
     const char* requested,
     int32_t* d,
     int32_t *diff);
-
+    
 int corto_load_intern(
     corto_string str,
     int argc,
     char* argv[],
     bool _try,
-    bool ignoreRecursive);
+    bool ignoreRecursive,
+    bool alwaysRun);
 
 #ifdef __cplusplus
 }
