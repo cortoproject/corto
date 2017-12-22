@@ -21,7 +21,7 @@ int16_t corto_route_construct(
     corto_int32 count = 0, elementCount = 0;
     corto_routerimpl router = corto_route_findRouterImpl(this);
     corto_router routerBase = corto_router(corto_typeof(router));
-    char *elements[CORTO_MAX_SCOPE_DEPTH];
+    const char *elements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 i;
     corto_parameterseq *params = &corto_function(this)->parameters;
 
@@ -51,14 +51,14 @@ int16_t corto_route_construct(
         );
         corto_parameter *p = &params->buffer[count];
         memset(p, 0, sizeof(corto_parameter));
-        corto_ptr_setref(&p->type, routerBase->paramType);
+        corto_set_ref(&p->type, routerBase->paramType);
         if (routerBase->paramName) {
-            corto_ptr_setstr(&p->name, routerBase->paramName);
-        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_NAMED)) {
-            corto_ptr_setstr(&p->name, corto_idof(routerBase->paramType));
+            corto_set_str(&p->name, routerBase->paramName);
+        } else if (corto_check_attr(routerBase->paramType, CORTO_ATTR_NAMED)) {
+            corto_set_str(&p->name, corto_idof(routerBase->paramType));
             p->name[0] = tolower(p->name[0]);
         } else {
-            corto_ptr_setstr(&p->name, "_param");
+            corto_set_str(&p->name, "_param");
         }
         count ++;
     }
@@ -69,20 +69,20 @@ int16_t corto_route_construct(
         );
         corto_parameter *p = &params->buffer[count];
         memset(p, 0, sizeof(corto_parameter));
-        corto_ptr_setref(&p->type, routerBase->routerDataType);
+        corto_set_ref(&p->type, routerBase->routerDataType);
         if (routerBase->routerDataName) {
-            corto_ptr_setstr(&p->name, routerBase->routerDataName);
-        } else if (corto_checkAttr(routerBase->paramType, CORTO_ATTR_NAMED)) {
-            corto_ptr_setstr(&p->name, corto_idof(routerBase->routerDataType));
+            corto_set_str(&p->name, routerBase->routerDataName);
+        } else if (corto_check_attr(routerBase->paramType, CORTO_ATTR_NAMED)) {
+            corto_set_str(&p->name, corto_idof(routerBase->routerDataType));
             p->name[0] = tolower(p->name[0]);
         } else {
-            corto_ptr_setstr(&p->name, "_routerData");
+            corto_set_str(&p->name, "_routerData");
         }
         count ++;
     }
 
     if (!strcmp(corto_idof(this), "_matched")) {
-        corto_ptr_setref(&router->matched, this);
+        corto_set_ref(&router->matched, this);
     }
 
     for (i = 0; i < this->elements.length; i++) {
@@ -94,13 +94,13 @@ int16_t corto_route_construct(
             );
             corto_parameter *p = &corto_function(this)->parameters.buffer[count];
             memset(p, 0, sizeof(corto_parameter));
-            corto_ptr_setref(&p->type, corto_string_o);
-            corto_ptr_setstr(&p->name, &element[1]);
+            corto_set_ref(&p->type, corto_string_o);
+            corto_set_str(&p->name, &element[1]);
             count ++;
         }
     }
 
-    corto_ptr_setref(&corto_function(this)->returnType, routerBase->returnType);
+    corto_set_ref(&corto_function(this)->returnType, routerBase->returnType);
     corto_function(this)->parameters.length = count;
 
     return safe_corto_function_construct(this);

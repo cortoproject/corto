@@ -6,17 +6,24 @@ void test_StringDeserializer_setup(
     test_StringDeserializer this)
 {
 
-    corto_setAttr(CORTO_ATTR_PERSISTENT);
+    corto_set_attr(CORTO_ATTR_PERSISTENT);
 
     corto_enableload(FALSE);
 
 }
 
+CORTO_EXPORT
+int16_t corto_deserialize_value(
+    corto_object o,
+    const char *fmtId,
+    const char *data);
+
+
 void test_StringDeserializer_tc_deserAnonymousComplex(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/ReferenceMember{m="
             "<0>"
         "}");
@@ -36,7 +43,7 @@ void test_StringDeserializer_tc_deserAnonymousComplexString(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/CompositeWithString{"
             "a=10,"
             "b=\"Hello\","
@@ -61,7 +68,7 @@ void test_StringDeserializer_tc_deserAnonymousComplexStringEsc(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/CompositeWithString{"
             "a=10,"
             "b=\"\\\"Hello\\\"\","
@@ -86,7 +93,7 @@ void test_StringDeserializer_tc_deserAnonymousCycle(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/ReferenceMember{m="
             "<0>"
         "}");
@@ -107,7 +114,7 @@ void test_StringDeserializer_tc_deserAnonymousMultiple(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/AnonymousTest{{"
             "<1>int32{10},"
             "<2>int32{20},"
@@ -142,7 +149,7 @@ void test_StringDeserializer_tc_deserAnonymousNested(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/AnonymousTest{{"
             "<1>int32{10},"
             "<2>test/AnonymousTest{{"
@@ -204,7 +211,7 @@ void test_StringDeserializer_tc_deserAnonymousReuse(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/AnonymousTest{{"
             "/corto/lang/type,"
             "<1>int32{10},"
@@ -252,7 +259,7 @@ void test_StringDeserializer_tc_deserAnonymousReuseNested(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/AnonymousTest{{"
             "<1>int32{10},"
             "<2>test/AnonymousTest{{"
@@ -315,7 +322,7 @@ void test_StringDeserializer_tc_deserAnonymousSimple(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/AnonymousTest{{"
             "<1>int32{10}"
         "}}");
@@ -338,7 +345,7 @@ void test_StringDeserializer_tc_deserAnonymousTwice(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
         "test/ReferenceMember{m="
             "int32{10}"
         "}");
@@ -357,7 +364,7 @@ void test_StringDeserializer_tc_deserAnonymousTwice(
     corto_object tmp_o = o;
     corto_object tmp_m = t->m;
 
-    corto_fromStr(&o,
+    corto_deserialize(&o, "text/corto",
         "test/ReferenceMember{m="
             "int32{20}"
         "}");
@@ -379,7 +386,7 @@ void test_StringDeserializer_tc_deserArray(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/IntArray{0, 1, 2, 3}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/IntArray{0, 1, 2, 3}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -400,7 +407,7 @@ void test_StringDeserializer_tc_deserArrayComplex(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
       "test/CompositeArray{{10, 20}, {30, 40}, {50, 60}, {70, 80}}");
 
     test_assert(o != NULL);
@@ -427,7 +434,7 @@ void test_StringDeserializer_tc_deserArrayReference(
     test_StringDeserializer this)
 {
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/ObjectArray{lang, corto, bool, any}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/ObjectArray{lang, corto, bool, any}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -450,7 +457,7 @@ void test_StringDeserializer_tc_deserBoolFalse(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "bool{false}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "bool{false}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_bool_o);
@@ -463,7 +470,7 @@ void test_StringDeserializer_tc_deserBoolInvalid(
     test_StringDeserializer this)
 {
     corto_object o = corto_boolCreate(TRUE);
-    corto_int16 ret = corto_fromStr(&o, "bool{bar}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "bool{bar}");
     test_assert(o != NULL);
     test_assert(ret != 0);
     test_assert(corto_catch());
@@ -475,7 +482,7 @@ void test_StringDeserializer_tc_deserBoolTrue(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "bool{true}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "bool{true}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_bool_o);
@@ -489,7 +496,7 @@ void test_StringDeserializer_tc_deserChar(
 {
 
     corto_object p = NULL;
-    corto_int16 ret = corto_fromStr(&p, "char{a}");
+    corto_int16 ret = corto_deserialize(&p, "text/corto", "char{a}");
     test_assert(p != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(p) == (corto_type)corto_char_o);
@@ -503,7 +510,7 @@ void test_StringDeserializer_tc_deserCharEscape(
 {
 
     corto_object p = NULL;
-    corto_int16 ret = corto_fromStr(&p, "char{\\}");
+    corto_int16 ret = corto_deserialize(&p, "text/corto", "char{\\}");
     test_assert(p != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(p) == (corto_type)corto_char_o);
@@ -517,7 +524,7 @@ void test_StringDeserializer_tc_deserCharEscapeQuoted(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "char{'\\\\'}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "char{'\\\\'}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_char_o);
@@ -531,7 +538,7 @@ void test_StringDeserializer_tc_deserCharNull(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "char{\0}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "char{\0}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_char_o);
@@ -545,7 +552,7 @@ void test_StringDeserializer_tc_deserCharNullQuoted(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "char{'\\0'}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "char{'\\0'}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_char_o);
@@ -559,7 +566,7 @@ void test_StringDeserializer_tc_deserCharQuoted(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "char{'a'}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "char{'a'}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_char_o);
@@ -573,7 +580,7 @@ void test_StringDeserializer_tc_deserComposite(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point{10,20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point{10,20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -589,7 +596,7 @@ void test_StringDeserializer_tc_deserCompositeMembers(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point{ y=20, x = 10 }");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point{ y=20, x = 10 }");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -605,7 +612,7 @@ void test_StringDeserializer_tc_deserCompositeMixed(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point{ x=10, 20 }");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point{ x=10, 20 }");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -621,7 +628,7 @@ void test_StringDeserializer_tc_deserCompositeNested(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Line{{10, 20}, {30, 40}}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Line{{10, 20}, {30, 40}}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Line_o);
@@ -639,7 +646,7 @@ void test_StringDeserializer_tc_deserCompositeNestedMembers(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Line{stop={y=40, x=30}, start={x=10, y=20}}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Line{stop={y=40, x=30}, start={x=10, y=20}}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Line_o);
@@ -657,7 +664,7 @@ void test_StringDeserializer_tc_deserCompositeNestedMixed(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Line{start={x=40, 30}, {x=10, 20}}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Line{start={x=40, 30}, {x=10, 20}}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Line_o);
@@ -678,7 +685,7 @@ void test_StringDeserializer_tc_deserCompositeNoType(
     test_assert(o != NULL);
     test_assert(o->x == 0);
     test_assert(o->y == 0);
-    corto_int16 ret = corto_fromStr(&o, "{10,20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{10,20}");
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
     test_assert(o->x == 10);
@@ -692,7 +699,7 @@ void test_StringDeserializer_tc_deserCompositeWhitespace(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point  {   10 ,   20\n}  ");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point  {   10 ,   20\n}  ");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point_o);
@@ -710,7 +717,7 @@ void test_StringDeserializer_tc_deserExisting(
     corto_bool *o = corto_boolCreate(FALSE);
     test_assert(o != NULL);
     test_assert(*o == FALSE);
-    corto_int16 ret = corto_fromStr(&o, "true");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "true");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_bool_o);
@@ -727,7 +734,7 @@ void test_StringDeserializer_tc_deserExisting_w_scopedType(
     corto_int32 *p = o;
     test_assert(o != NULL);
     test_assert(*o == 0);
-    corto_int16 ret = corto_fromStr(&o, "corto/lang/int32{10}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "corto/lang/int32{10}");
     test_assert(o != NULL);
     test_assert(o == p);
     test_assert(ret == 0);
@@ -745,7 +752,7 @@ void test_StringDeserializer_tc_deserExisting_w_type(
     corto_bool *p = o;
     test_assert(o != NULL);
     test_assert(*o == FALSE);
-    corto_int16 ret = corto_fromStr(&o, "bool{true}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "bool{true}");
     test_assert(o != NULL);
     test_assert(o == p);
     test_assert(ret == 0);
@@ -760,7 +767,7 @@ void test_StringDeserializer_tc_deserInheritance(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point3D{10,20,30}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point3D{10,20,30}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point3D_o);
@@ -777,7 +784,7 @@ void test_StringDeserializer_tc_deserInheritanceMembers(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point3D{z=30,x=10,y=20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point3D{z=30,x=10,y=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point3D_o);
@@ -794,7 +801,7 @@ void test_StringDeserializer_tc_deserInheritanceMixed(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point3D{z=30,x=10,20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point3D{z=30,x=10,20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_Point3D_o);
@@ -811,7 +818,7 @@ void test_StringDeserializer_tc_deserInt16(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int16{32767}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int16{32767}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int16_o);
@@ -825,7 +832,7 @@ void test_StringDeserializer_tc_deserInt16Minus(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int16{-32768}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int16{-32768}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int16_o);
@@ -839,7 +846,7 @@ void test_StringDeserializer_tc_deserInt16Overflow(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int16{32768}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int16{32768}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int16_o);
@@ -853,7 +860,7 @@ void test_StringDeserializer_tc_deserInt32(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int32{2147483647}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int32{2147483647}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
@@ -867,7 +874,7 @@ void test_StringDeserializer_tc_deserInt32Minus(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int32{-2147483648}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int32{-2147483648}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
@@ -881,7 +888,7 @@ void test_StringDeserializer_tc_deserInt32Overflow(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int32{2147483648}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int32{2147483648}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int32_o);
@@ -895,7 +902,7 @@ void test_StringDeserializer_tc_deserInt64(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int64{9223372036854775807}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int64{9223372036854775807}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int64_o);
@@ -909,7 +916,7 @@ void test_StringDeserializer_tc_deserInt64Minus(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int64{-9223372036854775808");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int64{-9223372036854775808");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int64_o);
@@ -923,7 +930,7 @@ void test_StringDeserializer_tc_deserInt8(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int8{127}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int8{127}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int8_o);
@@ -937,7 +944,7 @@ void test_StringDeserializer_tc_deserInt8Minus(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int8{-128}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int8{-128}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int8_o);
@@ -951,7 +958,7 @@ void test_StringDeserializer_tc_deserInt8Overflow(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "int8{128}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "int8{128}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_int8_o);
@@ -964,7 +971,7 @@ void test_StringDeserializer_tc_deserList(
     test_StringDeserializer this)
 {
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/IntList{0, 1, 2, 3}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/IntList{0, 1, 2, 3}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -986,7 +993,7 @@ void test_StringDeserializer_tc_deserListComplex(
     test_StringDeserializer this)
 {
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/CompositeList{{0, 1}, {2, 3}, {4, 5}}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/CompositeList{{0, 1}, {2, 3}, {4, 5}}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -1018,7 +1025,7 @@ void test_StringDeserializer_tc_deserListReference(
     test_StringDeserializer this)
 {
     corto_object *o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/ObjectList{lang, corto, bool, any}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/ObjectList{lang, corto, bool, any}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -1041,7 +1048,7 @@ void test_StringDeserializer_tc_deserSequence(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/IntSequence{0, 1, 2, 3}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/IntSequence{0, 1, 2, 3}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -1065,7 +1072,7 @@ void test_StringDeserializer_tc_deserSequenceComplex(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o,
+    corto_int16 ret = corto_deserialize(&o, "text/corto",
       "test/CompositeSequence{{10, 20}, {30, 40}, {50, 60}, {70, 80}}");
 
     test_assert(o != NULL);
@@ -1094,7 +1101,7 @@ void test_StringDeserializer_tc_deserSequenceReference(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/ObjectSequence{lang, corto, bool, any}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/ObjectSequence{lang, corto, bool, any}");
 
     test_assert(o != NULL);
     test_assert(ret == 0);
@@ -1119,7 +1126,7 @@ void test_StringDeserializer_tc_deserString(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{Hello World}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{Hello World}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1133,7 +1140,7 @@ void test_StringDeserializer_tc_deserStringEscape(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{\\}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{\\}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1147,7 +1154,7 @@ void test_StringDeserializer_tc_deserStringEscapeQuotes(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{\"\\\\\"}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{\"\\\\\"}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1160,7 +1167,7 @@ void test_StringDeserializer_tc_deserStringMember(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/CompositeWithString{10, \"Hello World\", \"Foo Bar\", 20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/CompositeWithString{10, \"Hello World\", \"Foo Bar\", 20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_CompositeWithString_o);
@@ -1176,7 +1183,7 @@ void test_StringDeserializer_tc_deserStringMemberEscape(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/CompositeWithString{10, \"Hello World\\n\", \"Foo Bar\\n\", 20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/CompositeWithString{10, \"Hello World\\n\", \"Foo Bar\\n\", 20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_CompositeWithString_o);
@@ -1192,7 +1199,7 @@ void test_StringDeserializer_tc_deserStringMemberEscapeNoQuotes(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/CompositeWithString{10, Hello\nWorld, Foo\nBar, 20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/CompositeWithString{10, Hello\nWorld, Foo\nBar, 20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_CompositeWithString_o);
@@ -1208,7 +1215,7 @@ void test_StringDeserializer_tc_deserStringMemberNoQuotes(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/CompositeWithString{10, Hello World, Foo Bar, 20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/CompositeWithString{10, Hello World, Foo Bar, 20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_CompositeWithString_o);
@@ -1225,7 +1232,7 @@ void test_StringDeserializer_tc_deserStringQuotes(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{\"Hello World\"}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{\"Hello World\"}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1239,7 +1246,7 @@ void test_StringDeserializer_tc_deserStringQuotesWhitespaces(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{\"  Hello World   \"}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{\"  Hello World   \"}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1253,7 +1260,7 @@ void test_StringDeserializer_tc_deserStringWhitespace(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{\"   \n\n\n  \t\t \"}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{\"   \n\n\n  \t\t \"}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1267,7 +1274,7 @@ void test_StringDeserializer_tc_deserStringWhitespaceTrailing(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "string{  Hello World   }");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{  Hello World   }");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1283,7 +1290,7 @@ void test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(
     corto_string *o = corto_stringCreate(NULL);
     test_assert(o != NULL);
     test_assert(*o == NULL);
-    corto_int16 ret = corto_fromStr(&o, "  Hello World   ");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "  Hello World   ");
     test_assert(ret == 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == (corto_type)corto_string_o);
@@ -1295,21 +1302,21 @@ void test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(
 void test_StringDeserializer_tc_deserTargetAnonymousNotOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_setOwner(owner);
-    test_ReferenceMember *o = corto_createChild(root_o, "o", test_ReferenceMember_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_set_source(owner);
+    test_ReferenceMember *o = corto_create(root_o, "o", test_ReferenceMember_o);
     test_assert(o != NULL);
 
     /* Deserializer can't assign anonymous object because member 'm' won't be
      * owned by thread */
-    o->m = corto_create(test_TargetActual_o);
+    o->m = corto_create(NULL, NULL, test_TargetActual_o);
 
-    corto_setOwner(NULL);
-    corto_int16 ret = corto_fromStr(&o, "{m=<1>/test/TargetActual{target=10, actual=20},n=10}");
+    corto_set_source(NULL);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m=<1>/test/TargetActual{target=10, actual=20},n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 0);
     test_assert(o->m != NULL);
     test_assert(corto_typeof(o->m) == (corto_type)test_TargetActual_o);
@@ -1321,9 +1328,9 @@ void test_StringDeserializer_tc_deserTargetAnonymousNotOwned(
     test_assertint(m->actual, 0);
 
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     corto_delete(o);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(owner);
 
@@ -1332,16 +1339,16 @@ void test_StringDeserializer_tc_deserTargetAnonymousNotOwned(
 void test_StringDeserializer_tc_deserTargetAnonymousOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_setOwner(owner);
-    test_ReferenceMember *o = corto_createChild(root_o, "o", test_ReferenceMember_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_set_source(owner);
+    test_ReferenceMember *o = corto_create(root_o, "o", test_ReferenceMember_o);
     test_assert(o != NULL);
 
-    corto_int16 ret = corto_fromStr(&o, "{m=<1>/test/TargetActual{target=10, actual=20}, n=10}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m=<1>/test/TargetActual{target=10, actual=20}, n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 10);
     test_assert(corto_typeof(o->m) == (corto_type)test_TargetActual_o);
     test_TargetActual m = o->m;
@@ -1349,7 +1356,7 @@ void test_StringDeserializer_tc_deserTargetAnonymousOwned(
     test_assertint(m->actual, 20);
 
     corto_delete(o);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(owner);
 
@@ -1358,23 +1365,23 @@ void test_StringDeserializer_tc_deserTargetAnonymousOwned(
 void test_StringDeserializer_tc_deserTargetMemberNotOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_setOwner(owner);
-    test_TargetActualMember *o = corto_createChild(root_o, "o", test_TargetActualMember_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_set_source(owner);
+    test_TargetActualMember *o = corto_create(root_o, "o", test_TargetActualMember_o);
 
-    corto_setOwner(NULL);
-    corto_int16 ret = corto_fromStr(&o, "{m={target=10, actual=20}, n=10}");
+    corto_set_source(NULL);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m={target=10, actual=20}, n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActualMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 0);
     test_assertint(o->m->actual, 0);
     test_assertint(o->m->target, 10);
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     corto_delete(o);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(owner);
 
@@ -1383,22 +1390,22 @@ void test_StringDeserializer_tc_deserTargetMemberNotOwned(
 void test_StringDeserializer_tc_deserTargetMemberOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_setOwner(owner);
-    test_TargetActualMember *o = corto_createChild(root_o, "o", test_TargetActualMember_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_set_source(owner);
+    test_TargetActualMember *o = corto_create(root_o, "o", test_TargetActualMember_o);
 
-    corto_int16 ret = corto_fromStr(&o, "{m={target=10, actual=20}, n=10}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m={target=10, actual=20}, n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActualMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 10);
     test_assert(o->m->target == 0);
     test_assert(o->m->actual == 20);
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     corto_delete(o);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(owner);
 
@@ -1407,22 +1414,22 @@ void test_StringDeserializer_tc_deserTargetMemberOwned(
 void test_StringDeserializer_tc_deserTargetNotOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_setOwner(owner);
-    test_TargetActual o = corto_createChild(root_o, "o", test_TargetActual_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_set_source(owner);
+    test_TargetActual o = corto_create(root_o, "o", test_TargetActual_o);
 
-    corto_setOwner(NULL);
-    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    corto_set_source(NULL);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assert(o->target == 10);
     test_assert(o->actual == 0);
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     corto_delete(o);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(owner);
 
@@ -1431,18 +1438,18 @@ void test_StringDeserializer_tc_deserTargetNotOwned(
 void test_StringDeserializer_tc_deserTargetNotOwnedMount(
     test_StringDeserializer this)
 {
-    test_TargetActual o = corto_create(test_TargetActual_o);
-    corto_object owner = corto_create(corto_mount_o);
+    test_TargetActual o = corto_create(NULL, NULL, test_TargetActual_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
 
-    corto_setOwner(owner);
-    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    corto_set_source(owner);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
-    test_assert(corto_ownerof(o) == NULL);
+    test_assert(corto_sourceof(o) == NULL);
     test_assert(o->target == 10);
     test_assert(o->actual == 0);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(o);
     corto_delete(owner);
@@ -1452,18 +1459,18 @@ void test_StringDeserializer_tc_deserTargetNotOwnedMount(
 void test_StringDeserializer_tc_deserTargetNotOwnedObj(
     test_StringDeserializer this)
 {
-    test_TargetActual o = corto_create(test_TargetActual_o);
-    corto_object owner = corto_create(corto_void_o);
+    test_TargetActual o = corto_create(NULL, NULL, test_TargetActual_o);
+    corto_object owner = corto_create(NULL, NULL, corto_void_o);
 
-    corto_setOwner(owner);
-    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    corto_set_source(owner);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
-    test_assert(corto_ownerof(o) == NULL);
+    test_assert(corto_sourceof(o) == NULL);
     test_assert(o->target == 0);
     test_assert(o->actual == 20);
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
 
     corto_delete(o);
     corto_delete(owner);
@@ -1474,7 +1481,7 @@ void test_StringDeserializer_tc_deserTargetOwned(
     test_StringDeserializer this)
 {
     test_TargetActual o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/TargetActual{target=10, actual=20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/TargetActual{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
@@ -1487,23 +1494,23 @@ void test_StringDeserializer_tc_deserTargetOwned(
 void test_StringDeserializer_tc_deserTargetOwnedMount(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
 
-    corto_setOwner(owner);
-    test_TargetActual o = corto_createChild(root_o, "o", test_TargetActual_o);
+    corto_set_source(owner);
+    test_TargetActual o = corto_create(root_o, "o", test_TargetActual_o);
 
-    corto_int16 ret = corto_fromStr(&o, "{target=10, actual=20}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assert(o->target == 0);
     test_assert(o->actual == 20);
 
     ret = corto_delete(o);
     test_assert(ret == 0);
 
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
     ret = corto_delete(owner);
     test_assert(ret == 0);
 
@@ -1512,20 +1519,20 @@ void test_StringDeserializer_tc_deserTargetOwnedMount(
 void test_StringDeserializer_tc_deserTargetOwnedObj(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_void_o);
+    corto_object owner = corto_create(NULL, NULL, corto_void_o);
 
-    corto_setOwner(owner);
-    test_TargetActual o = corto_createChild(root_o, "o", test_TargetActual_o);
-    corto_int16 ret = corto_fromStr(&o, "test/TargetActual{target=10, actual=20}");
+    corto_set_source(owner);
+    test_TargetActual o = corto_create(root_o, "o", test_TargetActual_o);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/TargetActual{target=10, actual=20}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_TargetActual_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assert(o->target == 0);
     test_assert(o->actual == 20);
     test_assert(corto_delete(o) == 0);
 
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
     test_assert(corto_delete(owner) == 0);
 
 }
@@ -1533,27 +1540,27 @@ void test_StringDeserializer_tc_deserTargetOwnedObj(
 void test_StringDeserializer_tc_deserTargetRefAnonymousMemberNotOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
 
-    corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
+    corto_set_source(owner);
+    test_ReferenceTargetMember *o = corto_create(root_o, "o", test_ReferenceTargetMember_o);
 
-    corto_setOwner(NULL);
-    corto_int16 ret = corto_fromStr(&o, "{m={target=int32{10}, actual=int32{20}}, 10}");
+    corto_set_source(NULL);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m={target=int32{10}, actual=int32{20}}, 10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 0);
     test_assert(o->m->target != NULL);
     test_assert(corto_typeof(o->m->target) == corto_type(corto_int32_o));
     test_assertint(*(corto_int32*)o->m->target, 10);
     test_assert(o->m->actual == NULL);
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     test_assert(corto_delete(o) == 0);
 
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
     test_assert(corto_delete(owner) == 0);
 
 }
@@ -1561,16 +1568,16 @@ void test_StringDeserializer_tc_deserTargetRefAnonymousMemberNotOwned(
 void test_StringDeserializer_tc_deserTargetRefAnonymousMemberOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
 
-    corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
+    corto_set_source(owner);
+    test_ReferenceTargetMember *o = corto_create(root_o, "o", test_ReferenceTargetMember_o);
 
-    corto_int16 ret = corto_fromStr(&o, "{m={target=int32{10}, actual=int32{20}}, n=10}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m={target=int32{10}, actual=int32{20}}, n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 10);
     test_assert(o->m->actual != NULL);
     test_assert(corto_typeof(o->m->actual) == corto_type(corto_int32_o));
@@ -1579,7 +1586,7 @@ void test_StringDeserializer_tc_deserTargetRefAnonymousMemberOwned(
 
     test_assert(corto_delete(o) == 0);
 
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
     test_assert(corto_delete(owner) == 0);
 
 }
@@ -1587,27 +1594,27 @@ void test_StringDeserializer_tc_deserTargetRefAnonymousMemberOwned(
 void test_StringDeserializer_tc_deserTargetRefMemberNotOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_object a = corto_createChild(root_o, "a", corto_int32_o);
-    corto_object b = corto_createChild(root_o, "b", corto_int32_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_object a = corto_create(root_o, "a", corto_int32_o);
+    corto_object b = corto_create(root_o, "b", corto_int32_o);
 
-    corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
+    corto_set_source(owner);
+    test_ReferenceTargetMember *o = corto_create(root_o, "o", test_ReferenceTargetMember_o);
 
-    corto_setOwner(NULL);
-    corto_int16 ret = corto_fromStr(&o, "{m={target=/a, actual=/b}, n=10}");
+    corto_set_source(NULL);
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m={target=/a, actual=/b}, n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 0);
     test_assert(o->m->target == a);
     test_assert(o->m->actual == NULL);
 
-    corto_setOwner(owner);
+    corto_set_source(owner);
     test_assert(corto_delete(o) == 0);
 
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
     test_assert(corto_delete(owner) == 0);
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(b) == 0);
@@ -1617,24 +1624,24 @@ void test_StringDeserializer_tc_deserTargetRefMemberNotOwned(
 void test_StringDeserializer_tc_deserTargetRefMemberOwned(
     test_StringDeserializer this)
 {
-    corto_object owner = corto_create(corto_mount_o);
-    corto_object a = corto_createChild(root_o, "a", corto_int32_o);
-    corto_object b = corto_createChild(root_o, "b", corto_int32_o);
+    corto_object owner = corto_create(NULL, NULL, corto_mount_o);
+    corto_object a = corto_create(root_o, "a", corto_int32_o);
+    corto_object b = corto_create(root_o, "b", corto_int32_o);
 
-    corto_setOwner(owner);
-    test_ReferenceTargetMember *o = corto_createChild(root_o, "o", test_ReferenceTargetMember_o);
+    corto_set_source(owner);
+    test_ReferenceTargetMember *o = corto_create(root_o, "o", test_ReferenceTargetMember_o);
 
-    corto_int16 ret = corto_fromStr(&o, "{m={target=/a, actual=/b}, n=10}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{m={target=/a, actual=/b}, n=10}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)test_ReferenceTargetMember_o);
-    test_assert(corto_ownerof(o) == owner);
+    test_assert(corto_sourceof(o) == owner);
     test_assertint(o->n, 10);
     test_assert(o->m->target == NULL);
     test_assert(o->m->actual == b);
     test_assert(corto_delete(o) == 0);
 
-    corto_setOwner(NULL);
+    corto_set_source(NULL);
     test_assert(corto_delete(owner) == 0);
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(b) == 0);
@@ -1646,7 +1653,7 @@ void test_StringDeserializer_tc_deserUint16(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint16{65535}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint16{65535}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint16_o);
@@ -1660,7 +1667,7 @@ void test_StringDeserializer_tc_deserUint16Overflow(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint16{65536}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint16{65536}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint16_o);
@@ -1674,7 +1681,7 @@ void test_StringDeserializer_tc_deserUint32(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint32{4294967295}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint32{4294967295}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint32_o);
@@ -1688,7 +1695,7 @@ void test_StringDeserializer_tc_deserUint32Overflow(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint32{4294967296}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint32{4294967296}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint32_o);
@@ -1702,7 +1709,7 @@ void test_StringDeserializer_tc_deserUint64(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint64{18446744073709551615}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint64{18446744073709551615}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint64_o);
@@ -1716,7 +1723,7 @@ void test_StringDeserializer_tc_deserUint8(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint8{255}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint8{255}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint8_o);
@@ -1730,7 +1737,7 @@ void test_StringDeserializer_tc_deserUint8Overflow(
 {
 
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "uint8{256}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "uint8{256}");
     test_assert(o != NULL);
     test_assert(ret == 0);
     test_assert(corto_typeof(o) == (corto_type)corto_uint8_o);
@@ -1743,7 +1750,7 @@ void test_StringDeserializer_tc_errExcessElements(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point{10, 20, 30}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point{10, 20, 30}");
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert(corto_catch());
@@ -1753,7 +1760,7 @@ void test_StringDeserializer_tc_errMissingType(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "{foo}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "{foo}");
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert(corto_catch());
@@ -1763,7 +1770,7 @@ void test_StringDeserializer_tc_errNotAType(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "lang{foo}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "lang{foo}");
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert(corto_catch());
@@ -1773,7 +1780,7 @@ void test_StringDeserializer_tc_errTypeMismatch(
     test_StringDeserializer this)
 {
     corto_object o = corto_boolCreate(TRUE);
-    corto_int16 ret = corto_fromStr(&o, "string{bar}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "string{bar}");
     test_assert(o != NULL);
     test_assert(ret != 0);
     corto_delete(o);
@@ -1784,17 +1791,17 @@ void test_StringDeserializer_tc_errUnresolvedMember(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "test/Point{a = 10}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "test/Point{a = 10}");
     test_assert(o == NULL);
     test_assert(ret != 0);
-    test_assert(corto_catch());    
+    test_assert(corto_catch());
 }
 
 void test_StringDeserializer_tc_errUnresolvedType(
     test_StringDeserializer this)
 {
     corto_object o = NULL;
-    corto_int16 ret = corto_fromStr(&o, "foo{bar}");
+    corto_int16 ret = corto_deserialize(&o, "text/corto", "foo{bar}");
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert(corto_catch());

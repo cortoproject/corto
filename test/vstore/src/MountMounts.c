@@ -17,7 +17,7 @@ void test_MountMounts_tc_mountOnDefine(
     test_assert(corto_ll_count(mnt->unmounts) == 0);
 
     /* Define object in the mount, this should trigger the MOUNT callback */
-    corto_object obj = corto_createChild(myRoot, "obj", corto_void_o);
+    corto_object obj = corto_create(myRoot, "obj", corto_void_o);
     test_assert(obj != NULL);
 
     test_assert(corto_ll_count(mnt->subscribes) == 0);

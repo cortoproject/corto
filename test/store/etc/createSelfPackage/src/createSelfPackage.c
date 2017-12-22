@@ -7,7 +7,7 @@
 
 int cortomain(int argc, char *argv[]) {
 
-    corto_object o = corto_createChild(root_o, "createSelfPackage", corto_package_o);
+    corto_object o = corto_create(root_o, "createSelfPackage", corto_package_o);
     if (!o) {
         goto error;
     }

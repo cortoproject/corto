@@ -2,13 +2,12 @@
 
 #include <include/test.h>
 
-#define LOOKUP_ASSERT(parent, id, type)\
-    corto(parent, id, type, NULL, NULL, NULL, -1, CORTO_DO_FORCE_TYPE | CORTO_DO_ASSERT_SUCCESS)
+#define LOOKUP_ASSERT(p, i, t)\
+    corto(CORTO_FORCE_TYPE|CORTO_ASSERT_SUCCESS, {.parent = p, .id = i, .type = t})
 
 void test_SubscribeContentType_setup(
     test_SubscribeContentType this)
 {
-
     /* Create 'json' scope for JSON mount */
     corto_object json_o = corto_voidCreateChild(root_o, "json");
 

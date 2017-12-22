@@ -21,33 +21,54 @@
 
 /** @file
  * @section buffer Corto
- * @brief Generic corto store functions.
+ * @brief Generic corto functions.
  */
 
 #ifndef CORTO_H
 #define CORTO_H
 
 /* $header() */
-#include <corto/base.h>
 
+/* Generic functionality (os abstraction, lockless admin) */
+#include <corto/base.h>
+#include <corto/entityadmin.h>
+
+/* Types must be included first because builtin packages cross reference */
+#include <corto/vstore/_type.h>
+#include <corto/lang/_type.h>
+#include <corto/secure/_type.h>
+
+/* Include main headers from builtin packages */
 #include <corto/lang/lang.h>
 #include <corto/vstore/vstore.h>
 #include <corto/native/native.h>
 #include <corto/secure/secure.h>
-
-/* Callback used to walk contents of scope */
-typedef int (*corto_scopeWalk_cb)(corto_object o, void* userData);
-
-#include <corto/util.h>
-#include <corto/entityadmin.h>
-#include <corto/rb.h>
-
 #include <corto/store/store.h>
-#include <corto/vstore/vstore.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+/* -- GLOBAL VARIABLES -- */
+
+CORTO_EXPORT extern int8_t CORTO_DEBUG_ENABLED;
+CORTO_EXPORT extern int8_t CORTO_TRACING_ENABLED;
+CORTO_EXPORT extern int8_t CORTO_WARNING_ENABLED;
+
+CORTO_EXPORT extern corto_string CORTO_TRACE_ID;
+CORTO_EXPORT extern corto_object CORTO_TRACE_OBJECT;
+CORTO_EXPORT extern int8_t CORTO_TRACE_NOTIFICATIONS;
+CORTO_EXPORT extern int32_t CORTO_MEMTRACE_BREAKPOINT;
+
+CORTO_EXPORT extern const char* BAKE_VERSION;
+CORTO_EXPORT extern const char* BAKE_VERSION_MAJOR;
+CORTO_EXPORT extern const char* BAKE_VERSION_MINOR;
+CORTO_EXPORT extern const char* BAKE_VERSION_PATCH;
+CORTO_EXPORT extern const char* BAKE_VERSION_SUFFIX;
+
+
+/* -- FRAMEWORK FUNCTIONS -- */
 
 /** Start corto
  * This function will initialize the corto object store. Should only be called
@@ -67,12 +88,33 @@ int corto_start(
 CORTO_EXPORT
 int corto_stop(void);
 
+/** Get a unique string that identifies the current corto build.
+ * This function is used to determine whether a package is linked with the
+ * correct corto library before allowing it to be loaded.
+ *
+ * @return String that uniquely identifies the current corto build
+ */
+CORTO_EXPORT
+char* corto_get_build(void);
+
+/** Specify function to be executed when corto exits.
+ *
+ * @param handler Pointer to function to be executed.
+ */
+CORTO_EXPORT
+void corto_onexit(
+    void(*handler)(void*),
+    void* userData);
+
+
+/* -- AUTOMATIC PACKAGE LOADING -- */
+
 /** Mount package data
  * The package loader mounts corto packages into the corto hierarchy so they can
  * be discovered with corto_select and resolved with corto_lookup and
  * corto_resolve.
  *
- * @param enable Specifiies whether to enable mounting package data.
+ * @param enable Specifies whether to enable mounting package data.
  * @return Previous value.
  */
 CORTO_EXPORT
@@ -90,103 +132,33 @@ CORTO_EXPORT
 bool corto_autoload(
     corto_bool autoload);
 
-/** Get a unique string that identifies the current corto build.
- * This function is used to determine whether a package is linked with the
- * correct corto library before allowing it to be loaded.
- *
- * @return String that uniquely identifies the current corto build
- */
-CORTO_EXPORT
-char* corto_getBuild(void);
 
-/** Get filename of corto library that current process links with.
- * This function can be used to debug scenarios in which a package has a corto
- * build that does not match the build of the application.
- *
- * @return path + filename of the corto library that the application links with.
- */
-CORTO_EXPORT
-char* corto_getLibrary(void);
-
-/** Specify function to be executed when corto exits.
- *
- * @param handler Pointer to function to be executed.
- */
-CORTO_EXPORT
-void corto_onexit(
-    void(*handler)(void*), void* userData);
-
-/* ffi_call compatible signature */
-typedef void (*corto_callInvoke)(void *fdata, void *fptr, corto_void *rvalue, void **args);
-
-typedef corto_int16 ___ (*corto_callInit_f)(corto_function f);
-typedef void (*corto_callDeinit_f)(corto_function f);
-
-/* Call API */
-CORTO_EXPORT
-void _corto_call(
-    corto_function f,
-    corto_void* result, ...);
-
-CORTO_EXPORT
-void _corto_callv(
-    corto_function f,
-    corto_void* result,
-    va_list args);
-
-CORTO_EXPORT
-void _corto_callb(
-    corto_function f,
-    corto_void* result,
-    void** argptrs);
-
-/* Register binding */
-CORTO_EXPORT int corto_callRegister(corto_callInit_f init, corto_callDeinit_f deinit);
-CORTO_EXPORT int16_t corto_callInit(corto_function f);
-CORTO_EXPORT void corto_callDeinit(corto_function f);
-
-#define corto_call(f, ...) _corto_call(corto_function(f), __VA_ARGS__)
-#define corto_callv(f, result, args) _corto_callv(corto_function(f), result, args)
-#define corto_callb(f, result, argptrs) _corto_callb(corto_function(f), result, argptrs)
+/* -- RUNTIME CONSISTENCY CHECKING -- */
 
 /* Used in type checking macro */
 CORTO_EXPORT
-corto_object _corto_assertType(
+corto_object _corto_assert_type(
     corto_type type,
     corto_object o);
 
 #ifndef NDEBUG
-#define corto_assertType(type, o) _corto_assertType((type), (o))
-#else
-#define corto_assertType(type, o) (o)
-#endif
-
-/* Throws an assertion when invalid object in debugging */
-#ifndef NDEBUG
+/* Is pointer a valid object */
 CORTO_EXPORT
-void _corto_assertObject(
+void _corto_assert_object(
     char const *file,
     unsigned int line,
     corto_object o);
-#define corto_assertObject(o) _corto_assertObject(__FILE__, __LINE__, o)
+#define corto_assert_object(o) _corto_assert_object(__FILE__, __LINE__, o)
 #else
-#define corto_assertObject(o)
+#define corto_assert_object(o)
 #endif
 
-CORTO_EXPORT extern int8_t CORTO_DEBUG_ENABLED;
-CORTO_EXPORT extern int8_t CORTO_TRACING_ENABLED;
-CORTO_EXPORT extern int8_t CORTO_WARNING_ENABLED;
-
-CORTO_EXPORT extern corto_string CORTO_TRACE_ID;
-CORTO_EXPORT extern corto_object CORTO_TRACE_OBJECT;
-CORTO_EXPORT extern int8_t CORTO_TRACE_NOTIFICATIONS;
-CORTO_EXPORT extern int32_t CORTO_MEMTRACE_BREAKPOINT;
-
-CORTO_EXPORT extern const char* BAKE_VERSION;
-CORTO_EXPORT extern const char* BAKE_VERSION_MAJOR;
-CORTO_EXPORT extern const char* BAKE_VERSION_MINOR;
-CORTO_EXPORT extern const char* BAKE_VERSION_PATCH;
-CORTO_EXPORT extern const char* BAKE_VERSION_SUFFIX;
+#ifndef NDEBUG
+/* Is object of specified type */
+#define corto_assert_type(type, o) _corto_assert_type((type), (o))
+#else
+#define corto_assert_type(type, o) (o)
+#endif
 
 #ifdef __cplusplus
 }

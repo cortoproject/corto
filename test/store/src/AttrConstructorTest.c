@@ -6,7 +6,7 @@ int16_t test_AttrConstructorTest_construct(
     test_AttrConstructorTest this)
 {
 
-    return (corto_getAttr() != CORTO_ATTR_DEFAULT);
+    return (corto_get_attr() != CORTO_ATTR_DEFAULT);
 
 }
 

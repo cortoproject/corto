@@ -6,7 +6,7 @@ int16_t test_VirtualMount_construct(
     test_VirtualMount this)
 {
 
-    corto_ptr_setstr(&corto_subscriber(this)->query.from, this->mount);
+    corto_set_str(&corto_subscriber(this)->query.from, this->mount);
 
     /* Data served up by the mount is in the corto string format */
     corto_mount_setContentType(this, "text/corto");

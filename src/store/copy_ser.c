@@ -22,7 +22,12 @@
 #include <corto/corto.h>
 #include "copy_ser.h"
 
-static int16_t corto_ser_any(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_any(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_any *ptr = corto_value_ptrof(info);
     corto_copy_ser_t *data = userData, privateData;
     corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
@@ -47,7 +52,12 @@ static int16_t corto_ser_any(corto_walk_opt* s, corto_value *info, void *userDat
     return 0;
 }
 
-static int16_t corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_primitive(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_type type = corto_value_typeof(info);
     corto_copy_ser_t *data = userData;
     void *ptr = corto_value_ptrof(info);
@@ -58,24 +68,34 @@ static int16_t corto_ser_primitive(corto_walk_opt* s, corto_value *info, void *u
     if (corto_primitive(type)->kind != CORTO_TEXT) {
         memcpy(value, ptr, type->size);
     } else {
-        corto_ptr_setstr((corto_string*)value, *(corto_string*)ptr);
+        corto_set_str((corto_string*)value, *(corto_string*)ptr);
     }
 
     return 0;
 }
 
-static int16_t corto_ser_reference(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_reference(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_copy_ser_t *data = userData;
     void *ptr = corto_value_ptrof(info);
     void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
     CORTO_UNUSED(s);
 
-    corto_ptr_setref(value, *(corto_object*)ptr);
+    corto_set_ref(value, *(corto_object*)ptr);
 
     return 0;
 }
 
-static int16_t corto_ser_composite(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_composite(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_copy_ser_t *data = userData;
     void *ptr = corto_value_ptrof(info);
     void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
@@ -115,16 +135,21 @@ static int16_t corto_ser_composite(corto_walk_opt* s, corto_value *info, void *u
 
 /* Deinit element */
 void corto_collection_deinitElement(corto_collection t, void *ptr) {
-    corto_value v;
     if (corto_collection_requiresAlloc(t->elementType)) {
-        v = corto_value_value(ptr, corto_type(t->elementType));
+        corto_ptr_deinit(ptr, t->elementType);
     } else {
-        v = corto_value_value(&ptr, corto_type(t->elementType));
+        corto_ptr_deinit(&ptr, t->elementType);
     }
-    corto_value_deinit(&v);
 }
 
-static int16_t corto_collection_copyListToArray(corto_collection t, void *array, uint32_t elementSize, corto_ll list, corto_bool reverse) {
+static
+int16_t corto_collection_copyListToArray(
+    corto_collection t,
+    void *array,
+    uint32_t elementSize,
+    corto_ll list,
+    corto_bool reverse)
+{
     corto_equalityKind result = 0;
     uint32_t i=0;
     corto_iter iter;
@@ -146,7 +171,7 @@ static int16_t corto_collection_copyListToArray(corto_collection t, void *array,
         }
 
         if (elementType->reference) {
-            corto_ptr_setref(e1, *(corto_object*)e2);
+            corto_set_ref(e1, *(corto_object*)e2);
         } else {
             result = corto_ptr_copy(e1, elementType, e2);
         }
@@ -158,7 +183,12 @@ static int16_t corto_collection_copyListToArray(corto_collection t, void *array,
 }
 
 /* TODO: should new elements be initialized? Should all elements be deinitialized first and then initialized? */
-static int16_t corto_collection_copyListToList(corto_collection t, corto_ll dst, corto_ll src) {
+static
+int16_t corto_collection_copyListToList(
+    corto_collection t,
+    corto_ll dst,
+    corto_ll src)
+{
     corto_equalityKind result = 0;
     corto_iter dstIter, srcIter;
     void *dstElem, *srcElem;
@@ -177,7 +207,7 @@ static int16_t corto_collection_copyListToList(corto_collection t, corto_ll dst,
         }
 
         if (elementType->reference) {
-            corto_ptr_setref((corto_object*)dstElem, *(corto_object*)srcElem);
+            corto_set_ref((corto_object*)dstElem, *(corto_object*)srcElem);
         } else {
             result = corto_ptr_copy(dstElem, elementType, srcElem);
         }
@@ -187,7 +217,12 @@ static int16_t corto_collection_copyListToList(corto_collection t, corto_ll dst,
 }
 
 /* Resize list */
-static void corto_collection_resizeList(corto_collection t, corto_ll list, uint32_t size) {
+static
+void corto_collection_resizeList(
+    corto_collection t,
+    corto_ll list,
+    uint32_t size)
+{
     uint32_t ownSize = corto_ll_count(list);
     corto_type elementType = t->elementType;
     bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
@@ -219,7 +254,12 @@ static void corto_collection_resizeList(corto_collection t, corto_ll list, uint3
 }
 
 /* Resize list */
-static void* corto_collection_resizeArray(corto_collection t, void* sequence, uint32_t size) {
+static
+void* corto_collection_resizeArray(
+    corto_collection t,
+    void* sequence,
+    uint32_t size)
+{
     void *result = sequence;
 
     /* Only sequences can be resized */
@@ -254,7 +294,12 @@ static void* corto_collection_resizeArray(corto_collection t, void* sequence, ui
 }
 
 /* Copy collections */
-static int16_t corto_ser_collection(corto_walk_opt* s, corto_value *info, void* userData) {
+static
+int16_t corto_ser_collection(
+    corto_walk_opt* s,
+    corto_value *info,
+    void* userData)
+{
     corto_type t1, t2;
     void *src, *dst;
     uint32_t size1 = 0;
@@ -362,7 +407,12 @@ static int16_t corto_ser_collection(corto_walk_opt* s, corto_value *info, void* 
     return result;
 }
 
-static int16_t corto_ser_construct(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_construct(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_copy_ser_t *data = userData;
     int16_t ret;
     CORTO_UNUSED(s);
@@ -381,7 +431,12 @@ static int16_t corto_ser_construct(corto_walk_opt* s, corto_value *info, void *u
     return ret;
 }
 
-static int16_t corto_ser_member(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_member(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_copy_ser_t *data = userData;
     corto_member m = info->is.member.t;
 
@@ -417,7 +472,12 @@ static int16_t corto_ser_member(corto_walk_opt* s, corto_value *info, void *user
     }
 }
 
-static int16_t corto_ser_observable(corto_walk_opt* s, corto_value *info, void *userData) {
+static
+int16_t corto_ser_observable(
+    corto_walk_opt* s,
+    corto_value *info,
+    void *userData)
+{
     corto_copy_ser_t *data = userData;
 
     corto_type type = corto_value_typeof(info);
@@ -443,7 +503,11 @@ static int16_t corto_ser_observable(corto_walk_opt* s, corto_value *info, void *
     }
 }
 
-corto_walk_opt corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+corto_walk_opt corto_copy_ser(
+    corto_modifier access,
+    corto_operatorKind accessKind,
+    corto_walk_traceKind trace)
+{
     corto_walk_opt s;
 
     corto_walk_init(&s);

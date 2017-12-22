@@ -9,10 +9,10 @@ int16_t corto_loader_construct(
 {
     if (corto_ainc(&constructOnce) == 1) {
         corto_query *q = &corto_subscriber(this)->query;
-        corto_ptr_setstr(&q->select, "//*");
-        corto_ptr_setstr(&q->from, "/");
-        corto_ptr_setstr(&q->type, "package");
-        corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+        corto_set_str(&q->select, "//*");
+        corto_set_str(&q->from, "/");
+        corto_set_str(&q->type, "package");
+        corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
         if (safe_corto_mount_setContentType(this, "text/json")) {
             return -1;
         }
@@ -136,7 +136,7 @@ void corto_loader_addDir(
                     result->value = (uintptr_t)strdup("{}");
                 }
 
-                corto_ptr_setstr(&result->parent, q->from);
+                corto_set_str(&result->parent, q->from);
 
                 corto_dealloc(env);
 

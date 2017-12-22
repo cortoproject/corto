@@ -7,8 +7,8 @@
 #include <corto/secure/_load.h>
 corto_string _corto_secure_key_authenticate(
     corto_secure_key _this,
-    corto_string user,
-    corto_string password)
+    const char *user,
+    const char *password)
 
 {
     static corto_uint32 _methodId;
@@ -29,16 +29,16 @@ corto_string _corto_secure_key_authenticate(
     corto_assert(_method != NULL, "unresolved method '%s::authenticate(string user,string password)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_string ___ (*)(corto_object, corto_string, corto_string))((corto_function)_method)->fptr)(_this, user, password);
+        _result = ((corto_string ___ (*)(corto_object, const char *, const char *))((corto_function)_method)->fptr)(_this, user, password);
     } else {
-        corto_call(corto_function(_method), &_result, _this, user, password);
+        corto_invoke(corto_function(_method), &_result, _this, user, password);
     }
     
     return _result;
 }
 corto_secure_accessKind _corto_secure_lock_authorize(
     corto_secure_lock _this,
-    corto_string token,
+    const char *token,
     corto_secure_actionKind action)
 
 {
@@ -60,9 +60,9 @@ corto_secure_accessKind _corto_secure_lock_authorize(
     corto_assert(_method != NULL, "unresolved method '%s::authorize(string token,secure/actionKind action)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
-        _result = ((corto_secure_accessKind ___ (*)(corto_object, corto_string, corto_secure_actionKind))((corto_function)_method)->fptr)(_this, token, action);
+        _result = ((corto_secure_accessKind ___ (*)(corto_object, const char *, corto_secure_actionKind))((corto_function)_method)->fptr)(_this, token, action);
     } else {
-        corto_call(corto_function(_method), &_result, _this, token, action);
+        corto_invoke(corto_function(_method), &_result, _this, token, action);
     }
     
     return _result;

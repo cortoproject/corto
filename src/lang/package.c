@@ -6,13 +6,13 @@
 
 void corto_package_onDefine(corto_observerEvent *e)
 {
-    corto_object owner = corto_ownerof(e->data);
+    corto_object owner = corto_sourceof(e->data);
 
     /* If owner is a mount, object is being resumed */
     if (owner && corto_instanceof(corto_loader_o, owner)) {
         if (corto_loader(owner)->autoLoad) {
             corto_id id;
-            if (corto_load_intern(corto_fullpath(id, e->data), 0, NULL, FALSE, TRUE)) {
+            if (corto_load_intern(corto_fullpath(id, e->data), 0, NULL, TRUE, FALSE, TRUE)) {
                 corto_throw("unable to auto-load package '%s'", id);
                 corto_raise();
             }
@@ -25,7 +25,7 @@ void corto_package_onDefine(corto_observerEvent *e)
 int16_t corto_package_construct(
     corto_package this)
 {
-    if (this->_public && !corto_isBuiltinPackage(this) && corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (this->_public && !corto_isbuiltin_package(this) && corto_check_attr(this, CORTO_ATTR_NAMED)) {
 
         /* Load package after object has been defined. Create one-shot observer to
          * trigger on DEFINE event */

@@ -1,10 +1,7 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
 #include "interface.h"
-
 corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure) {
     corto_function* f;
     corto_int32 d = 0;
@@ -23,12 +20,15 @@ corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure pr
                   corto_fullpath(NULL, procedure));
                 goto error;
             }
+
         }
+
     }
 
     if (corto_vtableInsert(&this->metaprocedures, corto_function(procedure))) {
         corto_claim(procedure);
     }
+
     return 0;
 error:
     return -1;
@@ -44,6 +44,7 @@ uint16_t corto_type_alignmentof(
     } else {
         alignment = this->alignment;
     }
+
     return alignment;
 }
 
@@ -57,6 +58,7 @@ bool corto_type_castable_v(
         if (this->reference && type->reference) {
             return TRUE;
         }
+
     }
 
     if (!result) {
@@ -82,8 +84,11 @@ bool corto_type_compatible_v(
                 if (this->kind == CORTO_VOID) {
                     result = TRUE;
                 }
+
             }
+
         }
+
     } else {
         result = TRUE;
     }
@@ -105,12 +110,15 @@ int16_t corto_type_construct(
     default:
         break;
     }
+
     if (this->kind == CORTO_ANY) {
         this->flags |= CORTO_TYPE_NEEDS_INIT;
     }
+
     if (this->init.super.procedure) {
         this->flags |= CORTO_TYPE_HAS_INIT;
     }
+
     if (this->deinit.super.procedure) {
         this->flags |= CORTO_TYPE_HAS_DEINIT;
     }
@@ -133,7 +141,6 @@ void corto_type_destruct(
         this->metaprocedures.buffer = NULL;
     }
 
-
 }
 
 int16_t corto_type_init(
@@ -142,18 +149,21 @@ int16_t corto_type_init(
     if (!this->options.parentState) {
         this->options.parentState = CORTO_DECLARED | CORTO_VALID;
     }
+
     if (!this->attr) {
         this->attr = CORTO_ATTR_DEFAULT;
     }
+
     if (this->reference && this->kind == CORTO_VOID) {
         this->flags |= CORTO_TYPE_HAS_RESOURCES;
     }
+
     return 0;
 }
 
 corto_function corto_type_resolveProcedure(
     corto_type this,
-    corto_string name)
+    const char *name)
 {
     corto_function result = NULL;
 
@@ -167,7 +177,6 @@ corto_function corto_type_resolveProcedure(
         corto_function *f;
         corto_int32 d = 0, prevD = 9999;
         corto_class metaclass = corto_class(corto_typeof(this));
-
         /* Walk inheritance of metaclass to find metaprocedure */
         do {
             if ((f = corto_vtableLookup(&corto_type(metaclass)->metaprocedures, name, &d))) {
@@ -175,7 +184,9 @@ corto_function corto_type_resolveProcedure(
                     result = *f;
                     prevD = d;
                 }
+
             }
+
             metaclass = corto_class(corto_interface(metaclass)->base);
         }while(metaclass && !result);
     }
@@ -192,5 +203,7 @@ uint32_t corto_type_sizeof(
     } else {
         size = this->size;
     }
+
     return size;
 }
+

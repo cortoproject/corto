@@ -35,14 +35,11 @@ void* corto_mount_thread(void* arg) {
     corto_float64 frequency = this->policy.sampleRate;
     corto_time interval = corto_mount_doubleToTime(1.0 / frequency);
     corto_time next, current, sleep = {0, 0}, lastSleep = {0, 0};
-
     corto_time_get(&next);
     next = corto_time_add(next, interval);
-
     while (!this->quit) {
         corto_mount_onPoll(this);
         corto_time_get(&current);
-
         lastSleep = sleep;
         sleep = corto_time_sub(next, current);
         if (lastSleep.sec || lastSleep.nanosec) {
@@ -63,6 +60,7 @@ void* corto_mount_thread(void* arg) {
                 sleep.sec, sleep.nanosec);
             corto_time_get(&next);
         }
+
         next = corto_time_add(next, interval);
     }
 
@@ -74,7 +72,7 @@ void corto_mount_notify(corto_subscriberEvent *e) {
     corto_eventMask event = e->event;
     corto_result *r = &e->data;
 
-    if (!r->object || (!this->attr || corto_checkAttr(r->object, this->attr))) {
+    if (!r->object || (!this->attr || corto_check_attr(r->object, this->attr))) {
         if (this->policy.mask & CORTO_MOUNT_NOTIFY) {
             corto_mount_onNotify(this, e);
         }
@@ -169,14 +167,14 @@ int16_t corto_mount_construct(
     corto_subscriber s = corto_subscriber(this);
 
     /* If mount isn't set, and object is scoped, mount data on itself */
-    if (!this->mount && corto_checkAttr(this, CORTO_ATTR_NAMED) && !s->query.from) {
-        corto_ptr_setref(&this->mount, this);
+    if (!this->mount && corto_check_attr(this, CORTO_ATTR_NAMED) && !s->query.from) {
+        corto_set_ref(&this->mount, this);
     }
 
     if (this->mount) {
-        corto_ptr_setstr(&s->query.from, corto_fullpath(NULL, this->mount));
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
     } else if (s->query.from) {
-        this->mount = corto(NULL, s->query.from, NULL, NULL, NULL, NULL, -1, 0);
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
 
     corto_eventMask mask = corto_observer(this)->mask;
@@ -184,13 +182,13 @@ int16_t corto_mount_construct(
     if (!s->query.select) {
         /* Set the expression according to the mask */
         if (mask & CORTO_ON_TREE) {
-            corto_ptr_setstr(&s->query.select, "//");
+            corto_set_str(&s->query.select, "//");
         } else if (mask & CORTO_ON_SCOPE) {
-            corto_ptr_setstr(&s->query.select, "/");
+            corto_set_str(&s->query.select, "/");
         } else if (mask & CORTO_ON_SELF) {
-            corto_ptr_setstr(&s->query.select, ".");
+            corto_set_str(&s->query.select, ".");
         } else {
-            corto_ptr_setstr(&s->query.select, "/");
+            corto_set_str(&s->query.select, "/");
         }
 
     }
@@ -252,8 +250,8 @@ int16_t corto_mount_construct(
     /* Set the callback function */
     corto_function(this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(this)->fptr = (corto_word)corto_mount_notify;
-    corto_ptr_setref(&corto_observer(this)->instance, this);
-    corto_ptr_setref(&corto_observer(this)->dispatcher, dispatcher);
+    corto_set_ref(&corto_observer(this)->instance, this);
+    corto_set_ref(&corto_observer(this)->dispatcher, dispatcher);
     /* Enable subscriber only when mount implements onNotify */
     if (this->policy.mask & CORTO_MOUNT_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY ||
@@ -265,7 +263,7 @@ int16_t corto_mount_construct(
     corto_observer(this)->mask |=
       CORTO_DECLARE|CORTO_DEFINE|CORTO_UPDATE|CORTO_DELETE;
     if (!s->query.select) {
-        corto_ptr_setstr(&s->query.select, "//");
+        corto_set_str(&s->query.select, "//");
     }
 
     if (s->contentType)
@@ -296,8 +294,12 @@ int16_t corto_mount_construct(
         corto_entityAdmin_remove(&corto_mount_admin, s->query.from, this, this, FALSE);
     } else {
         /* Make it easy to see whether this mount observes a tree, scope or self */
-        corto_observer(this)->mask =
-            corto_match_getScope((corto_idmatch_program)corto_subscriber(this)->idmatch);
+        int scope = corto_idmatch_get_scope(
+            (corto_idmatch_program)corto_subscriber(this)->idmatch);
+
+        corto_observer(this)->mask = scope == 2 ? CORTO_ON_TREE
+                                   : scope == 1 ? CORTO_ON_SCOPE
+                                                : CORTO_ON_SELF;
     }
 
     return ret;
@@ -352,7 +354,7 @@ corto_string corto_mount_id(
 int16_t corto_mount_init(
     corto_mount this)
 {
-    this->policy.ownership = CORTO_REMOTE_OWNER;
+    this->policy.ownership = CORTO_REMOTE_SOURCE;
 
     /* Mount doesn't need to implement a resume callback to resume objects */
     this->policy.mask |= CORTO_MOUNT_RESUME;
@@ -407,14 +409,14 @@ void corto_mount_invoke(
     corto_function proc,
     uintptr_t argptrs)
 {
-    corto_object owner = corto_ownerof(instance);
+    corto_object owner = corto_sourceof(instance);
 
     if (owner == this) {
         corto_mount_onInvoke(this, instance, proc, argptrs);
     } else {
-        corto_object prevowner = corto_setOwner(corto_ownerof(instance));
-        corto_callb(proc, NULL, (void**)argptrs);
-        corto_setOwner(prevowner);
+        corto_object prevowner = corto_set_source(corto_sourceof(instance));
+        corto_invokeb(proc, NULL, (void**)argptrs);
+        corto_set_source(prevowner);
     }
 
 }
@@ -511,6 +513,7 @@ void corto_mount_onPoll(
 
         corto_ll_free(events);
     }
+
 }
 
 static
@@ -525,6 +528,7 @@ int corto_mount_findEvent(
     {
         return false;
     }
+
     return true;
 }
 
@@ -545,7 +549,6 @@ void corto_mount_post(
              * only one queue, refcount does not need to be increased. If added
              * to two queues, refcount must be increased. */
             int appended = 0;
-
             /* Append new event to queue */
             if (corto_lock(this)) {
                 corto_throw(NULL);
@@ -576,6 +579,7 @@ void corto_mount_post(
                 if (!size) {
                     size = corto_ll_count(this->events);
                 }
+
             }
 
             if (appended == 2) {
@@ -586,6 +590,7 @@ void corto_mount_post(
                 corto_throw(NULL);
                 corto_raise();
             }
+
         } else {
             corto_event_handle(e);
             corto_assert(corto_release(e) == 0, "event is leaking");
@@ -642,7 +647,6 @@ void corto_mount_post(
         /* Retrieve time every collectCount samples */
         if (!lastQueueSize || !(size % collectCount)) {
             corto_time_get(&this->lastPost);
-
             /* Calculate total available time per period */
             corto_time totalTime = corto_mount_doubleToTime(1.0 / this->policy.sampleRate);
             corto_time spent = lastPoll.sec
@@ -653,20 +657,17 @@ void corto_mount_post(
             if (corto_time_compare(spent, totalTime) == CORTO_LT) {
                 /* Calculate last recorded write frequency */
                 double writeFrequency = size / corto_time_toDouble(spent);
-
                 /* Calculate if number of samples exceeds max if continuing to write at
                  * this frequency */
                 if (lastQueueSize || (writeFrequency * corto_time_toDouble(totalTime) > this->policy.queue.max)) {
                     /* Need to throttle. Calculate how much publisher needs to slow down */
                     corto_time budget = corto_time_sub(totalTime, spent);
-
                     /* Calculate time available per remaining sample, which is the time
                      * we should sleep to slow down the publisher. Add one
                      * sample for error margin so that in a stable system
                      * each poll cycle receives exactly the max queue size. */
                     double timePerSample =
                         corto_time_toDouble(budget) / ((double)this->policy.queue.max - (double)size + collectCount);
-
                     /*printf("sleep: %d.%.9d budget=[%d.%.9d] spent=[%d.%.9d] size=%d timePerSample=%f\n",
                         this->lastSleep.sec, this->lastSleep.nanosec,
                         budget.sec, budget.nanosec,
@@ -743,6 +744,7 @@ corto_resultIter corto_mount_onQuery_v(
         } else {
             sprintf(routerRequest, "/%s", query->from);
         }
+
         corto_path_clean(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
             corto_raise();
@@ -755,8 +757,8 @@ corto_resultIter corto_mount_onQuery_v(
 
 corto_object corto_mount_onResume_v(
     corto_mount this,
-    corto_string parent,
-    corto_string id,
+    const char *parent,
+    const char *id,
     corto_object object)
 {
     CORTO_UNUSED(this);
@@ -813,9 +815,9 @@ void corto_mount_onUnsubscribe_v(
 void corto_mount_publish(
     corto_mount this,
     corto_eventMask event,
-    corto_string from,
-    corto_string id,
-    corto_string type,
+    const char *from,
+    const char *id,
+    const char *type,
     uintptr_t value)
 {
     corto_id identifier;
@@ -881,20 +883,20 @@ corto_resultIter corto_mount_historyQuery(
 
 corto_object corto_mount_resume(
     corto_mount this,
-    corto_string parent,
-    corto_string name,
+    const char *parent,
+    const char *name,
     corto_object o)
 {
     /* If objects from mount are not owned locally they cannot be resumed */
-    if (this->policy.ownership != CORTO_LOCAL_OWNER) {
+    if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
         return NULL;
     }
 
     corto_log_push(strarg("resume:%s/%s", parent, name));
 
     /* Ensure that if object is created, owner & attributes are set correctly */
-    corto_attr prevAttr = corto_setAttr(CORTO_ATTR_PERSISTENT | corto_getAttr());
-    corto_object prevOwner = corto_setOwner(this);
+    corto_attr prevAttr = corto_set_attr(CORTO_ATTR_PERSISTENT | corto_get_attr());
+    corto_object prevOwner = corto_set_source(this);
     corto_object result = NULL;
 
     /* Resume object */
@@ -907,8 +909,8 @@ corto_object corto_mount_resume(
         corto_bool newObject = FALSE;
         // Prepare request
         memset(&q, 0, sizeof(q));
-        q.select = name;
-        q.from = parent;
+        q.select = (char*)name;
+        q.from = (char*)parent;
         if (o) {
             corto_fullpath(type, corto_typeof(o));
         } else {
@@ -917,7 +919,6 @@ corto_object corto_mount_resume(
 
         q.type = type;
         q.content = TRUE;
-
         corto_resultIter it = corto_mount_query(this, &q);
         if (corto_iter_hasNext(&it)) {
             corto_result *iterResult = corto_iter_next(&it);
@@ -935,10 +936,9 @@ corto_object corto_mount_resume(
                 corto_id fullpath;
                 sprintf(fullpath, "%s/%s/%s", corto_subscriber(this)->query.from, iterResult->parent, iterResult->id);
                 corto_path_clean(fullpath, fullpath);
-
                 corto_object type_o = corto_resolve(NULL, iterResult->type);
                 if (type_o) {
-                    o = corto_declareChild(root_o, fullpath, type_o);
+                    o = corto_declare(root_o, fullpath, type_o);
                     if (!o) {
                         corto_throw("failed to create object %s/%s",
                           parent, name);
@@ -953,18 +953,19 @@ corto_object corto_mount_resume(
                         corto_fullpath(NULL, this));
                     goto error;
                 }
+
             }
 
             if (o) {
                 corto_value v = corto_value_object(o, NULL);
                 if (this->contentTypeOutHandle && iterResult->value) {
-                    ((corto_contentType)this->contentTypeOutHandle)->toValue(
+                    ((corto_fmt)this->contentTypeOutHandle)->toValue(
                         &v, iterResult->value);
                 }
 
                 if (newObject) {
                     /* Use define that won't resume */
-                    corto(NULL, NULL, NULL, o, NULL, NULL, -1, CORTO_DO_DEFINE);
+                    corto(CORTO_DEFINE, {.object = o});
                 }
 
                 result = o;
@@ -987,8 +988,8 @@ corto_object corto_mount_resume(
     }
 
     /* Restore owner & attributes */
-    corto_setAttr(prevAttr);
-    corto_setOwner(prevOwner);
+    corto_set_attr(prevAttr);
+    corto_set_source(prevOwner);
     if (result) {
         corto_debug("resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
     }
@@ -1043,7 +1044,7 @@ void corto_mount_return(
 
 int16_t corto_mount_setContentType(
     corto_mount this,
-    corto_string type)
+    const char *type)
 {
 
     if (corto_mount_setContentTypeIn(this, type)) {
@@ -1061,11 +1062,11 @@ error:
 
 int16_t corto_mount_setContentTypeIn(
     corto_mount this,
-    corto_string type)
+    const char *type)
 {
 
-    corto_ptr_setstr(&corto_subscriber(this)->contentType, type);
-    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_load_contentType(type);
+    corto_set_str(&corto_subscriber(this)->contentType, type);
+    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_fmt_lookup(type);
     if (!corto_subscriber(this)->contentTypeHandle) {
         goto error;
     }
@@ -1077,11 +1078,11 @@ error:
 
 int16_t corto_mount_setContentTypeOut(
     corto_mount this,
-    corto_string type)
+    const char *type)
 {
 
-    corto_ptr_setstr(&this->contentTypeOut, type);
-    this->contentTypeOutHandle = (corto_word)corto_load_contentType(type);
+    corto_set_str(&this->contentTypeOut, type);
+    this->contentTypeOutHandle = (corto_word)corto_fmt_lookup(type);
     if (!this->contentTypeOutHandle) {
         goto error;
     }
@@ -1176,7 +1177,7 @@ void corto_mount_subscribeOrMount(
         return;
     }
 
-    if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
+    if (corto_check_state(this, CORTO_VALID)) corto_lock(this);
     subscription = corto_mount_findSubscription(this, query, &found);
     if (subscription) {
         /* Ensure subscription isn't deleted outside of lock */
@@ -1203,7 +1204,7 @@ void corto_mount_subscribeOrMount(
         corto_ll_append(this->subscriptions, placeHolder);
     }
 
-    if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
+    if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     /* Process callback outside of lock */
     if (!found && (!subscription ||
         (subscribe && subscription->subscriberCtx) ||
@@ -1237,7 +1238,7 @@ void corto_mount_subscribeOrMount(
      * subscription */
     if ((subCtx && (!subscription || (subscription->subscriberCtx != subCtx))) ||
         (mntCtx && (!subscription || (subscription->mountCtx != mntCtx)))) {
-        if (corto_checkState(this, CORTO_VALID)) corto_lock(this);
+        if (corto_check_state(this, CORTO_VALID)) corto_lock(this);
         /* If a new subscription is required, undo increase of refcount of the
          * subscription that was found */
         if (subscription) {
@@ -1266,26 +1267,26 @@ void corto_mount_subscribeOrMount(
 
         if (subscribe) subscription->subscriberCtx = subCtx;
         if (mount) subscription->mountCtx = mntCtx;
-        if (corto_checkState(this, CORTO_VALID))  corto_unlock(this);
+        if (corto_check_state(this, CORTO_VALID))  corto_unlock(this);
     } else if ((subCtx || mntCtx) && !found && subscription) {
         /* If there is no need to create a new subscription but no exact match
          * was found, it means that onSubscribe returned the same ctx as the
          * existing connection. In that case, the 'select' parameter of the
          * subscription is meaningless, so to avoid confusion set it to '*'
          */
-        if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
-        corto_ptr_setstr(&subscription->query.select, "*");
+        if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
+        corto_set_str(&subscription->query.select, "*");
         /* Doesn't count as new subscription, so undo increase in refcount */
         if (subCtx) subscription->subscriberCount --;
         if (mntCtx) subscription->mountCount --;
-        if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
+        if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     /* If placeholder was added & no (new) subscription is created, remove the
      * placeholder from the list */
     } else if (placeHolder) {
-        if (corto_checkState(this, CORTO_VALID))  corto_lock(this);
+        if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
         corto_ll_remove(this->subscriptions, placeHolder);
         corto_ptr_free(placeHolder, corto_mountSubscription_o);
-        if (corto_checkState(this, CORTO_VALID)) corto_unlock(this);
+        if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     }
 
 }

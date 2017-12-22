@@ -30,8 +30,19 @@ struct corto_string_deserIndexInfo {
     corto_bool parsed;
 };
 
+static
+const char* corto_string_deserParse(
+    const char *str,
+    struct corto_string_deserIndexInfo* info,
+    corto_string_deser_t* data);
+
 /* Serialize members */
-static corto_int16 corto_string_deserBuildIndexComposite(corto_walk_opt* s, corto_value* v, void* userData) {
+static
+corto_int16 corto_string_deserBuildIndexComposite(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
     corto_int16 result = 0;
 
     /* Only serialize direct members of object or elements */
@@ -42,7 +53,11 @@ static corto_int16 corto_string_deserBuildIndexComposite(corto_walk_opt* s, cort
 }
 
 /* Insert info into index */
-static void corto_string_deserIndexInsert(corto_string_deser_t* data, struct corto_string_deserIndexInfo* info) {
+static
+void corto_string_deserIndexInsert(
+    corto_string_deser_t* data,
+    struct corto_string_deserIndexInfo* info)
+{
     if (!data->index) {
         data->index = corto_ll_new();
         data->current = 0;
@@ -51,7 +66,8 @@ static void corto_string_deserIndexInsert(corto_string_deser_t* data, struct cor
 }
 
 /* Lookup index */
-static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
+static
+struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
     corto_string member,
     corto_string_deser_t* data)
 {
@@ -87,7 +103,10 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexLookup(
 }
 
 /* Get next member */
-static struct corto_string_deserIndexInfo* corto_string_deserIndexNext(corto_string_deser_t* data) {
+static
+struct corto_string_deserIndexInfo* corto_string_deserIndexNext(
+    corto_string_deser_t* data)
+{
     struct corto_string_deserIndexInfo* info;
 
     info = NULL;
@@ -102,14 +121,19 @@ static struct corto_string_deserIndexInfo* corto_string_deserIndexNext(corto_str
 }
 
 /* Free nodes from index */
-int corto_string_deserWalkIndex(void* o, void* ctx) {
+int corto_string_deserWalkIndex(
+    void* o,
+    void* ctx)
+{
     CORTO_UNUSED(ctx);
     corto_dealloc(o);
     return 1;
 }
 
 /* Free index */
-void corto_string_deserFreeIndex(corto_string_deser_t* data) {
+void corto_string_deserFreeIndex(
+    corto_string_deser_t* data)
+{
     if (data->index) {
         corto_ll_walk(data->index, corto_string_deserWalkIndex, NULL);
         corto_ll_free(data->index);
@@ -117,7 +141,12 @@ void corto_string_deserFreeIndex(corto_string_deser_t* data) {
 }
 
 /* Add indexInfo to indextable for each primitive */
-static corto_int16 corto_string_deserBuildIndexPrimitive(corto_walk_opt* s, corto_value* v, void* userData) {
+static
+corto_int16 corto_string_deserBuildIndexPrimitive(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
     corto_string_deser_t* data;
     struct corto_string_deserIndexInfo *newInfo;
     corto_member m;
@@ -142,7 +171,12 @@ static corto_int16 corto_string_deserBuildIndexPrimitive(corto_walk_opt* s, cort
 }
 
 /* This function prevents doing unwanted deepwalks of types */
-static corto_int16 corto_string_deserBuildIndexDummy(corto_walk_opt* s, corto_value* v, void* userData) {
+static
+corto_int16 corto_string_deserBuildIndexDummy(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
     CORTO_UNUSED(s);
     CORTO_UNUSED(v);
     CORTO_UNUSED(userData);
@@ -166,8 +200,7 @@ corto_walk_opt corto_string_deserBuildIndex(void) {
     return result;
 }
 
-static corto_string corto_string_deserParse(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data);
-
+static
 void* corto_string_deserAllocAny(void *ptr, corto_string_deser_t *data) {
     void *result = NULL;
     if (!data->current) {
@@ -188,7 +221,11 @@ void* corto_string_deserAllocAny(void *ptr, corto_string_deser_t *data) {
     return result;
 }
 
-void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
+static
+void* corto_string_deserAllocElem(
+    void *ptr,
+    corto_string_deser_t *data)
+{
     corto_collection t = corto_collection(data->allocUdata);
     corto_int32 size = corto_type_sizeof(t->elementType);
     void *result = NULL;
@@ -225,7 +262,12 @@ void* corto_string_deserAllocElem(void *ptr, corto_string_deser_t *data) {
 }
 
 /* Parse scope */
-static corto_string corto_string_deserParseScope(corto_string str, struct corto_string_deserIndexInfo* info, corto_string_deser_t* data) {
+static
+const char* corto_string_deserParseScope(
+    const char *str,
+    struct corto_string_deserIndexInfo* info,
+    corto_string_deser_t* data)
+{
     struct corto_string_deserIndexInfo rootInfo;
     corto_typeKind kind;
     void *ptr = data->ptr;
@@ -373,6 +415,7 @@ error:
 }
 
 /* Get pointer to current destination value */
+static
 corto_int16 corto_string_getDestinationPtr(
     struct corto_string_deserIndexInfo* info,
     corto_string_deser_t* data,
@@ -402,11 +445,12 @@ error:
     return -1;
 }
 
-static corto_string corto_string_deserParseAnonymousId (
-    corto_string str,
+static
+const char* corto_string_deserParseAnonymousId (
+    const char *str,
     corto_uint32 *out)
 {
-    char *ptr = str;
+    const char *ptr = str;
     if (*ptr == '<') {
         char buf[15], *bptr, ch;
 
@@ -482,7 +526,7 @@ static corto_int16 corto_string_deserParseValue(
         }
 
         if (o || !strcmp(value, "null")) {
-            if (offset) corto_ptr_setref(offset, o);
+            if (offset) corto_set_ref(offset, o);
             if (o) corto_release(o);
         } else {
             corto_throw("unresolved reference to '%s' for member '%s'", value,
@@ -510,7 +554,7 @@ static corto_int16 corto_string_deserParseValue(
                 deserialized = NULL;
             }
 
-            corto_ptr_setstr(offset, deserialized);
+            corto_set_str(offset, deserialized);
         }
     }
 
@@ -525,8 +569,11 @@ error:
 }
 
 /* Parse character literal */
-static corto_string corto_string_deserParseCharacter(corto_string ptr, corto_char *bptr) {
-
+static
+const char* corto_string_deserParseCharacter(
+    const char *ptr,
+    char *bptr)
+{
     if (*ptr == '\\') {
         ptr ++;
         switch(*ptr) {
@@ -574,7 +621,12 @@ static corto_string corto_string_deserParseCharacter(corto_string ptr, corto_cha
 }
 
 /* Parse string literal */
-static corto_string corto_string_deserParseString(corto_string ptr, corto_string buffer, corto_string *bufferPtr) {
+static
+const char* corto_string_deserParseString(
+    const char *ptr,
+    char *buffer,
+    char **bufferPtr)
+{
     corto_char ch, *bptr;
 
     ptr++; /* Skip first '"' */
@@ -594,15 +646,17 @@ static corto_string corto_string_deserParseString(corto_string ptr, corto_string
     return ptr;
 }
 
-static corto_string corto_string_parseAnonymous(
-    corto_string str,
-    corto_string value,
+/* Parse anonymous object */
+static
+const char* corto_string_parseAnonymous(
+    const char *str,
+    const char *value,
     struct corto_string_deserIndexInfo *info,
     corto_string_deser_t *data)
 {
     corto_object o = NULL;
-    char *ptr = str;
-    char *valuePtr = value;
+    const char *ptr = str;
+    const char *valuePtr = value;
     corto_uint32 index = 0;
     void *offset;
 
@@ -646,7 +700,7 @@ static corto_string corto_string_parseAnonymous(
                     goto error;
                 }
 
-                o = corto_declare(type);
+                o = corto_declare(NULL, NULL, type);
                 if (!o) {
                     corto_throw("failed to declare %s", value);
                     goto error;
@@ -690,7 +744,7 @@ static corto_string corto_string_parseAnonymous(
         }
     }
 
-    if (offset) corto_ptr_setref(offset, o);
+    if (offset) corto_set_ref(offset, o);
     if (o) corto_release(o);
 
     return ptr;
@@ -700,13 +754,15 @@ error:
 }
 
 /* Parse string */
-static corto_string corto_string_deserParse(
-    corto_string str,
+static
+const char* corto_string_deserParse(
+    const char *str,
     struct corto_string_deserIndexInfo* info,
     corto_string_deser_t* data)
 {
-    corto_char ch;
-    corto_char *ptr, *bptr, *nonWs;
+    char ch;
+    const char *ptr;
+    char *bptr, *nonWs;
     corto_char buffer[CORTO_STRING_DESER_TOKEN_MAX]; /* TODO: dangerous in a recursive function */
     corto_bool proceed, excess;
     struct corto_string_deserIndexInfo* memberInfo;
@@ -785,7 +841,7 @@ static corto_string corto_string_deserParse(
             /* If a value is being parsed, the '(' is part of an argument list.
              * Parse up until the matching ')' */
             if (bptr != buffer) {
-                char *start = ptr;
+                const char *start = ptr;
 
                 /* Parse until matching '} */
                 do {
@@ -887,13 +943,16 @@ error:
 }
 
 /* Deserialize string in object */
-corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
-    corto_char *ptr;
+const char* corto_string_deser(
+    const char *str,
+    corto_string_deser_t* data)
+{
+    const char *ptr;
     corto_bool createdNew = FALSE;
 
     {
         corto_id buffer;
-        corto_char *bptr, ch;
+        char *bptr, ch;
 
         /* Parse typename that potentially precedes string */
         bptr = buffer;
@@ -927,7 +986,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
                     }
                     if (corto_instanceof(corto_type(corto_type_o), type)) {
                         if (!data->out) {
-                            data->out = corto_declare(type);
+                            data->out = corto_declare(NULL, NULL, type);
                             createdNew = TRUE;
                         }
                         data->type = type;
@@ -961,7 +1020,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
     if (data->out && data->isObject) {
         if (!data->type) {
             data->type = corto_typeof(data->out);
-        } else if (!corto_instanceofType(corto_typeof(data->out), data->type)) {
+        } else if (!corto_type_instanceof(corto_typeof(data->out), data->type)) {
             corto_throw("object '%s' of type '%s' is not an instance of type '%s'",
                 corto_fullpath(NULL, data->out),
                 corto_fullpath(NULL, corto_typeof(data->out)),
@@ -974,7 +1033,7 @@ corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
         corto_throw("no type provided for '%s'", str);
         goto error;
     }
-    
+
     if (data->type->kind == CORTO_PRIMITIVE) {
         ptr = corto_string_deserParse(ptr, NULL, data);
     } else {
@@ -1004,7 +1063,7 @@ error:
     return NULL;
 }
 #else
-corto_string corto_string_deser(corto_string str, corto_string_deser_t* data) {
+corto_string corto_string_deser(const char *str, corto_string_deser_t* data) {
     CORTO_UNUSED(str);
     CORTO_UNUSED(data);
     return NULL;

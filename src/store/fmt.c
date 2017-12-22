@@ -29,22 +29,18 @@ extern corto_mutex_s corto_adminLock;
 static corto_ll contentTypes = NULL;
 
 static
-corto_word corto_contentType_ptr_fromValue(
+corto_word corto_fmt_ptr_fromValue(
     corto_value *v)
 {
     corto_type t = corto_value_typeof(v);
     void *ptr = corto_mem_new(t);
-    corto_value dst = corto_value_mem(ptr, t);
-    if (t->flags & CORTO_TYPE_NEEDS_INIT) {
-        corto_walk_opt s =
-            corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        if (corto_walk_value(&s, &dst, NULL)) {
-            goto error;
-        }
+
+    if (corto_ptr_init(ptr, t)) {
+        goto error;
     }
 
     if (t->flags & CORTO_TYPE_HAS_RESOURCES) {
-        if (corto_value_copy(&dst, v)) {
+        if (corto_ptr_copy(ptr, t, corto_value_ptrof(v))) {
             return 0;
         }
     } else {
@@ -57,7 +53,7 @@ error:
 }
 
 static
-corto_int16 corto_contentType_ptr_toValue(
+corto_int16 corto_fmt_ptr_toValue(
     corto_value *v,
     corto_word ptr)
 {
@@ -67,7 +63,7 @@ corto_int16 corto_contentType_ptr_toValue(
 }
 
 static
-void corto_contentType_ptr_release(
+void corto_fmt_ptr_release(
     corto_word ptr)
 {
     if (ptr) {
@@ -76,55 +72,95 @@ void corto_contentType_ptr_release(
 }
 
 static
-corto_word corto_contentType_ptr_copy(
+corto_word corto_fmt_ptr_copy(
     corto_word src)
 {
     corto_type t = corto_mem_typeof((void*)src);
     corto_value srcValue = corto_value_mem((void*)src, t);
-    return corto_contentType_ptr_fromValue(&srcValue);
+    return corto_fmt_ptr_fromValue(&srcValue);
 }
 
 static
-corto_word corto_contentType_str_fromValue(
+corto_word corto_fmt_str_fromValue(
     corto_value *v)
 {
-    return (corto_word)corto_value_str(v, 0);
+    corto_string_ser_t serData;
+    corto_walk_opt s = corto_string_ser(
+        CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+
+    serData.buffer = CORTO_BUFFER_INIT;
+    serData.buffer.max = 0;
+    serData.compactNotation = TRUE;
+    serData.prefixType = FALSE;
+    serData.enableColors = FALSE;
+
+    corto_walk_value(&s, v, &serData);
+    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_walk_deinit(&s, &serData);
+
+    return (corto_word)result;
 }
 
 static
-corto_int16 corto_contentType_str_toValue(
+corto_int16 corto_fmt_str_toValue(
     corto_value *v,
     corto_word str)
 {
-    return corto_value_fromStr(v, (char*)str);
+    corto_string_deser_t serData = {
+        .out = corto_value_ptrof(v),
+        .type = corto_value_typeof(v),
+        .isObject = v->kind == CORTO_OBJECT
+    };
+
+    if (!corto_string_deser((char*)str, &serData)) {
+        corto_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    if (serData.out) {
+        corto_value_ptrset(v, serData.out);
+    } else {
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 static
-corto_word corto_contentType_strColor_fromValue(
-    corto_value *v)
+int16_t corto_fmt_str_toObject(
+    corto_object *o,
+    corto_word data)
 {
-    corto_string_ser_t sdata;
-    corto_walk_opt s = corto_string_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-    memset(&sdata, 0, sizeof(corto_string_ser_t));
-    sdata.enableColors = TRUE;
-    s.access = CORTO_PRIVATE;
-    s.accessKind = CORTO_NOT;
-    s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
-    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
-    corto_walk_value(&s, v, &sdata);
-    return (corto_word)corto_buffer_str(&sdata.buffer);
+    corto_object obj = *(void**)o;
+    corto_string_deser_t serData = {
+        .out = obj,
+        .type = obj ? corto_typeof(obj) : NULL,
+        .isObject = TRUE
+    };
+
+    if (!corto_string_deser((char*)data, &serData)) {
+        corto_assert(!serData.out, "deserializer failed but out is set");
+    }
+
+    if (serData.out) {
+        *(void**)o = serData.out;
+    } else {
+        return -1;
+    }
+    return 0;
 }
 
 static
-corto_contentType corto_findContentType(
+corto_fmt corto_findContentType(
     bool isBinary,
     corto_string contentType)
 {
-    corto_contentType result = NULL;
+    corto_fmt result = NULL;
     if (contentTypes) {
         corto_iter it = corto_ll_iter(contentTypes);
         while (corto_iter_hasNext(&it)) {
-            corto_contentType ct = corto_iter_next(&it);
+            corto_fmt ct = corto_iter_next(&it);
             if (!strcmp(ct->name, contentType) && (ct->isBinary == isBinary)) {
                 result = ct;
                 break;
@@ -135,44 +171,35 @@ corto_contentType corto_findContentType(
     }
 
     if (!result && !strcmp(contentType, "corto") && !isBinary) {
-        result = corto_alloc(sizeof(struct corto_contentType_s));
+        result = corto_calloc(sizeof(struct corto_fmt_s));
         result->name = corto_strdup("corto");
         result->isBinary = isBinary;
-        result->toValue = corto_contentType_str_toValue;
-        result->fromValue = corto_contentType_str_fromValue;
+        result->toValue = corto_fmt_str_toValue;
+        result->fromValue = corto_fmt_str_fromValue;
         result->release = (void ___ (*)(corto_word))corto_dealloc;
         result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
-        corto_ll_append(contentTypes, result);
-
-    } else if (!result && !strcmp(contentType, "corto-color") && !isBinary) {
-        result = corto_alloc(sizeof(struct corto_contentType_s));
-        result->name = corto_strdup("corto-color");
-        result->isBinary = isBinary;
-        result->toValue = NULL;
-        result->fromValue = corto_contentType_strColor_fromValue;
-        result->release = (void ___ (*)(corto_word))corto_dealloc;
-        result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
+        result->toObject = corto_fmt_str_toObject;
         corto_ll_append(contentTypes, result);
 
     } else if (!result && !strcmp(contentType, "corto") && isBinary) {
-        result = corto_alloc(sizeof(struct corto_contentType_s));
+        result = corto_calloc(sizeof(struct corto_fmt_s));
         result->name = corto_strdup("corto");
         result->isBinary = isBinary;
-        result->toValue = corto_contentType_ptr_toValue;
-        result->fromValue = corto_contentType_ptr_fromValue;
-        result->release = corto_contentType_ptr_release;
-        result->copy = corto_contentType_ptr_copy;
+        result->toValue = corto_fmt_ptr_toValue;
+        result->fromValue = corto_fmt_ptr_fromValue;
+        result->release = corto_fmt_ptr_release;
+        result->copy = corto_fmt_ptr_copy;
         corto_ll_append(contentTypes, result);
     }
 
     return result;
 }
 
-corto_contentType
-corto_load_contentType(
-    corto_string contentType)
+corto_fmt
+corto_fmt_lookup(
+    const char *contentType)
 {
-    corto_contentType result = NULL;
+    corto_fmt result = NULL;
     bool isBinary = true;
 
     /* Built-in Corto string serializer */
@@ -199,7 +226,7 @@ corto_load_contentType(
         corto_id packageId;
         sprintf(packageId, "driver/fmt/%s", packagePtr);
 
-        result = corto_alloc(sizeof(struct corto_contentType_s));
+        result = corto_alloc(sizeof(struct corto_fmt_s));
         result->name = corto_strdup(packagePtr);
         result->isBinary = isBinary;
 
@@ -281,7 +308,7 @@ corto_load_contentType(
         /* Add to admin, verify that it hasn't been already added by another
          * thread */
          corto_mutex_lock(&corto_adminLock);
-         corto_contentType alreadyAdded = corto_findContentType(isBinary, packagePtr);
+         corto_fmt alreadyAdded = corto_findContentType(isBinary, packagePtr);
          if (!alreadyAdded) {
             corto_ll_append(contentTypes, result);
          } else {

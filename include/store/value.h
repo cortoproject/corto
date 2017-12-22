@@ -19,19 +19,19 @@
  * THE SOFTWARE.
  */
 
-/** @file 
+/** @file
  * @section value Value API
  * @brief API for dynamic access to corto values.
  *
  * The corto_value type contains meta-information in addition to a pointer
  * and a type that allows it to describe any possible value in corto. The most
- * commonly used values are objects, members and elements. 
+ * commonly used values are objects, members and elements.
  *
- * The corto_walk API in particular uses corto_value to communicate 
+ * The corto_walk API in particular uses corto_value to communicate
  * meta information about the value that is visited. A corto_value instance can
  * itself also be an input for the corto_walk API. The corto_value type also plays
  * a prominent role in the contentType interface. Whenever a value that is potentially
- * not an object needs to be shared between components, corto_value is the 
+ * not an object needs to be shared between components, corto_value is the
  * preferred carrier.
  *
  * The functions that are available for corto_value allow an application to
@@ -40,14 +40,14 @@
  * values dynamically, perform unary and binary operators and navigate and query
  * all scalar values of a value encapsulated by corto_value.
  *
- * In addition to describing corto values, a corto_value instance can also 
+ * In addition to describing corto values, a corto_value instance can also
  * contain a literal value. Literal values can be used to represent constant
  * values in unary or binary operations.
  *
  * Each corto_value has a parent field which can point to another corto_value.
  * This allows a corto_value to express a hierarchy of values, as is often found
- * in nested (composite/collection) types. The walk API automatically populates 
- * the parent field so that walk callbacks have full access to all information 
+ * in nested (composite/collection) types. The walk API automatically populates
+ * the parent field so that walk callbacks have full access to all information
  * about the value being serialized.
  */
 
@@ -63,7 +63,7 @@ typedef enum corto_valueKind {
     CORTO_OBJECT = 0,
     CORTO_BASE = 1, /* serialize inheritance relation */
     CORTO_VALUE = 2,
-    CORTO_MEM = 3, /* used internally. allows copying non-object memory of reference type by value. */ 
+    CORTO_MEM = 3, /* used internally. allows copying non-object memory of reference type by value. */
     CORTO_LITERAL = 4,
     CORTO_MEMBER = 5,
     CORTO_ELEMENT = 6,
@@ -149,7 +149,7 @@ struct corto_value {
  * @return The type of the specified value.
  * @see corto_value_ptrof
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_type corto_value_typeof(
     corto_value *value);
 
@@ -161,7 +161,7 @@ corto_type corto_value_typeof(
  * @return A pointer to the value represented by the corto_value.
  * @see corto_value_typeof corto_value_ptrset
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 void* corto_value_ptrof(
     corto_value *val);
 
@@ -179,9 +179,9 @@ void* corto_value_ptrof(
  * @return 0 if success, -1 if failed.
  * @see corto_value_ptrof
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int16_t corto_value_ptrset(
-    corto_value *val, 
+    corto_value *val,
     void *ptr);
 
 /** Return the object associated with a specified corto_value.
@@ -195,7 +195,7 @@ int16_t corto_value_ptrset(
  * @return 0 if success, -1 if failed.
  * @see corto_value_ptrof
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_object corto_value_objectof(
     corto_value *val);
 
@@ -211,36 +211,36 @@ corto_object corto_value_objectof(
  * @return 0 if success, -1 if failed.
  * @see corto_value_unaryOp corto_value_binaryOp corto_value_cast
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int16_t corto_value_memberExpr(
-    corto_value *value, 
-    char *member, 
+    corto_value *value,
+    char *member,
     corto_value *out);
 
 /** Perform unary operator on a corto_value.
  * The result corto_value has to at least be an initialized corto_value (use
- * corto_value_empty for new values). The value does not have to be of a 
- * matching type. If the result corto_value owned any resources, they will be 
+ * corto_value_empty for new values). The value does not have to be of a
+ * matching type. If the result corto_value owned any resources, they will be
  * deallocated / released before assigning the new value.
- * 
+ *
  * @param _operator The operator to perform.
  * @param value A pointer to the operand corto_value.
  * @param result A pointer to the result corto_value.
  * @return 0 if success, nonzero if failed.
  * @see corto_ptr_binaryOp corto_ptr_cast corto_value_memberExpr
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int16_t corto_value_unaryOp(
-    corto_operatorKind _operator, 
-    corto_value *value, 
+    corto_operatorKind _operator,
+    corto_value *value,
     corto_value *result);
 
 /** Perform binary operator on two corto_values.
  * The result corto_value has to at least be an initialized corto_value (use
- * corto_value_empty for new values). The value does not have to be of a 
- * matching type. If the result corto_value owned any resources, they will be 
+ * corto_value_empty for new values). The value does not have to be of a
+ * matching type. If the result corto_value owned any resources, they will be
  * deallocated / released before assigning the new value.
- * 
+ *
  * @param _operator The operator to perform.
  * @param left A pointer to the leftoperand corto_value.
  * @param right A pointer to the right operand corto_value.
@@ -248,11 +248,11 @@ int16_t corto_value_unaryOp(
  * @return 0 if success, nonzero if failed.
  * @see corto_ptr_unaryOp corto_ptr_cast corto_value_memberExpr
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int16_t corto_value_binaryOp(
-    corto_operatorKind _operator, 
-    corto_value *left, 
-    corto_value *right, 
+    corto_operatorKind _operator,
+    corto_value *left,
+    corto_value *right,
     corto_value *result);
 
 /** Cast a value.
@@ -262,34 +262,34 @@ int16_t corto_value_binaryOp(
  * @return 0 if success, nonzero if failed.
  * @see corto_ptr_unaryOp corto_ptr_binaryOp corto_value_memberExpr
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 int16_t _corto_value_cast(
     corto_value *value,
-    corto_type resultType, 
+    corto_type resultType,
     corto_value *result);
 
-CORTO_EXPORT 
+CORTO_EXPORT
 void corto_value_free(
     corto_value *v);
 
 /** Initialize a new corto_value instance.
  * @return A corto_value instance of kind CORTO_VALUE with ptr set to NULL.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_empty(void);
 
 /** Initialize a new corto_value instance holding an object.
  * A value representing an object in the corto object store.
- * 
+ *
  * @param object A valid object reference.
- * @param type The type of the new corto_value. 
+ * @param type The type of the new corto_value.
  * The type may be different from the object type, but the object has to be an
  * instance of the specified type.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value _corto_value_object(
-    corto_object object, 
+    corto_object object,
     corto_type type);
 
 /** Initialize a new corto_value instance holding a base value.
@@ -307,12 +307,12 @@ corto_value _corto_value_object(
  * values.
  *
  * @param ptr A pointer to a value.
- * @param type The type of the new corto_value. 
+ * @param type The type of the new corto_value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value _corto_value_base(
-    void *ptr, 
+    void *ptr,
     corto_type type);
 
 /** Initialize a new corto_value instance holding a generic value.
@@ -323,9 +323,9 @@ corto_value _corto_value_base(
  * @param type The type of the value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value _corto_value_value(
-    void *ptr, 
+    void *ptr,
     corto_type t);
 
 /** Initialize a new corto_value instance holding a generic value.
@@ -333,18 +333,18 @@ corto_value _corto_value_value(
  * and encountered by a walk routine, the routine initiates a walk by value instead
  * of invoking the reference callback.
  *
- * Reference values are otherwise only walked by value if of valueKind 
+ * Reference values are otherwise only walked by value if of valueKind
  * CORTO_OBJECT. Reference types mandate that they are instantiated as objects
  * which is consistent with this design.
  *
- * However, in case of the 'ptr' contentType, values are communicated in a 
+ * However, in case of the 'ptr' contentType, values are communicated in a
  * memory representation consistent with objects, but without the overhead of an
  * actual object. To facilitate this usecase, a copy function is needed that can
  * walk over the value of a non-object pointer of a reference type.
  *
  * Value instances of kind CORTO_MEM explicitly do not have an associated object,
  * which is another difference with values of the CORTO_VALUE kind.
- * 
+ *
  * Given the exotic nature of this functionality it is recommended that
  * applications avoid it unless they have a keen understanding of what the
  * implications are.
@@ -353,9 +353,9 @@ corto_value _corto_value_value(
  * @param type The type of the value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value _corto_value_mem(
-    void *ptr, 
+    void *ptr,
     corto_type t);
 
 /** Initialize a new corto_value instance holding a member value.
@@ -367,15 +367,15 @@ corto_value _corto_value_mem(
  * @param type The type of the value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_member(
-    corto_object object, 
-    corto_member member, 
+    corto_object object,
+    corto_member member,
     void *ptr);
 
 /** Initialize a new corto_value instance holding a constant value.
  * A value used to represent enumeration or bitmask constants. This is typically
- * used by the metawalk API when serializing each constant of a bitmask or 
+ * used by the metawalk API when serializing each constant of a bitmask or
  * enumeration type.
  *
  * @param object The object containing the constant (can be NULL).
@@ -383,10 +383,10 @@ corto_value corto_value_member(
  * @param ptr A pointer to the constant value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_constant(
-    corto_object object, 
-    corto_constant *constant, 
+    corto_object object,
+    corto_constant *constant,
     void *value);
 
 /** Initialize a new corto_value instance holding an element value.
@@ -398,11 +398,11 @@ corto_value corto_value_constant(
  * @param ptr A pointer to the element value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value _corto_value_element(
-    corto_object object, 
-    corto_type type, 
-    uint32_t index, 
+    corto_object object,
+    corto_type type,
+    uint32_t index,
     void *ptr);
 
 /** Initialize a new corto_value instance holding a map element value.
@@ -415,12 +415,12 @@ corto_value _corto_value_element(
  * @param ptr A pointer to the element value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_mapElement(
-    corto_object object, 
-    corto_type type, 
-    corto_type keyType, 
-    void *key, 
+    corto_object object,
+    corto_type type,
+    corto_type keyType,
+    void *key,
     void *ptr);
 
 /** Initialize a new corto_value instance holding a literal.
@@ -431,16 +431,16 @@ corto_value corto_value_mapElement(
  * @param ptr A pointer to the literal value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_literal(
-    corto_literalKind kind, 
+    corto_literalKind kind,
     void *ptr);
 
 /** Initialize a new corto_value instance holding a boolean literal.
  * @param value A boolean value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_bool(
     bool value);
 
@@ -448,7 +448,7 @@ corto_value corto_value_bool(
  * @param value A character value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_char(
     corto_char value);
 
@@ -456,7 +456,7 @@ corto_value corto_value_char(
  * @param value An unsigned integer value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_uint(
     corto_uint64 value);
 
@@ -464,7 +464,7 @@ corto_value corto_value_uint(
  * @param value A signed integer value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_int(
     corto_uint64 value);
 
@@ -472,7 +472,7 @@ corto_value corto_value_int(
  * @param value A floating point value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_float(
     corto_float64 value);
 
@@ -482,12 +482,9 @@ corto_value corto_value_float(
  * @param value A string value.
  * @return A new corto_value instance.
  */
-CORTO_EXPORT 
+CORTO_EXPORT
 corto_value corto_value_string(
     char *value);
-
-/* Helpers */
-CORTO_EXPORT char* corto_value_exprStr(corto_value *val, char *buffer, unsigned int length);
 
 int16_t corto_binaryExpr_getType(
     corto_type leftType,
@@ -498,14 +495,10 @@ int16_t corto_binaryExpr_getType(
     corto_type *operandType,
     corto_type *resultType);
 
-CORTO_EXPORT int16_t corto_value_fromcontent(corto_value *v, char *contentType, char *content);
-CORTO_EXPORT char *corto_value_contentof(corto_value *v, char *contentType);
-CORTO_EXPORT char *corto_value_str(corto_value* v, uint32_t maxLength);
-CORTO_EXPORT int16_t corto_value_fromStr(corto_value *v, char *string);
-CORTO_EXPORT int16_t corto_value_copy(corto_value *dst, corto_value *src);
-CORTO_EXPORT corto_equalityKind corto_value_compare(corto_value *v1, corto_value *value2);
-CORTO_EXPORT int16_t corto_value_init(corto_value *v);
-CORTO_EXPORT int16_t corto_value_deinit(corto_value *v);
+CORTO_EXPORT
+int16_t corto_value_copy(
+    corto_value *dst,
+    corto_value *src);
 
 /* Type safe macro's */
 #define corto_value_object(o, t) _corto_value_object(o, corto_type(t))

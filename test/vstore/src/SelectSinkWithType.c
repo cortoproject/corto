@@ -11,7 +11,7 @@ void test_SelectSinkWithType_setup(
     test_SinkMountCreateChild_auto(root_o, sinkMount, mount, "int32", NULL);
 
     /* Ensure all objects are created with persistency enabled */
-    corto_setAttr(CORTO_ATTR_PERSISTENT);
+    corto_set_attr(CORTO_ATTR_PERSISTENT);
 
 }
 

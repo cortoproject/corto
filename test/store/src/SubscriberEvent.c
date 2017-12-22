@@ -9,13 +9,13 @@ void test_SubscriberEvent_setup(
     test_SubscriberEvent this)
 {
 
-    this->prevAttr = corto_setAttr(CORTO_ATTR_DEFAULT);
+    this->prevAttr = corto_set_attr(CORTO_ATTR_DEFAULT);
     corto_voidCreateChild(root_o, "shouldNotBeMatched");
     testScope = corto_voidCreateChild(root_o, "testScope");
     test_assert(testScope != NULL);
     test_SubscriberTest st = test_SubscriberTestCreate();
     test_assert(st != NULL);
-    corto_ptr_setref(&this->st, st);
+    corto_set_ref(&this->st, st);
     corto_release(st);
 
 
@@ -665,10 +665,10 @@ void test_SubscriberEvent_teardown(
     test_SubscriberEvent this)
 {
 
-    corto_setAttr(this->prevAttr);
+    corto_set_attr(this->prevAttr);
 
     /* Delete before stopping testcase, to catch errors while unsubscribing */
-    corto_ptr_setref(&this->st, NULL);
+    corto_set_ref(&this->st, NULL);
 
 }
 

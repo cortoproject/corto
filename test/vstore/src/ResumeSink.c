@@ -78,7 +78,7 @@ void test_ResumeSink_tc_cleanupParentFromResumedChild(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -128,9 +128,9 @@ void test_ResumeSink_tc_define(
     test_assert(o != NULL);
     test_assert(corto_parentof(o) == mount);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(this->declared, 1);
     test_assertint(this->defined, 0);
@@ -176,14 +176,14 @@ void test_ResumeSink_tc_defineFromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
-    corto_object o = corto_createChild(vmount, "x", corto_int32_o);
+    corto_object o = corto_create(vmount, "x", corto_int32_o);
     test_assert(o != NULL);
     test_assertstr(corto_fullpath(NULL, o), "/vmount/nested/x");
-    test_assert(corto_ownerof(o) == mount);
+    test_assert(corto_sourceof(o) == mount);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -201,14 +201,14 @@ void test_ResumeSink_tc_defineFromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
-    corto_object o = corto_createChild(vmount, "x", corto_int32_o);
+    corto_object o = corto_create(vmount, "x", corto_int32_o);
     test_assert(o != NULL);
     test_assertstr(corto_fullpath(NULL, o), "/vmount/x");
-    test_assert(corto_ownerof(o) == mount);
+    test_assert(corto_sourceof(o) == mount);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -270,9 +270,9 @@ void test_ResumeSink_tc_defineNested1(
     test_Foo o = test_FooCreateChild(parent, "a", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(this->declared, 2);
     test_assertint(this->defined, 0);
@@ -318,14 +318,14 @@ void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
-    corto_object a = corto_createChild(vmount, "x/a", corto_float32_o);
+    corto_object a = corto_create(vmount, "x/a", corto_float32_o);
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
-    test_assert(corto_ownerof(a) == mount);
+    test_assert(corto_sourceof(a) == mount);
     test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
 
     corto_object x = corto_parentof(a);
@@ -378,9 +378,9 @@ void test_ResumeSink_tc_defineNested2(
     test_Foo o = test_FooCreateChild(parent, "k", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(this->declared, 3);
     test_assertint(this->defined, 0);
@@ -450,9 +450,9 @@ void test_ResumeSink_tc_lookup(
     test_Foo o = corto_lookup(root_o, "mount/x");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
@@ -503,9 +503,9 @@ void test_ResumeSink_tc_lookupFromMount(
     test_Foo o = corto_lookup(mount, "x");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
@@ -546,7 +546,7 @@ void test_ResumeSink_tc_lookupFromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -570,7 +570,7 @@ void test_ResumeSink_tc_lookupFromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -602,9 +602,9 @@ void test_ResumeSink_tc_lookupNested1(
     test_Foo o = corto_lookup(root_o, "mount/x/a");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -655,9 +655,9 @@ void test_ResumeSink_tc_lookupNested1FromMount(
     test_Foo o = corto_lookup(mount, "x/a");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -698,7 +698,7 @@ void test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -752,9 +752,9 @@ void test_ResumeSink_tc_lookupNested1FromObjectFromMount(
     test_Foo o = corto_lookup(x, "a");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -795,7 +795,7 @@ void test_ResumeSink_tc_lookupNested1FromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -859,9 +859,9 @@ void test_ResumeSink_tc_lookupNested2(
     test_Foo o = corto_lookup(root_o, "mount/x/a/k");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
     test_assertint(*test_destructCalled_o, 0);
@@ -912,9 +912,9 @@ void test_ResumeSink_tc_lookupNested2FromMount(
     test_Foo o = corto_lookup(mount, "x/a/k");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
     test_assertint(*test_destructCalled_o, 0);
@@ -955,7 +955,7 @@ void test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1026,9 +1026,9 @@ void test_ResumeSink_tc_lookupNested2FromObjectFromMount(
     test_Foo o = corto_lookup(a, "k");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
     test_assertint(*test_destructCalled_o, 0);
@@ -1071,7 +1071,7 @@ void test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1178,9 +1178,9 @@ void test_ResumeSink_tc_resolve(
     test_Foo o = corto_resolve(root_o, "mount/x");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
@@ -1231,9 +1231,9 @@ void test_ResumeSink_tc_resolveFromMount(
     test_Foo o = corto_resolve(mount, "x");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
@@ -1274,7 +1274,7 @@ void test_ResumeSink_tc_resolveFromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1298,7 +1298,7 @@ void test_ResumeSink_tc_resolveFromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1331,9 +1331,9 @@ void test_ResumeSink_tc_resolveNested1(
     test_Foo o = corto_resolve(root_o, "mount/x/a");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -1384,9 +1384,9 @@ void test_ResumeSink_tc_resolveNested1FromMount(
     test_Foo o = corto_resolve(mount, "x/a");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -1427,7 +1427,7 @@ void test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1481,9 +1481,9 @@ void test_ResumeSink_tc_resolveNested1FromObjectFromMount(
     test_Foo o = corto_resolve(x, "a");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -1524,7 +1524,7 @@ void test_ResumeSink_tc_resolveNested1FromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1589,9 +1589,9 @@ void test_ResumeSink_tc_resolveNested2(
     test_Foo o = corto_resolve(root_o, "mount/x/a/k");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
     test_assertint(*test_destructCalled_o, 0);
@@ -1642,9 +1642,9 @@ void test_ResumeSink_tc_resolveNested2FromMount(
     test_Foo o = corto_resolve(mount, "x/a/k");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
     test_assertint(*test_destructCalled_o, 0);
@@ -1685,7 +1685,7 @@ void test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount/nested", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount/nested", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1756,9 +1756,9 @@ void test_ResumeSink_tc_resolveNested2FromObjectFromMount(
     test_Foo o = corto_resolve(a, "k");
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
-    test_assert(corto_ownerof(o) == sinkMount);
-    test_assert(corto_checkState(o, CORTO_VALID | CORTO_DECLARED));
-    test_assert(corto_checkAttr(o, CORTO_ATTR_PERSISTENT));
+    test_assert(corto_sourceof(o) == sinkMount);
+    test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
     test_assertint(*test_constructCalled_o, 3);
     test_assertint(*test_destructCalled_o, 0);
@@ -1801,7 +1801,7 @@ void test_ResumeSink_tc_resolveNested2FromVirtualMountPoint(
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount */
@@ -1892,7 +1892,7 @@ void test_ResumeSink_tc_resumeNestedFromMultiple(
     test_assert(mount2 != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
-    corto_object vmount = corto_createChild(root_o, "vmount", corto_void_o);
+    corto_object vmount = corto_create(root_o, "vmount", corto_void_o);
     test_assert(vmount != NULL);
 
     /* Lookup object from mount, test that only one mount has been invoked */
@@ -1935,7 +1935,7 @@ void test_ResumeSink_tc_cleanupResumedParentOfCreatedChild(
     test_assertstr(corto_fullpath(NULL, parent), "/x/a");
 
     /* Create object with parent */
-    corto_object child = corto_createChild(parent, "child", corto_void_o);
+    corto_object child = corto_create(parent, "child", corto_void_o);
     test_assert(child != NULL);
     test_assert(corto_release(parent) == 1);
 }

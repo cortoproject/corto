@@ -1,12 +1,11 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
 
-    corto_ptr_setstr(&corto_subscriber(this)->query.type, this->type);
+    corto_set_str(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
       this->type ? this->type : "int32";
 
@@ -134,12 +133,11 @@ int16_t test_SinkMount_construct(
         FALSE
     );
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     return corto_mount_construct(this);
 }
-
 
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
@@ -170,23 +168,23 @@ corto_resultIter test_SinkMount_onQuery(
                     e.flags
                 );
             }
+
         }
+
     }
 
     /* Create persistent iterator */
     corto_iter result = corto_ll_iterAlloc(data);
-
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
-
     /* Return persistent iterator to request */
     return result;
 }
 
 corto_object test_SinkMount_onResume(
     test_SinkMount this,
-    corto_string parent,
-    corto_string id,
+    const char *parent,
+    const char *id,
     corto_object object)
 {
     corto_iter iter = corto_ll_iter(this->items);
@@ -226,16 +224,17 @@ corto_object test_SinkMount_onResume(
                 if (object) {
                     result = object;
                 } else {
-                    result = corto_declareChild(p, e.id, t);
+                    result = corto_declare(p, e.id, t);
                     if (!result) {
                         corto_throw("cannot create object '%s': %s",
                             e.id, corto_lasterr());
                         goto error;
                     }
+
                 }
 
                 if (e.value) {
-                    corto_fromStr(&result, (corto_string)e.value);
+                    corto_deserialize_value(result, "text/corto", (corto_string)e.value);
                 }
 
                 if (!object) {
@@ -245,7 +244,9 @@ corto_object test_SinkMount_onResume(
                 corto_release(t);
                 corto_release(p);
             }
+
         }
+
     }
 
     return result;

@@ -6,8 +6,8 @@
 void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
 {
     test_SubscriberTest this = e->instance;
-    corto_ptr_setstr(&this->lastId, e->data.id);
-    corto_ptr_setstr(&this->lastParent,  e->data.parent);
+    corto_set_str(&this->lastId, e->data.id);
+    corto_set_str(&this->lastParent,  e->data.parent);
     this->lastMask |= e->event;
     corto_subscriberListAppend(this->triggered, corto_subscriber(e->subscriber));
 }

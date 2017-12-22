@@ -10,7 +10,7 @@ void test_SelectSink_setup(
     test_SinkMountCreateChild_auto(root_o, sinkMount, mount, NULL, NULL);
 
     /* Ensure all objects are created with persistency enabled */
-    corto_setAttr(CORTO_ATTR_PERSISTENT);
+    corto_set_attr(CORTO_ATTR_PERSISTENT);
 }
 
 void test_SelectSink_tc_selectLoaderCortoScope(
@@ -441,7 +441,7 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     /* Create loader simulator mount */
     LoaderSimulatorMount m = LoaderSimulatorMountCreate();
 
-    corto_object p = corto_declareChild(root_o, "p", corto_unknown_o);
+    corto_object p = corto_declare(root_o, "p", corto_unknown_o);
     test_assert(p != NULL);
 
     corto_object q = corto_lookup(NULL, "p/q");

@@ -15,7 +15,7 @@ int corto_routerimpl_countArgs(corto_object o, void *userData) {
 int16_t corto_routerimpl_construct(
     corto_routerimpl this)
 {
-    corto_scopeWalk(this, corto_routerimpl_countArgs, this);
+    corto_scope_walk(this, corto_routerimpl_countArgs, this);
     return safe_corto_class_construct(this);
 }
 

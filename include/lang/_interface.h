@@ -564,7 +564,7 @@ int16_t _corto_function_init(
 CORTO_EXPORT
 int16_t _corto_function_parseParamString(
     corto_function _this,
-    corto_string params);
+    const char *params);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -580,7 +580,7 @@ int16_t _corto_function_parseParamString(
  * insertion of type-safe casts */
 CORTO_EXPORT
 corto_parameterseq _corto_function_stringToParameterSeq(
-    corto_string name,
+    const char *name,
     corto_object scope);
 
 /* implicit type-safe macro (not available for project implementation) */
@@ -719,7 +719,7 @@ int16_t _corto_interface_init(
 CORTO_EXPORT
 corto_member _corto_interface_resolveMember_v(
     corto_interface _this,
-    corto_string name);
+    const char *name);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -735,14 +735,14 @@ corto_member _corto_interface_resolveMember_v(
 CORTO_EXPORT
 corto_member _corto_interface_resolveMember(
     corto_interface _this,
-    corto_string name);
+    const char *name);
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
 CORTO_EXPORT
 corto_method _corto_interface_resolveMethod(
     corto_interface _this,
-    corto_string name);
+    const char *name);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -776,7 +776,7 @@ corto_method _corto_interface_resolveMethodById(
 CORTO_EXPORT
 uint32_t _corto_interface_resolveMethodId(
     corto_interface _this,
-    corto_string name);
+    const char *name);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -1283,7 +1283,7 @@ int16_t _corto_struct_init(
 CORTO_EXPORT
 corto_member _corto_struct_resolveMember_v(
     corto_struct _this,
-    corto_string name);
+    const char *name);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO
@@ -1299,7 +1299,7 @@ corto_member _corto_struct_resolveMember_v(
 CORTO_EXPORT
 corto_member _corto_struct_resolveMember(
     corto_struct _this,
-    corto_string name);
+    const char *name);
 
 /* forward declaration of the function. the '_' in front of the name allows
  * insertion of type-safe casts */
@@ -1464,7 +1464,7 @@ int16_t _corto_type_init(
 CORTO_EXPORT
 corto_function _corto_type_resolveProcedure(
     corto_type _this,
-    corto_string name);
+    const char *name);
 
 /* implicit type-safe macro (not available for project implementation) */
 #ifndef BUILDING_CORTO

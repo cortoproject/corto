@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 /* Casting macro's */
-#define corto_native_type(o) ((corto_native_type)corto_assertType((corto_type)corto_native_type_o, o))
+#define corto_native_type(o) ((corto_native_type)corto_assert_type((corto_type)corto_native_type_o, o))
 
 /* Native types */
 #ifndef CORTO_NATIVE_H

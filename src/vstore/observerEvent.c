@@ -25,7 +25,7 @@ void corto_observerEvent_handle(
         if (f->kind == CORTO_PROCEDURE_CDECL) {
             ((void(*)(corto_observerEvent*))f->fptr)(this);
         } else {
-            corto_call(f, NULL, this);
+            corto_invoke(f, NULL, this);
         }
 
         if (lockRequired) {

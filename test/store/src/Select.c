@@ -2,8 +2,8 @@
 
 #include <include/test.h>
 corto_resultList test_Select_collect(
-    corto_string scope,
-    corto_string expr,
+    const char *scope,
+    const char *expr,
     uint64_t offset,
     uint64_t limit)
 {
@@ -34,9 +34,9 @@ error:
 
 bool test_Select_hasObject(
     corto_resultList items,
-    corto_string parent,
-    corto_string name,
-    corto_string type)
+    const char *parent,
+    const char *name,
+    const char *type)
 {
 
     corto_iter iter = corto_ll_iter(items);
@@ -1752,9 +1752,9 @@ void test_Select_tc_selectUnderscore(
 void test_Select_tc_selectFromPartialMatchedElement(
     test_Select this)
 {
-    corto_object a = corto_createChild(root_o, "data/hello/a", corto_void_o);
+    corto_object a = corto_create(root_o, "data/hello/a", corto_void_o);
     test_assert(a != NULL);
-    corto_object b = corto_createChild(root_o, "data/helloworld/b", corto_void_o);
+    corto_object b = corto_create(root_o, "data/helloworld/b", corto_void_o);
     test_assert(b != NULL);
 
     corto_iter it;
@@ -1776,3 +1776,4 @@ void test_Select_teardown(
     /* << Insert implementation >> */
 
 }
+

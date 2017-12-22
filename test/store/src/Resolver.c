@@ -39,12 +39,12 @@ int tc_resolveAllWalk(corto_object o, void *ctx) {
     test_assert(r == o);
     corto_release(r);
 
-    corto_objectseq scope = corto_scopeClaim(o);
+    corto_objectseq scope = corto_scope_claim(o);
     int i;
     for (i = 0; i < scope.length; i ++) {
         tc_resolveAllWalk(scope.buffer[i], NULL);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 
     return 1;
 }
@@ -52,12 +52,12 @@ int tc_resolveAllWalk(corto_object o, void *ctx) {
 void test_Resolver_tc_resolveAll(
     test_Resolver this)
 {
-    corto_objectseq scope = corto_scopeClaim(root_o);
+    corto_objectseq scope = corto_scope_claim(root_o);
     int i;
     for (i = 0; i < scope.length; i ++) {
         tc_resolveAllWalk(scope.buffer[i], NULL);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 }
 
 void test_Resolver_tc_resolveAnonymous(
@@ -219,9 +219,9 @@ void test_Resolver_tc_resolveNested2FromScope(
     test_Resolver this)
 {
 
-    corto_object parent = corto_createChild(corto_o, "parent", corto_void_o);
-    corto_object child = corto_createChild(parent, "child", corto_void_o);
-    corto_object grandchild = corto_createChild(child, "grandchild", corto_void_o);
+    corto_object parent = corto_create(corto_o, "parent", corto_void_o);
+    corto_object child = corto_create(parent, "child", corto_void_o);
+    corto_object grandchild = corto_create(child, "grandchild", corto_void_o);
 
     corto_object o = corto_resolve(corto_o, "parent/child/grandchild");
     test_assert(o != NULL);

@@ -8,7 +8,7 @@ void corto_subscriberEvent_deinit(
     corto_subscriberEvent* this)
 {
     if (this->contentTypeHandle && this->data.value) {
-        ((corto_contentType)this->contentTypeHandle)->release(this->data.value);
+        ((corto_fmt)this->contentTypeHandle)->release(this->data.value);
     }
 }
 
@@ -20,7 +20,7 @@ void corto_subscriberEvent_handle(
     if (f->kind == CORTO_PROCEDURE_CDECL) {
         ((void(*)(corto_event*))f->fptr)(e);
     } else {
-        corto_call(f, NULL, e);
+        corto_invoke(f, NULL, e);
     }
 }
 

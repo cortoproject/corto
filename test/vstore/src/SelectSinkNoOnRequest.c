@@ -13,7 +13,7 @@ void test_SelectSinkNoOnRequest_setup(
     test_EmptySinkMountCreateChild_auto(root_o, sinkMount, mount);
 
     /* Ensure all objects are created with persistency enabled */
-    corto_setAttr(CORTO_ATTR_PERSISTENT);
+    corto_set_attr(CORTO_ATTR_PERSISTENT);
 }
 
 void test_SelectSinkNoOnRequest_tc_selectScope(

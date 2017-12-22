@@ -47,7 +47,7 @@ int16_t test_LifecycleTest_init(
     test_LifecycleTest this)
 {
     test_assert(!this->admin);
-    this->admin = corto_create(test_LifecycleAdmin_o);
+    this->admin = corto_create(NULL, NULL, test_LifecycleAdmin_o);
     test_assert(corto_stateof(this) == CORTO_DECLARED);
     test_assertint(this->admin->hooksCalled, 0);    
     

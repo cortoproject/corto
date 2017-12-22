@@ -7,9 +7,9 @@ int16_t test_VirtualSinkMount_construct(
 {
     char *type = "int32";
 
-    corto_ptr_setstr(&corto_subscriber(this)->query.select, "//");
-    corto_ptr_setstr(&corto_subscriber(this)->query.from, this->from);
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_OWNER;
+    corto_set_str(&corto_subscriber(this)->query.select, "//");
+    corto_set_str(&corto_subscriber(this)->query.from, this->from);
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
 
     // First tier
     corto_resultAssign(

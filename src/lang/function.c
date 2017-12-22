@@ -2,8 +2,6 @@
 
 #include <corto/corto.h>
 #include "src/store/object.h"
-
-
 /* Not all types that inherit from from function are necessarily procedures. Find
  * the first procedure type in the inheritance hierarchy. */
 corto_procedure corto_function_getProcedureType(corto_function this) {
@@ -19,7 +17,6 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
 
 int16_t corto_delegate_validate(
     corto_function object);
-
 int16_t corto_function_construct(
     corto_function this)
 {
@@ -33,7 +30,6 @@ int16_t corto_function_construct(
     }
 
     /* Count the size based on the parameters and store parameters in slots */
-
     if (!this->size) {
         /* Add size of this-pointer */
         if (procedure->hasThis) {
@@ -42,6 +38,7 @@ int16_t corto_function_construct(
             } else {
                 this->size += sizeof(corto_object);
             }
+
         }
 
         corto_uint32 i;
@@ -64,23 +61,28 @@ int16_t corto_function_construct(
                         this->size += sizeof(corto_objectseq);
                         break;
                     }
+
                 default:
                     this->size += sizeof(void*);
                     break;
                 }
+
             }
+
         }
+
     }
 
     /* Validate delegate */
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED) && procedure->hasThis) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED) && procedure->hasThis) {
         if (corto_delegate_validate(this)) {
             goto error;
         }
+
     }
 
     /* Initialize binding-specific data */
-    if (corto_callInit(this)) {
+    if (corto_invoke_init(this)) {
         goto error;
     }
 
@@ -94,7 +96,7 @@ void corto_function_destruct(
 {
     corto_uint32 i;
 
-    corto_callDeinit(this);
+    corto_invoke_deinit(this);
 
     /* Deinitialize parameters */
     for(i=0; i<this->parameters.length; i++) {
@@ -109,19 +111,15 @@ void corto_function_destruct(
     this->parameters.length = 0;
 }
 
-
 typedef struct corto_functionLookup_t {
     corto_function f;
     corto_bool error;
     corto_id name;
 }corto_functionLookup_t;
-
 static int corto_functionLookupWalk(corto_object o, void* userData) {
     corto_functionLookup_t* data;
     corto_int32 d;
-
     data = userData;
-
     if (o != data->f) {
         char *id = corto_idof(data->f);
         if (corto_overload(o, id, &d)) {
@@ -138,10 +136,12 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
                 data->error = TRUE;
                 goto finish;
             }
+
         } else if (d > 0 || d == CORTO_OVERLOAD_NOMATCH_OVERLOAD) {
             corto_function(o)->overloaded = TRUE;
             data->f->overloaded = TRUE;
         }
+
     }
 
     return 1;
@@ -152,49 +152,52 @@ finish:
 int16_t corto_function_init(
     corto_function this)
 {
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         if (!corto_instanceof(corto_interface_o, corto_parentof(this)) &&
             !corto_instanceof(corto_method_o, this))
         {
             corto_functionLookup_t walkData = {.f = this, .error = FALSE};
             corto_uint32 i;
-
             corto_objectseq scope =
-                corto_scopeClaimWithFilter(
+                corto_scope_claimWithFilter(
                     corto_parentof(this),
                     NULL,
                     corto_idof(this)
                 );
-
-
-            corto_signatureName(corto_idof(this), walkData.name);
+            corto_sig_name(corto_idof(this), walkData.name);
             for (i = 0; i < scope.length; i++) {
                 if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
                     break;
                 }
+
             }
+
             if (walkData.error) {
                 goto error;
             }
 
-            corto_scopeRelease(scope);
+            corto_scope_release(scope);
         }
 
         /* Parse arguments from name */
         if (corto_function_parseParamString(this, corto_idof(this))) {
             goto error;
         }
+
     }
 
     /* Bind with interface if possible */
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         corto_procedure p = corto_function_getProcedureType(this);
         if (p->hasThis) {
             if (corto_delegate_bind(this)) {
                 goto error;
             }
+
         }
+
     }
+
     return 0;
 error:
     this->parameters.length = 0;
@@ -203,11 +206,11 @@ error:
 
 int16_t corto_function_parseParamString(
     corto_function this,
-    corto_string params)
+    const char *params)
 {
     corto_object scope;
 
-    if (corto_checkAttr(this, CORTO_ATTR_NAMED)) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         scope = corto_parentof(this);
     } else {
         scope = root_o;
@@ -221,25 +224,21 @@ int16_t corto_function_parseParamString(
 }
 
 corto_parameterseq corto_function_stringToParameterSeq(
-    corto_string name,
+    const char *name,
     corto_object scope)
 {
     corto_parameterseq result = {0, NULL};
-
     corto_char* ptr;
-
     ptr = strchr(name, '(');
     if (ptr) {
         ptr++;
-
         /* Check if function has arguments */
         if (*ptr != ')') {
             corto_int32 count = 0, i = 0;
             corto_id id;
             int flags = 0;
-
             /* Count number of parameters for function */
-            count = corto_signatureParamCount(name);
+            count = corto_sig_paramCount(name);
             if (count == -1) {
                 goto error;
             }
@@ -247,10 +246,9 @@ corto_parameterseq corto_function_stringToParameterSeq(
             /* Allocate size for parameters */
             result.length = count;
             result.buffer = corto_calloc(sizeof(corto_parameter) * count);
-
             /* Parse arguments */
             for(i = 0; i < count; i++) {
-                if (corto_signatureParamType(name, i, id, &flags)) {
+                if (corto_sig_paramType(name, i, id, &flags)) {
                     corto_throw(
                         "error occurred while parsing type of parameter '%d' for signature '%s'",
                         i,
@@ -260,7 +258,6 @@ corto_parameterseq corto_function_stringToParameterSeq(
 
                 /* Set reference */
                 result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
-
                 if ((flags & (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) ==
                              (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT))
                 {
@@ -288,7 +285,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 }
 
                 /* Parse name */
-                if (corto_signatureParamName(name, i, id)) {
+                if (corto_sig_paramName(name, i, id)) {
                     corto_throw(
                         "error occurred while parsing name of argument '%s' for signature '%s'",
                         name);
@@ -297,7 +294,9 @@ corto_parameterseq corto_function_stringToParameterSeq(
 
                 result.buffer[i].name = corto_strdup(id);
             }
+
         }
+
     }
 
     return result;
@@ -307,3 +306,4 @@ error:
     result.buffer = NULL;
     return result;
 }
+

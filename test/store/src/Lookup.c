@@ -17,12 +17,12 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
     test_assert(r == o);
     corto_release(r);
 
-    corto_objectseq scope = corto_scopeClaim(o);
+    corto_objectseq scope = corto_scope_claim(o);
     int i;
     for (i = 0; i < scope.length; i ++) {
         tc_lookupAllWalk(scope.buffer[i], NULL);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 
     return 1;
 }
@@ -30,12 +30,12 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
 void test_Lookup_tc_lookupAll(
     test_Lookup this)
 {
-    corto_objectseq scope = corto_scopeClaim(root_o);
+    corto_objectseq scope = corto_scope_claim(root_o);
     int i;
     for (i = 0; i < scope.length; i ++) {
         tc_lookupAllWalk(scope.buffer[i], NULL);
     }
-    corto_scopeRelease(scope);
+    corto_scope_release(scope);
 }
 
 void test_Lookup_tc_lookupCaseInsensitive(
@@ -82,7 +82,7 @@ void test_Lookup_tc_lookupIdEndsWithDot(
     test_Lookup this)
 {
 
-    corto_object o = corto_createChild(root_o, "dot.", corto_void_o);
+    corto_object o = corto_create(root_o, "dot.", corto_void_o);
     test_assert(o != NULL);
 
     corto_object l = corto_lookup(root_o, "dot.");
@@ -128,7 +128,7 @@ void test_Lookup_tc_lookupIdStartsWithDot(
     test_Lookup this)
 {
 
-    corto_object o = corto_createChild(root_o, ".dot", corto_void_o);
+    corto_object o = corto_create(root_o, ".dot", corto_void_o);
     test_assert(o != NULL);
 
     corto_object l = corto_lookup(root_o, ".dot");
@@ -164,9 +164,9 @@ void test_Lookup_tc_lookupNested2FromScope(
     test_Lookup this)
 {
 
-    corto_object parent = corto_createChild(corto_o, "parent", corto_void_o);
-    corto_object child = corto_createChild(parent, "child", corto_void_o);
-    corto_object grandchild = corto_createChild(child, "grandchild", corto_void_o);
+    corto_object parent = corto_create(corto_o, "parent", corto_void_o);
+    corto_object child = corto_create(parent, "child", corto_void_o);
+    corto_object grandchild = corto_create(child, "grandchild", corto_void_o);
 
     corto_object o = corto_lookup(corto_o, "parent/child/grandchild");
     test_assert(o != NULL);

@@ -53,17 +53,20 @@ int16_t corto_struct_construct(
 
     /* Don't allow empty structs */
     if (!corto_interface(this)->nextMemberId && !corto_interface(this)->base) {
-        corto_member m =
-        corto(this, "__dummy", corto_member_o, NULL, NULL, NULL, CORTO_ATTR_NAMED,
-            CORTO_DO_DECLARE | CORTO_DO_FORCE_TYPE);
+        corto_member m = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {
+            .parent = this,
+            .id = "__dummy",
+            .type = corto_member_o,
+            .attrs = CORTO_ATTR_NAMED
+        });
 
         if (!m) {
             corto_critical("failed to declare dummy member");
         }
 
-        corto_ptr_setref(&m->type, corto_int8_o);
+        corto_set_ref(&m->type, corto_int8_o);
         m->modifiers = CORTO_PRIVATE|CORTO_LOCAL;
-        corto_define(m);
+        corto(CORTO_DEFINE, {.object = m});
     }
 
     /* Insert members */
@@ -93,10 +96,9 @@ int16_t corto_struct_construct(
                     corto_fullpath(NULL, this));
                 goto error;
             }
+
         } while ((base = (corto_struct)((corto_interface)base)->base));
-
         base = (corto_struct)corto_interface(this)->base;
-
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
             corto_throw("struct '%s' inherits from non-struct type '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, base));
@@ -107,7 +109,9 @@ int16_t corto_struct_construct(
             if (alignment < corto_type(base)->alignment) {
                 alignment = corto_type(base)->alignment;
             }
+
         }
+
     }
 
     /* Set alignment of self */
@@ -209,7 +213,7 @@ int16_t corto_struct_init(
     corto_struct this)
 {
     /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
-    if (corto_checkState(corto_type_o, CORTO_VALID)) {
+    if (corto_check_state(corto_type_o, CORTO_VALID)) {
         this->baseAccess = CORTO_GLOBAL;
     }
 
@@ -226,7 +230,7 @@ error:
 
 corto_member corto_struct_resolveMember_v(
     corto_struct this,
-    corto_string name)
+    const char *name)
 {
     corto_interface base;
     corto_member m;

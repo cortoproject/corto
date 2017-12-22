@@ -1,14 +1,13 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
 static corto_routerimpl corto_router_findRouterImpl(corto_route this) {
     corto_interface base = corto_interface(this);
     do {
         if (corto_instanceof(corto_routerimpl_o, base)) {
             break;
         }
+
     } while ((base = base->base));
     return corto_routerimpl(base);
 }
@@ -17,14 +16,16 @@ int16_t corto_router_construct(
     corto_router this)
 {
     if (!corto_interface(this)->base) {
-        corto_ptr_setref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
+        corto_set_ref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
-        if (!corto_instanceofType(corto_routerimpl_o, corto_interface(this)->base)) {
+        if (!corto_type_instanceof(corto_routerimpl_o, corto_interface(this)->base)) {
             corto_throw("router must inherit from 'routerimpl'");
             goto error;
         }
+
     }
-    corto_ptr_setref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
+
+    corto_set_ref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
     return safe_corto_class_construct(this);
 error:
     return -1;
@@ -33,13 +34,13 @@ error:
 int16_t corto_router_init(
     corto_router this)
 {
-    corto_ptr_setstr(&this->elementSeparator, "/");
+    corto_set_str(&this->elementSeparator, "/");
     return safe_corto_class_init(this);
 }
 
 int16_t corto_router_match(
     corto_object instance,
-    corto_string request,
+    const char *request,
     corto_any param,
     corto_any result,
     corto_route *matched)
@@ -49,11 +50,10 @@ int16_t corto_router_match(
     corto_router routerBase = corto_router(corto_typeof(router));
     corto_route match = NULL;
     corto_id requestBuffer;
-    char *requestElements[CORTO_MAX_SCOPE_DEPTH];
+    const char *requestElements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 elementCount;
     corto_any routerData = {.owner = TRUE};
     corto_int32 i;
-
     if (matched) {
         *matched = NULL;
     }
@@ -65,21 +65,20 @@ int16_t corto_router_match(
             corto_throw("invalid request '%s'", request);
             goto error;
         }
+
     } else {
         requestElements[0] = request;
         elementCount = 1;
     }
 
-    
-    corto_stringseq pattern = {elementCount, requestElements};
+    corto_stringseq pattern = {elementCount, (char**)requestElements};
     if (!(match = corto_routerimpl_findRoute(router, instance, pattern, param, &routerData))) {
         corto_throw("router: resource '%s' unknown", request);
         goto error;
     }
 
-
     corto_type returnType = corto_function(match)->returnType;
-    if (returnType && 
+    if (returnType &&
         ((returnType->kind != CORTO_VOID) ||
          returnType->reference) &&
         !result.value)
@@ -94,7 +93,6 @@ int16_t corto_router_match(
     corto_int32 arg = 1;
     void **args = alloca((1 + router->maxArgs) * sizeof(void*));
     args[0] = &instance;
-
     /* Add data passed from application */
     if (routerBase->paramType) {
         args[arg] = &param.value;
@@ -115,14 +113,15 @@ int16_t corto_router_match(
                 args[arg] = &requestElements[i];
                 arg++;
             }
+
         }
+
     }
 
     /* Call route */
-    corto_callb(corto_function(match), result.value, args);
-
+    corto_invokeb(corto_function(match), result.value, args);
     if (router->matched) {
-        corto_callb(corto_function(router->matched), result.value, args);
+        corto_invokeb(corto_function(router->matched), result.value, args);
     }
 
     if (matched) {
@@ -137,4 +136,3 @@ int16_t corto_router_match(
 error:
     return -1;
 }
-

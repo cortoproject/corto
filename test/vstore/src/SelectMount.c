@@ -6,12 +6,12 @@ void test_SelectMount_setup(
 {
 
     /* Create dummy object */
-    corto_attr old = corto_setAttr(CORTO_ATTR_OBSERVABLE);
+    corto_attr old = corto_set_attr(CORTO_ATTR_OBSERVABLE);
     corto_object a_o = corto_voidCreateChild(root_o, "a");
-    corto_setAttr(old);
+    corto_set_attr(old);
 
     /* Create mount */
-    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_REMOTE_OWNER);
+    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_REMOTE_SOURCE);
 
     corto_enableload(FALSE);
 
@@ -131,7 +131,7 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
     corto_iter it;
     corto_int32 i = 0;
 
-    corto_object mount = corto_createChild(root_o, "mount", corto_void_o);
+    corto_object mount = corto_create(root_o, "mount", corto_void_o);
 
     test_MountIterCount mountA = test_MountIterCountCreate(mount);
     test_assert(mountA != NULL);
@@ -1128,13 +1128,13 @@ void test_SelectMount_tc_selectTree(
 void test_SelectMount_tc_selectTreeEmptyNestedScope(
     test_SelectMount this)
 {
-    corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
+    corto_object b_o = corto_create(root_o, "b", corto_void_o);
     test_assert(b_o != NULL);
 
-    corto_object mount_o = corto_createChild(b_o, "mount", corto_void_o);
+    corto_object mount_o = corto_create(b_o, "mount", corto_void_o);
     test_assert(mount_o != NULL);
 
-    corto_object child_o = corto_createChild(b_o, "mount2", corto_void_o);
+    corto_object child_o = corto_create(b_o, "mount2", corto_void_o);
     test_assert(child_o != NULL);
 
     /* Empty mount that sets userdata of iterator - this touches a sensitive
@@ -1168,10 +1168,10 @@ void test_SelectMount_tc_selectTreeEmptyNestedScope(
 void test_SelectMount_tc_selectTreeEmptyScope(
     test_SelectMount this)
 {
-    corto_object b_o = corto_createChild(root_o, "b", corto_void_o);
+    corto_object b_o = corto_create(root_o, "b", corto_void_o);
     test_assert(b_o != NULL);
 
-    corto_object mount_o = corto_createChild(b_o, "mount", corto_void_o);
+    corto_object mount_o = corto_create(b_o, "mount", corto_void_o);
     test_assert(mount_o != NULL);
 
     /* Empty mount that sets userdata of iterator - this touches a sensitive
@@ -1488,7 +1488,7 @@ void test_SelectMount_teardown(
 void test_SelectMount_tc_selectFromMountWithPartialFrom(
     test_SelectMount this)
 {
-    corto_object p = corto_createChild(root_o, "parent", corto_void_o);
+    corto_object p = corto_create(root_o, "parent", corto_void_o);
     test_assert(p != NULL);
 
     test_VirtualSinkMount m = test_VirtualSinkMountCreate("parent");

@@ -252,88 +252,6 @@ error:
     return -1;
 }
 
-corto_function corto_valueFunction(corto_value* val) {
-    corto_function result;
-
-    switch(val->kind) {
-    case CORTO_OBJECT:
-        if (corto_class_instanceof(corto_procedure_o, corto_typeof(val->is.object.o))) {
-            result = val->is.object.o;
-        } else {
-            corto_throw("object '%s' in value is not a function",
-                corto_fullpath(NULL, val->is.object.o));
-            result = NULL;
-        }
-        break;
-    default:
-       corto_throw("value does not represent a function");
-       result = NULL;
-       break;
-    }
-
-    return result;
-}
-
-#ifndef NDEBUG
-static char* corto_valueKindString[CORTO_CONSTANT+1] = {"object", "base", "member", "constant", "element"};
-#endif
-
-char* corto_value_exprStr(corto_value* v, char* buffer, unsigned int length) {
-    corto_member m;
-    corto_value* parents[CORTO_MAX_INHERITANCE_DEPTH];
-    corto_int32 parentCount, i;
-    corto_value* vptr;
-
-    *buffer = '\0';
-
-    /* Collect parents */
-    parentCount = 0;
-    vptr = v;
-    do{
-        if (vptr->kind != CORTO_OBJECT) {
-            parents[parentCount] = vptr;
-            parentCount++;
-        }
-    }while((vptr = vptr->parent));
-
-    /* Put name of member or branch in buffer */
-    for(i=parentCount-1; i>=0; i--) {
-        vptr = parents[i];
-        m = NULL;
-        switch(vptr->kind) {
-        case CORTO_LITERAL:
-        case CORTO_VALUE:
-        case CORTO_MEM:
-            break;
-        case CORTO_BASE:
-            break;
-        case CORTO_MEMBER:
-            m = vptr->is.member.t;
-            break;
-        case CORTO_ELEMENT:
-            sprintf(buffer, "%s[%d]", buffer, vptr->is.element.t.index);
-            m = NULL;
-            break;
-        default:
-            corto_trace("corto_value_exprStr: unhandled '%s'", corto_valueKindString[vptr->kind]);
-            m = NULL;
-            goto error;
-        }
-        if (m) {
-            if ((strlen(buffer) + strlen(corto_idof(m)) + 1) >= length) {
-                corto_error("buffer passed to corto_strving is too short for member name");
-            } else {
-                strcat(buffer, ".");
-                strcat(buffer, corto_idof(m));
-            }
-        }
-    }
-
-    return buffer;
-error:
-    return NULL;
-}
-
 corto_value _corto_value_object(corto_object o, corto_type t) {
     corto_value val;
     val.kind = CORTO_OBJECT;
@@ -498,7 +416,12 @@ void corto_valueSetValue(corto_value* val, corto_void* v) {
     }
 }
 
-static corto_type corto_valueExpr_getType(corto_type src, corto_type target, corto_bool targetIsRef) {
+static
+corto_type corto_valueExpr_getType(
+    corto_type src,
+    corto_type target,
+    corto_bool targetIsRef)
+{
     corto_type result = src;
 
     if (!src) {
@@ -530,7 +453,10 @@ error:
 }
 
 /* Rate types based on expressibility */
-static corto_int8 corto_valueExpr_getTypeScore(corto_primitive t) {
+static
+corto_int8 corto_valueExpr_getTypeScore(
+    corto_primitive t)
+{
     corto_int8 result = 0;
     switch(t->kind) {
     case CORTO_ENUM:
@@ -557,7 +483,10 @@ static corto_int8 corto_valueExpr_getTypeScore(corto_primitive t) {
 }
 
 /* Categorize types on castability - if equal no cast is required when width is equal */
-static corto_int8 corto_valueExpr_getCastScore(corto_primitive t) {
+static
+corto_int8 corto_valueExpr_getCastScore(
+    corto_primitive t)
+{
     corto_int8 result = 0;
     switch(t->kind) {
         case CORTO_ENUM:
@@ -582,7 +511,8 @@ static corto_int8 corto_valueExpr_getCastScore(corto_primitive t) {
 }
 
 
-static corto_bool corto_valueExpr_isOperatorAssignment(
+static
+corto_bool corto_valueExpr_isOperatorAssignment(
     corto_operatorKind _operator)
 {
     corto_bool result;
@@ -604,7 +534,8 @@ static corto_bool corto_valueExpr_isOperatorAssignment(
     return result;
 }
 
-static corto_bool corto_valueExpr_isOperatorConditional(
+static
+corto_bool corto_valueExpr_isOperatorConditional(
     corto_operatorKind _operator)
 {
     corto_bool result;
@@ -626,131 +557,6 @@ static corto_bool corto_valueExpr_isOperatorConditional(
     }
     return result;
 }
-
-/* Obtain inttype from value */
-/* static corto_type corto_getIntTypeFromValue(corto_int64 v, corto_primitive t) {
-    corto_type result = NULL;
-
-    if (v < 0) {
-        if(t->kind == CORTO_UINTEGER) {
-            if (((corto_uint64)v) <= 4294967295) {
-                result = corto_type(corto_uint32_o);
-            } else {
-                result = corto_type(corto_uint64_o);
-            }
-        } else if (v >= -128) {
-            result = corto_type(corto_int8_o);
-        } else if (v >= -32768) {
-            result = corto_type(corto_int16_o);
-        } else if (v >= -2147483648) {
-            result = corto_type(corto_int32_o);
-        } else {
-            result = corto_type(corto_int64_o);
-        }
-    } else {
-        if (v <= 255) {
-            result = corto_type(corto_uint8_o);
-        } else if (v <= 65535) {
-            result = corto_type(corto_uint16_o);
-        } else {
-            result = corto_type(corto_uint32_o);
-        }
-    }
-
-    return result;
-}
-*/
-
-/*corto_type corto_narrowType(ast_Expression expr) {
-    corto_int64 v;
-    corto_type t = ast_Expression_getType(expr);
-    if (ast_Node(expr)->kind == Ast_LiteralExpr) {
-        if (t && (t->kind == CORTO_PRIMITIVE)) {
-            switch(corto_primitive(t)->kind) {
-            case CORTO_INTEGER:
-            case CORTO_UINTEGER:
-                ast_Expression_serialize(expr, corto_type(corto_int64_o), (corto_word)&v);
-                t = ast_Expression_getIntTypeFromValue(v, corto_primitive(t));
-                break;
-            default:
-                break;
-            }
-        }
-    }
-
-    return t;
-}*/
-
-/* Check if expression is integer literal that is eligible to changing type, if this is the case do the cast */
-/*corto_type corto_narrow(corto_value value, corto_type target) {
-
-    if (ast_Node(expr)->kind == Ast_LiteralExpr) {
-        if (!target) {
-            target = ast_Expression_narrowType(expr);
-        }
-        corto_type t = ast_Expression_getType_type(expr, target);
-        if (target && (t != target) &&
-           (target->kind == CORTO_PRIMITIVE) &&
-           (corto_primitive(target)->kind == corto_primitive(t)->kind)) {
-            corto_width width = corto_primitive(target)->width;
-
-            if (t->kind == CORTO_PRIMITIVE) {
-                switch(corto_primitive(t)->kind) {
-                case CORTO_INTEGER: {
-                    corto_int64 v = *(corto_int64*)ast_Expression_getValue(expr);
-                    switch(width) {
-                    case CORTO_WIDTH_8:
-                        if ((v <= 127) && (v >= -128)) {
-                            corto_ptr_setref(&expr->type, target);
-                        }
-                        break;
-                    case CORTO_WIDTH_16:
-                        if ((v <= 32767) && (v >= -32768)) {
-                            corto_ptr_setref(&expr->type, target);
-                        }
-                        break;
-                    case CORTO_WIDTH_32:
-                        if ((v <= 2147483647) && (v >= -2147483648)) {
-                            corto_ptr_setref(&expr->type, target);
-                        }
-                        break;
-                    default:
-                        break;
-                    }
-                    break;
-                }
-                case CORTO_UINTEGER: {
-                    corto_uint64 v = *(corto_uint64*)ast_Expression_getValue(expr);
-                    switch(width) {
-                    case CORTO_WIDTH_8:
-                        if (v <= 255) {
-                            corto_ptr_setref(&expr->type, target);
-                        }
-                        break;
-                    case CORTO_WIDTH_16:
-                        if (v <= 65535) {
-                            corto_ptr_setref(&expr->type, target);
-                        }
-                        break;
-                    case CORTO_WIDTH_32:
-                        if (v <= 4294967295) {
-                            corto_ptr_setref(&expr->type, target);
-                        }
-                        break;
-                    default:
-                        break;
-                    }
-                    break;
-                }
-                default:
-                    break;
-                }
-            }
-        }
-    }
-
-    return expr;
-}*/
 
 corto_int16 corto_valueExpr_getTypeForBinary(
     corto_type leftType,
@@ -786,7 +592,7 @@ corto_int16 corto_valueExpr_getTypeForBinary(
     }
 
     /* If objects are not scoped, verify whether they're equal */
-    if (!corto_checkAttr(leftType, CORTO_ATTR_NAMED) && !corto_checkAttr(rightType, CORTO_ATTR_NAMED)) {
+    if (!corto_check_attr(leftType, CORTO_ATTR_NAMED) && !corto_check_attr(rightType, CORTO_ATTR_NAMED)) {
         if (corto_compare(leftType, rightType) == CORTO_EQ) {
             equal = TRUE;
         }
@@ -1030,91 +836,6 @@ void corto_value_free(corto_value *v) {
     *v = corto_value_empty();
 }
 
-corto_int16 corto_value_fromcontent(corto_value *v, corto_string contentType, corto_string content) {
-    corto_contentType ct = corto_load_contentType(contentType);
-    if (!ct) {
-        corto_throw("unknown contentType '%s'", contentType);
-        goto error;
-    }
-
-    if (ct->toValue(v, (corto_word)content)) {
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
-corto_string corto_value_contentof(corto_value *v, corto_string contentType) {
-    corto_contentType ct = corto_load_contentType(contentType);
-    corto_string result;
-
-    if (!ct) {
-        corto_throw("unknown contentType '%s'", contentType);
-        goto error;
-    }
-
-    if (!(result = (corto_string)ct->fromValue(v))) {
-        goto error;
-    }
-
-    return result;
-error:
-    return NULL;
-}
-
-corto_string corto_value_str(corto_value* v, corto_uint32 maxLength) {
-    corto_string_ser_t serData;
-    corto_walk_opt s;
-
-    serData.buffer = CORTO_BUFFER_INIT;
-    serData.buffer.max = maxLength;
-    serData.compactNotation = TRUE;
-    serData.prefixType = FALSE;
-    serData.enableColors = FALSE;
-
-    s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
-    corto_walk_value(&s, v, &serData);
-    corto_string result = corto_buffer_str(&serData.buffer);
-    corto_walk_deinit(&s, &serData);
-    return result;
-}
-
-corto_int16 corto_value_fromStr(corto_value *v, corto_string string) {
-    corto_string_deser_t serData = {
-        .out = corto_value_ptrof(v),
-        .type = corto_value_typeof(v),
-        .isObject = v->kind == CORTO_OBJECT
-    };
-
-    if (!corto_string_deser(string, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
-    }
-
-    if (serData.out) {
-        corto_value_ptrset(v, serData.out);
-    } else {
-        goto error;
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
-corto_equalityKind corto_value_compare(corto_value *value1, corto_value *value2) {
-    corto_compare_ser_t data;
-    corto_walk_opt s;
-
-    data.value = *value2;
-    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
-
-    corto_walk_value(&s, value1, &data);
-
-    return data.result;
-}
-
 corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
     corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
@@ -1123,7 +844,7 @@ corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
 
     if (!corto_value_ptrof(dst)) {
         corto_type t = corto_value_typeof(src);
-        *dst = corto_value_value(corto_declare(t), t);
+        *dst = corto_value_value(corto_declare(NULL, NULL, t), t);
         newObject = TRUE;
     }
 
@@ -1135,30 +856,4 @@ corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
     }
 
     return result;
-}
-
-corto_int16 corto_value_init(corto_value *v) {
-    corto_type type = corto_value_typeof(v);
-    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        if (corto_walk_value(&s, v, NULL)) {
-            return -1;
-        }
-    }
-    if (type->flags & CORTO_TYPE_HAS_INIT) {
-        return corto_callInitDelegate(&type->init, type, corto_value_ptrof(v), false);
-    } else {
-        return 0;
-    }
-}
-
-corto_int16 corto_value_deinit(corto_value *v) {
-    corto_type type = corto_value_typeof(v);
-    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        freeops_ptr_free(type, corto_value_ptrof(v));
-    }
-    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
-        corto_callDestructDelegate(&type->deinit, type, corto_value_ptrof(v));
-    }
-    return 0;
 }

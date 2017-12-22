@@ -7,7 +7,7 @@ void tc_callback_callback(corto_log_verbosity level, char *category[], char *msg
 {
     test_Err this = ctx;
     this->level = level;
-    corto_ptr_setstr(&this->msg, msg);
+    corto_set_str(&this->msg, msg);
 
     if (category) {
         corto_buffer buff = CORTO_BUFFER_INIT;

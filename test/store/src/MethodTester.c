@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_MethodTester_onearg(
     test_MethodTester this,
     int32_t a)
@@ -33,7 +32,7 @@ void test_MethodTester_overload_int32_int32(
 
 void test_MethodTester_overload_string(
     test_MethodTester this,
-    corto_string a)
+    const char *a)
 {
     /* Insert implementation */
 }

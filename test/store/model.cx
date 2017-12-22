@@ -519,6 +519,8 @@ test/Suite ObjectMgmt:/
     void tc_redeclareUnknown()
     void tc_redeclareNestedUnknown()
     void tc_redeclareOutOfOrder()
+    void tc_redeclareUnknownDontForceType()
+    void tc_redeclareRecursiveUnknownDontForceType()
     void tc_recreateUnknown()
     void tc_recreateNestedUnknown()
     void tc_recreatedOutOfOrder()
