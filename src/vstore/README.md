@@ -272,7 +272,7 @@ Now, add this line to the main function in `MyMount/src/MyMount.c`:
 ```c
 corto_use("config.json", 0, NULL);
 ```
-And change the implementation of `onNotify` to this (using our fictual writeData function):
+And change the implementation of `onNotify` to this (using our fictional writeData function):
 ```c
     writeData(
         e->data.id,
