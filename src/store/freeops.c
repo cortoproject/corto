@@ -27,7 +27,7 @@ typedef enum freeops_kind {
 } freeops_kind;
 
 /* Single operation */
-typedef struct freeops_op {
+struct freeops_op {
     freeops_kind kind;
     uint16_t offset;
     uint32_t count;
@@ -35,7 +35,7 @@ typedef struct freeops_op {
 #ifdef DEBUG_FREEOPS
     corto_member member;
 #endif
-} freeops_op;
+};
 
 /* freeops program (Free Operations) */
 struct freeops {
