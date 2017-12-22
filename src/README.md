@@ -1,6 +1,6 @@
-# The Object Store
+# Core packages
 The folders in this part of the repository represent the different builtin core
-packages.
+packages:
 
 | file | description |
 |------|-------------|
