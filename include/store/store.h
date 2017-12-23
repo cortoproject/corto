@@ -40,7 +40,8 @@
   * All objects are strongly typed, meaning their types can't change after they
   * are created, although dynamic programming is supported by the `any` type.
   * Type information is stored in the in-memory store alongside regular objects.
-  * This enables using the regular store APIs to create and query for metadata.
+  * This enables using the regular store APIs to create and query the store for
+  * metadata.
   *
   * The in-memory store provides refcounting-based memory management. To
   * maintain its realtime characteristics, the store will not attempt to detect

@@ -4,7 +4,7 @@
 
 #include <corto/entityadmin.h>
 #include "src/store/object.h"
-#include "../base/src/idmatch.h"
+#include "../platform/src/idmatch.h"
 
 extern corto_tls CORTO_KEY_SUBSCRIBER_ADMIN;
 extern corto_tls CORTO_KEY_FLUENT;

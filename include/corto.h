@@ -30,8 +30,7 @@
 /* $header() */
 
 /* Generic functionality (os abstraction, lockless admin) */
-#include <corto/base.h>
-#include <corto/entityadmin.h>
+#include <corto/platform.h>
 
 /* Types must be included first because builtin packages cross reference */
 #include <corto/vstore/_type.h>

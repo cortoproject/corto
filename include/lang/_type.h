@@ -7,7 +7,8 @@
 #ifndef CORTO_LANG__TYPE_H
 #define CORTO_LANG__TYPE_H
 
-#include <corto/base.h>
+#include <corto/platform.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -736,4 +737,3 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
-

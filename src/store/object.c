@@ -21,7 +21,7 @@
 
 #include <corto/corto.h>
 
-#include "../base/src/idmatch.h"
+#include "../platform/src/idmatch.h"
 #include "src/lang/class.h"
 #include "src/store/object.h"
 #include "object.h"

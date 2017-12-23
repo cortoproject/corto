@@ -9,10 +9,10 @@
         "use_generated_api": false,
         "lib": ["rt", "dl", "m", "ffi", "pthread"],
         "sources": [
-            "src", "../base/src"
+            "src", "../platform/src"
         ],
         "includes": [
-            "include", "../base/include/corto"
+            "include", "../platform/include/corto"
         ],
         "doxygen": [{
             "title": "Corto API Reference",

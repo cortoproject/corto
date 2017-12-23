@@ -1328,14 +1328,6 @@ int corto_stop(void)
     corto_debug("cleanup objects");
     corto_drop(root_o, FALSE);
 
-    /* This function calls all destructors for registered TLS keys for the main
-     * thread */
-    corto_debug("cleanup TLS data");
-    corto_tls_free();
-
-    /* Call exithandlers */
-    corto_exit();
-
     corto_int32 i;
     corto_object o;
 
@@ -1360,6 +1352,12 @@ int corto_stop(void)
     corto_rwmutex_free(&corto_subscriberLock);
 
     corto_log_pop();
+
+    base_deinit();
+
+    /* Call exithandlers. Do after base_init as this will unload any loaded
+     * libraries, which may have routines to cleanup TLS data. */
+    corto_exit();
 
     CORTO_APP_STATUS = 3; /* Shut down */
 
