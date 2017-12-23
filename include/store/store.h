@@ -20,43 +20,93 @@
  */
 
  /** @file
-  * @section store in-memory store API
-  * @brief API for the in-memory object store.
+  * @section store In-memory Store
+  * @brief API for accessing and populating the in-memory store.
   *
-  * Corto objects are application-level entities that populate the corto object
-  * store. Application logic is expressed through creating, updating and deleting
-  * corto objects. Objects are always allocated on the heap.
+  * The in-memory store is a thread-safe, high-performance hierarchical object store that is
+  * designed to store the current state of an application. The store implements
+  * familiar OOP concepts like inheritance and polymorphism, alongside with
+  * support for collections, composite and primitive types to provide a
+  * convenient environment for expressing application logic.
   *
-  * Every corto object is annotated with a type, which allows for runtime
-  * reflection. Typical usecases for reflection are marshalling/demarshalling
-  * objects to other formats, or dynamically inspecting the value of an object
-  * without having to know its type upfront.
+  * Once objects are in the store, they can be discovered and introspected. This
+  * enables connecting generic components to the store, like for example a REST
+  * API, that automatically provides access to the contents of the store.
   *
-  * Objects can be either anonymous or named. Named objects are identified by a
-  * string identifier and can be discovered dynamically in the corto object store.
-  * Anonymous objects have no name, and cannot be automatically discovered, but are
-  * otherwise the same as named objects. The `corto_declare` and `corto_create`
-  * functions create anonymous objects.
+  * The object store provides a simple but powerful security framework for
+  * restricting access to objects. The security framework is deeply embedded
+  * into the core, thus decreasing the performance penalty to a minimum.
   *
-  * In addition to a name, named objects also have a parent. Objects in corto are
-  * stored in a hierarchy, and any named object can act as a parent for another
-  * object. Once created, an object cannot be moved to another parent. The
-  * `corto_declareChild` and `corto_createChild` functions create named objects.
+  * All objects are strongly typed, meaning their types can't change after they
+  * are created, although dynamic programming is supported by the `any` type.
+  * Type information is stored in the in-memory store alongside regular objects.
+  * This enables using the regular store APIs to create and query for metadata.
   *
-  * Objects are reference counted. When there are no more references to an object
-  * it is deleted from RAM. The `corto_claim` function increases refcount, and
-  * the `corto_release` function decreases refcount. This does not mean the object
-  * does not exist anymore as it can still 'live' in another medium, like a
-  * database. Objects that are no longer in the store but are still alive are
-  * called "suspended objects".
+  * The in-memory store provides refcounting-based memory management. To
+  * maintain its realtime characteristics, the store will not attempt to detect
+  * reference-cycles in realtime. It is up to the application to ensure that
+  * non-persistent objects do not contain cycles.
   *
-  * Suspended objects can be resumed by doing a lookup for the object id, which
-  * will re-insert the object in RAM if it is still available. The `corto_lookup`
-  * and `corto_resolve` functions can resume objects.
+  * Objects can be updated and observed. Every lifecycle event triggers a
+  * notification that can be catched by an observer (or subscriber, see vstore).
+  * Creating, updating and deleting objects all trigger notifications.
+  * Applications can subscribe for a single object, an object scope (branch)
+  * or a (sub)tree of objects.
   *
-  * Whenever an object is created, updated or deleted events are emitted. These
-  * events can be catched with observers and subscribers. See corto_observe and
-  * corto_subscribe for more details.
+  * The in-memory store interacts with the virtual store when lifecycle events
+  * take place. When the value of an object updates, it will be synchronized
+  * with the virtual store. When an object is created or deleted, it will also
+  * be created or deleted in the virtual store.
+  *
+  * Corto makes an important distinction between deleting an object and no
+  * longer having references to an object. When the last reference to an object
+  * is removed, an object may be removed from the in-memory store to conserve
+  * RAM, but it will still be in the virtual store. A consecutive lookup of the
+  * object will reinsert it into the in-memory store.
+  *
+  * Objects in the store are first declared, then defined. Between declaring and
+  * defining an application has the opportunity to set the initial object value.
+  * This ensures that when observers receive a DEFINE notification, the object
+  * will be set to a valid value. This also allows an application to forward-
+  * declare objects, which enables declaratively creating object cycles.
+  *
+  * When defining an object, the virtual store is queried for the last value of
+  * the object. This is also referred to as "resuming" an object. The initial
+  * value assigned by the application inbetween declaring and defining the
+  * object may be overwritten when the vstore has a previous state of the
+  * object. This enables transparent persisting & retrieving of objects.
+  *
+  * Applications may use the `corto_create` function to create an object with
+  * default values. The `corto_create` function is essentially a convenience
+  * wrapper around `corto_declare` and `corto_define`. When an object is defined
+  * it acquires the `VALID` object state, indicating that the value of the object
+  * may be interpreted for application logic.
+  *
+  * Multiple threads may attempt to set the initial value of an object. When
+  * the same object is declared by multiple threads, `corto_declare` ensures
+  * that only one thread will see the object in a not-`VALID` state. While the
+  * object is undefined, `corto_declare` will block for the other threads, until
+  * the thread that received the non-`VALID` object defines the object.
+  *
+  * When changing the value of an object, an application must use
+  * `corto_update_begin` and `corto_update_end`, which write-locks an object.
+  * When calling `corto_update_end` an `UPDATE` notification is sent to all
+  * observers of the object.
+  *
+  * The store provides lifecycle hooks for objects, which are callbacks defined
+  * on the type of an object that provide more control to an object over its
+  * lifecycle. An example of a hook is the `construct` callback, which is invoked
+  * when an object is defined. Another hook is the `validate` hook, which allows
+  * the object to verify if a new object value is valid.
+  *
+  * Applications can define functions and methods in the store, which can be
+  * implemented in multiple languages. The store provides an APO (invoke.h) for
+  * registering language bindings, which allows to insert custom logic when a
+  * function object is invoked. This enables components written in multiple
+  * languages to interact with each other in a single process, which can for
+  * example be utilized to import Lua or Python scripts, whilst abstracting from
+  * the language they are written in. By default store functions are implemented
+  * in C. The store uses libffi for dynamically invoking C functions.
   */
 
 #ifndef CORTO_STORE_H
@@ -84,7 +134,7 @@ typedef struct corto_fmt_s *corto_fmt;
 
 
 /** Create a new named object.
- * Equivalent to calling corto_declareChild + corto_define.
+ * Equivalent to calling corto_declare + corto_define.
  *
  * @param parent The parent for the new object.
  * @param id The object id. If NULL, a random unique id is generated. A name may contain
@@ -92,9 +142,7 @@ typedef struct corto_fmt_s *corto_fmt;
  *     do not yet exist, they are created with the specified type.
  * @param type The type of the object to create.
  * @return The new object, NULL if failed.
- * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createOrphan corto_findOrCreate
- * @see corto_define corto_delete corto_release
+ * @see corto_declare corto_define corto_delete
  */
 CORTO_EXPORT
 corto_object _corto_create(
@@ -129,9 +177,7 @@ corto_object _corto_create(
  *     do not yet exist, they are created with the specified type.
  * @param type The type of the object to create.
  * @return The new object, NULL if failed.
- * @see corto_declare corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_define corto_delete corto_release
+ * @see corto_create corto_define corto_delete
  */
 CORTO_EXPORT
 corto_object _corto_declare(
@@ -162,9 +208,7 @@ corto_object _corto_declare(
  *
  * @param o The object to be defined.
  * @return 0 if success, nonzero if failed.
- * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_delete corto_release
+ * @see corto_declare corto_create corto_delete
  */
 CORTO_EXPORT
 int16_t corto_define(
@@ -185,9 +229,7 @@ int16_t corto_define(
  *
  * @param o The object to be deleted.
  * @return 0 if success, nonzero if failed.
- * @see corto_declare corto_declareChild corto_declareOrphan corto_findOrDeclare
- * @see corto_create corto_createChild corto_createOrphan corto_findOrCreate
- * @see corto_delete corto_release
+ * @see corto_declare corto_create corto_define
  */
 CORTO_EXPORT
 int16_t corto_delete(
@@ -201,8 +243,7 @@ int16_t corto_delete(
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
+ * @see corto_update_begin corto_update_end corto_update_cancel corto_observe
  */
 CORTO_EXPORT
 int16_t corto_update(
@@ -217,8 +258,7 @@ int16_t corto_update(
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
+ * @see corto_update corto_update_end corto_update_cancel corto_observe
  */
 CORTO_EXPORT
 int16_t corto_update_begin(
@@ -236,8 +276,7 @@ int16_t corto_update_begin(
  *
  * @param o The object to be updated.
  * @return 0 if success, nonzero if failed.
- * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
+ * @see corto_update_begin
  */
 CORTO_EXPORT
 int16_t corto_update_end(
@@ -250,7 +289,7 @@ int16_t corto_update_end(
  * @param o The object for which the update must be cancelled.
  * @return 0 if success, nonzero if failed.
  * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
+ * @see corto_update_begin
  */
 CORTO_EXPORT
 int16_t corto_update_cancel(
@@ -265,8 +304,7 @@ int16_t corto_update_cancel(
  *
  * @param o The object to be invalidated
  * @return 0 if success, nonzero if failed.
- * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
- * @see corto_observe corto_subscribe
+ * @see corto_define corto_update
  */
 CORTO_EXPORT
 int16_t corto_invalidate(
@@ -376,8 +414,7 @@ corto_attr corto_attrof(
  *
  * @param o The object to check
  * @return true if the object is an orphan.
- * @see isbuiltin corto_check_state corto_check_attr
- */
+= */
 CORTO_EXPORT
 bool corto_isorphan(
     corto_object o);
@@ -387,7 +424,6 @@ bool corto_isorphan(
  *
  * @param o The object to check
  * @return true if the object is builtin.
- * @see isorphan corto_check_state corto_check_attr
  */
 CORTO_EXPORT
 bool corto_isbuiltin(
@@ -401,6 +437,7 @@ bool corto_isbuiltin(
  *
  * @param o The object for which to obtain the reference count.
  * @return The reference count of the object.
+ * @see corto_claim corto_release
  */
 CORTO_EXPORT
 int32_t corto_countof(
@@ -497,7 +534,7 @@ corto_object corto_sourceof(
  * @param scope The scope in which to lookup the object.
  * @param id An id expression (foo/bar) identifying the object to lookup.
  * @return The object if found, NULL if not found.
- * @see corto_lookupAssert corto_resolve corto_release
+ * @see corto_resolve
  */
 CORTO_EXPORT
 corto_object corto_lookup(
@@ -532,7 +569,7 @@ corto_object corto_lookup(
  * @param scope The scope in which to lookup the object.
  * @param id An id expression (foo/bar) identifying the object to lookup.
  * @return The object if found, NULL if not found.
- * @see corto_lookup corto_lookupAssert corto_release
+ * @see corto_lookup
  */
 CORTO_EXPORT
 corto_object corto_resolve(
@@ -642,6 +679,7 @@ any   | Enable all flags.
  *
  * @param event A mask that specifies the events to observe.
  * @param observable The object to observe.
+ * @see corto_unobserve corto_update corto_update_begin
  */
 CORTO_EXPORT
 struct corto_observe__fluent corto_observe(
@@ -672,6 +710,7 @@ void myDispatcher_post(corto_observerEvent *e) {
  *
  * @param observer An observer object.
  * @return 0 if success, -1 if failed.
+ * @see corto_observe
  */
 CORTO_EXPORT
 int16_t corto_unobserve(
@@ -689,6 +728,7 @@ int16_t corto_unobserve(
  * @param o The object to serialize.
  * @param fmtId The serialization format identifier (for example: "text/json").
  * @return The serialized value.
+ * @see corto_deserialize corto_serialize_value corto_deserialize_value
  */
 CORTO_EXPORT
 char *corto_serialize(
@@ -708,6 +748,7 @@ char *corto_serialize(
  * @param fmtId The serialization format identifier (for example: "text/json").
  * @param data Value formatted in the specified serialization format.
  * @return 0 if success, non-zero if failed.
+ * @see corto_serialize corto_serialize_value corto_deserialize_value
  */
 CORTO_EXPORT
 int16_t corto_deserialize(
@@ -724,6 +765,7 @@ int16_t corto_deserialize(
  * @param o The object to serialize.
  * @param fmtId The serialization format identifier (for example: "text/json").
  * @return The serialized value.
+ * @see corto_deserialize_value corto_serialize corto_deserialize
  */
 CORTO_EXPORT
 char *corto_serialize_value(
@@ -738,6 +780,7 @@ char *corto_serialize_value(
  * @param fmtId The serialization format identifier (for example: "text/json").
  * @param data Value formatted in the specified serialization format.
  * @return 0 if success, non-zero if failed.
+ * @see corto_serialize_value corto_serialize corto_deserialize
  */
 CORTO_EXPORT
 int16_t corto_deserialize_value(
@@ -770,6 +813,7 @@ corto_fmt corto_fmt_lookup(
  *
  * @param o The object to readlock.
  * @return 0 if success, non-zero if failed.
+ * @see corto_read_end corto_lock
  */
 CORTO_EXPORT
 int16_t corto_read_begin(
@@ -781,6 +825,7 @@ int16_t corto_read_begin(
  *
  * @param o The object to unlock.
  * @return 0 if success, non-zero if failed.
+ * @see corto_read_begin
  */
 CORTO_EXPORT
 int16_t corto_read_end(
@@ -794,6 +839,7 @@ int16_t corto_read_end(
  *
  * @param o The object to readlock.
  * @return 0 if success, non-zero if failed.
+ * @see corto_unlock corto_read_begin
  */
 CORTO_EXPORT
 int16_t corto_lock(
@@ -805,6 +851,7 @@ int16_t corto_lock(
  *
  * @param o The object to unlock.
  * @return 0 if success, non-zero if failed.
+ * @see corto_lock
  */
 CORTO_EXPORT
 int16_t corto_unlock(
@@ -870,6 +917,7 @@ corto_object corto_get_source(void);
  * @param username The username of the user logging in.
  * @param password The password of the user logging in.
  * @return The session token if login is valid. NULL if the login failed.
+ * @see corto_logout
  */
 CORTO_EXPORT
 const char *corto_login(

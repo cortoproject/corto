@@ -26,6 +26,72 @@
 #include <corto/_project.h>
 
 /* $header() */
+
+/** @file
+ * @section query Virtual Store
+ * @brief API for accessing and populating the virtual store.
+ *
+ * The virtual store is, as the name suggests, not an actual store, but provides
+ * uniform access to data from any number of 3rd party stores. Data in the
+ * virtual store can move transparently to and from the in-memory store when
+ * application interest emerges or goes away. This process is fully automated,
+ * and does not require explicit action on behalf of the application.
+ *
+ * The virtual store is populated by 'mounts'. Mounts are entities which connect
+ * subtrees of objects into the virtual store, which is represented to the
+ * application as a single uniform tree. Operations on the virtual store are
+ * translated by the "query engine" to the appropriate mounts, which will then
+ * either retrieve or synchronize the requested operation from the query engine.
+ *
+ * Subtrees provided by mounts may be mounted in different locations by
+ * different applications. The query engine automatically translates between
+ * local identifiers and mount identifiers, so that a mount does not require
+ * knowledge about how it connects to the virtual store.
+ *
+ * The mount class provides a rich interface for interacting with many kinds of
+ * data. The interface is implemented as a set of overridable methods on the
+ * mount class which a mount may or may not implement, based on the capabilities
+ * of the underlying technology.
+ *
+ * A mount can reply to a single request for data, be notified
+ * of subscriptions so it can provide realtime data, provide historical data,
+ * synchronize data from the store, batch data from the store, downsample data
+ * from the store, throttle an application (using an intelligent algorithm that
+ * evenly spaces delays across sampling periods), amongst others.
+ *
+ * Mounts are, just like anything else, objects that are stored in the in-memory
+ * store. This means that mounts can be instantiated with the regular store API,
+ * and that mount configurations can be provided in any serialization format
+ * that corto supports (XML, JSON, CX, ...).
+ *
+ * Applications can interact with the virtual store directly through the
+ * `corto_select`, `corto_subscribe` and `corto_publish` APIs. Rather than
+ * going through the object store, these functions communicate directly with the
+ * mounts.
+ *
+ * Mounts use the same mechanisms to communicate with each other, which
+ * means that the in-memory store can be completely bypassed. This particularly
+ * speeds up scenarios where data is bridged, where two can forward directly
+ * from one to another. Mounts can optionally configure a serialization format,
+ * in which case corto will automatically serialize/deserialize data to the
+ * correct format when it arrives/leaves the mount. When two mounts communicate
+ * directly and the serialization format is the same, a quick pass-through will
+ * take place.
+ *
+ * Mounts inherit from corto subscribers, which means that they use the same
+ * mechanisms to describe data that they synchronize. Subscribers in corto use
+ * a `corto_query`, which is a custom query format optimized for querying
+ * hierarchies. The two most important parts of a `corto_query` are the `select`
+ * and `from` fields. The `select` field specifies a filter that is matched
+ * against an object id. The `from` field specifies the location in the virtual
+ * store where the subscriber subscribes to. Identifiers of objects delivered to
+ * the subscriber will be relative to the `from` query field.
+ *
+ * A mount uses the `from` field to determine where it will mount its data. This
+ * also ensures that data the mount receives is relative to its mount point,
+ * which allows a mount to abstract away from where it is mounted by the app.
+ */
+
 /* $end */
 
 #include <corto/vstore/_type.h>

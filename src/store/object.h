@@ -158,7 +158,7 @@ struct corto__persistent {
      * padding bytes in headers. However, as this attribute isn't used in
      * builtin objects, it isn't necessary to take into account struct
      * alignment. */
-    corto_object owner;
+    corto_object source;
 
     /* Objects that are explicitly resumed should also be explicitly suspended
      * by an application. If this is set to true, corto won't automatically
@@ -189,18 +189,11 @@ int16_t corto_deinit_builtin(
 int16_t corto_invoke_preDelegate(
     corto_pre_action *d,
     corto_type t,
-    corto_object o,
-    bool isDefine);
+    corto_object o);
 
 void corto_invoke_postDelegate(
     corto_post_action *d,
     corto_type t,
-    corto_object o);
-
-int16_t corto_init(
-    corto_object o);
-
-int16_t corto_deinit(
     corto_object o);
 
 void corto_drop(
@@ -282,7 +275,7 @@ corto_object *corto_lookup_functionFromSequence(
     const char* requested,
     int32_t* d,
     int32_t *diff);
-    
+
 int corto_load_intern(
     corto_string str,
     int argc,

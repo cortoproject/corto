@@ -61,7 +61,7 @@ corto_int16 _corto_ptr_init(
     }
 
     if (type->flags & CORTO_TYPE_HAS_INIT) {
-        return corto_invoke_preDelegate(&type->init, type, p, false);
+        return corto_invoke_preDelegate(&type->init, type, p);
     } else {
         return 0;
     }

@@ -31,14 +31,22 @@
 #include "memory_ser.h"
 
 static
+int16_t corto_init(
+    corto_object o);
+
+static
+int16_t corto_deinit(
+    corto_object o);
+
+static
 corto_object corto_adopt(
     corto_object parent,
     corto_object child,
     bool forceType);
 
 static
-bool corto_owner_match(
-    corto_object owner,
+bool corto_source_match(
+    corto_object source,
     corto_object current);
 
 static
@@ -60,229 +68,8 @@ void corto_declaredByMeFree(void *admin) {
     }
 }
 
-static
-bool corto_declaredByMeCheck(corto_object o) {
-    corto_assert_object(o);
-    if (!corto_isbuiltin(o)) {
-        corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
-        if (!admin) {
-            return FALSE;
-        } else {
-            return corto_ll_hasObject(admin, o) != 0;
-        }
-    } else {
-        return true;
-    }
-}
-
-static
-void corto_declaredByMeAdd(corto_object o) {
-    corto_assert_object(o);
-    if (!corto_isbuiltin(o)) {
-        corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
-        if (!admin) {
-            admin = corto_ll_new();
-            corto_tls_set(CORTO_KEY_DECLARED_ADMIN, admin);
-        }
-        corto_ll_append(admin, o);
-    }
-}
-
-static
-bool corto_declaredByMeRemove(corto_object o) {
-    corto_assert_object(o);
-    if (!corto_isbuiltin(o)) {
-        corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
-        if (admin) {
-            if (corto_ll_remove(admin, o)) {
-                corto_unlock_intern(o);
-                return TRUE;
-            }
-        }
-        return FALSE;
-    } else {
-        return FALSE;
-    }
-}
-
-corto__observable* corto_hdr_observable(corto__object* o) {
-    corto__observable* result = (void*)o;
-
-    if (o->align.attrs.observable) {
-        result = CORTO_OFFSET(result, -sizeof(corto__observable));
-    } else {
-        result = NULL;
-    }
-
-    return result;
-}
-
-static
-corto__scope* corto_hdr_scope(
-    corto__object* o)
-{
-    corto__scope* result = (void*)o;
-
-    if (o->align.attrs.observable) {
-        result = CORTO_OFFSET(result, -sizeof(corto__observable));
-    }
-    if (o->align.attrs.scope) {
-        result = CORTO_OFFSET(result, -sizeof(corto__scope));
-    } else {
-        result = NULL;
-    }
-
-    return result;
-}
-
-static
-corto__writable* corto_hdr_writable(
-    corto__object* o)
-{
-    corto__writable* result = (void*)o;
-
-    if (o->align.attrs.observable) {
-        result = CORTO_OFFSET(result, -sizeof(corto__observable));
-    }
-    if (o->align.attrs.scope) {
-        result = CORTO_OFFSET(result, -sizeof(corto__scope));
-    }
-    if (o->align.attrs.write) {
-        result = CORTO_OFFSET(result, -sizeof(corto__writable));
-    } else {
-        result = NULL;
-    }
-
-    return result;
-}
-
-static
-corto__persistent* corto_hdr_persistent(
-    corto__object* o)
-{
-    corto__persistent* result = (void*)o;
-
-    if (o->align.attrs.observable) {
-        result = CORTO_OFFSET(result, -sizeof(corto__observable));
-    }
-    if (o->align.attrs.scope) {
-        result = CORTO_OFFSET(result, -sizeof(corto__scope));
-    }
-    if (o->align.attrs.write) {
-        result = CORTO_OFFSET(result, -sizeof(corto__writable));
-    }
-    if (o->align.attrs.persistent) {
-        result = CORTO_OFFSET(result, -sizeof(corto__persistent));
-    } else {
-        result = NULL;
-    }
-
-    return result;
-}
-
-static
-void* corto_object_startaddr(
-    corto__object* o)
-{
-    void* result;
-    result = o;
-    if (o->align.attrs.scope) {
-        result = CORTO_OFFSET(result, -sizeof(corto__scope));
-    }
-    if (o->align.attrs.write) {
-        result = CORTO_OFFSET(result, -sizeof(corto__writable));
-    }
-    if (o->align.attrs.observable) {
-        result = CORTO_OFFSET(result, -sizeof(corto__observable));
-    }
-    if (o->align.attrs.persistent) {
-        result  = CORTO_OFFSET(result, -sizeof(corto__persistent));
-    }
-    return result;
-}
-
-static
-corto_equalityKind corto_compareDefault(
-    corto_type this,
-    const void* o1,
-    const void* o2)
-{
-    int r;
-    corto_assert_object(this);
-    CORTO_UNUSED(this);
-    return ((r = stricmp(o1, o2)) < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
-}
-
-static
-corto_equalityKind corto_compareLookupIntern(
-    const char *o1,
-    const char *o2,
-    bool matchArgs)
-{
-    int r;
-    const char *ptr1, *ptr2;
-    ptr1 = o1;
-    ptr2 = o2;
-    char ch1, ch2;
-
-    ch2 = *ptr2;
-    while((ch1 = *ptr1) && ch2 && (ch2 != '/')) {
-        if (ch1 == ch2) {
-            ptr1++; ptr2++;
-            ch2 = *ptr2;
-            continue;
-        }
-        if (ch1 < 97) ch1 = tolower(ch1);
-        if (ch2 < 97) ch2 = tolower(ch2);
-        if (ch1 != ch2) {
-            r = ch1 - ch2;
-            goto compare;
-        }
-        ptr1++;
-        ptr2++;
-        ch2 = *ptr2;
-    }
-
-    if (!ch1 && (ch2 == '/')) {
-        goto match;
-    }
-
-    if (matchArgs) {
-        if (!ch2 && (ch1 == '(')) {
-            r = 0;
-            goto compare;
-        }
-    }
-
-    r = ch1 - ch2;
-compare:
-    return (r < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
-match:
-    return CORTO_EQ;
-}
-
-static
-corto_equalityKind corto_compareLookup(
-    corto_type this,
-    const void* o1,
-    const void* o2)
-{
-    CORTO_UNUSED(this);
-    return corto_compareLookupIntern(o1, o2, TRUE);
-}
-
-static
-corto_equalityKind corto_compareLookupNoArgMatching(
-    corto_type this,
-    const void* o1,
-    const void* o2)
-{
-    CORTO_UNUSED(this);
-    return corto_compareLookupIntern(o1, o2, FALSE);
-}
-
+/* Memory tracing utility */
 #ifndef NDEBUG
-/* Stack for tracing memory management operations */
 static char *memtrace[50];
 static int8_t memtraceSp = 0;
 static int8_t memtraceCount = 0;
@@ -361,6 +148,242 @@ void corto_memtrace(
 #define corto_memtrace(oper, o, context)
 #endif
 
+/* Has the object been declared by this thread */
+static
+bool corto_declaredByMeCheck(corto_object o) {
+    corto_assert_object(o);
+    if (!corto_isbuiltin(o)) {
+        corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
+        if (!admin) {
+            return FALSE;
+        } else {
+            return corto_ll_hasObject(admin, o) != 0;
+        }
+    } else {
+        return true;
+    }
+}
+
+/* Add object to list of objects that are declared in this thread */
+static
+void corto_declaredByMeAdd(corto_object o) {
+    corto_assert_object(o);
+    if (!corto_isbuiltin(o)) {
+        corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
+        if (!admin) {
+            admin = corto_ll_new();
+            corto_tls_set(CORTO_KEY_DECLARED_ADMIN, admin);
+        }
+        corto_ll_append(admin, o);
+    }
+}
+
+/* When object is defined, remove from list of objects declared in this thread */
+static
+bool corto_declaredByMeRemove(corto_object o) {
+    corto_assert_object(o);
+    if (!corto_isbuiltin(o)) {
+        corto_ll admin = corto_tls_get(CORTO_KEY_DECLARED_ADMIN);
+        if (admin) {
+            if (corto_ll_remove(admin, o)) {
+                corto_unlock_intern(o);
+                return TRUE;
+            }
+        }
+        return FALSE;
+    } else {
+        return FALSE;
+    }
+}
+
+/* Obtain observable part of object header */
+corto__observable* corto_hdr_observable(
+    corto__object* o)
+{
+    corto__observable* result = (void*)o;
+
+    if (o->align.attrs.observable) {
+        result = CORTO_OFFSET(result, -sizeof(corto__observable));
+    } else {
+        result = NULL;
+    }
+
+    return result;
+}
+
+/* Obtain scoped part of object header */
+static
+corto__scope* corto_hdr_scope(
+    corto__object* o)
+{
+    corto__scope* result = (void*)o;
+
+    if (o->align.attrs.observable) {
+        result = CORTO_OFFSET(result, -sizeof(corto__observable));
+    }
+    if (o->align.attrs.scope) {
+        result = CORTO_OFFSET(result, -sizeof(corto__scope));
+    } else {
+        result = NULL;
+    }
+
+    return result;
+}
+
+/* Obtain writable part of object header */
+static
+corto__writable* corto_hdr_writable(
+    corto__object* o)
+{
+    corto__writable* result = (void*)o;
+
+    if (o->align.attrs.observable) {
+        result = CORTO_OFFSET(result, -sizeof(corto__observable));
+    }
+    if (o->align.attrs.scope) {
+        result = CORTO_OFFSET(result, -sizeof(corto__scope));
+    }
+    if (o->align.attrs.write) {
+        result = CORTO_OFFSET(result, -sizeof(corto__writable));
+    } else {
+        result = NULL;
+    }
+
+    return result;
+}
+
+/* Obtain persistent part of object header */
+static
+corto__persistent* corto_hdr_persistent(
+    corto__object* o)
+{
+    corto__persistent* result = (void*)o;
+
+    if (o->align.attrs.observable) {
+        result = CORTO_OFFSET(result, -sizeof(corto__observable));
+    }
+    if (o->align.attrs.scope) {
+        result = CORTO_OFFSET(result, -sizeof(corto__scope));
+    }
+    if (o->align.attrs.write) {
+        result = CORTO_OFFSET(result, -sizeof(corto__writable));
+    }
+    if (o->align.attrs.persistent) {
+        result = CORTO_OFFSET(result, -sizeof(corto__persistent));
+    } else {
+        result = NULL;
+    }
+
+    return result;
+}
+
+/* Obtain allocation address of object */
+static
+void* corto_object_startaddr(
+    corto__object* o)
+{
+    void* result;
+    result = o;
+    if (o->align.attrs.scope) {
+        result = CORTO_OFFSET(result, -sizeof(corto__scope));
+    }
+    if (o->align.attrs.write) {
+        result = CORTO_OFFSET(result, -sizeof(corto__writable));
+    }
+    if (o->align.attrs.observable) {
+        result = CORTO_OFFSET(result, -sizeof(corto__observable));
+    }
+    if (o->align.attrs.persistent) {
+        result  = CORTO_OFFSET(result, -sizeof(corto__persistent));
+    }
+    return result;
+}
+
+/* Default object compare function used as tree comparator in scope rbtree */
+static
+corto_equalityKind corto_compareDefault(
+    corto_type this,
+    const void* o1,
+    const void* o2)
+{
+    int r;
+    corto_assert_object(this);
+    CORTO_UNUSED(this);
+    return ((r = stricmp(o1, o2)) < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
+}
+
+/* Optimized internal object compare function used in lookup functions */
+static
+corto_equalityKind corto_compareLookupIntern(
+    const char *o1,
+    const char *o2,
+    bool matchArgs)
+{
+    int r;
+    const char *ptr1, *ptr2;
+    ptr1 = o1;
+    ptr2 = o2;
+    char ch1, ch2;
+
+    ch2 = *ptr2;
+    while((ch1 = *ptr1) && ch2 && (ch2 != '/')) {
+        if (ch1 == ch2) {
+            ptr1++; ptr2++;
+            ch2 = *ptr2;
+            continue;
+        }
+        if (ch1 < 97) ch1 = tolower(ch1);
+        if (ch2 < 97) ch2 = tolower(ch2);
+        if (ch1 != ch2) {
+            r = ch1 - ch2;
+            goto compare;
+        }
+        ptr1++;
+        ptr2++;
+        ch2 = *ptr2;
+    }
+
+    if (!ch1 && (ch2 == '/')) {
+        goto match;
+    }
+
+    if (matchArgs) {
+        if (!ch2 && (ch1 == '(')) {
+            r = 0;
+            goto compare;
+        }
+    }
+
+    r = ch1 - ch2;
+compare:
+    return (r < 0) ? CORTO_LT : (r > 0) ? CORTO_GT : CORTO_EQ;
+match:
+    return CORTO_EQ;
+}
+
+/* rbtree wrapper around compare function */
+static
+corto_equalityKind corto_compareLookup(
+    corto_type this,
+    const void* o1,
+    const void* o2)
+{
+    CORTO_UNUSED(this);
+    return corto_compareLookupIntern(o1, o2, TRUE);
+}
+
+/* rbtree wrapper around compare function that does not match signatures */
+static
+corto_equalityKind corto_compareLookupNoArgMatching(
+    corto_type this,
+    const void* o1,
+    const void* o2)
+{
+    CORTO_UNUSED(this);
+    return corto_compareLookupIntern(o1, o2, FALSE);
+}
+
+/* Utility to verify if parent-state matches child parentState type option */
 static
 bool corto__checkStateXOR(
     corto_object o,
@@ -383,6 +406,8 @@ bool corto__checkStateXOR(
     return ostate & state;
 }
 
+/* When an object of an unknown type is replaced by an object with a known type
+ * this walk function updates child parent pointers and transfers refcount */
 struct corto_adopt_updateParents_t {
     corto_object old;
     corto_object new;
@@ -402,6 +427,7 @@ int corto_adopt_updateParents(
     return 1;
 }
 
+/* Before object is added to a scope, ensure it doesn't violate constraints */
 static
 int16_t corto_adopt_checkConstraints(
     corto_type parent,
@@ -512,7 +538,7 @@ void corto_adopt_replaceUnknown(
     }
 }
 
-/* Adopt an object */
+/* Adopt an object in a scope */
 static
 corto_object corto_adopt(
     corto_object parent,
@@ -624,7 +650,7 @@ err_existing:
     return NULL;
 }
 
-/* Orphan object - not a public function as this will only happen during destruction of an object. */
+/* Remove an object from a scope */
 static
 void corto_orphan(
     corto_object o)
@@ -653,6 +679,7 @@ err_parent_mutex:
     corto_error("corto_orphan: lock operation of scopeLock of parent failed");
 }
 
+/* Set key values based on object id for types that have keyfields */
 static
 int16_t corto_setKeyvalues(
     corto_object o,
@@ -685,7 +712,7 @@ error:
     return -1;
 }
 
-/* Initialze scope-part of object */
+/* Initialze named objects */
 static
 corto_object corto_init_scope(
     corto_object parent,
@@ -754,6 +781,7 @@ error:
     return NULL;
 }
 
+/* Deinitialize scoped objects */
 static
 void corto_deinit_scope(
     corto_object o)
@@ -788,7 +816,7 @@ void corto_deinit_scope(
     corto_rwmutex_free(&scope->align.scopeLock);
 }
 
-/* Initialize writable-part of object */
+/* Initialize writable header of object */
 static
 void corto__initWritable(
     corto_object o)
@@ -805,6 +833,7 @@ void corto__initWritable(
     corto_rwmutex_new(&writable->align.lock);
 }
 
+/* Deinitialize writable header of object */
 static
 void corto__deinitWritable(
     corto_object o)
@@ -821,7 +850,7 @@ void corto__deinitWritable(
     corto_rwmutex_free(&writable->align.lock);
 }
 
-/* Initialize observable-part of object */
+/* Initialize observable header of object */
 static
 void corto__initObservable(
     corto_object o)
@@ -843,6 +872,7 @@ void corto__initObservable(
     observable->onChildArray = NULL;
 }
 
+/* Deinitialize observable header of object */
 static
 void corto__deinitObservable(
     corto_object o)
@@ -884,7 +914,7 @@ void corto__deinitObservable(
     corto_rwmutex_free(&observable->align.selfLock);
 }
 
-/* Initialize static scoped object */
+/* Initialize builtin object */
 void corto_init_builtin(corto_object sso) {
     corto__object* o;
     corto__scope* scope;
@@ -907,7 +937,7 @@ void corto_init_builtin(corto_object sso) {
     }
 }
 
-/* Deinitialize static scoped object */
+/* Deinitialize builtin object */
 int16_t corto_deinit_builtin(corto_object sso) {
     corto__object* o;
     corto__scope* scope;
@@ -922,16 +952,6 @@ int16_t corto_deinit_builtin(corto_object sso) {
     corto_orphan(sso);
 
     if (scope->scope) {
-        /* Don't print this error - without a proper cycle detector this could
-         * be reported without there actually being a problem
-        if (corto_rb_count(scope->scope)) {
-            corto_error("corto_deinit_builtin: scope of object '%s' is not empty (%p/%p: %d left)",
-                corto_idof(sso),
-                sso,
-                scope->scope,
-                corto_rb_count(scope->scope));
-            goto error;
-        }*/
         corto_rb_free(scope->scope);
         scope->scope = NULL;
     }
@@ -946,7 +966,15 @@ int16_t corto_deinit_builtin(corto_object sso) {
     return 0;
 }
 
-int16_t corto_invoke_preDelegate(corto_pre_action *d, corto_type t, corto_object o, bool isDefine) {
+/* Wrapper around delegate function that is called before a lifecycle event
+ * takes place. These delegates have the following signature:
+    int16_t <name>(corto_object object)
+ */
+int16_t corto_invoke_preDelegate(
+    corto_pre_action *d,
+    corto_type t,
+    corto_object o)
+{
     int16_t result = 0;
     corto_function delegate;
 
@@ -968,7 +996,15 @@ int16_t corto_invoke_preDelegate(corto_pre_action *d, corto_type t, corto_object
     return result;
 }
 
-void corto_invoke_postDelegate(corto_post_action *d, corto_type t, corto_object o) {
+/* Wrapper around delegate function that is called after a lifecycle event
+ * takes place. These delegates have the following signature:
+    void <name>(corto_object object)
+ */
+void corto_invoke_postDelegate(
+    corto_post_action *d,
+    corto_type t,
+    corto_object o)
+{
     corto_function delegate;
     if ((delegate = d->super.procedure)) {
         corto_interface prev;
@@ -988,9 +1024,9 @@ void corto_invoke_postDelegate(corto_post_action *d, corto_type t, corto_object 
     }
 }
 
-/* Destruct object */
+/* Call destructor of an object */
 static
-void corto__destructor(
+void corto_destructor(
     corto_object o)
 {
     corto_type t;
@@ -1013,7 +1049,10 @@ void corto__destructor(
     }
 }
 
-corto_attr corto_set_attr(corto_attr attrs) {
+/* Set thread variable that determines with which attributes to create objects */
+corto_attr corto_set_attr(
+    corto_attr attrs)
+{
     corto_attr* attr = corto_tls_get(CORTO_KEY_ATTR);
     corto_attr oldAttr = CORTO_ATTR_DEFAULT;
     if (!attr) {
@@ -1026,6 +1065,7 @@ corto_attr corto_set_attr(corto_attr attrs) {
     return oldAttr;
 }
 
+/* Get thread variable that determines with which attributes to create objects */
 corto_attr corto_get_attr(void) {
     corto_attr* attr = corto_tls_get(CORTO_KEY_ATTR);
     if (attr) {
@@ -1035,6 +1075,7 @@ corto_attr corto_get_attr(void) {
     }
 }
 
+/* Utility that recursively checks if object is child of a parent */
 bool corto_childof(corto_object p, corto_object o) {
     bool result = FALSE;
     if (p != o) {
@@ -1049,6 +1090,7 @@ bool corto_childof(corto_object p, corto_object o) {
     return result;
 }
 
+/* If a container does not point to another type, use the container type */
 static
 corto_type corto_containerType(
     corto_container c)
@@ -1056,7 +1098,7 @@ corto_type corto_containerType(
     if (c->type) return c->type; else return corto_type(c);
 }
 
-/* Recursively declare containers in its definition */
+/* Recursively declare containers in its scope */
 static
 int16_t corto_declareContainer(
     corto_object parent)
@@ -1091,7 +1133,7 @@ error:
     return -1;
 }
 
-/* Recursively define containers in its definition */
+/* Recursively define containers in its scope */
 static
 int16_t corto_defineContainer(
     corto_object parent,
@@ -1155,7 +1197,7 @@ error:
     return -1;
 }
 
-/* Create new object with attributes */
+/* Declare new object */
 static
 corto_object corto_declare_intern(
     corto_type type,
@@ -1309,11 +1351,11 @@ error:
     return NULL;
 }
 
+/* Generate random id */
 static
 char* corto_randomId(
     uint16_t n)
 {
-/* $begin(corto/web/server/random) */
     static char *alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static char *alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890";
     uint16_t i;
@@ -1327,10 +1369,9 @@ char* corto_randomId(
     result[i] = '\0';
 
     return result;
-/* $end */
 }
 
-/* Declare object */
+/* Declare named object */
 static
 corto_object corto_declareChild_intern(
     corto_object parent,
@@ -1506,6 +1547,7 @@ access_error:
     return NULL;
 }
 
+/* Define a declared object */
 static
 corto_object corto_create_intern(
     corto_object result,
@@ -1521,6 +1563,7 @@ corto_object corto_create_intern(
     return result;
 }
 
+/* Resume object from mount */
 static
 corto_object corto_resume_fromMount(
     corto_mount m,
@@ -1540,11 +1583,11 @@ corto_object corto_resume_fromMount(
             expr,
             o)))
         {
-            /* Assign owner */
+            /* Assign source */
             corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
             corto__persistent *_p = corto_hdr_persistent(_o);
             corto_assert(_p != NULL, "cannot resume object that is not persistent");
-            corto_set_ref(&_p->owner, m);
+            corto_set_ref(&_p->source, m);
 
             /* If object was resumed without creating an object in the store first, it
              * means that a lookup or resolve triggered the resume. In that case, set
@@ -1559,6 +1602,7 @@ corto_object corto_resume_fromMount(
     return result;
 }
 
+/* Find right mount to resume object from */
 typedef struct corto_resumeWalk_t {
     corto_object o;
     corto_object p;
@@ -1610,7 +1654,8 @@ int corto_resumeWalk(
     return 1;
 }
 
-/* Precondition: 'expr' contains the expression starting from the object that
+/* Try resuming an object from a mount.
+ * Precondition: 'expr' contains the expression starting from the object that
  * could not be found in the object store. */
 corto_object corto_resume(
     corto_object parent,
@@ -1714,25 +1759,25 @@ bool corto_resumeDeclared(
     bool resumed = FALSE;
 
     if ((_p = corto_hdr_persistent(_o))) {
-        _p->owner = corto_get_source();
+        _p->source = corto_get_source();
 
-        if (_p->owner) {
-            corto_claim(_p->owner);
+        if (_p->source) {
+            corto_claim(_p->source);
         }
 
         /* If object is persistent and locally owned, check if a
          * persistent copy is already available */
-        if (!_p->owner && corto_check_attr(o, CORTO_ATTR_NAMED)) {
+        if (!_p->source && corto_check_attr(o, CORTO_ATTR_NAMED)) {
             if (resume) {
                 if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
                     resumed = TRUE;
                 }
             }
 
-        /* If owner of an object is a SINK, object is resumed */
-        } else if (_p->owner
-          && corto_instanceof(corto_mount_o, _p->owner)
-          && (corto_mount(_p->owner)->policy.ownership == CORTO_LOCAL_SOURCE))
+        /* If source of an object is a SINK, object is resumed */
+        } else if (_p->source
+          && corto_instanceof(corto_mount_o, _p->source)
+          && (corto_mount(_p->source)->policy.ownership == CORTO_LOCAL_SOURCE))
         {
             resumed = TRUE;
         }
@@ -1757,10 +1802,10 @@ int16_t corto_defineDeclared(
 
     /* Don't invoke constructor if object is not locally owned */
     if (t->flags & CORTO_TYPE_HAS_CONSTRUCT) {
-        if (corto_owner_match(corto_sourceof(o), NULL)) {
+        if (corto_source_match(corto_sourceof(o), NULL)) {
             /* Call constructor with default attributes */
             corto_attr prev = corto_set_attr(CORTO_ATTR_DEFAULT);
-            result = corto_invoke_preDelegate(&((corto_class)t)->construct, t, o, true);
+            result = corto_invoke_preDelegate(&((corto_class)t)->construct, t, o);
             corto_set_attr(prev);
         }
     }
@@ -1824,6 +1869,7 @@ error:
     return -1;
 }
 
+/* Recursively declare object in identifier of form 'foo/bar' */
 static
 corto_object corto_declareChildRecursive_intern(
     corto_object parent,
@@ -1915,6 +1961,7 @@ corto_object corto_declareChildRecursive_intern(
     return result;
 }
 
+/* Declare new named or anonymous object */
 corto_object _corto_declare(
     corto_object parent,
     const char *id,
@@ -1927,6 +1974,7 @@ corto_object _corto_declare(
     }
 }
 
+/* Create new named or anonymous object */
 corto_object _corto_create(
     corto_object parent,
     const char  *id,
@@ -1985,19 +2033,21 @@ error:
     return -1;
 }
 
+/* Define object (public) */
 int16_t corto_define(
     corto_object o)
 {
     return corto_define_intern(o, TRUE);
 }
 
+/* Destruct object */
 bool corto_destruct(
     corto_object o,
     bool delete)
 {
     corto__object* _o;
     bool result = TRUE;
-    corto_object owner = corto_sourceof(o);
+    corto_object source = corto_sourceof(o);
     bool named = corto_check_attr(o, CORTO_ATTR_NAMED);
     bool isBuiltin = corto_isbuiltin(o);
 
@@ -2014,7 +2064,7 @@ bool corto_destruct(
 
         /* Call destructor before marking object state as deleted */
         if (defined && corto_owned(o)) {
-            corto__destructor(o);
+            corto_destructor(o);
         }
 
         /* From here, object is marked as deleted. */
@@ -2045,8 +2095,8 @@ bool corto_destruct(
                     }
                 }
 
-                if (owner && corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
-                    corto_release(owner);
+                if (source && corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
+                    corto_release(source);
                 }
             } else {
                 /* If object wasn't defined, remove it from the declared admin */
@@ -2141,6 +2191,7 @@ bool corto_destruct(
     return result;
 }
 
+/* corto_drop removes all objects from a scope */
 typedef struct corto_dropWalk_t {
     corto_ll objects;
 }corto_dropWalk_t;
@@ -2243,22 +2294,6 @@ void corto_drop(
 }
 
 /* Delete object */
-int16_t corto_suspend(
-    corto_object o)
-{
-    corto_assert_object(o);
-    if (!o) {
-        corto_critical("NULL passed to corto_delete");
-    }
-
-    if (corto_destruct(o, FALSE)) {
-        corto_release(o);
-    }
-
-    return 0;
-}
-
-/* Delete object */
 int16_t corto_delete(
     corto_object o)
 {
@@ -2290,7 +2325,7 @@ error:
     return -1;
 }
 
-/* Invalidate object by removing valid flag */
+/* Invalidate object */
 int16_t corto_invalidate(
     corto_object o)
 {
@@ -2335,6 +2370,7 @@ corto_state corto_stateof(
     return state;
 }
 
+/* Get attributes */
 corto_attr corto_attrof(
     corto_object o)
 {
@@ -2351,7 +2387,7 @@ corto_attr corto_attrof(
     return attr;
 }
 
-/* Get contentstring */
+/* Serialize object value to content type */
 char* corto_serialize_value(
     corto_object o,
     const char *contentType)
@@ -2371,6 +2407,7 @@ error:
     return NULL;
 }
 
+/* Deserialize object value from content type */
 int16_t corto_deserialize_value(
     corto_object o,
     const char *contentType,
@@ -2390,6 +2427,7 @@ error:
     return -1;
 }
 
+/* Serialize object to content type (includes id, type) */
 char* corto_serialize(
     corto_object o,
     const char *contentType)
@@ -2407,6 +2445,7 @@ error:
     return NULL;
 }
 
+/* Deserialize object from content type (includes id, type) */
 int16_t corto_deserialize(
     void *o,
     const char *contentType,
@@ -2423,6 +2462,7 @@ error:
     return -1;
 }
 
+/* Check if object is in specified state */
 bool corto_check_state(
     corto_object o,
     corto_state state)
@@ -2437,6 +2477,7 @@ bool corto_check_state(
     return (ostate & state) == state;
 }
 
+/* Check if object has specified attributes */
 bool corto_check_attr(
     corto_object o,
     corto_attr attr)
@@ -2464,6 +2505,7 @@ bool corto_check_attr(
     return result;
 }
 
+/* Is object an orphan */
 bool corto_isorphan(
     corto_object o)
 {
@@ -2473,6 +2515,7 @@ bool corto_isorphan(
     return _o->align.attrs.orphan;
 }
 
+/* Is object builtin */
 bool corto_isbuiltin(
     corto_object o)
 {
@@ -2482,26 +2525,7 @@ bool corto_isbuiltin(
     return _o->align.attrs.builtin;
 }
 
-corto_object _corto_assert_type(
-    corto_type type,
-    corto_object o)
-{
-    corto_assert_object(type);
-    corto_assert_object(o);
-
-    if (o && (corto_typeof(o) != type)) {
-        if (!_corto_instanceof(type, o)) {
-            corto_error("object '%s' is not an instance of '%s'\n   type = %s",
-                corto_fullpath(NULL, o),
-                corto_fullpath(NULL, type),
-                corto_fullpath(NULL, corto_typeof(o)));
-            corto_backtrace(stdout);
-            abort();
-        }
-    }
-    return o;
-}
-
+/* Is instance of 'src' type an instance of of 'dst' type */
 bool _corto_type_instanceof(
     corto_type dst,
     corto_type src)
@@ -2594,6 +2618,7 @@ bool _corto_type_instanceof(
     return result;
 }
 
+/* Is object instance of type */
 bool _corto_instanceof(
     corto_type type,
     corto_object o)
@@ -2626,7 +2651,9 @@ bool _corto_instanceof(
 }
 
 /* Get & lock scope */
-corto__scope *corto_scope_lock(corto_object o) {
+corto__scope *corto_scope_lock(
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -2643,7 +2670,9 @@ error:
 }
 
 /* Release scope */
-void corto_scope_unlock(corto_object o) {
+void corto_scope_unlock(
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto__object  *_o = CORTO_OFFSET(o, -sizeof(corto__object));
@@ -2653,8 +2682,10 @@ void corto_scope_unlock(corto_object o) {
     }
 }
 
-/* Get parent (requires scoped object) */
-corto_object corto_parentof(corto_object o) {
+/* Get parent of named object */
+corto_object corto_parentof(
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto__object* _o;
@@ -2671,8 +2702,11 @@ corto_object corto_parentof(corto_object o) {
     return result;
 }
 
-/* Get name (requires scoped object) */
-char* corto_nameof(corto_id buffer, corto_object o) {
+/* Get name of named object */
+char* corto_nameof(
+    corto_id buffer,
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto_type t = corto_typeof(o);
@@ -2725,8 +2759,10 @@ char* corto_nameof(corto_id buffer, corto_object o) {
     return buffer;
 }
 
-/* Get id (requires scoped object) */
-char* corto_idof(corto_object o) {
+/* Get id of named object */
+char* corto_idof(
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto__object* _o;
@@ -2743,8 +2779,10 @@ char* corto_idof(corto_object o) {
     return result;
 }
 
-/* Get scope tree */
-corto_rb corto_scopeof(corto_object o) {
+/* Get tree containing the scope of named object */
+corto_rb corto_scopeof(
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto__object* _o;
@@ -2766,7 +2804,10 @@ err_not_scoped:
     return NULL;
 }
 
-uint32_t corto_scope_size(corto_object o) {
+/* Get number of objects in scope (memory only) */
+uint32_t corto_scope_size(
+    corto_object o)
+{
     corto_assert_object(o);
 
     corto__object* _o;
@@ -2806,7 +2847,11 @@ int corto_scope_walkSecured(corto_object o, void *userData) {
 }
 
 /* Walk objects in scope */
-int16_t corto_scope_walk(corto_object o, corto_scope_walk_cb action, void* userData) {
+int16_t corto_scope_walk(
+    corto_object o,
+    corto_scope_walk_cb action,
+    void* userData)
+{
     corto_assert_object(o);
 
     int16_t result;
@@ -2837,8 +2882,12 @@ int16_t corto_scope_walk(corto_object o, corto_scope_walk_cb action, void* userD
     return result;
 }
 
-/* Obtain scoped identifier (serves as global unique identifier) */
-char* corto_fullpath_intern(corto_id buffer, corto_object o, bool useName) {
+/* Obtain full object path (internal function) */
+char* corto_fullpath_intern(
+    corto_id buffer,
+    corto_object o,
+    bool useName)
+{
     corto_assert_object(o);
 
     corto_object stack[CORTO_MAX_SCOPE_DEPTH];
@@ -2930,11 +2979,16 @@ error:
     return NULL;
 }
 
-char* corto_fullpath(corto_id buffer, corto_object o) {
+/* Obtain full object path */
+char* corto_fullpath(
+    corto_id buffer,
+    corto_object o)
+{
     corto_assert_object(o);
     return corto_fullpath_intern(buffer, o, FALSE);
 }
 
+/* Store all parents of object in array */
 static
 corto_object* corto_scopeStack(
     corto_object o,
@@ -2959,6 +3013,7 @@ corto_object* corto_scopeStack(
     return scopeStack;
 }
 
+/* Get partial path of object (internal) */
 char* corto_path_intern(
     corto_id buffer,
     corto_object from,
@@ -3081,6 +3136,7 @@ error:
     return NULL;
 }
 
+/* Get partial path of object */
 char* corto_path(
     corto_id buffer,
     corto_object from,
@@ -3092,92 +3148,7 @@ char* corto_path(
     return corto_path_intern(buffer, from, o, sep, FALSE);
 }
 
-
-corto_object corto_sourceof(
-    corto_object o)
-{
-    corto_assert_object(o);
-
-    corto__object* _o;
-    corto__persistent* persistent;
-    corto_object result = NULL;
-
-    if (corto_isorphan(o)) {
-        o = corto_parentof(o);
-        while (o && corto_isorphan(o)) {
-            o = corto_parentof(o);
-        }
-    }
-
-    if (o && corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
-        _o = CORTO_OFFSET(o, -sizeof(corto__object));
-        persistent = corto_hdr_persistent(_o);
-        result = persistent->owner;
-    }
-
-    return result;
-}
-
-static
-bool corto_owner_match(
-    corto_object owner,
-    corto_object current)
-{
-    bool result;
-
-    if (owner == current) {
-        result = TRUE;
-    } else if (owner && corto_instanceof(corto_mount_o, owner)) {
-        if (!current) {
-            if (corto_mount(owner)->policy.ownership != CORTO_LOCAL_SOURCE) {
-                result = FALSE;
-            } else {
-                result = TRUE;
-            }
-        } else {
-            result = FALSE;
-        }
-    } else if (current && corto_instanceof(corto_mount_o, current)) {
-        if (!owner) {
-            if (corto_mount(current)->policy.ownership != CORTO_LOCAL_SOURCE) {
-                result = FALSE;
-            } else {
-                result = TRUE;
-            }
-        } else {
-            result = FALSE;
-        }
-    } else {
-        /* Owner is set, but not a mount. Object is owned by local process */
-        result = TRUE;
-    }
-
-    return result;
-}
-
-bool corto_owned(corto_object o) {
-    corto_assert_object(o);
-
-    /* If object is not persistent, and it is not an orphan
-     * the application is free to do with the object what it wants. */
-    if (!corto_check_attr(o, CORTO_ATTR_PERSISTENT) && !corto_isorphan(o)) {
-        return TRUE;
-    }
-
-    corto_object owner = corto_sourceof(o);
-    corto_object current = corto_get_source();
-    bool result = FALSE;
-
-    if (!corto_check_state(o, CORTO_VALID)) {
-        /* If object is not DEFINED it is not owned yet, and it's fair game */
-        result = TRUE;
-    } else {
-        result = corto_owner_match(owner, current);
-    }
-
-    return result;
-}
-
+/* increase refcount of an object */
 int32_t corto_claim(corto_object o) {
     corto_assert_object(o);
 
@@ -3196,6 +3167,7 @@ int32_t corto_claim(corto_object o) {
     return i;
 }
 
+/* decrease refcount of an object */
 int32_t corto_release(corto_object o) {
     corto_assert_object(o);
 
@@ -3224,6 +3196,7 @@ int32_t corto_release(corto_object o) {
     return i;
 }
 
+/* internal function for looking up objects in store & vstore (optional) */
 static
 corto_object corto_lookup_intern(
     corto_object parent,
@@ -3402,6 +3375,7 @@ error:
     return NULL;
 }
 
+/* External function to lookup objects */
 corto_object corto_lookup(
     corto_object scope,
     const char *id)
@@ -3409,9 +3383,7 @@ corto_object corto_lookup(
     return corto_lookup_intern(scope, id, TRUE);
 }
 
-bool corto_declaredByMeCheck(corto_object o);
-
-/* Resolve anonymous object */
+/* Create anonymous object from string provided to corto_resolve */
 static
 const char* corto_resolveAnonymous(
     corto_object scope,
@@ -3440,10 +3412,12 @@ const char* corto_resolveAnonymous(
     return ptr;
 }
 
-/* Use private function to do a lookup with a string that is guaranteed lowercase */
-#include "ctype.h"
-
-/* Resolve fully scoped name */
+/* Resolve object according to rules of looking up types:
+ * - if path is absolute, do regular lookup
+ * - look first in corto/lang
+ * - then look in provided path
+ * - then look in /corto
+ */
 corto_object corto_resolve_intern(
     corto_object _scope,
     const char *str,
@@ -3644,6 +3618,7 @@ error:
     return NULL;
 }
 
+/* External resolve function */
 corto_object corto_resolve(
     corto_object parent,
     const char *id)
@@ -3651,13 +3626,103 @@ corto_object corto_resolve(
     return corto_resolve_intern(parent, id, TRUE);
 }
 
-corto_object corto_set_source(corto_object owner) {
-    corto_assert_object(owner);
-    corto_object result = corto_tls_get(CORTO_KEY_OWNER);
-    corto_tls_set(CORTO_KEY_OWNER, owner);
+/* Get source of an object */
+corto_object corto_sourceof(
+    corto_object o)
+{
+    corto_assert_object(o);
+
+    corto__object* _o;
+    corto__persistent* persistent;
+    corto_object result = NULL;
+
+    if (corto_isorphan(o)) {
+        o = corto_parentof(o);
+        while (o && corto_isorphan(o)) {
+            o = corto_parentof(o);
+        }
+    }
+
+    if (o && corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
+        _o = CORTO_OFFSET(o, -sizeof(corto__object));
+        persistent = corto_hdr_persistent(_o);
+        result = persistent->source;
+    }
+
     return result;
 }
 
+/* is source equivalent to current source */
+static
+bool corto_source_match(
+    corto_object source,
+    corto_object current)
+{
+    bool result;
+
+    if (source == current) {
+        result = TRUE;
+    } else if (source && corto_instanceof(corto_mount_o, source)) {
+        if (!current) {
+            if (corto_mount(source)->policy.ownership != CORTO_LOCAL_SOURCE) {
+                result = FALSE;
+            } else {
+                result = TRUE;
+            }
+        } else {
+            result = FALSE;
+        }
+    } else if (current && corto_instanceof(corto_mount_o, current)) {
+        if (!source) {
+            if (corto_mount(current)->policy.ownership != CORTO_LOCAL_SOURCE) {
+                result = FALSE;
+            } else {
+                result = TRUE;
+            }
+        } else {
+            result = FALSE;
+        }
+    } else {
+        /* Owner is set, but not a mount. Object is owned by local process */
+        result = TRUE;
+    }
+
+    return result;
+}
+
+/* Is object owned by source of current thread */
+bool corto_owned(corto_object o) {
+    corto_assert_object(o);
+
+    /* If object is not persistent, and it is not an orphan
+     * the application is free to do with the object what it wants. */
+    if (!corto_check_attr(o, CORTO_ATTR_PERSISTENT) && !corto_isorphan(o)) {
+        return TRUE;
+    }
+
+    corto_object source = corto_sourceof(o);
+    corto_object current = corto_get_source();
+    bool result = FALSE;
+
+    if (!corto_check_state(o, CORTO_VALID)) {
+        /* If object is not DEFINED it is not owned yet, and it's fair game */
+        result = TRUE;
+    } else {
+        result = corto_source_match(source, current);
+    }
+
+    return result;
+}
+
+/* Set source of current thread */
+corto_object corto_set_source(corto_object source) {
+    corto_assert_object(source);
+    corto_object result = corto_tls_get(CORTO_KEY_OWNER);
+    corto_tls_set(CORTO_KEY_OWNER, source);
+    return result;
+}
+
+/* Get source of current thread */
 corto_object corto_get_source() {
     return corto_tls_get(CORTO_KEY_OWNER);
 }
@@ -3710,7 +3775,7 @@ int16_t corto_publish(
     return result;
 }
 
-/* Update object */
+/* Send update notification for object */
 int16_t corto_update(corto_object o) {
     corto_assert_object(o);
 
@@ -3756,6 +3821,7 @@ error:
     return -1;
 }
 
+/* Start updating object (acquires write-lock) */
 static
 int16_t corto_update_begin_intern(
     corto_object o,
@@ -3804,12 +3870,14 @@ error:
     return -1;
 }
 
+/* Public function to start updating object (takes write lock) */
 int16_t corto_update_begin(
     corto_object o)
 {
     return corto_update_begin_intern(o, TRUE);
 }
 
+/* End update. Sends notification, then unlocks object */
 int16_t corto_update_end(
     corto_object observable)
 {
@@ -3820,13 +3888,13 @@ int16_t corto_update_end(
     bool defined = TRUE;
 
     if (!corto_check_state(observable, CORTO_VALID)) {
-        corto_object owner = corto_sourceof(observable);
+        corto_object source = corto_sourceof(observable);
         defined = FALSE;
         corto_eventMask mask = 0;
-        if (owner && corto_instanceof(corto_mount_o, owner) &&
-            (corto_mount(owner)->policy.ownership == CORTO_LOCAL_SOURCE))
+        if (source && corto_instanceof(corto_mount_o, source) &&
+            (corto_mount(source)->policy.ownership == CORTO_LOCAL_SOURCE))
         {
-            /* If not defined, and owner is a SINK, object is resumed */
+            /* If not defined, and source is a SINK, object is resumed */
             mask |= CORTO_RESUME;
         } else
         {
@@ -3864,6 +3932,7 @@ error:
     return -1;
 }
 
+/* Cancel update. Unlocks object without sending a notification */
 int16_t corto_update_cancel(corto_object observable) {
     corto_assert_object(observable);
 
@@ -3887,7 +3956,7 @@ error:
     return -1;
 }
 
-/* Thread-safe reading */
+/* Take readlock on object. Multiple threads may simultaneousl readlock. */
 int16_t corto_read_begin(corto_object object) {
     corto_assert_object(object);
 
@@ -3907,11 +3976,13 @@ error:
     return -1;
 }
 
+/* Release readlock */
 int16_t corto_read_end(corto_object object) {
     corto_assert_object(object);
     return corto_unlock(object);
 }
 
+/* Take write lock. Only one thread may take a write-lock simultaneously */
 static
 int16_t corto_lock_intern(
     corto_object object)
@@ -3930,7 +4001,7 @@ error:
     return -1;
 }
 
-/* Thread-safe writing */
+/* Public function to take writelock */
 int16_t corto_lock(
     corto_object object)
 {
@@ -3944,6 +4015,7 @@ int16_t corto_lock(
     return corto_lock_intern(object);
 }
 
+/* Unlock writelock */
 static
 int16_t corto_unlock_intern(
     corto_object object)
@@ -3961,6 +4033,7 @@ error:
     return -1;
 }
 
+/* Public function to unlock writelock */
 int16_t corto_unlock(
     corto_object object)
 {
@@ -3996,7 +4069,7 @@ int32_t corto_sig_name(
     return 0;
 }
 
-/* Count number of parameters */
+/* Count number of signature parameters */
 int32_t corto_sig_paramCount(
     const char *signature)
 {
@@ -4236,7 +4309,7 @@ error:
     return -1;
 }
 
-/* Helper functions for overloading */
+/* Return number of parameters of either function or delegate */
 uint32_t corto_overloadParamCount(corto_object o) {
     corto_assert_object(o);
 
@@ -4249,7 +4322,7 @@ uint32_t corto_overloadParamCount(corto_object o) {
     return result;
 }
 
-/* Helper function that obtains type from signature */
+/* Obtain parameter type from signature */
 corto_type corto_overloadParamType(corto_object object, int32_t i, bool *reference) {
     corto_assert_object(object);
 
@@ -4294,7 +4367,7 @@ error:
 }
 
 
-/* Compare parameter */
+/* Test if parameter is compatible */
 static
 uint32_t corto_overloadParamCompare(
     corto_type o_type,
@@ -4409,7 +4482,7 @@ nomatch:
 
 /* Create signature from delegate */
 static
-void corto_sigFromDelegate(
+void corto_sig_fromDelegate(
     corto_object o,
     corto_id buffer)
 {
@@ -4437,7 +4510,7 @@ char* corto_sig(corto_object object, corto_id buffer) {
 
     switch(((corto_interface)t)->kind) {
     case CORTO_DELEGATE:
-        corto_sigFromDelegate(object, buffer);
+        corto_sig_fromDelegate(object, buffer);
         break;
     case CORTO_PROCEDURE:
         return corto_idof(object);
@@ -4455,7 +4528,7 @@ error:
 }
 
 static
-bool corto_sigCompareName(
+bool corto_sig_compareName(
     const char *offered,
     const char *requested)
 {
@@ -4475,6 +4548,86 @@ bool corto_sigCompareName(
         return FALSE;
     }
     return TRUE;
+}
+
+/* Create request signature */
+char* corto_sig_open(const char *name) {
+    char *result;
+
+    result = corto_alloc(strlen(name) + 1 + 1);
+    sprintf(result, "%s(", name);
+
+    return result;
+}
+
+/* Add type to request signature */
+char* corto_sig_add(char *sig, corto_type type, int flags) {
+    uint32_t len;
+    char *result;
+    corto_id id;
+    bool reference = flags & CORTO_PARAMETER_REFERENCE;
+    bool forceReference = flags & CORTO_PARAMETER_FORCEREFERENCE;
+    bool wildcard = flags & CORTO_PARAMETER_WILDCARD;
+
+    if (type) {
+        if (!corto_check_attr(type, CORTO_ATTR_NAMED) ||
+            corto_isbuiltin_package(type))
+        {
+            corto_fullpath(id, type);
+        } else
+        {
+            strcpy(id, corto_idof(type));
+        }
+    } else if (wildcard) {
+        strcpy(id, "?");
+    } else {
+        strcpy(id, "null");
+    }
+
+    len = strlen(sig);
+    if (sig[len-1] == '(') {
+        result = corto_realloc(sig, len + strlen(id) + 1 + ((reference|forceReference) ? 2 : 0));
+        strcat(result, id);
+        if (flags & (reference|forceReference)) strcat(result, "&");
+        if (flags & (forceReference)) strcat(result, "&");
+    } else {
+        result = corto_realloc(sig, len + strlen(id) + 1 + 1 + ((reference|forceReference) ? 2 : 0));
+        strcat(result, ",");
+        strcat(result, id);
+        if (flags & (reference|forceReference)) strcat(result, "&");
+        if (flags & (forceReference)) strcat(result, "&");
+    }
+
+    return result;
+}
+
+/* Add wildcard to request signature */
+char* corto_sig_addWildcard(char *sig, bool isReference) {
+    uint32_t len;
+    char *result;
+
+    len = strlen(sig);
+    if (sig[len-1] == '(') {
+        result = corto_realloc(sig, len + 1 + 1 + (isReference ? 1 : 0));
+        strcat(result, "?");
+        if (isReference) strcat(result, "&");
+    } else {
+        result = corto_realloc(sig, len + 1 + 1 + 1 + (isReference ? 1 : 0));
+        strcat(result, ",");
+        strcat(result, "?");
+        if (isReference) strcat(result, "&");
+    }
+
+    return result;
+}
+
+/* Close request signature */
+char* corto_sig_close(char *sig) {
+    uint32_t length = strlen(sig) + 1;
+    sig = corto_realloc(sig, length + 1);
+    sig[length-1] = ')';
+    sig[length] = '\0';
+    return sig;
 }
 
 /* Check if argumentlist-expr matches function.
@@ -4503,7 +4656,7 @@ int16_t corto_overload(
         goto error;
     }
 
-    if (!corto_sigCompareName(offered, requested)) {
+    if (!corto_sig_compareName(offered, requested)) {
         goto nomatch;
     }
 
@@ -4589,6 +4742,7 @@ error:
     return -1;
 }
 
+/* Walk over scope, collect objects. Optionally filter objects */
 typedef struct corto_scope_walk_t {
     corto_objectseq *seq;
     corto_type type;
@@ -4605,7 +4759,7 @@ int corto_scopeCollectWalk(
     corto_objectseq *seq = data->seq;
 
     if (!data->type || (corto_typeof(o) == data->type)) {
-        if (!data->id || (corto_sigCompareName(data->id, corto_idof(o)))) {
+        if (!data->id || (corto_sig_compareName(data->id, corto_idof(o)))) {
             if (!seq->buffer) {
                 /* Get scopesize within scope lock */
                 uint32_t scopeSize = corto_scope_size(corto_parentof(o));
@@ -4620,6 +4774,7 @@ int corto_scopeCollectWalk(
     return 1;
 }
 
+/* Claim with object filter */
 corto_objectseq corto_scope_claimWithFilter(
     corto_object scope,
     corto_type type,
@@ -4635,12 +4790,14 @@ corto_objectseq corto_scope_claimWithFilter(
     return result;
 }
 
+/* Claim objects in scope without filter */
 corto_objectseq corto_scope_claim(
     corto_object scope)
 {
     return corto_scope_claimWithFilter(scope, NULL, NULL);
 }
 
+/* Release claimed scope */
 void corto_scope_release(corto_objectseq seq) {
     uint32_t i = 0;
     for (i = 0; i < seq.length; i++) {
@@ -4657,7 +4814,7 @@ typedef struct corto_lookup_function_t {
     int32_t old_d;
 }corto_lookup_function_t;
 
-/* Lookup function in scope */
+/* Lookup function in scope. Take into account overloading */
 int corto_lookup_functionWalk(corto_object *ptr, void* userData) {
     int32_t d = -1;
     corto_lookup_function_t* data;
@@ -4719,7 +4876,8 @@ found:
     return 0;
 }
 
-/* Lookup function with support for overloading */
+/* Lookup function from a sequence. Supports overloading. Used both for
+ * determining overloading in regular scopes and class method tables. */
 corto_object* corto_lookup_functionFromSequence(
     corto_objectseq scopeContents,
     const char *requested,
@@ -4764,6 +4922,7 @@ corto_object* corto_lookup_functionFromSequence(
     return walkData.result;
 }
 
+/* Lookup function from scope. Supports overloading. */
 corto_object corto_lookup_function(
     corto_object scope,
     const char *requested,
@@ -4788,83 +4947,7 @@ corto_object corto_lookup_function(
     return result;
 }
 
-/* Create request signature */
-char* corto_sig_open(const char *name) {
-    char *result;
-
-    result = corto_alloc(strlen(name) + 1 + 1);
-    sprintf(result, "%s(", name);
-
-    return result;
-}
-
-char* corto_sig_add(char *sig, corto_type type, int flags) {
-    uint32_t len;
-    char *result;
-    corto_id id;
-    bool reference = flags & CORTO_PARAMETER_REFERENCE;
-    bool forceReference = flags & CORTO_PARAMETER_FORCEREFERENCE;
-    bool wildcard = flags & CORTO_PARAMETER_WILDCARD;
-
-    if (type) {
-        if (!corto_check_attr(type, CORTO_ATTR_NAMED) ||
-            corto_isbuiltin_package(type))
-        {
-            corto_fullpath(id, type);
-        } else
-        {
-            strcpy(id, corto_idof(type));
-        }
-    } else if (wildcard) {
-        strcpy(id, "?");
-    } else {
-        strcpy(id, "null");
-    }
-
-    len = strlen(sig);
-    if (sig[len-1] == '(') {
-        result = corto_realloc(sig, len + strlen(id) + 1 + ((reference|forceReference) ? 2 : 0));
-        strcat(result, id);
-        if (flags & (reference|forceReference)) strcat(result, "&");
-        if (flags & (forceReference)) strcat(result, "&");
-    } else {
-        result = corto_realloc(sig, len + strlen(id) + 1 + 1 + ((reference|forceReference) ? 2 : 0));
-        strcat(result, ",");
-        strcat(result, id);
-        if (flags & (reference|forceReference)) strcat(result, "&");
-        if (flags & (forceReference)) strcat(result, "&");
-    }
-
-    return result;
-}
-
-char* corto_sig_addWildcard(char *sig, bool isReference) {
-    uint32_t len;
-    char *result;
-
-    len = strlen(sig);
-    if (sig[len-1] == '(') {
-        result = corto_realloc(sig, len + 1 + 1 + (isReference ? 1 : 0));
-        strcat(result, "?");
-        if (isReference) strcat(result, "&");
-    } else {
-        result = corto_realloc(sig, len + 1 + 1 + 1 + (isReference ? 1 : 0));
-        strcat(result, ",");
-        strcat(result, "?");
-        if (isReference) strcat(result, "&");
-    }
-
-    return result;
-}
-
-char* corto_sig_close(char *sig) {
-    uint32_t length = strlen(sig) + 1;
-    sig = corto_realloc(sig, length + 1);
-    sig[length-1] = ')';
-    sig[length] = '\0';
-    return sig;
-}
-
+/* Compare two objects. Return value can be used as comparator. */
 int corto_compare(
     corto_object o1,
     corto_object o2)
@@ -4884,46 +4967,12 @@ int corto_compare(
     return data.result;
 }
 
-int16_t corto_init(corto_object o) {
-    corto_assert_object(o);
-    int16_t result = 0;
-    corto_type type = corto_typeof(o);
-
-    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        corto_walk_opt s =
-            corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        if (corto_walk(&s, o, NULL)) {
-            goto error;
-        }
-    }
-
-    if (type->flags & CORTO_TYPE_HAS_INIT) {
-        result = corto_invoke_preDelegate(&type->init, type, o, false);
-    }
-    return result;
-error:
-    return -1;
-}
-
-int16_t corto_deinit(corto_object o) {
-    corto_assert_object(o);
-    corto_type type = corto_typeof(o);
-
-    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
-        corto_invoke_postDelegate(&type->deinit, type, o);
-    }
-
-    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        freeops_ptr_free(type, o);
-    }
-
-    return 0;
-}
-
+/* Deep-copy source into destination object. */
 int16_t _corto_copy(corto_object *dst, corto_object src) {
     corto_assert_object(src);
 
-    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk_opt s = corto_copy_ser(
+        CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     int16_t result;
     bool newObject = FALSE;
@@ -4943,68 +4992,98 @@ int16_t _corto_copy(corto_object *dst, corto_object src) {
     return result;
 }
 
-int16_t corto_super_init(corto_object o) {
-    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
-    if (!cur) {
-        corto_throw("can only call corto_super_init from an initializer");
-        goto error;
+/* Initialize object */
+static
+int16_t corto_init(corto_object o) {
+    corto_assert_object(o);
+    int16_t result = 0;
+    corto_type type = corto_typeof(o);
+
+    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+        corto_walk_opt s =
+            corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+        if (corto_walk(&s, o, NULL)) {
+            goto error;
+        }
     }
-    corto_type base = (corto_type)cur->base;
-    if (base && base->flags & CORTO_TYPE_HAS_INIT) {
-        return corto_invoke_preDelegate(&base->init, (corto_type)base, o, false);
-    } else {
-        corto_throw("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
+
+    if (type->flags & CORTO_TYPE_HAS_INIT) {
+        result = corto_invoke_preDelegate(&type->init, type, o);
     }
+    return result;
 error:
     return -1;
 }
 
-int16_t corto_super_deinit(corto_object o) {
-    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
-    if (!cur) {
-        corto_throw("can only call corto_super_deinit from an deinitializer");
-        goto error;
+/* Deinitialize object */
+static
+int16_t corto_deinit(corto_object o) {
+    corto_assert_object(o);
+    corto_type type = corto_typeof(o);
+
+    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
+        corto_invoke_postDelegate(&type->deinit, type, o);
     }
-    corto_type base = (corto_type)cur->base;
-    if (base && base->flags & CORTO_TYPE_HAS_DEINIT) {
-        corto_invoke_postDelegate(&base->deinit, base, o);
-    } else {
-        corto_throw("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
+
+    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+        freeops_ptr_free(type, o);
     }
 
     return 0;
-error:
-    return -1;
 }
 
-int16_t corto_super_construct(corto_object o) {
-    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
-    if (!cur) {
-        corto_throw("can only call corto_super_construct from a constructor");
-        goto error;
-    }
-    corto_class base = (corto_class)cur->base;
-    if (base && ((corto_type)base)->flags & CORTO_TYPE_HAS_CONSTRUCT) {
-        return corto_invoke_preDelegate(&base->construct, (corto_type)base, o, true);
-    } else {
-        corto_throw("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
-    }
-error:
-    return -1;
+#define SUPER(o, flag, action, name, ret, prepost)\
+    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));\
+    if (!cur) {\
+        corto_throw("can only call super_"name" from "name);\
+        goto error;\
+    }\
+    corto_type base = (corto_type)cur->base;\
+    if (base && base->flags & flag) {\
+        ret corto_invoke_##prepost##Delegate(\
+            &action, (corto_type)base, o);\
+    } else {\
+        corto_throw("interface '%s' does not have a baseclass",\
+            corto_fullpath(NULL, cur));\
+    }\
+
+#define SUPER_PRE(o, flag, action, name)\
+    SUPER(o, flag, action, name, return, pre)
+#define SUPER_POST(o, flag, action, name)\
+    SUPER(o, flag, action, name, ,post)
+
+/* Call initializer of super type */
+int16_t corto_super_init(
+    corto_object o)
+{
+    SUPER_PRE(o, CORTO_TYPE_HAS_INIT, base->init, "init");
+    return 0;
+    error: return -1;
 }
 
-void corto_super_destruct(corto_object o) {
-    corto_interface cur = corto_interface(corto_tls_get(CORTO_KEY_CONSTRUCTOR_TYPE));
-    if (!cur) {
-        corto_throw("can only call corto_super_destruct from a destructor");
-        goto error;
-    }
-    corto_class base = (corto_class)cur->base;
-    if (base && ((corto_type)base)->flags & CORTO_TYPE_HAS_DESTRUCT) {
-        corto_invoke_postDelegate(&base->destruct, (corto_type)base, o);
-    } else {
-        corto_throw("interface '%s' does not have a baseclass", corto_fullpath(NULL, cur));
-    }
+/* Call deinitializer of super type */
+int16_t corto_super_deinit(
+    corto_object o)
+{
+    SUPER_POST(o, CORTO_TYPE_HAS_DEINIT, base->deinit, "deinit");
+    return 0;
+error: return -1;
+}
+
+/* Call constructor of super type */
+int16_t corto_super_construct(
+    corto_object o)
+{
+    SUPER_PRE(o, CORTO_TYPE_HAS_CONSTRUCT, ((corto_class)base)->construct, "construct");
+    return 0;
+error: return -1;
+}
+
+/* Call destructor of super type */
+void corto_super_destruct(
+    corto_object o)
+{
+    SUPER_POST(o, CORTO_TYPE_HAS_DESTRUCT, ((corto_class)base)->destruct, "destruct");
 error:;
 }
 
@@ -5018,7 +5097,12 @@ bool corto_isbuiltin_package(corto_object o) {
            (o == corto_secure_o);
 }
 
-void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
+/* Get pointer to member value. Encapsulates around observable/target/actual */
+void* corto_getMemberPtr(
+    corto_object o,
+    void *ptr,
+    corto_member m)
+{
     void *result;
 
     if (!ptr) {
@@ -5052,14 +5136,7 @@ void* corto_getMemberPtr(corto_object o, void *ptr, corto_member m) {
     return result;
 }
 
-/** Function that provides low-level access to the corto store.
- *
- * UNSTABLE API
- *
- * When applications require more flexibility than what is provided by the
- * regular API, they can use the corto() function.
- */
-
+/* Function that provides low-level flexible access to store operations */
 corto_object _corto(
     int action,
     struct corto_action params)

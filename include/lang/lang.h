@@ -11,7 +11,10 @@
 
 /* $header() */
 
-/* Type flags */
+/* Type flags. These flags are derived from metadata, and provide a method of
+ * quickly checking whether a certain part of the code can be skipped. For
+ * example: if a type does not have resources, copying an object can be reduced
+ * to a memcopy instead of a deepcopy. */
 #define CORTO_TYPE_HAS_RESOURCES (1)
 #define CORTO_TYPE_NEEDS_INIT (2)
 #define CORTO_TYPE_HAS_TARGET (4)

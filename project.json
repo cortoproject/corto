@@ -6,13 +6,17 @@
         "description": "Corto runtime library",
         "version": "2.0.0",
         "managed": false,
-        "lib": ["rt", "dl", "m", "ffi", "pthread"],
         "use_generated_api": false,
+        "lib": ["rt", "dl", "m", "ffi", "pthread"],
         "sources": [
             "src", "../base/src"
         ],
         "includes": [
             "include", "../base/include/corto"
-        ]
+        ],
+        "doxygen": [{
+            "title": "Corto API Reference",
+            "chapters": [ "store", "vstore" ]
+        }]
     }
 }

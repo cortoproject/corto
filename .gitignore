@@ -1,4 +1,6 @@
 *bake_cache*
+*doxygen*
 */bin*
 bin/*
+html/*
 .DS_Store

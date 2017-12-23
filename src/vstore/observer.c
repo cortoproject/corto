@@ -441,7 +441,7 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
 
     corto_type t = corto_typeof(observable);
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
-        if (corto_invoke_preDelegate(&((corto_class)t)->validate, t, observable, true)) {
+        if (corto_invoke_preDelegate(&((corto_class)t)->validate, t, observable)) {
             goto error;
         }
     }

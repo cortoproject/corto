@@ -40,11 +40,6 @@ void corto_invoke_cdecl(corto_function f, corto_void* result, void* args);
 void corto_observerAdminFree(void *admin);
 void corto_declaredByMeFree(void *admin);
 
-#ifdef CORTO_VM
-void corto_invoke_vm(corto_function f, corto_void* result, void* args);
-void corto_invokeDestruct_vm(corto_function f);
-#endif
-
 struct corto_exitHandler {
     void(*handler)(void*);
     void* userData;
@@ -70,12 +65,6 @@ const char* BAKE_VERSION_PATCH = VERSION_PATCH;
 /* Single lock to protect infrequent actions on global corto data */
 corto_mutex_s corto_adminLock;
 corto_rwmutex_s corto_subscriberLock;
-
-/* Package loader */
-static corto_loader corto_loaderInstance;
-
-/* Actions to be run at shutdown */
-static corto_ll corto_exitHandlers = NULL;
 
 /* Application name */
 char *corto_appName = NULL;
@@ -113,14 +102,13 @@ int8_t CORTO_TRACE_NOTIFICATIONS = 0;
 /* When set, the runtime will break at specified breakpoint */
 int32_t CORTO_MEMTRACE_BREAKPOINT;
 
-/*
- * Indicator for whether corto is operational
- * 0 = running
- * 1 = initializing
- * 2 = deinitializing
- * 3 = stopped
- */
+/* Package loader */
+static corto_loader corto_loaderInstance;
 
+/* Actions to be run at shutdown */
+static corto_ll corto_exitHandlers = NULL;
+
+/* String identifying current corto build */
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
 #define SSO_OBJECT(obj) CORTO_OFFSET(&obj##__o, sizeof(corto_SSO))
@@ -130,9 +118,15 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 #define SSO_OP_OBJ(obj) {SSO_OBJECT(obj), 0}
 
 /* The ordering of the lists of objects below is important to ensure correct
- * initialization\construction\destruction of objects. Especially the latter one
- * is tricky, since during destruction callback-vtables are destroyed, which in turn
- * contain the pointers to the destruct functions.
+ * initialization\construction\destruction of objects.
+ *
+ * During intiialization, objects are added to the hierarchy, and their
+ * intializers/constructors are called. This will (for types) calculate the type
+ * sizes, which will then be verified to be the same as the actual corto type.
+ *
+ * The definitions of these objects are located in bootstrap.h. For an object
+ * defined in bootstrap.h to be visible in the store, it needs to be added to
+ * the list of to be initialized objects.
  */
 
 /* Tier 1 objects */
@@ -887,33 +881,37 @@ corto_bootstrapElement objects[] = {
     {NULL, 0}
 };
 
-/* Creation and destruction of objects */
-static void corto_createObject(corto_object o) {
-    corto_init_builtin(o);
-}
-
 /* Initialization of objects */
-static void corto_initObject(corto_object o) {
-    corto_createObject(o);
+static
+void corto_initObject(
+    corto_object o)
+{
+    corto_init_builtin(o);
     corto_walk_opt s =
         corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_walk(&s, o, NULL);
     corto_type t = corto_typeof(o);
-    corto_invoke_preDelegate(&t->init, t, o, false);
+    corto_invoke_preDelegate(&t->init, t, o);
 }
 
 /* Define object */
-static void corto_defineObject(corto_object o) {
+static
+void corto_defineObject(
+    corto_object o)
+{
     if (corto_define(o)) {
         corto_throw("construction of builtin-object '%s' failed", corto_idof(o));
     }
 }
 
 /* Define type */
-static void corto_defineType(corto_object o, corto_uint32 size) {
+static
+void corto_defineType(
+    corto_object o,
+    corto_uint32 size)
+{
     corto_defineObject(o);
 
-    /* Size validation */
     if (corto_type(o)->size != size) {
         corto_error(
           "bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.",
@@ -921,11 +919,15 @@ static void corto_defineType(corto_object o, corto_uint32 size) {
     }
 }
 
-static void corto_genericTlsFree(void *o) {
+static
+void corto_genericTlsFree(
+    void *o)
+{
     corto_dealloc(o);
 }
 
-static void corto_patchSequences(void) {
+static
+void corto_patchSequences(void) {
     /* Mount implements dispatcher */
     corto_mount_o->implements.length = 1;
     corto_mount_o->implements.buffer = corto_alloc(sizeof(corto_object));
@@ -939,7 +941,9 @@ static void corto_patchSequences(void) {
     corto_set_str(&p->name, "event");
 }
 
-void corto_environment_init(void) {
+static
+void corto_environment_init(void)
+{
 /* Only set environment variables if library is installed as corto package */
 #ifndef CORTO_STANDALONE_LIB
 
@@ -986,7 +990,9 @@ void corto_environment_init(void) {
     }
 }
 
-static int corto_loadConfig(void) {
+static
+int corto_loadConfig(void)
+{
     int result = 0;
     corto_log_push("config");
     char *cfg = corto_getenv("CORTO_CONFIG");
@@ -1025,7 +1031,10 @@ static int corto_loadConfig(void) {
     return result;
 }
 
-int corto_start(char *appName) {
+/* Bootstrap corto object store */
+int corto_start(
+    char *appName)
+{
     CORTO_APP_STATUS = 1; /* Initializing */
 
     corto_appName = appName;
@@ -1258,7 +1267,10 @@ int corto_start(char *appName) {
 }
 
 /* Register exithandler */
-void corto_onexit(void(*handler)(void*), void* userData) {
+void corto_onexit(
+    void(*handler)(void*),
+    void* userData)
+{
     struct corto_exitHandler* h;
 
     h = corto_alloc(sizeof(struct corto_exitHandler));
@@ -1274,7 +1286,9 @@ void corto_onexit(void(*handler)(void*), void* userData) {
 }
 
 /* Call exit-handlers */
-static void corto_exit(void) {
+static
+void corto_exit(void)
+{
     struct corto_exitHandler* h;
 
     if (corto_exitHandlers) {
@@ -1287,8 +1301,9 @@ static void corto_exit(void) {
     }
 }
 
-int corto_stop(void) {
-
+/* Shutdown object store */
+int corto_stop(void)
+{
     CORTO_APP_STATUS = 2; /* Shutting down */
 
     corto_log_push("fini");
@@ -1353,17 +1368,14 @@ error:
     return -1;
 }
 
+/* Get current build. Used to check if packages link with correct corto lib */
 corto_string corto_get_build(void) {
     return CORTO_BUILD;
 }
 
-#define CORTO_CHECKBUILTIN(builtinobj)\
-    if (o == builtinobj) return TRUE;
-
-#define CORTO_CHECKBUILTIN_ARG(builtinobj, n)\
-    if (o == builtinobj) return TRUE;
-
-bool corto_autoload(corto_bool autoload) {
+/* Enable or disable autoloading of packages when a package object is created */
+bool corto_autoload(bool autoload)
+{
     bool prev = false;
 
     if (corto_loaderInstance) {
@@ -1374,7 +1386,9 @@ bool corto_autoload(corto_bool autoload) {
     return prev;
 }
 
-corto_bool corto_enableload(corto_bool enable) {
+/* Enable or disable package loader mount. */
+corto_bool corto_enableload(corto_bool enable)
+{
     corto_bool prev = FALSE;
     if (!enable) {
         if (corto_loaderInstance) {
@@ -1394,6 +1408,28 @@ corto_bool corto_enableload(corto_bool enable) {
     return prev;
 }
 
+/* Assert object is of specified type. Used in generated type macro's. */
+corto_object _corto_assert_type(
+    corto_type type,
+    corto_object o)
+{
+    corto_assert_object(type);
+    corto_assert_object(o);
+
+    if (o && (corto_typeof(o) != type)) {
+        if (!_corto_instanceof(type, o)) {
+            corto_error("object '%s' is not an instance of '%s'\n   type = %s",
+                corto_fullpath(NULL, o),
+                corto_fullpath(NULL, type),
+                corto_fullpath(NULL, corto_typeof(o)));
+            corto_backtrace(stdout);
+            abort();
+        }
+    }
+    return o;
+}
+
+/* Assert object is valid. Only enabled in debug builds */
 #ifndef NDEBUG
 void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
     if (o) {
