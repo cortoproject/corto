@@ -353,7 +353,7 @@ corto_object _corto(
  * it from being deallocated.
  *
  * It is usually not needed to call this function manually. When setting a member
- * of a reference type, use the corto_ptr_setref function.
+ * of a reference type, use the corto_set_ref function.
  *
  * @param o The object of which to increase the reference count.
  * @return The reference count of the object after the operation.
