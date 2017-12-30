@@ -1042,7 +1042,7 @@ int corto_start(
         corto_appName += 2;
     }
 
-    base_init(appName);
+    platform_init(appName);
 
     /* Initialize TLS keys */
     corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
@@ -1353,9 +1353,9 @@ int corto_stop(void)
 
     corto_log_pop();
 
-    base_deinit();
+    platform_deinit();
 
-    /* Call exithandlers. Do after base_init as this will unload any loaded
+    /* Call exithandlers. Do after platform_init as this will unload any loaded
      * libraries, which may have routines to cleanup TLS data. */
     corto_exit();
 
