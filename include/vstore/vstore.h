@@ -352,7 +352,7 @@ typedef struct corto_subscribe__fluent {
 /** Create a realtime query.
  * Subscribers enable an application to listen for for events from the object
  * store and events that come directly from mounts. Subscribers receive only
- * data events (`ON_DEFINE`, `ON_UPDATE`, `ON_DELETE`).
+ * data events (`DEFINE`, `UPDATE`, `DELETE`).
  *
  * The difference between subscribers and observers is that while observers
  * provide a reference to an object, a subscriber returns a `corto_result`, which
@@ -408,8 +408,8 @@ int16_t corto_unsubscribe(
  * If the object is loaded in the RAM store, a call to corto_publish will
  * demarshall the specified value into the object.
  *
- * The function may only emit events of the data kind, which are ON_DEFINE,
- * ON_UPDATE, ON_INVALIDATE and ON_DELETE. The other events are reserved for
+ * The function may only emit events of the data kind, which are DEFINE,
+ * UPDATE, INVALIDATE and DELETE. The other events are reserved for
  * objects that are loaded in the RAM store.
  *
  * @param event The event to be emitted

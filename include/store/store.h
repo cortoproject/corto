@@ -163,7 +163,7 @@ corto_object _corto_create(
  *
  * Scoped objects are added to the scope of their parent and have a unique id
  * which makes them discoverable in the object store. When this function succeeds
- * an ON_DECLARE event is emitted.
+ * an DECLARE event is emitted.
  *
  * This function will block if there is another thread that has declared, but not
  * defined the same object. Once the other thread defines the object, the function
@@ -188,12 +188,12 @@ corto_object _corto_declare(
 
 /** Define an object.
  * This function changes the state of an object to DEFINED. When an object is
- * defined, the type constructor is invoked. If successful, an ON_DEFINE event is
+ * defined, the type constructor is invoked. If successful, an DEFINE event is
  * emitted. The DEFINE event indicates the moment when the value
  * of an object is ready to be interpreted by contexts other than the one where
  * the object was being created.
  *
- * This function may emit an ON_RESUME event instead of ON_DEFINE if a SINK mount
+ * This function may emit an RESUME event instead of DEFINE if a SINK mount
  * indicates that it has a copy of the object available. In this case, the function
  * will overwrite the initial object value with the value that the SINK mount provides.
  *
@@ -266,13 +266,13 @@ int16_t corto_update_begin(
     corto_object o);
 
 /** Update an object.
- * This function emits an ON_UPDATE event and must be called after either
+ * This function emits an UPDATE event and must be called after either
  * a successful call to corto_update_begin or corto_update_try. If the function is
  * called without first calling corto_update_begin or corto_update_try the behavior
  * is undefined. The function will unlock the object.
  *
  * This function behaves like corto_define when the object is not yet defined,
- * in that it defines the object, and may either emit ON_DEFINE or ON_RESUME,
+ * in that it defines the object, and may either emit DEFINE or RESUME,
  * depending on whether a SINK mount has a copy of the object.
  *
  * @param o The object to be updated.
@@ -297,7 +297,7 @@ int16_t corto_update_cancel(
     corto_object o);
 
 /** Invalidate an object.
- * This function emits an ON_INVALIDATE event when a valid object is passed to it.
+ * This function emits an INVALIDATE event when a valid object is passed to it.
  * This function is typically used to indicate that an object has gone stale, or
  * that the constructor of the object has failed.
  *
@@ -411,7 +411,8 @@ corto_attr corto_attrof(
     corto_object o);
 
 /** Check if an object is an orphan.
- * Orphans are objects that not registered with their parents.
+ * Orphans are objects that contain a reference to a parent object, but the
+ * parent object does not have the object in its scope.
  *
  * @param o The object to check
  * @return true if the object is an orphan.
@@ -445,8 +446,7 @@ int32_t corto_countof(
     corto_object o);
 
 /** Get the object id.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
@@ -459,8 +459,7 @@ char *corto_idof(
     corto_object o);
 
 /** Get the object name.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
@@ -483,8 +482,7 @@ char *corto_nameof(
     corto_object o);
 
 /** Get the parent of an object.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
@@ -498,10 +496,9 @@ corto_object corto_parentof(
     corto_object o);
 
 /** Returns the source for an object.
- * Only objects created with CORTO_ATTR_PERSISTENT can explicitly set an source. If
- * the object is not PERSISTENT and is an orphan (created with either corto_declareOrphan
- * or corto_createOrphan) the function will obtain the source of the parent. In
- * all other scenarios the function will return NULL.
+ * Only objects created with CORTO_ATTR_PERSISTENT can explicitly set a source. If
+ * the object is not PERSISTENT and is an orphan the function will obtain the
+ * source of the parent. In all other scenarios the function will return NULL.
  *
  * @param o A valid object.
  * @return The source of the object.
@@ -1148,8 +1145,7 @@ char *corto_path(
     const char* sep);
 
 /** Check if object is a child of the specified parent.
- * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The objects passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
@@ -1189,8 +1185,7 @@ bool corto_owned(
 
 
 /** Returns the number of child objects in a scope.
- * The objects passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The objects passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
@@ -1207,8 +1202,7 @@ uint32_t corto_scope_size(
     corto_object o);
 
 /** Returns a sequence with the objects in the current scope.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
@@ -1234,8 +1228,7 @@ void corto_scope_release(
     corto_objectseq scope);
 
 /** Invoke a callback for each object in a scope.
- * The object passed to this function must be created with CORTO_ATTR_NAMED. Any
- * object that is created with declareChild or createChild has this attribute. If
+ * The object passed to this function must be created with CORTO_ATTR_NAMED. If
  * an object without CORTO_ATTR_NAMED is passed to this function the behavior is
  * undefined.
  *
