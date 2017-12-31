@@ -3908,11 +3908,11 @@ int16_t corto_update_end(
     } else {
         if (corto_secured()) {
             if (corto_notify_secured(observable, CORTO_UPDATE)) {
-                goto error;
+                result = -1;
             }
         } else {
             if (corto_notify(observable, CORTO_UPDATE)) {
-                goto error;
+                result = -1;
             }
         }
     }
@@ -3928,8 +3928,6 @@ int16_t corto_update_end(
     }
 
     return result;
-error:
-    return -1;
 }
 
 /* Cancel update. Unlocks object without sending a notification */

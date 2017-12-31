@@ -1173,7 +1173,6 @@ void test_ObjectMgmt_tc_declareOrphan(
         .id = "i",
         .type = corto_int32_o
     });
-
     test_assert(i != NULL);
     test_assert(corto_check_attr(i, CORTO_ATTR_NAMED));
     test_assertstr(corto_idof(i), "i");
@@ -1182,13 +1181,10 @@ void test_ObjectMgmt_tc_declareOrphan(
     test_assert(!corto_isbuiltin(i));
     ret = corto_define(i);
     test_assert(ret == 0);
-
     /* Object should not be resolvable */
     test_assert(!corto_lookup(root_o, "i"));
-
     ret = corto_delete(i);
     test_assert(ret == 0);
-
 }
 
 void test_ObjectMgmt_tc_declareScoped(
@@ -1775,7 +1771,6 @@ void test_ObjectMgmt_tc_findOrCreate(
         .id = "foo",
         .type = corto_int32_o
     });
-
     test_assert(o != NULL);
     test_assert(corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
@@ -1786,9 +1781,7 @@ void test_ObjectMgmt_tc_findOrCreate(
     test_assert(f != NULL);
     test_assert(f == o);
     test_assert(corto_release(f) == 1);
-
     test_assert(corto_delete(o) == 0);
-
 }
 
 void test_ObjectMgmt_tc_findOrCreateExisting(
@@ -1802,7 +1795,6 @@ void test_ObjectMgmt_tc_findOrCreateExisting(
         .id = "foo",
         .type = corto_int32_o
     });
-
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(corto_check_state(o, CORTO_VALID));
@@ -1810,10 +1802,8 @@ void test_ObjectMgmt_tc_findOrCreateExisting(
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
     test_assertint(corto_countof(o), 2);
-
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
-
 }
 
 void test_ObjectMgmt_tc_findOrCreateExistingOtherType(
@@ -1826,7 +1816,6 @@ void test_ObjectMgmt_tc_findOrCreateExistingOtherType(
         .id = "foo",
         .type = corto_int32_o
     });
-
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(corto_check_state(o, CORTO_VALID));
@@ -1834,10 +1823,8 @@ void test_ObjectMgmt_tc_findOrCreateExistingOtherType(
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
     test_assertint(corto_countof(o), 2);
-
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
-
 }
 
 void test_ObjectMgmt_tc_findOrDeclare(
@@ -1848,7 +1835,6 @@ void test_ObjectMgmt_tc_findOrDeclare(
         .id = "foo",
         .type = corto_int32_o
     });
-
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_type(corto_int32_o));
@@ -1859,9 +1845,7 @@ void test_ObjectMgmt_tc_findOrDeclare(
     test_assert(f != NULL);
     test_assert(f == o);
     test_assert(corto_release(f) == 1);
-
     test_assert(corto_delete(o) == 0);
-
 }
 
 void test_ObjectMgmt_tc_findOrDeclareExisting(
@@ -1875,7 +1859,6 @@ void test_ObjectMgmt_tc_findOrDeclareExisting(
         .id = "foo",
         .type = corto_int32_o
     });
-
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(!corto_check_state(o, CORTO_VALID));
@@ -1883,10 +1866,8 @@ void test_ObjectMgmt_tc_findOrDeclareExisting(
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
     test_assertint(corto_countof(o), 2);
-
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
-
 }
 
 void test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
@@ -1899,7 +1880,6 @@ void test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
         .id = "foo",
         .type = corto_int32_o
     });
-
     test_assert(o != NULL);
     test_assert(o == e);
     test_assert(!corto_check_state(o, CORTO_VALID));
@@ -1907,10 +1887,8 @@ void test_ObjectMgmt_tc_findOrDeclareExistingOtherType(
     test_assertstr(corto_idof(o), "foo");
     test_assert(corto_parentof(o) == root_o);
     test_assertint(corto_countof(o), 2);
-
     test_assert(corto_delete(o) == 0);
     test_assert(corto_release(e) == 0);
-
 }
 
 void test_ObjectMgmt_tc_invalidate(
@@ -2295,6 +2273,60 @@ void test_ObjectMgmt_tc_lifecycleValidateFail(
     test_assert(corto_delete(a) == 0);
 }
 
+void test_ObjectMgmt_tc_lifecycleValidateFail_w_updateBegin(
+    test_ObjectMgmt this)
+{
+    test_LifecycleTest o = corto_declare(root_o, "data/lt", test_LifecycleTest_o);
+    test_assert(o != NULL);
+    test_assert(o->admin != NULL);
+
+    // Separate object keeps track of called callbacks so it is possible to track
+    // calling deinit
+    test_LifecycleAdmin a = o->admin;
+    corto_claim(a);
+
+    test_assertint(a->hooksCalled, TEST_INIT_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED);
+
+    /* Claim object, so difference between delete and release can be tested */
+    corto_claim(o);
+
+    o->validateFail = true;
+
+    test_assert(corto_define(o) == 0);
+    test_assertint(a->hooksCalled,
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
+
+    test_assert(corto_update_begin(o) == 0);
+    test_assert(corto_update_end(o) != 0);
+    test_assertint(a->hooksCalled,
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
+
+    a->hooksCalled = TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED;
+    o->validateFail = false;
+
+    test_assert(corto_update_begin(o) == 0);
+    test_assert(corto_update_end(o) == 0);
+    test_assertint(a->hooksCalled,
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_VALID);
+
+    test_assert(corto_delete(o) == 0);
+    test_assertint(a->hooksCalled,
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED);
+    test_assertint(corto_stateof(o), CORTO_DECLARED|CORTO_DELETED);
+
+    corto_release(o);
+    test_assertint(a->hooksCalled,
+        TEST_INIT_CALLED|TEST_CONSTRUCT_CALLED|TEST_DEFINE_CALLED|TEST_VALIDATE_CALLED|TEST_UPDATE_CALLED|
+        TEST_DESTRUCT_CALLED|TEST_DELETE_CALLED|TEST_DEINIT_CALLED);
+
+    test_assert(corto_delete(a) == 0);
+}
+
 void test_ObjectMgmt_tc_redeclareNestedUnknown(
     test_ObjectMgmt this)
 {
@@ -2393,13 +2425,11 @@ void test_ObjectMgmt_tc_redeclareRecursiveUnknownDontForceType(
         .id = "foo/bar",
         .type = corto_uint32_o
     });
-
     test_assert(p != NULL);
     test_assert(p != o);
     test_assert(!corto_check_state(p, CORTO_VALID));
     test_assert(corto_typeof(p) == (corto_type)corto_uint32_o);
     test_assertstr(corto_fullpath(NULL, p), "/foo/bar");
-
     test_assert(!corto_delete(p));
 }
 
@@ -2417,13 +2447,11 @@ void test_ObjectMgmt_tc_redeclareUnknownDontForceType(
         .id = "foo",
         .type = corto_uint32_o
     });
-
     test_assert(p != NULL);
     test_assert(p != o);
     test_assert(!corto_check_state(p, CORTO_VALID));
     test_assert(corto_typeof(p) == (corto_type)corto_uint32_o);
     test_assertstr(corto_fullpath(NULL, p), "/foo");
-
     test_assert(!corto_delete(p));
 }
 
