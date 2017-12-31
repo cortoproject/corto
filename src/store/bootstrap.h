@@ -42,10 +42,10 @@
 extern "C" {
 #endif
 
-#define MAX_UINT8  (0xFF)
-#define MAX_UINT16 (0xFFFF)
-#define MAX_UINT32 (0xFFFFFFFF)
-#define MAX_UINT64 (0xFFFFFFFFFFFFFFFF)
+#define MAX_UINT8  (uint64_t)(0xFF)
+#define MAX_UINT16 (uint64_t)(0xFFFF)
+#define MAX_UINT32 (uint64_t)(0xFFFFFFFF)
+#define MAX_UINT64 (uint64_t)(0xFFFFFFFFFFFFFFFF)
 #define MAX_INT8  ((MAX_UINT8/2))
 #define MAX_INT16 ((MAX_UINT16/2))
 #define MAX_INT32 ((MAX_UINT32/2))

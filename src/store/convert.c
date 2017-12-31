@@ -73,10 +73,9 @@ typedef bool char_t;
 /* Conversions to string */
 #define CORTO_CONVERT_TO_STR(typeFrom, fmt) \
     CORTO_DECL_TRANSFORM(typeFrom,string) {\
-        char* str = corto_alloc(128);\
+        char* str = corto_asprintf(fmt, *(typeFrom##_t*)from);\
         CORTO_UNUSED(fromType);\
         CORTO_UNUSED(toType);\
-        sprintf(str, fmt, *(typeFrom##_t*)from);\
         *(corto_string*)to = str;\
         return 0;\
     }
