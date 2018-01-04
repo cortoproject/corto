@@ -134,6 +134,14 @@ CORTO_META_OBJECT(procedure, metaprocedure);
 
 CORTO_META_OBJECT(iterator, objectIter);
 
+/* Overridable methods */
+CORTO_META_OBJECT(method, type_castable);
+CORTO_META_OBJECT(method, collection_castable);
+CORTO_META_OBJECT(method, type_compatible);
+CORTO_META_OBJECT(method, struct_compatible);
+CORTO_META_OBJECT(method, interface_resolveMember);
+
+
 #ifdef __cplusplus
 }
 #endif

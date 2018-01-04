@@ -31,6 +31,10 @@ int16_t corto_unit_construct(
 
         this->toQuantity = (corto_word)exprToQuantity;
         this->fromQuantity = (corto_word)exprFromQuantity;
+    } else {
+        /* If unit does not specify a conversion, then this is the base unit for
+         * the quantity. */
+        corto_set_ref(&this->quantity->base_unit, this);
     }
 
     return 0;

@@ -125,7 +125,6 @@ int corto_interface_walkScope(corto_object o, void* userData) {
         if (corto_interface_bindMethod(this, o)) {
             goto error;
         }
-
     }
 
     return 1;
@@ -505,7 +504,6 @@ int16_t corto_interface_bindMethod(
                 corto_fullpath(NULL, method));
             goto error;
         }
-
     }
 
     /* Function is reentrant */
@@ -535,11 +533,8 @@ int16_t corto_interface_bindMethod(
                     corto_throw("method '%s' conflicts with '%s'", id, id2);
                     goto error;
                 }
-
             }
-
         }
-
     }
 
     if (!added) {
@@ -551,8 +546,16 @@ int16_t corto_interface_bindMethod(
         if (corto_vtableInsert(&this->methods, corto_function(method))) {
             corto_claim(method);
         }
-
     }
+
+    /* Set method index to enable quick lookups */
+    found = (corto_function *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
+    corto_assert(found != NULL, "cannot find method in vtable after it was inserted");
+    corto_assert(d != -1, "error occurred while looking up inserted method");
+
+    method->index =
+        ((corto_word)found -
+         (corto_word)this->methods.buffer) / sizeof(corto_function) + 1;
 
     return 0;
 error:

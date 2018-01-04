@@ -12,14 +12,13 @@
 extern "C" {
 #endif
 
-/* Casting macro's */
-#define corto_native_type(o) ((corto_native_type)corto_assert_type((corto_type)corto_native_type_o, o))
-
-/* Native types */
+/* -- Native types -- */
 #ifndef CORTO_NATIVE_H
 #endif
 
-/* Type definitions */
+
+/* -- Type definitions -- */
+
 /*  /corto/native/type */
 typedef struct corto_native_type_s *corto_native_type;
 
@@ -27,6 +26,13 @@ struct corto_native_type_s {
     struct corto_binary_s super;
     corto_string name;
 };
+
+
+/* -- Casting macro's -- */
+#define corto_native_type(o) ((corto_native_type)corto_assert_type((corto_type)corto_native_type_o, o))
+
+/* -- Non-expanding typedefs -- */
+typedef corto_native_type _type_corto_native_type;
 
 #ifdef __cplusplus
 }

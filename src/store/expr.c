@@ -22,14 +22,14 @@
 #include "object.h"
 
 static corto_int16 ___ (*_corto_expr_compb)(
-    ext_corto_expr *out, 
-    ext_corto_expr_opt *opt, 
-    char *expr, 
+    ext_corto_expr *out,
+    ext_corto_expr_opt *opt,
+    char *expr,
     char **types);
 
 static corto_int16 ___ (*_corto_expr_runb)(
-    ext_corto_expr *expr, 
-    corto_value *out, 
+    ext_corto_expr *expr,
+    corto_value *out,
     void **args);
 
 static corto_int16 ___ (*_corto_expr_free)(
@@ -41,23 +41,23 @@ static corto_int16 ext_corto_expr_load() {
         corto_dl dl = NULL;
 
         _corto_expr_compb = (corto_int16 ___ (*)(ext_corto_expr*,ext_corto_expr_opt*,char*,char**))
-            corto_load_proc("driver/ext", &dl, "corto_expr_compb");
+            corto_load_proc("corto/expr", &dl, "corto_expr_compb");
         if (!_corto_expr_compb) {
-            corto_throw("corto_expr_compb not found in corto/expr");
+            corto_throw("'corto_expr_compb' not found in corto/expr");
             goto error;
         }
 
         _corto_expr_runb = (corto_int16 ___ (*)(ext_corto_expr*,corto_value*,void**))
-            corto_load_proc("driver/ext", &dl, "corto_expr_runb");
+            corto_load_proc("corto/expr", &dl, "corto_expr_runb");
         if (!_corto_expr_runb) {
-            corto_throw("corto_expr_runb not found in corto/expr");
+            corto_throw("'corto_expr_runb' not found in corto/expr");
             goto error;
         }
 
         _corto_expr_free = (corto_int16 ___ (*)(ext_corto_expr*))
-            corto_load_proc("driver/ext", &dl, "corto_expr_free");
+            corto_load_proc("corto/expr", &dl, "corto_expr_free");
         if (!_corto_expr_free) {
-            corto_throw("corto_expr_free not found in corto/expr");
+            corto_throw("'corto_expr_free' not found in corto/expr");
             goto error;
         }
     }
@@ -72,10 +72,10 @@ ext_corto_expr* ext_corto_expr_alloc(void) {
 }
 
 corto_int16 ext_corto_expr_compb(
-    ext_corto_expr *out, 
-    ext_corto_expr_opt *opt, 
-    char *expr, 
-    char **types) 
+    ext_corto_expr *out,
+    ext_corto_expr_opt *opt,
+    char *expr,
+    char **types)
 {
     if (ext_corto_expr_load()) {
         goto error;
@@ -87,9 +87,9 @@ error:
 }
 
 corto_int16 ext_corto_expr_runb(
-    ext_corto_expr *expr, 
-    corto_value *out, 
-    void **args) 
+    ext_corto_expr *expr,
+    corto_value *out,
+    void **args)
 {
     if (ext_corto_expr_load()) {
         goto error;

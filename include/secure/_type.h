@@ -12,17 +12,13 @@
 extern "C" {
 #endif
 
-/* Casting macro's */
-#define corto_secure_accessKind(o) ((corto_secure_accessKind*)corto_assert_type((corto_type)corto_secure_accessKind_o, o))
-#define corto_secure_actionKind(o) ((corto_secure_actionKind*)corto_assert_type((corto_type)corto_secure_actionKind_o, o))
-#define corto_secure_key(o) ((corto_secure_key)corto_assert_type((corto_type)corto_secure_key_o, o))
-#define corto_secure_lock(o) ((corto_secure_lock)corto_assert_type((corto_type)corto_secure_lock_o, o))
-
-/* Native types */
+/* -- Native types -- */
 #ifndef CORTO_SECURE_H
 #endif
 
-/* Type definitions */
+
+/* -- Type definitions -- */
+
 /* /corto/secure/accessKind */
 typedef enum corto_secure_accessKind {
     CORTO_SECURE_ACCESS_GRANTED = 0,
@@ -53,6 +49,19 @@ struct corto_secure_lock_s {
     corto_string expr;
     int16_t priority;
 };
+
+
+/* -- Casting macro's -- */
+#define corto_secure_accessKind(o) ((corto_secure_accessKind*)corto_assert_type((corto_type)corto_secure_accessKind_o, o))
+#define corto_secure_actionKind(o) ((corto_secure_actionKind*)corto_assert_type((corto_type)corto_secure_actionKind_o, o))
+#define corto_secure_key(o) ((corto_secure_key)corto_assert_type((corto_type)corto_secure_key_o, o))
+#define corto_secure_lock(o) ((corto_secure_lock)corto_assert_type((corto_type)corto_secure_lock_o, o))
+
+/* -- Non-expanding typedefs -- */
+typedef corto_secure_accessKind _type_corto_secure_accessKind;
+typedef corto_secure_actionKind _type_corto_secure_actionKind;
+typedef corto_secure_key _type_corto_secure_key;
+typedef corto_secure_lock _type_corto_secure_lock;
 
 #ifdef __cplusplus
 }

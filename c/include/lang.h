@@ -1614,14 +1614,14 @@ CORTO_EXPORT corto_procedure _corto_procedureAssign(corto_procedure _this, bool 
 #define corto_procedureSet(_this, hasThis, thisType) _this = _this ? _this : (corto_procedure*)corto_ptr_new(corto_procedure_o); _corto_procedureAssign(_this, hasThis, corto_type(thisType))
 
 /* quantity */
-CORTO_EXPORT corto_quantity _corto_quantityCreate(const char * description);
-#define corto_quantityCreate(description) _corto_quantityCreate(description)
-#define corto_quantityCreate_auto(_id, description) corto_quantity _id = corto_quantityCreate(description); (void)_id
-CORTO_EXPORT corto_quantity _corto_quantityCreateChild(corto_object _parent, const char *_id, const char * description);
-#define corto_quantityCreateChild(_parent, _id, description) _corto_quantityCreateChild(_parent, _id, description)
-#define corto_quantityCreateChild_auto(_parent, _id, description) corto_quantity _id = corto_quantityCreateChild(_parent, #_id, description); (void)_id
-CORTO_EXPORT corto_int16 _corto_quantityUpdate(corto_quantity _this, const char * description);
-#define corto_quantityUpdate(_this, description) _corto_quantityUpdate(corto_quantity(_this), description)
+CORTO_EXPORT corto_quantity _corto_quantityCreate(corto_unit base_unit);
+#define corto_quantityCreate(base_unit) _corto_quantityCreate(corto_unit(base_unit))
+#define corto_quantityCreate_auto(_id, base_unit) corto_quantity _id = corto_quantityCreate(base_unit); (void)_id
+CORTO_EXPORT corto_quantity _corto_quantityCreateChild(corto_object _parent, const char *_id, corto_unit base_unit);
+#define corto_quantityCreateChild(_parent, _id, base_unit) _corto_quantityCreateChild(_parent, _id, corto_unit(base_unit))
+#define corto_quantityCreateChild_auto(_parent, _id, base_unit) corto_quantity _id = corto_quantityCreateChild(_parent, #_id, base_unit); (void)_id
+CORTO_EXPORT corto_int16 _corto_quantityUpdate(corto_quantity _this, corto_unit base_unit);
+#define corto_quantityUpdate(_this, base_unit) _corto_quantityUpdate(corto_quantity(_this), corto_unit(base_unit))
 
 CORTO_EXPORT corto_quantity _corto_quantityDeclare(void);
 #define corto_quantityDeclare() _corto_quantityDeclare()
@@ -1629,15 +1629,15 @@ CORTO_EXPORT corto_quantity _corto_quantityDeclare(void);
 CORTO_EXPORT corto_quantity _corto_quantityDeclareChild(corto_object _parent, const char *_id);
 #define corto_quantityDeclareChild(_parent, _id) _corto_quantityDeclareChild(_parent, _id)
 #define corto_quantityDeclareChild_auto(_parent, _id) corto_quantity _id = corto_quantityDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_quantityDefine(corto_quantity _this, const char * description);
-#define corto_quantityDefine(_this, description) _corto_quantityDefine(corto_quantity(_this), description)
-CORTO_EXPORT corto_quantity _corto_quantityAssign(corto_quantity _this, const char * description);
+CORTO_EXPORT corto_int16 _corto_quantityDefine(corto_quantity _this, corto_unit base_unit);
+#define corto_quantityDefine(_this, base_unit) _corto_quantityDefine(corto_quantity(_this), corto_unit(base_unit))
+CORTO_EXPORT corto_quantity _corto_quantityAssign(corto_quantity _this, corto_unit base_unit);
 #define corto_quantity__optional_NotSet NULL
-#define corto_quantity__optional_Set(description) (corto_quantity*)corto_quantityAssign((corto_quantity*)corto_ptr_new(corto_quantity_o), description)
-#define corto_quantity__optional_SetCond(cond, description) cond ? (corto_quantity*)corto_quantityAssign((corto_quantity*)corto_ptr_new(corto_quantity_o), description) : NULL
+#define corto_quantity__optional_Set(base_unit) (corto_quantity*)corto_quantityAssign((corto_quantity*)corto_ptr_new(corto_quantity_o), base_unit)
+#define corto_quantity__optional_SetCond(cond, base_unit) cond ? (corto_quantity*)corto_quantityAssign((corto_quantity*)corto_ptr_new(corto_quantity_o), base_unit) : NULL
 #define corto_quantityUnset(_this) _this ? corto_ptr_free(_this, corto_quantity_o), 0 : 0; _this = NULL;
-#define corto_quantityAssign(_this, description) _corto_quantityAssign(_this, description)
-#define corto_quantitySet(_this, description) _this = _this ? _this : (corto_quantity*)corto_ptr_new(corto_quantity_o); _corto_quantityAssign(_this, description)
+#define corto_quantityAssign(_this, base_unit) _corto_quantityAssign(_this, corto_unit(base_unit))
+#define corto_quantitySet(_this, base_unit) _this = _this ? _this : (corto_quantity*)corto_ptr_new(corto_quantity_o); _corto_quantityAssign(_this, corto_unit(base_unit))
 
 /* sequence */
 CORTO_EXPORT corto_sequence _corto_sequenceCreate(corto_type elementType, uint32_t max);

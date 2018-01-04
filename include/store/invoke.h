@@ -49,20 +49,20 @@ void (*corto_invoke_deinit_f)(
 
 /* Call API */
 CORTO_EXPORT
-void _corto_invoke(
+void* _corto_invoke(
     corto_function f,
-    corto_void* result, ...);
+    void* result, ...);
 
 CORTO_EXPORT
-void _corto_invokev(
+void* _corto_invokev(
     corto_function f,
-    corto_void* result,
+    void* result,
     va_list args);
 
 CORTO_EXPORT
-void _corto_invokeb(
+void* _corto_invokeb(
     corto_function f,
-    corto_void* result,
+    void* result,
     void** argptrs);
 
 /* Register binding */

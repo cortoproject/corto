@@ -5389,14 +5389,14 @@ corto_procedure _corto_procedureAssign(corto_procedure _this, bool hasThis, cort
     return _this;
 }
 
-corto_quantity _corto_quantityCreate(const char * description) {
+corto_quantity _corto_quantityCreate(corto_unit base_unit) {
     corto_quantity _this;
     _this = (corto_quantity)corto_declare(NULL, NULL, corto_quantity_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_str(&((corto_quantity)_this)->description, description);
+        corto_set_ref(&((corto_quantity)_this)->base_unit, base_unit);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -5405,14 +5405,14 @@ corto_quantity _corto_quantityCreate(const char * description) {
     return _this;
 }
 
-corto_quantity _corto_quantityCreateChild(corto_object _parent, const char *_id, const char * description) {
+corto_quantity _corto_quantityCreateChild(corto_object _parent, const char *_id, corto_unit base_unit) {
     corto_quantity _this;
     _this = (corto_quantity)corto_declare(_parent, _id, corto_quantity_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_str(&((corto_quantity)_this)->description, description);
+        corto_set_ref(&((corto_quantity)_this)->base_unit, base_unit);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -5421,13 +5421,13 @@ corto_quantity _corto_quantityCreateChild(corto_object _parent, const char *_id,
     return _this;
 }
 
-corto_int16 _corto_quantityUpdate(corto_quantity _this, const char * description) {
+corto_int16 _corto_quantityUpdate(corto_quantity _this, corto_unit base_unit) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_str(&((corto_quantity)((corto_quantity)CORTO_OFFSET(_this, ((corto_type)corto_quantity_o)->size)))->description, description);
+            corto_set_ref(&((corto_quantity)((corto_quantity)CORTO_OFFSET(_this, ((corto_type)corto_quantity_o)->size)))->base_unit, base_unit);
         } else {
-            corto_set_str(&((corto_quantity)_this)->description, description);
+            corto_set_ref(&((corto_quantity)_this)->base_unit, base_unit);
         }
         if (corto_update_end(_this)) {
             return -1;
@@ -5456,15 +5456,15 @@ corto_quantity _corto_quantityDeclareChild(corto_object _parent, const char *_id
     return _this;
 }
 
-corto_int16 _corto_quantityDefine(corto_quantity _this, const char * description) {
+corto_int16 _corto_quantityDefine(corto_quantity _this, corto_unit base_unit) {
     CORTO_UNUSED(_this);
-    corto_set_str(&((corto_quantity)_this)->description, description);
+    corto_set_ref(&((corto_quantity)_this)->base_unit, base_unit);
     return corto_define(_this);
 }
 
-corto_quantity _corto_quantityAssign(corto_quantity _this, const char * description) {
+corto_quantity _corto_quantityAssign(corto_quantity _this, corto_unit base_unit) {
     CORTO_UNUSED(_this);
-    corto_set_str(&((corto_quantity)_this)->description, description);
+    corto_set_ref(&((corto_quantity)_this)->base_unit, base_unit);
     return _this;
 }
 

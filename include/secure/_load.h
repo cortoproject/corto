@@ -24,6 +24,9 @@ CORTO_META_SECURE_OBJECT(class, lock);
 CORTO_META_SECURE_OBJECT(enum, accessKind);
 CORTO_META_SECURE_OBJECT(enum, actionKind);
 
+CORTO_META_SECURE_OBJECT(method, key_authenticate);
+CORTO_META_SECURE_OBJECT(method, lock_authorize);
+
 #ifdef __cplusplus
 }
 #endif

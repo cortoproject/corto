@@ -78,10 +78,10 @@ void corto_invoke_deinit(corto_function f) {
         {\
             if (!(owner == corto_get_source())) {\
                 corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
-                return;\
+                return result;\
             } else {\
                 /* Odd */\
-                return;\
+                return result;\
             }\
         }\
     }\
@@ -160,20 +160,23 @@ void corto_invoke_deinit(corto_function f) {
     CORTO_CALL
 
 /* Call with variable argument list */
-void _corto_invokev(corto_function f, corto_void* result, va_list args) {
+void* _corto_invokev(corto_function f, void* result, va_list args) {
     CORTO_CALLV
+    return result;
 }
 
 /* Call with variable arguments */
-void _corto_invoke(corto_function f, corto_void* result, ...) {
+void* _corto_invoke(corto_function f, void* result, ...) {
     va_list args;
 
     va_start(args, result);
     CORTO_CALLV
     va_end(args);
+    return result;
 }
 
 /* Call with buffer */
-void _corto_invokeb(corto_function f, corto_void* result, void** argptrs) {
+void* _corto_invokeb(corto_function f, void* result, void** argptrs) {
     CORTO_CALL
+    return result;
 }

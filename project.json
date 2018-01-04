@@ -14,6 +14,7 @@
         "includes": [
             "include", "../platform/include/corto"
         ],
+        "cflags": ["-fvisibility=hidden"],
         "doxygen": [{
             "title": "Corto API Reference",
             "chapters": [ "store", "vstore" ]

@@ -8,107 +8,17 @@
 #define CORTO_LANG__TYPE_H
 
 #include <corto/platform.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Casting macro's */
-#define corto_typeKind(o) ((corto_typeKind*)corto_assert_type((corto_type)corto_typeKind_o, o))
-#define corto_bool(o) ((bool*)corto_assert_type((corto_type)corto_bool_o, o))
-#define corto_attr(o) ((corto_attr*)corto_assert_type((corto_type)corto_attr_o, o))
-#define corto_state(o) ((corto_state*)corto_assert_type((corto_type)corto_state_o, o))
-#define corto_typeOptions(o) ((corto_typeOptions*)corto_assert_type((corto_type)corto_typeOptions_o, o))
-#define corto_uint16(o) ((uint16_t*)corto_assert_type((corto_type)corto_uint16_o, o))
-#define corto_uint32(o) ((uint32_t*)corto_assert_type((corto_type)corto_uint32_o, o))
-#define corto_object(o) ((corto_object)o)
-#define corto_objectseq(o) ((corto_objectseq*)corto_assert_type((corto_type)corto_objectseq_o, o))
-#define corto_string(o) ((corto_string*)corto_assert_type((corto_type)corto_string_o, o))
-#define corto_inout(o) ((corto_inout*)corto_assert_type((corto_type)corto_inout_o, o))
-#define corto_parameter(o) ((corto_parameter*)corto_assert_type((corto_type)corto_parameter_o, o))
-#define corto_parameterseq(o) ((corto_parameterseq*)corto_assert_type((corto_type)corto_parameterseq_o, o))
-#define corto_word(o) ((uintptr_t*)corto_assert_type((corto_type)corto_word_o, o))
-#define corto_function(o) ((corto_function)corto_assert_type((corto_type)corto_function_o, o))
-#define corto_delegatedata(o) ((corto_delegatedata*)corto_assert_type((corto_type)corto_delegatedata_o, o))
-#define corto_pre_action(o) ((corto_pre_action*)corto_assert_type((corto_type)corto_pre_action_o, o))
-#define corto_post_action(o) ((corto_post_action*)corto_assert_type((corto_type)corto_post_action_o, o))
-#define corto_name_action(o) ((corto_name_action*)corto_assert_type((corto_type)corto_name_action_o, o))
-#define corto_type(o) ((corto_type)corto_assert_type((corto_type)corto_type_o, o))
-#define corto_modifier(o) ((corto_modifier*)corto_assert_type((corto_type)corto_modifier_o, o))
-#define corto_quantity(o) ((corto_quantity)corto_assert_type((corto_type)corto_quantity_o, o))
-#define corto_unit(o) ((corto_unit)corto_assert_type((corto_type)corto_unit_o, o))
-#define corto_member(o) ((corto_member)corto_assert_type((corto_type)corto_member_o, o))
-#define corto_alias(o) ((corto_alias)corto_assert_type((corto_type)corto_alias_o, o))
-#define corto_any(o) ((corto_any*)corto_assert_type((corto_type)corto_any_o, o))
-#define corto_stringlist(o) ((corto_stringlist*)corto_assert_type((corto_type)corto_stringlist_o, o))
-#define corto_package(o) ((corto_package)corto_assert_type((corto_type)corto_package_o, o))
-#define corto_application(o) ((corto_application)corto_assert_type((corto_type)corto_application_o, o))
-#define corto_collectionKind(o) ((corto_collectionKind*)corto_assert_type((corto_type)corto_collectionKind_o, o))
-#define corto_collection(o) ((corto_collection)corto_assert_type((corto_type)corto_collection_o, o))
-#define corto_array(o) ((corto_array)corto_assert_type((corto_type)corto_array_o, o))
-#define corto_primitiveKind(o) ((corto_primitiveKind*)corto_assert_type((corto_type)corto_primitiveKind_o, o))
-#define corto_width(o) ((corto_width*)corto_assert_type((corto_type)corto_width_o, o))
-#define corto_uint8(o) ((uint8_t*)corto_assert_type((corto_type)corto_uint8_o, o))
-#define corto_primitive(o) ((corto_primitive)corto_assert_type((corto_type)corto_primitive_o, o))
-#define corto_binary(o) ((corto_binary)corto_assert_type((corto_type)corto_binary_o, o))
-#define corto_enum(o) ((corto_enum)corto_assert_type((corto_type)corto_enum_o, o))
-#define corto_bitmask(o) ((corto_bitmask)corto_assert_type((corto_type)corto_bitmask_o, o))
-#define corto_boolean(o) ((corto_boolean)corto_assert_type((corto_type)corto_boolean_o, o))
-#define corto_int32(o) ((int32_t*)corto_assert_type((corto_type)corto_int32_o, o))
-#define corto_int32seq(o) ((corto_int32seq*)corto_assert_type((corto_type)corto_int32seq_o, o))
-#define corto_case(o) ((corto_case)corto_assert_type((corto_type)corto_case_o, o))
-#define corto_char(o) ((char*)corto_assert_type((corto_type)corto_char_o, o))
-#define corto_character(o) ((corto_character)corto_assert_type((corto_type)corto_character_o, o))
-#define corto_compositeKind(o) ((corto_compositeKind*)corto_assert_type((corto_type)corto_compositeKind_o, o))
-#define corto_interface(o) ((corto_interface)corto_assert_type((corto_type)corto_interface_o, o))
-#define corto_stringseq(o) ((corto_stringseq*)corto_assert_type((corto_type)corto_stringseq_o, o))
-#define corto_struct(o) ((corto_struct)corto_assert_type((corto_type)corto_struct_o, o))
-#define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assert_type((corto_type)corto_interfaceseq_o, o))
-#define corto_interfaceVector(o) ((corto_interfaceVector*)corto_assert_type((corto_type)corto_interfaceVector_o, o))
-#define corto_interfaceVectorseq(o) ((corto_interfaceVectorseq*)corto_assert_type((corto_type)corto_interfaceVectorseq_o, o))
-#define corto_class(o) ((corto_class)corto_assert_type((corto_type)corto_class_o, o))
-#define corto_constant(o) ((int32_t*)corto_assert_type((corto_type)corto_constant_o, o))
-#define corto_container(o) ((corto_container)corto_assert_type((corto_type)corto_container_o, o))
-#define corto_default(o) ((corto_default)corto_assert_type((corto_type)corto_default_o, o))
-#define corto_delegate(o) ((corto_delegate)corto_assert_type((corto_type)corto_delegate_o, o))
-#define corto_equalityKind(o) ((corto_equalityKind*)corto_assert_type((corto_type)corto_equalityKind_o, o))
-#define corto_float64(o) ((double*)corto_assert_type((corto_type)corto_float64_o, o))
-#define corto_float(o) ((corto_float)corto_assert_type((corto_type)corto_float_o, o))
-#define corto_float32(o) ((float*)corto_assert_type((corto_type)corto_float32_o, o))
-#define corto_int64(o) ((int64_t*)corto_assert_type((corto_type)corto_int64_o, o))
-#define corto_int(o) ((corto_int)corto_assert_type((corto_type)corto_int_o, o))
-#define corto_int16(o) ((int16_t*)corto_assert_type((corto_type)corto_int16_o, o))
-#define corto_int8(o) ((int8_t*)corto_assert_type((corto_type)corto_int8_o, o))
-#define corto_iterator(o) ((corto_iterator)corto_assert_type((corto_type)corto_iterator_o, o))
-#define corto_leaf(o) ((corto_leaf)corto_assert_type((corto_type)corto_leaf_o, o))
-#define corto_list(o) ((corto_list)corto_assert_type((corto_type)corto_list_o, o))
-#define corto_map(o) ((corto_map)corto_assert_type((corto_type)corto_map_o, o))
-#define corto_metaprocedure(o) ((corto_metaprocedure)corto_assert_type((corto_type)corto_metaprocedure_o, o))
-#define corto_method(o) ((corto_method)corto_assert_type((corto_type)corto_method_o, o))
-#define corto_objectlist(o) ((corto_objectlist*)corto_assert_type((corto_type)corto_objectlist_o, o))
-#define corto_octet(o) ((uint8_t*)corto_assert_type((corto_type)corto_octet_o, o))
-#define corto_overridable(o) ((corto_overridable)corto_assert_type((corto_type)corto_overridable_o, o))
-#define corto_override(o) ((corto_override)corto_assert_type((corto_type)corto_override_o, o))
-#define corto_procedure(o) ((corto_procedure)corto_assert_type((corto_type)corto_procedure_o, o))
-#define corto_sequence(o) ((corto_sequence)corto_assert_type((corto_type)corto_sequence_o, o))
-#define corto_table(o) ((corto_table)corto_assert_type((corto_type)corto_table_o, o))
-#define corto_tableinstance(o) ((corto_tableinstance)corto_assert_type((corto_type)corto_tableinstance_o, o))
-#define corto_target(o) ((corto_target)corto_assert_type((corto_type)corto_target_o, o))
-#define corto_uint64(o) ((uint64_t*)corto_assert_type((corto_type)corto_uint64_o, o))
-#define corto_text(o) ((corto_text)corto_assert_type((corto_type)corto_text_o, o))
-#define corto_tool(o) ((corto_tool)corto_assert_type((corto_type)corto_tool_o, o))
-#define corto_uint(o) ((corto_uint)corto_assert_type((corto_type)corto_uint_o, o))
-#define corto_union(o) ((corto_union)corto_assert_type((corto_type)corto_union_o, o))
-#define corto_unknown(o) ((void*)o)
-#define corto_verbatim(o) ((corto_verbatim)corto_assert_type((corto_type)corto_verbatim_o, o))
-#define corto_void(o) ((void*)o)
-#define corto_wordseq(o) ((corto_wordseq*)corto_assert_type((corto_type)corto_wordseq_o, o))
-
-/* Native types */
+/* -- Native types -- */
 #ifndef CORTO_LANG_H
 #endif
 
-/* Type definitions */
+
+/* -- Type definitions -- */
+
 /* typeKind */
 typedef enum corto_typeKind {
     CORTO_VOID = 0,
@@ -256,15 +166,15 @@ typedef uint32_t corto_modifier;
     #define CORTO_OBSERVABLE (0x40)
     #define CORTO_KEY (0x84)
 
+/*  unit */
+typedef struct corto_unit_s *corto_unit;
+
 /*  quantity */
 typedef struct corto_quantity_s *corto_quantity;
 
 struct corto_quantity_s {
-    corto_string description;
+    corto_unit base_unit;
 };
-
-/*  unit */
-typedef struct corto_unit_s *corto_unit;
 
 struct corto_unit_s {
     corto_quantity quantity;
@@ -619,6 +529,7 @@ typedef struct corto_method_s *corto_method;
 
 struct corto_method_s {
     struct corto_function_s super;
+    uint32_t index;
 };
 
 #ifndef corto_objectlist_DEFINED
@@ -733,7 +644,191 @@ typedef void corto_void;
 
 typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq;
 
+
+/* -- Casting macro's -- */
+#define corto_typeKind(o) ((corto_typeKind*)corto_assert_type((corto_type)corto_typeKind_o, o))
+#define corto_bool(o) ((bool*)corto_assert_type((corto_type)corto_bool_o, o))
+#define corto_attr(o) ((corto_attr*)corto_assert_type((corto_type)corto_attr_o, o))
+#define corto_state(o) ((corto_state*)corto_assert_type((corto_type)corto_state_o, o))
+#define corto_typeOptions(o) ((corto_typeOptions*)corto_assert_type((corto_type)corto_typeOptions_o, o))
+#define corto_uint16(o) ((uint16_t*)corto_assert_type((corto_type)corto_uint16_o, o))
+#define corto_uint32(o) ((uint32_t*)corto_assert_type((corto_type)corto_uint32_o, o))
+#define corto_object(o) ((corto_object)o)
+#define corto_objectseq(o) ((corto_objectseq*)corto_assert_type((corto_type)corto_objectseq_o, o))
+#define corto_string(o) ((corto_string*)corto_assert_type((corto_type)corto_string_o, o))
+#define corto_inout(o) ((corto_inout*)corto_assert_type((corto_type)corto_inout_o, o))
+#define corto_parameter(o) ((corto_parameter*)corto_assert_type((corto_type)corto_parameter_o, o))
+#define corto_parameterseq(o) ((corto_parameterseq*)corto_assert_type((corto_type)corto_parameterseq_o, o))
+#define corto_word(o) ((uintptr_t*)corto_assert_type((corto_type)corto_word_o, o))
+#define corto_function(o) ((corto_function)corto_assert_type((corto_type)corto_function_o, o))
+#define corto_delegatedata(o) ((corto_delegatedata*)corto_assert_type((corto_type)corto_delegatedata_o, o))
+#define corto_pre_action(o) ((corto_pre_action*)corto_assert_type((corto_type)corto_pre_action_o, o))
+#define corto_post_action(o) ((corto_post_action*)corto_assert_type((corto_type)corto_post_action_o, o))
+#define corto_name_action(o) ((corto_name_action*)corto_assert_type((corto_type)corto_name_action_o, o))
+#define corto_type(o) ((corto_type)corto_assert_type((corto_type)corto_type_o, o))
+#define corto_modifier(o) ((corto_modifier*)corto_assert_type((corto_type)corto_modifier_o, o))
+#define corto_quantity(o) ((corto_quantity)corto_assert_type((corto_type)corto_quantity_o, o))
+#define corto_unit(o) ((corto_unit)corto_assert_type((corto_type)corto_unit_o, o))
+#define corto_member(o) ((corto_member)corto_assert_type((corto_type)corto_member_o, o))
+#define corto_alias(o) ((corto_alias)corto_assert_type((corto_type)corto_alias_o, o))
+#define corto_any(o) ((corto_any*)corto_assert_type((corto_type)corto_any_o, o))
+#define corto_stringlist(o) ((corto_stringlist*)corto_assert_type((corto_type)corto_stringlist_o, o))
+#define corto_package(o) ((corto_package)corto_assert_type((corto_type)corto_package_o, o))
+#define corto_application(o) ((corto_application)corto_assert_type((corto_type)corto_application_o, o))
+#define corto_collectionKind(o) ((corto_collectionKind*)corto_assert_type((corto_type)corto_collectionKind_o, o))
+#define corto_collection(o) ((corto_collection)corto_assert_type((corto_type)corto_collection_o, o))
+#define corto_array(o) ((corto_array)corto_assert_type((corto_type)corto_array_o, o))
+#define corto_primitiveKind(o) ((corto_primitiveKind*)corto_assert_type((corto_type)corto_primitiveKind_o, o))
+#define corto_width(o) ((corto_width*)corto_assert_type((corto_type)corto_width_o, o))
+#define corto_uint8(o) ((uint8_t*)corto_assert_type((corto_type)corto_uint8_o, o))
+#define corto_primitive(o) ((corto_primitive)corto_assert_type((corto_type)corto_primitive_o, o))
+#define corto_binary(o) ((corto_binary)corto_assert_type((corto_type)corto_binary_o, o))
+#define corto_enum(o) ((corto_enum)corto_assert_type((corto_type)corto_enum_o, o))
+#define corto_bitmask(o) ((corto_bitmask)corto_assert_type((corto_type)corto_bitmask_o, o))
+#define corto_boolean(o) ((corto_boolean)corto_assert_type((corto_type)corto_boolean_o, o))
+#define corto_int32(o) ((int32_t*)corto_assert_type((corto_type)corto_int32_o, o))
+#define corto_int32seq(o) ((corto_int32seq*)corto_assert_type((corto_type)corto_int32seq_o, o))
+#define corto_case(o) ((corto_case)corto_assert_type((corto_type)corto_case_o, o))
+#define corto_char(o) ((char*)corto_assert_type((corto_type)corto_char_o, o))
+#define corto_character(o) ((corto_character)corto_assert_type((corto_type)corto_character_o, o))
+#define corto_compositeKind(o) ((corto_compositeKind*)corto_assert_type((corto_type)corto_compositeKind_o, o))
+#define corto_interface(o) ((corto_interface)corto_assert_type((corto_type)corto_interface_o, o))
+#define corto_stringseq(o) ((corto_stringseq*)corto_assert_type((corto_type)corto_stringseq_o, o))
+#define corto_struct(o) ((corto_struct)corto_assert_type((corto_type)corto_struct_o, o))
+#define corto_interfaceseq(o) ((corto_interfaceseq*)corto_assert_type((corto_type)corto_interfaceseq_o, o))
+#define corto_interfaceVector(o) ((corto_interfaceVector*)corto_assert_type((corto_type)corto_interfaceVector_o, o))
+#define corto_interfaceVectorseq(o) ((corto_interfaceVectorseq*)corto_assert_type((corto_type)corto_interfaceVectorseq_o, o))
+#define corto_class(o) ((corto_class)corto_assert_type((corto_type)corto_class_o, o))
+#define corto_constant(o) ((int32_t*)corto_assert_type((corto_type)corto_constant_o, o))
+#define corto_container(o) ((corto_container)corto_assert_type((corto_type)corto_container_o, o))
+#define corto_default(o) ((corto_default)corto_assert_type((corto_type)corto_default_o, o))
+#define corto_delegate(o) ((corto_delegate)corto_assert_type((corto_type)corto_delegate_o, o))
+#define corto_equalityKind(o) ((corto_equalityKind*)corto_assert_type((corto_type)corto_equalityKind_o, o))
+#define corto_float64(o) ((double*)corto_assert_type((corto_type)corto_float64_o, o))
+#define corto_float(o) ((corto_float)corto_assert_type((corto_type)corto_float_o, o))
+#define corto_float32(o) ((float*)corto_assert_type((corto_type)corto_float32_o, o))
+#define corto_int64(o) ((int64_t*)corto_assert_type((corto_type)corto_int64_o, o))
+#define corto_int(o) ((corto_int)corto_assert_type((corto_type)corto_int_o, o))
+#define corto_int16(o) ((int16_t*)corto_assert_type((corto_type)corto_int16_o, o))
+#define corto_int8(o) ((int8_t*)corto_assert_type((corto_type)corto_int8_o, o))
+#define corto_iterator(o) ((corto_iterator)corto_assert_type((corto_type)corto_iterator_o, o))
+#define corto_leaf(o) ((corto_leaf)corto_assert_type((corto_type)corto_leaf_o, o))
+#define corto_list(o) ((corto_list)corto_assert_type((corto_type)corto_list_o, o))
+#define corto_map(o) ((corto_map)corto_assert_type((corto_type)corto_map_o, o))
+#define corto_metaprocedure(o) ((corto_metaprocedure)corto_assert_type((corto_type)corto_metaprocedure_o, o))
+#define corto_method(o) ((corto_method)corto_assert_type((corto_type)corto_method_o, o))
+#define corto_objectlist(o) ((corto_objectlist*)corto_assert_type((corto_type)corto_objectlist_o, o))
+#define corto_octet(o) ((uint8_t*)corto_assert_type((corto_type)corto_octet_o, o))
+#define corto_overridable(o) ((corto_overridable)corto_assert_type((corto_type)corto_overridable_o, o))
+#define corto_override(o) ((corto_override)corto_assert_type((corto_type)corto_override_o, o))
+#define corto_procedure(o) ((corto_procedure)corto_assert_type((corto_type)corto_procedure_o, o))
+#define corto_sequence(o) ((corto_sequence)corto_assert_type((corto_type)corto_sequence_o, o))
+#define corto_table(o) ((corto_table)corto_assert_type((corto_type)corto_table_o, o))
+#define corto_tableinstance(o) ((corto_tableinstance)corto_assert_type((corto_type)corto_tableinstance_o, o))
+#define corto_target(o) ((corto_target)corto_assert_type((corto_type)corto_target_o, o))
+#define corto_uint64(o) ((uint64_t*)corto_assert_type((corto_type)corto_uint64_o, o))
+#define corto_text(o) ((corto_text)corto_assert_type((corto_type)corto_text_o, o))
+#define corto_tool(o) ((corto_tool)corto_assert_type((corto_type)corto_tool_o, o))
+#define corto_uint(o) ((corto_uint)corto_assert_type((corto_type)corto_uint_o, o))
+#define corto_union(o) ((corto_union)corto_assert_type((corto_type)corto_union_o, o))
+#define corto_unknown(o) ((void*)o)
+#define corto_verbatim(o) ((corto_verbatim)corto_assert_type((corto_type)corto_verbatim_o, o))
+#define corto_void(o) ((void*)o)
+#define corto_wordseq(o) ((corto_wordseq*)corto_assert_type((corto_type)corto_wordseq_o, o))
+
+/* -- Non-expanding typedefs -- */
+typedef corto_typeKind _type_corto_typeKind;
+typedef corto_bool _type_corto_bool;
+typedef corto_attr _type_corto_attr;
+typedef corto_state _type_corto_state;
+typedef corto_typeOptions _type_corto_typeOptions;
+typedef corto_uint16 _type_corto_uint16;
+typedef corto_uint32 _type_corto_uint32;
+typedef corto_object _type_corto_object;
+typedef corto_objectseq _type_corto_objectseq;
+typedef corto_string _type_corto_string;
+typedef corto_inout _type_corto_inout;
+typedef corto_parameter _type_corto_parameter;
+typedef corto_parameterseq _type_corto_parameterseq;
+typedef corto_word _type_corto_word;
+typedef corto_function _type_corto_function;
+typedef corto_delegatedata _type_corto_delegatedata;
+typedef corto_pre_action _type_corto_pre_action;
+typedef corto_post_action _type_corto_post_action;
+typedef corto_name_action _type_corto_name_action;
+typedef corto_type _type_corto_type;
+typedef corto_modifier _type_corto_modifier;
+typedef corto_quantity _type_corto_quantity;
+typedef corto_unit _type_corto_unit;
+typedef corto_member _type_corto_member;
+typedef corto_alias _type_corto_alias;
+typedef corto_any _type_corto_any;
+typedef corto_stringlist _type_corto_stringlist;
+typedef corto_package _type_corto_package;
+typedef corto_application _type_corto_application;
+typedef corto_collectionKind _type_corto_collectionKind;
+typedef corto_collection _type_corto_collection;
+typedef corto_array _type_corto_array;
+typedef corto_primitiveKind _type_corto_primitiveKind;
+typedef corto_width _type_corto_width;
+typedef corto_uint8 _type_corto_uint8;
+typedef corto_primitive _type_corto_primitive;
+typedef corto_binary _type_corto_binary;
+typedef corto_enum _type_corto_enum;
+typedef corto_bitmask _type_corto_bitmask;
+typedef corto_boolean _type_corto_boolean;
+typedef corto_int32 _type_corto_int32;
+typedef corto_int32seq _type_corto_int32seq;
+typedef corto_case _type_corto_case;
+typedef corto_char _type_corto_char;
+typedef corto_character _type_corto_character;
+typedef corto_compositeKind _type_corto_compositeKind;
+typedef corto_interface _type_corto_interface;
+typedef corto_stringseq _type_corto_stringseq;
+typedef corto_struct _type_corto_struct;
+typedef corto_interfaceseq _type_corto_interfaceseq;
+typedef corto_interfaceVector _type_corto_interfaceVector;
+typedef corto_interfaceVectorseq _type_corto_interfaceVectorseq;
+typedef corto_class _type_corto_class;
+typedef corto_constant _type_corto_constant;
+typedef corto_container _type_corto_container;
+typedef corto_default _type_corto_default;
+typedef corto_delegate _type_corto_delegate;
+typedef corto_equalityKind _type_corto_equalityKind;
+typedef corto_float64 _type_corto_float64;
+typedef corto_float _type_corto_float;
+typedef corto_float32 _type_corto_float32;
+typedef corto_int64 _type_corto_int64;
+typedef corto_int _type_corto_int;
+typedef corto_int16 _type_corto_int16;
+typedef corto_int8 _type_corto_int8;
+typedef corto_iterator _type_corto_iterator;
+typedef corto_leaf _type_corto_leaf;
+typedef corto_list _type_corto_list;
+typedef corto_map _type_corto_map;
+typedef corto_metaprocedure _type_corto_metaprocedure;
+typedef corto_method _type_corto_method;
+typedef corto_objectlist _type_corto_objectlist;
+typedef corto_octet _type_corto_octet;
+typedef corto_overridable _type_corto_overridable;
+typedef corto_override _type_corto_override;
+typedef corto_procedure _type_corto_procedure;
+typedef corto_sequence _type_corto_sequence;
+typedef corto_table _type_corto_table;
+typedef corto_tableinstance _type_corto_tableinstance;
+typedef corto_target _type_corto_target;
+typedef corto_uint64 _type_corto_uint64;
+typedef corto_text _type_corto_text;
+typedef corto_tool _type_corto_tool;
+typedef corto_uint _type_corto_uint;
+typedef corto_union _type_corto_union;
+typedef corto_unknown _type_corto_unknown;
+typedef corto_verbatim _type_corto_verbatim;
+typedef corto_void _type_corto_void;
+typedef corto_wordseq _type_corto_wordseq;
+
 #ifdef __cplusplus
 }
 #endif
 #endif
+

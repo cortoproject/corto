@@ -73,6 +73,22 @@ CORTO_META_OBJECT(iterator, subscriberEventIter);
 CORTO_META_OBJECT(function, observerEvent_handle);
 CORTO_META_OBJECT(function, subscriberEvent_handle);
 
+CORTO_META_OBJECT(method, routerimpl_findRoute);
+CORTO_META_OBJECT(method, routerimpl_matchRoute);
+CORTO_META_OBJECT(method, mount_onInvoke);
+CORTO_META_OBJECT(method, mount_onInvoke);
+CORTO_META_OBJECT(method, mount_onId);
+CORTO_META_OBJECT(method, mount_onResume);
+CORTO_META_OBJECT(method, mount_onQuery);
+CORTO_META_OBJECT(method, mount_onHistoryQuery);
+CORTO_META_OBJECT(method, mount_onNotify);
+CORTO_META_OBJECT(method, mount_onBatchNotify);
+CORTO_META_OBJECT(method, mount_onHistoryBatchNotify);
+CORTO_META_OBJECT(method, mount_onSubscribe);
+CORTO_META_OBJECT(method, mount_onUnsubscribe);
+CORTO_META_OBJECT(method, mount_onMount);
+CORTO_META_OBJECT(method, mount_onUnmount);
+
 #ifdef __cplusplus
 }
 #endif
