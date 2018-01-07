@@ -178,6 +178,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(lang_, interfaceVectorseq),\
     SSO_OP_VALUE(lang_, interfaceVector),\
     SSO_OP_VALUE(lang_, objectlist),\
+    SSO_OP_VALUE(lang_, taglist),\
     SSO_OP_VALUE(lang_, stringlist),\
     SSO_OP_VALUE(vstore_, resultList),\
     SSO_OP_VALUE(vstore_, mountSubscriptionList),\
@@ -249,6 +250,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, target),\
     SSO_OP_CLASS(lang_, quantity),\
     SSO_OP_CLASS(lang_, unit),\
+    SSO_OP_CLASS(lang_, tag),\
     SSO_OP_CLASS(lang_, package),\
     SSO_OP_CLASS(lang_, application),\
     SSO_OP_CLASS(lang_, tool),\
@@ -764,6 +766,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_target_construct_),\
     /* quantity */\
     SSO_OP_OBJ(lang_quantity_base_unit),\
+    /* tag */\
     /* unit */\
     SSO_OP_OBJ(lang_unit_quantity),\
     SSO_OP_OBJ(lang_unit_symbol),\
@@ -794,6 +797,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_member_type),\
     SSO_OP_OBJ(lang_member_modifiers),\
     SSO_OP_OBJ(lang_member_unit),\
+    SSO_OP_OBJ(lang_member_tags),\
     SSO_OP_OBJ(lang_member_state),\
     SSO_OP_OBJ(lang_member_stateCondExpr),\
     SSO_OP_OBJ(lang_member_weak),\

@@ -166,6 +166,13 @@ typedef uint32_t corto_modifier;
     #define CORTO_OBSERVABLE (0x40)
     #define CORTO_KEY (0x84)
 
+/* tag */
+typedef struct corto_tag_s *corto_tag;
+
+struct corto_tag_s {
+    int8_t __dummy;
+};
+
 /*  unit */
 typedef struct corto_unit_s *corto_unit;
 
@@ -185,6 +192,11 @@ struct corto_unit_s {
     uintptr_t fromQuantity;
 };
 
+#ifndef corto_taglist_DEFINED
+#define corto_taglist_DEFINED
+typedef corto_ll corto_taglist;
+#endif
+
 /*  member */
 typedef struct corto_member_s *corto_member;
 
@@ -192,6 +204,7 @@ struct corto_member_s {
     corto_type type;
     corto_modifier modifiers;
     corto_unit unit;
+    corto_taglist tags;
     corto_state state;
     corto_string stateCondExpr;
     bool weak;
@@ -831,4 +844,3 @@ typedef corto_wordseq _type_corto_wordseq;
 }
 #endif
 #endif
-
