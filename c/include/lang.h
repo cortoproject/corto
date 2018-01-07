@@ -1847,6 +1847,58 @@ CORTO_EXPORT corto_tableinstance _corto_tableinstanceAssign(corto_tableinstance 
 #define corto_tableinstanceAssign(_this, type) _corto_tableinstanceAssign(_this, corto_struct(type))
 #define corto_tableinstanceSet(_this, type) _this = _this ? _this : (corto_tableinstance*)corto_ptr_new(corto_tableinstance_o); _corto_tableinstanceAssign(_this, corto_struct(type))
 
+/* tag */
+CORTO_EXPORT corto_tag _corto_tagCreate(void);
+#define corto_tagCreate() _corto_tagCreate()
+#define corto_tagCreate_auto(_id) corto_tag _id = corto_tagCreate(); (void)_id
+CORTO_EXPORT corto_tag _corto_tagCreateChild(corto_object _parent, const char *_id);
+#define corto_tagCreateChild(_parent, _id) _corto_tagCreateChild(_parent, _id)
+#define corto_tagCreateChild_auto(_parent, _id) corto_tag _id = corto_tagCreateChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_tagUpdate(corto_tag _this);
+#define corto_tagUpdate(_this) _corto_tagUpdate(corto_tag(_this))
+
+CORTO_EXPORT corto_tag _corto_tagDeclare(void);
+#define corto_tagDeclare() _corto_tagDeclare()
+#define corto_tagDeclare_auto(_id) corto_tag _id = corto_tagDeclare(); (void)_id
+CORTO_EXPORT corto_tag _corto_tagDeclareChild(corto_object _parent, const char *_id);
+#define corto_tagDeclareChild(_parent, _id) _corto_tagDeclareChild(_parent, _id)
+#define corto_tagDeclareChild_auto(_parent, _id) corto_tag _id = corto_tagDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_tagDefine(corto_tag _this);
+#define corto_tagDefine(_this) _corto_tagDefine(corto_tag(_this))
+CORTO_EXPORT corto_tag _corto_tagAssign(corto_tag _this);
+#define corto_tag__optional_NotSet NULL
+#define corto_tag__optional_Set() (corto_tag*)corto_tagAssign((corto_tag*)corto_ptr_new(corto_tag_o))
+#define corto_tag__optional_SetCond(cond) cond ? (corto_tag*)corto_tagAssign((corto_tag*)corto_ptr_new(corto_tag_o)) : NULL
+#define corto_tagUnset(_this) _this ? corto_ptr_free(_this, corto_tag_o), 0 : 0; _this = NULL;
+#define corto_tagAssign(_this) _corto_tagAssign(_this)
+#define corto_tagSet(_this) _this = _this ? _this : (corto_tag*)corto_ptr_new(corto_tag_o); _corto_tagAssign(_this)
+
+/* taglist */
+CORTO_EXPORT corto_taglist* _corto_taglistCreate(corto_uint32 length, corto_tag* elements);
+#define corto_taglistCreate(length, elements) _corto_taglistCreate(length, elements)
+#define corto_taglistCreate_auto(_id, length, elements) corto_taglist* _id = corto_taglistCreate(length, elements); (void)_id
+CORTO_EXPORT corto_taglist* _corto_taglistCreateChild(corto_object _parent, const char *_id, corto_uint32 length, corto_tag* elements);
+#define corto_taglistCreateChild(_parent, _id, length, elements) _corto_taglistCreateChild(_parent, _id, length, elements)
+#define corto_taglistCreateChild_auto(_parent, _id, length, elements) corto_taglist* _id = corto_taglistCreateChild(_parent, #_id, length, elements); (void)_id
+CORTO_EXPORT corto_int16 _corto_taglistUpdate(corto_taglist* _this, corto_uint32 length, corto_tag* elements);
+#define corto_taglistUpdate(_this, length, elements) _corto_taglistUpdate(corto_taglist(_this), length, elements)
+
+CORTO_EXPORT corto_taglist* _corto_taglistDeclare(void);
+#define corto_taglistDeclare() _corto_taglistDeclare()
+#define corto_taglistDeclare_auto(_id) corto_taglist* _id = corto_taglistDeclare(); (void)_id
+CORTO_EXPORT corto_taglist* _corto_taglistDeclareChild(corto_object _parent, const char *_id);
+#define corto_taglistDeclareChild(_parent, _id) _corto_taglistDeclareChild(_parent, _id)
+#define corto_taglistDeclareChild_auto(_parent, _id) corto_taglist* _id = corto_taglistDeclareChild(_parent, #_id); (void)_id
+CORTO_EXPORT corto_int16 _corto_taglistDefine(corto_taglist* _this, corto_uint32 length, corto_tag* elements);
+#define corto_taglistDefine(_this, length, elements) _corto_taglistDefine(corto_taglist(_this), length, elements)
+CORTO_EXPORT corto_taglist* _corto_taglistAssign(corto_taglist* _this, corto_uint32 length, corto_tag* elements);
+#define corto_taglist__optional_NotSet NULL
+#define corto_taglist__optional_Set(length, elements) (corto_taglist*)corto_taglistAssign((corto_taglist*)corto_ptr_new(corto_taglist_o), length, elements)
+#define corto_taglist__optional_SetCond(cond, length, elements) cond ? (corto_taglist*)corto_taglistAssign((corto_taglist*)corto_ptr_new(corto_taglist_o), length, elements) : NULL
+#define corto_taglistUnset(_this) _this ? corto_ptr_free(_this, corto_taglist_o), 0 : 0; _this = NULL;
+#define corto_taglistAssign(_this, length, elements) _corto_taglistAssign(_this, length, elements)
+#define corto_taglistSet(_this, length, elements) _this = _this ? _this : (corto_taglist*)corto_ptr_new(corto_taglist_o); _corto_taglistAssign(_this, length, elements)
+
 /* target */
 CORTO_EXPORT corto_target _corto_targetCreate(corto_type type);
 #define corto_targetCreate(type) _corto_targetCreate(corto_type(type))
@@ -2362,6 +2414,15 @@ CORTO_EXPORT corto_string* corto_stringseqAppend(corto_stringseq *seq, corto_str
 CORTO_EXPORT corto_string* corto_stringseqAppendAlloc(corto_stringseq *seq);
 CORTO_EXPORT void corto_stringseqResize(corto_stringseq *seq, corto_uint32 length);
 CORTO_EXPORT void corto_stringseqClear(corto_stringseq *seq);
+
+/* taglist */
+CORTO_EXPORT void corto_taglistInsert(corto_taglist list, corto_tag element);
+CORTO_EXPORT void corto_taglistAppend(corto_taglist list, corto_tag element);
+CORTO_EXPORT void corto_taglistRemove(corto_taglist list, corto_tag element);
+CORTO_EXPORT corto_tag corto_taglistTakeFirst(corto_taglist list);
+CORTO_EXPORT corto_tag corto_taglistLast(corto_taglist list);
+CORTO_EXPORT corto_tag corto_taglistGet(corto_taglist list, corto_uint32 index);
+CORTO_EXPORT void corto_taglistClear(corto_taglist list);
 
 /* wordseq */
 CORTO_EXPORT uintptr_t* corto_wordseqAppend(corto_wordseq *seq, uintptr_t element);

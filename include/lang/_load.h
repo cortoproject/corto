@@ -57,6 +57,7 @@ CORTO_META_OBJECT(class, default);
 CORTO_META_OBJECT(class, package);
 CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(class, quantity);
+CORTO_META_OBJECT(class, tag);
 CORTO_META_OBJECT(class, unit);
 CORTO_META_OBJECT(class, container);
 CORTO_META_OBJECT(class, leaf);

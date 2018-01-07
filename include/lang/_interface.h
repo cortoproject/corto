@@ -293,6 +293,11 @@ corto_member _corto_interface_resolveMember_v(
     )
 
 CORTO_EXPORT
+corto_member _corto_interface_resolveMemberByTag(
+    corto_interface _this,
+    corto_tag tag);
+
+CORTO_EXPORT
 corto_method _corto_interface_resolveMethod(
     corto_interface _this,
     const char *name);
@@ -670,6 +675,7 @@ int16_t _corto_verbatim_init(
 #define corto_interface_destruct(_this) _corto_interface_destruct(corto_interface(_this))
 #define corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
 #define corto_interface_resolveMember_v(_this, name) _corto_interface_resolveMember_v(corto_interface(_this), name)
+#define corto_interface_resolveMemberByTag(_this, tag) _corto_interface_resolveMemberByTag(corto_interface(_this), corto_tag(tag))
 #define corto_interface_resolveMethod(_this, name) _corto_interface_resolveMethod(corto_interface(_this), name)
 #define corto_interface_resolveMethodById(_this, id) _corto_interface_resolveMethodById(corto_interface(_this), id)
 #define corto_interface_resolveMethodId(_this, name) _corto_interface_resolveMethodId(corto_interface(_this), name)
@@ -763,6 +769,7 @@ int16_t _corto_verbatim_init(
 #define corto_interface_destruct _corto_interface_destruct
 #define corto_interface_init _corto_interface_init
 #define corto_interface_resolveMember_v _corto_interface_resolveMember_v
+#define corto_interface_resolveMemberByTag _corto_interface_resolveMemberByTag
 #define corto_interface_resolveMethod _corto_interface_resolveMethod
 #define corto_interface_resolveMethodById _corto_interface_resolveMethodById
 #define corto_interface_resolveMethodId _corto_interface_resolveMethodId
@@ -858,6 +865,7 @@ int16_t _corto_verbatim_init(
 #define safe_corto_interface_destruct(_this) _corto_interface_destruct(corto_interface(_this))
 #define safe_corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
 #define safe_corto_interface_resolveMember_v(_this, name) _corto_interface_resolveMember_v(corto_interface(_this), name)
+#define safe_corto_interface_resolveMemberByTag(_this, tag) _corto_interface_resolveMemberByTag(corto_interface(_this), corto_tag(tag))
 #define safe_corto_interface_resolveMethod(_this, name) _corto_interface_resolveMethod(corto_interface(_this), name)
 #define safe_corto_interface_resolveMethodById(_this, id) _corto_interface_resolveMethodById(corto_interface(_this), id)
 #define safe_corto_interface_resolveMethodId(_this, name) _corto_interface_resolveMethodId(corto_interface(_this), name)
@@ -914,4 +922,3 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
-

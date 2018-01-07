@@ -529,6 +529,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_interface_construct_),\
     SSO_OP_OBJ(lang_interface_destruct_),\
     SSO_OP_OBJ(lang_interface_resolveMember_),\
+    SSO_OP_OBJ(lang_interface_resolveMemberByTag_),\
     SSO_OP_OBJ(lang_interface_compatible_),\
     SSO_OP_OBJ(lang_interface_resolveMethod_),\
     SSO_OP_OBJ(lang_interface_resolveMethodId_),\
