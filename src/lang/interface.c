@@ -125,6 +125,7 @@ int corto_interface_walkScope(corto_object o, void* userData) {
         if (corto_interface_bindMethod(this, o)) {
             goto error;
         }
+
     }
 
     return 1;
@@ -504,6 +505,7 @@ int16_t corto_interface_bindMethod(
                 corto_fullpath(NULL, method));
             goto error;
         }
+
     }
 
     /* Function is reentrant */
@@ -533,8 +535,11 @@ int16_t corto_interface_bindMethod(
                     corto_throw("method '%s' conflicts with '%s'", id, id2);
                     goto error;
                 }
+
             }
+
         }
+
     }
 
     if (!added) {
@@ -546,17 +551,16 @@ int16_t corto_interface_bindMethod(
         if (corto_vtableInsert(&this->methods, corto_function(method))) {
             corto_claim(method);
         }
+
     }
 
     /* Set method index to enable quick lookups */
     found = (corto_function *)corto_vtableLookup(&this->methods, corto_idof(method), &d);
     corto_assert(found != NULL, "cannot find method in vtable after it was inserted");
     corto_assert(d != -1, "error occurred while looking up inserted method");
-
     method->index =
         ((corto_word)found -
          (corto_word)this->methods.buffer) / sizeof(corto_function) + 1;
-
     return 0;
 error:
     return -1;
@@ -709,6 +713,7 @@ corto_method corto_interface_resolveMethod(
         if (d >= 0) {
             result = *found;
         }
+
     }
 
     return result;
@@ -775,4 +780,45 @@ notfound:
     return 0;
 error:
     return -1;
+}
+
+struct corto_interface_findTag_t {
+    corto_tag tag;
+    corto_member result;
+};
+
+static
+int16_t corto_interface_findTag_member(
+    corto_walk_opt *opt,
+    corto_value *info,
+    void *userData)
+{
+    struct corto_interface_findTag_t *data = userData;
+    corto_member m = info->is.member.t;
+
+    if (corto_ll_count(m->tags)) {
+        if (corto_ll_hasObject(m->tags, data->tag)) {
+            data->result = m;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+corto_member corto_interface_resolveMemberByTag(
+    corto_interface this,
+    corto_tag tag)
+{
+    corto_walk_opt walk_members;
+
+    corto_walk_init(&walk_members);
+    walk_members.metaprogram[CORTO_MEMBER] = corto_interface_findTag_member;
+
+    struct corto_interface_findTag_t walkData = {
+        .tag = tag
+    };
+    corto_metawalk(&walk_members, this, &walkData);
+
+    return walkData.result;
 }

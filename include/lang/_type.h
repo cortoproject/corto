@@ -185,6 +185,21 @@ struct corto_unit_s {
     uintptr_t fromQuantity;
 };
 
+/* int8 */
+typedef int8_t corto_int8;
+
+/*  tag */
+typedef struct corto_tag_s *corto_tag;
+
+struct corto_tag_s {
+    int8_t __dummy;
+};
+
+#ifndef corto_taglist_DEFINED
+#define corto_taglist_DEFINED
+typedef corto_ll corto_taglist;
+#endif
+
 /*  member */
 typedef struct corto_member_s *corto_member;
 
@@ -192,6 +207,7 @@ struct corto_member_s {
     corto_type type;
     corto_modifier modifiers;
     corto_unit unit;
+    corto_taglist tags;
     corto_state state;
     corto_string stateCondExpr;
     bool weak;
@@ -481,9 +497,6 @@ struct corto_int_s {
 /* int16 */
 typedef int16_t corto_int16;
 
-/* int8 */
-typedef int8_t corto_int8;
-
 /*  iterator */
 typedef struct corto_iterator_s *corto_iterator;
 
@@ -669,6 +682,9 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 #define corto_modifier(o) ((corto_modifier*)corto_assert_type((corto_type)corto_modifier_o, o))
 #define corto_quantity(o) ((corto_quantity)corto_assert_type((corto_type)corto_quantity_o, o))
 #define corto_unit(o) ((corto_unit)corto_assert_type((corto_type)corto_unit_o, o))
+#define corto_int8(o) ((int8_t*)corto_assert_type((corto_type)corto_int8_o, o))
+#define corto_tag(o) ((corto_tag)corto_assert_type((corto_type)corto_tag_o, o))
+#define corto_taglist(o) ((corto_taglist*)corto_assert_type((corto_type)corto_taglist_o, o))
 #define corto_member(o) ((corto_member)corto_assert_type((corto_type)corto_member_o, o))
 #define corto_alias(o) ((corto_alias)corto_assert_type((corto_type)corto_alias_o, o))
 #define corto_any(o) ((corto_any*)corto_assert_type((corto_type)corto_any_o, o))
@@ -710,7 +726,6 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 #define corto_int64(o) ((int64_t*)corto_assert_type((corto_type)corto_int64_o, o))
 #define corto_int(o) ((corto_int)corto_assert_type((corto_type)corto_int_o, o))
 #define corto_int16(o) ((int16_t*)corto_assert_type((corto_type)corto_int16_o, o))
-#define corto_int8(o) ((int8_t*)corto_assert_type((corto_type)corto_int8_o, o))
 #define corto_iterator(o) ((corto_iterator)corto_assert_type((corto_type)corto_iterator_o, o))
 #define corto_leaf(o) ((corto_leaf)corto_assert_type((corto_type)corto_leaf_o, o))
 #define corto_list(o) ((corto_list)corto_assert_type((corto_type)corto_list_o, o))
@@ -760,6 +775,9 @@ typedef corto_type _type_corto_type;
 typedef corto_modifier _type_corto_modifier;
 typedef corto_quantity _type_corto_quantity;
 typedef corto_unit _type_corto_unit;
+typedef corto_int8 _type_corto_int8;
+typedef corto_tag _type_corto_tag;
+typedef corto_taglist _type_corto_taglist;
 typedef corto_member _type_corto_member;
 typedef corto_alias _type_corto_alias;
 typedef corto_any _type_corto_any;
@@ -801,7 +819,6 @@ typedef corto_float32 _type_corto_float32;
 typedef corto_int64 _type_corto_int64;
 typedef corto_int _type_corto_int;
 typedef corto_int16 _type_corto_int16;
-typedef corto_int8 _type_corto_int8;
 typedef corto_iterator _type_corto_iterator;
 typedef corto_leaf _type_corto_leaf;
 typedef corto_list _type_corto_list;

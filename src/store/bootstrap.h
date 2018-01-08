@@ -224,7 +224,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_SEQUENCE_EMPTY_V(subType) {0, NULL}
 
 /* member */
-#define CORTO_MEMBER_V(type, access, state, cond, weak) {(corto_type)&type##__o.v, access, NULL, state, cond, weak, 0, 0}
+#define CORTO_MEMBER_V(type, access, state, cond, weak) {(corto_type)&type##__o.v, access, NULL, NULL, state, cond, weak, 0, 0}
 
 /* object */
 #define CORTO_PACKAGE_O(name, uri, description) corto_ssoo_package name##__o = {CORTO_PACKAGE_V(root, #name, uri, NULL, "Sander Mertens", description)}
@@ -469,6 +469,7 @@ CORTO_FWDECL(class, table);
 CORTO_FWDECL(class, tableinstance);
 CORTO_FWDECL_VSTORE(class, tool);
 CORTO_FWDECL(class, unit);
+CORTO_FWDECL(class, tag);
 
 CORTO_FWDECL(class, sequence);
 CORTO_FWDECL(class, struct);
@@ -567,6 +568,7 @@ CORTO_FWDECL(sequence, wordseq);
 /* Lists */
 CORTO_FWDECL_VSTORE(list, resultList);
 CORTO_FWDECL(list, objectlist);
+CORTO_FWDECL(list, taglist);
 CORTO_FWDECL(list, stringlist);
 CORTO_FWDECL_VSTORE(list, mountSubscriptionList);
 
@@ -852,6 +854,7 @@ CORTO_SEQUENCE_O(lang, stringseq, lang_string, 0);
 CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
 CORTO_LIST_O(lang, stringlist, lang_string, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
+CORTO_LIST_O(lang, taglist, lang_tag, 0);
 CORTO_LIST_O(vstore, resultList, vstore_result, 0);
 CORTO_LIST_O(vstore, mountSubscriptionList, vstore_mountSubscription, 0);
 
@@ -921,6 +924,7 @@ CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL
     CORTO_METHOD_O(lang_interface, init, "()", lang_int16, corto_interface_init);
     CORTO_METHOD_O(lang_interface, construct, "()", lang_int16, corto_interface_construct);
     CORTO_METHOD_O(lang_interface, destruct, "()", lang_void, corto_interface_destruct);
+    CORTO_METHOD_O(lang_interface, resolveMemberByTag, "(tag tag)", lang_member, corto_interface_resolveMemberByTag);
     CORTO_OVERRIDABLE_O(lang_interface, resolveMember, "(string name)", lang_member, corto_interface_resolveMember_v);
     CORTO_OVERRIDABLE_O(lang_interface, compatible, "(type type)", lang_bool, corto_interface_compatible_v);
     CORTO_METHOD_O(lang_interface, resolveMethod, "(string name)", lang_method, corto_interface_resolveMethod);
@@ -1163,6 +1167,7 @@ CORTO_CLASS_NOBASE_O(lang, member, CORTO_ATTR_DEFAULT, CORTO_TYPE_ID(lang_interf
     CORTO_REFERENCE_O(lang_member, type, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_VALID, "reference", FALSE);
     CORTO_MEMBER_O(lang_member, modifiers, lang_modifier, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_member, unit, lang_unit, CORTO_HIDDEN);
+    CORTO_MEMBER_O(lang_member, tags, lang_taglist, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_member, state, lang_state, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_member, stateCondExpr, lang_string, CORTO_HIDDEN);
     CORTO_MEMBER_O(lang_member, weak, lang_bool, CORTO_HIDDEN);
@@ -1193,6 +1198,9 @@ CORTO_STRUCT_O(lang, parameter, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);
     CORTO_REFERENCE_O(lang_parameter, type, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_VALID, NULL, FALSE);
     CORTO_MEMBER_O(lang_parameter, inout, lang_inout, CORTO_GLOBAL);
     CORTO_MEMBER_O(lang_parameter, passByReference, lang_bool, CORTO_GLOBAL);
+
+/* /corto/lang/tag */
+CORTO_CLASS_NOBASE_O(lang, tag, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
 
 /* /corto/lang/quantity */
 CORTO_CLASS_NOBASE_O(lang, quantity, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);

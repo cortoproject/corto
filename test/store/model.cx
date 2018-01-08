@@ -403,6 +403,16 @@ class Plane: implements={Vehicle} :/
     cur_x, cur_y: float64
     float64 move(float64 x, float64 y)
 
+// Test tags
+tag foo_tag{}
+tag bar_tag{}
+tag hello_tag{}
+tag world_tag{}
+
+struct TagTest:/
+    foo: int32, tags = {foo_tag, hello_tag}
+    bar: int32, tags = {bar_tag}
+
 test/Suite Attributes:/
     void tc_testDefaultSet()
     void tc_testTargetAttr()
@@ -535,6 +545,10 @@ test/Suite ObjectMgmt:/
 
     void tc_nameof()
     void tc_nameofOverride()
+
+test/Suite Tags:/
+    void tc_findTag()
+    void tc_tagNotFound()
 
 // Test whether attributes are set correctly in different contexts
 class AttrConstructorTest:/

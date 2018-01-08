@@ -6184,6 +6184,182 @@ corto_tableinstance _corto_tableinstanceAssign(corto_tableinstance _this, corto_
     return _this;
 }
 
+corto_tag _corto_tagCreate(void) {
+    corto_tag _this;
+    _this = (corto_tag)corto_declare(NULL, NULL, corto_tag_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_tag _corto_tagCreateChild(corto_object _parent, const char *_id) {
+    corto_tag _this;
+    _this = (corto_tag)corto_declare(_parent, _id, corto_tag_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_tagUpdate(corto_tag _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_tag _corto_tagDeclare(void) {
+    corto_tag _this;
+    _this = (corto_tag)corto_declare(NULL, NULL, corto_tag_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_tag _corto_tagDeclareChild(corto_object _parent, const char *_id) {
+    corto_tag _this;
+    _this = (corto_tag)corto_declare(_parent, _id, corto_tag_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_tagDefine(corto_tag _this) {
+    CORTO_UNUSED(_this);
+    return corto_define(_this);
+}
+
+corto_tag _corto_tagAssign(corto_tag _this) {
+    CORTO_UNUSED(_this);
+    return _this;
+}
+
+corto_taglist* _corto_taglistCreate(corto_uint32 length, corto_tag* elements) {
+    corto_taglist* _this;
+    _this = (corto_taglist*)corto_declare(NULL, NULL, corto_taglist_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        corto_uint32 i = 0;
+        corto_taglistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_taglistAppend(*_this, elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_taglist* _corto_taglistCreateChild(corto_object _parent, const char *_id, corto_uint32 length, corto_tag* elements) {
+    corto_taglist* _this;
+    _this = (corto_taglist*)corto_declare(_parent, _id, corto_taglist_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        corto_uint32 i = 0;
+        corto_taglistClear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_taglistAppend(*_this, elements[i]);
+        }
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_taglistUpdate(corto_taglist* _this, corto_uint32 length, corto_tag* elements) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            corto_uint32 i = 0;
+            corto_taglistClear(*((corto_taglist*)CORTO_OFFSET(_this, ((corto_type)corto_taglist_o)->size)));
+            for (i = 0; i < length; i ++) {
+                corto_taglistAppend(*((corto_taglist*)CORTO_OFFSET(_this, ((corto_type)corto_taglist_o)->size)), elements[i]);
+            }
+        } else {
+            corto_uint32 i = 0;
+            corto_taglistClear(*_this);
+            for (i = 0; i < length; i ++) {
+                corto_taglistAppend(*_this, elements[i]);
+            }
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_taglist* _corto_taglistDeclare(void) {
+    corto_taglist* _this;
+    _this = (corto_taglist*)corto_declare(NULL, NULL, corto_taglist_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_taglist* _corto_taglistDeclareChild(corto_object _parent, const char *_id) {
+    corto_taglist* _this;
+    _this = (corto_taglist*)corto_declare(_parent, _id, corto_taglist_o);
+    if (!_this) {
+        return NULL;
+    }
+    return _this;
+}
+
+corto_int16 _corto_taglistDefine(corto_taglist* _this, corto_uint32 length, corto_tag* elements) {
+    CORTO_UNUSED(_this);
+    corto_uint32 i = 0;
+    corto_taglistClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_taglistAppend(*_this, elements[i]);
+    }
+    return corto_define(_this);
+}
+
+corto_taglist* _corto_taglistAssign(corto_taglist* _this, corto_uint32 length, corto_tag* elements) {
+    CORTO_UNUSED(_this);
+    corto_uint32 i = 0;
+    corto_taglistClear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_taglistAppend(*_this, elements[i]);
+    }
+    return _this;
+}
+
 corto_target _corto_targetCreate(corto_type type) {
     corto_target _this;
     _this = (corto_target)corto_declare(NULL, NULL, corto_target_o);
@@ -7972,6 +8148,46 @@ void corto_stringseqResize(corto_stringseq *seq, corto_uint32 length) {
 
 void corto_stringseqClear(corto_stringseq *seq) {
     corto_stringseqResize(seq, 0);
+}
+
+void corto_taglistInsert(corto_taglist list, corto_tag element) {
+    corto_ll_insert(list, (void*)(corto_word)element);
+    if (element) {
+        corto_claim(element);
+    }
+}
+
+void corto_taglistAppend(corto_taglist list, corto_tag element) {
+    corto_ll_append(list, (void*)(corto_word)element);
+    if (element) {
+        corto_claim(element);
+    }
+}
+
+void corto_taglistRemove(corto_taglist list, corto_tag element) {
+    corto_ll_remove(list, element);
+    corto_release(element);
+}
+
+corto_tag corto_taglistTakeFirst(corto_taglist list) {
+    return (corto_tag)(corto_word)corto_ll_takeFirst(list);
+}
+
+corto_tag corto_taglistLast(corto_taglist list) {
+    return (corto_tag)(corto_word)corto_ll_last(list);
+}
+
+corto_tag corto_taglistGet(corto_taglist list, corto_uint32 index) {
+    return (corto_tag)(corto_word)corto_ll_get(list, index);
+}
+
+void corto_taglistClear(corto_taglist list) {
+    corto_iter iter = corto_ll_iter(list);
+    while(corto_iter_hasNext(&iter)) {
+        void *ptr = corto_iter_next(&iter);
+        corto_release(ptr);
+    }
+    corto_ll_clear(list);
 }
 
 uintptr_t* corto_wordseqAppend(corto_wordseq *seq, uintptr_t element) {
