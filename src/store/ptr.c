@@ -107,7 +107,7 @@ corto_equalityKind _corto_ptr_compare(
     corto_compare_ser_t data;
     corto_walk_opt s;
 
-    data.value = corto_value_mem((void*)p2, type);;
+    data.value = corto_value_value((void*)p2, type);
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
     corto_walk_ptr(&s, (void*)p1, type, &data);
@@ -152,7 +152,8 @@ void* _corto_mem_new(
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
         corto_walk_opt s =
             corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
-        if (corto_walk_ptr(&s, result, type, NULL)) {
+        corto_value v = corto_value_mem(result, type);
+        if (corto_walk_value(&s, &v, NULL)) {
             goto error;
         }
     }

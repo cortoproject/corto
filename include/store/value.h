@@ -500,6 +500,11 @@ int16_t corto_value_copy(
     corto_value *dst,
     corto_value *src);
 
+CORTO_EXPORT
+int16_t corto_value_compare(
+    corto_value *dst,
+    corto_value *src);
+
 /* Type safe macro's */
 #define corto_value_object(o, t) _corto_value_object(o, corto_type(t))
 #define corto_value_base(v, t) _corto_value_base(v, corto_type(t))

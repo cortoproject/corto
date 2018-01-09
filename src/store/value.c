@@ -836,7 +836,25 @@ void corto_value_free(corto_value *v) {
     *v = corto_value_empty();
 }
 
-corto_int16 corto_value_copy(corto_value *dst, corto_value *src) {
+int16_t corto_value_compare(
+    corto_value *dst,
+    corto_value *src)
+{
+    corto_compare_ser_t data;
+    corto_walk_opt s;
+
+    data.value = *dst;
+    s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+
+    corto_walk_value(&s, src, &data);
+
+    return data.result;
+}
+
+int16_t corto_value_copy(
+    corto_value *dst,
+    corto_value *src)
+{
     corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     corto_int16 result;

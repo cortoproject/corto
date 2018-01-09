@@ -686,6 +686,12 @@ test/Suite Copy:/
     void tc_listToListString()
     void tc_listToExistingListString()
 
+// Test binary serializer
+test/Suite BinarySerializer:/
+    void tc_serializeReferenceType()
+    void tc_serializeReferenceTypeWithInit()
+    void tc_copyReferenceType()
+
 // Test ownership scenarios
 test/Suite Ownership:/
     observable: word

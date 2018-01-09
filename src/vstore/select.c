@@ -296,6 +296,7 @@ void corto_setItemData(
         if (item->value) {
             data->dstSer->release(item->value);
         }
+
         corto_value v = corto_value_object(o, NULL);
         item->value = data->dstSer->fromValue(&v);
     }

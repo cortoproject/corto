@@ -35,21 +35,14 @@ corto_word corto_fmt_ptr_fromValue(
     corto_type t = corto_value_typeof(v);
     void *ptr = corto_mem_new(t);
 
-    if (corto_ptr_init(ptr, t)) {
-        goto error;
-    }
-
     if (t->flags & CORTO_TYPE_HAS_RESOURCES) {
-        if (corto_ptr_copy(ptr, t, corto_value_ptrof(v))) {
-            return 0;
-        }
+        corto_value dst = corto_value_mem(ptr, t);
+        corto_value_copy(&dst, v);
     } else {
         memcpy(ptr, corto_value_ptrof(v), t->size);
     }
 
     return (corto_word)ptr;
-error:
-    return 0;
 }
 
 static
