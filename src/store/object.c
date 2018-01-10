@@ -455,11 +455,13 @@ int16_t corto_adopt_checkConstraints(
             corto_struct tableType = corto_tableinstance(parent)->type;
             if ((corto_type(tableType) != childType)) {
                 if (!corto_instanceof(childType, corto_container_o)) {
-                    corto_throw("type '%s' does not match tabletype '%s' of '%s'",
-                        corto_fullpath(NULL, childType),
-                        corto_fullpath(NULL, tableType),
-                        corto_fullpath(NULL, parent));
-                    goto error;
+                    if (!corto_type_instanceof(tableType, childType)) {
+                        corto_throw("type '%s' does not match tabletype '%s' of '%s'",
+                            corto_fullpath(NULL, childType),
+                            corto_fullpath(NULL, tableType),
+                            corto_fullpath(NULL, parent));
+                        goto error;
+                    }
                 }
             }
         }
@@ -3787,6 +3789,14 @@ int16_t corto_update(corto_object o) {
         goto error;
     }
 
+    corto__writable* _wr = corto_hdr_writable(CORTO_OFFSET(o, -sizeof(corto__object)));
+    if (_wr) {
+        if (corto_rwmutex_write(&_wr->align.lock)) {
+            corto_throw(NULL);
+            goto error;
+        }
+    }
+
     if (corto_secured()) {
         if (!corto_authorize(o, CORTO_SECURE_ACTION_UPDATE)) {
             goto error;
@@ -3814,6 +3824,11 @@ int16_t corto_update(corto_object o) {
                 goto error;
             }
         }
+    }
+
+    if (corto_rwmutex_unlock(&_wr->align.lock)) {
+        corto_throw(NULL);
+        goto error;
     }
 
     return result;

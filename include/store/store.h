@@ -1232,7 +1232,7 @@ uint32_t corto_scope_size(
  * This function must be used with care as it only returns objects that are
  * currently loaded in the object store. If there are mounted objects in this
  * scope that are not loaded in the store they will not be returned. To obtain a
- * full list of objects count, use corto_select().iterObjects().
+ * full list of objects count, use corto_select().iter_objects().
  *
  * @param o A named object.
  * @return A sequence with the objects in the scope of the object.

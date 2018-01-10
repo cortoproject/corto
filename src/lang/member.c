@@ -67,6 +67,11 @@ int16_t corto_member_init(
         }
     }
 
+    /* Builtin members are not initialized like regular objects */
+    if (!this->tags) {
+        this->tags = corto_ll_new();
+    }
+
     return 0;
 error:
     return -1;

@@ -43,6 +43,7 @@ typedef struct corto_selectRequest {
     const char *scope;
     corto_string expr;
     const char *type;
+    const char *instanceof;
     uint64_t offset;
     uint64_t limit;
     uint64_t soffset;
@@ -135,6 +136,7 @@ struct corto_select_data {
     /* Filters */
     corto_string typeFilter;
     corto_idmatch_program typeFilterProgram;   /* Parsed program */
+    corto_type instanceof;
 
     /* Full path representing the current location of select */
     corto_id location;
@@ -407,6 +409,19 @@ bool corto_selectMatch(
                 }
             } else {
                 result = corto_idmatch_run(data->typeFilterProgram, type);
+            }
+        }
+
+        if (result && data->instanceof) {
+            corto_type type = NULL;
+            if (o) {
+                type = corto_typeof(o);
+            } else {
+                type = corto_resolve(NULL, item->type);
+            }
+            result = corto_type_instanceof(data->instanceof, type);
+            if (!o) {
+                corto_release(type);
             }
         }
     }
@@ -1181,6 +1196,7 @@ void corto_selectRelease(
     if (data->fullscope) corto_dealloc(data->fullscope);
     if (data->filterProgram) corto_idmatch_free(data->filterProgram);
     if (data->typeFilterProgram) corto_idmatch_free(data->typeFilterProgram);
+    if (data->instanceof) corto_release(data->instanceof);
 
     /* Free iterators */
     int32_t i;
@@ -1472,6 +1488,13 @@ corto_resultIter corto_selectPrepareIterator (
     } else {
         data->typeFilter = NULL;
     }
+    if (r->instanceof) {
+        data->instanceof = corto_resolve(NULL, r->instanceof);
+        if (!data->instanceof) {
+            corto_throw("type '%s' specified in instanceof not found", r->instanceof);
+            goto error;
+        }
+    }
     data->soffset = r->soffset;
     data->slimit = r->slimit;
     data->from = r->from;
@@ -1613,6 +1636,19 @@ corto_select__fluent corto_selectorType(
     if (request) {
         corto_debug("TYPE '%s'", type);
         request->type = type;
+    }
+    return corto_select__fluentGet();
+}
+
+static
+corto_select__fluent corto_selectorInstanceof(
+    const char *instanceof)
+{
+    corto_selectRequest *request =
+      corto_tls_get(CORTO_KEY_FLUENT);
+    if (request) {
+        corto_debug("INSTANCEOF '%s'", instanceof);
+        request->instanceof = instanceof;
     }
     return corto_select__fluentGet();
 }
@@ -2013,6 +2049,7 @@ static corto_select__fluent corto_select__fluentGet(void)
     result.soffset = corto_selectorSoffset;
     result.slimit = corto_selectorSlimit;
     result.type = corto_selectorType;
+    result.instanceof = corto_selectorInstanceof;
     result.fromNow = corto_selectorFromNow;
     result.fromTime = corto_selectorFromTime;
     result.toNow = corto_selectorToNow;
@@ -2023,7 +2060,7 @@ static corto_select__fluent corto_select__fluentGet(void)
     result.unsubscribe = corto_selectorUnsubscribe;
     result.id = corto_selectorId;
     result.resume = corto_selectorResume;
-    result.iterObjects = corto_selectorIterObjects;
+    result.iter_objects = corto_selectorIterObjects;
     result.count = corto_selectorCount;
     result.instance = corto_selectorInstance;
     result.mount = corto_selectorMount;

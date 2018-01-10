@@ -105,6 +105,7 @@ int16_t corto_subscriber_invoke(
             corto_set_str(&eptr->data.id, r->id);
             corto_set_str(&eptr->data.type, r->type);
             corto_set_str(&eptr->data.parent, r->parent);
+            corto_set_ref(&eptr->data.object, r->object);
             if (r->value) {
                 eptr->data.value =
                   ((corto_fmt)s->contentTypeHandle)->copy(r->value);

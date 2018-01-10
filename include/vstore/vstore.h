@@ -139,6 +139,12 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*type)(
         const char *filter);
 
+    /** Filter out results that are not an instance of specified type.
+     * @param filter An id expression matching a single type.
+     */
+    struct corto_select__fluent (*instanceof)(
+        const char *type);
+
     /** Filter out results from a specific instance (mount).
      * This is typically useful when using corto_select from a mount, and the
      * mount does not want to invoke itself.
@@ -218,7 +224,7 @@ typedef struct corto_select__fluent {
      * @param iter_out A pointer to an iterator object.
      * @return 0 if success, -1 if failed.
      */
-    int16_t (*iterObjects)(
+    int16_t (*iter_objects)(
         corto_objectIter *iter_out); /* Unstable API */
 
     /** Return the number of objects for a query.
