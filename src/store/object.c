@@ -3782,6 +3782,7 @@ int16_t corto_update(corto_object o) {
     corto_assert_object(o);
 
     int16_t result = 0;
+    bool locked = false;
     corto_eventMask mask = CORTO_UPDATE;
 
     if (!corto_owned(o) && (corto_typeof(corto_typeof(o)) != (corto_type)corto_target_o)) {
@@ -3795,6 +3796,7 @@ int16_t corto_update(corto_object o) {
             corto_throw(NULL);
             goto error;
         }
+        locked = true;
     }
 
     if (corto_secured()) {
@@ -3826,13 +3828,22 @@ int16_t corto_update(corto_object o) {
         }
     }
 
-    if (corto_rwmutex_unlock(&_wr->align.lock)) {
-        corto_throw(NULL);
-        goto error;
+    if (_wr) {
+        locked = false;
+        if (corto_rwmutex_unlock(&_wr->align.lock)) {
+            corto_throw(NULL);
+            goto error;
+        }
     }
 
     return result;
 error:
+    if (locked) {
+        if (corto_rwmutex_unlock(&_wr->align.lock)) {
+            corto_throw(NULL);
+            goto error;
+        }
+    }
     return -1;
 }
 
