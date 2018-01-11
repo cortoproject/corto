@@ -60,7 +60,11 @@ corto_int16 _corto_ptr_init(
         }
     }
 
-    if (type->flags & CORTO_TYPE_HAS_INIT) {
+    /* Never call init delegate of reference type on a reference pointer. The
+     * initializer of reference types is only meant to be invoked on objects of
+     * the reference types, not on *values* that contain a reference to the
+     * object. */
+    if (!type->reference && type->flags & CORTO_TYPE_HAS_INIT) {
         return corto_invoke_preDelegate(&type->init, type, p);
     } else {
         return 0;

@@ -28,6 +28,9 @@ struct Point3D: Point:/
 struct Line:/
     start, stop: Point
 
+struct CompositeWithReferenceTypeWithInit:/
+    m: list{Foo}
+
 struct CompositeWithString:/
     a: int32
     b: string
@@ -691,6 +694,8 @@ test/Suite BinarySerializer:/
     void tc_serializeReferenceType()
     void tc_serializeReferenceTypeWithInit()
     void tc_copyReferenceType()
+    void tc_copyListWithReferenceType()
+    void tc_copyListWithReferenceWithInitType()
 
 // Test ownership scenarios
 test/Suite Ownership:/

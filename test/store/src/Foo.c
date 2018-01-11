@@ -31,6 +31,10 @@ void test_Foo_destruct(
 int16_t test_Foo_init(
     test_Foo this)
 {
+    /* Ensure that init is called on real object- which must be guaranteed since
+     * 'Foo' is a reference type */
+    corto_assert_object(this);
+
     this->x = 1;
     this->y = 2;
 
@@ -38,4 +42,3 @@ int16_t test_Foo_init(
 
 	return 0;
 }
-
