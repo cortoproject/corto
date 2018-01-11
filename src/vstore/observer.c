@@ -534,19 +534,15 @@ int corto_observerAlignScope(corto_object o, void *userData) {
 
     corto_observerAlignData *data = userData;
 
-    if (corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
-        if ((data->mask & CORTO_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
-        {
-            corto_notify_observer(data->observer, o, o, CORTO_DECLARE, data->depth);
-        }
+    if ((data->mask & CORTO_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
+    {
+        corto_notify_observer(data->observer, o, o, CORTO_DECLARE, data->depth);
     }
 
-    if (corto_check_attr(o, CORTO_ATTR_PERSISTENT)) {
-        if ((data->mask & CORTO_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
-            corto_check_state(o, CORTO_VALID))
-        {
-            corto_notify_observer(data->observer, o, o, CORTO_DEFINE, data->depth);
-        }
+    if ((data->mask & CORTO_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
+        corto_check_state(o, CORTO_VALID))
+    {
+        corto_notify_observer(data->observer, o, o, CORTO_DEFINE, data->depth);
     }
 
     if (data->mask & CORTO_ON_TREE) {
