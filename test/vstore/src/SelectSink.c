@@ -473,7 +473,6 @@ void test_SelectSink_tc_selectLoaderLookupNestedInitialSlash(
     test_assert(corto_delete(q) == 0);
 }
 
-
 void test_SelectSink_tc_selectMixedScope(
     test_SelectSink this)
 {
@@ -1193,6 +1192,115 @@ void test_SelectSink_tc_selectVirtualSingleNested2(
     test_assert(!strcmp(result->type, "int32"));
 
     test_assert(!corto_iter_hasNext(&iter));
+}
+
+void test_SelectSink_tc_selectObjectFromVstore(
+    test_SelectSink this)
+{
+    corto_mountPolicy p = {
+        .mask = CORTO_MOUNT_QUERY,
+        .ownership = CORTO_LOCAL_SOURCE
+    };
+
+    corto_mount m =
+        corto_subscribe("*")
+            .from("data")
+            .contentType("text/corto")
+            .mount(test_SimpleMount_o, &p, NULL);
+    test_assert(m != NULL);
+    test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
+    test_assert(corto_check_state(m, CORTO_VALID) == true);
+
+    corto_iter it;
+    test_assert(corto_select("*").from("data").iter_objects(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it) == true);
+    corto_object r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(corto_idof(r), "foo");
+    test_assertstr(corto_idof(corto_parentof(r)), "data");
+    test_assert(corto_typeof(r) == corto_type(corto_int32_o));
+    test_assert(corto_check_state(r, CORTO_VALID));
+    test_assertint(*(int32_t*)r, 10);
+
+    test_assert(corto_iter_hasNext(&it) == false);
+}
+
+void test_SelectSink_tc_selectObjectFromVstore_w_InvalidObjectInStore(
+    test_SelectSink this)
+{
+    corto_mountPolicy p = {
+        .mask = CORTO_MOUNT_QUERY,
+        .ownership = CORTO_LOCAL_SOURCE
+    };
+
+    corto_mount m =
+        corto_subscribe("*")
+            .from("data")
+            .contentType("text/corto")
+            .mount(test_SimpleMount_o, &p, NULL);
+    test_assert(m != NULL);
+    test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
+    test_assert(corto_check_state(m, CORTO_VALID) == true);
+
+    /* Declare object */
+    corto_object o = corto_declare(root_o, "data/foo", corto_int32_o);
+
+    corto_iter it;
+    test_assert(corto_select("*").from("data").iter_objects(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it) == true);
+    corto_object r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assert(o == r);
+    test_assertstr(corto_idof(r), "foo");
+    test_assertstr(corto_idof(corto_parentof(r)), "data");
+    test_assert(corto_typeof(r) == corto_type(corto_int32_o));
+    test_assert(corto_check_state(r, CORTO_VALID));
+    test_assertint(*(int32_t*)r, 10);
+
+    test_assert(corto_iter_hasNext(&it) == false);
+}
+
+void test_SelectSink_tc_selectObjectFromVstore_w_ValidObjectInStore(
+    test_SelectSink this)
+{
+    corto_mountPolicy p = {
+        .mask = CORTO_MOUNT_QUERY,
+        .ownership = CORTO_LOCAL_SOURCE
+    };
+
+    corto_mount m =
+        corto_subscribe("*")
+            .from("data")
+            .contentType("text/corto")
+            .mount(test_SimpleMount_o, &p, NULL);
+    test_assert(m != NULL);
+    test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
+    test_assert(corto_check_state(m, CORTO_VALID) == true);
+
+    /* Declare & define object BEFORE creation of mount */
+    int32_t *o = corto_create(root_o, "data/foo", corto_int32_o);
+    test_assert(corto_define(o) == 0);
+    test_assert(corto_check_state(o, CORTO_VALID));
+
+    /* Change object value */
+    *o = 20;
+
+    corto_iter it;
+    test_assert(corto_select("*").from("data").iter_objects(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it) == true);
+    corto_object r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assert(o == r);
+    test_assertstr(corto_idof(r), "foo");
+    test_assertstr(corto_idof(corto_parentof(r)), "data");
+    test_assert(corto_typeof(r) == corto_type(corto_int32_o));
+    test_assert(corto_check_state(r, CORTO_VALID));
+    test_assertint(*(int32_t*)r, 20); /* Value should not be overwritten */
+
+    test_assert(corto_iter_hasNext(&it) == false);
 }
 
 void test_SelectSink_teardown(

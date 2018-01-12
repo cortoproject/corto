@@ -636,8 +636,11 @@ corto_mount corto_subscribeMount(
     corto_set_str(&q->select, r->expr);
     corto_set_str(&q->type, r->type);
     corto_set_str(&s->contentType, r->contentType);
+
     ((corto_observer)s)->enabled = true;
-    m->policy = *policy;
+    if (policy) {
+        m->policy = *policy;
+    }
 
     corto_tls_set(CORTO_KEY_FLUENT, NULL);
     free(r);

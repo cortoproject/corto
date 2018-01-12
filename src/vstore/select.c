@@ -568,9 +568,19 @@ bool corto_selectIterMount(
     corto_assert(result->type != NULL, "mount '%s' returns result without type", corto_fullpath(NULL, mount));
     corto_assert(result->type[0] != 0, "mount '%s' returns result with empty type", corto_fullpath(NULL, mount));
 
+    char *local_parent = result->parent;
+
+    /* Mounts never return absolute paths, so interpret '/' as '.' */
+    if (local_parent[0] == '/') {
+        local_parent ++;
+    }
+    if (!local_parent[0]) {
+        local_parent = ".";
+    }
+
     corto_debug(
-        "mount returned (id = '%s', parent = '%s' leaf = '%s')",
-        result->id, result->parent, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
+        "mount returned (id = '%s', parent = '%s' type = '%s' leaf = '%s')",
+        result->id, local_parent, result->type, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
 
     /* Filter data early if mount indicates it doesn't do any filtering, and
      * this is not a tree query */
@@ -583,7 +593,8 @@ bool corto_selectIterMount(
         }
 
         char *parent = corto_selectRelativeParent(&corto_subscriber(mount)->query, data);
-        if (strcmp(parent, result->parent)) {
+
+        if (strcmp(parent, local_parent)) {
             goto noMatch;
         }
     }
@@ -610,12 +621,12 @@ bool corto_selectIterMount(
         }
     }
 
-    if (result->parent) {
+    if (local_parent) {
         corto_id path;
         strcpy(path, data->scope ? data->scope : "");
         strcpy(rpath, corto_subscriber(mount)->query.from);
         strcat(rpath, "/");
-        strcat(rpath, result->parent);
+        strcat(rpath, local_parent);
         corto_path_clean(rpath, rpath);
         corto_pathstr(data->item.parent, path, rpath, -1);
     } else {
@@ -659,7 +670,7 @@ bool corto_selectIterMount(
         corto_type type = NULL;
 
         corto_trace("resuming '%s/%s' of type '%s'",
-            result->parent, result->id, result->type);
+            local_parent, result->id, result->type);
 
         if (corto_observer(mount)->type) {
             corto_set_ref(&type, corto_observer(mount)->type);
@@ -667,7 +678,7 @@ bool corto_selectIterMount(
             if (!(type = corto_resolve(NULL, result->type))) {
                 corto_warning(
                     "could not resume '%s/%s' from '%s': type '%s not found",
-                  result->parent,
+                  local_parent,
                   result->id,
                   corto_fullpath(NULL, mount),
                   result->type);
@@ -678,7 +689,7 @@ bool corto_selectIterMount(
         if (!parent) {
             corto_warning(
               "could not resume '%s/%s' from '%s': parent '%s' not available",
-              result->parent,
+              local_parent,
               result->id,
               corto_fullpath(NULL, mount),
               rpath);
@@ -695,7 +706,6 @@ bool corto_selectIterMount(
             .fmt = contentTypeHandle,
             .value = (void*)result->value
         });
-
         corto_set_source(prev);
         corto_release(type);
         corto_release(parent);
@@ -703,7 +713,7 @@ bool corto_selectIterMount(
         if (!ref) {
             corto_warning(
               "could not resume '%s/%s' from mount '%s'",
-              result->parent,
+              local_parent,
               result->id,
               corto_fullpath(NULL, mount));
             goto resume_failed;
@@ -711,7 +721,7 @@ bool corto_selectIterMount(
 
         corto_ok("resumed '%s'", corto_fullpath(NULL, ref));
 
-        corto_set_ref(&result->object, ref);
+        corto_set_ref(&data->item.object, ref);
         if (!data->resumeKeep) {
             corto_release(ref);
         }

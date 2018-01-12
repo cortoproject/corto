@@ -115,6 +115,9 @@ class VirtualMount: mount, hidden:/
     resultIter onQuery(vstore/query query) override
     int16 construct()
 
+class MountInitialSlash: mount:/
+    resultIter onQuery(vstore/query query) override
+
 // Test corto_select requesting data from mounts
 test/Suite SelectMount:/
     void setup() method
@@ -177,6 +180,8 @@ test/Suite SelectMount:/
 
     void tc_selectFromMountWithPartialFrom()
     void tc_selectFromRootNoInitialSlashInFrom()
+    void tc_selectTreeFromInitialSlashInMountResult()
+    void tc_selectScopeFromInitialSlashInMountResult()
 
 
 class HistoryMount : vstore/mount, hidden:/
@@ -246,6 +251,10 @@ class LoaderSimulatorMount : vstore/mount, hidden:/
     queryCount: int32, private
     items: resultList, private
 
+// Simple mount serving single object
+class SimpleMount: vstore/mount:/
+    resultIter onQuery(vstore/query query) override
+
 // Request data from a SINK mount
 test/Suite SelectSink:/
     void setup() method
@@ -286,6 +295,11 @@ test/Suite SelectSink:/
     void tc_selectLoaderNestedTree()
     void tc_selectLoaderLookupNestedInitialSlash()
     void tc_selectLoaderLookupFromUnknown()
+
+    void tc_selectObjectFromVstore()
+    void tc_selectObjectFromVstore_w_InvalidObjectInStore()
+    void tc_selectObjectFromVstore_w_ValidObjectInStore()
+
 
 // Resume data from SINK mount
 test/Suite ResumeSink:/

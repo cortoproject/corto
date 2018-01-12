@@ -1562,3 +1562,60 @@ void test_SelectMount_tc_selectFromRootNoInitialSlashInFrom(
 
     test_assert(!corto_iter_hasNext(&it));
 }
+
+void test_SelectMount_tc_selectScopeFromInitialSlashInMountResult(
+    test_SelectMount this)
+{
+    corto_mount m =
+        corto_subscribe("*")
+            .from("data")
+            .mount(test_MountInitialSlash_o, NULL, NULL);
+
+    test_assert(m != NULL);
+    test_assert(corto_typeof(m) == corto_type(test_MountInitialSlash_o));
+    test_assert(corto_check_state(m, CORTO_VALID) == true);
+
+    corto_iter it;
+    test_assert(corto_select("*").from("data").iter(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it) == true);
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "foo");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == false);
+}
+
+void test_SelectMount_tc_selectTreeFromInitialSlashInMountResult(
+    test_SelectMount this)
+{
+    corto_mount m =
+        corto_subscribe("*")
+            .from("data")
+            .mount(test_MountInitialSlash_o, NULL, NULL);
+
+    test_assert(m != NULL);
+    test_assert(corto_typeof(m) == corto_type(test_MountInitialSlash_o));
+    test_assert(corto_check_state(m, CORTO_VALID) == true);
+
+    corto_iter it;
+    test_assert(corto_select("//").from("data").iter(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it) == true);
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "foo");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == true);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, "foo");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == false);
+}

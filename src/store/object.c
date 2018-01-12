@@ -5243,13 +5243,14 @@ corto_object _corto(
             isUpdating = true;
         }
 
-        if (isDefine || isUpdate) {
+        if ((isDefine && !isValid) || isUpdate) {
             if (params.fmt) {
                 corto_assert(
                     params.value != NULL,
                     "contentType specified but no value provided");
 
                 corto_value v = corto_value_object(result, params.type);
+
                 if (params.fmt->toValue(&v, (uintptr_t)params.value)) {
                     goto error;
                 }

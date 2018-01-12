@@ -9,16 +9,19 @@ corto_entityAdmin corto_mount_admin = {
     .lock = CORTO_RWMUTEX_INITIALIZER,
     .changed = 0
 };
+
 void corto_mount_subscribeOrMount(
     corto_mount this,
     corto_query *query,
     bool subscribe,
     bool mount);
+
 void corto_mount_unsubscribeOrUnmount(
     corto_mount this,
     corto_query *query,
     bool subscribe,
     bool mount);
+
 static corto_time corto_mount_doubleToTime(double frequency) {
     corto_time result;
     result.sec = frequency;
