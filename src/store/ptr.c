@@ -77,11 +77,20 @@ corto_int16 _corto_ptr_deinit(
 {
     corto_assert_object(type);
 
-    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        freeops_ptr_free(type, p);
-    }
-    if (type->flags & CORTO_TYPE_HAS_DEINIT) {
-        corto_invoke_postDelegate(&type->deinit, type, p);
+    /* Don't deinit for reference types- see ptr_init for reason */
+    if (!type->reference) {
+        if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+            freeops_ptr_free(type, p);
+        }
+
+        if (type->flags & CORTO_TYPE_HAS_DEINIT) {
+            corto_invoke_postDelegate(&type->deinit, type, p);
+        }
+    } else {
+        corto_object o = *(corto_object*)p;
+        if (o) {
+            corto_release(o);
+        }
     }
 
     return 0;
@@ -170,7 +179,12 @@ error:
 void corto_mem_free(
     void *ptr)
 {
-    corto_ptr_deinit(ptr, corto_mem_typeof(ptr));
+    corto_type type = corto_mem_typeof(ptr);
+
+    if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
+        freeops_ptr_free(type, ptr);
+    }
+
     ptr = CORTO_OFFSET(ptr, -sizeof(corto_type));
     corto_dealloc(ptr);
 }

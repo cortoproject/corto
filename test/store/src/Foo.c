@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 int16_t test_Foo_construct(
     test_Foo this)
 {
@@ -14,11 +13,9 @@ int16_t test_Foo_construct(
 	}
 
 	(*test_constructCalled_o)++;
-
 	return 0;
 error:
 	return -1;
-
 }
 
 void test_Foo_destruct(
@@ -41,4 +38,10 @@ int16_t test_Foo_init(
     (*test_initCalled_o)++;
 
 	return 0;
+}
+
+void test_Foo_deinit(
+    test_Foo this)
+{
+    corto_assert_object(this);
 }

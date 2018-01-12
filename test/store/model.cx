@@ -12,6 +12,7 @@ class Foo:/
     fail: bool, local
     x, y: int32
     int16 init()
+    void deinit()
     int16 construct()
     void destruct()
 
@@ -1815,6 +1816,11 @@ test/Suite ValueExpr:/
     void tc_exprMemPtrOut()
     void tc_exprMemMemberOut()
     void tc_exprMemMemberInOut()
+
+// Test ptr API
+test/Suite Ptr:/
+    void tc_ptr_initDeinitReferenceType()
+    void tc_ptr_newFreeReferenceType()
 
 // Test containers, leafs and tables
 test/Suite Container:/
