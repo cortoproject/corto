@@ -5,6 +5,8 @@
         "author": "Sander Mertens",
         "description": "Corto runtime library",
         "version": "2.0.0",
+        "license": "MIT",
+        "repository": "https://github.com/cortoproject/corto",
         "managed": false,
         "use_generated_api": false,
         "lib": ["rt", "dl", "m", "ffi", "pthread"],

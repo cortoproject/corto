@@ -10,6 +10,7 @@ corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     corto_uint32 size;
 
     corto_objectseq *baseTable, myTable = {0, NULL};
+    
     /* Lookup first vtable in inheritance hierarchy */
     base = corto_interface(this);
     baseTable = NULL;
@@ -256,8 +257,12 @@ static int corto_interface_validateAlias(corto_alias this) {
             goto error;
         }
 
-        if (this->member->modifiers & (CORTO_PRIVATE|CORTO_LOCAL|CORTO_READONLY|CORTO_CONST)) {
-            corto_throw("alias '%s' doesn't have write-access to member '%s'",
+        if (!((corto_member)this)->modifiers) {
+            ((corto_member)this)->modifiers = this->member->modifiers;
+        }
+
+        if (this->member->modifiers != ((corto_member)this)->modifiers) {
+            corto_throw("alias '%s' modifiers differ from member '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
             goto error;
         }
