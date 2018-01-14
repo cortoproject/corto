@@ -1081,7 +1081,7 @@ CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, CORTO_ATTR_DEFAULT, N
 
 /* /corto/lang/target */
 CORTO_FW_C(lang, target);
-CORTO_CLASS_O(lang, target, lang_struct, CORTO_READONLY, CORTO_ATTR_NAMED|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
+CORTO_CLASS_O(lang, target, lang_struct, CORTO_READONLY, CORTO_ATTR_NAMED | CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_C);
     CORTO_METHOD_O(lang_target, construct, "()", lang_int16, corto_target_construct);
     CORTO_MEMBER_O(lang_target, type, lang_type, CORTO_GLOBAL | CORTO_CONST);
 

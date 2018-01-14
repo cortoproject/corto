@@ -10,7 +10,7 @@ corto_objectseq corto_interface_vtableFromBase(corto_interface this) {
     corto_uint32 size;
 
     corto_objectseq *baseTable, myTable = {0, NULL};
-    
+
     /* Lookup first vtable in inheritance hierarchy */
     base = corto_interface(this);
     baseTable = NULL;
@@ -245,6 +245,7 @@ error:
 
 static int corto_interface_validateAlias(corto_alias this) {
     corto_modifier m = 0;
+    corto_member super = ((corto_member)this);
     /* Find the member we're aliassing and verify access */
     if (!this->member) {
         corto_throw("alias '%s' does not point to a member",
@@ -257,11 +258,24 @@ static int corto_interface_validateAlias(corto_alias this) {
             goto error;
         }
 
-        if (!((corto_member)this)->modifiers) {
-            ((corto_member)this)->modifiers = this->member->modifiers;
+        if (this->member->modifiers & CORTO_PRIVATE) {
+            corto_throw("cannot alias private member in alias '%s'",
+                corto_fullpath(NULL, this));
         }
 
-        if (this->member->modifiers != ((corto_member)this)->modifiers) {
+        if (super->modifiers & CORTO_HIDDEN) {
+            corto_throw("invalid hidden modifier for alias '%s'",
+                corto_fullpath(NULL, this));
+        }
+
+        if (!super->modifiers) {
+            super->modifiers = this->member->modifiers;
+
+            /* When copying modifiers, don't copy hidden */
+            super->modifiers &= ~CORTO_HIDDEN;
+        }
+
+        if ((this->member->modifiers & ~CORTO_HIDDEN) != super->modifiers) {
             corto_throw("alias '%s' modifiers differ from member '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
             goto error;
