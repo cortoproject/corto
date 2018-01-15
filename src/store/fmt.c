@@ -79,7 +79,7 @@ corto_word corto_fmt_str_fromValue(
 {
     corto_string_ser_t serData;
     corto_walk_opt s = corto_string_ser(
-        CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
+        CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
     serData.buffer = CORTO_BUFFER_INIT;
     serData.buffer.max = 0;

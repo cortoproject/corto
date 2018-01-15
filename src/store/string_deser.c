@@ -197,6 +197,7 @@ corto_walk_opt corto_string_deserBuildIndex(void) {
     result.access = CORTO_LOCAL|CORTO_PRIVATE|CORTO_READONLY;
     result.accessKind = CORTO_NOT;
     result.traceKind = CORTO_WALK_TRACE_ON_FAIL;
+    result.aliasAction = CORTO_WALK_ALIAS_IGNORE;
     return result;
 }
 

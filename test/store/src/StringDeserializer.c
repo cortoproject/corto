@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_StringDeserializer_setup(
     test_StringDeserializer this)
 {
@@ -17,8 +16,6 @@ int16_t corto_deserialize_value(
     corto_object o,
     const char *fmtId,
     const char *data);
-
-
 void test_StringDeserializer_tc_deserAnonymousComplex(
     test_StringDeserializer this)
 {
@@ -1805,6 +1802,33 @@ void test_StringDeserializer_tc_errUnresolvedType(
     test_assert(o == NULL);
     test_assert(ret != 0);
     test_assert(corto_catch());
+}
+
+void test_StringDeserializer_tc_deserAlias(
+    test_StringDeserializer this)
+{
+    /* Create object of type AliasSub */
+    test_AliasSub *sub = corto_create(NULL, NULL, test_AliasSub_o);
+    test_assert(sub != NULL);
+
+    test_AliasBase(sub)->a = 10;
+    corto_set_ref(&test_AliasBase(sub)->b, corto_lang_o);
+    sub->c = 30;
+
+    /* Serialize to string */
+    char *str = corto_serialize_value(sub, "text/corto");
+    test_assert(str != NULL);
+    test_assertstr(str, "{10,/corto/lang,30}");
+
+    /* Deserialize into new object */
+    test_AliasSub *sub2 = corto_create(NULL, NULL, test_AliasSub_o);
+    test_assert(sub2 != NULL);
+
+    test_assert(corto_deserialize_value(sub2, "text/corto", str) == 0);
+
+    test_assert(corto_delete(sub) == 0);
+    test_assert(corto_delete(sub2) == 0);
+    free(str);
 }
 
 void test_StringDeserializer_teardown(

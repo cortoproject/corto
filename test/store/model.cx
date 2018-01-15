@@ -368,6 +368,15 @@ class MethodForwardTest:/
     void func() remote
     invoked: int32, readonly
 
+// Type with inheritance and alias member
+struct AliasBase:/
+    a: int32
+    b: object
+
+struct AliasSub: AliasBase, hidden:/
+    alias b: AliasBase/b
+    c: int32
+
 bitmask Hooks:/
     INIT_CALLED
     CONSTRUCT_CALLED
@@ -1613,6 +1622,8 @@ test/Suite StringDeserializer:/
     void tc_deserCompositeNested()
     void tc_deserCompositeNestedMembers()
     void tc_deserCompositeNestedMixed()
+
+    void tc_deserAlias()
 
     void tc_deserAnonymousSimple()
     void tc_deserAnonymousNested()
