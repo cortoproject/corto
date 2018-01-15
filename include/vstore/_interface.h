@@ -9,6 +9,10 @@
 
 #include <corto/_project.h>
 
+#include <corto/vstore/_type.h>
+#include <corto/vstore/_interface.h>
+#include <corto/vstore/_load.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

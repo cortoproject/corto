@@ -1978,14 +1978,14 @@ CORTO_EXPORT corto_tool _corto_toolAssign(corto_tool _this);
 #define corto_toolSet(_this) _this = _this ? _this : (corto_tool*)corto_ptr_new(corto_tool_o); _corto_toolAssign(_this)
 
 /* type */
-CORTO_EXPORT corto_type _corto_typeCreate(corto_typeKind kind, bool reference, corto_attr attr);
-#define corto_typeCreate(kind, reference, attr) _corto_typeCreate(kind, reference, attr)
-#define corto_typeCreate_auto(_id, kind, reference, attr) corto_type _id = corto_typeCreate(kind, reference, attr); (void)_id
-CORTO_EXPORT corto_type _corto_typeCreateChild(corto_object _parent, const char *_id, corto_typeKind kind, bool reference, corto_attr attr);
-#define corto_typeCreateChild(_parent, _id, kind, reference, attr) _corto_typeCreateChild(_parent, _id, kind, reference, attr)
-#define corto_typeCreateChild_auto(_parent, _id, kind, reference, attr) corto_type _id = corto_typeCreateChild(_parent, #_id, kind, reference, attr); (void)_id
-CORTO_EXPORT corto_int16 _corto_typeUpdate(corto_type _this, corto_typeKind kind, bool reference, corto_attr attr);
-#define corto_typeUpdate(_this, kind, reference, attr) _corto_typeUpdate(corto_type(_this), kind, reference, attr)
+CORTO_EXPORT corto_type _corto_typeCreate(bool reference, corto_attr attr);
+#define corto_typeCreate(reference, attr) _corto_typeCreate(reference, attr)
+#define corto_typeCreate_auto(_id, reference, attr) corto_type _id = corto_typeCreate(reference, attr); (void)_id
+CORTO_EXPORT corto_type _corto_typeCreateChild(corto_object _parent, const char *_id, bool reference, corto_attr attr);
+#define corto_typeCreateChild(_parent, _id, reference, attr) _corto_typeCreateChild(_parent, _id, reference, attr)
+#define corto_typeCreateChild_auto(_parent, _id, reference, attr) corto_type _id = corto_typeCreateChild(_parent, #_id, reference, attr); (void)_id
+CORTO_EXPORT corto_int16 _corto_typeUpdate(corto_type _this, bool reference, corto_attr attr);
+#define corto_typeUpdate(_this, reference, attr) _corto_typeUpdate(corto_type(_this), reference, attr)
 
 CORTO_EXPORT corto_type _corto_typeDeclare(void);
 #define corto_typeDeclare() _corto_typeDeclare()
@@ -1993,15 +1993,15 @@ CORTO_EXPORT corto_type _corto_typeDeclare(void);
 CORTO_EXPORT corto_type _corto_typeDeclareChild(corto_object _parent, const char *_id);
 #define corto_typeDeclareChild(_parent, _id) _corto_typeDeclareChild(_parent, _id)
 #define corto_typeDeclareChild_auto(_parent, _id) corto_type _id = corto_typeDeclareChild(_parent, #_id); (void)_id
-CORTO_EXPORT corto_int16 _corto_typeDefine(corto_type _this, corto_typeKind kind, bool reference, corto_attr attr);
-#define corto_typeDefine(_this, kind, reference, attr) _corto_typeDefine(corto_type(_this), kind, reference, attr)
-CORTO_EXPORT corto_type _corto_typeAssign(corto_type _this, corto_typeKind kind, bool reference, corto_attr attr);
+CORTO_EXPORT corto_int16 _corto_typeDefine(corto_type _this, bool reference, corto_attr attr);
+#define corto_typeDefine(_this, reference, attr) _corto_typeDefine(corto_type(_this), reference, attr)
+CORTO_EXPORT corto_type _corto_typeAssign(corto_type _this, bool reference, corto_attr attr);
 #define corto_type__optional_NotSet NULL
-#define corto_type__optional_Set(kind, reference, attr) (corto_type*)corto_typeAssign((corto_type*)corto_ptr_new(corto_type_o), kind, reference, attr)
-#define corto_type__optional_SetCond(cond, kind, reference, attr) cond ? (corto_type*)corto_typeAssign((corto_type*)corto_ptr_new(corto_type_o), kind, reference, attr) : NULL
+#define corto_type__optional_Set(reference, attr) (corto_type*)corto_typeAssign((corto_type*)corto_ptr_new(corto_type_o), reference, attr)
+#define corto_type__optional_SetCond(cond, reference, attr) cond ? (corto_type*)corto_typeAssign((corto_type*)corto_ptr_new(corto_type_o), reference, attr) : NULL
 #define corto_typeUnset(_this) _this ? corto_ptr_free(_this, corto_type_o), 0 : 0; _this = NULL;
-#define corto_typeAssign(_this, kind, reference, attr) _corto_typeAssign(_this, kind, reference, attr)
-#define corto_typeSet(_this, kind, reference, attr) _this = _this ? _this : (corto_type*)corto_ptr_new(corto_type_o); _corto_typeAssign(_this, kind, reference, attr)
+#define corto_typeAssign(_this, reference, attr) _corto_typeAssign(_this, reference, attr)
+#define corto_typeSet(_this, reference, attr) _this = _this ? _this : (corto_type*)corto_ptr_new(corto_type_o); _corto_typeAssign(_this, reference, attr)
 
 /* typeKind */
 CORTO_EXPORT corto_typeKind* _corto_typeKindCreate(corto_typeKind value);
