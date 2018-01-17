@@ -97,7 +97,7 @@ int16_t corto_subscriber_invoke(
         }
     } else {
         if (!eptr) {
-            eptr = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o});
+            eptr = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o, .attrs = -1});
             corto_set_ref(&eptr->subscriber, s);
             corto_set_ref(&eptr->instance, instance);
             corto_set_ref(&eptr->source, NULL);

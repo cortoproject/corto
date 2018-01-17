@@ -387,9 +387,7 @@ static void corto_notify_observer_dispatch(corto__observer *data, corto_object o
         corto_dispatcher dispatcher = observer->dispatcher;
 
         if (!data->_this || (data->_this != source)) {
-            corto_attr oldAttr = corto_set_attr(0);
-            corto_observerEvent *event = corto_declare(NULL, NULL, corto_type(corto_observerEvent_o));
-            corto_set_attr(oldAttr);
+            corto_observerEvent *event = corto(CORTO_DECLARE, {.type = corto_observerEvent_o, .attrs = -1});
 
             corto_set_ref(&event->observer, observer);
             corto_set_ref(&event->instance, data->_this);
