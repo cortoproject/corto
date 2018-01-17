@@ -1203,12 +1203,12 @@ error:
 static
 corto_object corto_declare_intern(
     corto_type type,
-    bool orphan)
+    bool orphan,
+    corto_attr attrs)
 {
     uint32_t size, headerSize;
     corto__object* o = NULL;
     void *mem = NULL;
-    corto_attr attrs = corto_get_attr();
     bool initializeScoped = !(attrs & CORTO_ATTR_NAMED);
 
     corto_assert_object(type);
@@ -1382,7 +1382,8 @@ corto_object corto_declareChild_intern(
     bool orphan,
     bool forceType,
     bool defineVoid,
-    bool *newobject)
+    bool *newobject,
+    corto_attr attrs)
 {
     corto_object o = NULL;
     bool retry = FALSE;
@@ -1429,9 +1430,7 @@ corto_object corto_declareChild_intern(
 
     /* Create new object */
     do {
-        corto_attr oldAttr = corto_set_attr(corto_get_attr()|CORTO_ATTR_NAMED);
-        o = corto_declare_intern(type, orphan);
-        corto_set_attr(oldAttr);
+        o = corto_declare_intern(type, orphan, attrs|CORTO_ATTR_NAMED);
 
         if (o) {
             corto_object o_ret = NULL;
@@ -1881,7 +1880,8 @@ corto_object corto_declareChildRecursive_intern(
     bool forceType,
     bool define,
     bool defineSelf,
-    bool resume)
+    bool resume,
+    corto_attr attrs)
 {
     char *next;
     corto_object result = NULL;
@@ -1911,7 +1911,8 @@ corto_object corto_declareChildRecursive_intern(
                 orphan,
                 next ? FALSE : forceType,
                 FALSE /* prevent sending VALID event for void objects */,
-                &newobject);
+                &newobject,
+                attrs);
 
             /* Keep track of first non-existing object. If something
              * goes wrong objects starting from here must be deleted. */
@@ -1954,7 +1955,7 @@ corto_object corto_declareChildRecursive_intern(
             }
         }
     } else {
-        result = corto_declareChild_intern(parent, id, type, orphan, forceType, TRUE, NULL);
+        result = corto_declareChild_intern(parent, id, type, orphan, forceType, TRUE, NULL, attrs);
         if (defineSelf) {
             result = corto_create_intern(result, resume);
         }
@@ -1970,9 +1971,9 @@ corto_object _corto_declare(
     corto_type type)
 {
     if (parent) {
-        return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, FALSE, FALSE, TRUE);
+        return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, FALSE, FALSE, TRUE, corto_get_attr());
     } else {
-        return corto_declare_intern(type, FALSE);
+        return corto_declare_intern(type, FALSE, corto_get_attr());
     }
 }
 
@@ -1983,9 +1984,9 @@ corto_object _corto_create(
     corto_type type)
 {
     if (parent) {
-        return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, TRUE, TRUE, TRUE);
+        return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, TRUE, TRUE, TRUE, corto_get_attr());
     } else {
-        corto_object result = corto_declare_intern(type, FALSE);
+        corto_object result = corto_declare_intern(type, FALSE, corto_get_attr());
         return corto_create_intern(result, TRUE);
     }
 }
@@ -5171,13 +5172,15 @@ corto_object _corto(
     bool gotref = false;
 
     if (!result) {
-        corto_attr prevAttr = -1;
+        corto_attr attr;
 
         /* Little trick, so .attrs = 0 is the default */
         if (params.attrs > 0) {
-            prevAttr = corto_set_attr(params.attrs);
+            attr = params.attrs;
         } else if (params.attrs == -1) {
-            prevAttr = corto_set_attr(0);
+            attr = 0;
+        } else {
+            attr = corto_get_attr();
         }
 
         if (action & CORTO_DECLARE) {
@@ -5191,7 +5194,8 @@ corto_object _corto(
                         (action & CORTO_FORCE_TYPE) != 0,
                         (action & CORTO_DEFINE) != 0,
                         FALSE,
-                        (action & CORTO_RESUME) != 0);
+                        (action & CORTO_RESUME) != 0,
+                        attr);
                 } else {
                     result = corto_declareChild_intern(
                         params.parent,
@@ -5200,7 +5204,8 @@ corto_object _corto(
                         (action & CORTO_ORPHAN) != 0,
                         (action & CORTO_FORCE_TYPE) != 0,
                         (action & CORTO_DEFINE) != 0,
-                        NULL);
+                        NULL,
+                        attr);
                 }
                 childDeclared = true;
             } else {
@@ -5218,7 +5223,6 @@ corto_object _corto(
                 params.parent, (char*)params.id, (action & CORTO_RESUME) != 0);
             gotref = true;
         }
-        if (prevAttr != -1) corto_set_attr(prevAttr);
     } else if (action & CORTO_FORCE_TYPE) {
         if (!corto_instanceof(params.type, result)) {
             corto_throw("type mismatch");
