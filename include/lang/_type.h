@@ -206,11 +206,11 @@ typedef struct corto_member_s *corto_member;
 struct corto_member_s {
     corto_type type;
     corto_modifier modifiers;
+    corto_string _default;
     corto_unit unit;
     corto_taglist tags;
     corto_state state;
     corto_string stateCondExpr;
-    bool weak;
     uint32_t id;
     uint32_t offset;
 };
@@ -848,4 +848,3 @@ typedef corto_wordseq _type_corto_wordseq;
 }
 #endif
 #endif
-

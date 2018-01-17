@@ -29,15 +29,7 @@ corto_int16 corto_ser_keepReference(corto_walk_opt* s, corto_value* v, void* use
 
     o = *(corto_object*)corto_value_ptrof(v);
     if (o) {
-        corto_bool weak = FALSE;
-        if (v->kind == CORTO_MEMBER) {
-            if (v->is.member.t->weak) {
-                weak = TRUE;
-            }
-        }
-        if (!weak) {
-            corto_claim(o);
-        }
+        corto_claim(o);
     }
 
     return 0;
@@ -150,15 +142,7 @@ corto_int16 corto_ser_freeReference(corto_walk_opt* s, corto_value* v, void* use
     optr = corto_value_ptrof(v);
 
     if ((o = *optr)) {
-        corto_bool weak = FALSE;
-        if (v->kind == CORTO_MEMBER) {
-            if (v->is.member.t->weak) {
-                weak = TRUE;
-            }
-        }
-        if (!weak) {
-            corto_release(o);
-        }
+        corto_release(o);
     }
 
     return 0;

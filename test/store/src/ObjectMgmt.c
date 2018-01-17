@@ -2572,3 +2572,16 @@ void test_ObjectMgmt_tc_defineRedeclaredUnknown(
 
     test_assert(corto_delete(o) == 0);
 }
+
+void test_ObjectMgmt_tc_defaultValues(
+    test_ObjectMgmt this)
+{
+    test_DefaultValues *v = corto_create(NULL, NULL, test_DefaultValues_o);
+    test_assert(v != NULL);
+    test_assert(corto_check_state(v, CORTO_VALID));
+
+    test_assertint(v->a, 10);
+    test_assertint(v->b.x, 20);
+    test_assertint(v->b.y, 30);
+    test_assertstr(v->c, "Hello World");
+}

@@ -302,7 +302,6 @@ static int corto_interface_validateAlias(corto_alias this) {
         corto_claim(this->member->type); /* TODO: memory leak outside of bootstrap */
         corto_member(this)->type = this->member->type;
         corto_member(this)->state = this->member->state;
-        corto_member(this)->weak = this->member->weak;
     }
 
     return 0;
@@ -311,6 +310,8 @@ error:
 }
 
 static int corto_interface_insertMemberAction(void* o, void* userData) {
+    corto_interface this = corto_interface(userData);
+
     /* If object is a member, add it to members sequence */
     if (corto_class_instanceof(corto_member_o, o)) {
         corto_member m = o;
@@ -318,7 +319,6 @@ static int corto_interface_insertMemberAction(void* o, void* userData) {
             if (corto_interface_validateAlias(corto_alias(m))) {
                 goto error;
             }
-
         }
 
         if (!m->type) {
@@ -326,9 +326,19 @@ static int corto_interface_insertMemberAction(void* o, void* userData) {
             goto error;
         }
 
+        if (m->type->flags & CORTO_TYPE_HAS_INIT) {
+            /* Init serializer will invoke init routine of member */
+            corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+        }
+
+        if (m->_default) {
+            /* If default value is set, initializer needs to assign it */
+            corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+        }
+
         corto_claim(o);
-        corto_interface(userData)->members.buffer[corto_member(o)->id] = o;
-        corto_interface(userData)->members.length++;
+        this->members.buffer[corto_member(o)->id] = o;
+        this->members.length++;
     }
 
     return 1;
@@ -349,7 +359,6 @@ corto_int16 corto__interface_insertMembers(corto_interface this) {
         if (!corto_scope_walk(this, corto_interface_insertMemberAction, this)) {
             goto error;
         }
-
     }
 
     corto_assert(this->nextMemberId == this->members.length, "not all members were added to interface object.");

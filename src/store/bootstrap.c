@@ -797,11 +797,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* member */\
     SSO_OP_OBJ(lang_member_type),\
     SSO_OP_OBJ(lang_member_modifiers),\
+    SSO_OP_OBJ(lang_member_default),\
     SSO_OP_OBJ(lang_member_unit),\
     SSO_OP_OBJ(lang_member_tags),\
     SSO_OP_OBJ(lang_member_state),\
     SSO_OP_OBJ(lang_member_stateCondExpr),\
-    SSO_OP_OBJ(lang_member_weak),\
     SSO_OP_OBJ(lang_member_id),\
     SSO_OP_OBJ(lang_member_offset),\
     SSO_OP_OBJ(lang_member_init_),\

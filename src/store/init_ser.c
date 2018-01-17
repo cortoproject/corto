@@ -21,7 +21,12 @@
 
 #include <corto/corto.h>
 
-corto_int16 corto_ser_initAny(corto_walk_opt* s, corto_value* v, void* userData) {
+static
+corto_int16 corto_ser_initAny(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
     corto_any *ptr = corto_value_ptrof(v);
     CORTO_UNUSED(s);
     CORTO_UNUSED(userData);
@@ -29,7 +34,12 @@ corto_int16 corto_ser_initAny(corto_walk_opt* s, corto_value* v, void* userData)
     return 0;
 }
 
-corto_int16 corto_ser_initCollection(corto_walk_opt* s, corto_value* v, void* userData) {
+static
+corto_int16 corto_ser_initCollection(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
     corto_type t;
     void* o;
 
@@ -57,7 +67,12 @@ error:
     return -1;
 }
 
-corto_int16 corto_ser_initObservable(corto_walk_opt* s, corto_value* v, void* userData) {
+static
+corto_int16 corto_ser_initObservable(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
     corto_member m = v->is.member.t;
 
     /* Initialize member to a new object of member type */
@@ -79,7 +94,43 @@ error:
     return -1;
 }
 
-corto_walk_opt corto_ser_init(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+static
+corto_int16 corto_ser_initMember(
+    corto_walk_opt* s,
+    corto_value* v,
+    void* userData)
+{
+    corto_member m = v->is.member.t;
+    corto_type t = m->type;
+
+    if (m->_default) {
+        corto_fmt fmt;
+
+        if (!(fmt = corto_fmt_lookup("text/corto"))) {
+            corto_throw("text/corto format not found");
+            goto error;
+        }
+
+        return fmt->toValue(v, (corto_word)m->_default);
+    }
+
+    if (!t->reference && t->flags & CORTO_TYPE_HAS_INIT) {
+        void *ptr = corto_value_ptrof(v);
+        if (corto_ptr_init(ptr, t)) {
+            goto error;
+        }
+    }
+
+    return corto_walk_value(s, v, userData);
+error:
+    return -1;
+}
+
+corto_walk_opt corto_ser_init(
+    corto_modifier access,
+    corto_operatorKind accessKind,
+    corto_walk_traceKind trace)
+{
     corto_walk_opt s;
 
     corto_walk_init(&s);
@@ -89,6 +140,7 @@ corto_walk_opt corto_ser_init(corto_modifier access, corto_operatorKind accessKi
     s.traceKind = trace;
     s.program[CORTO_COLLECTION] = corto_ser_initCollection;
     s.program[CORTO_ANY] = corto_ser_initAny;
+    s.metaprogram[CORTO_MEMBER] = corto_ser_initMember;
     s.observable = corto_ser_initObservable;
 
     return s;

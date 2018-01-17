@@ -26,6 +26,11 @@ struct Point:/
 struct Point3D: Point:/
     z: int32
 
+struct DefaultValues:/
+    a: int32, default = "10"
+    b: Point, default = "{20, 30}"
+    c: string, default = "Hello World"
+
 struct Line:/
     start, stop: Point
 
@@ -558,6 +563,8 @@ test/Suite ObjectMgmt:/
 
     void tc_nameof()
     void tc_nameofOverride()
+
+    void tc_defaultValues()
 
 test/Suite Tags:/
     void tc_findTag()

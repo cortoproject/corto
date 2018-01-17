@@ -116,6 +116,7 @@ int16_t corto_struct_construct(
 
     /* Set alignment of self */
     corto_type(this)->alignment = alignment;
+
     /* Get size of base-class */
     if (base) {
         size = corto_type(base)->size;
@@ -126,7 +127,6 @@ int16_t corto_struct_construct(
         if (corto_type(base)->flags & CORTO_TYPE_NEEDS_INIT) {
             corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
         }
-
     }
 
     /* Calculate size of self */
@@ -142,6 +142,7 @@ int16_t corto_struct_construct(
 
     /* Set size of self */
     corto_type(this)->size = size;
+    
     if (this->keys.length != 0) {
         /* If a keylist was provided, test if members have been added and ensure
          * the KEY modifier is enabled */
