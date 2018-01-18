@@ -2576,7 +2576,7 @@ void test_ObjectMgmt_tc_defineRedeclaredUnknown(
 void test_ObjectMgmt_tc_defaultValues(
     test_ObjectMgmt this)
 {
-    test_DefaultValues *v = corto_create(NULL, NULL, test_DefaultValues_o);
+    test_DefaultValues v = corto_create(NULL, NULL, test_DefaultValues_o);
     test_assert(v != NULL);
     test_assert(corto_check_state(v, CORTO_VALID));
 
