@@ -26,7 +26,7 @@ struct Point:/
 struct Point3D: Point:/
     z: int32
 
-struct DefaultValues:/
+class DefaultValues:/
     a: int32, default = "10"
     b: Point, default = "{20, 30}"
     c: string, default = "Hello World"
@@ -36,6 +36,9 @@ struct Line:/
 
 struct CompositeWithReferenceTypeWithInit:/
     m: list{Foo}
+
+struct CompositeWithReferenceTypeDefaults:/
+    m: list{DefaultValues}
 
 struct CompositeWithString:/
     a: int32
@@ -713,6 +716,7 @@ test/Suite BinarySerializer:/
     void tc_copyReferenceType()
     void tc_copyListWithReferenceType()
     void tc_copyListWithReferenceWithInitType()
+    void tc_copyListWithReferenceWithDefaults()
 
 // Test ownership scenarios
 test/Suite Ownership:/

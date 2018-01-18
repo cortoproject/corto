@@ -53,7 +53,7 @@ corto_int16 _corto_ptr_init(
 
     memset(p, 0, corto_type_sizeof(type));
 
-    if (type->flags & CORTO_TYPE_NEEDS_INIT) {
+    if (!type->reference && type->flags & CORTO_TYPE_NEEDS_INIT) {
         corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
         if (corto_walk_value(&s, &v, NULL)) {
             return -1;
