@@ -997,10 +997,10 @@ void corto_environment_init(void)
     }
 }
 
-static
-int corto_loadConfig(void)
+int corto_load_config(void)
 {
     int result = 0;
+    corto_debug("load configuration");
     corto_log_push("config");
     char *cfg = corto_getenv("CORTO_CONFIG");
     if (cfg) {
@@ -1027,10 +1027,10 @@ int corto_loadConfig(void)
                 result = -1;
             }
         } else {
-            corto_throw(
-                "$CORTO_CONFIG ('%s') does not point to an accessible path or file",
+            corto_trace(
+                "$CORTO_CONFIG ('%s') does not point to an accessible "
+                "path or file",
                 cfg);
-            result = -1;
         }
     }
     corto_log_pop();
@@ -1262,10 +1262,6 @@ int corto_start(
         corto_trace("autoloading of packages disabled");
     }
 #endif
-
-    /* Load configuration, if available */
-    corto_debug("load configuration");
-    corto_loadConfig();
 
     /* Pop init log component */
     corto_log_pop();

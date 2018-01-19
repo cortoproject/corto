@@ -87,6 +87,13 @@ int corto_start(
 CORTO_EXPORT
 int corto_stop(void);
 
+/** Load configuration.
+ * This function loads configuration from the path configured in $CORTO_CONFIG
+ * if this environment variable is set.
+ */
+CORTO_EXPORT
+int corto_load_config(void);
+
 /** Get a unique string that identifies the current corto build.
  * This function is used to determine whether a package is linked with the
  * correct corto library before allowing it to be loaded.
