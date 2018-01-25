@@ -1118,7 +1118,7 @@ CORTO_FW_IC(lang, map);
 CORTO_CLASS_O(lang, map, lang_collection, CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
     /* Duplicate members for a more convenient order in the initializer */
     CORTO_REFERENCE_O(lang_map, elementType, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_VALID | CORTO_CONST, NULL);
-    CORTO_REFERENCE_O(lang_map, keyType, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_VALID | CORTO_CONST, NULL);
+    CORTO_REFERENCE_O(lang_map, keyType, lang_type, CORTO_GLOBAL | CORTO_CONST, CORTO_DECLARED | CORTO_VALID, NULL);
     CORTO_MEMBER_O(lang_map, max, lang_uint32, CORTO_GLOBAL | CORTO_CONST);
     CORTO_METHOD_O(lang_map, init, "()", lang_int16, corto_map_init);
     CORTO_METHOD_O(lang_map, construct, "()", lang_int16, corto_map_construct);
@@ -1235,7 +1235,7 @@ CORTO_CLASS_O(lang, table, lang_container, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NUL
 
 /* /corto/lang/tableinstance */
 CORTO_CLASS_NOBASE_O(lang, tableinstance, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(lang_tableinstance, type, lang_struct, CORTO_GLOBAL | CORTO_CONST);
+    CORTO_MEMBER_O(lang_tableinstance, type, lang_type, CORTO_GLOBAL | CORTO_CONST);
 
 /* /corto/vstore/sample */
 CORTO_STRUCT_O(vstore, sample, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL);

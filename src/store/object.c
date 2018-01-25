@@ -452,8 +452,8 @@ int16_t corto_adopt_checkConstraints(
      * table type */
     if (corto_instanceof(corto_tableinstance_o, parent)) {
         if (childType != corto_type(corto_tableinstance_o)) {
-            corto_struct tableType = corto_tableinstance(parent)->type;
-            if ((corto_type(tableType) != childType)) {
+            corto_type tableType = corto_tableinstance(parent)->type;
+            if ((tableType != childType)) {
                 if (!corto_instanceof(childType, corto_container_o)) {
                     if (!corto_type_instanceof(tableType, childType)) {
                         corto_throw("type '%s' does not match tabletype '%s' of '%s'",

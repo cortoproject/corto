@@ -594,7 +594,7 @@ struct corto_table_s {
 typedef struct corto_tableinstance_s *corto_tableinstance;
 
 struct corto_tableinstance_s {
-    corto_struct type;
+    corto_type type;
 };
 
 /*  target */
