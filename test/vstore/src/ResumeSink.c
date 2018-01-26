@@ -25,7 +25,7 @@ void test_ResumeSink_onDelete(
 
 }
 
-void test_ResumeSink_onResume(
+void test_ResumeSink_on_resume(
     corto_observerEvent *e)
 {
     test_ResumeSink this = e->instance;
@@ -63,7 +63,7 @@ void test_ResumeSink_setup(
     corto_observer_observe(test_ResumeSink_onDefine_o, this, mount);
     corto_observer_observe(test_ResumeSink_onDelete_o, this, mount);
     corto_observer_observe(test_ResumeSink_onUpdate_o, this, mount);
-    corto_observer_observe(test_ResumeSink_onResume_o, this, mount);
+    corto_observer_observe(test_ResumeSink_on_resume_o, this, mount);
     corto_observer_observe(test_ResumeSink_onSuspend_o, this, mount);
 
 }
@@ -1918,7 +1918,7 @@ void test_ResumeSink_teardown(
     corto_observer_unobserve(test_ResumeSink_onDefine_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onDelete_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onUpdate_o, this, mount);
-    corto_observer_unobserve(test_ResumeSink_onResume_o, this, mount);
+    corto_observer_unobserve(test_ResumeSink_on_resume_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onSuspend_o, this, mount);
     corto_release(mount);
 }

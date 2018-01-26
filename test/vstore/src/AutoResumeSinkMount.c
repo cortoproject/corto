@@ -148,7 +148,7 @@ static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_AutoResumeSinkMount_onQuery(
+corto_resultIter test_AutoResumeSinkMount_on_query(
     test_AutoResumeSinkMount this,
     corto_query *query)
 {
@@ -182,14 +182,14 @@ corto_resultIter test_AutoResumeSinkMount_onQuery(
     return result;
 }
 
-uintptr_t test_AutoResumeSinkMount_onSubscribe(
+uintptr_t test_AutoResumeSinkMount_on_subscribe(
     test_AutoResumeSinkMount this,
     corto_query *query,
     uintptr_t ctx)
 {
 
     /* Result is set to either this or 'expr' depending on the content of expr.
-     * This allows the testcase to test both cases where onSubscribe returns the
+     * This allows the testcase to test both cases where on_subscribe returns the
      * same value of ctx, as well as cases where it doesn't */
     corto_word result = (corto_word)this;
 
@@ -205,7 +205,7 @@ uintptr_t test_AutoResumeSinkMount_onSubscribe(
     return result;
 }
 
-void test_AutoResumeSinkMount_onUnsubscribe(
+void test_AutoResumeSinkMount_on_unsubscribe(
     test_AutoResumeSinkMount this,
     corto_query *query,
     uintptr_t ctx)
@@ -220,13 +220,13 @@ void test_AutoResumeSinkMount_onUnsubscribe(
     );
 }
 
-uintptr_t test_AutoResumeSinkMount_onMount(
+uintptr_t test_AutoResumeSinkMount_on_mount(
     test_AutoResumeSinkMount this,
     corto_query *query,
     uintptr_t ctx)
 {
     /* Result is set to either this or 'expr' depending on the content of expr.
-     * This allows the testcase to test both cases where onMount returns the
+     * This allows the testcase to test both cases where on_mount returns the
      * same value of ctx, as well as cases where it doesn't */
     corto_word result = (corto_word)this;
 
@@ -242,7 +242,7 @@ uintptr_t test_AutoResumeSinkMount_onMount(
     return result;
 }
 
-void test_AutoResumeSinkMount_onUnmount(
+void test_AutoResumeSinkMount_on_unmount(
     test_AutoResumeSinkMount this,
     corto_query *query,
     uintptr_t ctx)

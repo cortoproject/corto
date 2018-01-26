@@ -45,7 +45,7 @@ int16_t test_VirtualMount_construct(
     return corto_super_construct(this);
 }
 
-corto_resultIter test_VirtualMount_onQuery(
+corto_resultIter test_VirtualMount_on_query(
     test_VirtualMount this,
     corto_query *query)
 {

@@ -600,18 +600,18 @@ CORTO_FWDECL__SECURE(method, key_authenticate);
 CORTO_FWDECL__SECURE(method, lock_authorize);
 CORTO_FWDECL__VSTORE(method, routerimpl_findRoute);
 CORTO_FWDECL__VSTORE(method, routerimpl_matchRoute);
-CORTO_FWDECL__VSTORE(method, mount_onInvoke);
-CORTO_FWDECL__VSTORE(method, mount_onId);
-CORTO_FWDECL__VSTORE(method, mount_onResume);
-CORTO_FWDECL__VSTORE(method, mount_onQuery);
-CORTO_FWDECL__VSTORE(method, mount_onHistoryQuery);
-CORTO_FWDECL__VSTORE(method, mount_onNotify);
-CORTO_FWDECL__VSTORE(method, mount_onBatchNotify);
-CORTO_FWDECL__VSTORE(method, mount_onHistoryBatchNotify);
-CORTO_FWDECL__VSTORE(method, mount_onSubscribe);
-CORTO_FWDECL__VSTORE(method, mount_onUnsubscribe);
-CORTO_FWDECL__VSTORE(method, mount_onMount);
-CORTO_FWDECL__VSTORE(method, mount_onUnmount);
+CORTO_FWDECL__VSTORE(method, mount_on_invoke);
+CORTO_FWDECL__VSTORE(method, mount_on_id);
+CORTO_FWDECL__VSTORE(method, mount_on_resume);
+CORTO_FWDECL__VSTORE(method, mount_on_query);
+CORTO_FWDECL__VSTORE(method, mount_on_history_query);
+CORTO_FWDECL__VSTORE(method, mount_on_notify);
+CORTO_FWDECL__VSTORE(method, mount_on_batch_notify);
+CORTO_FWDECL__VSTORE(method, mount_on_history_batch_notify);
+CORTO_FWDECL__VSTORE(method, mount_on_subscribe);
+CORTO_FWDECL__VSTORE(method, mount_on_unsubscribe);
+CORTO_FWDECL__VSTORE(method, mount_on_mount);
+CORTO_FWDECL__VSTORE(method, mount_on_unmount);
 
 /* database root */
 corto_ssoo_package root__o = {CORTO_ROOT_V(), {"http://corto.io/doc"}};
@@ -1418,20 +1418,20 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_METHOD_O(vstore_mount, resume, "(string parent,string name,object o)", lang_object, corto_mount_resume);
     CORTO_METHOD_O(vstore_mount, subscribe, "(/corto/vstore/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(vstore_mount, unsubscribe, "(/corto/vstore/query query)", lang_void, corto_mount_unsubscribe);
-    CORTO_OVERRIDABLE_O(vstore_mount, onInvoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_onInvoke_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onId, "()", lang_string, corto_mount_onId_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onQuery_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onHistoryQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_onHistoryQuery_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onResume, "(string parent,string id,object object)", lang_object, corto_mount_onResume_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onNotify, "(vstore/subscriberEvent event)", lang_void, corto_mount_onNotify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onHistoryBatchNotify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_onBatchNotify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onSubscribe, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_onSubscribe_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onUnsubscribe, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_onUnsubscribe_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onMount, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_onMount_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onUnmount, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_onUnmount_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onTransactionBegin, "()", lang_word, corto_mount_onSubscribe_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, onTransactionEnd, "(vstore/subscriberEventIter events,word ctx)", lang_void, corto_mount_onUnsubscribe_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_on_invoke_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_id, "()", lang_string, corto_mount_on_id_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_query_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_history_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_history_query_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_resume, "(string parent,string id,object object)", lang_object, corto_mount_on_resume_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_notify, "(vstore/subscriberEvent event)", lang_void, corto_mount_on_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_on_batch_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_history_batch_notify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_on_batch_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_subscribe, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_on_subscribe_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_unsubscribe, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_on_unsubscribe_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_mount, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_on_mount_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_unmount, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_on_unmount_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_transaction_begin, "()", lang_word, corto_mount_on_subscribe_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_transaction_end, "(vstore/subscriberEventIter events,word ctx)", lang_void, corto_mount_on_unsubscribe_v);
 
 /* /corto/vstore/router */
 CORTO_FW_IC(vstore, router);
@@ -1505,7 +1505,7 @@ CORTO_CLASS_O(vstore, loader, vstore_mount, CORTO_PRIVATE|CORTO_LOCAL, CORTO_ATT
     CORTO_MEMBER_O(vstore_loader, autoLoad, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(vstore_loader, construct, "()", lang_int16, corto_loader_construct);
     CORTO_METHOD_O(vstore_loader, destruct, "()", lang_void, corto_loader_destruct);
-    CORTO_OVERRIDABLE_O(vstore_loader, onQuery, "(/corto/vstore/query query)", vstore_resultIter, corto_loader_onQuery_v);
+    CORTO_OVERRIDABLE_O(vstore_loader, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_loader_on_query_v);
 
 #ifdef __cplusplus
 }

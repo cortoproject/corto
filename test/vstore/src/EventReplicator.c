@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-void test_EventReplicator_onNotify(
+void test_EventReplicator_on_notify(
     test_EventReplicator this,
     corto_subscriberEvent *event)
 {

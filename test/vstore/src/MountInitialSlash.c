@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-corto_resultIter test_MountInitialSlash_onQuery(
+corto_resultIter test_MountInitialSlash_on_query(
     test_MountInitialSlash this,
     corto_query *query)
 {

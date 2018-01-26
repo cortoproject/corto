@@ -77,7 +77,7 @@ void corto_mount_notify(corto_subscriberEvent *e) {
 
     if (!r->object || (!this->attr || corto_check_attr(r->object, this->attr))) {
         if (this->policy.mask & CORTO_MOUNT_NOTIFY) {
-            corto_mount_onNotify(this, e);
+            corto_mount_on_notify(this, e);
         }
 
         switch(event) {
@@ -204,49 +204,49 @@ int16_t corto_mount_construct(
             this);
     }
 
-    /* If mount doesn't implement onQuery, it is a passthrough mount meaning
+    /* If mount doesn't implement on_query, it is a passthrough mount meaning
      * it uses the object store. */
-    if (!corto_mount_hasMethod(this, "onQuery")) {
+    if (!corto_mount_hasMethod(this, "on_query")) {
         this->passThrough = TRUE;
     }
 
-    /* If mount has explicit onResume function, don't call onQuery when resuming
+    /* If mount has explicit on_resume function, don't call on_query when resuming
      * objects */
-    if (corto_mount_hasMethod(this, "onResume")) {
+    if (corto_mount_hasMethod(this, "on_resume")) {
         this->explicitResume = true;
     }
 
     /* Disable flags if mount does not implement method. This allows the rest of
      * the code to check for just the flags, instead of looking up the method. */
-    if (!corto_mount_hasMethod(this, "onHistoryQuery")) {
+    if (!corto_mount_hasMethod(this, "on_history_query")) {
         this->policy.mask &= ~CORTO_MOUNT_HISTORY_QUERY;
     }
 
-    if (!corto_mount_hasMethod(this, "onNotify")) {
+    if (!corto_mount_hasMethod(this, "on_notify")) {
         this->policy.mask &= ~CORTO_MOUNT_NOTIFY;
     }
 
-    if (!corto_mount_hasMethod(this, "onBatchNotify")) {
+    if (!corto_mount_hasMethod(this, "on_batch_notify")) {
         this->policy.mask &= ~CORTO_MOUNT_BATCH_NOTIFY;
     }
 
-    if (!corto_mount_hasMethod(this, "onHistoryBatchNotify")) {
+    if (!corto_mount_hasMethod(this, "on_history_batch_notify")) {
         this->policy.mask &= ~CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
     }
 
-    if (!corto_mount_hasMethod(this, "onInvoke")) {
+    if (!corto_mount_hasMethod(this, "on_invoke")) {
         this->policy.mask &= ~CORTO_MOUNT_INVOKE;
     }
 
-    if (!corto_mount_hasMethod(this, "onSubscribe")) {
+    if (!corto_mount_hasMethod(this, "on_subscribe")) {
         this->policy.mask &= ~CORTO_MOUNT_SUBSCRIBE;
     }
 
-    if (!corto_mount_hasMethod(this, "onMount")) {
+    if (!corto_mount_hasMethod(this, "on_mount")) {
         this->policy.mask &= ~CORTO_MOUNT_MOUNT;
     }
 
-    if (!corto_mount_hasMethod(this, "onId")) {
+    if (!corto_mount_hasMethod(this, "on_id")) {
         this->policy.mask &= ~CORTO_MOUNT_ID;
     }
 
@@ -255,7 +255,7 @@ int16_t corto_mount_construct(
     corto_function(this)->fptr = (corto_word)corto_mount_notify;
     corto_set_ref(&corto_observer(this)->instance, this);
     corto_set_ref(&corto_observer(this)->dispatcher, dispatcher);
-    /* Enable subscriber only when mount implements onNotify */
+    /* Enable subscriber only when mount implements on_notify */
     if (this->policy.mask & CORTO_MOUNT_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY ||
         this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY ||
@@ -320,7 +320,7 @@ void corto_mount_destruct(
 
     /* Unsubscribe from active subscriptions */
     while ((s = corto_ll_takeFirst(this->subscriptions))) {
-        corto_mount_onUnsubscribe(
+        corto_mount_on_unsubscribe(
             this,
             &s->query,
             s->subscriberCtx);
@@ -351,7 +351,7 @@ void corto_mount_destruct(
 corto_string corto_mount_id(
     corto_mount this)
 {
-    return corto_mount_onId(this);
+    return corto_mount_on_id(this);
 }
 
 int16_t corto_mount_init(
@@ -363,39 +363,39 @@ int16_t corto_mount_init(
     this->policy.mask |= CORTO_MOUNT_RESUME;
 
     /* Enable default flags based on which methods are implemented */
-    if (corto_mount_hasMethod(this, "onQuery")) {
+    if (corto_mount_hasMethod(this, "on_query")) {
         this->policy.mask |= CORTO_MOUNT_QUERY;
     }
 
-    if (corto_mount_hasMethod(this, "onId")) {
+    if (corto_mount_hasMethod(this, "on_id")) {
         this->policy.mask |= CORTO_MOUNT_ID;
     }
 
-    if (corto_mount_hasMethod(this, "onHistoryQuery")) {
+    if (corto_mount_hasMethod(this, "on_history_query")) {
         this->policy.mask |= CORTO_MOUNT_HISTORY_QUERY;
     }
 
-    if (corto_mount_hasMethod(this, "onNotify")) {
+    if (corto_mount_hasMethod(this, "on_notify")) {
         this->policy.mask |= CORTO_MOUNT_NOTIFY;
     }
 
-    if (corto_mount_hasMethod(this, "onBatchNotify")) {
+    if (corto_mount_hasMethod(this, "on_batch_notify")) {
         this->policy.mask |= CORTO_MOUNT_BATCH_NOTIFY;
     }
 
-    if (corto_mount_hasMethod(this, "onHistoryBatchNotify")) {
+    if (corto_mount_hasMethod(this, "on_history_batch_notify")) {
         this->policy.mask |= CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
     }
 
-    if (corto_mount_hasMethod(this, "onInvoke")) {
+    if (corto_mount_hasMethod(this, "on_invoke")) {
         this->policy.mask |= CORTO_MOUNT_INVOKE;
     }
 
-    if (corto_mount_hasMethod(this, "onSubscribe")) {
+    if (corto_mount_hasMethod(this, "on_subscribe")) {
         this->policy.mask |= CORTO_MOUNT_SUBSCRIBE;
     }
 
-    if (corto_mount_hasMethod(this, "onMount")) {
+    if (corto_mount_hasMethod(this, "on_mount")) {
         this->policy.mask |= CORTO_MOUNT_MOUNT;
     }
 
@@ -415,7 +415,7 @@ void corto_mount_invoke(
     corto_object owner = corto_sourceof(instance);
 
     if (owner == this) {
-        corto_mount_onInvoke(this, instance, proc, argptrs);
+        corto_mount_on_invoke(this, instance, proc, argptrs);
     } else {
         corto_object prevowner = corto_set_source(corto_sourceof(instance));
         corto_invokeb(proc, NULL, (void**)argptrs);
@@ -424,14 +424,14 @@ void corto_mount_invoke(
 
 }
 
-corto_string corto_mount_onId_v(
+corto_string corto_mount_on_id_v(
     corto_mount this)
 {
     CORTO_UNUSED(this);
     return NULL;
 }
 
-void corto_mount_onInvoke_v(
+void corto_mount_on_invoke_v(
     corto_mount this,
     corto_object instance,
     corto_function proc,
@@ -445,7 +445,7 @@ void corto_mount_onInvoke_v(
 
 }
 
-void corto_mount_onNotify_v(
+void corto_mount_on_notify_v(
     corto_mount this,
     corto_subscriberEvent *event)
 {
@@ -488,16 +488,16 @@ void corto_mount_onPoll(
         corto_raise();
     }
 
-    /* If batching is enabled, call onBatchNotify */
+    /* If batching is enabled, call on_batch_notify */
     if (events && this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(events);
-        corto_mount_onBatchNotify(this, it);
+        corto_mount_on_batch_notify(this, it);
     }
 
-    /* If batching of historical data is enabled, call onHistoryBatchNotify */
+    /* If batching of historical data is enabled, call on_history_batch_notify */
     if (historicalEvents && this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(historicalEvents);
-        corto_mount_onHistoryBatchNotify(this, it);
+        corto_mount_on_history_batch_notify(this, it);
         it = corto_ll_iter(historicalEvents);
         while (corto_iter_hasNext(&it)) {
             corto_event *e = corto_iter_next(&it);
@@ -729,7 +729,7 @@ void corto_mount_post(
 
 }
 
-corto_resultIter corto_mount_onQuery_v(
+corto_resultIter corto_mount_on_query_v(
     corto_mount this,
     corto_query *query)
 {
@@ -758,7 +758,7 @@ corto_resultIter corto_mount_onQuery_v(
     return result;
 }
 
-corto_object corto_mount_onResume_v(
+corto_object corto_mount_on_resume_v(
     corto_mount this,
     const char *parent,
     const char *id,
@@ -772,7 +772,7 @@ corto_object corto_mount_onResume_v(
     return NULL;
 }
 
-uintptr_t corto_mount_onSubscribe_v(
+uintptr_t corto_mount_on_subscribe_v(
     corto_mount this,
     corto_query *query,
     uintptr_t ctx)
@@ -784,7 +784,7 @@ uintptr_t corto_mount_onSubscribe_v(
     return 0;
 }
 
-uintptr_t corto_mount_onTransactionBegin_v(
+uintptr_t corto_mount_on_transaction_begin_v(
     corto_mount this)
 {
 
@@ -792,7 +792,7 @@ uintptr_t corto_mount_onTransactionBegin_v(
     return 0;
 }
 
-void corto_mount_onTransactionEnd_v(
+void corto_mount_on_transaction_end_v(
     corto_mount this,
     corto_subscriberEventIter events,
     uintptr_t ctx)
@@ -804,7 +804,7 @@ void corto_mount_onTransactionEnd_v(
 
 }
 
-void corto_mount_onUnsubscribe_v(
+void corto_mount_on_unsubscribe_v(
     corto_mount this,
     corto_query *query,
     uintptr_t ctx)
@@ -850,7 +850,7 @@ corto_resultIter corto_mount_query(
     corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
     corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
 
-    result = corto_mount_onQuery(this, query);
+    result = corto_mount_on_query(this, query);
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
@@ -871,7 +871,7 @@ corto_resultIter corto_mount_historyQuery(
     corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
     corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
 
-    result = corto_mount_onHistoryQuery(this, query);
+    result = corto_mount_on_history_query(this, query);
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
@@ -904,8 +904,8 @@ corto_object corto_mount_resume(
 
     /* Resume object */
     if (this->explicitResume) {
-        corto_debug("mount: onResume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
-        result = corto_mount_onResume(this, parent, name, o);
+        corto_debug("mount: on_resume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
+        result = corto_mount_on_resume(this, parent, name, o);
     } else {
         corto_id type;
         corto_query q;
@@ -1193,7 +1193,7 @@ void corto_mount_subscribeOrMount(
         }
 
     } else {
-        /* Add placeholder to list, so onSubscribe won't be called recursively */
+        /* Add placeholder to list, so on_subscribe won't be called recursively */
         placeHolder = corto_calloc(sizeof(corto_mountSubscription));
         corto_ptr_copy(&placeHolder->query, corto_query_o, query);
         if (subscribe) {
@@ -1216,7 +1216,7 @@ void corto_mount_subscribeOrMount(
         /* If no subscription is found that both matches parent and expr, notify
          * the mount */
         if (subscribe) {
-            subCtx = corto_mount_onSubscribe(
+            subCtx = corto_mount_on_subscribe(
                 this,
                 query,
                 subscription ? subscription->subscriberCtx : 0);
@@ -1226,7 +1226,7 @@ void corto_mount_subscribeOrMount(
             corto_query q_out, *q;
             corto_id parentId;
             if ((q = corto_mount_getQueryForMount(query, &q_out, parentId, subscribe))) {
-                mntCtx = corto_mount_onMount(
+                mntCtx = corto_mount_on_mount(
                     this,
                     q,
                     subscription ? subscription->mountCtx : 0);
@@ -1273,7 +1273,7 @@ void corto_mount_subscribeOrMount(
         if (corto_check_state(this, CORTO_VALID))  corto_unlock(this);
     } else if ((subCtx || mntCtx) && !found && subscription) {
         /* If there is no need to create a new subscription but no exact match
-         * was found, it means that onSubscribe returned the same ctx as the
+         * was found, it means that on_subscribe returned the same ctx as the
          * existing connection. In that case, the 'select' parameter of the
          * subscription is meaningless, so to avoid confusion set it to '*'
          */
@@ -1336,7 +1336,7 @@ void corto_mount_unsubscribeOrUnmount(
     corto_unlock(this);
     if (subscription) {
         if (subscribe && !subscription->subscriberCount) {
-            corto_mount_onUnsubscribe(
+            corto_mount_on_unsubscribe(
                 this,
                 &subscription->query,
                 subscription->subscriberCtx);
@@ -1346,7 +1346,7 @@ void corto_mount_unsubscribeOrUnmount(
             corto_query q_out, *q;
             corto_id parentId;
             if ((q = corto_mount_getQueryForMount(query, &q_out, parentId, subscribe))) {
-                corto_mount_onUnmount(
+                corto_mount_on_unmount(
                     this,
                     q,
                     subscription->mountCtx);
@@ -1370,7 +1370,7 @@ void corto_mount_unsubscribe(
     corto_mount_unsubscribeOrUnmount(this, query, true, true);
 }
 
-uintptr_t corto_mount_onMount_v(
+uintptr_t corto_mount_on_mount_v(
     corto_mount this,
     corto_query *query,
     uintptr_t ctx)
@@ -1381,7 +1381,7 @@ uintptr_t corto_mount_onMount_v(
     return 0;
 }
 
-void corto_mount_onUnmount_v(
+void corto_mount_on_unmount_v(
     corto_mount this,
     corto_query *query,
     uintptr_t ctx)
@@ -1391,7 +1391,7 @@ void corto_mount_onUnmount_v(
     CORTO_UNUSED(ctx);
 }
 
-void corto_mount_onBatchNotify_v(
+void corto_mount_on_batch_notify_v(
     corto_mount this,
     corto_subscriberEventIter events)
 {
@@ -1399,7 +1399,7 @@ void corto_mount_onBatchNotify_v(
     CORTO_UNUSED(events);
 }
 
-corto_resultIter corto_mount_onHistoryQuery_v(
+corto_resultIter corto_mount_on_history_query_v(
     corto_mount this,
     corto_query *query)
 {
@@ -1408,7 +1408,7 @@ corto_resultIter corto_mount_onHistoryQuery_v(
     return CORTO_ITER_EMPTY;
 }
 
-void corto_mount_onHistoryBatchNotify_v(
+void corto_mount_on_history_batch_notify_v(
     corto_mount this,
     corto_subscriberEventIter events)
 {

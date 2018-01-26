@@ -162,7 +162,7 @@ void corto_loader_addDir(
     }
 }
 
-corto_resultIter corto_loader_onQuery_v(
+corto_resultIter corto_loader_on_query_v(
     corto_loader this,
     corto_query *query)
 {

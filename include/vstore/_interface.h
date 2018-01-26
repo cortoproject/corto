@@ -77,15 +77,15 @@ void _corto_loader_destruct(
     corto_loader _this);
 
 CORTO_EXPORT
-corto_resultIter _corto_loader_onQuery_v(
+corto_resultIter _corto_loader_on_query_v(
     corto_loader _this,
     corto_query *query);
 
-/* corto_resultIter corto_loader_onQuery(corto_loader, corto_query *) */
-#define corto_loader_onQuery(_this, query) ( \
-    ((corto_function)corto_loader_onQuery_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_onQuery_o)->index - 1])->fptr)(corto_loader(_this), query) \
-    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_onQuery_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_loader(_this), query) \
+/* corto_resultIter corto_loader_on_query(corto_loader, corto_query *) */
+#define corto_loader_on_query(_this, query) ( \
+    ((corto_function)corto_loader_on_query_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1])->fptr)(corto_loader(_this), query) \
+    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_loader(_this), query) \
     )
 
 
@@ -120,89 +120,89 @@ void _corto_mount_invoke(
     uintptr_t argptrs);
 
 CORTO_EXPORT
-void _corto_mount_onBatchNotify_v(
+void _corto_mount_on_batch_notify_v(
     corto_mount _this,
     corto_subscriberEventIter events);
 
-/* void corto_mount_onBatchNotify(corto_mount, corto_subscriberEventIter) */
-#define corto_mount_onBatchNotify(_this, events) ( \
-    ((corto_function)corto_mount_onBatchNotify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onBatchNotify_o)->index - 1])->fptr)(corto_mount(_this), events) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onBatchNotify_o)->index - 1], NULL, corto_mount(_this), events) \
+/* void corto_mount_on_batch_notify(corto_mount, corto_subscriberEventIter) */
+#define corto_mount_on_batch_notify(_this, events) ( \
+    ((corto_function)corto_mount_on_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1], NULL, corto_mount(_this), events) \
     )
 
 CORTO_EXPORT
-void _corto_mount_onHistoryBatchNotify_v(
+void _corto_mount_on_history_batch_notify_v(
     corto_mount _this,
     corto_subscriberEventIter events);
 
-/* void corto_mount_onHistoryBatchNotify(corto_mount, corto_subscriberEventIter) */
-#define corto_mount_onHistoryBatchNotify(_this, events) ( \
-    ((corto_function)corto_mount_onHistoryBatchNotify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onHistoryBatchNotify_o)->index - 1])->fptr)(corto_mount(_this), events) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onHistoryBatchNotify_o)->index - 1], NULL, corto_mount(_this), events) \
+/* void corto_mount_on_history_batch_notify(corto_mount, corto_subscriberEventIter) */
+#define corto_mount_on_history_batch_notify(_this, events) ( \
+    ((corto_function)corto_mount_on_history_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1], NULL, corto_mount(_this), events) \
     )
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_onHistoryQuery_v(
+corto_resultIter _corto_mount_on_history_query_v(
     corto_mount _this,
     corto_query *query);
 
-/* corto_resultIter corto_mount_onHistoryQuery(corto_mount, corto_query *) */
-#define corto_mount_onHistoryQuery(_this, query) ( \
-    ((corto_function)corto_mount_onHistoryQuery_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onHistoryQuery_o)->index - 1])->fptr)(corto_mount(_this), query) \
-    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onHistoryQuery_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_mount(_this), query) \
+/* corto_resultIter corto_mount_on_history_query(corto_mount, corto_query *) */
+#define corto_mount_on_history_query(_this, query) ( \
+    ((corto_function)corto_mount_on_history_query_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_query_o)->index - 1])->fptr)(corto_mount(_this), query) \
+    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_mount(_this), query) \
     )
 
 CORTO_EXPORT
-corto_string _corto_mount_onId_v(
+corto_string _corto_mount_on_id_v(
     corto_mount _this);
 
-/* corto_string corto_mount_onId(corto_mount) */
-#define corto_mount_onId(_this) ( \
-    ((corto_function)corto_mount_onId_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_string (*)(corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onId_o)->index - 1])->fptr)(corto_mount(_this)) \
-    : *(corto_string*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onId_o)->index - 1], alloca(sizeof(corto_string)), corto_mount(_this)) \
+/* corto_string corto_mount_on_id(corto_mount) */
+#define corto_mount_on_id(_this) ( \
+    ((corto_function)corto_mount_on_id_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_string (*)(corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_id_o)->index - 1])->fptr)(corto_mount(_this)) \
+    : *(corto_string*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_id_o)->index - 1], alloca(sizeof(corto_string)), corto_mount(_this)) \
     )
 
 CORTO_EXPORT
-void _corto_mount_onInvoke_v(
+void _corto_mount_on_invoke_v(
     corto_mount _this,
     corto_object instance,
     corto_function proc,
     uintptr_t argptrs);
 
-/* void corto_mount_onInvoke(corto_mount, corto_object, corto_function, uintptr_t) */
-#define corto_mount_onInvoke(_this, instance, proc, argptrs) ( \
-    ((corto_function)corto_mount_onInvoke_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_object, corto_function, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onInvoke_o)->index - 1])->fptr)(corto_mount(_this), instance, proc, argptrs) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onInvoke_o)->index - 1], NULL, corto_mount(_this), instance, proc, argptrs) \
+/* void corto_mount_on_invoke(corto_mount, corto_object, corto_function, uintptr_t) */
+#define corto_mount_on_invoke(_this, instance, proc, argptrs) ( \
+    ((corto_function)corto_mount_on_invoke_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_object, corto_function, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_invoke_o)->index - 1])->fptr)(corto_mount(_this), instance, proc, argptrs) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_invoke_o)->index - 1], NULL, corto_mount(_this), instance, proc, argptrs) \
     )
 
 CORTO_EXPORT
-uintptr_t _corto_mount_onMount_v(
+uintptr_t _corto_mount_on_mount_v(
     corto_mount _this,
     corto_query *query,
     uintptr_t ctx);
 
-/* uintptr_t corto_mount_onMount(corto_mount, corto_query *, uintptr_t) */
-#define corto_mount_onMount(_this, query, ctx) ( \
-    ((corto_function)corto_mount_onMount_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_word (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onMount_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
-    : *(uintptr_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onMount_o)->index - 1], alloca(sizeof(uintptr_t)), corto_mount(_this), query, ctx) \
+/* uintptr_t corto_mount_on_mount(corto_mount, corto_query *, uintptr_t) */
+#define corto_mount_on_mount(_this, query, ctx) ( \
+    ((corto_function)corto_mount_on_mount_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_word (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_mount_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
+    : *(uintptr_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_mount_o)->index - 1], alloca(sizeof(uintptr_t)), corto_mount(_this), query, ctx) \
     )
 
 CORTO_EXPORT
-void _corto_mount_onNotify_v(
+void _corto_mount_on_notify_v(
     corto_mount _this,
     corto_subscriberEvent *event);
 
-/* void corto_mount_onNotify(corto_mount, corto_subscriberEvent *) */
-#define corto_mount_onNotify(_this, event) ( \
-    ((corto_function)corto_mount_onNotify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEvent *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onNotify_o)->index - 1])->fptr)(corto_mount(_this), event) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onNotify_o)->index - 1], NULL, corto_mount(_this), event) \
+/* void corto_mount_on_notify(corto_mount, corto_subscriberEvent *) */
+#define corto_mount_on_notify(_this, event) ( \
+    ((corto_function)corto_mount_on_notify_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriberEvent *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_notify_o)->index - 1])->fptr)(corto_mount(_this), event) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_notify_o)->index - 1], NULL, corto_mount(_this), event) \
     )
 
 CORTO_EXPORT
@@ -210,92 +210,92 @@ void _corto_mount_onPoll(
     corto_mount _this);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_onQuery_v(
+corto_resultIter _corto_mount_on_query_v(
     corto_mount _this,
     corto_query *query);
 
-/* corto_resultIter corto_mount_onQuery(corto_mount, corto_query *) */
-#define corto_mount_onQuery(_this, query) ( \
-    ((corto_function)corto_mount_onQuery_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onQuery_o)->index - 1])->fptr)(corto_mount(_this), query) \
-    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onQuery_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_mount(_this), query) \
+/* corto_resultIter corto_mount_on_query(corto_mount, corto_query *) */
+#define corto_mount_on_query(_this, query) ( \
+    ((corto_function)corto_mount_on_query_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_query_o)->index - 1])->fptr)(corto_mount(_this), query) \
+    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_mount(_this), query) \
     )
 
 CORTO_EXPORT
-corto_object _corto_mount_onResume_v(
+corto_object _corto_mount_on_resume_v(
     corto_mount _this,
     const char *parent,
     const char *id,
     corto_object object);
 
-/* corto_object corto_mount_onResume(corto_mount, const char *, const char *, corto_object) */
-#define corto_mount_onResume(_this, parent, id, object) ( \
-    ((corto_function)corto_mount_onResume_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_object (*)(corto_object, const char *, const char *, corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onResume_o)->index - 1])->fptr)(corto_mount(_this), parent, id, object) \
-    : *(corto_object*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onResume_o)->index - 1], alloca(sizeof(corto_object)), corto_mount(_this), parent, id, object) \
+/* corto_object corto_mount_on_resume(corto_mount, const char *, const char *, corto_object) */
+#define corto_mount_on_resume(_this, parent, id, object) ( \
+    ((corto_function)corto_mount_on_resume_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_object (*)(corto_object, const char *, const char *, corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_resume_o)->index - 1])->fptr)(corto_mount(_this), parent, id, object) \
+    : *(corto_object*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_resume_o)->index - 1], alloca(sizeof(corto_object)), corto_mount(_this), parent, id, object) \
     )
 
 CORTO_EXPORT
-uintptr_t _corto_mount_onSubscribe_v(
+uintptr_t _corto_mount_on_subscribe_v(
     corto_mount _this,
     corto_query *query,
     uintptr_t ctx);
 
-/* uintptr_t corto_mount_onSubscribe(corto_mount, corto_query *, uintptr_t) */
-#define corto_mount_onSubscribe(_this, query, ctx) ( \
-    ((corto_function)corto_mount_onSubscribe_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_word (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onSubscribe_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
-    : *(uintptr_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onSubscribe_o)->index - 1], alloca(sizeof(uintptr_t)), corto_mount(_this), query, ctx) \
+/* uintptr_t corto_mount_on_subscribe(corto_mount, corto_query *, uintptr_t) */
+#define corto_mount_on_subscribe(_this, query, ctx) ( \
+    ((corto_function)corto_mount_on_subscribe_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_word (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_subscribe_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
+    : *(uintptr_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_subscribe_o)->index - 1], alloca(sizeof(uintptr_t)), corto_mount(_this), query, ctx) \
     )
 
 CORTO_EXPORT
-uintptr_t _corto_mount_onTransactionBegin_v(
+uintptr_t _corto_mount_on_transaction_begin_v(
     corto_mount _this);
 
-/* uintptr_t corto_mount_onTransactionBegin(corto_mount) */
-#define corto_mount_onTransactionBegin(_this) ( \
-    ((corto_function)corto_mount_onTransactionBegin_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_word (*)(corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onTransactionBegin_o)->index - 1])->fptr)(corto_mount(_this)) \
-    : *(uintptr_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onTransactionBegin_o)->index - 1], alloca(sizeof(uintptr_t)), corto_mount(_this)) \
+/* uintptr_t corto_mount_on_transaction_begin(corto_mount) */
+#define corto_mount_on_transaction_begin(_this) ( \
+    ((corto_function)corto_mount_on_transaction_begin_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_word (*)(corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_begin_o)->index - 1])->fptr)(corto_mount(_this)) \
+    : *(uintptr_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_begin_o)->index - 1], alloca(sizeof(uintptr_t)), corto_mount(_this)) \
     )
 
 CORTO_EXPORT
-void _corto_mount_onTransactionEnd_v(
+void _corto_mount_on_transaction_end_v(
     corto_mount _this,
     corto_subscriberEventIter events,
     uintptr_t ctx);
 
-/* void corto_mount_onTransactionEnd(corto_mount, corto_subscriberEventIter, uintptr_t) */
-#define corto_mount_onTransactionEnd(_this, events, ctx) ( \
-    ((corto_function)corto_mount_onTransactionEnd_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onTransactionEnd_o)->index - 1])->fptr)(corto_mount(_this), events, ctx) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onTransactionEnd_o)->index - 1], NULL, corto_mount(_this), events, ctx) \
+/* void corto_mount_on_transaction_end(corto_mount, corto_subscriberEventIter, uintptr_t) */
+#define corto_mount_on_transaction_end(_this, events, ctx) ( \
+    ((corto_function)corto_mount_on_transaction_end_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_end_o)->index - 1])->fptr)(corto_mount(_this), events, ctx) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_end_o)->index - 1], NULL, corto_mount(_this), events, ctx) \
     )
 
 CORTO_EXPORT
-void _corto_mount_onUnmount_v(
+void _corto_mount_on_unmount_v(
     corto_mount _this,
     corto_query *query,
     uintptr_t ctx);
 
-/* void corto_mount_onUnmount(corto_mount, corto_query *, uintptr_t) */
-#define corto_mount_onUnmount(_this, query, ctx) ( \
-    ((corto_function)corto_mount_onUnmount_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onUnmount_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onUnmount_o)->index - 1], NULL, corto_mount(_this), query, ctx) \
+/* void corto_mount_on_unmount(corto_mount, corto_query *, uintptr_t) */
+#define corto_mount_on_unmount(_this, query, ctx) ( \
+    ((corto_function)corto_mount_on_unmount_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_unmount_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_unmount_o)->index - 1], NULL, corto_mount(_this), query, ctx) \
     )
 
 CORTO_EXPORT
-void _corto_mount_onUnsubscribe_v(
+void _corto_mount_on_unsubscribe_v(
     corto_mount _this,
     corto_query *query,
     uintptr_t ctx);
 
-/* void corto_mount_onUnsubscribe(corto_mount, corto_query *, uintptr_t) */
-#define corto_mount_onUnsubscribe(_this, query, ctx) ( \
-    ((corto_function)corto_mount_onUnsubscribe_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onUnsubscribe_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_onUnsubscribe_o)->index - 1], NULL, corto_mount(_this), query, ctx) \
+/* void corto_mount_on_unsubscribe(corto_mount, corto_query *, uintptr_t) */
+#define corto_mount_on_unsubscribe(_this, query, ctx) ( \
+    ((corto_function)corto_mount_on_unsubscribe_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object, corto_query *, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_unsubscribe_o)->index - 1])->fptr)(corto_mount(_this), query, ctx) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_unsubscribe_o)->index - 1], NULL, corto_mount(_this), query, ctx) \
     )
 
 CORTO_EXPORT
@@ -559,28 +559,28 @@ int16_t _corto_subscriberEvent_init(
 #define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
 #define corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
 #define corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
-#define corto_loader_onQuery_v(_this, query) _corto_loader_onQuery_v(corto_loader(_this), query)
+#define corto_loader_on_query_v(_this, query) _corto_loader_on_query_v(corto_loader(_this), query)
 #define corto_mount_construct(_this) _corto_mount_construct(corto_mount(_this))
 #define corto_mount_destruct(_this) _corto_mount_destruct(corto_mount(_this))
 #define corto_mount_historyQuery(_this, query) _corto_mount_historyQuery(corto_mount(_this), query)
 #define corto_mount_id(_this) _corto_mount_id(corto_mount(_this))
 #define corto_mount_init(_this) _corto_mount_init(corto_mount(_this))
 #define corto_mount_invoke(_this, instance, proc, argptrs) _corto_mount_invoke(corto_mount(_this), instance, corto_function(proc), argptrs)
-#define corto_mount_onBatchNotify_v(_this, events) _corto_mount_onBatchNotify_v(corto_mount(_this), events)
-#define corto_mount_onHistoryBatchNotify_v(_this, events) _corto_mount_onHistoryBatchNotify_v(corto_mount(_this), events)
-#define corto_mount_onHistoryQuery_v(_this, query) _corto_mount_onHistoryQuery_v(corto_mount(_this), query)
-#define corto_mount_onId_v(_this) _corto_mount_onId_v(corto_mount(_this))
-#define corto_mount_onInvoke_v(_this, instance, proc, argptrs) _corto_mount_onInvoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
-#define corto_mount_onMount_v(_this, query, ctx) _corto_mount_onMount_v(corto_mount(_this), query, ctx)
-#define corto_mount_onNotify_v(_this, event) _corto_mount_onNotify_v(corto_mount(_this), event)
+#define corto_mount_on_batch_notify_v(_this, events) _corto_mount_on_batch_notify_v(corto_mount(_this), events)
+#define corto_mount_on_history_batch_notify_v(_this, events) _corto_mount_on_history_batch_notify_v(corto_mount(_this), events)
+#define corto_mount_on_history_query_v(_this, query) _corto_mount_on_history_query_v(corto_mount(_this), query)
+#define corto_mount_on_id_v(_this) _corto_mount_on_id_v(corto_mount(_this))
+#define corto_mount_on_invoke_v(_this, instance, proc, argptrs) _corto_mount_on_invoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
+#define corto_mount_on_mount_v(_this, query, ctx) _corto_mount_on_mount_v(corto_mount(_this), query, ctx)
+#define corto_mount_on_notify_v(_this, event) _corto_mount_on_notify_v(corto_mount(_this), event)
 #define corto_mount_onPoll(_this) _corto_mount_onPoll(corto_mount(_this))
-#define corto_mount_onQuery_v(_this, query) _corto_mount_onQuery_v(corto_mount(_this), query)
-#define corto_mount_onResume_v(_this, parent, id, object) _corto_mount_onResume_v(corto_mount(_this), parent, id, object)
-#define corto_mount_onSubscribe_v(_this, query, ctx) _corto_mount_onSubscribe_v(corto_mount(_this), query, ctx)
-#define corto_mount_onTransactionBegin_v(_this) _corto_mount_onTransactionBegin_v(corto_mount(_this))
-#define corto_mount_onTransactionEnd_v(_this, events, ctx) _corto_mount_onTransactionEnd_v(corto_mount(_this), events, ctx)
-#define corto_mount_onUnmount_v(_this, query, ctx) _corto_mount_onUnmount_v(corto_mount(_this), query, ctx)
-#define corto_mount_onUnsubscribe_v(_this, query, ctx) _corto_mount_onUnsubscribe_v(corto_mount(_this), query, ctx)
+#define corto_mount_on_query_v(_this, query) _corto_mount_on_query_v(corto_mount(_this), query)
+#define corto_mount_on_resume_v(_this, parent, id, object) _corto_mount_on_resume_v(corto_mount(_this), parent, id, object)
+#define corto_mount_on_subscribe_v(_this, query, ctx) _corto_mount_on_subscribe_v(corto_mount(_this), query, ctx)
+#define corto_mount_on_transaction_begin_v(_this) _corto_mount_on_transaction_begin_v(corto_mount(_this))
+#define corto_mount_on_transaction_end_v(_this, events, ctx) _corto_mount_on_transaction_end_v(corto_mount(_this), events, ctx)
+#define corto_mount_on_unmount_v(_this, query, ctx) _corto_mount_on_unmount_v(corto_mount(_this), query, ctx)
+#define corto_mount_on_unsubscribe_v(_this, query, ctx) _corto_mount_on_unsubscribe_v(corto_mount(_this), query, ctx)
 #define corto_mount_post(_this, e) _corto_mount_post(corto_mount(_this), e)
 #define corto_mount_publish(_this, event, from, id, type, value) _corto_mount_publish(corto_mount(_this), event, from, id, type, value)
 #define corto_mount_query(_this, query) _corto_mount_query(corto_mount(_this), query)
@@ -631,28 +631,28 @@ int16_t _corto_subscriberEvent_init(
 #define corto_invokeEvent_handle_v _corto_invokeEvent_handle_v
 #define corto_loader_construct _corto_loader_construct
 #define corto_loader_destruct _corto_loader_destruct
-#define corto_loader_onQuery_v _corto_loader_onQuery_v
+#define corto_loader_on_query_v _corto_loader_on_query_v
 #define corto_mount_construct _corto_mount_construct
 #define corto_mount_destruct _corto_mount_destruct
 #define corto_mount_historyQuery _corto_mount_historyQuery
 #define corto_mount_id _corto_mount_id
 #define corto_mount_init _corto_mount_init
 #define corto_mount_invoke _corto_mount_invoke
-#define corto_mount_onBatchNotify_v _corto_mount_onBatchNotify_v
-#define corto_mount_onHistoryBatchNotify_v _corto_mount_onHistoryBatchNotify_v
-#define corto_mount_onHistoryQuery_v _corto_mount_onHistoryQuery_v
-#define corto_mount_onId_v _corto_mount_onId_v
-#define corto_mount_onInvoke_v _corto_mount_onInvoke_v
-#define corto_mount_onMount_v _corto_mount_onMount_v
-#define corto_mount_onNotify_v _corto_mount_onNotify_v
+#define corto_mount_on_batch_notify_v _corto_mount_on_batch_notify_v
+#define corto_mount_on_history_batch_notify_v _corto_mount_on_history_batch_notify_v
+#define corto_mount_on_history_query_v _corto_mount_on_history_query_v
+#define corto_mount_on_id_v _corto_mount_on_id_v
+#define corto_mount_on_invoke_v _corto_mount_on_invoke_v
+#define corto_mount_on_mount_v _corto_mount_on_mount_v
+#define corto_mount_on_notify_v _corto_mount_on_notify_v
 #define corto_mount_onPoll _corto_mount_onPoll
-#define corto_mount_onQuery_v _corto_mount_onQuery_v
-#define corto_mount_onResume_v _corto_mount_onResume_v
-#define corto_mount_onSubscribe_v _corto_mount_onSubscribe_v
-#define corto_mount_onTransactionBegin_v _corto_mount_onTransactionBegin_v
-#define corto_mount_onTransactionEnd_v _corto_mount_onTransactionEnd_v
-#define corto_mount_onUnmount_v _corto_mount_onUnmount_v
-#define corto_mount_onUnsubscribe_v _corto_mount_onUnsubscribe_v
+#define corto_mount_on_query_v _corto_mount_on_query_v
+#define corto_mount_on_resume_v _corto_mount_on_resume_v
+#define corto_mount_on_subscribe_v _corto_mount_on_subscribe_v
+#define corto_mount_on_transaction_begin_v _corto_mount_on_transaction_begin_v
+#define corto_mount_on_transaction_end_v _corto_mount_on_transaction_end_v
+#define corto_mount_on_unmount_v _corto_mount_on_unmount_v
+#define corto_mount_on_unsubscribe_v _corto_mount_on_unsubscribe_v
 #define corto_mount_post _corto_mount_post
 #define corto_mount_publish _corto_mount_publish
 #define corto_mount_query _corto_mount_query
@@ -705,28 +705,28 @@ int16_t _corto_subscriberEvent_init(
 #define safe_corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
 #define safe_corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
 #define safe_corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
-#define safe_corto_loader_onQuery_v(_this, query) _corto_loader_onQuery_v(corto_loader(_this), query)
+#define safe_corto_loader_on_query_v(_this, query) _corto_loader_on_query_v(corto_loader(_this), query)
 #define safe_corto_mount_construct(_this) _corto_mount_construct(corto_mount(_this))
 #define safe_corto_mount_destruct(_this) _corto_mount_destruct(corto_mount(_this))
 #define safe_corto_mount_historyQuery(_this, query) _corto_mount_historyQuery(corto_mount(_this), query)
 #define safe_corto_mount_id(_this) _corto_mount_id(corto_mount(_this))
 #define safe_corto_mount_init(_this) _corto_mount_init(corto_mount(_this))
 #define safe_corto_mount_invoke(_this, instance, proc, argptrs) _corto_mount_invoke(corto_mount(_this), instance, corto_function(proc), argptrs)
-#define safe_corto_mount_onBatchNotify_v(_this, events) _corto_mount_onBatchNotify_v(corto_mount(_this), events)
-#define safe_corto_mount_onHistoryBatchNotify_v(_this, events) _corto_mount_onHistoryBatchNotify_v(corto_mount(_this), events)
-#define safe_corto_mount_onHistoryQuery_v(_this, query) _corto_mount_onHistoryQuery_v(corto_mount(_this), query)
-#define safe_corto_mount_onId_v(_this) _corto_mount_onId_v(corto_mount(_this))
-#define safe_corto_mount_onInvoke_v(_this, instance, proc, argptrs) _corto_mount_onInvoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
-#define safe_corto_mount_onMount_v(_this, query, ctx) _corto_mount_onMount_v(corto_mount(_this), query, ctx)
-#define safe_corto_mount_onNotify_v(_this, event) _corto_mount_onNotify_v(corto_mount(_this), event)
+#define safe_corto_mount_on_batch_notify_v(_this, events) _corto_mount_on_batch_notify_v(corto_mount(_this), events)
+#define safe_corto_mount_on_history_batch_notify_v(_this, events) _corto_mount_on_history_batch_notify_v(corto_mount(_this), events)
+#define safe_corto_mount_on_history_query_v(_this, query) _corto_mount_on_history_query_v(corto_mount(_this), query)
+#define safe_corto_mount_on_id_v(_this) _corto_mount_on_id_v(corto_mount(_this))
+#define safe_corto_mount_on_invoke_v(_this, instance, proc, argptrs) _corto_mount_on_invoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
+#define safe_corto_mount_on_mount_v(_this, query, ctx) _corto_mount_on_mount_v(corto_mount(_this), query, ctx)
+#define safe_corto_mount_on_notify_v(_this, event) _corto_mount_on_notify_v(corto_mount(_this), event)
 #define safe_corto_mount_onPoll(_this) _corto_mount_onPoll(corto_mount(_this))
-#define safe_corto_mount_onQuery_v(_this, query) _corto_mount_onQuery_v(corto_mount(_this), query)
-#define safe_corto_mount_onResume_v(_this, parent, id, object) _corto_mount_onResume_v(corto_mount(_this), parent, id, object)
-#define safe_corto_mount_onSubscribe_v(_this, query, ctx) _corto_mount_onSubscribe_v(corto_mount(_this), query, ctx)
-#define safe_corto_mount_onTransactionBegin_v(_this) _corto_mount_onTransactionBegin_v(corto_mount(_this))
-#define safe_corto_mount_onTransactionEnd_v(_this, events, ctx) _corto_mount_onTransactionEnd_v(corto_mount(_this), events, ctx)
-#define safe_corto_mount_onUnmount_v(_this, query, ctx) _corto_mount_onUnmount_v(corto_mount(_this), query, ctx)
-#define safe_corto_mount_onUnsubscribe_v(_this, query, ctx) _corto_mount_onUnsubscribe_v(corto_mount(_this), query, ctx)
+#define safe_corto_mount_on_query_v(_this, query) _corto_mount_on_query_v(corto_mount(_this), query)
+#define safe_corto_mount_on_resume_v(_this, parent, id, object) _corto_mount_on_resume_v(corto_mount(_this), parent, id, object)
+#define safe_corto_mount_on_subscribe_v(_this, query, ctx) _corto_mount_on_subscribe_v(corto_mount(_this), query, ctx)
+#define safe_corto_mount_on_transaction_begin_v(_this) _corto_mount_on_transaction_begin_v(corto_mount(_this))
+#define safe_corto_mount_on_transaction_end_v(_this, events, ctx) _corto_mount_on_transaction_end_v(corto_mount(_this), events, ctx)
+#define safe_corto_mount_on_unmount_v(_this, query, ctx) _corto_mount_on_unmount_v(corto_mount(_this), query, ctx)
+#define safe_corto_mount_on_unsubscribe_v(_this, query, ctx) _corto_mount_on_unsubscribe_v(corto_mount(_this), query, ctx)
 #define safe_corto_mount_post(_this, e) _corto_mount_post(corto_mount(_this), e)
 #define safe_corto_mount_publish(_this, event, from, id, type, value) _corto_mount_publish(corto_mount(_this), event, from, id, type, value)
 #define safe_corto_mount_query(_this, query) _corto_mount_query(corto_mount(_this), query)

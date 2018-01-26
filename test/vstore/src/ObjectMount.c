@@ -42,7 +42,7 @@ void release(
     corto_dealloc(it->ctx);
 }
 
-corto_resultIter test_ObjectMount_onQuery(
+corto_resultIter test_ObjectMount_on_query(
     test_ObjectMount this,
     corto_query *query)
 {

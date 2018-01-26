@@ -154,7 +154,7 @@ void test_ListMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_ListMount_onQuery(
+corto_resultIter test_ListMount_on_query(
     test_ListMount this,
     corto_query *query)
 {

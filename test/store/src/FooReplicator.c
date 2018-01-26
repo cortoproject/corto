@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-void test_FooReplicator_onInvoke(
+void test_FooReplicator_on_invoke(
     test_FooReplicator this,
     corto_object instance,
     corto_function proc,

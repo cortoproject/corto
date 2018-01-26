@@ -64,8 +64,6 @@ CORTO_META_OBJECT(struct, subscriberEvent);
 CORTO_META_OBJECT(struct, invokeEvent);
 CORTO_META_OBJECT(struct, time);
 
-CORTO_META_OBJECT(subscriber, mount_on_notify);
-
 CORTO_META_OBJECT(iterator, resultIter);
 CORTO_META_OBJECT(iterator, sampleIter);
 CORTO_META_OBJECT(iterator, subscriberEventIter);
@@ -75,19 +73,19 @@ CORTO_META_OBJECT(function, subscriberEvent_handle);
 
 CORTO_META_OBJECT(method, routerimpl_findRoute);
 CORTO_META_OBJECT(method, routerimpl_matchRoute);
-CORTO_META_OBJECT(method, mount_onInvoke);
-CORTO_META_OBJECT(method, mount_onInvoke);
-CORTO_META_OBJECT(method, mount_onId);
-CORTO_META_OBJECT(method, mount_onResume);
-CORTO_META_OBJECT(method, mount_onQuery);
-CORTO_META_OBJECT(method, mount_onHistoryQuery);
-CORTO_META_OBJECT(method, mount_onNotify);
-CORTO_META_OBJECT(method, mount_onBatchNotify);
-CORTO_META_OBJECT(method, mount_onHistoryBatchNotify);
-CORTO_META_OBJECT(method, mount_onSubscribe);
-CORTO_META_OBJECT(method, mount_onUnsubscribe);
-CORTO_META_OBJECT(method, mount_onMount);
-CORTO_META_OBJECT(method, mount_onUnmount);
+CORTO_META_OBJECT(method, mount_on_invoke);
+CORTO_META_OBJECT(method, mount_on_invoke);
+CORTO_META_OBJECT(method, mount_on_id);
+CORTO_META_OBJECT(method, mount_on_resume);
+CORTO_META_OBJECT(method, mount_on_query);
+CORTO_META_OBJECT(method, mount_on_history_query);
+CORTO_META_OBJECT(method, mount_on_notify);
+CORTO_META_OBJECT(method, mount_on_batch_notify);
+CORTO_META_OBJECT(method, mount_on_history_batch_notify);
+CORTO_META_OBJECT(method, mount_on_subscribe);
+CORTO_META_OBJECT(method, mount_on_unsubscribe);
+CORTO_META_OBJECT(method, mount_on_mount);
+CORTO_META_OBJECT(method, mount_on_unmount);
 
 #ifdef __cplusplus
 }

@@ -355,7 +355,7 @@ bool corto_selectMatch(
                 corto_mount r = data->mounts[i];
                 corto_string rType = r->super.query.type;
 
-                /* If a SINK mount doesn't implement the onQuery method, select will
+                /* If a SINK mount doesn't implement the on_query method, select will
                  * return the contents of the object store */
                 if ((r->policy.ownership == CORTO_LOCAL_SOURCE) && !r->passThrough) {
                     if (rType) {

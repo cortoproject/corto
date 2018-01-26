@@ -18,7 +18,7 @@ void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_JsonReplicator_onQuery(
+corto_resultIter test_JsonReplicator_on_query(
     test_JsonReplicator this,
     corto_query *query)
 {

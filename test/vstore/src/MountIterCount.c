@@ -25,7 +25,7 @@ void test_MounterIterCount_release(corto_iter *it) {
     this->releaseCount ++;
 }
 
-corto_resultIter test_MountIterCount_onQuery(
+corto_resultIter test_MountIterCount_on_query(
     test_MountIterCount this,
     corto_query *query)
 {

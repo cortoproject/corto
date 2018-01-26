@@ -16,7 +16,7 @@ bool iterHasNext(
     return 0;
 }
 
-corto_resultIter test_MountWIterData_onQuery(
+corto_resultIter test_MountWIterData_on_query(
     test_MountWIterData this,
     corto_query *query)
 {

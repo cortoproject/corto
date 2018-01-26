@@ -116,7 +116,7 @@ void release(
     corto_dealloc(ctx);
 }
 
-corto_resultIter test_HistoryMount_onHistoryQuery(
+corto_resultIter test_HistoryMount_on_history_query(
     test_HistoryMount this,
     corto_query *query)
 {

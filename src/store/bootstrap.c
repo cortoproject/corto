@@ -731,25 +731,25 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_mount_publish_),\
     SSO_OP_OBJ(vstore_mount_post_),\
     SSO_OP_OBJ(vstore_mount_onPoll_),\
-    SSO_OP_OBJ(vstore_mount_onNotify_),\
-    SSO_OP_OBJ(vstore_mount_onBatchNotify_),\
-    SSO_OP_OBJ(vstore_mount_onHistoryBatchNotify_),\
-    SSO_OP_OBJ(vstore_mount_onInvoke_),\
-    SSO_OP_OBJ(vstore_mount_onId_),\
-    SSO_OP_OBJ(vstore_mount_onQuery_),\
-    SSO_OP_OBJ(vstore_mount_onHistoryQuery_),\
-    SSO_OP_OBJ(vstore_mount_onResume_),\
-    SSO_OP_OBJ(vstore_mount_onSubscribe_),\
-    SSO_OP_OBJ(vstore_mount_onUnsubscribe_),\
-    SSO_OP_OBJ(vstore_mount_onMount_),\
-    SSO_OP_OBJ(vstore_mount_onUnmount_),\
-    SSO_OP_OBJ(vstore_mount_onTransactionBegin_),\
-    SSO_OP_OBJ(vstore_mount_onTransactionEnd_),\
+    SSO_OP_OBJ(vstore_mount_on_notify_),\
+    SSO_OP_OBJ(vstore_mount_on_batch_notify_),\
+    SSO_OP_OBJ(vstore_mount_on_history_batch_notify_),\
+    SSO_OP_OBJ(vstore_mount_on_invoke_),\
+    SSO_OP_OBJ(vstore_mount_on_id_),\
+    SSO_OP_OBJ(vstore_mount_on_query_),\
+    SSO_OP_OBJ(vstore_mount_on_history_query_),\
+    SSO_OP_OBJ(vstore_mount_on_resume_),\
+    SSO_OP_OBJ(vstore_mount_on_subscribe_),\
+    SSO_OP_OBJ(vstore_mount_on_unsubscribe_),\
+    SSO_OP_OBJ(vstore_mount_on_mount_),\
+    SSO_OP_OBJ(vstore_mount_on_unmount_),\
+    SSO_OP_OBJ(vstore_mount_on_transaction_begin_),\
+    SSO_OP_OBJ(vstore_mount_on_transaction_end_),\
     /* loader */\
     SSO_OP_OBJ(vstore_loader_autoLoad),\
     SSO_OP_OBJ(vstore_loader_construct_),\
     SSO_OP_OBJ(vstore_loader_destruct_),\
-    SSO_OP_OBJ(vstore_loader_onQuery_),\
+    SSO_OP_OBJ(vstore_loader_on_query_),\
     /* delegatedata */\
     SSO_OP_OBJ(lang_delegatedata_instance),\
     SSO_OP_OBJ(lang_delegatedata_procedure),\

@@ -94,7 +94,7 @@ static void test_LoaderSimulatorMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_LoaderSimulatorMount_onQuery(
+corto_resultIter test_LoaderSimulatorMount_on_query(
     test_LoaderSimulatorMount this,
     corto_query *query)
 {

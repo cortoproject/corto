@@ -368,10 +368,10 @@ container Car:/
 // Replicator for ownership testcase
 class FooReplicator : mount, hidden :/
     alias mount: mount/mount
-    void onInvoke(object instance, function proc, word argptrs)
+    void on_invoke(object instance, function proc, word argptrs)
     invoked: uint32, readonly
 
-// Class with method for testing ownership onInvoke
+// Class with method for testing ownership on_invoke
 class MethodForwardTest:/
     void func() remote
     invoked: int32, readonly

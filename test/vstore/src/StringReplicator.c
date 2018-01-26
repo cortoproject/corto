@@ -20,7 +20,7 @@ void test_StringReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_StringReplicator_onQuery(
+corto_resultIter test_StringReplicator_on_query(
     test_StringReplicator this,
     corto_query *query)
 {

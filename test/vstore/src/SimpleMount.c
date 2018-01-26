@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-corto_resultIter test_SimpleMount_onQuery(
+corto_resultIter test_SimpleMount_on_query(
     test_SimpleMount this,
     corto_query *query)
 {

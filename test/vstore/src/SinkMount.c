@@ -147,7 +147,7 @@ static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_SinkMount_onQuery(
+corto_resultIter test_SinkMount_on_query(
     test_SinkMount this,
     corto_query *query)
 {
@@ -181,7 +181,7 @@ corto_resultIter test_SinkMount_onQuery(
     return result;
 }
 
-corto_object test_SinkMount_onResume(
+corto_object test_SinkMount_on_resume(
     test_SinkMount this,
     const char *parent,
     const char *id,

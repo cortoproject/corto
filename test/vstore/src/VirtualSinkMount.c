@@ -147,7 +147,7 @@ static void test_VirtualSinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_VirtualSinkMount_onQuery(
+corto_resultIter test_VirtualSinkMount_on_query(
     test_VirtualSinkMount this,
     corto_query *query)
 {

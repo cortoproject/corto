@@ -191,17 +191,17 @@ layer on more complexity as it is needed.
 
 Mounts are instances of the `corto/vstore/mount` class. This is a builtin class
 with overridable methods that mount implementations can selectively override. The
-most used overridable functions are `onNotify` and `onQuery`. The former notifies
+most used overridable functions are `on_notify` and `on_query`. The former notifies
 a mount of an event in either the virtual store or object store. The latter is
 invoked when a user performs a single shot query.
 
-In addition to `onNotify` and `onQuery`, there is also `onSubscribe` and 
-`onUnsubscribe` which are invoked when a subscriber is created with a query that
+In addition to `on_notify` and `on_query`, there is also `on_subscribe` and 
+`on_unsubscribe` which are invoked when a subscriber is created with a query that
 matches the mount. This matching uses the same logic as how a query is matched to
 a set of mounts.
 
 There are more callbacks, though these are the most important ones. Lets implement
-a simple mount using the `onNotify` callback.
+a simple mount using the `on_notify` callback.
 
 #### Create a custom mount class
 First we have to create a definition for our own mount class. There are various
@@ -218,7 +218,7 @@ Then, add the following lines to `MyMount.cx`:
 in package MyMount
 
 class CustomMount: vstore/mount:/
-    void onNotify(subscriberEvent e) override
+    void on_notify(subscriberEvent e) override
 ```
 If you are familiar with corto definition files, you'll notice this looks just
 like a regular class, just one that happens to inherit from mount. Now build the
@@ -227,10 +227,10 @@ project with:
 corto build
 ```
 We now have a file `MyMount/src/CustomMount.c` which contains an empty function
-body for `MyMount_CustomMount_onNotify`. Assuming we have a function called
+body for `MyMount_CustomMount_on_notify`. Assuming we have a function called
 `writeData` that stores data in some kind of external storage, we can now do:
 ```c
-void MyMount_CustomMount_onNotify(corto_subscriberEvent *e) {
+void MyMount_CustomMount_on_notify(corto_subscriberEvent *e) {
     writeData(
         e->data.id,
         e->data.parent,
@@ -240,7 +240,7 @@ void MyMount_CustomMount_onNotify(corto_subscriberEvent *e) {
 ```
 This is not massively impressive, as we are not actually writing the value of
 the object, only the metadata. Suppose we want to store the value of the object
-serialied to JSON, what code do we have to add to the `onNotify` method that 
+serialied to JSON, what code do we have to add to the `on_notify` method that 
 serializes the object data to JSON?
 
 ##### A dirty little secret about mounts
@@ -272,7 +272,7 @@ Now, add this line to the main function in `MyMount/src/MyMount.c`:
 ```c
 corto_use("config.json", 0, NULL);
 ```
-And change the implementation of `onNotify` to this (using our fictional writeData function):
+And change the implementation of `on_notify` to this (using our fictional writeData function):
 ```c
     writeData(
         e->data.id,

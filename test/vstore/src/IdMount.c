@@ -12,7 +12,7 @@ int16_t test_IdMount_construct(
     return corto_mount_construct(this);
 }
 
-corto_string test_IdMount_onId(
+corto_string test_IdMount_on_id(
     test_IdMount this)
 {
 
