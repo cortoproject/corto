@@ -4,6 +4,7 @@
 static corto_object testScope;
 #define DECLARE_ORPHAN(p, i, t)\
     corto(CORTO_DECLARE|CORTO_ORPHAN|CORTO_FORCE_TYPE, {.parent=p, .id=i, .type=t})
+
 void test_Event_setup(
     test_Event this)
 {
@@ -14,7 +15,6 @@ void test_Event_setup(
     test_assert(et != NULL);
     corto_set_ref(&this->et, et);
     corto_release(et);
-
 }
 
 void test_Event_tc_onDeclare(
@@ -1056,7 +1056,7 @@ void test_Event_tc_onDeleteTreeOrphan(
 
 }
 
-void test_Event_tc_on__update(
+void test_Event_tc_onUpdate(
     test_Event this)
 {
     int ret;
@@ -2230,10 +2230,3 @@ void test_Event_teardown(
     corto_set_attr(this->prevAttr);
 
 }
-
-void test_Event_tc_onUpdate(
-    test_Event this)
-{
-    /* Insert implementation */
-}
-

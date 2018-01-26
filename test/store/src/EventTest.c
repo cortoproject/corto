@@ -214,7 +214,7 @@ void test_EventTest_onDeleteTree(
    this->countDeleteTree++;
 }
 
-void test_EventTest_on__update(
+void test_EventTest_onUpdate(
     corto_observerEvent *e)
 {
    test_EventTest this = e->instance;
@@ -285,10 +285,3 @@ void test_EventTest_onUpdateTree(
    corto_set_ref(&this->lastObservable, e->data);
    this->countUpdateTree++;
 }
-
-void test_EventTest_onUpdate(
-    corto_observerEvent *e)
-{
-    /* Insert implementation */
-}
-

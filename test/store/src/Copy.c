@@ -910,7 +910,7 @@ void test_Copy_tc_sequenceToSequenceComposite(
     corto_delete(v2);
 }
 
-void test_Copy_tc_sequenceToSequence__resize(
+void test_Copy_tc_sequenceToSequenceResize(
     test_Copy this)
 {
     corto_int16 ret;
@@ -1902,10 +1902,3 @@ void test_Copy_tc_unionWithStruct(
     corto_ptr_deinit(&v1, test_unionTypes_o);
     corto_ptr_deinit(&v2, test_unionTypes_o);
 }
-
-void test_Copy_tc_sequenceToSequenceResize(
-    test_Copy this)
-{
-    /* Insert implementation */
-}
-

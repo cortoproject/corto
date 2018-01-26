@@ -462,10 +462,10 @@ void MultiDifferentParent2(corto_subscriberEvent *e) {
 void MultiDifferentParent3(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
-    
+
     test_assertstr(e->data.id, "foo");
     test_assertstr(e->data.parent, ".");
-    test_assertstr(e->data.type, "void");   
+    test_assertstr(e->data.type, "void");
 }
 
 void test_Subscribe_tc_subscribeMultiDifferentParent(
@@ -523,10 +523,10 @@ void MultiDifferentParentVirtual2(corto_subscriberEvent *e) {
 void MultiDifferentParentVirtual3(corto_subscriberEvent *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
-    
+
     test_assertstr(e->data.id, "foo");
     test_assertstr(e->data.parent, ".");
-    test_assertstr(e->data.type, "void");   
+    test_assertstr(e->data.type, "void");
 }
 
 void test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
@@ -618,7 +618,7 @@ void test_Subscribe_tc_subscribeOwnerSet(
     corto_subscriber s = corto_subscribe("a,b").from("/")
       .instance(this)
       .callback(tc_subscribeOwnerSet);
- 
+
     corto_set_ref(&this->owner, NULL);
 
     test_assert(corto_update(a) == 0);
@@ -672,5 +672,3 @@ void test_Subscribe_tc_subscribePartialMatchingParentObject(
 
     test_assert(corto_delete(s) == 0);
 }
-
-

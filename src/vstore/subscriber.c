@@ -252,6 +252,7 @@ int16_t corto_notify_subscribersById(
         return 0;
     }
 
+
     /* Subscribers only receive data events */
     if (!(mask & (CORTO_DEFINE|CORTO_UPDATE|CORTO_DELETE))) {
         return 0;

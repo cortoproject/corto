@@ -41,7 +41,7 @@ void test_ResumeSink_onSuspend(
 
 }
 
-void test_ResumeSink_on__update(
+void test_ResumeSink_onUpdate(
     corto_observerEvent *e)
 {
     test_ResumeSink this = e->instance;
@@ -1939,10 +1939,3 @@ void test_ResumeSink_tc_cleanupResumedParentOfCreatedChild(
     test_assert(child != NULL);
     test_assert(corto_release(parent) == 1);
 }
-
-void test_ResumeSink_onUpdate(
-    corto_observerEvent *e)
-{
-    /* Insert implementation */
-}
-

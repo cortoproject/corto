@@ -23,7 +23,7 @@ void test_Attributes_tc_isDefaultScopedPersistent(
 
 }
 
-void test_Attributes_tc_testDefault__set(
+void test_Attributes_tc_testDefaultSet(
     test_Attributes this)
 {
 
@@ -66,10 +66,3 @@ void test_Attributes_tc_typeOverridesAttributes(
     test_assert(corto_delete(o) == 0);
 
 }
-
-void test_Attributes_tc_testDefaultSet(
-    test_Attributes this)
-{
-    /* Insert implementation */
-}
-

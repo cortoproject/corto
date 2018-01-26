@@ -35,7 +35,7 @@ void test_Security_tc_authenticateFail(
 
 }
 
-void test_Security_tc_authorize__create(
+void test_Security_tc_authorizeCreate(
     test_Security this)
 {
     const char *token = corto_login("Ford Prefect", "42");
@@ -80,7 +80,7 @@ void test_Security_tc_authorizeDelete(
     test_assert(prev == token);
 }
 
-void test_Security_tc_authorizeDenied__create(
+void test_Security_tc_authorizeDeniedCreate(
     test_Security this)
 {
     const char *token = corto_login("Ford Prefect", "42");
@@ -241,7 +241,7 @@ void test_Security_tc_authorizeDeniedSelect(
     test_assert(prev == token);
 }
 
-void test_Security_tc_authorizeDenied__update(
+void test_Security_tc_authorizeDeniedUpdate(
     test_Security this)
 {
     const char *token = corto_login("Ford Prefect", "42");
@@ -357,7 +357,7 @@ void test_Security_tc_authorizeSelect(
     test_assert(prev == token);
 }
 
-void test_Security_tc_authorize__update(
+void test_Security_tc_authorizeUpdate(
     test_Security this)
 {
     const char *token = corto_login("Ford Prefect", "42");
@@ -906,28 +906,3 @@ void test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     prev = corto_set_session(prev);
     test_assert(prev == token);
 }
-
-void test_Security_tc_authorizeCreate(
-    test_Security this)
-{
-    /* Insert implementation */
-}
-
-void test_Security_tc_authorizeDeniedCreate(
-    test_Security this)
-{
-    /* Insert implementation */
-}
-
-void test_Security_tc_authorizeDeniedUpdate(
-    test_Security this)
-{
-    /* Insert implementation */
-}
-
-void test_Security_tc_authorizeUpdate(
-    test_Security this)
-{
-    /* Insert implementation */
-}
-

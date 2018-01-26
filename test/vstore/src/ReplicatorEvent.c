@@ -146,7 +146,7 @@ void test_ReplicatorEvent_tc_eventTreeWithTree(
     test_assertint(mount->declareCount, 0);
     test_assertint(mount->updateCount, 0);
     test_assertint(mount->deleteCount, 0);
-    int32_t *a_a = corto_declare(parent, "a_a", corto_int32_o);
+    int32_t *a_a = corto_declare(a, "a_a", corto_int32_o);
     test_assert(a_a != NULL);
     test_assert(corto_check_attr(a_a, CORTO_ATTR_PERSISTENT));
     test_assertint(mount->declareCount, 0);
@@ -524,6 +524,12 @@ void test_ReplicatorEvent_tc_rateLimitAlign(
         .sampleRate = 20.0,
     };
     test_assert(corto_define(mnt) == 0);
+}
+
+void test_ReplicatorEvent_tc_sequenceToSequenceResize(
+    test_ReplicatorEvent this)
+{
+    /* Insert implementation */
 }
 
 void test_ReplicatorEvent_tc_eventDefineWithUpdate(

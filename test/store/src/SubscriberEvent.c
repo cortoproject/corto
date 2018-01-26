@@ -355,7 +355,7 @@ void test_SubscriberEvent_tc_onDefineTree(
 
 }
 
-void test_SubscriberEvent_tc_on__update(
+void test_SubscriberEvent_tc_onUpdate(
     test_SubscriberEvent this)
 {
     int ret;
@@ -668,10 +668,3 @@ void test_SubscriberEvent_teardown(
     corto_set_ref(&this->st, NULL);
 
 }
-
-void test_SubscriberEvent_tc_onUpdate(
-    test_SubscriberEvent this)
-{
-    /* Insert implementation */
-}
-
