@@ -789,8 +789,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_list_init_),\
     SSO_OP_OBJ(lang_list_construct_),\
     /* map */\
-    SSO_OP_OBJ(lang_map_elementType),\
     SSO_OP_OBJ(lang_map_keyType),\
+    SSO_OP_OBJ(lang_map_elementType),\
     SSO_OP_OBJ(lang_map_max),\
     SSO_OP_OBJ(lang_map_init_),\
     SSO_OP_OBJ(lang_map_construct_),\

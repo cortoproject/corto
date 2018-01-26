@@ -35,18 +35,25 @@ corto_int16 corto_ser_initAny(
 }
 
 static
+int corto_compare_key(void* ctx, const void *o1, const void *o2) {
+    return corto_ptr_compare(o1, ctx, o2);
+}
+
+static
+int corto_compare_key_ptr(void* ctx, const void *o1, const void *o2) {
+    return corto_ptr_compare(&o1, ctx, &o2);
+}
+
+static
 corto_int16 corto_ser_initCollection(
     corto_walk_opt* s,
     corto_value* v,
     void* userData)
 {
-    corto_type t;
-    void* o;
+    corto_collection t = (corto_collection)corto_value_typeof(v);
+    void *o = corto_value_ptrof(v);
 
-    t = corto_value_typeof(v);
-    o = corto_value_ptrof(v);
-
-    switch(corto_collection(t)->kind) {
+    switch(t->kind) {
         case CORTO_ARRAY:
             if (corto_walk_elements(s, v, userData)) {
                 goto error;
@@ -55,9 +62,15 @@ corto_int16 corto_ser_initCollection(
         case CORTO_LIST:
             *(corto_ll*)o = corto_ll_new();
             break;
-        case CORTO_MAP:
-            /**(corto_rb*)o = corto_rb_new(t);*/
+        case CORTO_MAP: {
+            corto_type keyType = corto_map(t)->keyType;
+            if (corto_collection_requiresAlloc(keyType)) {
+                *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
+            } else {
+                *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);
+            }
             break;
+        }
         default:
             break;
     }

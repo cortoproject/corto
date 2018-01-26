@@ -524,8 +524,8 @@ typedef struct corto_map_s *corto_map;
 
 struct corto_map_s {
     struct corto_collection_s super;
-    corto_type elementType;
     corto_type keyType;
+    corto_type elementType;
     uint32_t max;
 };
 

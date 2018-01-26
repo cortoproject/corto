@@ -1115,10 +1115,10 @@ CORTO_CLASS_O(lang, list, lang_collection, CORTO_GLOBAL, CORTO_ATTR_DEFAULT, NUL
 
 /* /corto/lang/map */
 CORTO_FW_IC(lang, map);
-CORTO_CLASS_O(lang, map, lang_collection, CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(lang, map, lang_collection, CORTO_PRIVATE, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
     /* Duplicate members for a more convenient order in the initializer */
-    CORTO_REFERENCE_O(lang_map, elementType, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_VALID | CORTO_CONST, NULL);
     CORTO_REFERENCE_O(lang_map, keyType, lang_type, CORTO_GLOBAL | CORTO_CONST, CORTO_DECLARED | CORTO_VALID, NULL);
+    CORTO_REFERENCE_O(lang_map, elementType, lang_type, CORTO_GLOBAL, CORTO_DECLARED | CORTO_VALID | CORTO_CONST, NULL);
     CORTO_MEMBER_O(lang_map, max, lang_uint32, CORTO_GLOBAL | CORTO_CONST);
     CORTO_METHOD_O(lang_map, init, "()", lang_int16, corto_map_init);
     CORTO_METHOD_O(lang_map, construct, "()", lang_int16, corto_map_construct);
