@@ -24,8 +24,8 @@ CORTO_EXPORT corto_native_type _corto_native_type__assign(corto_native_type _thi
 #define corto_native_type__optional_set(name) (corto_native_type*)corto_native_type__assign((corto_native_type*)corto_ptr_new(corto_native_type_o), name)
 #define corto_native_type__optional_set_cond(cond, name) cond ? (corto_native_type*)corto_native_type__assign((corto_native_type*)corto_ptr_new(corto_native_type_o), name) : NULL
 #define corto_native_type__unset(_this) _this ? corto_ptr_free(_this, corto_native_type_o), 0 : 0; _this = NULL;
-#define corto_native_type__assign(_this, name) _corto_native_type__assign(corto_native_type(_this), name)
-#define corto_native_type__set(_this, name) _this = _this ? _this : (corto_native_type*)corto_ptr_new(corto_native_type_o); _corto_native_type__assign(corto_native_type(_this), name)
+#define corto_native_type__assign(_this, name) _corto_native_type__assign(_this, name)
+#define corto_native_type__set(_this, name) _this = _this ? _this : (corto_native_type*)corto_ptr_new(corto_native_type_o); _corto_native_type__assign(_this, name)
 
 
 #ifdef __cplusplus

@@ -1,20 +1,16 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
-
 static corto_object testScope;
-
 #define DECLARE_ORPHAN(p, i, t)\
     corto(CORTO_DECLARE|CORTO_ORPHAN|CORTO_FORCE_TYPE, {.parent=p, .id=i, .type=t})
-
 void test_Event_setup(
     test_Event this)
 {
     this->prevAttr = corto_set_attr(CORTO_ATTR_DEFAULT);
     testScope = corto_void__create(root_o, "testScope");
     test_assert(testScope != NULL);
-    test_EventTest et = test_EventTestCreate(testScope);
+    test_EventTest et = test_EventTest__create(NULL, NULL, testScope);
     test_assert(et != NULL);
     corto_set_ref(&this->et, et);
     corto_release(et);
@@ -28,7 +24,7 @@ void test_Event_tc_onDeclare(
 
     test_assertint(this->et->countDeclare, 1);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclare == 2);
     test_assert(this->et->lastThis == this->et);
@@ -38,13 +34,13 @@ void test_Event_tc_onDeclare(
     test_assert(ret == 0);
     test_assert(this->et->countDeclare == 2);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeclare == 3);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeclare == 4);
     test_assert(this->et->lastThis == this->et);
@@ -95,7 +91,7 @@ void test_Event_tc_onDeclareScope(
     corto_int16 ret;
     test_assertint(this->et->countDeclareScope, 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareScope == 1);
     test_assert(this->et->lastThis == this->et);
@@ -105,13 +101,13 @@ void test_Event_tc_onDeclareScope(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareScope == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeclareScope == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeclareScope == 2);
 
@@ -133,7 +129,7 @@ void test_Event_tc_onDeclareScopeNotObservable(
 
     test_assert(this->et->countDeclareScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareScope == 1);
     test_assert(this->et->lastThis == this->et);
@@ -144,14 +140,14 @@ void test_Event_tc_onDeclareScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareScope == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeclareScope == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeclareScope == 2);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -204,7 +200,7 @@ void test_Event_tc_onDeclareSelf(
     test_assert(this->et->countDeclareSelf == 1);
     test_assert(this->et->lastObservable == testScope);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareSelf == 1);
 
@@ -212,11 +208,11 @@ void test_Event_tc_onDeclareSelf(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareSelf == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeclareSelf == 1);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeclareSelf == 1);
 
@@ -266,7 +262,7 @@ void test_Event_tc_onDeclareTree(
 
     test_assert(this->et->countDeclareTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareTree == 1);
     test_assert(this->et->lastThis == this->et);
@@ -276,13 +272,13 @@ void test_Event_tc_onDeclareTree(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareTree == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeclareTree == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeclareTree == 3);
     test_assert(this->et->lastThis == this->et);
@@ -307,7 +303,7 @@ void test_Event_tc_onDeclareTreeNotObservable(
 
     test_assert(this->et->countDeclareTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeclareTree == 1);
     test_assert(this->et->lastThis == this->et);
@@ -318,14 +314,14 @@ void test_Event_tc_onDeclareTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countDeclareTree == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeclareTree == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeclareTree == 3);
     test_assert(this->et->lastThis == this->et);
@@ -379,7 +375,7 @@ void test_Event_tc_onDefine(
     corto_int16 ret;
     test_assert(this->et->countDefine == 1);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefine == 1);
 
@@ -389,13 +385,13 @@ void test_Event_tc_onDefine(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDefine == 3);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDefine == 3);
 
@@ -447,7 +443,7 @@ void test_Event_tc_onDefineScope(
 
     test_assertint(this->et->countDefineScope, 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assertint(this->et->countDefineScope, 0);
 
@@ -457,13 +453,13 @@ void test_Event_tc_onDefineScope(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assertint(this->et->countDefineScope, 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assertint(this->et->countDefineScope, 2);
 
@@ -486,7 +482,7 @@ void test_Event_tc_onDefineScopeNotObservable(
 
     test_assert(this->et->countDefineScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineScope == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -497,14 +493,14 @@ void test_Event_tc_onDefineScopeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDefineScope == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDefineScope == 2);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -557,7 +553,7 @@ void test_Event_tc_onDefineSelf(
 
     test_assert(this->et->countDefineSelf == 1);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineSelf == 1);
 
@@ -565,11 +561,11 @@ void test_Event_tc_onDefineSelf(
     test_assert(ret == 0);
     test_assert(this->et->countDefineSelf == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDefineSelf == 1);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDefineSelf == 1);
 
@@ -619,7 +615,7 @@ void test_Event_tc_onDefineTree(
 
     test_assert(this->et->countDefineTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineTree == 0);
 
@@ -629,13 +625,13 @@ void test_Event_tc_onDefineTree(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDefineTree == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDefineTree == 2);
 
@@ -660,7 +656,7 @@ void test_Event_tc_onDefineTreeNotObservable(
 
     test_assert(this->et->countDefineTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDefineTree == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -671,14 +667,14 @@ void test_Event_tc_onDefineTreeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDefineTree == 2);
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDefineTree == 2);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -733,7 +729,7 @@ void test_Event_tc_onDelete(
 
     test_assert(this->et->countDelete == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDelete == 0);
 
@@ -741,11 +737,11 @@ void test_Event_tc_onDelete(
     test_assert(ret == 0);
     test_assert(this->et->countDelete == 0);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDelete == 0);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDelete == 0);
 
@@ -796,7 +792,7 @@ void test_Event_tc_onDeleteScope(
 
     test_assert(this->et->countDeleteScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteScope == 0);
 
@@ -804,11 +800,11 @@ void test_Event_tc_onDeleteScope(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteScope == 0);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeleteScope == 0);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeleteScope == 0);
 
@@ -832,7 +828,7 @@ void test_Event_tc_onDeleteScopeNotObservable(
 
     test_assert(this->et->countDeleteScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteScope == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -841,12 +837,12 @@ void test_Event_tc_onDeleteScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteScope == 0);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeleteScope == 0);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeleteScope == 0);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -900,7 +896,7 @@ void test_Event_tc_onDeleteSelf(
 
     test_assert(this->et->countDeleteSelf == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteSelf == 0);
 
@@ -908,11 +904,11 @@ void test_Event_tc_onDeleteSelf(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteSelf == 0);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeleteSelf == 0);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeleteSelf == 0);
 
@@ -963,7 +959,7 @@ void test_Event_tc_onDeleteTree(
 
     test_assert(this->et->countDeleteTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteTree == 0);
 
@@ -971,11 +967,11 @@ void test_Event_tc_onDeleteTree(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteTree == 0);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeleteTree == 0);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeleteTree == 0);
 
@@ -999,7 +995,7 @@ void test_Event_tc_onDeleteTreeNotObservable(
 
     test_assert(this->et->countDeleteTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countDeleteTree == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -1008,12 +1004,12 @@ void test_Event_tc_onDeleteTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countDeleteTree == 0);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countDeleteTree == 0);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countDeleteTree == 0);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -1060,7 +1056,7 @@ void test_Event_tc_onDeleteTreeOrphan(
 
 }
 
-void test_Event_tc_onUpdate(
+void test_Event_tc_on__update(
     test_Event this)
 {
     int ret;
@@ -1073,7 +1069,7 @@ void test_Event_tc_onUpdate(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == testScope);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdate == 1);
 
@@ -1091,7 +1087,7 @@ void test_Event_tc_onUpdate(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdate == 2);
 
@@ -1105,7 +1101,7 @@ void test_Event_tc_onUpdate(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdate == 3);
 
@@ -1143,7 +1139,7 @@ void test_Event_tc_onUpdateDefine(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == testScope);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefine == 2);
 
@@ -1161,7 +1157,7 @@ void test_Event_tc_onUpdateDefine(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefine == 5);
 
@@ -1175,7 +1171,7 @@ void test_Event_tc_onUpdateDefine(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateDefine == 6);
 
@@ -1241,7 +1237,7 @@ void test_Event_tc_onUpdateDefineScope(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineScope == 0);
 
@@ -1259,7 +1255,7 @@ void test_Event_tc_onUpdateDefineScope(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineScope == 3);
 
@@ -1273,7 +1269,7 @@ void test_Event_tc_onUpdateDefineScope(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateDefineScope == 4);
 
@@ -1308,7 +1304,7 @@ void test_Event_tc_onUpdateDefineScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineScope == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -1327,7 +1323,7 @@ void test_Event_tc_onUpdateDefineScopeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineScope == 3);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
@@ -1342,7 +1338,7 @@ void test_Event_tc_onUpdateDefineScopeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateDefineScope == 4);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -1409,7 +1405,7 @@ void test_Event_tc_onUpdateDefineSelf(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == testScope);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
@@ -1425,7 +1421,7 @@ void test_Event_tc_onUpdateDefineSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
@@ -1437,7 +1433,7 @@ void test_Event_tc_onUpdateDefineSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateDefineSelf == 2);
 
@@ -1501,7 +1497,7 @@ void test_Event_tc_onUpdateDefineTree(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineTree == 0);
 
@@ -1519,7 +1515,7 @@ void test_Event_tc_onUpdateDefineTree(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineTree == 3);
 
@@ -1533,7 +1529,7 @@ void test_Event_tc_onUpdateDefineTree(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateDefineTree == 4);
 
@@ -1570,7 +1566,7 @@ void test_Event_tc_onUpdateDefineTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateDefineTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateDefineTree == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -1589,7 +1585,7 @@ void test_Event_tc_onUpdateDefineTreeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateDefineTree == 3);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
@@ -1604,7 +1600,7 @@ void test_Event_tc_onUpdateDefineTreeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateDefineTree == 4);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -1701,7 +1697,7 @@ void test_Event_tc_onUpdateScope(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateScope == 0);
 
@@ -1719,7 +1715,7 @@ void test_Event_tc_onUpdateScope(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateScope == 1);
 
@@ -1733,7 +1729,7 @@ void test_Event_tc_onUpdateScope(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateScope == 2);
 
@@ -1768,7 +1764,7 @@ void test_Event_tc_onUpdateScopeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateScope == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateScope == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -1787,7 +1783,7 @@ void test_Event_tc_onUpdateScopeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateScope == 1);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
@@ -1802,7 +1798,7 @@ void test_Event_tc_onUpdateScopeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateScope == 2);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -1869,7 +1865,7 @@ void test_Event_tc_onUpdateSelf(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == testScope);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -1885,7 +1881,7 @@ void test_Event_tc_onUpdateSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -1897,7 +1893,7 @@ void test_Event_tc_onUpdateSelf(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateSelf == 1);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateSelf == 1);
 
@@ -1961,7 +1957,7 @@ void test_Event_tc_onUpdateTree(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateTree == 0);
 
@@ -1979,7 +1975,7 @@ void test_Event_tc_onUpdateTree(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateTree == 1);
 
@@ -1993,7 +1989,7 @@ void test_Event_tc_onUpdateTree(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateTree == 2);
 
@@ -2030,7 +2026,7 @@ void test_Event_tc_onUpdateTreeNotObservable(
     test_assert(ret == 0);
     test_assert(this->et->countUpdateTree == 0);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(o != NULL);
     test_assert(this->et->countUpdateTree == 0);
     test_assert(!corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
@@ -2049,7 +2045,7 @@ void test_Event_tc_onUpdateTreeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == o);
 
-    corto_object p = corto_int32CreateChild(testScope, "p", 0);
+    corto_object p = corto_int32__create(testScope, "p", 0);
     test_assert(p != NULL);
     test_assert(this->et->countUpdateTree == 1);
     test_assert(!corto_check_attr(p, CORTO_ATTR_OBSERVABLE));
@@ -2064,7 +2060,7 @@ void test_Event_tc_onUpdateTreeNotObservable(
     test_assert(this->et->lastThis == this->et);
     test_assert(this->et->lastObservable == p);
 
-    corto_object q = corto_int32DeclareChild(p, "q");
+    corto_object q = corto_declare(p, "q", corto_int32_o);
     test_assert(q != NULL);
     test_assert(this->et->countUpdateTree == 2);
     test_assert(!corto_check_attr(q, CORTO_ATTR_OBSERVABLE));
@@ -2120,7 +2116,6 @@ void test_Event_tc_onUpdateTreeOrphan(
 
 }
 
-
 void test_Event_tc_postponeListenForUndefinedCallback(corto_observerEvent *e)
 {
     *corto_int32(e->instance) = *corto_int32(e->data);
@@ -2129,8 +2124,8 @@ void test_Event_tc_postponeListenForUndefinedCallback(corto_observerEvent *e)
 void test_Event_tc_postponeListenForUndefined(
     test_Event this)
 {
-    corto_int32 *observable = corto_int32CreateChild(root_o, "observable", 0);
-    corto_int32 *instance = corto_int32Declare();
+    corto_int32 *observable = corto_int32__create(root_o, "observable", 0);
+    corto_int32 *instance = corto_declare(NULL, NULL, corto_int32_o);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, observable)
       .instance(instance)
@@ -2139,7 +2134,7 @@ void test_Event_tc_postponeListenForUndefined(
     test_assert(observer != NULL);
     test_assert(observer->active == 0);
 
-    corto_int16 ret = corto_int32Update(observable, 10);
+    corto_int16 ret = corto_int32__update(observable, 10);
     test_assert(ret == 0);
     test_assertint(*instance, 0);
 
@@ -2147,7 +2142,7 @@ void test_Event_tc_postponeListenForUndefined(
     test_assert(ret == 0);
     test_assert(observer->active == 1);
 
-    ret = corto_int32Update(observable, 20);
+    ret = corto_int32__update(observable, 20);
     test_assert(ret == 0);
     test_assertint(*instance, 20);
 
@@ -2159,8 +2154,8 @@ void test_Event_tc_postponeListenForUndefined(
 void test_Event_tc_postponeListenSilence(
     test_Event this)
 {
-    corto_int32 *observable = corto_int32CreateChild(root_o, "observable", 0);
-    corto_int32 *instance = corto_int32Declare();
+    corto_int32 *observable = corto_int32__create(root_o, "observable", 0);
+    corto_int32 *instance = corto_declare(NULL, NULL, corto_int32_o);
 
     corto_observer observer = corto_observe(CORTO_UPDATE, observable)
       .instance(instance)
@@ -2171,14 +2166,14 @@ void test_Event_tc_postponeListenSilence(
     corto_int16 ret = corto_unobserve(observer);
     test_assert(ret == 0);
 
-    ret = corto_int32Update(observable, 10);
+    ret = corto_int32__update(observable, 10);
     test_assert(ret == 0);
     test_assertint(*instance, 0);
 
     ret = corto_define(instance);
     test_assert(ret == 0);
 
-    ret = corto_int32Update(observable, 20);
+    ret = corto_int32__update(observable, 20);
     test_assert(ret == 0);
     test_assertint(*instance, 0);
 }
@@ -2188,7 +2183,7 @@ void test_Event_tc_updateUndefined(
 {
     test_assert(this->et->countDefine == 1);
 
-    corto_object o = corto_int32DeclareChild(testScope, "o");
+    corto_object o = corto_declare(testScope, "o", corto_int32_o);
     test_assert(this->et->countUpdate == 0);
     test_assert(this->et->countDefine == 1);
     test_assert(o != NULL);
@@ -2213,7 +2208,7 @@ void test_Event_tc_updateVoid(
     test_Event this)
 {
 
-    corto_object o = corto_int32CreateChild(root_o, "o", 10);
+    corto_object o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
 
     corto_int16 ret = corto_update(o);
@@ -2235,3 +2230,10 @@ void test_Event_teardown(
     corto_set_attr(this->prevAttr);
 
 }
+
+void test_Event_tc_onUpdate(
+    test_Event this)
+{
+    /* Insert implementation */
+}
+

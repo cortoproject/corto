@@ -8,7 +8,7 @@ void test_MountMounts_tc_mountOnDefine(
     corto_object myRoot = corto_void__create(root_o, "myroot");
     test_assert(myRoot != NULL);
 
-    test_AutoResumeSinkMount mnt = test_AutoResumeSinkMountCreate(myRoot, NULL, 0);
+    test_AutoResumeSinkMount mnt = test_AutoResumeSinkMount__create(NULL, NULL, myRoot, NULL, 0);
     test_assert(mnt != NULL);
 
     test_assert(corto_ll_count(mnt->subscribes) == 0);

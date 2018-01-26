@@ -14,8 +14,8 @@ int16_t test_AutoResumeSinkMount_construct(
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     // First tier
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "x",
         NULL,
         ".",
@@ -24,8 +24,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "y",
         NULL,
         ".",
@@ -34,8 +34,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "z",
         NULL,
         ".",
@@ -45,8 +45,8 @@ int16_t test_AutoResumeSinkMount_construct(
     );
 
     // Second tier
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "a",
         NULL,
         "x",
@@ -55,8 +55,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "b",
         NULL,
         "x",
@@ -65,8 +65,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "c",
         NULL,
         "x",
@@ -76,8 +76,8 @@ int16_t test_AutoResumeSinkMount_construct(
     );
 
     // Third tier
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "k",
         NULL,
         "x/a",
@@ -86,8 +86,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "l",
         NULL,
         "x/a",
@@ -96,8 +96,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "m",
         NULL,
         "x/a",
@@ -107,8 +107,8 @@ int16_t test_AutoResumeSinkMount_construct(
     );
 
     // Fourth tier
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "n",
         NULL,
         "x/a/k",
@@ -117,8 +117,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "o",
         NULL,
         "x/a/k",
@@ -127,8 +127,8 @@ int16_t test_AutoResumeSinkMount_construct(
         FALSE
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->items),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->items),
         "p",
         NULL,
         "x/a/k",
@@ -143,7 +143,7 @@ int16_t test_AutoResumeSinkMount_construct(
 /* Custom release function */
 static void test_SinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultListClear(data->list);
+    corto_resultList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
@@ -156,11 +156,11 @@ corto_resultIter test_AutoResumeSinkMount_onQuery(
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
-    corto_resultIterForeach(iter, e) {
+    corto_resultIter__foreach(iter, e) {
         if (!fnmatch(query->from, e.parent, 0)) {
             if (!fnmatch(query->select, e.id, 0)) {
-                corto_resultAssign(
-                    corto_resultListAppendAlloc(data),
+                corto_result__assign(
+                    corto_resultList__append_alloc(data),
                     e.id,
                     e.id,
                     e.parent,
@@ -197,7 +197,7 @@ uintptr_t test_AutoResumeSinkMount_onSubscribe(
         result = rand();
     }
 
-    corto_queryListAppend(
+    corto_queryList__append(
       this->subscribes,
       query
     );
@@ -214,7 +214,7 @@ void test_AutoResumeSinkMount_onUnsubscribe(
         test_assert(ctx == (corto_word)this);
     }
 
-    corto_queryListAppend(
+    corto_queryList__append(
       this->unsubscribes,
       query
     );
@@ -234,7 +234,7 @@ uintptr_t test_AutoResumeSinkMount_onMount(
         result = rand();
     }
 
-    corto_queryListAppend(
+    corto_queryList__append(
       this->mounts,
       query
     );
@@ -251,7 +251,7 @@ void test_AutoResumeSinkMount_onUnmount(
         test_assert(ctx == (corto_word)this);
     }
 
-    corto_queryListAppend(
+    corto_queryList__append(
       this->unmounts,
       query
     );

@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_AutoResumeSink_onDeclare(
     corto_observerEvent *e)
 {
@@ -42,7 +41,7 @@ void test_AutoResumeSink_onSuspend(
 
 }
 
-void test_AutoResumeSink_onUpdate(
+void test_AutoResumeSink_on__update(
     corto_observerEvent *e)
 {
     test_AutoResumeSink this = e->instance;
@@ -55,7 +54,7 @@ void test_AutoResumeSink_setup(
 {
     /* Register sink mount */
     corto_void__create_auto(root_o, mount);
-    test_AutoResumeSinkMountCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
+    test_AutoResumeSinkMount__create_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
 
     /* Setup observers */
     corto_observer_observe(test_ResumeSink_onDeclare_o, this, mount);
@@ -85,7 +84,7 @@ void test_AutoResumeSink_tc_define(
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
     test_assert(sinkMount != NULL);
 
-    test_Foo o = test_FooCreateChild(mount, "x", 0, 0);
+    test_Foo o = test_Foo__create(mount, "x", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_parentof(o) == mount);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
@@ -155,7 +154,7 @@ void test_AutoResumeSink_tc_defineNested1(
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
     test_assert(sinkMount != NULL);
 
-    test_Foo o = test_FooCreateChild(parent, "a", 0, 0);
+    test_Foo o = test_Foo__create(parent, "a", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_sourceof(o) == sinkMount);
@@ -223,7 +222,7 @@ void test_AutoResumeSink_tc_defineNested2(
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
     test_assert(sinkMount != NULL);
 
-    test_Foo o = test_FooCreateChild(parent, "k", 0, 0);
+    test_Foo o = test_Foo__create(parent, "k", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_sourceof(o) == sinkMount);
@@ -831,5 +830,11 @@ void test_AutoResumeSink_teardown(
     corto_observer_unobserve(test_ResumeSink_onResume_o, this, mount);
     corto_observer_unobserve(test_ResumeSink_onSuspend_o, this, mount);
     corto_release(mount);
+}
+
+void test_AutoResumeSink_onUpdate(
+    corto_observerEvent *e)
+{
+    /* Insert implementation */
 }
 

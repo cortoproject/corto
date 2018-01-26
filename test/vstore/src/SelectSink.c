@@ -7,7 +7,7 @@ void test_SelectSink_setup(
 
     /* Register sink mount */
     corto_void__create_auto(root_o, mount);
-    test_SinkMountCreateChild_auto(root_o, sinkMount, mount, NULL, NULL);
+    test_SinkMount__create_auto(root_o, sinkMount, mount, NULL, NULL);
 
     /* Ensure all objects are created with persistency enabled */
     corto_set_attr(CORTO_ATTR_PERSISTENT);
@@ -20,7 +20,7 @@ void test_SelectSink_tc_selectLoaderCortoScope(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("/").from("corto").type("package").iter(&it) == 0);
@@ -68,7 +68,7 @@ void test_SelectSink_tc_selectLoaderCortoSingle(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("r").from("corto").type("package").iter(&it) == 0);
@@ -92,7 +92,7 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("//").from("corto").type("package").iter(&it) == 0);
@@ -147,7 +147,7 @@ void test_SelectSink_tc_selectLoaderNestedScope(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto/").type("package").iter(&it) == 0);
@@ -195,7 +195,7 @@ void test_SelectSink_tc_selectLoaderNestedSingle(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto/native").type("package").iter(&it) == 0);
@@ -219,7 +219,7 @@ void test_SelectSink_tc_selectLoaderNestedSingleVirtual(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto/r").type("package").iter(&it) == 0);
@@ -243,7 +243,7 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto//").type("package").iter(&it) == 0);
@@ -297,7 +297,7 @@ void test_SelectSink_tc_selectLoaderRootScope(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("/").type("package").iter(&it) == 0);
@@ -331,7 +331,7 @@ void test_SelectSink_tc_selectLoaderRootSingle(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("p").type("package").iter(&it) == 0);
@@ -355,7 +355,7 @@ void test_SelectSink_tc_selectLoaderRootTree(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("//").type("package").iter(&it) == 0);
@@ -439,7 +439,7 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_object p = corto_declare(root_o, "p", corto_unknown_o);
     test_assert(p != NULL);
@@ -461,7 +461,7 @@ void test_SelectSink_tc_selectLoaderLookupNestedInitialSlash(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMountCreate();
+    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
 
     corto_object q = corto_lookup(NULL, "/p/q");
     test_assert(q != NULL);
@@ -483,13 +483,13 @@ void test_SelectSink_tc_selectMixedScope(
     corto_object mount = corto_resolve(root_o, "mount");
 
     /* Create duplicate of object in mount */
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
 
     /* Create object that is not in mount (should not show up) */
-    corto_int32CreateChild_auto(mount, i, 0);
+    corto_int32__create_auto(mount, i, 0);
 
     /* Create float object that is not in mount (should not show up) */
-    corto_float32CreateChild_auto(mount, j, 0);
+    corto_float32__create_auto(mount, j, 0);
 
     corto_release(mount);
 
@@ -534,13 +534,13 @@ void test_SelectSink_tc_selectMixedScopeNested1(
     corto_object mount = corto_resolve(root_o, "mount");
 
     /* Create duplicate of object in mount */
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
 
     /* Create object that is not in mount (should not show up) */
-    corto_int32CreateChild_auto(x, i, 0);
+    corto_int32__create_auto(x, i, 0);
 
     /* Create float object that is not in mount (should not show up) */
-    corto_float32CreateChild_auto(x, j, 0);
+    corto_float32__create_auto(x, j, 0);
 
     corto_release(mount);
 
@@ -586,14 +586,14 @@ void test_SelectSink_tc_selectMixedScopeNested2(
     corto_object mount = corto_resolve(root_o, "mount");
 
     /* Create duplicate of object in mount */
-    corto_int32CreateChild_auto(mount, x, 0);
-    corto_int32CreateChild_auto(x, a, 0);
+    corto_int32__create_auto(mount, x, 0);
+    corto_int32__create_auto(x, a, 0);
 
     /* Create object that is not in mount (should not show up) */
-    corto_int32CreateChild_auto(a, i, 0);
+    corto_int32__create_auto(a, i, 0);
 
     /* Create float object that is not in mount (should not show up) */
-    corto_float32CreateChild_auto(a, j, 0);
+    corto_float32__create_auto(a, j, 0);
 
     corto_release(mount);
 
@@ -706,8 +706,8 @@ void test_SelectSink_tc_selectScopeWithType(
         .type = "float32",
         .flags = CORTO_RESULT_LEAF
     };
-    test_ObjectMount m1 = test_ObjectMountCreate("*", "/", &r1);
-    test_ObjectMount m2 = test_ObjectMountCreate("*", "/root", &r2);
+    test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "*", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "*", "/root", &r2);
     corto_iter it;
     corto_select("root/obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
@@ -736,8 +736,8 @@ void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
         .type = "float32",
         .flags = CORTO_RESULT_LEAF
     };
-    test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
-    test_ObjectMount m2 = test_ObjectMountCreate("//", "/root", &r2);
+    test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "//", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "//", "/root", &r2);
     corto_iter it;
     corto_select("root/obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
@@ -805,8 +805,8 @@ void test_SelectSink_tc_selectSingleVirtualNested1(
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild_auto(mount, x, 0);
-    corto_int32CreateChild_auto(x, a, 0);
+    corto_int32__create_auto(mount, x, 0);
+    corto_int32__create_auto(x, a, 0);
     corto_release(mount);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -852,7 +852,7 @@ void test_SelectSink_tc_selectSingleWithType(
         .flags = CORTO_RESULT_LEAF
     };
     /* use root as mount point */
-    test_ObjectMount m1 = test_ObjectMountCreate("*", "/", &r1);
+    test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "*", "/", &r1);
     test_assert(m1 != NULL);
     corto_iter it;
     corto_select("a").type("int32").iter(&it);
@@ -876,7 +876,7 @@ void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
         .flags = 0
     };
     /* use root as mount point */
-    test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
+    test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "//", "/", &r1);
     test_assert(m1 != NULL);
     corto_iter it;
     corto_select("a").type("int32").iter(&it);
@@ -911,10 +911,10 @@ void test_SelectSink_tc_selectTreeWithType(
         .type = "float32",
         .flags = CORTO_RESULT_LEAF
     };
-    test_ObjectMount m1 = test_ObjectMountCreate("/", "/", &r1);
-    test_ObjectMount m2 = test_ObjectMountCreate("/", "/root", &r2);
-    test_ObjectMount m3 = test_ObjectMountCreate("/", "/root/obj", &r3);
-    test_ObjectMount m4 = test_ObjectMountCreate("/", "/root/obj/nested", &r2);
+    test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "/", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "/", "/root", &r2);
+    test_ObjectMount m3 = test_ObjectMount__create(NULL, NULL, "/", "/root/obj", &r3);
+    test_ObjectMount m4 = test_ObjectMount__create(NULL, NULL, "/", "/root/obj/nested", &r2);
     corto_iter it;
     corto_select("//obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
@@ -957,10 +957,10 @@ void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
         .type = "float32",
         .flags = CORTO_RESULT_LEAF
     };
-    test_ObjectMount m1 = test_ObjectMountCreate("//", "/", &r1);
-    test_ObjectMount m2 = test_ObjectMountCreate("//", "/root", &r2);
-    test_ObjectMount m3 = test_ObjectMountCreate("//", "/root/obj", &r3);
-    test_ObjectMount m4 = test_ObjectMountCreate("//", "/root/obj/nested", &r2);
+    test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "//", "/", &r1);
+    test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "//", "/root", &r2);
+    test_ObjectMount m3 = test_ObjectMount__create(NULL, NULL, "//", "/root/obj", &r3);
+    test_ObjectMount m4 = test_ObjectMount__create(NULL, NULL, "//", "/root/obj/nested", &r2);
     corto_iter it;
     corto_select("//obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
@@ -990,7 +990,7 @@ void test_SelectSink_tc_selectVirtualScopeNested1(
 
     /* Create an actual scope */
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild(mount, "x", 0);
+    corto_int32__create(mount, "x", 0);
     corto_release(mount);
 
     corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
@@ -1033,8 +1033,8 @@ void test_SelectSink_tc_selectVirtualScopeNested2(
 
     /* Create an actual scope */
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild_auto(mount, x, 0);
-    corto_int32CreateChild_auto(x, a, 0);
+    corto_int32__create_auto(mount, x, 0);
+    corto_int32__create_auto(x, a, 0);
     corto_release(mount);
 
     corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
@@ -1150,7 +1150,7 @@ void test_SelectSink_tc_selectVirtualSingleNested1(
     corto_result *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
     corto_release(mount);
 
     corto_int16 ret = corto_select("x/a").from("/mount").iter( &iter );
@@ -1176,7 +1176,7 @@ void test_SelectSink_tc_selectVirtualSingleNested2(
     corto_result *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
     corto_release(mount);
 
     corto_int16 ret = corto_select("x/a/k").from("/mount").iter( &iter );

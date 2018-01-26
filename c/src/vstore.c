@@ -606,7 +606,7 @@ corto_mountSubscriptionList* _corto_mountSubscriptionList__create(corto_object _
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_uint32 i = 0;
-        corto_mountSubscriptionList_clear(*_this);
+        corto_mountSubscriptionList__clear(*_this);
         for (i = 0; i < length; i ++) {
             corto_mountSubscriptionList__append(*_this, &elements[i]);
         }
@@ -623,13 +623,13 @@ corto_int16 _corto_mountSubscriptionList__update(corto_mountSubscriptionList* _t
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_uint32 i = 0;
-            corto_mountSubscriptionList_clear(*((corto_mountSubscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscriptionList_o)->size)));
+            corto_mountSubscriptionList__clear(*((corto_mountSubscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscriptionList_o)->size)));
             for (i = 0; i < length; i ++) {
                 corto_mountSubscriptionList__append(*((corto_mountSubscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscriptionList_o)->size)), &elements[i]);
             }
         } else {
             corto_uint32 i = 0;
-            corto_mountSubscriptionList_clear(*_this);
+            corto_mountSubscriptionList__clear(*_this);
             for (i = 0; i < length; i ++) {
                 corto_mountSubscriptionList__append(*_this, &elements[i]);
             }
@@ -646,7 +646,7 @@ corto_int16 _corto_mountSubscriptionList__update(corto_mountSubscriptionList* _t
 corto_mountSubscriptionList* _corto_mountSubscriptionList__assign(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements) {
     CORTO_UNUSED(_this);
     corto_uint32 i = 0;
-    corto_mountSubscriptionList_clear(*_this);
+    corto_mountSubscriptionList__clear(*_this);
     for (i = 0; i < length; i ++) {
         corto_mountSubscriptionList__append(*_this, &elements[i]);
     }
@@ -1179,7 +1179,7 @@ corto_resultList* _corto_resultList__create(corto_object _parent, const char *_i
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_uint32 i = 0;
-        corto_resultList_clear(*_this);
+        corto_resultList__clear(*_this);
         for (i = 0; i < length; i ++) {
             corto_resultList__append(*_this, &elements[i]);
         }
@@ -1196,13 +1196,13 @@ corto_int16 _corto_resultList__update(corto_resultList* _this, corto_uint32 leng
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_uint32 i = 0;
-            corto_resultList_clear(*((corto_resultList*)CORTO_OFFSET(_this, ((corto_type)corto_resultList_o)->size)));
+            corto_resultList__clear(*((corto_resultList*)CORTO_OFFSET(_this, ((corto_type)corto_resultList_o)->size)));
             for (i = 0; i < length; i ++) {
                 corto_resultList__append(*((corto_resultList*)CORTO_OFFSET(_this, ((corto_type)corto_resultList_o)->size)), &elements[i]);
             }
         } else {
             corto_uint32 i = 0;
-            corto_resultList_clear(*_this);
+            corto_resultList__clear(*_this);
             for (i = 0; i < length; i ++) {
                 corto_resultList__append(*_this, &elements[i]);
             }
@@ -1219,7 +1219,7 @@ corto_int16 _corto_resultList__update(corto_resultList* _this, corto_uint32 leng
 corto_resultList* _corto_resultList__assign(corto_resultList* _this, corto_uint32 length, corto_result* elements) {
     CORTO_UNUSED(_this);
     corto_uint32 i = 0;
-    corto_resultList_clear(*_this);
+    corto_resultList__clear(*_this);
     for (i = 0; i < length; i ++) {
         corto_resultList__append(*_this, &elements[i]);
     }
@@ -1764,7 +1764,7 @@ corto_mountSubscription* corto_mountSubscriptionList__get(corto_mountSubscriptio
     return (corto_mountSubscription*)corto_ll_get(list, index);
 }
 
-void corto_mountSubscriptionList_clear(corto_mountSubscriptionList list) {
+void corto_mountSubscriptionList__clear(corto_mountSubscriptionList list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
@@ -1818,7 +1818,7 @@ corto_result* corto_resultList__get(corto_resultList list, corto_uint32 index) {
     return (corto_result*)corto_ll_get(list, index);
 }
 
-void corto_resultList_clear(corto_resultList list) {
+void corto_resultList__clear(corto_resultList list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);

@@ -148,7 +148,7 @@ void test_ObjectMgmt_tc_createChildInvalidType(
     test_ObjectMgmt this)
 {
 
-    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_int__create(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_check_state(t, CORTO_DECLARED));
@@ -244,7 +244,7 @@ void test_ObjectMgmt_tc_createChildParentStateErr(
     test_assert(p == NULL);
     test_assert(corto_catch());
 
-    corto_object q = test_DefinedParentCreateChild(o, "q", 0);
+    corto_object q = test_DefinedParent__create(o, "q", 0);
     test_assert(q == NULL);
     test_assert(corto_catch());
 
@@ -265,7 +265,7 @@ void test_ObjectMgmt_tc_createChildParentTypeErr(
     test_assert(p == NULL);
     test_assert(corto_catch());
 
-    corto_object q = test_VoidParentCreateChild(o, "q", 0);
+    corto_object q = test_VoidParent__create(o, "q", 0);
     test_assert(q == NULL);
     test_assert(corto_catch());
 
@@ -428,7 +428,7 @@ void test_ObjectMgmt_tc_createInvalidType(
     test_ObjectMgmt this)
 {
 
-    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_int__create(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_check_state(t, CORTO_DECLARED));
@@ -462,7 +462,7 @@ corto_void onCreateNested(corto_observerEvent *e)
 void test_ObjectMgmt_tc_createNested(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onCreateNested);
@@ -510,7 +510,7 @@ void test_ObjectMgmt_tc_createNested(
 void test_ObjectMgmt_tc_createNestedLastFail(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onCreateNested);
@@ -723,7 +723,7 @@ void test_ObjectMgmt_tc_declareChildInvalidType(
     test_ObjectMgmt this)
 {
 
-    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_int__create(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_check_state(t, CORTO_DECLARED));
@@ -763,7 +763,7 @@ void test_ObjectMgmt_tc_declareChildParentStateErr(
     test_assert(p == NULL);
     test_assert(corto_catch());
 
-    corto_object q = test_DefinedParentDeclareChild(o, "q");
+    corto_object q = corto_declare(o, "q", test_DefinedParent_o);
     test_assert(q == NULL);
     test_assert(corto_catch());
 
@@ -783,7 +783,7 @@ void test_ObjectMgmt_tc_declareChildParentTypeErr(
     test_assert(p == NULL);
     test_assert(corto_catch());
 
-    corto_object q = test_VoidParentDeclareChild(o, "q");
+    corto_object q = corto_declare(o, "q", test_VoidParent_o);
     test_assert(q == NULL);
     test_assert(corto_catch());
 
@@ -849,18 +849,17 @@ void test_ObjectMgmt_tc_declareChildVoidAttr0(
 void test_ObjectMgmt_tc_declareExistingWithParentState(
     test_ObjectMgmt this)
 {
-
-    corto_struct s = corto_structDeclareChild(root_o, "s");
+    corto_struct s = corto_declare(root_o, "s", corto_struct_o);
     test_assert(s != NULL);
 
-    corto_member m = corto_memberCreateChild(s, "m", corto_type(corto_uint32_o), CORTO_GLOBAL);
+    corto_member m = corto_member__create(s, "m", corto_type(corto_uint32_o), CORTO_GLOBAL);
     test_assert(m != NULL);
 
     corto_int16 ret = corto_define(s);
     test_assert(ret == 0);
 
     /* Validate I can redeclare member after struct has been defined */
-    corto_member n = corto_memberDeclareChild(s, "m");
+    corto_member n = corto_declare(s, "m", corto_member_o);
     test_assert(n != NULL);
     test_assert(corto_check_state(n, CORTO_VALID));
 
@@ -971,7 +970,7 @@ void test_ObjectMgmt_tc_declareIntAttr0(
 void test_ObjectMgmt_tc_declareInvalidType(
     test_ObjectMgmt this)
 {
-    corto_type t = corto_type(corto_intCreateChild(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
+    corto_type t = corto_type(corto_int__create(root_o, "invalid", CORTO_WIDTH_8, 0, 0));
     test_assert(t != NULL);
     test_assert(corto_typeof(t) == corto_type(corto_int_o));
     test_assert(corto_check_state(t, CORTO_DECLARED));
@@ -1004,7 +1003,7 @@ corto_void onDeclareNested(corto_observerEvent *e)
 void test_ObjectMgmt_tc_declareNested(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -1051,7 +1050,7 @@ void test_ObjectMgmt_tc_declareNested(
 void test_ObjectMgmt_tc_declareNestedFirstFail(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -1087,7 +1086,7 @@ void test_ObjectMgmt_tc_declareNestedFirstFail(
 void test_ObjectMgmt_tc_declareNestedLastFail(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -1117,7 +1116,7 @@ void test_ObjectMgmt_tc_declareNestedLastFail(
 void test_ObjectMgmt_tc_declareNestedSecondFail(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -1481,7 +1480,7 @@ void test_ObjectMgmt_tc_deleteRedeclaration(
     test_assert(*test_constructCalled_o == 1);
     test_assert(*test_destructCalled_o == 0);
 
-    test_EventTest e = test_EventTestCreate(o);
+    test_EventTest e = test_EventTest__create(NULL, NULL, o);
     test_assertint(corto_countof(o), 4);
 
     corto_object p = corto_resolve(NULL, "o");
@@ -1534,7 +1533,7 @@ void test_ObjectMgmt_tc_deleteSingle(
     test_Foo o = corto_create(root_o, "o", test_Foo_o);
     test_assert(o != NULL);
 
-    test_EventTest e = test_EventTestCreate(o);
+    test_EventTest e = test_EventTest__create(NULL, NULL, o);
 
     corto_object p = corto_resolve(NULL, "o");
     test_assert(p == o);
@@ -1584,7 +1583,7 @@ void test_ObjectMgmt_tc_deleteTreeExplicit(
     test_assert(o_o_o != o_o);
     test_assert(o_o_o != o);
 
-    test_EventTest e = test_EventTestCreate(o);
+    test_EventTest e = test_EventTest__create(NULL, NULL, o);
 
     corto_object p = corto_resolve(NULL, "o");
     test_assert(p == o);
@@ -1666,7 +1665,7 @@ void test_ObjectMgmt_tc_deleteTreeImplicit(
     test_assert(o_o_o != o_o);
     test_assert(o_o_o != o);
 
-    test_EventTest e = test_EventTestCreate(o);
+    test_EventTest e = test_EventTest__create(NULL, NULL, o);
 
     corto_object p = corto_resolve(NULL, "o");
     test_assert(p == o);
@@ -1720,7 +1719,7 @@ void test_ObjectMgmt_tc_deleteWithReference(
     test_assert(o != NULL);
     test_assertint(corto_countof(o), 1);
 
-    test_EventTest e = test_EventTestCreate(o);
+    test_EventTest e = test_EventTest__create(NULL, NULL, o);
     test_assertint(corto_countof(o), 3); /* e holds 2 references */
 
     corto_object p = corto_resolve(NULL, "o");
@@ -1895,7 +1894,7 @@ void test_ObjectMgmt_tc_invalidate(
     test_ObjectMgmt this)
 {
 
-    corto_object o = corto_voidCreate();
+    corto_object o = corto_void__create(NULL, NULL);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_void_o);
     test_assert(corto_check_state(o, CORTO_DECLARED));
@@ -1912,7 +1911,7 @@ void test_ObjectMgmt_tc_nameof(
     test_ObjectMgmt this)
 {
 
-    corto_int32CreateChild_auto(root_o, a, 10);
+    corto_int32__create_auto(root_o, a, 10);
     test_assertstr(corto_nameof(NULL, a), "a");
 
 }
@@ -1921,7 +1920,7 @@ void test_ObjectMgmt_tc_nameofOverride(
     test_ObjectMgmt this)
 {
 
-    test_PointCreateChild_auto(root_o, p, 10, 20);
+    test_Point__create_auto(root_o, p, 10, 20);
     test_assertstr(corto_nameof(NULL, p), "10,20");
 
 }
@@ -1929,19 +1928,19 @@ void test_ObjectMgmt_tc_nameofOverride(
 void test_ObjectMgmt_tc_redeclareWithDifferentType(
     test_ObjectMgmt this)
 {
-    corto_float32DeclareChild(root_o, "a");
-    corto_float32DeclareChild(root_o, "b");
-    corto_float32DeclareChild(root_o, "c");
+    corto_declare(root_o, "a", corto_float32_o);
+    corto_declare(root_o, "b", corto_float32_o);
+    corto_declare(root_o, "c", corto_float32_o);
 
-    corto_object a = corto_float64DeclareChild(root_o, "a");
+    corto_object a = corto_declare(root_o, "a", corto_float64_o);
     test_assert(a == NULL);
     test_assert(corto_catch());
 
-    corto_object b = corto_float64DeclareChild(root_o, "b");
+    corto_object b = corto_declare(root_o, "b", corto_float64_o);
     test_assert(b == NULL);
     test_assert(corto_catch());
 
-    corto_object c = corto_float64DeclareChild(root_o, "c");
+    corto_object c = corto_declare(root_o, "c", corto_float64_o);
     test_assert(c == NULL);
     test_assert(corto_catch());
 }
@@ -1955,7 +1954,7 @@ void test_ObjectMgmt_teardown(
 void test_ObjectMgmt_tc_declareNestedFirstExists(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -2006,7 +2005,7 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
 void test_ObjectMgmt_tc_declareNestedLastExists(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -2065,7 +2064,7 @@ void test_ObjectMgmt_tc_declareNestedLastExists(
 void test_ObjectMgmt_tc_declareNestedSecondExists(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCountCreate(0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
@@ -2585,3 +2584,4 @@ void test_ObjectMgmt_tc_defaultValues(
     test_assertint(v->b.y, 30);
     test_assertstr(v->c, "Hello World");
 }
+

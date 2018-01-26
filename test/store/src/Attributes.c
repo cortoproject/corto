@@ -1,12 +1,11 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 void test_Attributes_tc_isDefaultPersistent(
     test_Attributes this)
 {
 
-    corto_int32Create_auto(i, 10);
+    corto_int32__create_auto(NULL, i, 10);
     test_assert(i != NULL);
     test_assert(!corto_check_attr(i, CORTO_ATTR_PERSISTENT));
     corto_delete(i);
@@ -17,14 +16,14 @@ void test_Attributes_tc_isDefaultScopedPersistent(
     test_Attributes this)
 {
 
-    corto_int32CreateChild_auto(root_o, i, 10);
+    corto_int32__create_auto(root_o, i, 10);
     test_assert(i != NULL);
     test_assert(corto_check_attr(i, CORTO_ATTR_PERSISTENT));
     corto_delete(i);
 
 }
 
-void test_Attributes_tc_testDefaultSet(
+void test_Attributes_tc_testDefault__set(
     test_Attributes this)
 {
 
@@ -67,3 +66,10 @@ void test_Attributes_tc_typeOverridesAttributes(
     test_assert(corto_delete(o) == 0);
 
 }
+
+void test_Attributes_tc_testDefaultSet(
+    test_Attributes this)
+{
+    /* Insert implementation */
+}
+

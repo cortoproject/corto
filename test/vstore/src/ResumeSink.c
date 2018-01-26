@@ -41,7 +41,7 @@ void test_ResumeSink_onSuspend(
 
 }
 
-void test_ResumeSink_onUpdate(
+void test_ResumeSink_on__update(
     corto_observerEvent *e)
 {
     test_ResumeSink this = e->instance;
@@ -54,7 +54,7 @@ void test_ResumeSink_setup(
 {
     /* Register sink mount */
     corto_void__create_auto(root_o, mount);
-    test_SinkMountCreateChild_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
+    test_SinkMount__create_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
 
     CORTO_DEBUG_ENABLED = 1;
 
@@ -74,7 +74,7 @@ void test_ResumeSink_tc_cleanupParentFromResumedChild(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -124,7 +124,7 @@ void test_ResumeSink_tc_define(
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
     test_assert(sinkMount != NULL);
 
-    test_Foo o = test_FooCreateChild(mount, "x", 0, 0);
+    test_Foo o = test_Foo__create(mount, "x", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_parentof(o) == mount);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
@@ -172,7 +172,7 @@ void test_ResumeSink_tc_defineFromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -197,7 +197,7 @@ void test_ResumeSink_tc_defineFromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -267,7 +267,7 @@ void test_ResumeSink_tc_defineNested1(
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
     test_assert(sinkMount != NULL);
 
-    test_Foo o = test_FooCreateChild(parent, "a", 0, 0);
+    test_Foo o = test_Foo__create(parent, "a", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_sourceof(o) == sinkMount);
@@ -314,7 +314,7 @@ void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -375,7 +375,7 @@ void test_ResumeSink_tc_defineNested2(
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
     test_assert(sinkMount != NULL);
 
-    test_Foo o = test_FooCreateChild(parent, "k", 0, 0);
+    test_Foo o = test_Foo__create(parent, "k", 0, 0);
     test_assert(o != NULL);
     test_assert(corto_typeof(o) == corto_type(test_Foo_o));
     test_assert(corto_sourceof(o) == sinkMount);
@@ -542,7 +542,7 @@ void test_ResumeSink_tc_lookupFromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -566,7 +566,7 @@ void test_ResumeSink_tc_lookupFromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -694,7 +694,7 @@ void test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -791,7 +791,7 @@ void test_ResumeSink_tc_lookupNested1FromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -951,7 +951,7 @@ void test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1067,7 +1067,7 @@ void test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1270,7 +1270,7 @@ void test_ResumeSink_tc_resolveFromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1294,7 +1294,7 @@ void test_ResumeSink_tc_resolveFromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1423,7 +1423,7 @@ void test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1520,7 +1520,7 @@ void test_ResumeSink_tc_resolveNested1FromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1681,7 +1681,7 @@ void test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount/nested");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1797,7 +1797,7 @@ void test_ResumeSink_tc_resolveNested2FromVirtualMountPoint(
 
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
-    corto_object mount = test_VirtualSinkMountCreate("/vmount");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1885,10 +1885,10 @@ void test_ResumeSink_tc_resumeNestedFromMultiple(
 
     /* Create two mounts that mounts data under vmount, which does not exist in the
      * RAM store. */
-    test_VirtualSinkMount mount1 = test_VirtualSinkMountCreate("/vmount");
+    test_VirtualSinkMount mount1 = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount1 != NULL);
 
-    test_VirtualSinkMount mount2 = test_VirtualSinkMountCreate("/vmount");
+    test_VirtualSinkMount mount2 = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
     test_assert(mount2 != NULL);
 
     /* Create mount point after mount- 'mount' member has not been set */
@@ -1927,7 +1927,7 @@ void test_ResumeSink_tc_cleanupResumedParentOfCreatedChild(
     test_ResumeSink this)
 {
     /* Create a mount that mounts data under / */
-    corto_object mount = test_VirtualSinkMountCreate("/");
+    corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/");
     test_assert(mount != NULL);
 
     corto_object parent = corto_lookup(NULL, "x/a");
@@ -1939,3 +1939,10 @@ void test_ResumeSink_tc_cleanupResumedParentOfCreatedChild(
     test_assert(child != NULL);
     test_assert(corto_release(parent) == 1);
 }
+
+void test_ResumeSink_onUpdate(
+    corto_observerEvent *e)
+{
+    /* Insert implementation */
+}
+

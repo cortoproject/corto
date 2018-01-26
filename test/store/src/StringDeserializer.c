@@ -466,7 +466,7 @@ void test_StringDeserializer_tc_deserBoolFalse(
 void test_StringDeserializer_tc_deserBoolInvalid(
     test_StringDeserializer this)
 {
-    corto_object o = corto_boolCreate(TRUE);
+    corto_object o = corto_bool__create(NULL, NULL, TRUE);
     corto_int16 ret = corto_deserialize(&o, "text/corto", "bool{bar}");
     test_assert(o != NULL);
     test_assert(ret != 0);
@@ -678,7 +678,7 @@ void test_StringDeserializer_tc_deserCompositeNoType(
     test_StringDeserializer this)
 {
 
-    test_Point *o = test_PointCreate(0, 0);
+    test_Point *o = test_Point__create(NULL, NULL, 0, 0);
     test_assert(o != NULL);
     test_assert(o->x == 0);
     test_assert(o->y == 0);
@@ -711,7 +711,7 @@ void test_StringDeserializer_tc_deserExisting(
     test_StringDeserializer this)
 {
 
-    corto_bool *o = corto_boolCreate(FALSE);
+    corto_bool *o = corto_bool__create(NULL, NULL, FALSE);
     test_assert(o != NULL);
     test_assert(*o == FALSE);
     corto_int16 ret = corto_deserialize(&o, "text/corto", "true");
@@ -727,7 +727,7 @@ void test_StringDeserializer_tc_deserExisting_w_scopedType(
     test_StringDeserializer this)
 {
 
-    corto_int32 *o = corto_int32Create(0);
+    corto_int32 *o = corto_int32__create(NULL, NULL, 0);
     corto_int32 *p = o;
     test_assert(o != NULL);
     test_assert(*o == 0);
@@ -745,7 +745,7 @@ void test_StringDeserializer_tc_deserExisting_w_type(
     test_StringDeserializer this)
 {
 
-    corto_bool *o = corto_boolCreate(FALSE);
+    corto_bool *o = corto_bool__create(NULL, NULL, FALSE);
     corto_bool *p = o;
     test_assert(o != NULL);
     test_assert(*o == FALSE);
@@ -1284,7 +1284,7 @@ void test_StringDeserializer_tc_deserStringWhitespaceTrailingNoType(
     test_StringDeserializer this)
 {
 
-    corto_string *o = corto_stringCreate(NULL);
+    corto_string *o = corto_string__create(NULL, NULL, NULL);
     test_assert(o != NULL);
     test_assert(*o == NULL);
     corto_int16 ret = corto_deserialize(&o, "text/corto", "  Hello World   ");
@@ -1776,7 +1776,7 @@ void test_StringDeserializer_tc_errNotAType(
 void test_StringDeserializer_tc_errTypeMismatch(
     test_StringDeserializer this)
 {
-    corto_object o = corto_boolCreate(TRUE);
+    corto_object o = corto_bool__create(NULL, NULL, TRUE);
     corto_int16 ret = corto_deserialize(&o, "text/corto", "string{bar}");
     test_assert(o != NULL);
     test_assert(ret != 0);

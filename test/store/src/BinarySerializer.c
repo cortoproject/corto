@@ -75,10 +75,10 @@ void test_BinarySerializer_tc_copyListWithReferenceType(
     test_struct_listReference *o = corto_create(NULL, NULL, test_struct_listReference_o);
 
     /* Populate list */
-    corto_objectlistAppend(o->m, corto_o);
-    corto_objectlistAppend(o->m, corto_lang_o);
-    corto_objectlistAppend(o->m, corto_package_o);
-    corto_objectlistAppend(o->m, root_o);
+    corto_objectlist__append(o->m, corto_o);
+    corto_objectlist__append(o->m, corto_lang_o);
+    corto_objectlist__append(o->m, corto_package_o);
+    corto_objectlist__append(o->m, root_o);
 
     corto_value src_value = corto_value_mem(o, test_struct_listReference_o);
 
@@ -111,10 +111,10 @@ void test_BinarySerializer_tc_copyListWithReferenceWithInitType(
     test_Foo e = corto_create(NULL, NULL, test_Foo_o); /* Element */
 
     /* Populate list */
-    test_FooListAppend(o->m, e);
-    test_FooListAppend(o->m, e);
-    test_FooListAppend(o->m, e);
-    test_FooListAppend(o->m, e);
+    test_FooList__append(o->m, e);
+    test_FooList__append(o->m, e);
+    test_FooList__append(o->m, e);
+    test_FooList__append(o->m, e);
 
     corto_value src_value = corto_value_mem(o, test_CompositeWithReferenceTypeWithInit_o);
 
@@ -147,10 +147,10 @@ void test_BinarySerializer_tc_copyListWithReferenceWithDefaults(
     test_DefaultValues e = corto_create(NULL, NULL, test_DefaultValues_o); /* Element */
 
     /* Populate list */
-    test_DefaultValuesListAppend(o->m, e);
-    test_DefaultValuesListAppend(o->m, e);
-    test_DefaultValuesListAppend(o->m, e);
-    test_DefaultValuesListAppend(o->m, e);
+    test_DefaultValuesList__append(o->m, e);
+    test_DefaultValuesList__append(o->m, e);
+    test_DefaultValuesList__append(o->m, e);
+    test_DefaultValuesList__append(o->m, e);
 
     corto_value src_value = corto_value_mem(o, test_CompositeWithReferenceTypeDefaults_o);
 

@@ -16,15 +16,15 @@ void test_SelectContentType_setup(
     corto_object obj_o = corto_void__create(root_o, "obj");
 
     /* Attach json mount to json scope */
-    test_JsonReplicatorCreate(json_o);
+    test_JsonReplicator__create(NULL, NULL, json_o);
 
     /* Attach str mount to str scope */
-    test_StringReplicatorCreate(str_o);
+    test_StringReplicator__create(NULL, NULL, str_o);
 
     /* Create three objects in 'obj' scope */
-    test_PointCreateChild(obj_o, "a", 10, 20);
-    test_PointCreateChild(obj_o, "b", 30, 40);
-    test_PointCreateChild(obj_o, "c", 50, 60);
+    test_Point__create(obj_o, "a", 10, 20);
+    test_Point__create(obj_o, "b", 30, 40);
+    test_Point__create(obj_o, "c", 50, 60);
 
 }
 

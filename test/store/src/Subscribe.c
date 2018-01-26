@@ -14,14 +14,14 @@ void test_Subscribe_tc_noInitialSep(
     test_assertint(this->triggered, 0);
 
     corto_void__create_auto(root_o, testScope);
-    corto_int32CreateChild_auto(testScope, i, 10);
+    corto_int32__create_auto(testScope, i, 10);
     test_assertint(this->triggered, 0);
 
     corto_int16 ret = corto_subscriber_subscribe(test_Subscribe_noInitialSep_o, this);
     test_assert(ret == 0);
     test_assertint(this->triggered, 1); /* Alignment */
 
-    ret = corto_int32Update(i, 20);
+    ret = corto_int32__update(i, 20);
     test_assert(ret == 0);
 
     test_assertint(this->triggered, 2);
@@ -609,7 +609,7 @@ void tc_subscribeOwnerSet(corto_subscriberEvent *e)
 void test_Subscribe_tc_subscribeOwnerSet(
     test_Subscribe this)
 {
-    corto_object owner = corto_voidCreate();
+    corto_object owner = corto_void__create(NULL, NULL);
     corto_object prevOwner = corto_set_source(owner);
     corto_object a = corto_create(root_o, "a", corto_int32_o);
     corto_set_source(prevOwner);
@@ -672,4 +672,5 @@ void test_Subscribe_tc_subscribePartialMatchingParentObject(
 
     test_assert(corto_delete(s) == 0);
 }
+
 

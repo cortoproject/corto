@@ -5,10 +5,10 @@
 void test_StringSerializer_tc_serAnonymous(
     test_StringSerializer this)
 {
-    corto_object anonymous = corto_int32Create(10);
+    corto_object anonymous = corto_int32__create(NULL, NULL, 10);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     corto_string str = corto_serialize_value(o, "text/corto");
@@ -27,7 +27,7 @@ void test_StringSerializer_tc_serAnonymousComplex(
     test_Point *anonymous = corto_create(NULL, NULL, test_Point_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     anonymous->x = 10;
@@ -49,7 +49,7 @@ void test_StringSerializer_tc_serAnonymousComplexString(
     test_CompositeWithString *anonymous = corto_create(NULL, NULL, test_CompositeWithString_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     anonymous->a = 10;
@@ -73,7 +73,7 @@ void test_StringSerializer_tc_serAnonymousComplexStringEsc(
     test_CompositeWithString *anonymous = corto_create(NULL, NULL, test_CompositeWithString_o);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     anonymous->a = 10;
@@ -94,7 +94,7 @@ void test_StringSerializer_tc_serAnonymousComplexStringEsc(
 void test_StringSerializer_tc_serArray(
     test_StringSerializer this)
 {
-    corto_array t = corto_arrayCreate(corto_int32_o, 3);
+    corto_array t = corto_array__create(NULL, NULL, corto_int32_o, 3);
     test_assert(t != NULL);
     corto_string result;
 
@@ -112,7 +112,7 @@ void test_StringSerializer_tc_serArray(
 void test_StringSerializer_tc_serArrayComplex(
     test_StringSerializer this)
 {
-    corto_array t = corto_arrayCreate(test_Point_o, 3);
+    corto_array t = corto_array__create(NULL, NULL, test_Point_o, 3);
     test_assert(t != NULL);
     corto_string result;
 
@@ -372,7 +372,7 @@ void test_StringSerializer_tc_serInt8Minus(
 void test_StringSerializer_tc_serList(
     test_StringSerializer this)
 {
-    corto_list t = corto_listCreate(corto_int32_o, 0);
+    corto_list t = corto_list__create(NULL, NULL, corto_int32_o, 0);
     corto_ll v = corto_ll_new();
     corto_string result;
 
@@ -393,7 +393,7 @@ void test_StringSerializer_tc_serList(
 void test_StringSerializer_tc_serListComplex(
     test_StringSerializer this)
 {
-    corto_list t = corto_listCreate(test_Point_o, 0);
+    corto_list t = corto_list__create(NULL, NULL, test_Point_o, 0);
     corto_ll v = corto_ll_new();
     test_Point e1 = {10, 20}, e2 = {30, 40}, e3 = {50, 60};
     corto_string result;
@@ -415,13 +415,13 @@ void test_StringSerializer_tc_serListComplex(
 void test_StringSerializer_tc_serLongAnonymous(
     test_StringSerializer this)
 {
-    corto_object anonymous = corto_int32Create(10);
+    corto_object anonymous = corto_int32__create(NULL, NULL, 10);
     corto_objectList objList = corto_ll_new();
     corto_uint32 i;
     for (i = 0; i < 300; i++) {
         corto_ll_append(objList, anonymous);
     }
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     corto_string str = corto_serialize_value(o, "text/corto");
@@ -436,11 +436,11 @@ void test_StringSerializer_tc_serLongAnonymous(
 void test_StringSerializer_tc_serSameAnonymous(
     test_StringSerializer this)
 {
-    corto_object anonymous = corto_int32Create(10);
+    corto_object anonymous = corto_int32__create(NULL, NULL, 10);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous);
     corto_ll_append(objList, anonymous);
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     corto_string str = corto_serialize_value(o, "text/corto");
@@ -456,7 +456,7 @@ void test_StringSerializer_tc_serSameAnonymous(
 void test_StringSerializer_tc_serSequence(
     test_StringSerializer this)
 {
-    corto_sequence t = corto_sequenceCreate(corto_int32_o, 0);
+    corto_sequence t = corto_sequence__create(NULL, NULL, corto_int32_o, 0);
     CORTO_SEQUENCE(seqType, corto_int32,);
     corto_int32 elements[] = {10, 20, 30};
     seqType v = {3, elements};
@@ -474,7 +474,7 @@ void test_StringSerializer_tc_serSequence(
 void test_StringSerializer_tc_serSequenceComplex(
     test_StringSerializer this)
 {
-    corto_sequence t = corto_sequenceCreate(test_Point_o, 0);
+    corto_sequence t = corto_sequence__create(NULL, NULL, test_Point_o, 0);
     CORTO_SEQUENCE(seqType, test_Point,);
     test_Point elements[] = {{10, 20}, {30, 40}, {50, 60}};
     seqType v = {3, elements};
@@ -611,9 +611,9 @@ void test_StringSerializer_tc_serStructListInt(
     test_struct_listInt v;
 
     corto_ptr_init(&v, test_struct_listInt_o);
-    test_IntListAppend(v.m, 10);
-    test_IntListAppend(v.m, 20);
-    test_IntListAppend(v.m, 30);
+    test_IntList__append(v.m, 10);
+    test_IntList__append(v.m, 20);
+    test_IntList__append(v.m, 30);
 
     char *str = corto_ptr_str(&v, test_struct_listInt_o, 0);
     test_assert(str != NULL);
@@ -630,9 +630,9 @@ void test_StringSerializer_tc_serStructListReference(
     test_struct_listInt v;
 
     corto_ptr_init(&v, test_struct_listReference_o);
-    test_ReferenceListAppend(v.m, corto_o);
-    test_ReferenceListAppend(v.m, corto_lang_o);
-    test_ReferenceListAppend(v.m, corto_class_o);
+    test_ReferenceList__append(v.m, corto_o);
+    test_ReferenceList__append(v.m, corto_lang_o);
+    test_ReferenceList__append(v.m, corto_class_o);
 
     char *str = corto_ptr_str(&v, test_struct_listReference_o, 0);
     test_assert(str != NULL);
@@ -649,9 +649,9 @@ void test_StringSerializer_tc_serStructListString(
     test_struct_listInt v;
 
     corto_ptr_init(&v, test_struct_listInt_o);
-    test_StringListAppend(v.m, "Hello");
-    test_StringListAppend(v.m, "World");
-    test_StringListAppend(v.m, "Foo");
+    test_StringList__append(v.m, "Hello");
+    test_StringList__append(v.m, "World");
+    test_StringList__append(v.m, "Foo");
 
     char *str = corto_ptr_str(&v, test_struct_listString_o, 0);
     test_assert(str != NULL);
@@ -672,9 +672,9 @@ void test_StringSerializer_tc_serStructListStruct(
         r = {50, 60};
 
     corto_ptr_init(&v, test_struct_listStruct_o);
-    test_PointListAppend(v.m, &p);
-    test_PointListAppend(v.m, &q);
-    test_PointListAppend(v.m, &r);
+    test_PointList__append(v.m, &p);
+    test_PointList__append(v.m, &q);
+    test_PointList__append(v.m, &r);
 
     char *str = corto_ptr_str(&v, test_struct_listStruct_o, 0);
     test_assert(str != NULL);
@@ -727,9 +727,9 @@ void test_StringSerializer_tc_serStructObservableList(
     test_struct_observableList v;
 
     corto_ptr_init(&v, test_struct_observableList_o);
-    test_IntListAppend(*v.m, 10);
-    test_IntListAppend(*v.m, 20);
-    test_IntListAppend(*v.m, 30);
+    test_IntList__append(*v.m, 10);
+    test_IntList__append(*v.m, 20);
+    test_IntList__append(*v.m, 30);
 
     char *str = corto_ptr_str(&v, test_struct_observableList_o, 0);
     test_assert(str != NULL);
@@ -763,7 +763,7 @@ void test_StringSerializer_tc_serStructObservableSequence(
     test_struct_observableSequence v;
 
     corto_ptr_init(&v, test_struct_observableSequence_o);
-    test_IntSequenceResize(v.m, 3);
+    test_IntSequence__resize(v.m, 3);
     v.m->buffer[0] = 10;
     v.m->buffer[1] = 20;
     v.m->buffer[2] = 30;
@@ -820,14 +820,14 @@ void test_StringSerializer_tc_serStructOptionalArray(
     corto_ptr_init(&v, test_struct_optionalArray_o);
 
     int32_t array[] = {10, 20, 30, 40};
-    test_IntArraySet(v.m, 4, array);
+    test_IntArray__set(v.m, 4, array);
 
     char *str = corto_ptr_str(&v, test_struct_optionalArray_o, 0);
     test_assert(str != NULL);
     test_assertstr(str, "{{10,20,30,40}}");
     corto_dealloc(str);
 
-    test_IntArrayUnset(v.m);
+    test_IntArray__unset(v.m);
 
     str = corto_ptr_str(&v, test_struct_optionalArray_o, 0);
     test_assert(str != NULL);
@@ -845,14 +845,14 @@ void test_StringSerializer_tc_serStructOptionalInt(
 
     corto_ptr_init(&v, test_struct_optionalInt_o);
 
-    corto_int32Set(v.m, 10);
+    corto_int32__set(v.m, 10);
 
     char *str = corto_ptr_str(&v, test_struct_optionalInt_o, 0);
     test_assert(str != NULL);
     test_assertstr(str, "{10}");
     corto_dealloc(str);
 
-    corto_int32Unset(v.m);
+    corto_int32__unset(v.m);
 
     str = corto_ptr_str(&v, test_struct_optionalInt_o, 0);
     test_assert(str != NULL);
@@ -871,14 +871,14 @@ void test_StringSerializer_tc_serStructOptionalList(
     corto_ptr_init(&v, test_struct_optionalList_o);
 
     int32_t array[] = {10, 20, 30, 40};
-    test_IntListSet(v.m, 4, array);
+    test_IntList__set(v.m, 4, array);
 
     char *str = corto_ptr_str(&v, test_struct_optionalList_o, 0);
     test_assert(str != NULL);
     test_assertstr(str, "{{10,20,30,40}}");
     corto_dealloc(str);
 
-    test_IntArrayUnset(v.m);
+    test_IntArray__unset(v.m);
 
     str = corto_ptr_str(&v, test_struct_optionalList_o, 0);
     test_assert(str != NULL);
@@ -924,14 +924,14 @@ void test_StringSerializer_tc_serStructOptionalSequence(
     corto_ptr_init(&v, test_struct_optionalSequence_o);
 
     int32_t array[] = {10, 20, 30, 40};
-    test_IntSequenceSet(v.m, 4, array);
+    test_IntSequence__set(v.m, 4, array);
 
     char *str = corto_ptr_str(&v, test_struct_optionalSequence_o, 0);
     test_assert(str != NULL);
     test_assertstr(str, "{{10,20,30,40}}");
     corto_dealloc(str);
 
-    test_IntArrayUnset(v.m);
+    test_IntArray__unset(v.m);
 
     str = corto_ptr_str(&v, test_struct_optionalSequence_o, 0);
     test_assert(str != NULL);
@@ -949,14 +949,14 @@ void test_StringSerializer_tc_serStructOptionalString(
 
     corto_ptr_init(&v, test_struct_optionalString_o);
 
-    corto_stringSet(v.m, "Hello World");
+    corto_string__set(v.m, "Hello World");
 
     char *str = corto_ptr_str(&v, test_struct_optionalString_o, 0);
     test_assert(str != NULL);
     test_assertstr(str, "{\"Hello World\"}");
     corto_dealloc(str);
 
-    corto_stringUnset(v.m);
+    corto_string__unset(v.m);
 
     str = corto_ptr_str(&v, test_struct_optionalString_o, 0);
     test_assert(str != NULL);
@@ -974,14 +974,14 @@ void test_StringSerializer_tc_serStructOptionalStruct(
 
     corto_ptr_init(&v, test_struct_optionalStruct_o);
 
-    test_PointSet(v.m, 10, 20);
+    test_Point__set(v.m, 10, 20);
 
     char *str = corto_ptr_str(&v, test_struct_optionalStruct_o, 0);
     test_assert(str != NULL);
     test_assertstr(str, "{{10,20}}");
     corto_dealloc(str);
 
-    test_PointUnset(v.m);
+    test_Point__unset(v.m);
 
     str = corto_ptr_str(&v, test_struct_optionalStruct_o, 0);
     test_assert(str != NULL);
@@ -1169,18 +1169,18 @@ void test_StringSerializer_tc_serStructTargetList(
 
     corto_ptr_init(&v, test_struct_targetList_o);
 
-    test_IntListAppend(v.m->actual, 10);
-    test_IntListAppend(v.m->actual, 20);
-    test_IntListAppend(v.m->actual, 30);
-    test_IntListAppend(v.m->actual, 40);
-    test_IntListAppend(v.m->target, 50);
-    test_IntListAppend(v.m->target, 60);
-    test_IntListAppend(v.m->target, 70);
-    test_IntListAppend(v.m->target, 80);
-    test_IntListAppend(v.m->objective, 90);
-    test_IntListAppend(v.m->objective, 100);
-    test_IntListAppend(v.m->objective, 110);
-    test_IntListAppend(v.m->objective, 120);
+    test_IntList__append(v.m->actual, 10);
+    test_IntList__append(v.m->actual, 20);
+    test_IntList__append(v.m->actual, 30);
+    test_IntList__append(v.m->actual, 40);
+    test_IntList__append(v.m->target, 50);
+    test_IntList__append(v.m->target, 60);
+    test_IntList__append(v.m->target, 70);
+    test_IntList__append(v.m->target, 80);
+    test_IntList__append(v.m->objective, 90);
+    test_IntList__append(v.m->objective, 100);
+    test_IntList__append(v.m->objective, 110);
+    test_IntList__append(v.m->objective, 120);
 
     char *str = corto_ptr_str(&v, test_struct_targetList_o, 0);
     test_assert(str != NULL);
@@ -1288,12 +1288,12 @@ void test_StringSerializer_tc_serStructTargetStruct(
 void test_StringSerializer_tc_serTwoAnonymous(
     test_StringSerializer this)
 {
-    corto_object anonymous1 = corto_int32Create(10);
-    corto_object anonymous2 = corto_int32Create(20);
+    corto_object anonymous1 = corto_int32__create(NULL, NULL, 10);
+    corto_object anonymous2 = corto_int32__create(NULL, NULL, 20);
     corto_objectList objList = corto_ll_new();
     corto_ll_append(objList, anonymous1);
     corto_ll_append(objList, anonymous2);
-    test_AnonymousTest o = test_AnonymousTestCreate(objList);
+    test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
     corto_string str = corto_serialize_value(o, "text/corto");

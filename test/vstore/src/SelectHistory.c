@@ -5,7 +5,7 @@
 void test_SelectHistory_setup(
     test_SelectHistory this)
 {
-    test_HistoryMountCreateChild(root_o, "A", NULL);
+    test_HistoryMount__create(root_o, "A", NULL);
 }
 
 void test_SelectHistory_tc_selectAll(

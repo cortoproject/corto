@@ -5,12 +5,12 @@
 void test_MethodInvoking_tc_interfaceMethod(
     test_MethodInvoking this)
 {
-    test_Boat v1 = test_BoatCreate(10.0, 20.0);
+    test_Boat v1 = test_Boat__create(NULL, NULL, 10.0, 20.0);
     test_assert(v1 != NULL);
     test_assertflt(v1->cur_x, 10.0);
     test_assertflt(v1->cur_y, 20.0);
 
-    test_Plane v2 = test_PlaneCreate(30.0, 40.0);
+    test_Plane v2 = test_Plane__create(NULL, NULL, 30.0, 40.0);
     test_assert(v2 != NULL);
     test_assertflt(v2->cur_x, 30.0);
     test_assertflt(v2->cur_y, 40.0);

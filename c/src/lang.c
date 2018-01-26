@@ -2126,7 +2126,7 @@ corto_objectlist* _corto_objectlist__create(corto_object _parent, const char *_i
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_uint32 i = 0;
-        corto_objectlist_clear(*_this);
+        corto_objectlist__clear(*_this);
         for (i = 0; i < length; i ++) {
             corto_objectlist__append(*_this, elements[i]);
         }
@@ -2143,13 +2143,13 @@ corto_int16 _corto_objectlist__update(corto_objectlist* _this, corto_uint32 leng
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_uint32 i = 0;
-            corto_objectlist_clear(*((corto_objectlist*)CORTO_OFFSET(_this, ((corto_type)corto_objectlist_o)->size)));
+            corto_objectlist__clear(*((corto_objectlist*)CORTO_OFFSET(_this, ((corto_type)corto_objectlist_o)->size)));
             for (i = 0; i < length; i ++) {
                 corto_objectlist__append(*((corto_objectlist*)CORTO_OFFSET(_this, ((corto_type)corto_objectlist_o)->size)), elements[i]);
             }
         } else {
             corto_uint32 i = 0;
-            corto_objectlist_clear(*_this);
+            corto_objectlist__clear(*_this);
             for (i = 0; i < length; i ++) {
                 corto_objectlist__append(*_this, elements[i]);
             }
@@ -2166,7 +2166,7 @@ corto_int16 _corto_objectlist__update(corto_objectlist* _this, corto_uint32 leng
 corto_objectlist* _corto_objectlist__assign(corto_objectlist* _this, corto_uint32 length, corto_object* elements) {
     CORTO_UNUSED(_this);
     corto_uint32 i = 0;
-    corto_objectlist_clear(*_this);
+    corto_objectlist__clear(*_this);
     for (i = 0; i < length; i ++) {
         corto_objectlist__append(*_this, elements[i]);
     }
@@ -2965,7 +2965,7 @@ corto_stringlist* _corto_stringlist__create(corto_object _parent, const char *_i
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_uint32 i = 0;
-        corto_stringlist_clear(*_this);
+        corto_stringlist__clear(*_this);
         for (i = 0; i < length; i ++) {
             corto_stringlist__append(*_this, elements[i]);
         }
@@ -2982,13 +2982,13 @@ corto_int16 _corto_stringlist__update(corto_stringlist* _this, corto_uint32 leng
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_uint32 i = 0;
-            corto_stringlist_clear(*((corto_stringlist*)CORTO_OFFSET(_this, ((corto_type)corto_stringlist_o)->size)));
+            corto_stringlist__clear(*((corto_stringlist*)CORTO_OFFSET(_this, ((corto_type)corto_stringlist_o)->size)));
             for (i = 0; i < length; i ++) {
                 corto_stringlist__append(*((corto_stringlist*)CORTO_OFFSET(_this, ((corto_type)corto_stringlist_o)->size)), elements[i]);
             }
         } else {
             corto_uint32 i = 0;
-            corto_stringlist_clear(*_this);
+            corto_stringlist__clear(*_this);
             for (i = 0; i < length; i ++) {
                 corto_stringlist__append(*_this, elements[i]);
             }
@@ -3005,7 +3005,7 @@ corto_int16 _corto_stringlist__update(corto_stringlist* _this, corto_uint32 leng
 corto_stringlist* _corto_stringlist__assign(corto_stringlist* _this, corto_uint32 length, corto_string* elements) {
     CORTO_UNUSED(_this);
     corto_uint32 i = 0;
-    corto_stringlist_clear(*_this);
+    corto_stringlist__clear(*_this);
     for (i = 0; i < length; i ++) {
         corto_stringlist__append(*_this, elements[i]);
     }
@@ -3247,7 +3247,7 @@ corto_taglist* _corto_taglist__create(corto_object _parent, const char *_id, cor
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_uint32 i = 0;
-        corto_taglist_clear(*_this);
+        corto_taglist__clear(*_this);
         for (i = 0; i < length; i ++) {
             corto_taglist__append(*_this, elements[i]);
         }
@@ -3264,13 +3264,13 @@ corto_int16 _corto_taglist__update(corto_taglist* _this, corto_uint32 length, co
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_uint32 i = 0;
-            corto_taglist_clear(*((corto_taglist*)CORTO_OFFSET(_this, ((corto_type)corto_taglist_o)->size)));
+            corto_taglist__clear(*((corto_taglist*)CORTO_OFFSET(_this, ((corto_type)corto_taglist_o)->size)));
             for (i = 0; i < length; i ++) {
                 corto_taglist__append(*((corto_taglist*)CORTO_OFFSET(_this, ((corto_type)corto_taglist_o)->size)), elements[i]);
             }
         } else {
             corto_uint32 i = 0;
-            corto_taglist_clear(*_this);
+            corto_taglist__clear(*_this);
             for (i = 0; i < length; i ++) {
                 corto_taglist__append(*_this, elements[i]);
             }
@@ -3287,7 +3287,7 @@ corto_int16 _corto_taglist__update(corto_taglist* _this, corto_uint32 length, co
 corto_taglist* _corto_taglist__assign(corto_taglist* _this, corto_uint32 length, corto_tag* elements) {
     CORTO_UNUSED(_this);
     corto_uint32 i = 0;
-    corto_taglist_clear(*_this);
+    corto_taglist__clear(*_this);
     for (i = 0; i < length; i ++) {
         corto_taglist__append(*_this, elements[i]);
     }
@@ -4188,7 +4188,7 @@ corto_object corto_objectlist__get(corto_objectlist list, corto_uint32 index) {
     return (corto_object)(corto_word)corto_ll_get(list, index);
 }
 
-void corto_objectlist_clear(corto_objectlist list) {
+void corto_objectlist__clear(corto_objectlist list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
@@ -4311,7 +4311,7 @@ corto_string corto_stringlist__get(corto_stringlist list, corto_uint32 index) {
     return (corto_string)(corto_word)corto_ll_get(list, index);
 }
 
-void corto_stringlist_clear(corto_stringlist list) {
+void corto_stringlist__clear(corto_stringlist list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
@@ -4381,7 +4381,7 @@ corto_tag corto_taglist__get(corto_taglist list, corto_uint32 index) {
     return (corto_tag)(corto_word)corto_ll_get(list, index);
 }
 
-void corto_taglist_clear(corto_taglist list) {
+void corto_taglist__clear(corto_taglist list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);

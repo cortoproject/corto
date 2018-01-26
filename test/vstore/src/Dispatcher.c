@@ -10,7 +10,7 @@ void test_Dispatcher_tc_observerDispatcher(
     test_Dispatcher this)
 {
     corto_object obj = corto_create(root_o, "data/obj", corto_void_o);
-    corto_dispatcher d = test_FooDispatcherCreate();
+    corto_dispatcher d = test_FooDispatcher__create(NULL, NULL);
     corto_observer o = corto_observe(CORTO_UPDATE, obj)
         .instance(this)
         .dispatcher(d)
@@ -29,7 +29,7 @@ void test_Dispatcher_tc_observerDispatcherMulti(
     test_Dispatcher this)
 {
     corto_object obj = corto_create(root_o, "data/obj", corto_void_o);
-    corto_dispatcher d = test_FooDispatcherCreate();
+    corto_dispatcher d = test_FooDispatcher__create(NULL, NULL);
     corto_observer o1 = corto_observe(CORTO_UPDATE, obj)
         .instance(this)
         .dispatcher(d)
@@ -61,7 +61,7 @@ void test_Dispatcher_tc_subscriberDispatcher(
     test_Dispatcher this)
 {
     corto_object obj = corto_create(root_o, "data/obj", corto_void_o);
-    corto_dispatcher d = test_FooDispatcherCreate();
+    corto_dispatcher d = test_FooDispatcher__create(NULL, NULL);
     corto_subscriber s = corto_subscribe("data/obj")
         .instance(this)
         .dispatcher(d)
@@ -80,7 +80,7 @@ void test_Dispatcher_tc_subscriberDispatcherMulti(
     test_Dispatcher this)
 {
     corto_object obj = corto_create(root_o, "data/obj", corto_void_o);
-    corto_dispatcher d = test_FooDispatcherCreate();
+    corto_dispatcher d = test_FooDispatcher__create(NULL, NULL);
     corto_subscriber s1 = corto_subscribe("data/obj")
         .instance(this)
         .dispatcher(d)
@@ -105,7 +105,7 @@ void test_Dispatcher_tc_observerSubscriberDispatcher(
     test_Dispatcher this)
 {
     corto_object obj = corto_create(root_o, "data/obj", corto_void_o);
-    corto_dispatcher d = test_FooDispatcherCreate();
+    corto_dispatcher d = test_FooDispatcher__create(NULL, NULL);
     corto_subscriber s = corto_subscribe("data/obj")
         .instance(this)
         .dispatcher(d)

@@ -208,14 +208,14 @@ void test_MethodResolver_tc_redeclare(
     test_MethodResolver this)
 {
 
-    corto_struct s = corto_structDeclareChild(root_o, "TestStruct");
+    corto_struct s = corto_declare(root_o, "TestStruct", corto_struct_o);
     test_assert(s != NULL);
 
-    corto_object m = corto_methodDeclareChild(s, "bar()");
+    corto_object m = corto_declare(s, "bar()", corto_method_o);
     test_assert(m != NULL);
     test_assert(corto_instanceof(corto_method_o, m));
 
-    corto_object n = corto_methodDeclareChild(s, "bar()");
+    corto_object n = corto_declare(s, "bar()", corto_method_o);
     test_assert(n != NULL);
     test_assert(corto_instanceof(corto_method_o, n));
     test_assert(m == n);

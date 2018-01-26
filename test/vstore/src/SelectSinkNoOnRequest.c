@@ -6,11 +6,11 @@ void test_SelectSinkNoOnRequest_setup(
     test_SelectSinkNoOnRequest this)
 {
     /* Register sink mount */
-    corto_int32CreateChild_auto(root_o, mount, 0);
-    corto_int32CreateChild_auto(mount, x, 10);
-    corto_int32CreateChild_auto(mount, y, 10);
+    corto_int32__create_auto(root_o, mount, 0);
+    corto_int32__create_auto(mount, x, 10);
+    corto_int32__create_auto(mount, y, 10);
 
-    test_EmptySinkMountCreateChild_auto(root_o, sinkMount, mount);
+    test_EmptySinkMount__create_auto(root_o, sinkMount, mount);
 
     /* Ensure all objects are created with persistency enabled */
     corto_set_attr(CORTO_ATTR_PERSISTENT);

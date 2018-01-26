@@ -11,7 +11,7 @@ void test_SelectMount_setup(
     corto_set_attr(old);
 
     /* Create mount */
-    this->mount = test_ListMountCreate(a_o, CORTO_ON_SCOPE, CORTO_REMOTE_SOURCE);
+    this->mount = test_ListMount__create(NULL, NULL, a_o, CORTO_ON_SCOPE, CORTO_REMOTE_SOURCE);
 
     corto_enableload(FALSE);
 
@@ -104,7 +104,7 @@ void test_SelectMount_tc_selectInvertCaseScope(
 void test_SelectMount_tc_selectIteratorPartialRelease(
     test_SelectMount this)
 {
-    test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
+    test_MountIterCount mount = test_MountIterCount__create(root_o, "mount", NULL);
     test_assert(mount != NULL);
 
     corto_iter it;
@@ -133,10 +133,10 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
 
     corto_object mount = corto_create(root_o, "mount", corto_void_o);
 
-    test_MountIterCount mountA = test_MountIterCountCreate(mount);
+    test_MountIterCount mountA = test_MountIterCount__create(NULL, NULL, mount);
     test_assert(mountA != NULL);
 
-    test_MountIterCount mountB = test_MountIterCountCreate(mount);
+    test_MountIterCount mountB = test_MountIterCount__create(NULL, NULL, mount);
     test_assert(mountB != NULL);
 
     corto_int16 ret = corto_select("*").from("/mount").iter( &it );
@@ -160,10 +160,10 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMounts(
 void test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
     test_SelectMount this)
 {
-    test_MountIterCount mountA = test_MountIterCountCreateChild(root_o, "mount", NULL);
+    test_MountIterCount mountA = test_MountIterCount__create(root_o, "mount", NULL);
     test_assert(mountA != NULL);
 
-    test_MountIterCount mountB = test_MountIterCountCreateChild(mountA, "mount", NULL);
+    test_MountIterCount mountB = test_MountIterCount__create(mountA, "mount", NULL);
     test_assert(mountB != NULL);
 
     corto_iter it;
@@ -191,7 +191,7 @@ void test_SelectMount_tc_selectIteratorPartialReleaseTwoMountsNested(
 void test_SelectMount_tc_selectIteratorRelease(
     test_SelectMount this)
 {
-    test_MountIterCount mount = test_MountIterCountCreateChild(root_o, "mount", NULL);
+    test_MountIterCount mount = test_MountIterCount__create(root_o, "mount", NULL);
     corto_iter it;
     corto_int32 count = 0;
 
@@ -419,7 +419,7 @@ void test_SelectMount_tc_selectScopeFromVirtualMount(
     test_SelectMount this)
 {
 
-    corto_object m = test_VirtualMountCreate("/data");
+    corto_object m = test_VirtualMount__create(NULL, NULL, "/data");
     test_assert(m != NULL);
 
     corto_iter it;
@@ -1140,7 +1140,7 @@ void test_SelectMount_tc_selectTreeEmptyNestedScope(
     /* Empty mount that sets userdata of iterator - this touches a sensitive
      * part of corto_select that could accidentally interpret iterator userdata
      * the wrong way, which would result in a crash. */
-    test_MountWIterData m = test_MountWIterDataCreate(mount_o);
+    test_MountWIterData m = test_MountWIterData__create(NULL, NULL, mount_o);
     test_assert(m != NULL);
 
     corto_iter it;
@@ -1177,7 +1177,7 @@ void test_SelectMount_tc_selectTreeEmptyScope(
     /* Empty mount that sets userdata of iterator - this touches a sensitive
      * part of corto_select that could accidentally interpret iterator userdata
      * the wrong way, which would result in a crash. */
-    test_MountWIterData m = test_MountWIterDataCreate(mount_o);
+    test_MountWIterData m = test_MountWIterData__create(NULL, NULL, mount_o);
     test_assert(m != NULL);
 
     corto_iter it;
@@ -1491,7 +1491,7 @@ void test_SelectMount_tc_selectFromMountWithPartialFrom(
     corto_object p = corto_create(root_o, "parent", corto_void_o);
     test_assert(p != NULL);
 
-    test_VirtualSinkMount m = test_VirtualSinkMountCreate("parent");
+    test_VirtualSinkMount m = test_VirtualSinkMount__create(NULL, NULL, "parent");
     test_assert(m != NULL);
 
     corto_object o = corto_lookup(p, "x");
@@ -1533,7 +1533,7 @@ void test_SelectMount_tc_selectFromRootNoInitialSlashInFrom(
     test_SelectMount this)
 {
     /* Create mount where no initial '/' is provided for 'from' */
-    corto_object vmount = test_VirtualMountCreate("data");
+    corto_object vmount = test_VirtualMount__create(NULL, NULL, "data");
     test_assert(vmount != NULL);
 
     /* Select data from root of mount */

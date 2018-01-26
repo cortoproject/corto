@@ -16,7 +16,7 @@ void test_MountSubscription_tc_subscribeForMountWithTypeFilter(
 
     /* Create a mount with a filter on int32 */
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, "int32", NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, "int32", NULL);
     test_assert(m != NULL);
 
     /* Subscribe for scope in mountRoot: ok */
@@ -77,7 +77,7 @@ void test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
 
     /* Create a mount with a filter on int32 */
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, "int32", NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, "int32", NULL);
     test_assert(m != NULL);
 
     /* Subscribe for nested scope in mountRoot: ok */
@@ -166,7 +166,7 @@ void test_MountSubscription_tc_subscribeSameIdDifferentCase(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe("foo").from("/mountRoot")
@@ -211,7 +211,7 @@ void test_MountSubscription_tc_subscribeScope(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe("*").from("/mountRoot")
@@ -248,7 +248,7 @@ void test_MountSubscription_tc_subscribeScopeAlign(
     test_assert(s != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     test_assertint(corto_ll_count(m->subscribes), 1);
@@ -278,7 +278,7 @@ void test_MountSubscription_tc_subscribeScopeTwice(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe("*").from("/mountRoot")
@@ -322,7 +322,7 @@ void test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe("*").from("/mountRoot")
@@ -367,7 +367,7 @@ void test_MountSubscription_tc_subscribeSingle(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe("foo").from("/mountRoot")
@@ -404,7 +404,7 @@ void test_MountSubscription_tc_subscribeSingleAlign(
     test_assert(s != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     test_assertint(corto_ll_count(m->subscribes), 1);
@@ -433,7 +433,7 @@ void test_MountSubscription_tc_subscribeSingleTwice(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe("foo").from("/mountRoot")
@@ -476,7 +476,7 @@ void test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe("foo").from("/mountRoot")
@@ -521,7 +521,7 @@ void test_MountSubscription_tc_subscribeTree(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe("//").from("/mountRoot")
@@ -668,7 +668,7 @@ void test_MountSubscription_tc_subscribeTreeAlign(
     test_assert(s != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     test_assertint(corto_ll_count(m->subscribes), 13);
@@ -839,7 +839,7 @@ void test_MountSubscription_tc_subscribeTreeTwice(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe("//").from("/mountRoot")
@@ -991,7 +991,7 @@ void test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s = corto_subscribe("//").from("/mountRoot")
@@ -1144,7 +1144,7 @@ void test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe("A").from("/mountRoot")
@@ -1196,7 +1196,7 @@ void test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     test_assert(mountRoot != NULL);
 
     test_AutoResumeSinkMount m =
-      test_AutoResumeSinkMountCreate(mountRoot, NULL, NULL);
+      test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
     corto_subscriber s1 = corto_subscribe("*A").from("/mountRoot")

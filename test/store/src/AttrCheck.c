@@ -7,14 +7,14 @@ void test_AttrCheck_tc_constructorAttr(
 {
     corto_int16 ret;
 
-    corto_object o = test_AttrConstructorTestCreate();
+    corto_object o = test_AttrConstructorTest__create(NULL, NULL);
     test_assert(o != NULL);
 
     ret = corto_delete(o);
     test_assert(ret == 0);
 
     corto_attr prev = corto_set_attr(CORTO_ATTR_PERSISTENT);
-    o = test_AttrConstructorTestCreate();
+    o = test_AttrConstructorTest__create(NULL, NULL);
     test_assert(o != NULL);
     corto_set_attr(prev);
 

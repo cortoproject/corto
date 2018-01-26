@@ -60,11 +60,11 @@ void notifyReadDenied_onUpdate(corto_observerEvent *e)
 void test_Observers_tc_notifyReadDenied(
     test_Observers this)
 {
-    test_TestKeyCreate();
+    test_TestKey__create(NULL, NULL);
 
-    test_TestLock l = test_TestLockCreate("/o", ".", 0, NULL);
+    test_TestLock l = test_TestLock__create(NULL, NULL, "/o", ".", 0, NULL);
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
-    test_AccessRuleListInsert(l->rules, &r);
+    test_AccessRuleList__insert(l->rules, &r);
 
     corto_object o = corto_create(root_o, "o", corto_void_o);
     test_assert(o != NULL);
@@ -97,11 +97,11 @@ void test_Observers_tc_notifyReadDenied(
 void test_Observers_tc_notifyUpdateDenied(
     test_Observers this)
 {
-    test_TestKeyCreate();
+    test_TestKey__create(NULL, NULL);
 
-    test_TestLock l = test_TestLockCreate("/o", ".", 0, NULL);
+    test_TestLock l = test_TestLock__create(NULL, NULL, "/o", ".", 0, NULL);
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_UPDATE, CORTO_SECURE_ACCESS_DENIED};
-    test_AccessRuleListInsert(l->rules, &r);
+    test_AccessRuleList__insert(l->rules, &r);
 
     corto_object o = corto_create(root_o, "o", corto_void_o);
     test_assert(o != NULL);

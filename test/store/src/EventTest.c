@@ -1,7 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-
 int16_t test_EventTest_construct(
     test_EventTest this)
 {
@@ -215,7 +214,7 @@ void test_EventTest_onDeleteTree(
    this->countDeleteTree++;
 }
 
-void test_EventTest_onUpdate(
+void test_EventTest_on__update(
     corto_observerEvent *e)
 {
    test_EventTest this = e->instance;
@@ -285,5 +284,11 @@ void test_EventTest_onUpdateTree(
    corto_set_ref(&this->lastThis, e->instance);
    corto_set_ref(&this->lastObservable, e->data);
    this->countUpdateTree++;
+}
+
+void test_EventTest_onUpdate(
+    corto_observerEvent *e)
+{
+    /* Insert implementation */
 }
 

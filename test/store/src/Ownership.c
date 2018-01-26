@@ -30,7 +30,7 @@ void test_Ownership_tc_checkOwnerNull(
 void test_Ownership_tc_checkOwnerReplicator(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreate(root_o);
+    test_FooReplicator r = test_FooReplicator__create(NULL, NULL, root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
@@ -53,7 +53,7 @@ void test_Ownership_tc_checkOwnerReplicator(
 void test_Ownership_tc_createOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
@@ -83,7 +83,7 @@ void test_Ownership_tc_createOwned(
 void test_Ownership_tc_declareOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
@@ -110,7 +110,7 @@ void test_Ownership_tc_declareOwned(
 void test_Ownership_tc_deleteNotOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
@@ -133,7 +133,7 @@ void test_Ownership_tc_deleteNotOwned(
 void test_Ownership_tc_deleteOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
@@ -155,12 +155,12 @@ void test_Ownership_tc_deleteOwned(
 void test_Ownership_tc_invokeNotOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    test_MethodForwardTest o = test_MethodForwardTestCreateChild(root_o, "o");
+    test_MethodForwardTest o = test_MethodForwardTest__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -186,12 +186,12 @@ void test_Ownership_tc_invokeNotOwned(
 void test_Ownership_tc_invokeOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    test_MethodForwardTest o = test_MethodForwardTestCreateChild(root_o, "o");
+    test_MethodForwardTest o = test_MethodForwardTest__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -213,13 +213,13 @@ void test_Ownership_tc_invokeOwned(
 void test_Ownership_tc_ownedMountMount(
     test_Ownership this)
 {
-    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
-    test_FooReplicator r2 = test_FooReplicatorCreateChild(root_o, "r2", root_o);
+    test_FooReplicator r1 = test_FooReplicator__create(root_o, "r1", root_o);
+    test_FooReplicator r2 = test_FooReplicator__create(root_o, "r2", root_o);
 
     corto_object old = corto_set_source(r1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r1);
 
@@ -243,12 +243,12 @@ void test_Ownership_tc_ownedMountMount(
 void test_Ownership_tc_ownedMountMountSame(
     test_Ownership this)
 {
-    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+    test_FooReplicator r1 = test_FooReplicator__create(root_o, "r1", root_o);
 
     corto_object old = corto_set_source(r1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r1);
 
@@ -267,14 +267,14 @@ void test_Ownership_tc_ownedMountMountSame(
 void test_Ownership_tc_ownedMountObj(
     test_Ownership this)
 {
-    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+    test_FooReplicator r1 = test_FooReplicator__create(root_o, "r1", root_o);
 
     corto_void__create_auto(root_o, obj);
 
     corto_object old = corto_set_source(r1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r1);
 
@@ -298,12 +298,12 @@ void test_Ownership_tc_ownedMountObj(
 void test_Ownership_tc_ownedMountSelf(
     test_Ownership this)
 {
-    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+    test_FooReplicator r1 = test_FooReplicator__create(root_o, "r1", root_o);
 
     corto_object old = corto_set_source(r1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r1);
 
@@ -324,14 +324,14 @@ void test_Ownership_tc_ownedMountSelf(
 void test_Ownership_tc_ownedObjMount(
     test_Ownership this)
 {
-    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+    test_FooReplicator r1 = test_FooReplicator__create(root_o, "r1", root_o);
 
     corto_void__create_auto(root_o, obj);
 
     corto_object old = corto_set_source(obj);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == obj);
 
@@ -361,7 +361,7 @@ void test_Ownership_tc_ownedObjObj(
     corto_object old = corto_set_source(obj1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == obj1);
 
@@ -390,7 +390,7 @@ void test_Ownership_tc_ownedObjObjSame(
     corto_object old = corto_set_source(obj1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == obj1);
 
@@ -414,7 +414,7 @@ void test_Ownership_tc_ownedObjSelf(
     corto_object old = corto_set_source(obj1);
     test_assert(old == NULL);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == obj1);
 
@@ -435,9 +435,9 @@ void test_Ownership_tc_ownedObjSelf(
 void test_Ownership_tc_ownedSelfMount(
     test_Ownership this)
 {
-    test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
+    test_FooReplicator r1 = test_FooReplicator__create(root_o, "r1", root_o);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == NULL);
 
@@ -458,7 +458,7 @@ void test_Ownership_tc_ownedSelfObj(
 {
     corto_void__create_auto(root_o, obj1);
 
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == NULL);
 
@@ -477,7 +477,7 @@ void test_Ownership_tc_ownedSelfObj(
 void test_Ownership_tc_ownedSelfSelf(
     test_Ownership this)
 {
-    corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
+    corto_int32 *o = corto_int32__create(root_o, "o", 10);
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == NULL);
 
@@ -491,7 +491,7 @@ void test_Ownership_tc_ownedSelfSelf(
 void test_Ownership_tc_releaseNotOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     /* Create an observable object to catch DELETE event */
     corto_set_attr(CORTO_ATTR_PERSISTENT | CORTO_ATTR_OBSERVABLE);
@@ -537,7 +537,7 @@ void test_Ownership_tc_releaseOwned(
 void test_Ownership_tc_updateNotOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
@@ -602,7 +602,7 @@ void test_Ownership_tc_updateNotOwnedTarget(
 void test_Ownership_tc_updateOwned(
     test_Ownership this)
 {
-    test_FooReplicator r = test_FooReplicatorCreateChild(root_o, "r", root_o);
+    test_FooReplicator r = test_FooReplicator__create(root_o, "r", root_o);
 
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);

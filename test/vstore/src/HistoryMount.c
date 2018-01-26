@@ -11,33 +11,33 @@ int16_t test_HistoryMount_construct(
     corto_mount_setContentType(this, "text/corto");
 
     samples = corto_ll_new();
-    corto_stringListAppend(samples, "{10,11}");
-    corto_stringListAppend(samples, "{20,22}");
+    corto_stringList__append(samples, "{10,11}");
+    corto_stringList__append(samples, "{20,22}");
 
     r = (corto_result){"a", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
-    test_HistoryMount_dataAssign(
-        test_HistoryMount_dataListAppendAlloc(this->history),
+    test_HistoryMount_data__assign(
+        test_HistoryMount_dataList__append_alloc(this->history),
         &r,
         samples
     );
     corto_ll_clear(samples);
-    corto_stringListAppend(samples, "{30,33}");
-    corto_stringListAppend(samples, "{40,44}");
-    corto_stringListAppend(samples, "{50,55}");
+    corto_stringList__append(samples, "{30,33}");
+    corto_stringList__append(samples, "{40,44}");
+    corto_stringList__append(samples, "{50,55}");
     r = (corto_result){"b", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
-    test_HistoryMount_dataAssign(
-        test_HistoryMount_dataListAppendAlloc(this->history),
+    test_HistoryMount_data__assign(
+        test_HistoryMount_dataList__append_alloc(this->history),
         &r,
         samples
     );
     corto_ll_clear(samples);
-    corto_stringListAppend(samples, "{60,66}");
-    corto_stringListAppend(samples, "{70,77}");
-    corto_stringListAppend(samples, "{80,88}");
-    corto_stringListAppend(samples, "{90,99}");
+    corto_stringList__append(samples, "{60,66}");
+    corto_stringList__append(samples, "{70,77}");
+    corto_stringList__append(samples, "{80,88}");
+    corto_stringList__append(samples, "{90,99}");
     r = (corto_result){"c", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
-    test_HistoryMount_dataAssign(
-        test_HistoryMount_dataListAppendAlloc(this->history),
+    test_HistoryMount_data__assign(
+        test_HistoryMount_dataList__append_alloc(this->history),
         &r,
         samples
     );

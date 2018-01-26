@@ -13,7 +13,7 @@ int16_t test_JsonReplicator_construct(
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultListClear(data->list);
+    corto_resultList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
@@ -25,8 +25,8 @@ corto_resultIter test_JsonReplicator_onQuery(
     corto_ll data = corto_ll_new();
 
     /* Create top level objects */
-    corto_resultAssign(
-        corto_resultListAppendAlloc(data),
+    corto_result__assign(
+        corto_resultList__append_alloc(data),
         "a",
         NULL,
         ".",
@@ -34,8 +34,8 @@ corto_resultIter test_JsonReplicator_onQuery(
         (corto_word)corto_strdup("{\"x\":10,\"y\":20}"),
         CORTO_RESULT_LEAF
     );
-    corto_resultAssign(
-        corto_resultListAppendAlloc(data),
+    corto_result__assign(
+        corto_resultList__append_alloc(data),
         "b",
         0,
         ".",
@@ -43,8 +43,8 @@ corto_resultIter test_JsonReplicator_onQuery(
         (corto_word)corto_strdup("{\"x\":30,\"y\":40}"),
         CORTO_RESULT_LEAF
     );
-    corto_resultAssign(
-        corto_resultListAppendAlloc(data),
+    corto_result__assign(
+        corto_resultList__append_alloc(data),
         "c",
         NULL,
         ".",

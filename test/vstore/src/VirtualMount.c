@@ -12,8 +12,8 @@ int16_t test_VirtualMount_construct(
     corto_mount_setContentType(this, "text/corto");
 
     /* Populate the mount with some demo data */
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->data),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->data),
         "a",                        /* id */
         NULL,                       /* name */
         ".",                        /* parent */
@@ -22,8 +22,8 @@ int16_t test_VirtualMount_construct(
         TRUE                        /* is node a leaf */
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->data),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->data),
         "b",                        /* id */
         NULL,                       /* name */
         ".",                        /* parent */
@@ -32,8 +32,8 @@ int16_t test_VirtualMount_construct(
         TRUE                        /* is node a leaf */
     );
 
-    corto_resultAssign(
-        corto_resultListAppendAlloc(this->data),
+    corto_result__assign(
+        corto_resultList__append_alloc(this->data),
         "c",                        /* id */
         NULL,                       /* name */
         ".",                        /* parent */

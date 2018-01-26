@@ -18,15 +18,15 @@ void test_SubscribeContentType_setup(
     corto_object obj_o = corto_void__create(root_o, "obj");
 
     /* Attach json mount to json scope */
-    test_JsonReplicatorCreate(json_o);
+    test_JsonReplicator__create(NULL, NULL, json_o);
 
     /* Attach str mount to str scope */
-    test_StringReplicatorCreate(str_o);
+    test_StringReplicator__create(NULL, NULL, str_o);
 
     /* Create three objects in 'obj' scope */
-    test_PointCreateChild(obj_o, "a", 10, 20);
-    test_PointCreateChild(obj_o, "b", 30, 40);
-    test_PointCreateChild(obj_o, "c", 50, 60);
+    test_Point__create(obj_o, "a", 10, 20);
+    test_Point__create(obj_o, "b", 30, 40);
+    test_Point__create(obj_o, "c", 50, 60);
 
 }
 
@@ -85,7 +85,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromJson(
 void test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
@@ -116,7 +116,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjects(
     test_assertint(this->eventsReceived, 3);
 
     test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
-    test_assert(test_PointUpdate(p, 70, 80) == 0);
+    test_assert(test_Point__update(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -126,7 +126,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjects(
 void test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
@@ -138,7 +138,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
     test_assertint(this->eventsReceived, 3);
 
     test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
-    test_assert(test_PointUpdate(p, 70, 80) == 0);
+    test_assert(test_Point__update(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -166,7 +166,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromString(
 void test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
@@ -234,7 +234,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromJson(
 void test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
@@ -264,7 +264,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjects(
     test_assertint(this->eventsReceived, 3);
 
     test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
-    test_assert(test_PointUpdate(p, 70, 80) == 0);
+    test_assert(test_Point__update(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -274,7 +274,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjects(
 void test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
@@ -286,7 +286,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
     test_assertint(this->eventsReceived, 3);
 
     test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
-    test_assert(test_PointUpdate(p, 70, 80) == 0);
+    test_assert(test_Point__update(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -314,7 +314,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromString(
 void test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
@@ -382,7 +382,7 @@ void test_SubscribeContentType_tc_subscribeStringFromJson(
 void test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
@@ -412,7 +412,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjects(
     test_assertint(this->eventsReceived, 3);
 
     test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
-    test_assert(test_PointUpdate(p, 70, 80) == 0);
+    test_assert(test_Point__update(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -422,7 +422,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjects(
 void test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
@@ -434,7 +434,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
     test_assertint(this->eventsReceived, 3);
 
     test_Point *p = LOOKUP_ASSERT(NULL, "obj/c", test_Point_o);
-    test_assert(test_PointUpdate(p, 70, 80) == 0);
+    test_assert(test_Point__update(p, 70, 80) == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -462,7 +462,7 @@ void test_SubscribeContentType_tc_subscribeStringFromString(
 void test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
     test_SubscribeContentType this)
 {
-    test_FooDispatcher dispatcher = test_FooDispatcherCreate();
+    test_FooDispatcher dispatcher = test_FooDispatcher__create(NULL, NULL);
 
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)

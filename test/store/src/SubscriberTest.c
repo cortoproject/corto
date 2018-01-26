@@ -9,14 +9,14 @@ void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
     corto_set_str(&this->lastId, e->data.id);
     corto_set_str(&this->lastParent,  e->data.parent);
     this->lastMask |= e->event;
-    corto_subscriberListAppend(this->triggered, corto_subscriber(e->subscriber));
+    corto_subscriberList__append(this->triggered, corto_subscriber(e->subscriber));
 }
 
 void test_SubscriberTest_clear(
     test_SubscriberTest this)
 {
 
-    corto_subscriberListClear(this->triggered);
+    corto_subscriberList__clear(this->triggered);
     this->lastMask = 0;
 
 }

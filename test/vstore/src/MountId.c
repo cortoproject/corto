@@ -5,7 +5,7 @@
 void test_MountId_tc_id(
     test_MountId this)
 {
-    test_IdMount m = test_IdMountCreate(root_o, NULL);
+    test_IdMount m = test_IdMount__create(NULL, NULL, root_o, NULL);
 
     /* Create object & request id from mount */
     corto_object o = corto_declare(root_o, NULL, corto_void_o);
@@ -19,7 +19,7 @@ void test_MountId_tc_id(
 void test_MountId_tc_idForNested(
     test_MountId this)
 {
-    test_IdMount m = test_IdMountCreate(root_o, NULL);
+    test_IdMount m = test_IdMount__create(NULL, NULL, root_o, NULL);
 
     /* Create object & request id from mount */
     corto_object p = corto_declare(root_o, "parent", corto_void_o);
@@ -36,7 +36,7 @@ void test_MountId_tc_idForNested(
 void test_MountId_tc_idTypeFilter(
     test_MountId this)
 {
-    test_IdMount m = test_IdMountCreate(root_o, corto_int32_o);
+    test_IdMount m = test_IdMount__create(NULL, NULL, root_o, corto_int32_o);
 
     /* Create object with a type that does not match the id mount */
     corto_object o = corto_declare(root_o, NULL, corto_float32_o);

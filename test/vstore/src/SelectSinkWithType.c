@@ -7,8 +7,8 @@ void test_SelectSinkWithType_setup(
 {
 
     /* Register sink mount */
-    corto_int32CreateChild_auto(root_o, mount, 0);
-    test_SinkMountCreateChild_auto(root_o, sinkMount, mount, "int32", NULL);
+    corto_int32__create_auto(root_o, mount, 0);
+    test_SinkMount__create_auto(root_o, sinkMount, mount, "int32", NULL);
 
     /* Ensure all objects are created with persistency enabled */
     corto_set_attr(CORTO_ATTR_PERSISTENT);
@@ -25,13 +25,13 @@ void test_SelectSinkWithType_tc_selectMixedScope(
     corto_object mount = corto_resolve(root_o, "mount");
 
     /* Create duplicate of object in mount */
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
 
     /* Create int32 object that is not in mount (should not show up) */
-    corto_int32CreateChild_auto(mount, i, 0);
+    corto_int32__create_auto(mount, i, 0);
 
     /* Create float object that is not in mount (should show up) */
-    corto_float32CreateChild_auto(mount, j, 0);
+    corto_float32__create_auto(mount, j, 0);
 
     corto_release(mount);
 
@@ -85,13 +85,13 @@ void test_SelectSinkWithType_tc_selectMixedScopeNested1(
     corto_object mount = corto_resolve(root_o, "mount");
 
     /* Create duplicate of object in mount */
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
 
     /* Create int32 object that is not in mount (should not show up) */
-    corto_int32CreateChild_auto(x, i, 0);
+    corto_int32__create_auto(x, i, 0);
 
     /* Create float object that is not in mount (should show up) */
-    corto_float32CreateChild_auto(x, j, 0);
+    corto_float32__create_auto(x, j, 0);
 
     corto_release(mount);
 
@@ -145,14 +145,14 @@ void test_SelectSinkWithType_tc_selectMixedScopeNested2(
     corto_object mount = corto_resolve(root_o, "mount");
 
     /* Create duplicate of object in mount */
-    corto_int32CreateChild_auto(mount, x, 0);
-    corto_int32CreateChild_auto(x, a, 0);
+    corto_int32__create_auto(mount, x, 0);
+    corto_int32__create_auto(x, a, 0);
 
     /* Create object that is not in mount (should not show up) */
-    corto_int32CreateChild_auto(a, i, 0);
+    corto_int32__create_auto(a, i, 0);
 
     /* Create float object that is not in mount (should not show up) */
-    corto_float32CreateChild_auto(a, j, 0);
+    corto_float32__create_auto(a, j, 0);
 
     corto_release(mount);
 
@@ -221,7 +221,7 @@ void test_SelectSinkWithType_tc_selectMountFromParent(
     test_SelectSinkWithType this)
 {
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild_auto(mount, x, 0);
+    corto_int32__create_auto(mount, x, 0);
     corto_release(mount);
 
     corto_iter iter;
@@ -266,7 +266,7 @@ void test_SelectSinkWithType_tc_selectSingleMatch(
     corto_iter iter;
 
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_int32CreateChild_auto(mount, test, 0);
+    corto_int32__create_auto(mount, test, 0);
     corto_release(mount);
 
     corto_int16 ret = corto_select("test").from("/mount").iter( &iter );
@@ -283,7 +283,7 @@ void test_SelectSinkWithType_tc_selectSingleNoMatch(
     corto_result *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
-    corto_float32CreateChild_auto(mount, test, 0);
+    corto_float32__create_auto(mount, test, 0);
     corto_release(mount);
 
     corto_int16 ret = corto_select("test").from("/mount").iter( &iter );
