@@ -68,40 +68,40 @@ bool test_Select_hasObject(
 void test_Select_setup(
     test_Select this)
 {
-    corto_object a = corto_voidCreateChild(root_o, "a");
-    corto_voidCreateChild(a, "b");
-    corto_object c = corto_voidCreateChild(a, "c");
+    corto_object a = corto_void__create(root_o, "a");
+    corto_void__create(a, "b");
+    corto_object c = corto_void__create(a, "c");
 
     /* Create in separate scope, to avoid contamination of root & keep test case
      * clean. */
-    corto_voidCreateChild(a, "abc"); /* For matching filters */
-    corto_voidCreateChild(a, "abd"); /* For wildcard testing */
-    corto_voidCreateChild(a, "abdc"); /* For asterisk testing */
-    corto_voidCreateChild(a, "Abab"); /* For caps testing */
-    corto_voidCreateChild(a, "ab_ab"); /* Testing underscores */
-    corto_voidCreateChild(a, "ab01234567890"); /* Testing numbers */
-    corto_voidCreateChild(root_o, "korto"); /* For testing wildcard */
-    corto_voidCreateChild(root_o, "karto"); /* For testing asterisk */
+    corto_void__create(a, "abc"); /* For matching filters */
+    corto_void__create(a, "abd"); /* For wildcard testing */
+    corto_void__create(a, "abdc"); /* For asterisk testing */
+    corto_void__create(a, "Abab"); /* For caps testing */
+    corto_void__create(a, "ab_ab"); /* Testing underscores */
+    corto_void__create(a, "ab01234567890"); /* Testing numbers */
+    corto_void__create(root_o, "korto"); /* For testing wildcard */
+    corto_void__create(root_o, "karto"); /* For testing asterisk */
 
     /* Objects to test trees */
-    corto_object _1 = corto_voidCreateChild(c, "b");
-    corto_object _2 = corto_voidCreateChild(c, "c");
-    corto_object _3 = corto_voidCreateChild(c, "abc"); /* For matching filters */
-    corto_object _4 = corto_voidCreateChild(c, "abd"); /* For wildcard testing */
-    corto_object _5 = corto_voidCreateChild(c, "abdc"); /* For asterisk testing */
-    corto_object _6 = corto_voidCreateChild(c, "Abab"); /* For caps testing */
-    corto_object _7 = corto_voidCreateChild(c, "ab_ab"); /* Testing underscores */
-    corto_object _8 = corto_voidCreateChild(c, "ab01234567890"); /* Testing numbers */
+    corto_object _1 = corto_void__create(c, "b");
+    corto_object _2 = corto_void__create(c, "c");
+    corto_object _3 = corto_void__create(c, "abc"); /* For matching filters */
+    corto_object _4 = corto_void__create(c, "abd"); /* For wildcard testing */
+    corto_object _5 = corto_void__create(c, "abdc"); /* For asterisk testing */
+    corto_object _6 = corto_void__create(c, "Abab"); /* For caps testing */
+    corto_object _7 = corto_void__create(c, "ab_ab"); /* Testing underscores */
+    corto_object _8 = corto_void__create(c, "ab01234567890"); /* Testing numbers */
 
     /* Add one more level of nesting */
-    corto_voidCreateChild(_1, "abcdef");
-    corto_voidCreateChild(_2, "abcdef");
-    corto_voidCreateChild(_3, "abcdef");
-    corto_voidCreateChild(_4, "abcdef");
-    corto_voidCreateChild(_5, "abcdef");
-    corto_voidCreateChild(_6, "abcdef");
-    corto_voidCreateChild(_7, "abcdef");
-    corto_voidCreateChild(_8, "abcdef");
+    corto_void__create(_1, "abcdef");
+    corto_void__create(_2, "abcdef");
+    corto_void__create(_3, "abcdef");
+    corto_void__create(_4, "abcdef");
+    corto_void__create(_5, "abcdef");
+    corto_void__create(_6, "abcdef");
+    corto_void__create(_7, "abcdef");
+    corto_void__create(_8, "abcdef");
 
     corto_enableload(FALSE);
 

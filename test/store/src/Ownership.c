@@ -18,7 +18,7 @@ void test_Ownership_setup(
 void test_Ownership_tc_checkOwnerNull(
     test_Ownership this)
 {
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == NULL);
 
@@ -35,7 +35,7 @@ void test_Ownership_tc_checkOwnerReplicator(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == r);
@@ -58,11 +58,11 @@ void test_Ownership_tc_createOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
-    corto_object p = corto_voidCreateChild(root_o, "o");
+    corto_object p = corto_void__create(root_o, "o");
     test_assert(p != NULL);
     test_assert(p == o);
     test_assert(corto_sourceof(p) == r);
@@ -88,7 +88,7 @@ void test_Ownership_tc_declareOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -115,7 +115,7 @@ void test_Ownership_tc_deleteNotOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -138,7 +138,7 @@ void test_Ownership_tc_deleteOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -269,7 +269,7 @@ void test_Ownership_tc_ownedMountObj(
 {
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
-    corto_voidCreateChild_auto(root_o, obj);
+    corto_void__create_auto(root_o, obj);
 
     corto_object old = corto_set_source(r1);
     test_assert(old == NULL);
@@ -326,7 +326,7 @@ void test_Ownership_tc_ownedObjMount(
 {
     test_FooReplicator r1 = test_FooReplicatorCreateChild(root_o, "r1", root_o);
 
-    corto_voidCreateChild_auto(root_o, obj);
+    corto_void__create_auto(root_o, obj);
 
     corto_object old = corto_set_source(obj);
     test_assert(old == NULL);
@@ -355,8 +355,8 @@ void test_Ownership_tc_ownedObjMount(
 void test_Ownership_tc_ownedObjObj(
     test_Ownership this)
 {
-    corto_voidCreateChild_auto(root_o, obj1);
-    corto_voidCreateChild_auto(root_o, obj2);
+    corto_void__create_auto(root_o, obj1);
+    corto_void__create_auto(root_o, obj2);
 
     corto_object old = corto_set_source(obj1);
     test_assert(old == NULL);
@@ -385,7 +385,7 @@ void test_Ownership_tc_ownedObjObj(
 void test_Ownership_tc_ownedObjObjSame(
     test_Ownership this)
 {
-    corto_voidCreateChild_auto(root_o, obj1);
+    corto_void__create_auto(root_o, obj1);
 
     corto_object old = corto_set_source(obj1);
     test_assert(old == NULL);
@@ -409,7 +409,7 @@ void test_Ownership_tc_ownedObjObjSame(
 void test_Ownership_tc_ownedObjSelf(
     test_Ownership this)
 {
-    corto_voidCreateChild_auto(root_o, obj1);
+    corto_void__create_auto(root_o, obj1);
 
     corto_object old = corto_set_source(obj1);
     test_assert(old == NULL);
@@ -456,7 +456,7 @@ void test_Ownership_tc_ownedSelfMount(
 void test_Ownership_tc_ownedSelfObj(
     test_Ownership this)
 {
-    corto_voidCreateChild_auto(root_o, obj1);
+    corto_void__create_auto(root_o, obj1);
 
     corto_int32 *o = corto_int32CreateChild(root_o, "o", 10);
     test_assert(o != NULL);
@@ -499,7 +499,7 @@ void test_Ownership_tc_releaseNotOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -520,7 +520,7 @@ void test_Ownership_tc_releaseNotOwned(
 void test_Ownership_tc_releaseOwned(
     test_Ownership this)
 {
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == NULL);
 
@@ -542,7 +542,7 @@ void test_Ownership_tc_updateNotOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 
@@ -607,7 +607,7 @@ void test_Ownership_tc_updateOwned(
     corto_object old = corto_set_source(r);
     test_assert(old == NULL);
 
-    corto_object o = corto_voidCreateChild(root_o, "o");
+    corto_object o = corto_void__create(root_o, "o");
     test_assert(o != NULL);
     test_assert(corto_sourceof(o) == r);
 

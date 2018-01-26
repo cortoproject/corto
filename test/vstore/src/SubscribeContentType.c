@@ -9,13 +9,13 @@ void test_SubscribeContentType_setup(
     test_SubscribeContentType this)
 {
     /* Create 'json' scope for JSON mount */
-    corto_object json_o = corto_voidCreateChild(root_o, "json");
+    corto_object json_o = corto_void__create(root_o, "json");
 
     /* Create 'string' scope for Corto string mount */
-    corto_object str_o = corto_voidCreateChild(root_o, "str");
+    corto_object str_o = corto_void__create(root_o, "str");
 
     /* Create 'obj' scope with Corto objects */
-    corto_object obj_o = corto_voidCreateChild(root_o, "obj");
+    corto_object obj_o = corto_void__create(root_o, "obj");
 
     /* Attach json mount to json scope */
     test_JsonReplicatorCreate(json_o);

@@ -13,7 +13,7 @@ void test_Subscribe_tc_noInitialSep(
 {
     test_assertint(this->triggered, 0);
 
-    corto_voidCreateChild_auto(root_o, testScope);
+    corto_void__create_auto(root_o, testScope);
     corto_int32CreateChild_auto(testScope, i, 10);
     test_assertint(this->triggered, 0);
 

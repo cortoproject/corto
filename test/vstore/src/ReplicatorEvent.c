@@ -7,7 +7,7 @@ void test_ReplicatorEvent_tc_event(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
@@ -46,7 +46,7 @@ void test_ReplicatorEvent_tc_eventDefineWithUpdate(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
@@ -78,7 +78,7 @@ void test_ReplicatorEvent_tc_eventTree(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
@@ -134,7 +134,7 @@ void test_ReplicatorEvent_tc_eventTreeWithTree(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "//", .from = corto_fullpath(NULL, parent)};
@@ -190,7 +190,7 @@ void test_ReplicatorEvent_tc_eventWithTree(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "//", .from = corto_fullpath(NULL, parent)};
@@ -229,7 +229,7 @@ void test_ReplicatorEvent_tc_matchingType(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent), .type = "int32"};
@@ -290,7 +290,7 @@ void test_ReplicatorEvent_tc_nonPersistent(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
@@ -353,7 +353,7 @@ void test_ReplicatorEvent_tc_ownedByMount(
 {
     corto_int16 ret;
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
 
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
@@ -427,7 +427,7 @@ void test_ReplicatorEvent_tc_rateLimitOneObject(
         cycles = 100;
     }
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
     corto_mountPolicy policy = {.sampleRate = 5};
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
@@ -470,7 +470,7 @@ void test_ReplicatorEvent_tc_rateLimitThreeObjects(
         cycles = 100;
     }
 
-    corto_voidCreateChild_auto(root_o, parent);
+    corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
     corto_mountPolicy policy = {.sampleRate = 5};
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};

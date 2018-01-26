@@ -6,12 +6,12 @@ void test_RelativeName_setup(
     test_RelativeName this)
 {
 
-    corto_set_ref(&this->tier1, corto_voidCreateChild(root_o, "tier1"));
-    corto_set_ref(&this->tier2, corto_voidCreateChild(this->tier1, "tier2"));
-    corto_set_ref(&this->tier3, corto_voidCreateChild(this->tier2, "tier3"));
-    corto_set_ref(&this->obj, corto_voidCreateChild(this->tier3, "obj"));
-    corto_set_ref(&this->disjunct, corto_voidCreateChild(this->tier1, "disjunct"));
-    corto_set_ref(&this->child, corto_voidCreateChild(this->obj, "child"));
+    corto_set_ref(&this->tier1, corto_void__create(root_o, "tier1"));
+    corto_set_ref(&this->tier2, corto_void__create(this->tier1, "tier2"));
+    corto_set_ref(&this->tier3, corto_void__create(this->tier2, "tier3"));
+    corto_set_ref(&this->obj, corto_void__create(this->tier3, "obj"));
+    corto_set_ref(&this->disjunct, corto_void__create(this->tier1, "disjunct"));
+    corto_set_ref(&this->child, corto_void__create(this->obj, "child"));
 
     test_assert(this->tier1 != NULL);
     test_assert(this->tier2 != NULL);

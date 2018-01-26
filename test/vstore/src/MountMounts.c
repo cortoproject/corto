@@ -5,7 +5,7 @@
 void test_MountMounts_tc_mountOnDefine(
     test_MountMounts this)
 {
-    corto_object myRoot = corto_voidCreateChild(root_o, "myroot");
+    corto_object myRoot = corto_void__create(root_o, "myroot");
     test_assert(myRoot != NULL);
 
     test_AutoResumeSinkMount mnt = test_AutoResumeSinkMountCreate(myRoot, NULL, 0);

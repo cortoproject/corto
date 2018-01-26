@@ -6,7 +6,7 @@ void test_SelectSink_setup(
 {
 
     /* Register sink mount */
-    corto_voidCreateChild_auto(root_o, mount);
+    corto_void__create_auto(root_o, mount);
     test_SinkMountCreateChild_auto(root_o, sinkMount, mount, NULL, NULL);
 
     /* Ensure all objects are created with persistency enabled */

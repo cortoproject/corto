@@ -7,7 +7,7 @@ void test_SelectMount_setup(
 
     /* Create dummy object */
     corto_attr old = corto_set_attr(CORTO_ATTR_OBSERVABLE);
-    corto_object a_o = corto_voidCreateChild(root_o, "a");
+    corto_object a_o = corto_void__create(root_o, "a");
     corto_set_attr(old);
 
     /* Create mount */
@@ -495,9 +495,9 @@ void test_SelectMount_tc_selectScopeMixed(
     /* Create additional three objects in scope of a */
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
-    corto_voidCreateChild(a, "b");
-    corto_voidCreateChild(a, "bc");
-    corto_voidCreateChild(a, "abc");
+    corto_void__create(a, "b");
+    corto_void__create(a, "bc");
+    corto_void__create(a, "abc");
     corto_release(a);
 
     corto_int16 ret = corto_select("a/*").from("/").iter( &iter );

@@ -6,9 +6,9 @@ void test_Security_setup(
     test_Security this)
 {
 
-    corto_voidCreateChild_auto(root_o, a);
-    corto_voidCreateChild_auto(a, b);
-    corto_voidCreateChild_auto(b, c);
+    corto_void__create_auto(root_o, a);
+    corto_void__create_auto(a, b);
+    corto_void__create_auto(b, c);
     corto_int32CreateChild_auto(a, d, 10);
 
     test_TestKeyCreate();
@@ -51,7 +51,7 @@ void test_Security_tc_authorizeCreate(
 
     corto_object b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
-    corto_object foo = corto_voidCreateChild(b, "foo");
+    corto_object foo = corto_void__create(b, "foo");
     corto_release(b);
     test_assert(foo != NULL);
 
@@ -78,7 +78,7 @@ void test_Security_tc_authorizeDelete(
     corto_object b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
 
-    corto_object foo = corto_voidCreateChild(b, "foo");
+    corto_object foo = corto_void__create(b, "foo");
     corto_release(b);
     test_assert(foo != NULL);
 
@@ -105,7 +105,7 @@ void test_Security_tc_authorizeDeniedCreate(
     corto_object b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
 
-    corto_object foo = corto_voidCreateChild(b, "foo");
+    corto_object foo = corto_void__create(b, "foo");
 
     corto_release(b);
     test_assert(foo == NULL);
@@ -129,7 +129,7 @@ void test_Security_tc_authorizeDeniedDelete(
 
     corto_object b = corto_resolve(root_o, "/a/b");
     test_assert(b != NULL);
-    corto_object foo = corto_voidCreateChild(b, "foo");
+    corto_object foo = corto_void__create(b, "foo");
     corto_release(b);
     test_assert(foo != NULL);
 

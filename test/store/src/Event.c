@@ -12,7 +12,7 @@ void test_Event_setup(
     test_Event this)
 {
     this->prevAttr = corto_set_attr(CORTO_ATTR_DEFAULT);
-    testScope = corto_voidCreateChild(root_o, "testScope");
+    testScope = corto_void__create(root_o, "testScope");
     test_assert(testScope != NULL);
     test_EventTest et = test_EventTestCreate(testScope);
     test_assert(et != NULL);
