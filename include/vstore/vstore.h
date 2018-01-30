@@ -22,7 +22,6 @@
 #ifndef CORTO_VSTORE_H
 #define CORTO_VSTORE_H
 
-#include <corto/corto.h>
 #include <corto/_project.h>
 
 /* $header() */
@@ -94,7 +93,6 @@
 
 /* $end */
 
-#include <corto/vstore/_type.h>
 #include <corto/vstore/_load.h>
 #include <corto/vstore/_interface.h>
 

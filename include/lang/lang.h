@@ -6,7 +6,6 @@
 #ifndef CORTO_LANG_H
 #define CORTO_LANG_H
 
-#include <corto/corto.h>
 #include <corto/_project.h>
 
 /* $header() */
@@ -30,7 +29,6 @@
 #define CORTO_TYPE_IS_CONTAINER (4096)
 /* $end */
 
-#include <corto/lang/_type.h>
 #include <corto/lang/_load.h>
 #include <corto/lang/_interface.h>
 

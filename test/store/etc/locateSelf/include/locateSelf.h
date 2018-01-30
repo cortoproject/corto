@@ -7,7 +7,6 @@
 #ifndef LOCATESELF_H
 #define LOCATESELF_H
 
-#include <corto/corto.h>
 #include <locateSelf/_project.h>
 #include <corto/c/c.h>
 

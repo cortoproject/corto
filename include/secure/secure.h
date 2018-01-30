@@ -6,14 +6,12 @@
 #ifndef CORTO_SECURE_H
 #define CORTO_SECURE_H
 
-#include <corto/corto.h>
 #include <corto/_project.h>
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
 
-#include <corto/secure/_type.h>
 #include <corto/secure/_load.h>
 #include <corto/secure/_interface.h>
 
@@ -22,4 +20,3 @@
 /* $end */
 
 #endif
-

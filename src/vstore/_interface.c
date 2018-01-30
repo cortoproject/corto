@@ -3,6 +3,7 @@
  * This file contains wrapper functions for /corto/vstore.
  */
 
+#include <corto/corto.h>
 #include <corto/vstore/vstore.h>
 #include <corto/vstore/_load.h>
 void _corto_dispatcher_post(

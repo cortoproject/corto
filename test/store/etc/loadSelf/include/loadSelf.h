@@ -7,7 +7,6 @@
 #ifndef LOADSELF_H
 #define LOADSELF_H
 
-#include <corto/corto.h>
 #include <loadSelf/_project.h>
 #include <corto/c/c.h>
 
