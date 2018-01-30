@@ -98,31 +98,6 @@ void corto_loader_addDir(
                 sprintf(package, "%s/%s", q->from, f);
                 corto_path_clean(package, package);
 
-                corto_string env = corto_locate(package, NULL, CORTO_LOCATION_ENV);
-
-                if (!env) {
-                    corto_catch();
-                    //continue;
-                }
-
-                if (!strcmp(package, "corto") ||
-                    !strcmp(package, "corto/lang") ||
-                    !strcmp(package, "corto/vstore") ||
-                    !strcmp(package, "corto/native") ||
-                    !strcmp(package, "corto/secure"))
-                {
-                    if (!env) {
-                        env = corto_locate("corto", NULL, CORTO_LOCATION_ENV);
-                        if (!env) corto_catch(); /* Catch error */
-                    }
-                }
-
-                /* If no event was found by corto_locate, this is not a loadable
-                 * package, but a directory that contains packages. */
-                if (!env) {
-                    env = corto_strdup("");
-                }
-
                 corto_result *result = corto_calloc(sizeof(corto_result));
 
                 corto_id packageFile;
@@ -137,8 +112,6 @@ void corto_loader_addDir(
                 }
 
                 corto_set_str(&result->parent, q->from);
-
-                corto_dealloc(env);
 
                 /* because the corto object is not persistent, but because the
                  * mount does have objects under the corto scope, hide the corto
