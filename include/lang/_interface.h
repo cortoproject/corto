@@ -110,8 +110,8 @@ bool _corto_collection_castable_v(
 /* bool corto_collection_castable(corto_collection, corto_type) */
 #define corto_collection_castable(_this, type) ( \
     ((corto_function)corto_collection_castable_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_castable_o)->index - 1])->fptr)(corto_collection(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_castable_o)->index - 1], alloca(sizeof(bool)), corto_collection(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_castable_o)->index - 1])->fptr)(corto_collection(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_castable_o)->index - 1], alloca(sizeof(bool)), corto_collection(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -122,8 +122,8 @@ bool _corto_collection_compatible_v(
 /* bool corto_collection_compatible(corto_collection, corto_type) */
 #define corto_collection_compatible(_this, type) ( \
     ((corto_function)corto_collection_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_compatible_o)->index - 1])->fptr)(corto_collection(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_compatible_o)->index - 1], alloca(sizeof(bool)), corto_collection(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_compatible_o)->index - 1])->fptr)(corto_collection(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_collection_compatible_o)->index - 1], alloca(sizeof(bool)), corto_collection(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -163,8 +163,8 @@ bool _corto_delegate_castable_v(
 /* bool corto_delegate_castable(corto_delegate, corto_type) */
 #define corto_delegate_castable(_this, type) ( \
     ((corto_function)corto_delegate_castable_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_castable_o)->index - 1])->fptr)(corto_delegate(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_castable_o)->index - 1], alloca(sizeof(bool)), corto_delegate(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_castable_o)->index - 1])->fptr)(corto_delegate(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_castable_o)->index - 1], alloca(sizeof(bool)), corto_delegate(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -175,8 +175,8 @@ bool _corto_delegate_compatible_v(
 /* bool corto_delegate_compatible(corto_delegate, corto_type) */
 #define corto_delegate_compatible(_this, type) ( \
     ((corto_function)corto_delegate_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_compatible_o)->index - 1])->fptr)(corto_delegate(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_compatible_o)->index - 1], alloca(sizeof(bool)), corto_delegate(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_compatible_o)->index - 1])->fptr)(corto_delegate(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_delegate_compatible_o)->index - 1], alloca(sizeof(bool)), corto_delegate(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -268,8 +268,8 @@ bool _corto_interface_compatible_v(
 /* bool corto_interface_compatible(corto_interface, corto_type) */
 #define corto_interface_compatible(_this, type) ( \
     ((corto_function)corto_interface_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_compatible_o)->index - 1])->fptr)(corto_interface(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_compatible_o)->index - 1], alloca(sizeof(bool)), corto_interface(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_compatible_o)->index - 1])->fptr)(corto_interface(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_compatible_o)->index - 1], alloca(sizeof(bool)), corto_interface(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -327,8 +327,8 @@ bool _corto_iterator_castable_v(
 /* bool corto_iterator_castable(corto_iterator, corto_type) */
 #define corto_iterator_castable(_this, type) ( \
     ((corto_function)corto_iterator_castable_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_castable_o)->index - 1])->fptr)(corto_iterator(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_castable_o)->index - 1], alloca(sizeof(bool)), corto_iterator(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_castable_o)->index - 1])->fptr)(corto_iterator(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_castable_o)->index - 1], alloca(sizeof(bool)), corto_iterator(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -339,8 +339,8 @@ bool _corto_iterator_compatible_v(
 /* bool corto_iterator_compatible(corto_iterator, corto_type) */
 #define corto_iterator_compatible(_this, type) ( \
     ((corto_function)corto_iterator_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_compatible_o)->index - 1])->fptr)(corto_iterator(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_compatible_o)->index - 1], alloca(sizeof(bool)), corto_iterator(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_compatible_o)->index - 1])->fptr)(corto_iterator(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_iterator_compatible_o)->index - 1], alloca(sizeof(bool)), corto_iterator(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -416,8 +416,8 @@ bool _corto_primitive_castable_v(
 /* bool corto_primitive_castable(corto_primitive, corto_type) */
 #define corto_primitive_castable(_this, type) ( \
     ((corto_function)corto_primitive_castable_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_castable_o)->index - 1])->fptr)(corto_primitive(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_castable_o)->index - 1], alloca(sizeof(bool)), corto_primitive(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_castable_o)->index - 1])->fptr)(corto_primitive(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_castable_o)->index - 1], alloca(sizeof(bool)), corto_primitive(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -428,8 +428,8 @@ bool _corto_primitive_compatible_v(
 /* bool corto_primitive_compatible(corto_primitive, corto_type) */
 #define corto_primitive_compatible(_this, type) ( \
     ((corto_function)corto_primitive_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_compatible_o)->index - 1])->fptr)(corto_primitive(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_compatible_o)->index - 1], alloca(sizeof(bool)), corto_primitive(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_compatible_o)->index - 1])->fptr)(corto_primitive(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_primitive_compatible_o)->index - 1], alloca(sizeof(bool)), corto_primitive(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -481,8 +481,8 @@ bool _corto_struct_castable_v(
 /* bool corto_struct_castable(corto_struct, corto_type) */
 #define corto_struct_castable(_this, type) ( \
     ((corto_function)corto_struct_castable_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_castable_o)->index - 1])->fptr)(corto_struct(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_castable_o)->index - 1], alloca(sizeof(bool)), corto_struct(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_castable_o)->index - 1])->fptr)(corto_struct(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_castable_o)->index - 1], alloca(sizeof(bool)), corto_struct(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -493,8 +493,8 @@ bool _corto_struct_compatible_v(
 /* bool corto_struct_compatible(corto_struct, corto_type) */
 #define corto_struct_compatible(_this, type) ( \
     ((corto_function)corto_struct_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_compatible_o)->index - 1])->fptr)(corto_struct(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_compatible_o)->index - 1], alloca(sizeof(bool)), corto_struct(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_compatible_o)->index - 1])->fptr)(corto_struct(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_compatible_o)->index - 1], alloca(sizeof(bool)), corto_struct(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -557,8 +557,8 @@ bool _corto_type_castable_v(
 /* bool corto_type_castable(corto_type, corto_type) */
 #define corto_type_castable(_this, type) ( \
     ((corto_function)corto_type_castable_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_castable_o)->index - 1])->fptr)(corto_type(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_castable_o)->index - 1], alloca(sizeof(bool)), corto_type(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_castable_o)->index - 1])->fptr)(corto_type(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_castable_o)->index - 1], alloca(sizeof(bool)), corto_type(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
@@ -569,8 +569,8 @@ bool _corto_type_compatible_v(
 /* bool corto_type_compatible(corto_type, corto_type) */
 #define corto_type_compatible(_this, type) ( \
     ((corto_function)corto_type_compatible_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_compatible_o)->index - 1])->fptr)(corto_type(_this), type) \
-    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_compatible_o)->index - 1], alloca(sizeof(bool)), corto_type(_this), type) \
+    ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_compatible_o)->index - 1])->fptr)(corto_type(_this), corto_type(type)) \
+    : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_type_compatible_o)->index - 1], alloca(sizeof(bool)), corto_type(_this), corto_type(type)) \
     )
 
 CORTO_EXPORT
