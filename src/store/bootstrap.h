@@ -937,7 +937,7 @@ CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL
 CORTO_FW_I(lang, collection);
 CORTO_CLASS_O(lang, collection, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(lang_collection, kind, lang_collectionKind, CORTO_LOCAL|CORTO_READONLY);
-    CORTO_REFERENCE_O(lang_collection, elementType, lang_type, CORTO_GLOBAL | CORTO_CONST, CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(lang_collection, elementType, lang_type, CORTO_GLOBAL | CORTO_CONST, CORTO_DECLARED, "reference");
     CORTO_MEMBER_O(lang_collection, max, lang_uint32, CORTO_GLOBAL | CORTO_CONST);
     CORTO_OVERRIDABLE_O(lang_collection, castable, "(type type)", lang_bool, corto_collection_castable_v);
     CORTO_OVERRIDABLE_O(lang_collection, compatible, "(type type)", lang_bool, corto_collection_compatible_v);
@@ -1180,7 +1180,7 @@ CORTO_CLASS_NOBASE_O(lang, member, CORTO_ATTR_DEFAULT, CORTO_TYPE_ID(lang_interf
 CORTO_FW_C(lang, alias);
 CORTO_CLASS_O(lang, alias, lang_member, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, CORTO_TYPE_ID(lang_struct), CORTO_DECLARED, NULL, NULL, CORTO_C);
     CORTO_REFERENCE_O(lang_alias, member, lang_member, CORTO_GLOBAL | CORTO_CONST, CORTO_VALID, NULL);
-     CORTO_METHOD_O(lang_alias, construct, "()", lang_int16, corto_alias_construct);
+    CORTO_METHOD_O(lang_alias, construct, "()", lang_int16, corto_alias_construct);
 
 /* /corto/lang/case */
 CORTO_CLASS_O(lang, case, lang_member, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, CORTO_TYPE_ID(lang_union), CORTO_DECLARED, NULL, NULL, CORTO_NODELEGATE);
