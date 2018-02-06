@@ -206,4 +206,3 @@ uint32_t corto_type_sizeof(
 
     return size;
 }
-

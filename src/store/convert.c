@@ -163,9 +163,9 @@ CORTO_DECL_TRANSFORM(string, boolean) {
     CORTO_UNUSED(toType);
     CORTO_UNUSED(fromType);
     str = *(corto_string*)from;
-    if (!strcmp(str, "TRUE") || !strcmp(str, "true")) {
+    if (!stricmp(str, "true")) {
         *(corto_bool*)to = TRUE;
-    } else if (!strcmp(str, "FALSE") || !strcmp(str, "false")) {
+    } else if (!stricmp(str, "false")) {
         *(corto_bool*)to = FALSE;
     } else {
         corto_throw("'%s' is not a valid boolean value", str);
@@ -578,9 +578,9 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
         }
     } else if (fromType->kind == CORTO_PRIMITIVE) {
         /* Get conversion */
-        c = _conversions[corto_primitive(fromType)->convertId][corto_primitive(toType)->convertId];
+        c = _conversions[((corto_primitive)fromType)->convertId][corto_primitive(toType)->convertId];
         if (c) {
-            if (c(corto_primitive(fromType), from, corto_primitive(toType), to)) {
+            if (c((corto_primitive)fromType, from, (corto_primitive)toType, to)) {
                 /* Conversion failed */
                 goto error;
             }

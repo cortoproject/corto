@@ -193,7 +193,8 @@ corto_bool corto_serializeMatchAccess(corto_operatorKind accessKind, corto_modif
         result = !(sa & a);
         break;
     default:
-        corto_error("unsupported operator %s for serializer accessKind.", corto_idof(corto_enum_constant(corto_operatorKind_o, accessKind)));
+        corto_error("unsupported operator %s for serializer accessKind.",
+            corto_idof(corto_enum_constant(corto_operatorKind_o, accessKind)));
         result = FALSE;
         break;
     }
@@ -230,8 +231,12 @@ static int16_t corto_walk_member(
 {
     corto_value member;
     corto_modifier modifiers = m->modifiers;
-    corto_bool isAlias = corto_instanceof(corto_alias_o, m);
-    corto_bool isKey = modifiers & CORTO_KEY;
+    corto_type t = corto_typeof(m);
+    bool isAlias = false;
+    if (t != (corto_type)corto_member_o) {
+        isAlias = corto_instanceof(corto_alias_o, m);
+    }
+    bool isKey = modifiers & CORTO_KEY;
 
     if (isKey && this->keyAction == CORTO_WALK_KEY_DATA_ONLY) {
         return 0;
@@ -253,27 +258,21 @@ static int16_t corto_walk_member(
 
     if (!isAlias || (this->aliasAction != CORTO_WALK_ALIAS_IGNORE)) {
         if (corto_serializeMatchAccess(this->accessKind, this->access, modifiers)) {
+            bool isOptional = modifiers & CORTO_OPTIONAL;
+
             member.kind = CORTO_MEMBER;
             member.parent = info;
             member.is.member.o = o;
             member.is.member.t = m;
-            if (modifiers & CORTO_OPTIONAL && (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH)) {
+
+            if (isOptional && (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH)) {
                 member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
             } else {
                 member.is.member.v = CORTO_OFFSET(v, m->offset);
             }
-#ifdef CORTO_WALK_TRACING
-            {
-                corto_id id, id2;
-                printf("%*smember(%s : %s)\n", indent, " ",
-                    corto_fullname(m, id2),
-                    corto_fullname(member.is.member.t->type, id));
-                fflush(stdout);
-            }
-            indent++;
-#endif
+
             /* Don't serialize if member is optional and not set */
-            if (!(modifiers & CORTO_OPTIONAL) ||
+            if (!isOptional ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_ALWAYS) ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_PASSTHROUGH) ||
                 member.is.member.v)
@@ -282,9 +281,6 @@ static int16_t corto_walk_member(
                     goto error;
                 }
             }
-#ifdef CORTO_WALK_TRACING
-            indent--;
-#endif
         }
     }
 
@@ -302,38 +298,29 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
     corto_walk_cb cb;
     corto_object o;
 
-    t = corto_interface(corto_value_typeof(info));
+    t = (corto_interface)corto_value_typeof(info);
     v = corto_value_ptrof(info);
     o = corto_value_objectof(info);
 
     /* Process inheritance */
     if (!this->members.length) {
         if (corto_class_instanceof(corto_struct_o, t) &&
-            corto_serializeMatchAccess(this->accessKind, this->access, corto_struct(t)->baseAccess))
+            corto_serializeMatchAccess(this->accessKind, this->access, ((corto_struct)t)->baseAccess))
         {
             corto_value base;
 
             cb = this->metaprogram[CORTO_BASE];
 
-            if (cb && corto_interface(t)->base) {
+            if (cb && ((corto_interface)t)->base) {
                 base.kind = CORTO_BASE;
                 base.parent = info;
                 base.is.base.v = v;
-                base.is.base.t = corto_type(corto_interface(t)->base);
+                base.is.base.t = (corto_type)((corto_interface)t)->base;
                 base.is.base.o = o;
-    #ifdef CORTO_WALK_TRACING
-                {
-                    corto_id id;
-                    printf("%*sbase(%s)\n", indent, " ", corto_fullname(base.is.base.t, id)); fflush(stdout);
-                }
-                indent++;
-    #endif
+
                 if (cb(this, &base, userData)) {
                     goto error;
                 }
-    #ifdef CORTO_WALK_TRACING
-                indent--;
-    #endif
             }
         }
     }
@@ -351,7 +338,7 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
                 goto error;
             }
         }
-    } else if (!this->visitAllCases && (corto_typeof(t) == corto_type(corto_union_o))) {
+    } else if (!this->visitAllCases && (corto_typeof(t) == (corto_type)corto_union_o)) {
         corto_int32 discriminator = *(corto_int32*)v;
         corto_member member = safe_corto_union_findCase(t, discriminator);
         if (member) {
