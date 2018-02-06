@@ -142,7 +142,7 @@ int16_t corto_struct_construct(
 
     /* Set size of self */
     corto_type(this)->size = size;
-    
+
     if (this->keys.length != 0) {
         /* If a keylist was provided, test if members have been added and ensure
          * the KEY modifier is enabled */
@@ -198,13 +198,11 @@ int16_t corto_struct_construct(
                 corto_claim(m);
                 this->keycache.length ++;
             }
-
         }
-
     }
 
-    /* Create instruction sequence for freeing instances of this type */
     freeops_create(NULL, (corto_type)this);
+
     return safe_corto_interface_construct(this);
 error:
     return -1;

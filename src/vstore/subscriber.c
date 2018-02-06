@@ -95,6 +95,9 @@ int16_t corto_subscriber_invoke(
             void *args[] = {&eptr};
             corto_invokeb((corto_function)s, NULL, args);
         }
+        if (eptr != &e) {
+            corto_try (corto_delete(eptr), NULL);
+        }
     } else {
         if (!eptr) {
             eptr = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o, .attrs = -1});
@@ -111,9 +114,7 @@ int16_t corto_subscriber_invoke(
                   ((corto_fmt)s->contentTypeHandle)->copy(r->value);
             }
             eptr->contentTypeHandle = s->contentTypeHandle;
-            if (corto_define(eptr)) {
-                goto error;
-            }
+            corto_try (corto_define(eptr), NULL);
         }
 
         if (!s->isAligning) {
@@ -138,7 +139,8 @@ int16_t corto_subscriber_flushAlignQueue(
             corto_release(e);
             goto error;
         }
-        corto_release(e);
+
+        /* No need to release event. Ownership is transferred to invoke */
     }
 
     return 0;
@@ -852,8 +854,6 @@ int16_t corto_subscriber_subscribe(
         corto_debug("TYPE '%s'", this->query.type);
     }
 
-    this->isAligning = true;
-
     /* Add subscriber to global subscriber admin */
     corto_entityAdmin_add(
         &corto_subscriber_admin,
@@ -881,19 +881,31 @@ int16_t corto_subscriber_subscribe(
         goto error;
     }
 
-    corto_observer(this)->enabled = TRUE;
-
     /* Ensure that subscriber isn't deleted before instance unsubscribes */
     corto_claim(this);
 
     /* Align subscriber */
+    corto_mutex_lock((corto_mutex)this->alignMutex);
+    this->isAligning = true;
+
+    /* Enable observer within aligner lock, so no messages are delivered before
+     * alignment has started */
+    corto_observer(this)->enabled = TRUE;
+
+    if (corto_ll_count(this->alignQueue)) {
+        corto_warning("messages in align queue before aligned messages");
+    }
+
+    /* Populate alignment queue. Any message delivered to the subscriber will
+     * end up in the queue */
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
         corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL);
     }
 
-    corto_mutex_lock((corto_mutex)this->alignMutex);
     this->isAligning = false;
+
+    /* Flush messages in alignQueue to subscriber */
     if (corto_subscriber_flushAlignQueue(this)) {
         corto_mutex_unlock((corto_mutex)this->alignMutex);
         goto error;
