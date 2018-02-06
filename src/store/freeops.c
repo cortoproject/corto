@@ -135,6 +135,14 @@ static int16_t freeops_collection(corto_walk_opt *s, corto_value *info, void *ct
     corto_collection t = corto_collection(corto_value_typeof(info));
     corto_type elementType = t->elementType;
 
+    if (!t->elementType->reference) {
+        corto_assert(
+            corto_check_state(elementType, CORTO_VALID),
+            "cannot create free-program: elementType '%s' of '%s' is not valid",
+            corto_fullpath(NULL, elementType),
+            corto_fullpath(NULL, t));
+    }
+
     if (corto_type(t)->flags & CORTO_TYPE_HAS_RESOURCES) {
         freeops_op* op = NULL;
         bool elemIsStr = elementType->kind == CORTO_PRIMITIVE && corto_primitive(elementType)->kind == CORTO_TEXT;
@@ -225,7 +233,7 @@ static int16_t freeops_member(corto_walk_opt *s, corto_value *info, void *ctx) {
 
     if (m->modifiers & CORTO_OPTIONAL) {
         freeops_op* op = freeops_add(r);
-        op->kind = FREEOPS_REF;
+        op->kind = FREEOPS_OPTIONAL;
         op->offset = freeops_computeOffset(info);
         op->subtype = m->type;
 #ifdef DEBUG_FREEOPS
@@ -251,10 +259,9 @@ void freeops_create(freeops *r, corto_type type) {
     corto_walk_opt s;
 
     corto_walk_init(&s);
-
     s.access = 0;
     s.accessKind = CORTO_NOT;
-    s.optionalAction = CORTO_WALK_OPTIONAL_IF_SET;
+    s.optionalAction = CORTO_WALK_OPTIONAL_PASSTHROUGH;
     s.aliasAction = CORTO_WALK_ALIAS_IGNORE;
     s.program[CORTO_PRIMITIVE] = freeops_primitive;
     s.program[CORTO_COLLECTION] = freeops_collection;
@@ -341,8 +348,19 @@ CORTO_SEQUENCE(dummySeq,void*,);
 #define mem_free(ptr) if (ptr) free(ptr);
 #define ref_free(ptr) if (ptr) corto_release(ptr);
 
-/* Macro to obtain a program from a subtype */
-#define nestops (freeops*)((corto_struct)op->subtype)->freeops
+/* Obtain a program from a type */
+static
+freeops *nestops(
+    corto_type type)
+{
+    freeops *r = (freeops*)((corto_struct)type)->freeops;
+    if (!r) {
+        freeops_create(NULL, type);
+        r = (freeops*)((corto_struct)type)->freeops;
+        corto_assert(r != NULL, "failed to create freeops program");
+    }
+    return r;
+}
 
 /* Run a program */
 static void freeops_run(freeops *r, void *v) {
@@ -351,13 +369,14 @@ static void freeops_run(freeops *r, void *v) {
     dummySeq *seq;
 
 #ifdef DEBUG_FREEOPS
-    printf(">> free %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
+    //printf(">> free %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
 #endif
     for (i = 0; i < r->opcount; i++) {
         freeops_op* op = &r->ops[i];
         void *ptr = CORTO_OFFSET(v, op->offset);
+
 #ifdef DEBUG_FREEOPS
-        printf("%s: v = %p, offset = %d, ptr = %p [%s], member = %s\n", freeops_tostr(op->kind), v, op->offset, ptr, corto_fullpath(NULL, op->subtype), corto_fullpath(NULL, op->member));
+        //printf("    %s: v = %p, offset = %d, ptr = %p [%s], member = %s\n", freeops_tostr(op->kind), v, op->offset, ptr, corto_fullpath(NULL, op->subtype), corto_fullpath(NULL, op->member));
 #endif
 
         switch(op->kind) {
@@ -373,14 +392,14 @@ static void freeops_run(freeops *r, void *v) {
         ARRAY_OPS(_STRING, sizeof(char*), deref_mem_free(elem));
         ARRAY_OPS(_REF, sizeof(corto_object), deref_ref_free(elem));
         ARRAY_OPS(_W_RES, op->subtype->size, (freeops_ptr_free(op->subtype, elem)));
-        ARRAY_OPS(_STRUCT, op->subtype->size, (freeops_run(nestops, elem)));
+        ARRAY_OPS(_STRUCT, op->subtype->size, (freeops_run(nestops(op->subtype), elem)));
 
         LIST_OPS_NOITER(, op->subtype->size,);
         LIST_OPS(_NO_RES, op->subtype->size, free(elem));
         LIST_OPS(_W_RES, op->subtype->size, (freeops_ptr_free(op->subtype, elem)));
         LIST_OPS(_STRING, , mem_free(elem));
         LIST_OPS(_REF, , ref_free(elem));
-        LIST_OPS(_STRUCT, op->subtype->size, (freeops_run(nestops, elem)));
+        LIST_OPS(_STRUCT, op->subtype->size, (freeops_run(nestops(op->subtype), elem), free(elem)));
 
         case FREEOPS_UNION: {
             int32_t discriminator = *(int32_t*)v;
@@ -391,14 +410,17 @@ static void freeops_run(freeops *r, void *v) {
         case FREEOPS_OPTIONAL:
             if (op->subtype) {
                 void *elem = *(void**)ptr;
-                freeops_ptr_free(op->subtype, elem);
+                if (elem) {
+                    freeops_ptr_free(op->subtype, elem);
+                    free(elem);
+                }
             }
             break;
         }
     }
 
 #ifdef DEBUG_FREEOPS
-    printf("<< done with %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
+    //printf("<< done with %p of type '%s' with program %p\n", v, corto_fullpath(NULL, r->type), r);
 #endif
 }
 
@@ -411,13 +433,16 @@ void freeops_ptr_free(corto_type t, void *ptr) {
                 corto_fullpath(NULL, t));
         }
 #ifdef DEBUG_FREEOPS
-        printf(">> free instance of '%s'\n", corto_fullpath(NULL, t));
+        //printf(">> free instance of '%s'\n", corto_fullpath(NULL, t));
 #endif
         freeops_run(r, ptr);
     } else {
         if (t->reference && t->kind == CORTO_VOID) {
             corto_object obj = *(corto_object*)ptr;
             if (obj) corto_release(obj);
+        } else if (t->kind == CORTO_PRIMITIVE && ((corto_primitive)t)->kind == CORTO_TEXT) {
+            char *str = *(char**)ptr;
+            if (str) free(str);
         } else {
             /* Generate program on the fly */
             freeops_op op;
@@ -431,10 +456,10 @@ void freeops_ptr_free(corto_type t, void *ptr) {
 /* Delete a program */
 void freeops_delete(corto_struct t) {
     corto_struct s = (corto_struct)t;
-    corto_assert(s->freeops != 0, "no instructions available for '%s'",
-        corto_fullpath(NULL, t));
-    freeops *r = (freeops*)t->freeops;
-    free(r->ops);
-    free(r);
-    s->freeops = 0;
+    if (s->freeops) {
+        freeops *r = (freeops*)t->freeops;
+        free(r->ops);
+        free(r);
+        s->freeops = 0;
+    }
 }
