@@ -1389,6 +1389,8 @@ corto_object corto_declareChild_intern(
     bool retry = FALSE;
     char *mountId = NULL;
 
+    corto_log_push_dbg("declare");
+
     corto_assert_object(parent);
     corto_assert_object(type);
 
@@ -1539,12 +1541,14 @@ corto_object corto_declareChild_intern(
     }
 
 ok:
+    corto_log_pop_dbg();
     if (mountId) corto_dealloc(mountId);
     return o;
 error:
     if (o) corto_delete(o);
 access_error:
     if (mountId) corto_dealloc(mountId);
+    corto_log_pop_dbg();
     return NULL;
 }
 
@@ -1675,6 +1679,8 @@ corto_object corto_resume(
         return NULL;
     }
 
+    corto_log_push_dbg("resume");
+
     corto_debug("try resume '%s' from '%s' (%s)",
         expr,
         corto_fullpath(NULL, parent),
@@ -1745,6 +1751,8 @@ corto_object corto_resume(
         walkData.parent = walkData.result;
         walkData.exprPtr = nextSep + 1;
     } while (walkData.parent && nextSep);
+
+    corto_log_pop_dbg();
 
     return walkData.result;
 }
@@ -2001,6 +2009,8 @@ int16_t corto_define_intern(
 
     corto_assert_object(o);
 
+    corto_log_push_dbg("define");
+
     if (!o) {
         corto_throw("corto: NULL passed to corto_define");
         goto error;
@@ -2031,8 +2041,10 @@ int16_t corto_define_intern(
         }
     }
 
+    corto_log_pop_dbg();
     return result;
 error:
+    corto_log_pop_dbg();
     return -1;
 }
 
@@ -3208,6 +3220,8 @@ corto_object corto_lookup_intern(
 {
     corto_assert_object(parent);
 
+    corto_log_push_dbg("lookup");
+
     if (!parent) {
         parent = root_o;
     }
@@ -3371,10 +3385,13 @@ corto_object corto_lookup_intern(
         goto access_error;
     }
 
+    corto_log_pop_dbg();
+
     return o;
 access_error:
     corto_release(o);
 error:
+    corto_log_pop_dbg();
     return NULL;
 }
 
@@ -3782,6 +3799,8 @@ int16_t corto_publish(
 int16_t corto_update(corto_object o) {
     corto_assert_object(o);
 
+    corto_log_push_dbg("update");
+
     int16_t result = 0;
     bool locked = false;
     corto_eventMask mask = CORTO_UPDATE;
@@ -3837,6 +3856,8 @@ int16_t corto_update(corto_object o) {
         }
     }
 
+    corto_log_pop_dbg();
+
     return result;
 error:
     if (locked) {
@@ -3845,6 +3866,7 @@ error:
             goto error;
         }
     }
+    corto_log_pop_dbg();
     return -1;
 }
 
@@ -3855,6 +3877,9 @@ int16_t corto_update_begin_intern(
     bool resume)
 {
     corto_assert_object(o);
+
+    corto_log_push_dbg("update_begin");
+
     corto_type type = corto_typeof(o);
 
     /* Update fails if process isn't authorized to update observable */
@@ -3891,9 +3916,10 @@ int16_t corto_update_begin_intern(
                 corto_fullpath(NULL, o));
         }
     }
-
+    corto_log_pop_dbg();
     return 0;
 error:
+    corto_log_pop_dbg();
     return -1;
 }
 
