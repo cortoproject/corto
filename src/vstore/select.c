@@ -57,6 +57,7 @@ typedef struct corto_selectRequest {
     corto_mountMask mountMask;
     bool isHistoricalQuery;
     bool queryVstore;
+    bool queryStore;
 } corto_selectRequest;
 
 typedef struct corto_select_data corto_select_data;
@@ -132,6 +133,7 @@ struct corto_select_data {
     corto_frame to;
     bool isHistoricalQuery;
     bool queryVstore;
+    bool queryStore;
 
     /* Filters */
     corto_string typeFilter;
@@ -743,8 +745,10 @@ bool corto_selectIterNext(
     bool hasData = FALSE;
     corto_object result = NULL;
 
+    *o_out = NULL;
+
     /* Select data from scope */
-    if (frame->o) {
+    if (data->queryStore && frame->o) {
 
         /* Don't walk over objects if a frame contains a expr or if the
          * frame is already walking over a mount */
@@ -812,7 +816,7 @@ bool corto_selectIterNext(
             hasData = corto_selectIterMount(data, frame);
 
             /* If mount had data but did not return any data, the data did not
-             * match the select query. Try next result */
+             * match the select query. Try next mount */
             if (!hasData) retry = true;
         }
     } while (retry);
@@ -983,7 +987,6 @@ int16_t corto_selectTree(
             data->location[frame->locationLength] = '\0';
             frame = &data->stack[data->sp];
         }
-
 
         if (hasData) {
             data->next = &data->item;
@@ -1510,6 +1513,7 @@ corto_resultIter corto_selectPrepareIterator (
     data->from = r->from;
     data->to = r->to;
     data->isHistoricalQuery = r->isHistoricalQuery;
+    data->queryStore = r->queryStore;
     data->queryVstore = r->queryVstore;
     data->item.parent = data->parent;
     data->item.name = data->name;
@@ -1720,6 +1724,7 @@ corto_string corto_selectorId(void)
         corto_debug("ID");
         request->mountMask = CORTO_MOUNT_ID;
         request->mountAction = corto_mountAction_id;
+        request->queryStore = false;
         corto_tls_set(CORTO_KEY_FLUENT, NULL);
         corto_iter it = corto_selectPrepareIterator(request);
         if (request->err) {
@@ -2088,9 +2093,11 @@ corto_select__fluent corto_select(
     if (!request) {
         request = corto_calloc(sizeof(corto_selectRequest));
         corto_tls_set(CORTO_KEY_FLUENT, request);
+        request->queryStore = true;
         request->queryVstore = true;
     } else {
         memset(request, 0, sizeof(corto_selectRequest));
+        request->queryStore = true;
         request->queryVstore = true;
     }
 
