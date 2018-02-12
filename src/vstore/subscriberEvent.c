@@ -7,8 +7,8 @@
 void corto_subscriberEvent_deinit(
     corto_subscriberEvent* this)
 {
-    if (this->contentTypeHandle && this->data.value) {
-        ((corto_fmt)this->contentTypeHandle)->release(this->data.value);
+    if (this->fmt.handle && this->data.value) {
+        corto_fmt_data_deinit(&this->fmt);
     }
 }
 
@@ -30,4 +30,3 @@ int16_t corto_subscriberEvent_init(
     ((corto_event*)this)->handleAction.super.procedure = corto_subscriberEvent_handle_o;
     return 0;
 }
-

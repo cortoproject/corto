@@ -32,123 +32,6 @@ corto_entityAdmin corto_subscriber_admin = {
 };
 
 static
-int corto_subscriber_findEvent(
-    void *o1,
-    void *o2)
-{
-    corto_subscriberEvent *e1 = o1, *e2 = o2;
-    if (!strcmp(e2->data.id, e1->data.id) &&
-        !strcmp(e2->data.parent, e1->data.parent))
-    {
-        return false;
-    }
-    return true;
-}
-
-static
-void corto_subscriber_addToAlignQueue(
-    corto_subscriber this,
-    corto_subscriberEvent *e)
-{
-    void *ptr = corto_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
-    if (ptr) {
-        corto_release(*(void**)ptr);
-        *(void**)ptr = e;
-    } else {
-        corto_ll_append(this->alignQueue, e);
-    }
-    corto_claim(e);
-}
-
-static
-int16_t corto_subscriber_invoke(
-    corto_object instance,
-    corto_eventMask mask,
-    corto_result *r,
-    corto_subscriber s,
-    corto_subscriberEvent *eptr)
-{
-    corto_dispatcher dispatcher = corto_observer(s)->dispatcher;
-
-    if (!dispatcher && !s->isAligning) {
-        /* Deliver synchronously if the subscriber does not have a dispatcher
-         * and is not aligning data. */
-        corto_function f = corto_function(s);
-
-        corto_subscriberEvent e;
-        if (!eptr) {
-            e = (corto_subscriberEvent){
-                .instance = instance,
-                .event = mask,
-                .source = NULL,
-                .subscriber = s,
-                .data = *r
-            };
-            eptr = &e;
-        }
-
-        if (f->kind == CORTO_PROCEDURE_CDECL) {
-            if (f->fptr) {
-                ((void(*)(corto_subscriberEvent*))((corto_function)s)->fptr)(eptr);
-            }
-        } else {
-            void *args[] = {&eptr};
-            corto_invokeb((corto_function)s, NULL, args);
-        }
-        if (eptr != &e) {
-            corto_try (corto_delete(eptr), NULL);
-        }
-    } else {
-        if (!eptr) {
-            eptr = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o, .attrs = -1});
-            corto_set_ref(&eptr->subscriber, s);
-            corto_set_ref(&eptr->instance, instance);
-            corto_set_ref(&eptr->source, NULL);
-            eptr->event = mask;
-            corto_set_str(&eptr->data.id, r->id);
-            corto_set_str(&eptr->data.type, r->type);
-            corto_set_str(&eptr->data.parent, r->parent);
-            corto_set_ref(&eptr->data.object, r->object);
-            if (r->value) {
-                eptr->data.value =
-                  ((corto_fmt)s->contentTypeHandle)->copy(r->value);
-            }
-            eptr->contentTypeHandle = s->contentTypeHandle;
-            corto_try (corto_define(eptr), NULL);
-        }
-
-        if (!s->isAligning) {
-            corto_dispatcher_post(dispatcher, corto_event(eptr));
-        } else {
-            corto_subscriber_addToAlignQueue(s, eptr);
-        }
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
-static
-int16_t corto_subscriber_flushAlignQueue(
-    corto_subscriber s)
-{
-    corto_subscriberEvent *e;
-    while ((e = corto_ll_takeFirst(s->alignQueue))) {
-        if (corto_subscriber_invoke(NULL, 0, NULL, s, e)) {
-            corto_release(e);
-            goto error;
-        }
-
-        /* No need to release event. Ownership is transferred to invoke */
-    }
-
-    return 0;
-error:
-    return -1;
-}
-
-static
 const char tochar(
     const char *to,
     const char *ptr,
@@ -167,7 +50,11 @@ const char tochar(
 
 #define tch tochar(to, tptr, tolen)
 
-static bool chicmp(char ch1, char ch2) {
+static
+bool chicmp(
+    char ch1,
+    char ch2)
+{
     if (ch1 < 97) ch1 = tolower(ch1);
     if (ch2 < 97) ch2 = tolower(ch2);
     return ch1 == ch2;
@@ -243,17 +130,289 @@ void corto_pathstr(
     outptr[0] = '\0';
 }
 
+static
+int corto_subscriber_findEvent(
+    void *o1,
+    void *o2)
+{
+    corto_subscriberEvent *e1 = o1, *e2 = o2;
+    if (!strcmp(e2->data.id, e1->data.id) &&
+        !strcmp(e2->data.parent, e1->data.parent))
+    {
+        return false;
+    }
+    return true;
+}
+
+static
+void corto_subscriber_addToAlignQueue(
+    corto_subscriber this,
+    corto_subscriberEvent *e)
+{
+    void *ptr = corto_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
+    if (ptr) {
+        corto_release(*(void**)ptr);
+        *(void**)ptr = e;
+    } else {
+        corto_ll_append(this->alignQueue, e);
+    }
+    corto_claim(e);
+}
+
+typedef struct corto_fmtcache {
+    corto_fmt src_handle;
+    uintptr_t src_ptr;
+    corto_object o;
+    corto_value v;
+    const char *type;
+    corto_fmt_data cache[CORTO_MAX_CONTENTTYPE];
+    int32_t count;
+} corto_fmtcache;
+
+static
+corto_fmtcache corto_fmtcache_init(
+    corto_fmt src_handle,
+    uintptr_t src_ptr,
+    corto_object o,
+    const char *type)
+{
+    corto_fmtcache result = {
+        .src_handle = src_handle,
+        .src_ptr = src_ptr,
+        .o = o,
+        .type = type,
+        .count = 1
+    };
+
+    /* Reserve first spot for format of publisher */
+    result.cache[0].handle = (uintptr_t)src_handle;
+    result.cache[0].ptr = src_ptr;
+    result.cache[0].shared_count = 0;
+
+    if (o) {
+        result.v = corto_value_object(o, NULL);
+    }
+
+    return result;
+}
+
+static
+corto_fmt_data* corto_fmtcache_serialize(
+    corto_fmtcache *this,
+    corto_fmt dst_handle,
+    bool copy)
+{
+    int32_t index = -1;
+
+    if (dst_handle && this->src_handle && dst_handle == this->src_handle) {
+        /* Requested same format as provided by publisher */
+        index = 0;
+
+    } else if (dst_handle && this->src_ptr) {
+        /* Subcsriber requests different format */
+
+        /* Check if format has been serialized */
+        for (index = 0; index < this->count; index++) {
+            if (this->cache[index].handle == (uintptr_t)dst_handle) {
+                /* Index points to correct format */
+                break;
+            }
+        }
+
+        if (index == this->count) {
+            /* Format has not yet been serialized */
+
+            if (!this->o) {
+                /* Create intermediate object for serializing between formats */
+
+                /* Resolve type of object */
+                corto_type type = corto_resolve(NULL, this->type);
+                corto_try(!type, "failed to resolve type '%s'", this->type);
+
+                /* Create intermediate object */
+                this->o = corto(CORTO_DECLARE|CORTO_DEFINE, {
+                    .type = type,
+                    .attrs = -1
+                });
+                corto_try(!this->o, NULL);
+                corto_release(type);
+
+                /* Serialize from source format to intermediate object */
+                this->v = corto_value_object(this->o, NULL);
+                corto_try (
+                    this->src_handle->toValue(&this->v, this->src_ptr), NULL);
+            }
+
+            /* Serialize to destination format */
+            this->cache[index].ptr = dst_handle->fromValue(&this->v);
+            this->cache[index].handle = (uintptr_t)dst_handle;
+            this->count ++;
+        }
+    }
+
+    if (copy) {
+        if (!this->cache[index].shared_count) {
+            this->cache[index].shared_count = (uintptr_t)malloc(sizeof(int32_t));
+
+            /* Give it an initial count of two, so it is guaranteed that the
+             * serialized value won't be deleted until we finish notifying. The
+             * additional count is for the asynchronous subscriber that is
+             * currently requesting the serialization. */
+            *(int32_t*)this->cache[index].shared_count = 2;
+        } else {
+            /* Do an atomic incrememt, as asynchronous subscribers may already
+             * have been notified */
+            corto_ainc((int32_t*)this->cache[index].shared_count);
+        }
+    }
+
+    return &this->cache[index];
+error:
+    return NULL;
+}
+
+static
+void corto_fmtcache_deinit(
+    corto_fmtcache *this)
+{
+    /* Only cleanup first element when it has a shared count */
+    if (this->cache[0].shared_count) {
+        corto_fmt_data_deinit(&this->cache[0]);
+    }
+    int i;
+    for (i = 1; i < this->count; i ++) {
+        corto_fmt_data_deinit(&this->cache[i]);
+    }
+
+    /* If src_handle is provided, the object is an intermediate object */
+    if (this->o && this->src_handle) {
+        corto_release(this->o);
+    }
+}
+
+static
+int16_t corto_subscriber_invoke(
+    corto_object instance,
+    corto_eventMask mask,
+    corto_result *r,
+    corto_subscriber s,
+    corto_subscriberEvent *existing_event,
+    corto_fmtcache *cache)
+{
+    corto_dispatcher dispatcher = ((corto_observer)s)->dispatcher;
+    corto_subscriberEvent *event = existing_event;
+    corto_fmt_data *fmt = NULL;
+    bool synchronous = !dispatcher && !s->isAligning;
+
+    if (cache && s->fmt_handle) {
+        /* Use serialization cache if available & if subscriber requests a
+         * destination format. */
+        fmt = corto_fmtcache_serialize(
+            cache, (corto_fmt)s->fmt_handle, !synchronous);
+    }
+
+    if (synchronous) {
+        /* Deliver synchronously if the subscriber does not have a dispatcher
+         * and is not aligning data. */
+
+        corto_function f = corto_function(s);
+        corto_subscriberEvent e;
+
+        if (!event) {
+            e = (corto_subscriberEvent){
+                .instance = instance,
+                .event = mask,
+                .source = NULL,
+                .subscriber = s,
+                .data = *r,
+            };
+            if (fmt) {
+                e.fmt = *fmt;
+                e.data.value = fmt->ptr;
+            }
+            event = &e;
+        }
+
+        if (f->kind == CORTO_PROCEDURE_CDECL) {
+            if (f->fptr) {
+                ((void(*)(corto_subscriberEvent*))((corto_function)s)->fptr)(event);
+            }
+        } else {
+            void *args[] = {&event};
+            corto_invokeb((corto_function)s, NULL, args);
+        }
+        if (event != &e) {
+            /* When an existing_event was provided but needs to be synchronously
+             * delivered, this is an event from the alignment queue, and can be
+             * deleted after it has used. */
+            corto_try (corto_delete(event), NULL);
+        }
+    } else {
+        /* Asynchronously deliver event to subscriber. If no event was provided,
+         * create a new one */
+        if (!event) {
+            event = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o, .attrs = -1});
+            corto_set_ref(&event->subscriber, s);
+            corto_set_ref(&event->instance, instance);
+            corto_set_ref(&event->source, NULL);
+            corto_set_str(&event->data.id, r->id);
+            corto_set_str(&event->data.type, r->type);
+            corto_set_str(&event->data.parent, r->parent);
+            corto_set_ref(&event->data.object, r->object);
+            event->event = mask;
+            if (fmt) {
+                event->data.value = fmt->ptr;
+                event->fmt = *fmt;
+            } else {
+                event->data.value = r->value;
+            }
+            corto_try (corto_define(event), NULL);
+        }
+
+        if (s->isAligning) {
+            /* If this happens during alignment, add event to alignment queue */
+            corto_subscriber_addToAlignQueue(s, event);
+        } else {
+            /* Deliver event to dispatcher */
+            corto_dispatcher_post(dispatcher, (corto_event*)event);
+        }
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+static
+int16_t corto_subscriber_flushAlignQueue(
+    corto_subscriber s)
+{
+    corto_subscriberEvent *e;
+    while ((e = corto_ll_takeFirst(s->alignQueue))) {
+        if (corto_subscriber_invoke(NULL, 0, NULL, s, e, NULL)) {
+            corto_release(e);
+            goto error;
+        }
+
+        /* No need to release event. Ownership is transferred to invoke */
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 int16_t corto_notify_subscribersById(
     corto_eventMask mask,
     const char *path,
     const char *type,
-    const char *contentType,
+    const char *fmt,
     corto_word value)
 {
+    /* If there are no subscribers, quickly return */
     if (!corto_subscriber_admin.count) {
         return 0;
     }
-
 
     /* Subscribers only receive data events */
     if (!(mask & (CORTO_DEFINE|CORTO_UPDATE|CORTO_DELETE))) {
@@ -265,26 +424,31 @@ int16_t corto_notify_subscribersById(
         return 0;
     }
 
-    corto_object intermediate = NULL;
-    corto_value intermediateValue = corto_value_empty();
-    corto_fmt contentTypeHandle = NULL;
+    /* Intermediate object used for serializing between formats */
+    corto_object o = NULL;
     corto_object owner = corto_get_source();
-    corto_object objectOwner = owner;
-    bool valueIsObject = false;
+    corto_object object_source = owner;
+    bool value_is_object = false;
 
-    struct {
-        corto_fmt ct;
-        corto_word value;
-    } contentTypes[CORTO_MAX_CONTENTTYPE];
-    int32_t contentTypesCount = 0;
-
-    if (!contentType && value) {
-        intermediate = (corto_object)value;
-        intermediateValue = corto_value_object(intermediate, NULL);
-        objectOwner = corto_sourceof(intermediate);
-        valueIsObject = true;
+    /* Lookup publisher format */
+    corto_fmt fmt_handle = fmt ? corto_fmt_lookup(fmt) : NULL;
+    if (fmt && !fmt_handle) {
+        corto_throw("failed to load format '%s'", fmt);
+        goto error;
     }
 
+    /* If value is set but no format is provided, the value is an object */
+    if (!fmt_handle && value) {
+        /* Use provided object as intermediate, no extra serialization needed */
+        o = (corto_object)value;
+        object_source = corto_sourceof(o);
+        value_is_object = true;
+    }
+
+    /* Temporary storage for serialized values */
+    corto_fmtcache cache = corto_fmtcache_init(fmt_handle, value, o, type);
+
+    /* Normalize id and path */
     const char *sep = NULL, *id = strrchr(path, '/');
     const char *parent = NULL;
     if (id) {
@@ -305,40 +469,44 @@ int16_t corto_notify_subscribersById(
         : 0
         ;
 
+    /* Determine depth at which subscribers should start being invoked */
     int16_t depth = corto_entityAdmin_getDepthFromId(path);
 
+    /* Obtain global administration with subscribers */
     corto_entityAdmin *admin = corto_entityAdmin_get(&corto_subscriber_admin);
-    if (!admin) {
-        goto error;
-    }
+    corto_try(!admin, NULL);
 
     do {
         uint32_t sp, s;
         corto_id relativeParent;
 
+        /* Walk parents at specified depth */
         for (sp = 0; sp < admin->entities[depth].length; sp ++) {
             corto_entityPerParent *subPerParent = &admin->entities[depth].buffer[sp];
             bool relativeParentSet = FALSE;
 
+            /* Verify if path matches with subscribers in current branch */
             const char *expr = corto_matchParent(subPerParent->parent, path);
             if (!expr) {
                 continue;
             }
 
+            /* Walk subscribers for parent */
             for (s = 0; s < subPerParent->entities.length; s ++) {
                 corto_entity *sub = &subPerParent->entities.buffer[s];
                 corto_subscriber s = sub->e;
-                corto_word content = 0;
                 corto_object instance = sub->instance;
 
                 if (!s->query.select) {
                     continue;
                 }
 
+                /* If notification comes from subscriber instance, ignore */
                 if (instance && (instance == owner)) {
                     continue;
                 }
 
+                /* Verify that subscription type matches */
                 if (s->query.type && strcmp(s->query.type, type)) {
                     continue;
                 }
@@ -353,56 +521,6 @@ int16_t corto_notify_subscribersById(
                     }
                 } else if ((sep > expr) || expr[0] == '.') {
                     continue;
-                }
-
-                /* If subscriber requests content, convert to subscriber contentType */
-                if (s->contentType && contentType && !strcmp(s->contentType, contentType)) {
-                    content = value;
-                } else if (s->contentTypeHandle && value && type) {
-
-                    /* Check if contentType has already been loaded */
-                    int32_t i;
-                    for (i = 0; i < contentTypesCount; i++) {
-                        if ((corto_word)contentTypes[i].ct == s->contentTypeHandle) {
-                            content = contentTypes[i].value;
-                            break;
-                        }
-                    }
-
-                    /* contentType hasn't been loaded */
-                    if (i == contentTypesCount) {
-
-                        /* Has source contentType been loaded? */
-                        if (contentType && !contentTypeHandle) {
-                            /* Load contentType */
-                            contentTypeHandle = corto_fmt_lookup(contentType);
-                            if (!contentTypeHandle) {
-                                goto error;
-                            }
-
-                            /* Resolve type of object */
-                            corto_type t = corto_resolve(NULL, type);
-                            if (!t) {
-                                corto_throw("failed to resolve type '%s'", type);
-                                goto error;
-                            }
-
-                            /* Create intermediate object */
-                            if (!(intermediate = corto_create(NULL, NULL, t))) {
-                                goto error;
-                            }
-                            corto_release(t);
-                            intermediateValue = corto_value_object(intermediate, NULL);
-                            if (contentTypeHandle->toValue(&intermediateValue, value)) {
-                                goto error;
-                            }
-                        }
-
-                        contentTypes[i].ct = (corto_fmt)s->contentTypeHandle;
-                        contentTypes[i].value = contentTypes[i].ct->fromValue(&intermediateValue);
-                        content = contentTypes[i].value;
-                        contentTypesCount ++;
-                    }
                 }
 
                 /* Relative parent will be the same for each subscriber at same depth */
@@ -435,45 +553,27 @@ int16_t corto_notify_subscribersById(
                   .name = NULL,
                   .parent = parentPtr,
                   .type = (char*)type,
-                  .value = content,
                   .flags = 0,
-                  .object = valueIsObject ? intermediate : NULL,
-                  .owner = objectOwner
+                  .object = value_is_object ? o : NULL,
+                  .owner = object_source
                 };
 
-                if (s->isAligning) {
-                    if (corto_mutex_lock((corto_mutex)s->alignMutex)) {
-                        goto error;
-                    }
-
-                    corto_subscriber_invoke(instance, mask, &r, s, NULL);
-
-                    if (corto_mutex_unlock((corto_mutex)s->alignMutex)) {
-                        goto error;
-                    }
-                } else {
-                    corto_subscriber_invoke(instance, mask, &r, s, NULL);
-                }
+                if (s->isAligning) { corto_try(
+                    corto_mutex_lock((corto_mutex)s->alignMutex), NULL
+                );}
+                corto_subscriber_invoke(instance, mask, &r, s, NULL, &cache);
+                if (s->isAligning) { corto_try(
+                    corto_mutex_unlock((corto_mutex)s->alignMutex), NULL
+                );}
             }
         }
     } while (--depth >= 0);
 
-    /* Free up resources */
-    int32_t i;
-    for (i = 0; i < contentTypesCount; i++) {
-        contentTypes[i].ct->release(contentTypes[i].value);
-    }
-
-    /* Free intermediate format */
-    if (intermediate && contentType) {
-        corto_release(intermediate);
-    }
+    corto_fmtcache_deinit(&cache);
 
     return 0;
 error:
-    if (intermediate && contentType) {
-        corto_release(intermediate);
-    }
+    corto_fmtcache_deinit(&cache);
 
     return -1;
 }
@@ -755,9 +855,9 @@ int16_t corto_subscriber_construct(
         goto error;
     }
 
-    if (this->contentType && !this->contentTypeHandle) {
-        this->contentTypeHandle = (corto_word)corto_fmt_lookup(this->contentType);
-        if (!this->contentTypeHandle) {
+    if (this->contentType && !this->fmt_handle) {
+        this->fmt_handle = (corto_word)corto_fmt_lookup(this->contentType);
+        if (!this->fmt_handle) {
             goto error;
         }
     }
@@ -900,7 +1000,12 @@ int16_t corto_subscriber_subscribe(
      * end up in the queue */
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
-        corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL);
+        corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL, NULL);
+
+        /* Nifty trick to take ownership of the serialized value- that way there
+         * is no need to make a copy. The corto_select function will now not
+         * attempt to free the serialized value. */
+        r->value = 0;
     }
 
     this->isAligning = false;

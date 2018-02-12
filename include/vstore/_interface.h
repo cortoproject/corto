@@ -9,9 +9,6 @@
 
 #include <corto/_project.h>
 
-#include <corto/vstore/_type.h>
-#include <corto/vstore/_interface.h>
-#include <corto/vstore/_load.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +40,13 @@ void _corto_dispatcher_post(
 CORTO_EXPORT
 void _corto_event_handle(
     corto_event* _this);
+
+
+/* struct corto/vstore/fmt_data */
+
+CORTO_EXPORT
+void _corto_fmt_data_deinit(
+    corto_fmt_data* _this);
 
 
 /* struct corto/vstore/frame */
@@ -555,6 +559,7 @@ int16_t _corto_subscriberEvent_init(
 #ifndef BUILDING_CORTO
 #define corto_dispatcher_post_v(_this, e) _corto_dispatcher_post_v(corto_dispatcher(_this), e)
 #define corto_event_handle(_this) _corto_event_handle(_this)
+#define corto_fmt_data_deinit(_this) _corto_fmt_data_deinit(_this)
 #define corto_frame_getTime(_this) _corto_frame_getTime(_this)
 #define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
 #define corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
@@ -627,6 +632,7 @@ int16_t _corto_subscriberEvent_init(
 #else
 #define corto_dispatcher_post_v _corto_dispatcher_post_v
 #define corto_event_handle _corto_event_handle
+#define corto_fmt_data_deinit _corto_fmt_data_deinit
 #define corto_frame_getTime _corto_frame_getTime
 #define corto_invokeEvent_handle_v _corto_invokeEvent_handle_v
 #define corto_loader_construct _corto_loader_construct
@@ -701,6 +707,7 @@ int16_t _corto_subscriberEvent_init(
 #endif
 #define safe_corto_dispatcher_post_v(_this, e) _corto_dispatcher_post_v(corto_dispatcher(_this), e)
 #define safe_corto_event_handle(_this) _corto_event_handle(_this)
+#define safe_corto_fmt_data_deinit(_this) _corto_fmt_data_deinit(_this)
 #define safe_corto_frame_getTime(_this) _corto_frame_getTime(_this)
 #define safe_corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
 #define safe_corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))

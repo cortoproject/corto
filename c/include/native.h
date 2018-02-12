@@ -16,6 +16,7 @@ extern "C" {
 CORTO_EXPORT corto_native_type _corto_native_type__create(corto_object _parent, const char *_id, const char * name);
 #define corto_native_type__create(_parent, _id, name) _corto_native_type__create(_parent, _id, name)
 #define corto_native_type__create_auto(_parent, _id, name) corto_native_type _id = corto_native_type__create(_parent, #_id, name); (void)_id
+#define corto_native_type__declare(parent, id) (corto_native_type)corto_declare(parent, id, corto_native_type_o)
 CORTO_EXPORT corto_int16 _corto_native_type__update(corto_native_type _this, const char * name);
 #define corto_native_type__update(_this, name) _corto_native_type__update(corto_native_type(_this), name)
 

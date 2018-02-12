@@ -36,6 +36,7 @@
 #include <corto/vstore/_type.h>
 #include <corto/lang/_type.h>
 #include <corto/secure/_type.h>
+#include <corto/native/_type.h>
 
 /* Include main headers from builtin packages */
 #include <corto/lang/lang.h>
