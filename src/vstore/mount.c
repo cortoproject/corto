@@ -271,7 +271,7 @@ int16_t corto_mount_construct(
 
     if (s->contentType)
     {
-        if (!s->contentTypeHandle) {
+        if (!s->fmt_handle) {
             corto_mount_setContentTypeIn(this, s->contentType);
         }
 
@@ -1069,8 +1069,8 @@ int16_t corto_mount_setContentTypeIn(
 {
 
     corto_set_str(&corto_subscriber(this)->contentType, type);
-    corto_subscriber(this)->contentTypeHandle = (corto_word)corto_fmt_lookup(type);
-    if (!corto_subscriber(this)->contentTypeHandle) {
+    corto_subscriber(this)->fmt_handle = (corto_word)corto_fmt_lookup(type);
+    if (!corto_subscriber(this)->fmt_handle) {
         goto error;
     }
 

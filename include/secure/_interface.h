@@ -9,9 +9,6 @@
 
 #include <corto/_project.h>
 
-#include <corto/secure/_type.h>
-#include <corto/secure/_interface.h>
-#include <corto/secure/_load.h>
 
 #ifdef __cplusplus
 extern "C" {

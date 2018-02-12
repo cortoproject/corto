@@ -699,13 +699,13 @@ bool corto_selectIterMount(
             goto resume_failed;
         }
 
-        corto_fmt contentTypeHandle = (corto_fmt)mount->contentTypeOutHandle;
+        corto_fmt fmt_handle = (corto_fmt)mount->contentTypeOutHandle;
         corto_object prev = corto_set_source(mount);
         corto_object ref = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE, {
             .parent = parent,
             .id = result->id,
             .type = type,
-            .fmt = contentTypeHandle,
+            .fmt = fmt_handle,
             .value = (void*)result->value
         });
         corto_set_source(prev);

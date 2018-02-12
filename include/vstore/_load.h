@@ -57,6 +57,7 @@ CORTO_META_OBJECT(procedure, subscriber);
 CORTO_META_OBJECT(procedure, observer);
 CORTO_META_OBJECT(procedure, route);
 
+CORTO_META_OBJECT(struct, fmt_data);
 CORTO_META_OBJECT(struct, event);
 CORTO_META_OBJECT(struct, observerEvent);
 CORTO_META_OBJECT(struct, sample);

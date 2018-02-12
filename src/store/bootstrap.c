@@ -219,6 +219,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, struct),\
     SSO_OP_CLASS(lang_, union),\
     SSO_OP_VALUE(vstore_, event),\
+    SSO_OP_VALUE(vstore_, fmt_data),\
     SSO_OP_VALUE(vstore_, observerEvent),\
     SSO_OP_VALUE(vstore_, subscriberEvent),\
     SSO_OP_VALUE(vstore_, invokeEvent),\
@@ -315,6 +316,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* event */\
     SSO_OP_OBJ(vstore_event_handleAction),\
     SSO_OP_OBJ(vstore_event_handle_),\
+    /* fmt_data */\
+    SSO_OP_OBJ(vstore_fmt_data_ptr),\
+    SSO_OP_OBJ(vstore_fmt_data_handle),\
+    SSO_OP_OBJ(vstore_fmt_data_shared_count),\
+    SSO_OP_OBJ(vstore_fmt_data_deinit_),\
     /* observerEvent */\
     SSO_OP_OBJ(vstore_observerEvent_observer),\
     SSO_OP_OBJ(vstore_observerEvent_instance),\
@@ -331,7 +337,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_subscriberEvent_source),\
     SSO_OP_OBJ(vstore_subscriberEvent_event),\
     SSO_OP_OBJ(vstore_subscriberEvent_data),\
-    SSO_OP_OBJ(vstore_subscriberEvent_contentTypeHandle),\
+    SSO_OP_OBJ(vstore_subscriberEvent_fmt),\
     SSO_OP_OBJ(vstore_subscriberEvent_handle),\
     SSO_OP_OBJ(vstore_subscriberEvent_init_),\
     SSO_OP_OBJ(vstore_subscriberEvent_deinit_),\
@@ -665,7 +671,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_subscriber_instance),\
     SSO_OP_OBJ(vstore_subscriber_dispatcher),\
     SSO_OP_OBJ(vstore_subscriber_enabled),\
-    SSO_OP_OBJ(vstore_subscriber_contentTypeHandle),\
+    SSO_OP_OBJ(vstore_subscriber_fmt_handle),\
     SSO_OP_OBJ(vstore_subscriber_idmatch),\
     SSO_OP_OBJ(vstore_subscriber_isAligning),\
     SSO_OP_OBJ(vstore_subscriber_alignMutex),\

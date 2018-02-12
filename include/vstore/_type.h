@@ -53,6 +53,15 @@ typedef uint32_t corto_eventMask;
     #define CORTO_ON_METAVALUE (0x800)
     #define CORTO_ON_ANY (0xffff)
 
+/*  /corto/vstore/fmt_data */
+typedef struct corto_fmt_data corto_fmt_data;
+
+struct corto_fmt_data {
+    uintptr_t ptr;
+    uintptr_t handle;
+    uintptr_t shared_count;
+};
+
 /* /corto/vstore/frameKind */
 typedef enum corto_frameKind {
     CORTO_FRAME_NOW = 0,
@@ -107,7 +116,7 @@ struct corto_subscriber_s {
     struct corto_observer_s super;
     corto_query query;
     corto_string contentType;
-    uintptr_t contentTypeHandle;
+    uintptr_t fmt_handle;
     uintptr_t idmatch;
     bool isAligning;
     uintptr_t alignMutex;
@@ -357,7 +366,7 @@ struct corto_subscriberEvent {
     corto_object source;
     corto_eventMask event;
     corto_result data;
-    uintptr_t contentTypeHandle;
+    corto_fmt_data fmt;
 };
 
 typedef corto_iter corto_subscriberEventIter;
@@ -368,6 +377,7 @@ typedef corto_iter corto_subscriberEventIter;
 #define corto_handleAction(o) ((corto_handleAction*)corto_assert_type((corto_type)corto_handleAction_o, o))
 #define corto_event(o) ((corto_event*)corto_assert_type((corto_type)corto_event_o, o))
 #define corto_eventMask(o) ((corto_eventMask*)corto_assert_type((corto_type)corto_eventMask_o, o))
+#define corto_fmt_data(o) ((corto_fmt_data*)corto_assert_type((corto_type)corto_fmt_data_o, o))
 #define corto_frameKind(o) ((corto_frameKind*)corto_assert_type((corto_type)corto_frameKind_o, o))
 #define corto_frame(o) ((corto_frame*)corto_assert_type((corto_type)corto_frame_o, o))
 #define corto_observer(o) ((corto_observer)corto_assert_type((corto_type)corto_observer_o, o))
@@ -404,6 +414,7 @@ typedef corto_dispatcher _type_corto_dispatcher;
 typedef corto_handleAction _type_corto_handleAction;
 typedef corto_event _type_corto_event;
 typedef corto_eventMask _type_corto_eventMask;
+typedef corto_fmt_data _type_corto_fmt_data;
 typedef corto_frameKind _type_corto_frameKind;
 typedef corto_frame _type_corto_frame;
 typedef corto_observer _type_corto_observer;
