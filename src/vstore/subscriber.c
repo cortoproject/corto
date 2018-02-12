@@ -181,14 +181,17 @@ corto_fmtcache corto_fmtcache_init(
         .src_ptr = src_ptr,
         .o = o,
         .type = type,
-        .count = 1,
-        .v = corto_value_object(o, NULL)
+        .count = 1
     };
 
     /* Reserve first spot for format of publisher */
     result.cache[0].handle = (uintptr_t)src_handle;
     result.cache[0].ptr = src_ptr;
     result.cache[0].shared_count = 0;
+
+    if (o) {
+        result.v = corto_value_object(o, NULL);
+    }
 
     return result;
 }
