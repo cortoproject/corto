@@ -6,7 +6,7 @@ static const char *corto_secure_token;
 static corto_thread corto_secure_mainThread;
 
 static
-corto_entityAdmin corto_lock_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT}
+corto_entityAdmin corto_lock_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
 
 void corto_secure_init(void) {
     corto_secure_mainThread = corto_thread_self();
