@@ -483,6 +483,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_modifier_PRIVATE),\
     SSO_OP_OBJ(lang_modifier_READONLY),\
     SSO_OP_OBJ(lang_modifier_CONST),\
+    SSO_OP_OBJ(lang_modifier_NOT_NULL),\
     SSO_OP_OBJ(lang_modifier_HIDDEN),\
     SSO_OP_OBJ(lang_modifier_OPTIONAL),\
     SSO_OP_OBJ(lang_modifier_OBSERVABLE),\

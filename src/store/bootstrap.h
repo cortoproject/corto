@@ -840,6 +840,7 @@ CORTO_BITMASK_O(lang, modifier);
     CORTO_CONSTANT_O(lang_modifier, PRIVATE);
     CORTO_CONSTANT_O(lang_modifier, READONLY);
     CORTO_CONSTANT_O(lang_modifier, CONST);
+    CORTO_CONSTANT_O(lang_modifier, NOT_NULL);
     CORTO_CONSTANT_O(lang_modifier, HIDDEN);
     CORTO_CONSTANT_O(lang_modifier, OPTIONAL);
     CORTO_CONSTANT_O(lang_modifier, OBSERVABLE);

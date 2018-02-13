@@ -161,10 +161,11 @@ typedef uint32_t corto_modifier;
     #define CORTO_PRIVATE (0x2)
     #define CORTO_READONLY (0x4)
     #define CORTO_CONST (0x8)
-    #define CORTO_HIDDEN (0x10)
-    #define CORTO_OPTIONAL (0x20)
-    #define CORTO_OBSERVABLE (0x40)
-    #define CORTO_KEY (0x84)
+    #define CORTO_NOT_NULL (0x10)
+    #define CORTO_HIDDEN (0x20)
+    #define CORTO_OPTIONAL (0x40)
+    #define CORTO_OBSERVABLE (0x80)
+    #define CORTO_KEY (0x104)
 
 /*  unit */
 typedef struct corto_unit_s *corto_unit;
@@ -848,4 +849,3 @@ typedef corto_wordseq _type_corto_wordseq;
 }
 #endif
 #endif
-
