@@ -64,10 +64,14 @@ corto_int16 corto_ser_initCollection(
             break;
         case CORTO_MAP: {
             corto_type keyType = corto_map(t)->keyType;
-            if (corto_collection_requiresAlloc(keyType)) {
-                *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
+            if (keyType) {
+                if (corto_collection_requiresAlloc(keyType)) {
+                    *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
+                } else {
+                    *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);
+                }
             } else {
-                *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);
+                /* Custom compare function, app is responsible for init */
             }
             break;
         }
