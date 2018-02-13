@@ -91,7 +91,7 @@ class ListMount : mount, hidden:/
     alias mount : mount/mount
     alias mask : observer/mask
     kind : ownership
-    items: resultList, private
+    items: resultList, private|not_null
     int16 construct()
     resultIter on_query(vstore/query query) override
 
@@ -111,7 +111,7 @@ class MountIterCount: mount, hidden:/
 
 class VirtualMount: mount, hidden:/
     mount: string
-    data: resultList,private
+    data: resultList, private|not_null
     resultIter on_query(vstore/query query) override
     int16 construct()
 
@@ -191,9 +191,9 @@ class HistoryMount : vstore/mount, hidden:/
 
     struct data:/
         result: vstore/result
-        history: list{string}
+        history: list{string}, not_null
 
-    history: list{data}, private
+    history: list{data}, private|not_null
 
 test/Suite SelectHistory:/
     void setup() method
@@ -206,7 +206,7 @@ class SinkMount : vstore/mount, hidden:/
     alias mount: mount/mount
     type: string
     value: string
-    items: resultList, private
+    items: resultList, private|not_null
     int16 construct()
     resultIter on_query(vstore/query query) override
     object on_resume(string parent, string id, object object) override
@@ -215,11 +215,11 @@ class AutoResumeSinkMount : vstore/mount, hidden:/
     alias mount: mount/mount
     type: string
     value: string
-    subscribes: list{vstore/query},readonly
-    unsubscribes: list{vstore/query},readonly
-    mounts: list{vstore/query},readonly
-    unmounts: list{vstore/query},readonly
-    items: resultList, private
+    subscribes: list{vstore/query}, readonly|not_null
+    unsubscribes: list{vstore/query}, readonly|not_null
+    mounts: list{vstore/query}, readonly|not_null
+    unmounts: list{vstore/query}, readonly|not_null
+    items: resultList, private|not_null
     int16 construct()
     resultIter on_query(vstore/query query) override
     word on_subscribe(vstore/query query, word ctx) override
@@ -231,7 +231,7 @@ class VirtualSinkMount : vstore/mount, hidden:/
     from: string
     int16 construct()
     resultIter on_query(vstore/query query) override
-    items: resultList, private
+    items: resultList, private|not_null
     count: int32, readonly
 
 class ObjectMount : vstore/mount, hidden:/
@@ -249,7 +249,7 @@ class LoaderSimulatorMount : vstore/mount, hidden:/
     int16 construct()
     resultIter on_query(vstore/query query) override
     queryCount: int32, private
-    items: resultList, private
+    items: resultList, private|not_null
 
 // Simple mount serving single object
 class SimpleMount: vstore/mount:/

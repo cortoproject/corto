@@ -35,10 +35,10 @@ struct Line:/
     start, stop: Point
 
 struct CompositeWithReferenceTypeWithInit:/
-    m: list{Foo}
+    m: list{Foo}, not_null
 
 struct CompositeWithReferenceTypeDefaults:/
-    m: list{DefaultValues}
+    m: list{DefaultValues}, not_null
 
 struct CompositeWithString:/
     a: int32
@@ -131,16 +131,16 @@ struct struct_sequenceStruct:/
     m: sequence{Point}
 
 struct struct_listInt:/
-    m: list{int32}
+    m: list{int32}, not_null
 
 struct struct_listReference:/
-    m: list{object}
+    m: list{object}, not_null
 
 struct struct_listString:/
-    m: list{string}
+    m: list{string}, not_null
 
 struct struct_listStruct:/
-    m: list{Point}
+    m: list{Point}, not_null
 
 struct struct_observableInt:/
     m: int32, observable
@@ -203,7 +203,7 @@ struct struct_targetSequence:/
     m: target{IntSequence}
 
 struct struct_targetList:/
-    m: target{IntList}
+    m: target{IntList}, not_null
 
 enum TypeKind :/
     Int,
@@ -1223,7 +1223,7 @@ class SubscriberTest:/
     lastParent: string, readonly
     lastId: string, readonly
     lastMask: eventMask, readonly
-    triggered: list{subscriber}, readonly
+    triggered: list{subscriber}, readonly|not_null
 
     int16 construct()
     void destruct()
@@ -1539,7 +1539,7 @@ test/Suite StringSerializer:/
     void tc_serStructInherit()
 
 class AnonymousTest:/
-    objects: list{object}
+    objects: list{object}, not_null
 
 // String deserializer testcases
 test/Suite StringDeserializer:/
@@ -1714,7 +1714,7 @@ struct AccessRule:/
     access: secure/accessKind
 
 class TestLock: secure/lock:/
-    rules: list{AccessRule}
+    rules: list{AccessRule}, not_null
     secure/accessKind authorize(string token, secure/actionKind action) override
 
 // Test security

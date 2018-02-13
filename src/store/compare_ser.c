@@ -161,6 +161,10 @@ static corto_equalityKind corto_collection_compareArrayWithList(corto_collection
     void *e1, *e2;
     corto_type elementType = t->elementType;
 
+    if (!list) {
+        return CORTO_GT;
+    }
+
     iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         if (corto_collection_requiresAlloc(elementType)) {
@@ -184,6 +188,12 @@ static corto_equalityKind corto_collection_compareListWithList(corto_collection 
     corto_iter iter1, iter2;
     void *e1, *e2;
     corto_type elementType = t->elementType;
+
+    if (list1 && !list2) {
+        return CORTO_GT;
+    } else if (!list1 && list2) {
+        return CORTO_LT;
+    }
 
     iter1 = corto_ll_iter(list1);
     iter2 = corto_ll_iter(list2);
@@ -286,6 +296,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
         void *array1=NULL, *array2=NULL;
         corto_ll list1=NULL, list2=NULL;
         corto_uint32 elementSize=0, mem=0;
+        bool v1IsList = false, v2IsList = false;
 
         elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
 
@@ -302,6 +313,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
                 break;
             case CORTO_LIST:
                 list1 = *(corto_ll*)v1;
+                v1IsList = true;
                 break;
             case CORTO_MAP:
                 break;
@@ -316,6 +328,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
                 break;
             case CORTO_LIST:
                 list2 = *(corto_ll*)v2;
+                v2IsList = true;
                 break;
             case CORTO_MAP:
                 break;
@@ -327,7 +340,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
             } else if (list2) {
                 result = corto_collection_compareArrayWithList(corto_collection(t1), array1, elementSize, list2);
             }
-        } else if (list1) {
+        } else if (v1IsList) {
             if (array2) {
                 result = corto_collection_compareArrayWithList(corto_collection(t1), array2, elementSize, list1);
                 /* Reverse result */
@@ -338,7 +351,7 @@ static corto_int16 corto_ser_collection(corto_walk_opt* s, corto_value *info, vo
                         result = CORTO_GT;
                     }
                 }
-            } else if (list2) {
+            } else if (v2IsList) {
                 result = corto_collection_compareListWithList(corto_collection(t1), list1, list2);
             }
         }

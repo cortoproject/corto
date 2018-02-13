@@ -5,6 +5,11 @@
 int16_t corto_target_construct(
     corto_target this)
 {
+    bool modifiers = 0;
+    if (this->type->kind == CORTO_COLLECTION) {
+        /* Automatically initialize collections */
+        modifiers = CORTO_NOT_NULL;
+    }
 
     corto_member actual = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {
         .parent = this, .id = "actual", .type = corto_member_o});
@@ -13,6 +18,7 @@ int16_t corto_target_construct(
     }
     if (!corto_check_state(actual, CORTO_VALID)) {
         corto_set_ref(&actual->type, this->type);
+        actual->modifiers = modifiers;
         if (!corto(CORTO_DEFINE, {.object = actual})) {
             goto error;
         }
@@ -25,6 +31,7 @@ int16_t corto_target_construct(
     }
     if (!corto_check_state(target, CORTO_VALID)) {
         corto_set_ref(&target->type, this->type);
+        target->modifiers = modifiers;
         if (!corto(CORTO_DEFINE, {.object = target})) {
             goto error;
         }
@@ -37,6 +44,7 @@ int16_t corto_target_construct(
     }
     if (!corto_check_state(objective, CORTO_VALID)) {
         corto_set_ref(&objective->type, this->type);
+        objective->modifiers = modifiers;
         if (!corto(CORTO_DEFINE, {.object = objective})) {
             goto error;
         }

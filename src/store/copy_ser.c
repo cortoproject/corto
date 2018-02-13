@@ -306,6 +306,7 @@ int16_t corto_ser_collection(
     corto_copy_ser_t *data = userData;
     uint32_t result = 0;
     corto_bool v1IsArray = FALSE, v2IsArray = FALSE;
+    bool srcIsList = false, dstIsList = false;
 
     CORTO_UNUSED(s);
 
@@ -347,12 +348,8 @@ int16_t corto_ser_collection(
                 break;
             case CORTO_LIST:
                 srcList = *(corto_ll*)src;
-
-                corto_assert(
-                    srcList != NULL,
-                    "invalid list value (expected instance of %s)",
-                    corto_fullpath(NULL, t1));
                 size1 = corto_ll_count(srcList);
+                srcIsList = true;
                 break;
             case CORTO_MAP:
                 break;
@@ -369,13 +366,14 @@ int16_t corto_ser_collection(
                 break;
             case CORTO_LIST:
                 dstList = *(corto_ll*)dst;
-                corto_assert(
-                    dstList != NULL,
-                    "invalid list value (expected instance of %s)",
-                    corto_fullpath(NULL, t2));
+                dstIsList = true;
                 break;
             case CORTO_MAP:
                 break;
+        }
+
+        if (dstIsList && !dstList && size1) {
+            *(corto_ll*)dst = dstList = corto_ll_new();
         }
 
         if (v1IsArray) {
@@ -393,14 +391,18 @@ int16_t corto_ser_collection(
                 corto_collection_resizeList(corto_collection(t1), dstList, size1);
                 result = corto_collection_copyListToArray(corto_collection(t1), array1, elementSize, dstList, TRUE);
             }
-        } else if (srcList) {
+        } else if (srcIsList) {
             if (array2) {
                 array2 = corto_collection_resizeArray(corto_collection(t2), dst, size1);
                 result = corto_collection_copyListToArray(corto_collection(t1), array2, elementSize, srcList, FALSE);
-            } else if (dstList) {
+            } else if (dstIsList) {
                 corto_collection_resizeList(corto_collection(t1), dstList, size1);
                 result = corto_collection_copyListToList(corto_collection(t1), dstList, srcList);
             }
+        }
+        if (dstList && srcIsList && !srcList) {
+            corto_ll_free(dstList); /* List should be empty by now */
+            *(corto_ll*)dst = NULL;
         }
     }
 

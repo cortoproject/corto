@@ -297,8 +297,7 @@ CORTO_SEQUENCE(dummySeq,void*,);
     break;
 
 #define LIST_FREE()\
-    corto_ll_free(*(corto_ll*)ptr);\
-    break;
+    corto_ll_free(*(corto_ll*)ptr);
 
 #define ARRAY_OP(size_of, action)\
     aptr = ptr;\
@@ -319,14 +318,17 @@ CORTO_SEQUENCE(dummySeq,void*,);
     SEQ_FREE();
 
 #define LIST_OP(size_of, action) {\
-    corto_ll_node n = (*(corto_ll*)ptr)->first;\
-    while (n) {\
-        elem = n->data;\
-        n = n->next;\
-        (void)elem;\
-        action;\
+    if (*(corto_ll*)ptr) {\
+        corto_ll_node n = (*(corto_ll*)ptr)->first;\
+        while (n) {\
+            elem = n->data;\
+            n = n->next;\
+            (void)elem;\
+            action;\
+        }\
+        LIST_FREE();\
     }\
-    LIST_FREE();\
+    break;\
 }
 
 #define ARRAY_OPS(op, size_of, action)\
@@ -340,7 +342,7 @@ CORTO_SEQUENCE(dummySeq,void*,);
     case FREEOPS_LIST##postfix: LIST_OP(size_of, action);
 
 #define LIST_OPS_NOITER(postfix, size_of, action)\
-    case FREEOPS_LIST##postfix: LIST_FREE();
+    case FREEOPS_LIST##postfix: LIST_FREE(); break;
 
 /* Macro's that facilitate safe freeing of values */
 #define deref_mem_free(ptr) deref = *(void**)ptr; if (deref) free(deref);

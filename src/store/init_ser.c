@@ -52,6 +52,7 @@ corto_int16 corto_ser_initCollection(
 {
     corto_collection t = (corto_collection)corto_value_typeof(v);
     void *o = corto_value_ptrof(v);
+    corto_member m = v->is.member.t;
 
     switch(t->kind) {
         case CORTO_ARRAY:
@@ -60,21 +61,24 @@ corto_int16 corto_ser_initCollection(
             }
             break;
         case CORTO_LIST:
-            *(corto_ll*)o = corto_ll_new();
-            break;
-        case CORTO_MAP: {
-            corto_type keyType = corto_map(t)->keyType;
-            if (keyType) {
-                if (corto_collection_requiresAlloc(keyType)) {
-                    *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
-                } else {
-                    *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);
-                }
-            } else {
-                /* Custom compare function, app is responsible for init */
+            if (!m || m->modifiers & CORTO_NOT_NULL) {
+                *(corto_ll*)o = corto_ll_new();
             }
             break;
-        }
+        case CORTO_MAP:
+            if (!m || m->modifiers & CORTO_NOT_NULL) {
+                corto_type keyType = corto_map(t)->keyType;
+                if (keyType) {
+                    if (corto_collection_requiresAlloc(keyType)) {
+                        *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
+                    } else {
+                        *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);
+                    }
+                } else {
+                    /* Custom compare function, app is responsible for init */
+                }
+                break;
+            }
         default:
             break;
     }
