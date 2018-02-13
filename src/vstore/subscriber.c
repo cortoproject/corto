@@ -24,7 +24,7 @@ typedef struct corto_subscribeRequest {
     void (*callback)(corto_subscriberEvent*);
 } corto_subscribeRequest;
 
-corto_entityAdmin corto_subscriber_admin = CORTO_ENTITYADMIN_INIT;
+corto_entityAdmin corto_subscriber_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
 
 static
 const char tochar(

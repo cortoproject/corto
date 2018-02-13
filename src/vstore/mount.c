@@ -3,12 +3,7 @@
 #include <corto/corto.h>
 #include "src/store/object.h"
 extern corto_tls CORTO_KEY_MOUNT_RESULT;
-corto_entityAdmin corto_mount_admin = {
-    .key = 0,
-    .count = 0,
-    .lock = CORTO_RWMUTEX_INIT,
-    .changed = 0
-};
+corto_entityAdmin corto_mount_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
 
 void corto_mount_subscribeOrMount(
     corto_mount this,
