@@ -10,7 +10,7 @@ void test_Observers_setup(
 
 
 void dispatchObserver_onUpdate(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
@@ -48,7 +48,7 @@ void test_Observers_tc_dispatchObserver(
 }
 
 
-void notifyReadDenied_onUpdate(corto_observerEvent *e)
+void notifyReadDenied_onUpdate(corto_observer_event *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
@@ -143,7 +143,7 @@ void test_Observers_tc_notObserving(
 }
 
 
-void tc_observeAlignCallbackSelf(corto_observerEvent *e) {
+void tc_observeAlignCallbackSelf(corto_observer_event *e) {
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "o");
     test_assert(e->event == CORTO_DEFINE);
@@ -164,7 +164,7 @@ void test_Observers_tc_observeAlignSelf(
 }
 
 
-void tc_observeAlignCallbackType(corto_observerEvent *e) {
+void tc_observeAlignCallbackType(corto_observer_event *e) {
     test_Observers this = e->instance;
     test_assert(e->data != NULL);
     test_assertstr(corto_idof(e->data), "p");
@@ -228,7 +228,7 @@ void test_Observers_tc_observerMissingObservable(
 }
 
 
-void observeTypeFilter_onUpdate(corto_observerEvent *e)
+void observeTypeFilter_onUpdate(corto_observer_event *e)
 {
     test_Observers this = e->instance;
     this->mask = e->event;
@@ -293,7 +293,7 @@ void test_Observers_tc_observeTypeFilterUnresolved(
 
 
 void observeWithMultipleInstances_onUpdate(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_Observers this = corto_observer(e->observer)->instance;
     this->mask = e->event;

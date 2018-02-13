@@ -21,7 +21,7 @@ typedef struct corto_subscribeRequest {
     const char *contentType;
     corto_dispatcher dispatcher;
     bool enabled;
-    void (*callback)(corto_subscriberEvent*);
+    void (*callback)(corto_subscriber_event*);
 } corto_subscribeRequest;
 
 corto_entityAdmin corto_subscriber_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
@@ -130,7 +130,7 @@ int corto_subscriber_findEvent(
     void *o1,
     void *o2)
 {
-    corto_subscriberEvent *e1 = o1, *e2 = o2;
+    corto_subscriber_event *e1 = o1, *e2 = o2;
     if (!strcmp(e2->data.id, e1->data.id) &&
         !strcmp(e2->data.parent, e1->data.parent))
     {
@@ -142,7 +142,7 @@ int corto_subscriber_findEvent(
 static
 void corto_subscriber_addToAlignQueue(
     corto_subscriber this,
-    corto_subscriberEvent *e)
+    corto_subscriber_event *e)
 {
     void *ptr = corto_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
     if (ptr) {
@@ -289,11 +289,11 @@ int16_t corto_subscriber_invoke(
     corto_eventMask mask,
     corto_result *r,
     corto_subscriber s,
-    corto_subscriberEvent *existing_event,
+    corto_subscriber_event *existing_event,
     corto_fmtcache *cache)
 {
     corto_dispatcher dispatcher = ((corto_observer)s)->dispatcher;
-    corto_subscriberEvent *event = existing_event;
+    corto_subscriber_event *event = existing_event;
     corto_fmt_data *fmt = NULL;
     bool synchronous = !dispatcher && !s->isAligning;
 
@@ -309,10 +309,10 @@ int16_t corto_subscriber_invoke(
          * and is not aligning data. */
 
         corto_function f = corto_function(s);
-        corto_subscriberEvent e;
+        corto_subscriber_event e;
 
         if (!event) {
-            e = (corto_subscriberEvent){
+            e = (corto_subscriber_event){
                 .instance = instance,
                 .event = mask,
                 .source = NULL,
@@ -328,7 +328,7 @@ int16_t corto_subscriber_invoke(
 
         if (f->kind == CORTO_PROCEDURE_CDECL) {
             if (f->fptr) {
-                ((void(*)(corto_subscriberEvent*))((corto_function)s)->fptr)(event);
+                ((void(*)(corto_subscriber_event*))((corto_function)s)->fptr)(event);
             }
         } else {
             void *args[] = {&event};
@@ -344,7 +344,7 @@ int16_t corto_subscriber_invoke(
         /* Asynchronously deliver event to subscriber. If no event was provided,
          * create a new one */
         if (!event) {
-            event = corto(CORTO_DECLARE, {.type = corto_subscriberEvent_o, .attrs = -1});
+            event = corto(CORTO_DECLARE, {.type = corto_subscriber_event_o, .attrs = -1});
             corto_set_ref(&event->subscriber, s);
             corto_set_ref(&event->instance, instance);
             corto_set_ref(&event->source, NULL);
@@ -381,7 +381,7 @@ static
 int16_t corto_subscriber_flushAlignQueue(
     corto_subscriber s)
 {
-    corto_subscriberEvent *e;
+    corto_subscriber_event *e;
     while ((e = corto_ll_takeFirst(s->alignQueue))) {
         if (corto_subscriber_invoke(NULL, 0, NULL, s, e, NULL)) {
             corto_release(e);
@@ -698,7 +698,7 @@ corto_subscribe__fluent corto_subscribeFrom(
 
 static
 corto_subscriber corto_subscribeCallback(
-    void (*callback)(corto_subscriberEvent*))
+    void (*callback)(corto_subscriber_event*))
 {
     corto_subscriber result = NULL;
 
@@ -917,7 +917,7 @@ int16_t corto_subscriber_init(
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("e");
     p->passByReference = FALSE;
-    corto_set_ref(&p->type, corto_subscriberEvent_o);
+    corto_set_ref(&p->type, corto_subscriber_event_o);
 
     this->alignMutex = (uintptr_t)corto_alloc(sizeof(corto_mutex_s));
     if (corto_mutex_new((corto_mutex)this->alignMutex)) {

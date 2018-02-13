@@ -644,7 +644,7 @@ typedef struct corto_observe__fluent {
      * @param callback An observer callback function.
      */
     corto_observer ___ (*callback)(
-        void (*r)(corto_observerEvent*));
+        void (*r)(corto_observer_event*));
 } corto_observe__fluent;
 
 
@@ -715,11 +715,11 @@ struct corto_observe__fluent corto_observe(
  * When there are still events in flight when this function is called (something
  * that can happen when a dispatcher is pushing events to another thread) the
  * application can prevent delivery of the event by checking the state of the
- * observer object, which is part of the `corto_observerEvent` instance, by doing:
+ * observer object, which is part of the `corto_observer_event` instance, by doing:
  *
 @verbatim
 ```c
-void myDispatcher_post(corto_observerEvent *e) {
+void myDispatcher_post(corto_observer_event *e) {
     if (!corto_check_state(e->observer, CORTO_DELETED)) {
         corto_event_handle(e);
     } else {

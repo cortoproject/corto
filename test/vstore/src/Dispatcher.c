@@ -1,7 +1,7 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-void observerCallback(corto_observerEvent *event) {
+void observerCallback(corto_observer_event *event) {
     test_Dispatcher instance = event->instance;
     instance->observerPosted ++;
 }
@@ -50,7 +50,7 @@ void test_Dispatcher_tc_observerDispatcherMulti(
     test_assert(corto_delete(obj) == 0);
 }
 
-void subscriberCallback(corto_subscriberEvent *event) {
+void subscriberCallback(corto_subscriber_event *event) {
     test_Dispatcher instance = event->instance;
     if (event->event == CORTO_UPDATE) {
         instance->subscriberPosted ++;

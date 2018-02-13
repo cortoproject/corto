@@ -447,7 +447,7 @@ void test_ObjectMgmt_tc_createInvalidType(
 
 }
 
-corto_void onCreateNested(corto_observerEvent *e)
+corto_void onCreateNested(corto_observer_event *e)
 {
     test_EventCount *counter = e->instance;
 
@@ -988,7 +988,7 @@ void test_ObjectMgmt_tc_declareInvalidType(
     test_assert(corto_catch());
 }
 
-corto_void onDeclareNested(corto_observerEvent *e)
+corto_void onDeclareNested(corto_observer_event *e)
 {
     test_EventCount *counter = e->instance;
 

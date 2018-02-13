@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 void test_AutoResumeSink_onDeclare(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_AutoResumeSink this = e->instance;
     this->declared ++;
@@ -10,7 +10,7 @@ void test_AutoResumeSink_onDeclare(
 }
 
 void test_AutoResumeSink_onDefine(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_AutoResumeSink this = e->instance;
     this->defined ++;
@@ -18,7 +18,7 @@ void test_AutoResumeSink_onDefine(
 }
 
 void test_AutoResumeSink_onDelete(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_AutoResumeSink this = e->instance;
     this->deleted ++;
@@ -26,7 +26,7 @@ void test_AutoResumeSink_onDelete(
 }
 
 void test_AutoResumeSink_on_resume(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_AutoResumeSink this = e->instance;
     this->resumed ++;
@@ -34,7 +34,7 @@ void test_AutoResumeSink_on_resume(
 }
 
 void test_AutoResumeSink_onSuspend(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_AutoResumeSink this = e->instance;
     this->suspended ++;
@@ -42,7 +42,7 @@ void test_AutoResumeSink_onSuspend(
 }
 
 void test_AutoResumeSink_on__update(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_AutoResumeSink this = e->instance;
     this->updated ++;
@@ -833,7 +833,7 @@ void test_AutoResumeSink_teardown(
 }
 
 void test_AutoResumeSink_onUpdate(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     /* Insert implementation */
 }

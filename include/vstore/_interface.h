@@ -126,24 +126,24 @@ void _corto_mount_invoke(
 CORTO_EXPORT
 void _corto_mount_on_batch_notify_v(
     corto_mount _this,
-    corto_subscriberEventIter events);
+    corto_subscriber_eventIter events);
 
-/* void corto_mount_on_batch_notify(corto_mount, corto_subscriberEventIter) */
+/* void corto_mount_on_batch_notify(corto_mount, corto_subscriber_eventIter) */
 #define corto_mount_on_batch_notify(_this, events) ( \
     ((corto_function)corto_mount_on_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriber_eventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
     : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1], NULL, corto_mount(_this), events) \
     )
 
 CORTO_EXPORT
 void _corto_mount_on_history_batch_notify_v(
     corto_mount _this,
-    corto_subscriberEventIter events);
+    corto_subscriber_eventIter events);
 
-/* void corto_mount_on_history_batch_notify(corto_mount, corto_subscriberEventIter) */
+/* void corto_mount_on_history_batch_notify(corto_mount, corto_subscriber_eventIter) */
 #define corto_mount_on_history_batch_notify(_this, events) ( \
     ((corto_function)corto_mount_on_history_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriber_eventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
     : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1], NULL, corto_mount(_this), events) \
     )
 
@@ -200,12 +200,12 @@ uintptr_t _corto_mount_on_mount_v(
 CORTO_EXPORT
 void _corto_mount_on_notify_v(
     corto_mount _this,
-    corto_subscriberEvent *event);
+    corto_subscriber_event *event);
 
-/* void corto_mount_on_notify(corto_mount, corto_subscriberEvent *) */
+/* void corto_mount_on_notify(corto_mount, corto_subscriber_event *) */
 #define corto_mount_on_notify(_this, event) ( \
     ((corto_function)corto_mount_on_notify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEvent *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_notify_o)->index - 1])->fptr)(corto_mount(_this), event) \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriber_event *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_notify_o)->index - 1])->fptr)(corto_mount(_this), event) \
     : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_notify_o)->index - 1], NULL, corto_mount(_this), event) \
     )
 
@@ -262,13 +262,13 @@ uintptr_t _corto_mount_on_transaction_begin_v(
 CORTO_EXPORT
 void _corto_mount_on_transaction_end_v(
     corto_mount _this,
-    corto_subscriberEventIter events,
+    corto_subscriber_eventIter events,
     uintptr_t ctx);
 
-/* void corto_mount_on_transaction_end(corto_mount, corto_subscriberEventIter, uintptr_t) */
+/* void corto_mount_on_transaction_end(corto_mount, corto_subscriber_eventIter, uintptr_t) */
 #define corto_mount_on_transaction_end(_this, events, ctx) ( \
     ((corto_function)corto_mount_on_transaction_end_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriberEventIter, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_end_o)->index - 1])->fptr)(corto_mount(_this), events, ctx) \
+    ? ((_type_corto_void (*)(corto_object, corto_subscriber_eventIter, uintptr_t))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_end_o)->index - 1])->fptr)(corto_mount(_this), events, ctx) \
     : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_transaction_end_o)->index - 1], NULL, corto_mount(_this), events, ctx) \
     )
 
@@ -392,19 +392,19 @@ int16_t _corto_observer_unobserve(
     corto_object observable);
 
 
-/* struct corto/vstore/observerEvent */
+/* struct corto/vstore/observer_event */
 
 CORTO_EXPORT
-void _corto_observerEvent_deinit(
-    corto_observerEvent* _this);
+void _corto_observer_event_deinit(
+    corto_observer_event* _this);
 
 CORTO_EXPORT
-void _corto_observerEvent_handle(
+void _corto_observer_event_handle(
     corto_event *e);
 
 CORTO_EXPORT
-int16_t _corto_observerEvent_init(
-    corto_observerEvent* _this);
+int16_t _corto_observer_event_init(
+    corto_observer_event* _this);
 
 
 /* struct corto/vstore/query */
@@ -541,19 +541,19 @@ int16_t _corto_subscriber_unsubscribe(
     corto_object instance);
 
 
-/* struct corto/vstore/subscriberEvent */
+/* struct corto/vstore/subscriber_event */
 
 CORTO_EXPORT
-void _corto_subscriberEvent_deinit(
-    corto_subscriberEvent* _this);
+void _corto_subscriber_event_deinit(
+    corto_subscriber_event* _this);
 
 CORTO_EXPORT
-void _corto_subscriberEvent_handle(
+void _corto_subscriber_event_handle(
     corto_event *e);
 
 CORTO_EXPORT
-int16_t _corto_subscriberEvent_init(
-    corto_subscriberEvent* _this);
+int16_t _corto_subscriber_event_init(
+    corto_subscriber_event* _this);
 
 /* -- Support macro's -- */
 #ifndef BUILDING_CORTO
@@ -602,9 +602,9 @@ int16_t _corto_subscriberEvent_init(
 #define corto_observer_observe(_this, instance, observable) _corto_observer_observe(corto_observer(_this), instance, observable)
 #define corto_observer_observing(_this, instance, observable) _corto_observer_observing(corto_observer(_this), instance, observable)
 #define corto_observer_unobserve(_this, instance, observable) _corto_observer_unobserve(corto_observer(_this), instance, observable)
-#define corto_observerEvent_deinit(_this) _corto_observerEvent_deinit(_this)
-#define corto_observerEvent_handle(e) _corto_observerEvent_handle(e)
-#define corto_observerEvent_init(_this) _corto_observerEvent_init(_this)
+#define corto_observer_event_deinit(_this) _corto_observer_event_deinit(_this)
+#define corto_observer_event_handle(e) _corto_observer_event_handle(e)
+#define corto_observer_event_init(_this) _corto_observer_event_init(_this)
 #define corto_query_cardinality(_this) _corto_query_cardinality(_this)
 #define corto_query_match(_this, result) _corto_query_match(_this, result)
 #define corto_result_contentof(_this, contentType) _corto_result_contentof(_this, contentType)
@@ -626,9 +626,9 @@ int16_t _corto_subscriberEvent_init(
 #define corto_subscriber_init(_this) _corto_subscriber_init(corto_subscriber(_this))
 #define corto_subscriber_subscribe(_this, instance) _corto_subscriber_subscribe(corto_subscriber(_this), instance)
 #define corto_subscriber_unsubscribe(_this, instance) _corto_subscriber_unsubscribe(corto_subscriber(_this), instance)
-#define corto_subscriberEvent_deinit(_this) _corto_subscriberEvent_deinit(_this)
-#define corto_subscriberEvent_handle(e) _corto_subscriberEvent_handle(e)
-#define corto_subscriberEvent_init(_this) _corto_subscriberEvent_init(_this)
+#define corto_subscriber_event_deinit(_this) _corto_subscriber_event_deinit(_this)
+#define corto_subscriber_event_handle(e) _corto_subscriber_event_handle(e)
+#define corto_subscriber_event_init(_this) _corto_subscriber_event_init(_this)
 #else
 #define corto_dispatcher_post_v _corto_dispatcher_post_v
 #define corto_event_handle _corto_event_handle
@@ -675,9 +675,9 @@ int16_t _corto_subscriberEvent_init(
 #define corto_observer_observe _corto_observer_observe
 #define corto_observer_observing _corto_observer_observing
 #define corto_observer_unobserve _corto_observer_unobserve
-#define corto_observerEvent_deinit _corto_observerEvent_deinit
-#define corto_observerEvent_handle _corto_observerEvent_handle
-#define corto_observerEvent_init _corto_observerEvent_init
+#define corto_observer_event_deinit _corto_observer_event_deinit
+#define corto_observer_event_handle _corto_observer_event_handle
+#define corto_observer_event_init _corto_observer_event_init
 #define corto_query_cardinality _corto_query_cardinality
 #define corto_query_match _corto_query_match
 #define corto_result_contentof _corto_result_contentof
@@ -699,9 +699,9 @@ int16_t _corto_subscriberEvent_init(
 #define corto_subscriber_init _corto_subscriber_init
 #define corto_subscriber_subscribe _corto_subscriber_subscribe
 #define corto_subscriber_unsubscribe _corto_subscriber_unsubscribe
-#define corto_subscriberEvent_deinit _corto_subscriberEvent_deinit
-#define corto_subscriberEvent_handle _corto_subscriberEvent_handle
-#define corto_subscriberEvent_init _corto_subscriberEvent_init
+#define corto_subscriber_event_deinit _corto_subscriber_event_deinit
+#define corto_subscriber_event_handle _corto_subscriber_event_handle
+#define corto_subscriber_event_init _corto_subscriber_event_init
 #ifndef __cplusplus
 #endif
 #endif
@@ -750,9 +750,9 @@ int16_t _corto_subscriberEvent_init(
 #define safe_corto_observer_observe(_this, instance, observable) _corto_observer_observe(corto_observer(_this), instance, observable)
 #define safe_corto_observer_observing(_this, instance, observable) _corto_observer_observing(corto_observer(_this), instance, observable)
 #define safe_corto_observer_unobserve(_this, instance, observable) _corto_observer_unobserve(corto_observer(_this), instance, observable)
-#define safe_corto_observerEvent_deinit(_this) _corto_observerEvent_deinit(_this)
-#define safe_corto_observerEvent_handle(e) _corto_observerEvent_handle(e)
-#define safe_corto_observerEvent_init(_this) _corto_observerEvent_init(_this)
+#define safe_corto_observer_event_deinit(_this) _corto_observer_event_deinit(_this)
+#define safe_corto_observer_event_handle(e) _corto_observer_event_handle(e)
+#define safe_corto_observer_event_init(_this) _corto_observer_event_init(_this)
 #define safe_corto_query_cardinality(_this) _corto_query_cardinality(_this)
 #define safe_corto_query_match(_this, result) _corto_query_match(_this, result)
 #define safe_corto_result_contentof(_this, contentType) _corto_result_contentof(_this, contentType)
@@ -774,9 +774,9 @@ int16_t _corto_subscriberEvent_init(
 #define safe_corto_subscriber_init(_this) _corto_subscriber_init(corto_subscriber(_this))
 #define safe_corto_subscriber_subscribe(_this, instance) _corto_subscriber_subscribe(corto_subscriber(_this), instance)
 #define safe_corto_subscriber_unsubscribe(_this, instance) _corto_subscriber_unsubscribe(corto_subscriber(_this), instance)
-#define safe_corto_subscriberEvent_deinit(_this) _corto_subscriberEvent_deinit(_this)
-#define safe_corto_subscriberEvent_handle(e) _corto_subscriberEvent_handle(e)
-#define safe_corto_subscriberEvent_init(_this) _corto_subscriberEvent_init(_this)
+#define safe_corto_subscriber_event_deinit(_this) _corto_subscriber_event_deinit(_this)
+#define safe_corto_subscriber_event_handle(e) _corto_subscriber_event_handle(e)
+#define safe_corto_subscriber_event_init(_this) _corto_subscriber_event_init(_this)
 
 #ifdef __cplusplus
 }

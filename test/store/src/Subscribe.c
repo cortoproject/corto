@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 void test_Subscribe_noInitialSep(
-    corto_subscriberEvent *e)
+    corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered ++;
@@ -28,7 +28,7 @@ void test_Subscribe_tc_noInitialSep(
 
 }
 
-void subscribeAlignSelf(corto_subscriberEvent *e)
+void subscribeAlignSelf(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     test_assertstr(e->data.id, "o");
@@ -51,7 +51,7 @@ void test_Subscribe_tc_subscribeAlignSelf(
 
 }
 
-void subscribeAlignType(corto_subscriberEvent *e)
+void subscribeAlignType(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     test_assertstr(e->data.id, "p");
@@ -77,7 +77,7 @@ void test_Subscribe_tc_subscribeAlignType(
 
 }
 
-void subscribeResultTest(corto_subscriberEvent *e)
+void subscribeResultTest(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -288,7 +288,7 @@ void test_Subscribe_tc_subscribeFromScopeNoInitialSlash(
 
 }
 
-void subscribeInvertCaseOnUpdate(corto_subscriberEvent *e)
+void subscribeInvertCaseOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -316,7 +316,7 @@ void test_Subscribe_tc_subscribeInvertCase(
 
 }
 
-void subscribeInvertCaseFilterOnUpdate(corto_subscriberEvent *e)
+void subscribeInvertCaseFilterOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -344,7 +344,7 @@ void test_Subscribe_tc_subscribeInvertCaseFilter(
 
 }
 
-void subscribeInvertCaseFilterFromPublishOnUpdate(corto_subscriberEvent *e)
+void subscribeInvertCaseFilterFromPublishOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -367,7 +367,7 @@ void test_Subscribe_tc_subscribeInvertCaseFilterFromPublish(
 
 }
 
-void subscribeInvertCaseFromPublishOnUpdate(corto_subscriberEvent *e)
+void subscribeInvertCaseFromPublishOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -390,7 +390,7 @@ void test_Subscribe_tc_subscribeInvertCaseFromPublish(
 
 }
 
-void subscribeInvertCaseParentOnUpdate(corto_subscriberEvent *e)
+void subscribeInvertCaseParentOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -418,7 +418,7 @@ void test_Subscribe_tc_subscribeInvertCaseParent(
 
 }
 
-void subscribeInvertCaseParentFromPublishOnUpdate(corto_subscriberEvent *e)
+void subscribeInvertCaseParentFromPublishOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -441,7 +441,7 @@ void test_Subscribe_tc_subscribeInvertCaseParentFromPublish(
 
 }
 
-void MultiDifferentParent1(corto_subscriberEvent *e) {
+void MultiDifferentParent1(corto_subscriber_event *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
 
@@ -450,7 +450,7 @@ void MultiDifferentParent1(corto_subscriberEvent *e) {
     test_assertstr(e->data.type, "void");
 }
 
-void MultiDifferentParent2(corto_subscriberEvent *e) {
+void MultiDifferentParent2(corto_subscriber_event *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
 
@@ -459,7 +459,7 @@ void MultiDifferentParent2(corto_subscriberEvent *e) {
     test_assertstr(e->data.type, "void");
 }
 
-void MultiDifferentParent3(corto_subscriberEvent *e) {
+void MultiDifferentParent3(corto_subscriber_event *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
 
@@ -502,7 +502,7 @@ void test_Subscribe_tc_subscribeMultiDifferentParent(
 
 }
 
-void MultiDifferentParentVirtual1(corto_subscriberEvent *e) {
+void MultiDifferentParentVirtual1(corto_subscriber_event *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
 
@@ -511,7 +511,7 @@ void MultiDifferentParentVirtual1(corto_subscriberEvent *e) {
     test_assertstr(e->data.type, "void");
 }
 
-void MultiDifferentParentVirtual2(corto_subscriberEvent *e) {
+void MultiDifferentParentVirtual2(corto_subscriber_event *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
 
@@ -520,7 +520,7 @@ void MultiDifferentParentVirtual2(corto_subscriberEvent *e) {
     test_assertstr(e->data.type, "void");
 }
 
-void MultiDifferentParentVirtual3(corto_subscriberEvent *e) {
+void MultiDifferentParentVirtual3(corto_subscriber_event *e) {
     test_Subscribe instance = e->instance;
     instance->triggered ++;
 
@@ -562,7 +562,7 @@ void test_Subscribe_tc_subscribeMultiDifferentParentVirtual(
 
 }
 
-void tc_subscribeNestedIdFromRootOnUpdate(corto_subscriberEvent *e)
+void tc_subscribeNestedIdFromRootOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -583,7 +583,7 @@ void test_Subscribe_tc_subscribeNestedIdFromRoot(
 
 }
 
-void tc_subscribeNestedScopeFromRootOnUpdate(corto_subscriberEvent *e)
+void tc_subscribeNestedScopeFromRootOnUpdate(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
@@ -600,7 +600,7 @@ void test_Subscribe_tc_subscribeNestedScopeFromRoot(
     test_assert(corto_delete(s) == 0);
 }
 
-void tc_subscribeOwnerSet(corto_subscriberEvent *e)
+void tc_subscribeOwnerSet(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     corto_set_ref(&this->owner, e->data.owner);

@@ -790,19 +790,19 @@ corto_observer _corto_observer__assign(corto_observer _this, corto_eventMask mas
     return _this;
 }
 
-corto_observerEvent* _corto_observerEvent__create(corto_object _parent, const char *_id, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread) {
-    corto_observerEvent* _this;
-    _this = (corto_observerEvent*)corto_declare(_parent, _id, corto_observerEvent_o);
+corto_observer_event* _corto_observer_event__create(corto_object _parent, const char *_id, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread) {
+    corto_observer_event* _this;
+    _this = (corto_observer_event*)corto_declare(_parent, _id, corto_observer_event_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_observerEvent*)_this)->observer, observer);
-        corto_set_ref(&((corto_observerEvent*)_this)->instance, instance);
-        corto_set_ref(&((corto_observerEvent*)_this)->source, source);
-        ((corto_observerEvent*)_this)->event = event;
-        corto_set_ref(&((corto_observerEvent*)_this)->data, data);
-        ((corto_observerEvent*)_this)->thread = thread;
+        corto_set_ref(&((corto_observer_event*)_this)->observer, observer);
+        corto_set_ref(&((corto_observer_event*)_this)->instance, instance);
+        corto_set_ref(&((corto_observer_event*)_this)->source, source);
+        ((corto_observer_event*)_this)->event = event;
+        corto_set_ref(&((corto_observer_event*)_this)->data, data);
+        ((corto_observer_event*)_this)->thread = thread;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -811,23 +811,23 @@ corto_observerEvent* _corto_observerEvent__create(corto_object _parent, const ch
     return _this;
 }
 
-corto_int16 _corto_observerEvent__update(corto_observerEvent* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread) {
+corto_int16 _corto_observer_event__update(corto_observer_event* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_observerEvent*)((corto_observerEvent*)CORTO_OFFSET(_this, ((corto_type)corto_observerEvent_o)->size)))->observer, observer);
-            corto_set_ref(&((corto_observerEvent*)((corto_observerEvent*)CORTO_OFFSET(_this, ((corto_type)corto_observerEvent_o)->size)))->instance, instance);
-            corto_set_ref(&((corto_observerEvent*)((corto_observerEvent*)CORTO_OFFSET(_this, ((corto_type)corto_observerEvent_o)->size)))->source, source);
-            ((corto_observerEvent*)((corto_observerEvent*)CORTO_OFFSET(_this, ((corto_type)corto_observerEvent_o)->size)))->event = event;
-            corto_set_ref(&((corto_observerEvent*)((corto_observerEvent*)CORTO_OFFSET(_this, ((corto_type)corto_observerEvent_o)->size)))->data, data);
-            ((corto_observerEvent*)((corto_observerEvent*)CORTO_OFFSET(_this, ((corto_type)corto_observerEvent_o)->size)))->thread = thread;
+            corto_set_ref(&((corto_observer_event*)((corto_observer_event*)CORTO_OFFSET(_this, ((corto_type)corto_observer_event_o)->size)))->observer, observer);
+            corto_set_ref(&((corto_observer_event*)((corto_observer_event*)CORTO_OFFSET(_this, ((corto_type)corto_observer_event_o)->size)))->instance, instance);
+            corto_set_ref(&((corto_observer_event*)((corto_observer_event*)CORTO_OFFSET(_this, ((corto_type)corto_observer_event_o)->size)))->source, source);
+            ((corto_observer_event*)((corto_observer_event*)CORTO_OFFSET(_this, ((corto_type)corto_observer_event_o)->size)))->event = event;
+            corto_set_ref(&((corto_observer_event*)((corto_observer_event*)CORTO_OFFSET(_this, ((corto_type)corto_observer_event_o)->size)))->data, data);
+            ((corto_observer_event*)((corto_observer_event*)CORTO_OFFSET(_this, ((corto_type)corto_observer_event_o)->size)))->thread = thread;
         } else {
-            corto_set_ref(&((corto_observerEvent*)_this)->observer, observer);
-            corto_set_ref(&((corto_observerEvent*)_this)->instance, instance);
-            corto_set_ref(&((corto_observerEvent*)_this)->source, source);
-            ((corto_observerEvent*)_this)->event = event;
-            corto_set_ref(&((corto_observerEvent*)_this)->data, data);
-            ((corto_observerEvent*)_this)->thread = thread;
+            corto_set_ref(&((corto_observer_event*)_this)->observer, observer);
+            corto_set_ref(&((corto_observer_event*)_this)->instance, instance);
+            corto_set_ref(&((corto_observer_event*)_this)->source, source);
+            ((corto_observer_event*)_this)->event = event;
+            corto_set_ref(&((corto_observer_event*)_this)->data, data);
+            ((corto_observer_event*)_this)->thread = thread;
         }
         if (corto_update_end(_this)) {
             return -1;
@@ -838,14 +838,14 @@ corto_int16 _corto_observerEvent__update(corto_observerEvent* _this, corto_obser
     return 0;
 }
 
-corto_observerEvent* _corto_observerEvent__assign(corto_observerEvent* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread) {
+corto_observer_event* _corto_observer_event__assign(corto_observer_event* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread) {
     CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_observerEvent*)_this)->observer, observer);
-    corto_set_ref(&((corto_observerEvent*)_this)->instance, instance);
-    corto_set_ref(&((corto_observerEvent*)_this)->source, source);
-    ((corto_observerEvent*)_this)->event = event;
-    corto_set_ref(&((corto_observerEvent*)_this)->data, data);
-    ((corto_observerEvent*)_this)->thread = thread;
+    corto_set_ref(&((corto_observer_event*)_this)->observer, observer);
+    corto_set_ref(&((corto_observer_event*)_this)->instance, instance);
+    corto_set_ref(&((corto_observer_event*)_this)->source, source);
+    ((corto_observer_event*)_this)->event = event;
+    corto_set_ref(&((corto_observer_event*)_this)->data, data);
+    ((corto_observer_event*)_this)->thread = thread;
     return _this;
 }
 
@@ -1610,22 +1610,22 @@ corto_subscriber _corto_subscriber__assign(corto_subscriber _this, corto_query* 
     return _this;
 }
 
-corto_subscriberEvent* _corto_subscriberEvent__create(corto_object _parent, const char *_id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt) {
-    corto_subscriberEvent* _this;
-    _this = (corto_subscriberEvent*)corto_declare(_parent, _id, corto_subscriberEvent_o);
+corto_subscriber_event* _corto_subscriber_event__create(corto_object _parent, const char *_id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt) {
+    corto_subscriber_event* _this;
+    _this = (corto_subscriber_event*)corto_declare(_parent, _id, corto_subscriber_event_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_subscriberEvent*)_this)->subscriber, subscriber);
-        corto_set_ref(&((corto_subscriberEvent*)_this)->instance, instance);
-        corto_set_ref(&((corto_subscriberEvent*)_this)->source, source);
-        ((corto_subscriberEvent*)_this)->event = event;
+        corto_set_ref(&((corto_subscriber_event*)_this)->subscriber, subscriber);
+        corto_set_ref(&((corto_subscriber_event*)_this)->instance, instance);
+        corto_set_ref(&((corto_subscriber_event*)_this)->source, source);
+        ((corto_subscriber_event*)_this)->event = event;
         if (data) {
-            corto_ptr_copy(&((corto_subscriberEvent*)_this)->data, corto_result_o, data);
+            corto_ptr_copy(&((corto_subscriber_event*)_this)->data, corto_result_o, data);
         }
         if (fmt) {
-            corto_ptr_copy(&((corto_subscriberEvent*)_this)->fmt, corto_fmt_data_o, fmt);
+            corto_ptr_copy(&((corto_subscriber_event*)_this)->fmt, corto_fmt_data_o, fmt);
         }
         if (corto_define(_this)) {
             corto_release(_this);
@@ -1635,30 +1635,30 @@ corto_subscriberEvent* _corto_subscriberEvent__create(corto_object _parent, cons
     return _this;
 }
 
-corto_int16 _corto_subscriberEvent__update(corto_subscriberEvent* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt) {
+corto_int16 _corto_subscriber_event__update(corto_subscriber_event* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_subscriberEvent*)((corto_subscriberEvent*)CORTO_OFFSET(_this, ((corto_type)corto_subscriberEvent_o)->size)))->subscriber, subscriber);
-            corto_set_ref(&((corto_subscriberEvent*)((corto_subscriberEvent*)CORTO_OFFSET(_this, ((corto_type)corto_subscriberEvent_o)->size)))->instance, instance);
-            corto_set_ref(&((corto_subscriberEvent*)((corto_subscriberEvent*)CORTO_OFFSET(_this, ((corto_type)corto_subscriberEvent_o)->size)))->source, source);
-            ((corto_subscriberEvent*)((corto_subscriberEvent*)CORTO_OFFSET(_this, ((corto_type)corto_subscriberEvent_o)->size)))->event = event;
+            corto_set_ref(&((corto_subscriber_event*)((corto_subscriber_event*)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_event_o)->size)))->subscriber, subscriber);
+            corto_set_ref(&((corto_subscriber_event*)((corto_subscriber_event*)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_event_o)->size)))->instance, instance);
+            corto_set_ref(&((corto_subscriber_event*)((corto_subscriber_event*)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_event_o)->size)))->source, source);
+            ((corto_subscriber_event*)((corto_subscriber_event*)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_event_o)->size)))->event = event;
             if (data) {
-                corto_ptr_copy(&((corto_subscriberEvent*)((corto_subscriberEvent*)CORTO_OFFSET(_this, ((corto_type)corto_subscriberEvent_o)->size)))->data, corto_result_o, data);
+                corto_ptr_copy(&((corto_subscriber_event*)((corto_subscriber_event*)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_event_o)->size)))->data, corto_result_o, data);
             }
             if (fmt) {
-                corto_ptr_copy(&((corto_subscriberEvent*)((corto_subscriberEvent*)CORTO_OFFSET(_this, ((corto_type)corto_subscriberEvent_o)->size)))->fmt, corto_fmt_data_o, fmt);
+                corto_ptr_copy(&((corto_subscriber_event*)((corto_subscriber_event*)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_event_o)->size)))->fmt, corto_fmt_data_o, fmt);
             }
         } else {
-            corto_set_ref(&((corto_subscriberEvent*)_this)->subscriber, subscriber);
-            corto_set_ref(&((corto_subscriberEvent*)_this)->instance, instance);
-            corto_set_ref(&((corto_subscriberEvent*)_this)->source, source);
-            ((corto_subscriberEvent*)_this)->event = event;
+            corto_set_ref(&((corto_subscriber_event*)_this)->subscriber, subscriber);
+            corto_set_ref(&((corto_subscriber_event*)_this)->instance, instance);
+            corto_set_ref(&((corto_subscriber_event*)_this)->source, source);
+            ((corto_subscriber_event*)_this)->event = event;
             if (data) {
-                corto_ptr_copy(&((corto_subscriberEvent*)_this)->data, corto_result_o, data);
+                corto_ptr_copy(&((corto_subscriber_event*)_this)->data, corto_result_o, data);
             }
             if (fmt) {
-                corto_ptr_copy(&((corto_subscriberEvent*)_this)->fmt, corto_fmt_data_o, fmt);
+                corto_ptr_copy(&((corto_subscriber_event*)_this)->fmt, corto_fmt_data_o, fmt);
             }
         }
         if (corto_update_end(_this)) {
@@ -1670,24 +1670,24 @@ corto_int16 _corto_subscriberEvent__update(corto_subscriberEvent* _this, corto_s
     return 0;
 }
 
-corto_subscriberEvent* _corto_subscriberEvent__assign(corto_subscriberEvent* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt) {
+corto_subscriber_event* _corto_subscriber_event__assign(corto_subscriber_event* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt) {
     CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_subscriberEvent*)_this)->subscriber, subscriber);
-    corto_set_ref(&((corto_subscriberEvent*)_this)->instance, instance);
-    corto_set_ref(&((corto_subscriberEvent*)_this)->source, source);
-    ((corto_subscriberEvent*)_this)->event = event;
+    corto_set_ref(&((corto_subscriber_event*)_this)->subscriber, subscriber);
+    corto_set_ref(&((corto_subscriber_event*)_this)->instance, instance);
+    corto_set_ref(&((corto_subscriber_event*)_this)->source, source);
+    ((corto_subscriber_event*)_this)->event = event;
     if (data) {
-        corto_ptr_copy(&((corto_subscriberEvent*)_this)->data, corto_result_o, data);
+        corto_ptr_copy(&((corto_subscriber_event*)_this)->data, corto_result_o, data);
     }
     if (fmt) {
-        corto_ptr_copy(&((corto_subscriberEvent*)_this)->fmt, corto_fmt_data_o, fmt);
+        corto_ptr_copy(&((corto_subscriber_event*)_this)->fmt, corto_fmt_data_o, fmt);
     }
     return _this;
 }
 
-corto_subscriberEventIter* _corto_subscriberEventIter__create(corto_object _parent, const char *_id) {
-    corto_subscriberEventIter* _this;
-    _this = (corto_subscriberEventIter*)corto_declare(_parent, _id, corto_subscriberEventIter_o);
+corto_subscriber_eventIter* _corto_subscriber_eventIter__create(corto_object _parent, const char *_id) {
+    corto_subscriber_eventIter* _this;
+    _this = (corto_subscriber_eventIter*)corto_declare(_parent, _id, corto_subscriber_eventIter_o);
     if (!_this) {
         return NULL;
     }
@@ -1700,7 +1700,7 @@ corto_subscriberEventIter* _corto_subscriberEventIter__create(corto_object _pare
     return _this;
 }
 
-corto_int16 _corto_subscriberEventIter__update(corto_subscriberEventIter* _this) {
+corto_int16 _corto_subscriber_eventIter__update(corto_subscriber_eventIter* _this) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -1715,7 +1715,7 @@ corto_int16 _corto_subscriberEventIter__update(corto_subscriberEventIter* _this)
     return 0;
 }
 
-corto_subscriberEventIter* _corto_subscriberEventIter__assign(corto_subscriberEventIter* _this) {
+corto_subscriber_eventIter* _corto_subscriber_eventIter__assign(corto_subscriber_eventIter* _this) {
     CORTO_UNUSED(_this);
     return _this;
 }

@@ -59,18 +59,18 @@ CORTO_META_OBJECT(procedure, route);
 
 CORTO_META_OBJECT(struct, fmt_data);
 CORTO_META_OBJECT(struct, event);
-CORTO_META_OBJECT(struct, observerEvent);
+CORTO_META_OBJECT(struct, observer_event);
 CORTO_META_OBJECT(struct, sample);
-CORTO_META_OBJECT(struct, subscriberEvent);
+CORTO_META_OBJECT(struct, subscriber_event);
 CORTO_META_OBJECT(struct, invokeEvent);
 CORTO_META_OBJECT(struct, time);
 
 CORTO_META_OBJECT(iterator, resultIter);
 CORTO_META_OBJECT(iterator, sampleIter);
-CORTO_META_OBJECT(iterator, subscriberEventIter);
+CORTO_META_OBJECT(iterator, subscriber_eventIter);
 
-CORTO_META_OBJECT(function, observerEvent_handle);
-CORTO_META_OBJECT(function, subscriberEvent_handle);
+CORTO_META_OBJECT(function, observer_event_handle);
+CORTO_META_OBJECT(function, subscriber_event_handle);
 
 CORTO_META_OBJECT(method, routerimpl_findRoute);
 CORTO_META_OBJECT(method, routerimpl_matchRoute);

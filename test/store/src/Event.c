@@ -2116,7 +2116,7 @@ void test_Event_tc_onUpdateTreeOrphan(
 
 }
 
-void test_Event_tc_postponeListenForUndefinedCallback(corto_observerEvent *e)
+void test_Event_tc_postponeListenForUndefinedCallback(corto_observer_event *e)
 {
     *corto_int32(e->instance) = *corto_int32(e->data);
 }

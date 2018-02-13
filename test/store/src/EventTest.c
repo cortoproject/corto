@@ -107,7 +107,7 @@ void test_EventTest_destruct(
 }
 
 void test_EventTest_onDeclare(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -116,7 +116,7 @@ void test_EventTest_onDeclare(
 }
 
 void test_EventTest_onDeclareScope(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -125,7 +125,7 @@ void test_EventTest_onDeclareScope(
 }
 
 void test_EventTest_onDeclareSelf(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -134,7 +134,7 @@ void test_EventTest_onDeclareSelf(
 }
 
 void test_EventTest_onDeclareTree(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -143,7 +143,7 @@ void test_EventTest_onDeclareTree(
 }
 
 void test_EventTest_onDefine(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -152,7 +152,7 @@ void test_EventTest_onDefine(
 }
 
 void test_EventTest_onDefineScope(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -161,7 +161,7 @@ void test_EventTest_onDefineScope(
 }
 
 void test_EventTest_onDefineSelf(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -170,7 +170,7 @@ void test_EventTest_onDefineSelf(
 }
 
 void test_EventTest_onDefineTree(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -179,7 +179,7 @@ void test_EventTest_onDefineTree(
 }
 
 void test_EventTest_onDelete(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -188,7 +188,7 @@ void test_EventTest_onDelete(
 }
 
 void test_EventTest_onDeleteScope(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -197,7 +197,7 @@ void test_EventTest_onDeleteScope(
 }
 
 void test_EventTest_onDeleteSelf(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -206,7 +206,7 @@ void test_EventTest_onDeleteSelf(
 }
 
 void test_EventTest_onDeleteTree(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -215,7 +215,7 @@ void test_EventTest_onDeleteTree(
 }
 
 void test_EventTest_onUpdate(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -224,7 +224,7 @@ void test_EventTest_onUpdate(
 }
 
 void test_EventTest_onUpdateDefine(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -233,7 +233,7 @@ void test_EventTest_onUpdateDefine(
 }
 
 void test_EventTest_onUpdateDefineScope(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -242,7 +242,7 @@ void test_EventTest_onUpdateDefineScope(
 }
 
 void test_EventTest_onUpdateDefineSelf(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -251,7 +251,7 @@ void test_EventTest_onUpdateDefineSelf(
 }
 
 void test_EventTest_onUpdateDefineTree(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -260,7 +260,7 @@ void test_EventTest_onUpdateDefineTree(
 }
 
 void test_EventTest_onUpdateScope(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -269,7 +269,7 @@ void test_EventTest_onUpdateScope(
 }
 
 void test_EventTest_onUpdateSelf(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);
@@ -278,7 +278,7 @@ void test_EventTest_onUpdateSelf(
 }
 
 void test_EventTest_onUpdateTree(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
    test_EventTest this = e->instance;
    corto_set_ref(&this->lastThis, e->instance);

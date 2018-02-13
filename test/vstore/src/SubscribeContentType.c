@@ -31,7 +31,7 @@ void test_SubscribeContentType_setup(
 }
 
 
-void binary(corto_subscriberEvent *e) {
+void binary(corto_subscriber_event *e) {
     test_SubscribeContentType this = e->instance;
     test_Point *p;
     this->eventsReceived ++;
@@ -185,7 +185,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
 }
 
 
-void json(corto_subscriberEvent *e) {
+void json(corto_subscriber_event *e) {
     test_SubscribeContentType this = e->instance;
     char *json;
     this->eventsReceived ++;
@@ -333,7 +333,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
 }
 
 
-void string(corto_subscriberEvent *e) {
+void string(corto_subscriber_event *e) {
     test_SubscribeContentType this = e->instance;
     char *json;
     this->eventsReceived ++;

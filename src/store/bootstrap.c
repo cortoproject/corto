@@ -188,7 +188,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(vstore_, frame),\
     SSO_OP_VALUE(vstore_, sample),\
     SSO_OP_VALUE(vstore_, sampleIter),\
-    SSO_OP_VALUE(vstore_, subscriberEventIter),\
+    SSO_OP_VALUE(vstore_, subscriber_eventIter),\
     SSO_OP_VALUE(vstore_, result),\
     SSO_OP_VALUE(vstore_, queuePolicy),\
     SSO_OP_VALUE(vstore_, mountPolicy),\
@@ -220,8 +220,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_CLASS(lang_, union),\
     SSO_OP_VALUE(vstore_, event),\
     SSO_OP_VALUE(vstore_, fmt_data),\
-    SSO_OP_VALUE(vstore_, observerEvent),\
-    SSO_OP_VALUE(vstore_, subscriberEvent),\
+    SSO_OP_VALUE(vstore_, observer_event),\
+    SSO_OP_VALUE(vstore_, subscriber_event),\
     SSO_OP_VALUE(vstore_, invokeEvent),\
     SSO_OP_CLASS(lang_, binary),\
     SSO_OP_CLASS(lang_, boolean),\
@@ -321,26 +321,26 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_fmt_data_handle),\
     SSO_OP_OBJ(vstore_fmt_data_shared_count),\
     SSO_OP_OBJ(vstore_fmt_data_deinit_),\
-    /* observerEvent */\
-    SSO_OP_OBJ(vstore_observerEvent_observer),\
-    SSO_OP_OBJ(vstore_observerEvent_instance),\
-    SSO_OP_OBJ(vstore_observerEvent_source),\
-    SSO_OP_OBJ(vstore_observerEvent_event),\
-    SSO_OP_OBJ(vstore_observerEvent_data),\
-    SSO_OP_OBJ(vstore_observerEvent_thread),\
-    SSO_OP_OBJ(vstore_observerEvent_handle),\
-    SSO_OP_OBJ(vstore_observerEvent_init_),\
-    SSO_OP_OBJ(vstore_observerEvent_deinit_),\
-    /* subscriberEvent */\
-    SSO_OP_OBJ(vstore_subscriberEvent_subscriber),\
-    SSO_OP_OBJ(vstore_subscriberEvent_instance),\
-    SSO_OP_OBJ(vstore_subscriberEvent_source),\
-    SSO_OP_OBJ(vstore_subscriberEvent_event),\
-    SSO_OP_OBJ(vstore_subscriberEvent_data),\
-    SSO_OP_OBJ(vstore_subscriberEvent_fmt),\
-    SSO_OP_OBJ(vstore_subscriberEvent_handle),\
-    SSO_OP_OBJ(vstore_subscriberEvent_init_),\
-    SSO_OP_OBJ(vstore_subscriberEvent_deinit_),\
+    /* observer_event */\
+    SSO_OP_OBJ(vstore_observer_event_observer),\
+    SSO_OP_OBJ(vstore_observer_event_instance),\
+    SSO_OP_OBJ(vstore_observer_event_source),\
+    SSO_OP_OBJ(vstore_observer_event_event),\
+    SSO_OP_OBJ(vstore_observer_event_data),\
+    SSO_OP_OBJ(vstore_observer_event_thread),\
+    SSO_OP_OBJ(vstore_observer_event_handle),\
+    SSO_OP_OBJ(vstore_observer_event_init_),\
+    SSO_OP_OBJ(vstore_observer_event_deinit_),\
+    /* subscriber_event */\
+    SSO_OP_OBJ(vstore_subscriber_event_subscriber),\
+    SSO_OP_OBJ(vstore_subscriber_event_instance),\
+    SSO_OP_OBJ(vstore_subscriber_event_source),\
+    SSO_OP_OBJ(vstore_subscriber_event_event),\
+    SSO_OP_OBJ(vstore_subscriber_event_data),\
+    SSO_OP_OBJ(vstore_subscriber_event_fmt),\
+    SSO_OP_OBJ(vstore_subscriber_event_handle),\
+    SSO_OP_OBJ(vstore_subscriber_event_init_),\
+    SSO_OP_OBJ(vstore_subscriber_event_deinit_),\
     /* invokeEvent */\
     SSO_OP_OBJ(vstore_invokeEvent_mount),\
     SSO_OP_OBJ(vstore_invokeEvent_instance),\
@@ -1208,8 +1208,8 @@ int corto_start(
     ((corto_type)corto_tableinstance_o)->flags |= CORTO_TYPE_IS_CONTAINER;
 
     /* Manually assign two function objects that are used as delegate callbacks */
-    corto_observerEvent_handle_o = &vstore_observerEvent_handle__o.v;
-    corto_subscriberEvent_handle_o = &vstore_subscriberEvent_handle__o.v;
+    corto_observer_event_handle_o = &vstore_observer_event_handle__o.v;
+    corto_subscriber_event_handle_o = &vstore_subscriber_event_handle__o.v;
 
     /* Construct objects */
     for (i = 0; (o = objects[i].o); i++) corto_defineObject(o);

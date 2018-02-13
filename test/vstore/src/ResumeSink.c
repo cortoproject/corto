@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 void test_ResumeSink_onDeclare(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_ResumeSink this = e->instance;
     this->declared ++;
@@ -10,7 +10,7 @@ void test_ResumeSink_onDeclare(
 }
 
 void test_ResumeSink_onDefine(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_ResumeSink this = e->instance;
     this->defined ++;
@@ -18,7 +18,7 @@ void test_ResumeSink_onDefine(
 }
 
 void test_ResumeSink_onDelete(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_ResumeSink this = e->instance;
     this->deleted ++;
@@ -26,7 +26,7 @@ void test_ResumeSink_onDelete(
 }
 
 void test_ResumeSink_on_resume(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_ResumeSink this = e->instance;
     this->resumed ++;
@@ -34,7 +34,7 @@ void test_ResumeSink_on_resume(
 }
 
 void test_ResumeSink_onSuspend(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_ResumeSink this = e->instance;
     this->suspended ++;
@@ -42,7 +42,7 @@ void test_ResumeSink_onSuspend(
 }
 
 void test_ResumeSink_onUpdate(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_ResumeSink this = e->instance;
     this->updated ++;

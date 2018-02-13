@@ -3,7 +3,7 @@
 #include <include/test.h>
 
 
-void test_SubscriberTest_setMembers(corto_subscriberEvent *e)
+void test_SubscriberTest_setMembers(corto_subscriber_event *e)
 {
     test_SubscriberTest this = e->instance;
     corto_set_str(&this->lastId, e->data.id);
@@ -61,7 +61,7 @@ void test_SubscriberTest_destruct(
 }
 
 void test_SubscriberTest_onAll(
-    corto_subscriberEvent *e)
+    corto_subscriber_event *e)
 {
 
     test_SubscriberTest this = e->instance;
@@ -79,7 +79,7 @@ void test_SubscriberTest_onAll(
 }
 
 void test_SubscriberTest_onScope(
-    corto_subscriberEvent *e)
+    corto_subscriber_event *e)
 {
 
     test_SubscriberTest this = e->instance;
@@ -96,7 +96,7 @@ void test_SubscriberTest_onScope(
 }
 
 void test_SubscriberTest_onSelf(
-    corto_subscriberEvent *e)
+    corto_subscriber_event *e)
 {
 
     test_SubscriberTest this = e->instance;
@@ -114,7 +114,7 @@ void test_SubscriberTest_onSelf(
 }
 
 void test_SubscriberTest_onTree(
-    corto_subscriberEvent *e)
+    corto_subscriber_event *e)
 {
 
     test_SubscriberTest this = e->instance;

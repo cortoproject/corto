@@ -4,7 +4,7 @@
 
 #include "src/store/object.h"
 
-void corto_package_onDefine(corto_observerEvent *e)
+void corto_package_onDefine(corto_observer_event *e)
 {
     corto_object owner = corto_sourceof(e->data);
 

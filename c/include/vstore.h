@@ -273,21 +273,21 @@ CORTO_EXPORT corto_observer _corto_observer__assign(corto_observer _this, corto_
 #define corto_observer__assign(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _corto_observer__assign(_this, mask, observable, instance, corto_dispatcher(dispatcher), corto_type(type), enabled, (void(*)(void))_impl)
 #define corto_observer__set(_this, mask, observable, instance, dispatcher, type, enabled, _impl) _this = _this ? _this : (corto_observer*)corto_ptr_new(corto_observer_o); _corto_observer__assign(_this, mask, observable, instance, corto_dispatcher(dispatcher), corto_type(type), enabled, (void(*)(void))_impl)
 
-/* /corto/vstore/observerEvent */
-CORTO_EXPORT corto_observerEvent* _corto_observerEvent__create(corto_object _parent, const char *_id, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
-#define corto_observerEvent__create(_parent, _id, observer, instance, source, event, data, thread) _corto_observerEvent__create(_parent, _id, corto_observer(observer), instance, source, event, data, thread)
-#define corto_observerEvent__create_auto(_parent, _id, observer, instance, source, event, data, thread) corto_observerEvent* _id = corto_observerEvent__create(_parent, #_id, observer, instance, source, event, data, thread); (void)_id
-#define corto_observerEvent__declare(parent, id) (corto_observerEvent*)corto_declare(parent, id, corto_observerEvent_o)
-CORTO_EXPORT corto_int16 _corto_observerEvent__update(corto_observerEvent* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
-#define corto_observerEvent__update(_this, observer, instance, source, event, data, thread) _corto_observerEvent__update(corto_observerEvent(_this), corto_observer(observer), instance, source, event, data, thread)
+/* /corto/vstore/observer_event */
+CORTO_EXPORT corto_observer_event* _corto_observer_event__create(corto_object _parent, const char *_id, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observer_event__create(_parent, _id, observer, instance, source, event, data, thread) _corto_observer_event__create(_parent, _id, corto_observer(observer), instance, source, event, data, thread)
+#define corto_observer_event__create_auto(_parent, _id, observer, instance, source, event, data, thread) corto_observer_event* _id = corto_observer_event__create(_parent, #_id, observer, instance, source, event, data, thread); (void)_id
+#define corto_observer_event__declare(parent, id) (corto_observer_event*)corto_declare(parent, id, corto_observer_event_o)
+CORTO_EXPORT corto_int16 _corto_observer_event__update(corto_observer_event* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observer_event__update(_this, observer, instance, source, event, data, thread) _corto_observer_event__update(corto_observer_event(_this), corto_observer(observer), instance, source, event, data, thread)
 
-CORTO_EXPORT corto_observerEvent* _corto_observerEvent__assign(corto_observerEvent* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
-#define corto_observerEvent__optional_not_set NULL
-#define corto_observerEvent__optional_set(observer, instance, source, event, data, thread) (corto_observerEvent*)corto_observerEvent__assign((corto_observerEvent*)corto_ptr_new(corto_observerEvent_o), observer, instance, source, event, data, thread)
-#define corto_observerEvent__optional_set_cond(cond, observer, instance, source, event, data, thread) cond ? (corto_observerEvent*)corto_observerEvent__assign((corto_observerEvent*)corto_ptr_new(corto_observerEvent_o), observer, instance, source, event, data, thread) : NULL
-#define corto_observerEvent__unset(_this) _this ? corto_ptr_free(_this, corto_observerEvent_o), 0 : 0; _this = NULL;
-#define corto_observerEvent__assign(_this, observer, instance, source, event, data, thread) _corto_observerEvent__assign(_this, corto_observer(observer), instance, source, event, data, thread)
-#define corto_observerEvent__set(_this, observer, instance, source, event, data, thread) _this = _this ? _this : (corto_observerEvent*)corto_ptr_new(corto_observerEvent_o); _corto_observerEvent__assign(_this, corto_observer(observer), instance, source, event, data, thread)
+CORTO_EXPORT corto_observer_event* _corto_observer_event__assign(corto_observer_event* _this, corto_observer observer, corto_object instance, corto_object source, corto_eventMask event, corto_object data, uintptr_t thread);
+#define corto_observer_event__optional_not_set NULL
+#define corto_observer_event__optional_set(observer, instance, source, event, data, thread) (corto_observer_event*)corto_observer_event__assign((corto_observer_event*)corto_ptr_new(corto_observer_event_o), observer, instance, source, event, data, thread)
+#define corto_observer_event__optional_set_cond(cond, observer, instance, source, event, data, thread) cond ? (corto_observer_event*)corto_observer_event__assign((corto_observer_event*)corto_ptr_new(corto_observer_event_o), observer, instance, source, event, data, thread) : NULL
+#define corto_observer_event__unset(_this) _this ? corto_ptr_free(_this, corto_observer_event_o), 0 : 0; _this = NULL;
+#define corto_observer_event__assign(_this, observer, instance, source, event, data, thread) _corto_observer_event__assign(_this, corto_observer(observer), instance, source, event, data, thread)
+#define corto_observer_event__set(_this, observer, instance, source, event, data, thread) _this = _this ? _this : (corto_observer_event*)corto_ptr_new(corto_observer_event_o); _corto_observer_event__assign(_this, corto_observer(observer), instance, source, event, data, thread)
 
 /* /corto/vstore/operatorKind */
 CORTO_EXPORT corto_operatorKind* _corto_operatorKind__create(corto_object _parent, const char *_id, corto_operatorKind value);
@@ -529,37 +529,37 @@ CORTO_EXPORT corto_subscriber _corto_subscriber__assign(corto_subscriber _this, 
 #define corto_subscriber__assign(_this, query, contentType, instance, dispatcher, enabled, _impl) _corto_subscriber__assign(_this, query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
 #define corto_subscriber__set(_this, query, contentType, instance, dispatcher, enabled, _impl) _this = _this ? _this : (corto_subscriber*)corto_ptr_new(corto_subscriber_o); _corto_subscriber__assign(_this, query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
 
-/* /corto/vstore/subscriberEvent */
-CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEvent__create(corto_object _parent, const char *_id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);
-#define corto_subscriberEvent__create(_parent, _id, subscriber, instance, source, event, data, fmt) _corto_subscriberEvent__create(_parent, _id, corto_subscriber(subscriber), instance, source, event, data, fmt)
-#define corto_subscriberEvent__create_auto(_parent, _id, subscriber, instance, source, event, data, fmt) corto_subscriberEvent* _id = corto_subscriberEvent__create(_parent, #_id, subscriber, instance, source, event, data, fmt); (void)_id
-#define corto_subscriberEvent__declare(parent, id) (corto_subscriberEvent*)corto_declare(parent, id, corto_subscriberEvent_o)
-CORTO_EXPORT corto_int16 _corto_subscriberEvent__update(corto_subscriberEvent* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);
-#define corto_subscriberEvent__update(_this, subscriber, instance, source, event, data, fmt) _corto_subscriberEvent__update(corto_subscriberEvent(_this), corto_subscriber(subscriber), instance, source, event, data, fmt)
+/* /corto/vstore/subscriber_event */
+CORTO_EXPORT corto_subscriber_event* _corto_subscriber_event__create(corto_object _parent, const char *_id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);
+#define corto_subscriber_event__create(_parent, _id, subscriber, instance, source, event, data, fmt) _corto_subscriber_event__create(_parent, _id, corto_subscriber(subscriber), instance, source, event, data, fmt)
+#define corto_subscriber_event__create_auto(_parent, _id, subscriber, instance, source, event, data, fmt) corto_subscriber_event* _id = corto_subscriber_event__create(_parent, #_id, subscriber, instance, source, event, data, fmt); (void)_id
+#define corto_subscriber_event__declare(parent, id) (corto_subscriber_event*)corto_declare(parent, id, corto_subscriber_event_o)
+CORTO_EXPORT corto_int16 _corto_subscriber_event__update(corto_subscriber_event* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);
+#define corto_subscriber_event__update(_this, subscriber, instance, source, event, data, fmt) _corto_subscriber_event__update(corto_subscriber_event(_this), corto_subscriber(subscriber), instance, source, event, data, fmt)
 
-CORTO_EXPORT corto_subscriberEvent* _corto_subscriberEvent__assign(corto_subscriberEvent* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);
-#define corto_subscriberEvent__optional_not_set NULL
-#define corto_subscriberEvent__optional_set(subscriber, instance, source, event, data, fmt) (corto_subscriberEvent*)corto_subscriberEvent__assign((corto_subscriberEvent*)corto_ptr_new(corto_subscriberEvent_o), subscriber, instance, source, event, data, fmt)
-#define corto_subscriberEvent__optional_set_cond(cond, subscriber, instance, source, event, data, fmt) cond ? (corto_subscriberEvent*)corto_subscriberEvent__assign((corto_subscriberEvent*)corto_ptr_new(corto_subscriberEvent_o), subscriber, instance, source, event, data, fmt) : NULL
-#define corto_subscriberEvent__unset(_this) _this ? corto_ptr_free(_this, corto_subscriberEvent_o), 0 : 0; _this = NULL;
-#define corto_subscriberEvent__assign(_this, subscriber, instance, source, event, data, fmt) _corto_subscriberEvent__assign(_this, corto_subscriber(subscriber), instance, source, event, data, fmt)
-#define corto_subscriberEvent__set(_this, subscriber, instance, source, event, data, fmt) _this = _this ? _this : (corto_subscriberEvent*)corto_ptr_new(corto_subscriberEvent_o); _corto_subscriberEvent__assign(_this, corto_subscriber(subscriber), instance, source, event, data, fmt)
+CORTO_EXPORT corto_subscriber_event* _corto_subscriber_event__assign(corto_subscriber_event* _this, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);
+#define corto_subscriber_event__optional_not_set NULL
+#define corto_subscriber_event__optional_set(subscriber, instance, source, event, data, fmt) (corto_subscriber_event*)corto_subscriber_event__assign((corto_subscriber_event*)corto_ptr_new(corto_subscriber_event_o), subscriber, instance, source, event, data, fmt)
+#define corto_subscriber_event__optional_set_cond(cond, subscriber, instance, source, event, data, fmt) cond ? (corto_subscriber_event*)corto_subscriber_event__assign((corto_subscriber_event*)corto_ptr_new(corto_subscriber_event_o), subscriber, instance, source, event, data, fmt) : NULL
+#define corto_subscriber_event__unset(_this) _this ? corto_ptr_free(_this, corto_subscriber_event_o), 0 : 0; _this = NULL;
+#define corto_subscriber_event__assign(_this, subscriber, instance, source, event, data, fmt) _corto_subscriber_event__assign(_this, corto_subscriber(subscriber), instance, source, event, data, fmt)
+#define corto_subscriber_event__set(_this, subscriber, instance, source, event, data, fmt) _this = _this ? _this : (corto_subscriber_event*)corto_ptr_new(corto_subscriber_event_o); _corto_subscriber_event__assign(_this, corto_subscriber(subscriber), instance, source, event, data, fmt)
 
-/* /corto/vstore/subscriberEventIter */
-CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIter__create(corto_object _parent, const char *_id);
-#define corto_subscriberEventIter__create(_parent, _id) _corto_subscriberEventIter__create(_parent, _id)
-#define corto_subscriberEventIter__create_auto(_parent, _id) corto_subscriberEventIter* _id = corto_subscriberEventIter__create(_parent, #_id); (void)_id
-#define corto_subscriberEventIter__declare(parent, id) (corto_subscriberEventIter*)corto_declare(parent, id, corto_subscriberEventIter_o)
-CORTO_EXPORT corto_int16 _corto_subscriberEventIter__update(corto_subscriberEventIter* _this);
-#define corto_subscriberEventIter__update(_this) _corto_subscriberEventIter__update(corto_subscriberEventIter(_this))
+/* /corto/vstore/subscriber_eventIter */
+CORTO_EXPORT corto_subscriber_eventIter* _corto_subscriber_eventIter__create(corto_object _parent, const char *_id);
+#define corto_subscriber_eventIter__create(_parent, _id) _corto_subscriber_eventIter__create(_parent, _id)
+#define corto_subscriber_eventIter__create_auto(_parent, _id) corto_subscriber_eventIter* _id = corto_subscriber_eventIter__create(_parent, #_id); (void)_id
+#define corto_subscriber_eventIter__declare(parent, id) (corto_subscriber_eventIter*)corto_declare(parent, id, corto_subscriber_eventIter_o)
+CORTO_EXPORT corto_int16 _corto_subscriber_eventIter__update(corto_subscriber_eventIter* _this);
+#define corto_subscriber_eventIter__update(_this) _corto_subscriber_eventIter__update(corto_subscriber_eventIter(_this))
 
-CORTO_EXPORT corto_subscriberEventIter* _corto_subscriberEventIter__assign(corto_subscriberEventIter* _this);
-#define corto_subscriberEventIter__optional_not_set NULL
-#define corto_subscriberEventIter__optional_set() (corto_subscriberEventIter*)corto_subscriberEventIter__assign((corto_subscriberEventIter*)corto_ptr_new(corto_subscriberEventIter_o))
-#define corto_subscriberEventIter__optional_set_cond(cond) cond ? (corto_subscriberEventIter*)corto_subscriberEventIter__assign((corto_subscriberEventIter*)corto_ptr_new(corto_subscriberEventIter_o)) : NULL
-#define corto_subscriberEventIter__unset(_this) _this ? corto_ptr_free(_this, corto_subscriberEventIter_o), 0 : 0; _this = NULL;
-#define corto_subscriberEventIter__assign(_this) _corto_subscriberEventIter__assign(_this)
-#define corto_subscriberEventIter__set(_this) _this = _this ? _this : (corto_subscriberEventIter*)corto_ptr_new(corto_subscriberEventIter_o); _corto_subscriberEventIter__assign(_this)
+CORTO_EXPORT corto_subscriber_eventIter* _corto_subscriber_eventIter__assign(corto_subscriber_eventIter* _this);
+#define corto_subscriber_eventIter__optional_not_set NULL
+#define corto_subscriber_eventIter__optional_set() (corto_subscriber_eventIter*)corto_subscriber_eventIter__assign((corto_subscriber_eventIter*)corto_ptr_new(corto_subscriber_eventIter_o))
+#define corto_subscriber_eventIter__optional_set_cond(cond) cond ? (corto_subscriber_eventIter*)corto_subscriber_eventIter__assign((corto_subscriber_eventIter*)corto_ptr_new(corto_subscriber_eventIter_o)) : NULL
+#define corto_subscriber_eventIter__unset(_this) _this ? corto_ptr_free(_this, corto_subscriber_eventIter_o), 0 : 0; _this = NULL;
+#define corto_subscriber_eventIter__assign(_this) _corto_subscriber_eventIter__assign(_this)
+#define corto_subscriber_eventIter__set(_this) _this = _this ? _this : (corto_subscriber_eventIter*)corto_ptr_new(corto_subscriber_eventIter_o); _corto_subscriber_eventIter__assign(_this)
 
 /* /corto/vstore/time */
 CORTO_EXPORT corto_time* _corto_time__create(corto_object _parent, const char *_id, int32_t sec, uint32_t nanosec);
@@ -609,9 +609,9 @@ CORTO_EXPORT void corto_resultList__clear(corto_resultList list);
     corto_sample elem;\
     while(corto_iter_hasNext(&iter) ? elem = *(corto_sample*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
 
-#define corto_subscriberEventIter__foreach(iter, elem) \
-    corto_subscriberEvent elem;\
-    while(corto_iter_hasNext(&iter) ? elem = *(corto_subscriberEvent*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+#define corto_subscriber_eventIter__foreach(iter, elem) \
+    corto_subscriber_event elem;\
+    while(corto_iter_hasNext(&iter) ? elem = *(corto_subscriber_event*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
 
 
 #ifdef __cplusplus

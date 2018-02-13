@@ -426,7 +426,7 @@ class EventReplicator: mount, hidden:/
   updateCount: int32, readonly
   deleteCount: int32, readonly
 
-  void on_notify(vstore/subscriberEvent event) override
+  void on_notify(vstore/subscriber_event event) override
 
 // Test events received by replicator
 test/Suite ReplicatorEvent:/

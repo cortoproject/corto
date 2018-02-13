@@ -30,7 +30,7 @@ An overview of the files, and what they do:
 | loader.c | Mount that loads packages into the virtual store |
 | mount.c | Implementation of the mount class (see below) |
 | observer.c | Observe notifications from the object store |
-| observerEvent.c | Event used to communicate notifications to an observer |
+| observer_event.c | Event used to communicate notifications to an observer |
 | package.c | Base class for packages |
 | query.c | The query class, used to capture information in a query |
 | result.c | The result class, used to communicate objects from the virtual store |
@@ -39,7 +39,7 @@ An overview of the files, and what they do:
 | routerimpl.c | Default implementation of router |
 | select.c | The corto_select function, which performs single shot queries |
 | subscriber.c | The corto_subscriber class, which performs realtime queries |
-| subscriberEvent.c | Event used to communicate notifications to a subscriber |
+| subscriber_event.c | Event used to communicate notifications to a subscriber |
 
 You may remark that some files do not necessarily seem part of the virtual store. 
 That is correct. A few classes need to be moved to other locations.
@@ -137,7 +137,7 @@ processing infinite datasets on devices of any size.
 
 This is the same example, but for a realtime query (using a subscriber):
 ```c
-void callback(corto_subscriberEvent *e) {
+void callback(corto_subscriber_event *e) {
     // e->data is of type corto_result*
     printf("id = %s, parent = %s, type = %s",
         e->data.id,
@@ -218,7 +218,7 @@ Then, add the following lines to `MyMount.cx`:
 in package MyMount
 
 class CustomMount: vstore/mount:/
-    void on_notify(subscriberEvent e) override
+    void on_notify(subscriber_event e) override
 ```
 If you are familiar with corto definition files, you'll notice this looks just
 like a regular class, just one that happens to inherit from mount. Now build the
@@ -230,7 +230,7 @@ We now have a file `MyMount/src/CustomMount.c` which contains an empty function
 body for `MyMount_CustomMount_on_notify`. Assuming we have a function called
 `writeData` that stores data in some kind of external storage, we can now do:
 ```c
-void MyMount_CustomMount_on_notify(corto_subscriberEvent *e) {
+void MyMount_CustomMount_on_notify(corto_subscriber_event *e) {
     writeData(
         e->data.id,
         e->data.parent,

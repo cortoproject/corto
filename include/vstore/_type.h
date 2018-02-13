@@ -231,10 +231,10 @@ struct corto_loader_s {
 
 typedef corto_iter corto_objectIter;
 
-/*  /corto/vstore/observerEvent */
-typedef struct corto_observerEvent corto_observerEvent;
+/*  /corto/vstore/observer_event */
+typedef struct corto_observer_event corto_observer_event;
 
-struct corto_observerEvent {
+struct corto_observer_event {
     corto_event super;
     corto_observer observer;
     corto_object instance;
@@ -356,10 +356,10 @@ struct corto_routerimpl_s {
     corto_route matched;
 };
 
-/*  /corto/vstore/subscriberEvent */
-typedef struct corto_subscriberEvent corto_subscriberEvent;
+/*  /corto/vstore/subscriber_event */
+typedef struct corto_subscriber_event corto_subscriber_event;
 
-struct corto_subscriberEvent {
+struct corto_subscriber_event {
     corto_event super;
     corto_subscriber subscriber;
     corto_object instance;
@@ -369,7 +369,7 @@ struct corto_subscriberEvent {
     corto_fmt_data fmt;
 };
 
-typedef corto_iter corto_subscriberEventIter;
+typedef corto_iter corto_subscriber_eventIter;
 
 
 /* -- Casting macro's -- */
@@ -394,7 +394,7 @@ typedef corto_iter corto_subscriberEventIter;
 #define corto_invokeEvent(o) ((corto_invokeEvent*)corto_assert_type((corto_type)corto_invokeEvent_o, o))
 #define corto_loader(o) ((corto_loader)corto_assert_type((corto_type)corto_loader_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assert_type((corto_type)corto_objectIter_o, o))
-#define corto_observerEvent(o) ((corto_observerEvent*)corto_assert_type((corto_type)corto_observerEvent_o, o))
+#define corto_observer_event(o) ((corto_observer_event*)corto_assert_type((corto_type)corto_observer_event_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assert_type((corto_type)corto_operatorKind_o, o))
 #define corto_remote(o) ((corto_remote)corto_assert_type((corto_type)corto_remote_o, o))
 #define corto_resultMask(o) ((corto_resultMask*)corto_assert_type((corto_type)corto_resultMask_o, o))
@@ -406,8 +406,8 @@ typedef corto_iter corto_subscriberEventIter;
 #define corto_route(o) ((corto_route)corto_assert_type((corto_type)corto_route_o, o))
 #define corto_router(o) ((corto_router)corto_assert_type((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assert_type((corto_type)corto_routerimpl_o, o))
-#define corto_subscriberEvent(o) ((corto_subscriberEvent*)corto_assert_type((corto_type)corto_subscriberEvent_o, o))
-#define corto_subscriberEventIter(o) ((corto_subscriberEventIter*)corto_assert_type((corto_type)corto_subscriberEventIter_o, o))
+#define corto_subscriber_event(o) ((corto_subscriber_event*)corto_assert_type((corto_type)corto_subscriber_event_o, o))
+#define corto_subscriber_eventIter(o) ((corto_subscriber_eventIter*)corto_assert_type((corto_type)corto_subscriber_eventIter_o, o))
 
 /* -- Non-expanding typedefs -- */
 typedef corto_dispatcher _type_corto_dispatcher;
@@ -431,7 +431,7 @@ typedef corto_mount _type_corto_mount;
 typedef corto_invokeEvent _type_corto_invokeEvent;
 typedef corto_loader _type_corto_loader;
 typedef corto_objectIter _type_corto_objectIter;
-typedef corto_observerEvent _type_corto_observerEvent;
+typedef corto_observer_event _type_corto_observer_event;
 typedef corto_operatorKind _type_corto_operatorKind;
 typedef corto_remote _type_corto_remote;
 typedef corto_resultMask _type_corto_resultMask;
@@ -443,8 +443,8 @@ typedef corto_resultList _type_corto_resultList;
 typedef corto_route _type_corto_route;
 typedef corto_router _type_corto_router;
 typedef corto_routerimpl _type_corto_routerimpl;
-typedef corto_subscriberEvent _type_corto_subscriberEvent;
-typedef corto_subscriberEventIter _type_corto_subscriberEventIter;
+typedef corto_subscriber_event _type_corto_subscriber_event;
+typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 
 #ifdef __cplusplus
 }

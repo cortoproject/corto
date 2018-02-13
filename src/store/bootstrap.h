@@ -495,10 +495,10 @@ CORTO_FWDECL_VSTORE(struct, query);
 CORTO_FWDECL_VSTORE(struct, queuePolicy);
 CORTO_FWDECL_VSTORE(struct, mountPolicy);
 CORTO_FWDECL_VSTORE(struct, mountSubscription);
-CORTO_FWDECL_VSTORE(struct, observerEvent);
+CORTO_FWDECL_VSTORE(struct, observer_event);
 CORTO_FWDECL_VSTORE(struct, result);
 CORTO_FWDECL_VSTORE(struct, sample);
-CORTO_FWDECL_VSTORE(struct, subscriberEvent);
+CORTO_FWDECL_VSTORE(struct, subscriber_event);
 
 /* Abstract classes */
 CORTO_FWDECL_VSTORE(interface, dispatcher);
@@ -585,15 +585,15 @@ CORTO_FWDECL_VSTORE(delegate, handleAction);
 
 /* Iterators */
 CORTO_FWDECL_VSTORE(iterator, resultIter);
-CORTO_FWDECL_VSTORE(iterator, subscriberEventIter);
+CORTO_FWDECL_VSTORE(iterator, subscriber_eventIter);
 CORTO_FWDECL_VSTORE(iterator, objectIter);
 CORTO_FWDECL_VSTORE(iterator, sampleIter);
 
 CORTO_FWDECL_VSTORE(struct, time);
 
 /* Function objects */
-CORTO_FWDECL_VSTORE(function, observerEvent_handle);
-CORTO_FWDECL_VSTORE(function, subscriberEvent_handle);
+CORTO_FWDECL_VSTORE(function, observer_event_handle);
+CORTO_FWDECL_VSTORE(function, subscriber_event_handle);
 
 /* Overridable objects */
 CORTO_FWDECL_(method, type_castable);
@@ -872,7 +872,7 @@ CORTO_DELEGATE_O(vstore, handleAction, lang_void);
 /* Iterator types */
 CORTO_ITERATOR_O(vstore, objectIter, lang_object);
 CORTO_ITERATOR_O(vstore, resultIter, vstore_result);
-CORTO_ITERATOR_O(vstore, subscriberEventIter, vstore_subscriberEvent);
+CORTO_ITERATOR_O(vstore, subscriber_eventIter, vstore_subscriber_event);
 CORTO_ITERATOR_O(vstore, sampleIter, vstore_sample);
 
 /* /corto/lang/typeOptions */
@@ -1279,31 +1279,31 @@ CORTO_STRUCT_O(vstore, fmt_data, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL,
     CORTO_MEMBER_O(vstore_fmt_data, shared_count, lang_word, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_METHOD_O(vstore_fmt_data, deinit, "()", lang_void, corto_fmt_data_deinit);
 
-/* /corto/vstore/observerEvent */
-CORTO_FW_IF(vstore, observerEvent);
-CORTO_STRUCT_BASE_O(vstore, observerEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
-    CORTO_REFERENCE_O(vstore_observerEvent, observer, vstore_observer, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_observerEvent, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_observerEvent, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_MEMBER_O(vstore_observerEvent, event, vstore_eventMask, CORTO_GLOBAL);
-    CORTO_REFERENCE_O(vstore_observerEvent, data, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_MEMBER_O(vstore_observerEvent, thread, lang_word, CORTO_GLOBAL);
-    CORTO_FUNCTION_O(vstore_observerEvent, handle, "(vstore/event e)", lang_void, corto_observerEvent_handle);
-    CORTO_METHOD_O(vstore_observerEvent, init, "()", lang_int16, corto_observerEvent_init);
-    CORTO_METHOD_O(vstore_observerEvent, deinit, "()", lang_void, corto_observerEvent_deinit);
+/* /corto/vstore/observer_event */
+CORTO_FW_IF(vstore, observer_event);
+CORTO_STRUCT_BASE_O(vstore, observer_event, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
+    CORTO_REFERENCE_O(vstore_observer_event, observer, vstore_observer, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_observer_event, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_observer_event, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_MEMBER_O(vstore_observer_event, event, vstore_eventMask, CORTO_GLOBAL);
+    CORTO_REFERENCE_O(vstore_observer_event, data, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_MEMBER_O(vstore_observer_event, thread, lang_word, CORTO_GLOBAL);
+    CORTO_FUNCTION_O(vstore_observer_event, handle, "(vstore/event e)", lang_void, corto_observer_event_handle);
+    CORTO_METHOD_O(vstore_observer_event, init, "()", lang_int16, corto_observer_event_init);
+    CORTO_METHOD_O(vstore_observer_event, deinit, "()", lang_void, corto_observer_event_deinit);
 
-/* /corto/vstore/subscriberEvent */
-CORTO_FW_IF(vstore, subscriberEvent);
-CORTO_STRUCT_BASE_O(vstore, subscriberEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
-    CORTO_REFERENCE_O(vstore_subscriberEvent, subscriber, vstore_subscriber, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_subscriberEvent, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_subscriberEvent, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_MEMBER_O(vstore_subscriberEvent, event, vstore_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_subscriberEvent, data, vstore_result, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_subscriberEvent, fmt, vstore_fmt_data, CORTO_GLOBAL);
-    CORTO_FUNCTION_O(vstore_subscriberEvent, handle, "(vstore/event e)", lang_void, corto_subscriberEvent_handle);
-    CORTO_METHOD_O(vstore_subscriberEvent, init, "()", lang_int16, corto_subscriberEvent_init);
-    CORTO_METHOD_O(vstore_subscriberEvent, deinit, "()", lang_void, corto_subscriberEvent_deinit);
+/* /corto/vstore/subscriber_event */
+CORTO_FW_IF(vstore, subscriber_event);
+CORTO_STRUCT_BASE_O(vstore, subscriber_event, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IF);
+    CORTO_REFERENCE_O(vstore_subscriber_event, subscriber, vstore_subscriber, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_subscriber_event, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_subscriber_event, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_MEMBER_O(vstore_subscriber_event, event, vstore_eventMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_subscriber_event, data, vstore_result, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_subscriber_event, fmt, vstore_fmt_data, CORTO_GLOBAL);
+    CORTO_FUNCTION_O(vstore_subscriber_event, handle, "(vstore/event e)", lang_void, corto_subscriber_event_handle);
+    CORTO_METHOD_O(vstore_subscriber_event, init, "()", lang_int16, corto_subscriber_event_init);
+    CORTO_METHOD_O(vstore_subscriber_event, deinit, "()", lang_void, corto_subscriber_event_deinit);
 
 /* /corto/vstore/invokeEvent */
 CORTO_STRUCT_BASE_O(vstore, invokeEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
@@ -1436,15 +1436,15 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_OVERRIDABLE_O(vstore_mount, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_query_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_history_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_history_query_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_resume, "(string parent,string id,object object)", lang_object, corto_mount_on_resume_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_notify, "(vstore/subscriberEvent event)", lang_void, corto_mount_on_notify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_on_batch_notify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_history_batch_notify, "(vstore/subscriberEventIter events)", lang_void, corto_mount_on_batch_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_notify, "(vstore/subscriber_event event)", lang_void, corto_mount_on_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_history_batch_notify, "(vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_subscribe, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_on_subscribe_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_unsubscribe, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_on_unsubscribe_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_mount, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_on_mount_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_unmount, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_on_unmount_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_transaction_begin, "()", lang_word, corto_mount_on_subscribe_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_transaction_end, "(vstore/subscriberEventIter events,word ctx)", lang_void, corto_mount_on_unsubscribe_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_transaction_end, "(vstore/subscriber_eventIter events,word ctx)", lang_void, corto_mount_on_unsubscribe_v);
 
 /* /corto/vstore/router */
 CORTO_FW_IC(vstore, router);

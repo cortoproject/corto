@@ -350,7 +350,7 @@ typedef struct corto_subscribe__fluent {
      * @param callback An subscriber callback function.
      */
     corto_subscriber ___ (*callback)(
-        void (*r)(corto_subscriberEvent*));
+        void (*r)(corto_subscriber_event*));
 } corto_subscribe__fluent;
 
 /** Create a realtime query.
@@ -381,12 +381,12 @@ struct corto_subscribe__fluent corto_subscribe(
  * When there are still events in flight when this function is called (something
  * that can happen when a dispatcher is pushing events to another thread) the
  * application can prevent delivery of the event by checking the state of the
- * subscriber object, which is part of the `corto_subscriberEvent` instance, by
+ * subscriber object, which is part of the `corto_subscriber_event` instance, by
  * doing:
  *
 @verbatim
 ```c
-void myDispatcher_post(corto_subscriberEvent *e) {
+void myDispatcher_post(corto_subscriber_event *e) {
     if (!corto_check_state(e->subscriber, CORTO_DELETED)) {
         corto_event_handle(e);
     } else {

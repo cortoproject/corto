@@ -3,7 +3,7 @@
 #include <include/test.h>
 
 void test_Ownership_onDelete(
-    corto_observerEvent *e)
+    corto_observer_event *e)
 {
     test_Ownership this = e->instance;
     this->observable = (corto_word)e->data;

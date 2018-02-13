@@ -14,7 +14,7 @@ typedef struct corto_observeRequest {
     corto_object dispatcher;
     corto_string type;
     corto_bool enabled;
-    void (*callback)(corto_observerEvent*);
+    void (*callback)(corto_observer_event*);
 } corto_observeRequest;
 
 /* Thread local storage key for administration that keeps track for which observables notifications take place.
@@ -342,7 +342,7 @@ static void corto_notify_observer(corto__observer *data, corto_object observable
     {
         corto_object this = data->_this;
         if (!this || (this != source)) {
-            corto_observerEvent e = {
+            corto_observer_event e = {
                 .instance = this,
                 .event = mask,
                 .data = observable,
@@ -365,13 +365,13 @@ static void corto_notify_observer_cdecl(corto__observer *data, corto_object obse
     {
         corto_object this = data->_this;
         if (!this || (this != source)) {
-            corto_observerEvent e = {
+            corto_observer_event e = {
                 .instance = this,
                 .event = mask,
                 .data = observable,
                 .observer = observer
             };
-            ((void(*)(corto_observerEvent*))((corto_function)observer)->fptr)(&e);
+            ((void(*)(corto_observer_event*))((corto_function)observer)->fptr)(&e);
         }
     }
 }
@@ -387,7 +387,7 @@ static void corto_notify_observer_dispatch(corto__observer *data, corto_object o
         corto_dispatcher dispatcher = observer->dispatcher;
 
         if (!data->_this || (data->_this != source)) {
-            corto_observerEvent *event = corto(CORTO_DECLARE, {.type = corto_observerEvent_o, .attrs = -1});
+            corto_observer_event *event = corto(CORTO_DECLARE, {.type = corto_observer_event_o, .attrs = -1});
 
             corto_set_ref(&event->observer, observer);
             corto_set_ref(&event->instance, data->_this);
@@ -670,7 +670,7 @@ static corto_observe__fluent corto_observeDispatcher(
 }
 
 static corto_observer corto_observeCallback(
-    void (*callback)(corto_observerEvent*))
+    void (*callback)(corto_observer_event*))
 {
     corto_observer result = NULL;
 
@@ -731,7 +731,7 @@ int16_t corto_observer_construct(
             p = &corto_function(this)->parameters.buffer[0];
             p->name = corto_strdup("e");
             p->passByReference = FALSE;
-            corto_set_ref(&p->type, corto_observerEvent_o);
+            corto_set_ref(&p->type, corto_observer_event_o);
         }
     }
 
@@ -792,7 +792,7 @@ int16_t corto_observer_init(
             goto error;
         }
 
-        if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_observerEvent_o)) {
+        if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_observer_event_o)) {
             corto_throw("first argument must be of type vstore/eventMask");
             goto error;
         }

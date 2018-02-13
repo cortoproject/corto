@@ -4,7 +4,7 @@
 
 void test_EventReplicator_on_notify(
     test_EventReplicator this,
-    corto_subscriberEvent *event)
+    corto_subscriber_event *event)
 {
     switch(event->event) {
         case CORTO_DECLARE: this->declareCount ++; break;

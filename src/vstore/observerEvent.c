@@ -2,18 +2,18 @@
 
 #include <corto/corto.h>
 
-void corto_observerEvent_deinit(
-    corto_observerEvent* this)
+void corto_observer_event_deinit(
+    corto_observer_event* this)
 {
 
     CORTO_UNUSED(this);
 
 }
 
-void corto_observerEvent_handle(
+void corto_observer_event_handle(
     corto_event *e)
 {
-    corto_observerEvent *this = (corto_observerEvent*)e;
+    corto_observer_event *this = (corto_observer_event*)e;
     corto_bool lockRequired =
       (this->thread != corto_thread_self()) &&
       !(this->event & CORTO_DELETE);
@@ -23,7 +23,7 @@ void corto_observerEvent_handle(
         corto_function f = corto_function(this->observer);
 
         if (f->kind == CORTO_PROCEDURE_CDECL) {
-            ((void(*)(corto_observerEvent*))f->fptr)(this);
+            ((void(*)(corto_observer_event*))f->fptr)(this);
         } else {
             corto_invoke(f, NULL, this);
         }
@@ -38,9 +38,9 @@ void corto_observerEvent_handle(
 
 }
 
-int16_t corto_observerEvent_init(
-    corto_observerEvent* this)
+int16_t corto_observer_event_init(
+    corto_observer_event* this)
 {
-    ((corto_event*)this)->handleAction.super.procedure = corto_observerEvent_handle_o;
+    ((corto_event*)this)->handleAction.super.procedure = corto_observer_event_handle_o;
     return 0;
 }
