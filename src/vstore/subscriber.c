@@ -24,12 +24,7 @@ typedef struct corto_subscribeRequest {
     void (*callback)(corto_subscriberEvent*);
 } corto_subscribeRequest;
 
-corto_entityAdmin corto_subscriber_admin = {
-    .key = 0,
-    .count = 0,
-    .lock = CORTO_RWMUTEX_INITIALIZER,
-    .changed = 0
-};
+corto_entityAdmin corto_subscriber_admin = CORTO_ENTITYADMIN_INIT;
 
 static
 const char tochar(
@@ -151,12 +146,10 @@ void corto_subscriber_addToAlignQueue(
 {
     void *ptr = corto_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
     if (ptr) {
-        corto_release(*(void**)ptr);
         *(void**)ptr = e;
     } else {
         corto_ll_append(this->alignQueue, e);
     }
-    corto_claim(e);
 }
 
 typedef struct corto_fmtcache {
@@ -370,7 +363,8 @@ int16_t corto_subscriber_invoke(
         }
 
         if (s->isAligning) {
-            /* If this happens during alignment, add event to alignment queue */
+            /* If this happens during alignment, add event to alignment queue.
+             * Ownership of event is transferred to align queue. */
             corto_subscriber_addToAlignQueue(s, event);
         } else {
             /* Deliver event to dispatcher */
@@ -470,10 +464,10 @@ int16_t corto_notify_subscribersById(
         ;
 
     /* Determine depth at which subscribers should start being invoked */
-    int16_t depth = corto_entityAdmin_getDepthFromId(path);
+    int16_t depth = corto_entityAdmin_claimDepthFromId(path);
 
     /* Obtain global administration with subscribers */
-    corto_entityAdmin *admin = corto_entityAdmin_get(&corto_subscriber_admin);
+    corto_entityAdmin *admin = corto_entityAdmin_claim(&corto_subscriber_admin);
     corto_try(!admin, NULL);
 
     do {
@@ -558,23 +552,24 @@ int16_t corto_notify_subscribersById(
                   .owner = object_source
                 };
 
-                if (s->isAligning) { corto_try(
+                bool isAligning = s->isAligning;
+                if (isAligning) { corto_try(
                     corto_mutex_lock((corto_mutex)s->alignMutex), NULL
                 );}
                 corto_subscriber_invoke(instance, mask, &r, s, NULL, &cache);
-                if (s->isAligning) { corto_try(
+                if (isAligning) { corto_try(
                     corto_mutex_unlock((corto_mutex)s->alignMutex), NULL
                 );}
             }
         }
     } while (--depth >= 0);
 
+    corto_entityAdmin_release(&corto_subscriber_admin);
     corto_fmtcache_deinit(&cache);
-
     return 0;
 error:
+    corto_entityAdmin_release(&corto_subscriber_admin);
     corto_fmtcache_deinit(&cache);
-
     return -1;
 }
 
@@ -905,10 +900,8 @@ void corto_subscriber_deinit(
 void corto_subscriber_destruct(
     corto_subscriber this)
 {
-
     /* Unsubscribe all entities of this subscriber */
     corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
-
     corto_mutex_free((corto_mutex)this->alignMutex);
     free((corto_mutex)this->alignMutex);
 }

@@ -8,7 +8,7 @@ static
 corto_entityAdmin corto_lock_admin = {
     .key = 0,
     .count = 0,
-    .lock = CORTO_RWMUTEX_INITIALIZER,
+    .lock = CORTO_RWMUTEX_INIT,
     .changed = 0
 };
 void corto_secure_init(void) {
@@ -106,12 +106,12 @@ bool corto_authorize_id(
     corto_secure_accessKind allowed = CORTO_SECURE_ACCESS_UNDEFINED;
 
     if (corto_secure_keyInstance) {
-        int32_t depth = corto_entityAdmin_getDepthFromId(objectId);
+        int32_t depth = corto_entityAdmin_claimDepthFromId(objectId);
         uint16_t currentDepth = 0;
         int16_t priority = 0;
 
         /* Walk over locks in the lock admin */
-        corto_entityAdmin *admin = corto_entityAdmin_get(&corto_lock_admin);
+        corto_entityAdmin *admin = corto_entityAdmin_claim(&corto_lock_admin);
         do {
             int ep, e;
             for (ep = 0; ep < admin->entities[depth].length; ep ++) {
@@ -163,6 +163,7 @@ bool corto_authorize_id(
             }
 
         } while (--depth >= 0);
+        corto_entityAdmin_release(&corto_lock_admin);
     }
 
     return allowed != CORTO_SECURE_ACCESS_DENIED;
@@ -210,4 +211,3 @@ void corto_secure_key_destruct(
     corto_secure_keyInstance = NULL;
 
 }
-

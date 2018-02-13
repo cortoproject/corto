@@ -577,7 +577,8 @@ corto_object corto_adopt(
                 p_scope->scope = corto_rb_new((corto_equals_cb)corto_compareDefault, NULL);
             }
 
-            void *ptr = corto_rb_findOrSetPtr(p_scope->scope, c_scope->id);
+            void *key = c_scope->id;
+            void *ptr = corto_rb_findOrSetPtr(p_scope->scope, &key);
             corto_object existing = *(corto_object*)ptr;
 
             /* If existing is of unknown type and child is not, move scope from

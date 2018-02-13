@@ -6,7 +6,7 @@ extern corto_tls CORTO_KEY_MOUNT_RESULT;
 corto_entityAdmin corto_mount_admin = {
     .key = 0,
     .count = 0,
-    .lock = CORTO_RWMUTEX_INITIALIZER,
+    .lock = CORTO_RWMUTEX_INIT,
     .changed = 0
 };
 
