@@ -1902,3 +1902,66 @@ void test_Copy_tc_unionWithStruct(
     corto_ptr_deinit(&v1, test_unionTypes_o);
     corto_ptr_deinit(&v2, test_unionTypes_o);
 }
+
+void test_Copy_tc_listToNullList(
+    test_Copy this)
+{
+    corto_int16 ret;
+    corto_int32 v[] = {10, 20, 30, 40};
+    test_IntList__create_auto(NULL, v1, 4, v);
+    test_IntList__create_auto(NULL, v2, 0, NULL);
+
+    /* Free list of v2 */
+    corto_ll_free(*v2);
+    *v2 = NULL;
+
+    ret = corto_copy(&v2, v1);
+    test_assert(ret == 0);
+    test_assert(*v2 != NULL);
+    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(test_IntList__get(*v2, 0), 10);
+    test_assertint(test_IntList__get(*v2, 1), 20);
+    test_assertint(test_IntList__get(*v2, 2), 30);
+    test_assertint(test_IntList__get(*v2, 3), 40);
+    corto_delete(v1);
+    corto_delete(v2);
+}
+
+void test_Copy_tc_nullListToList(
+    test_Copy this)
+{
+    corto_int16 ret;
+    corto_int32 v[] = {10, 20, 30, 40};
+    test_IntList__create_auto(NULL, v1, 0, NULL);
+    test_IntList__create_auto(NULL, v2, 4, v);
+
+    /* Free list of v2 */
+    corto_ll_free(*v1);
+    *v1 = NULL;
+
+    ret = corto_copy(&v2, v1);
+    test_assert(ret == 0);
+    test_assert(*v2 == NULL);
+    corto_delete(v1);
+    corto_delete(v2);
+}
+
+void test_Copy_tc_nullListToNullList(
+    test_Copy this)
+{
+    corto_int16 ret;
+    test_IntList__create_auto(NULL, v1, 0, NULL);
+    test_IntList__create_auto(NULL, v2, 0, NULL);
+
+    /* Free list of v1 and v2 */
+    corto_ll_free(*v1);
+    *v1 = NULL;
+    corto_ll_free(*v2);
+    *v2 = NULL;
+
+    ret = corto_copy(&v2, v1);
+    test_assert(ret == 0);
+    test_assert(*v2 == NULL);
+    corto_delete(v1);
+    corto_delete(v2);
+}

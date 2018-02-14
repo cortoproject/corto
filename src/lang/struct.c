@@ -109,9 +109,7 @@ int16_t corto_struct_construct(
             if (alignment < corto_type(base)->alignment) {
                 alignment = corto_type(base)->alignment;
             }
-
         }
-
     }
 
     /* Set alignment of self */
@@ -137,7 +135,6 @@ int16_t corto_struct_construct(
                 corto_fullpath(NULL, this));
             goto error;
         }
-
     }
 
     /* Set size of self */

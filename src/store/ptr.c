@@ -247,6 +247,9 @@ int16_t _corto_ptr_resize(
     }
     case CORTO_LIST: {
         corto_ll l = *(corto_ll*)ptr;
+        if (!l) {
+            *(corto_ll*)ptr = l = corto_ll_new();
+        }
         if (corto_ll_count(l) > size) {
             corto_iter it = corto_ll_iter(l);
 

@@ -483,6 +483,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_modifier_PRIVATE),\
     SSO_OP_OBJ(lang_modifier_READONLY),\
     SSO_OP_OBJ(lang_modifier_CONST),\
+    SSO_OP_OBJ(lang_modifier_NOT_NULL),\
     SSO_OP_OBJ(lang_modifier_HIDDEN),\
     SSO_OP_OBJ(lang_modifier_OPTIONAL),\
     SSO_OP_OBJ(lang_modifier_OBSERVABLE),\
@@ -1147,13 +1148,6 @@ int corto_start(
     corto_initObject(corto_vstore_o);
     corto_initObject(corto_native_o);
     corto_initObject(corto_secure_o);
-
-    /* Allocate lists */
-    corto_o->use = corto_ll_new();
-    corto_lang_o->use = corto_ll_new();
-    corto_vstore_o->use = corto_ll_new();
-    corto_native_o->use = corto_ll_new();
-    corto_secure_o->use = corto_ll_new();
 
     /* Define builtin scopes */
     corto_defineObject(root_o);

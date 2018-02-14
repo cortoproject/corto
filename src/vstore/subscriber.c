@@ -924,6 +924,8 @@ int16_t corto_subscriber_init(
         goto error;
     }
 
+    this->alignQueue = corto_ll_new();
+
     return safe_corto_function_init(this);
 error:
     return -1;

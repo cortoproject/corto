@@ -40,7 +40,7 @@ void test_BinarySerializer_tc_copyReferenceType(
     corto_value dst_value = corto_value_mem((void*)dst, corto_package_o);
 
     /* Test if values are equal */
-    test_assert(corto_value_compare(&src_value, &dst_value) == 0);
+    test_assertint(corto_value_compare(&src_value, &dst_value), 0);
 
     corto_mem_free((void*)src);
     corto_mem_free((void*)dst);

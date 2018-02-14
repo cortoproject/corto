@@ -313,13 +313,15 @@ void corto_mount_destruct(
     this->quit = TRUE;
 
     /* Unsubscribe from active subscriptions */
-    while ((s = corto_ll_takeFirst(this->subscriptions))) {
-        corto_mount_on_unsubscribe(
-            this,
-            &s->query,
-            s->subscriberCtx);
-        corto_ptr_deinit(s, corto_mountSubscription_o);
-        corto_dealloc(s);
+    if (this->subscriptions) {
+        while ((s = corto_ll_takeFirst(this->subscriptions))) {
+            corto_mount_on_unsubscribe(
+                this,
+                &s->query,
+                s->subscriberCtx);
+            corto_ptr_deinit(s, corto_mountSubscription_o);
+            corto_dealloc(s);
+        }
     }
 
     if (this->thread) {
@@ -542,6 +544,7 @@ void corto_mount_post(
              * only one queue, refcount does not need to be increased. If added
              * to two queues, refcount must be increased. */
             int appended = 0;
+
             /* Append new event to queue */
             if (corto_lock(this)) {
                 corto_throw(NULL);
@@ -552,6 +555,9 @@ void corto_mount_post(
             lastPoll = this->lastPoll;
             lastQueueSize = this->lastQueueSize;
             if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
+                if (!this->historicalEvents) {
+                    this->historicalEvents = corto_ll_new();
+                }
                 corto_ll_append(this->historicalEvents, e);
                 appended ++;
                 size = corto_ll_count(this->historicalEvents);
@@ -560,7 +566,12 @@ void corto_mount_post(
             if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
                 /* Check if there is already another event in the queue for the same object.
                  * if so, replace event with latest update. */
-                void *ptr = corto_ll_findPtr(this->events, corto_mount_findEvent, e);
+                void *ptr = NULL;
+                if (!this->events) {
+                    this->events = corto_ll_new();
+                } else {
+                    ptr = corto_ll_findPtr(this->events, corto_mount_findEvent, e);
+                }
                 if (ptr) {
                     corto_release(*(void**)ptr);
                     *(void**)ptr = e;
@@ -1186,6 +1197,7 @@ void corto_mount_subscribeOrMount(
             placeHolder->mountCount = 1;
         }
 
+        if (!this->subscriptions) this->subscriptions = corto_ll_new();
         corto_ll_append(this->subscriptions, placeHolder);
     }
 
@@ -1238,6 +1250,7 @@ void corto_mount_subscribeOrMount(
             corto_ptr_copy(&subscription->query, corto_query_o, query);
             if (subscribe) subscription->subscriberCount = 1;
             if (mount) subscription->mountCount = 1;
+            if (!this->subscriptions) this->subscriptions = corto_ll_new();
             corto_ll_append(this->subscriptions, subscription);
 
         } else if (subscription->subscriberCtx) {
