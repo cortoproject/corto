@@ -457,6 +457,44 @@ test/Suite Err:/
     msg: string
     category: string
 
+struct InitTest:/
+    m_list: list{int32}
+    m_list_not_null: list{int32}, not_null
+    m_map: map{string, int32}
+    m_map_not_null: map{string, int32}, not_null
+    m_default_num: int32, default="10"
+    m_default_string: string, default="Hello World"
+    m_default_composite: Point, default="{10, 20}"
+    m_default_nested: Line, default="{{10,20},{30,40}}"
+    m_default_list: list{int32}, default="{10,20,30}"
+    m_default_null_list: list{int32}, default="null"
+    m_observable: int32, observable
+    m_observable_default: int32, observable, default="10"
+    m_observable_list: list{int32}, observable
+    m_observable_list_not_null: list{int32}, observable|not_null
+    m_target: target{int32}
+
+struct NestedInitTest:/
+    m_nested: InitTest
+
+// Test initializer functionality
+test/Suite Init:/
+    void tc_list()
+    void tc_list_not_null()
+    void tc_map()
+    void tc_map_not_null()
+    void tc_default_num()
+    void tc_default_string()
+    void tc_default_composite()
+    void tc_default_nested()
+    void tc_default_list()
+    void tc_observable()
+    void tc_observable_default()
+    void tc_observable_list()
+    void tc_observable_list_not_null()
+    void tc_target()
+    void tc_nestedInit()
+
 // Object management testcases
 test/Suite ObjectMgmt:/
     prevAttr: lang/attr, local|private
@@ -605,6 +643,9 @@ test/Suite Compare:/
     void tc_array()
     void tc_sequence()
     void tc_list()
+    void tc_listWithNullList()
+    void tc_nullListWithNullList()
+    void tc_nullListWithList()
     void tc_arrayWithSequence()
     void tc_arrayWithList()
     void tc_listWithArray()
@@ -683,6 +724,9 @@ test/Suite Copy:/
     void tc_listToList()
     void tc_listToExistingList()
     void tc_listToListResize()
+    void tc_listToNullList()
+    void tc_nullListToList()
+    void tc_nullListToNullList()
     void tc_arrayToArrayAlloc()
     void tc_arrayToListAlloc()
     void tc_sequenceToSequenceAlloc()

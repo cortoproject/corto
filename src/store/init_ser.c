@@ -35,12 +35,20 @@ corto_int16 corto_ser_initAny(
 }
 
 static
-int corto_compare_key(void* ctx, const void *o1, const void *o2) {
+int corto_compare_key(
+    void* ctx,
+    const void *o1,
+    const void *o2)
+{
     return corto_ptr_compare(o1, ctx, o2);
 }
 
 static
-int corto_compare_key_ptr(void* ctx, const void *o1, const void *o2) {
+int corto_compare_key_ptr(
+    void* ctx,
+    const void *o1,
+    const void *o2)
+{
     return corto_ptr_compare(&o1, ctx, &o2);
 }
 

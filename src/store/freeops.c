@@ -342,7 +342,7 @@ CORTO_SEQUENCE(dummySeq,void*,);
     case FREEOPS_LIST##postfix: LIST_OP(size_of, action);
 
 #define LIST_OPS_NOITER(postfix, size_of, action)\
-    case FREEOPS_LIST##postfix: LIST_FREE(); break;
+    case FREEOPS_LIST##postfix: if (*(corto_ll*)ptr) {LIST_FREE();} break;
 
 /* Macro's that facilitate safe freeing of values */
 #define deref_mem_free(ptr) deref = *(void**)ptr; if (deref) free(deref);

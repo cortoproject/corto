@@ -6,8 +6,9 @@ int16_t corto_target_construct(
     corto_target this)
 {
     bool modifiers = 0;
+
     if (this->type->kind == CORTO_COLLECTION) {
-        /* Automatically initialize collections */
+        /* Automatically initialize collections in target members */
         modifiers = CORTO_NOT_NULL;
     }
 

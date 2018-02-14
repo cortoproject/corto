@@ -372,7 +372,7 @@ int16_t corto_ser_collection(
                 break;
         }
 
-        if (dstIsList && !dstList && size1) {
+        if (dstIsList && !dstList && (size1 || srcList)) {
             *(corto_ll*)dst = dstList = corto_ll_new();
         }
 

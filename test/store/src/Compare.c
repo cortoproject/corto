@@ -347,7 +347,6 @@ void test_Compare_tc_list(
 
     corto_delete(o1);
     corto_delete(o2);
-
 }
 
 void test_Compare_tc_listSizeMismatch(
@@ -683,3 +682,57 @@ void test_Compare_tc_uintw(
 
 }
 
+void test_Compare_tc_listWithNullList(
+    test_Compare this)
+{
+    corto_equalityKind eq;
+    corto_int32 v[] = {10, 20, 30, 40};
+    test_IntList__create_auto(NULL, o1, 4, v);
+    test_IntList__create_auto(NULL, o2, 0, NULL);
+
+    corto_ll_free(*o2);
+    *o2 = NULL;
+
+    eq = corto_compare(o1, o2);
+    test_assert(eq == CORTO_GT);
+
+    corto_delete(o1);
+    corto_delete(o2);
+}
+
+void test_Compare_tc_nullListWithList(
+    test_Compare this)
+{
+    corto_equalityKind eq;
+    corto_int32 v[] = {10, 20, 30, 40};
+    test_IntList__create_auto(NULL, o1, 0, NULL);
+    test_IntList__create_auto(NULL, o2, 4, v);
+
+    corto_ll_free(*o1);
+    *o1 = NULL;
+
+    eq = corto_compare(o1, o2);
+    test_assert(eq == CORTO_LT);
+
+    corto_delete(o1);
+    corto_delete(o2);
+}
+
+void test_Compare_tc_nullListWithNullList(
+    test_Compare this)
+{
+    corto_equalityKind eq;
+    test_IntList__create_auto(NULL, o1, 0, NULL);
+    test_IntList__create_auto(NULL, o2, 0, NULL);
+
+    corto_ll_free(*o1);
+    *o1 = NULL;
+    corto_ll_free(*o2);
+    *o2 = NULL;
+
+    eq = corto_compare(o1, o2);
+    test_assert(eq == CORTO_EQ);
+
+    corto_delete(o1);
+    corto_delete(o2);
+}

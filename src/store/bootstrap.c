@@ -1149,13 +1149,6 @@ int corto_start(
     corto_initObject(corto_native_o);
     corto_initObject(corto_secure_o);
 
-    /* Allocate lists */
-    corto_o->use = corto_ll_new();
-    corto_lang_o->use = corto_ll_new();
-    corto_vstore_o->use = corto_ll_new();
-    corto_native_o->use = corto_ll_new();
-    corto_secure_o->use = corto_ll_new();
-
     /* Define builtin scopes */
     corto_defineObject(root_o);
     corto_defineObject(corto_o);
