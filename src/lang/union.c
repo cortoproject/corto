@@ -1,8 +1,7 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
-
-
+#include "src/store/object.h"
 #include "interface.h"
 #include "class.h"
 
@@ -50,6 +49,8 @@ int16_t corto_union_construct(
 
     corto_type(this)->size = size;
     corto_type(this)->alignment = alignment;
+
+    freeops_create(NULL, (corto_type)this);
 
     return safe_corto_type_construct(this);
 error:

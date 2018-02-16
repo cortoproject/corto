@@ -1630,7 +1630,7 @@ void test_Copy_tc_structWithTargetStruct(
 void test_Copy_tc_unionWithArray(
     test_Copy this)
 {
-    test_unionTypes v1, v2;
+    test_unionTypes v1 = {0}, v2 = {0};
 
     int32_t array[] = {10, 20, 30, 40};
     test_unionTypes__assign_m_array(&v1, Test_Array, array);
@@ -1648,7 +1648,7 @@ void test_Copy_tc_unionWithArray(
 void test_Copy_tc_unionWithInt(
     test_Copy this)
 {
-    test_unionTypes v1, v2;
+    test_unionTypes v1 = {0}, v2 = {0};
 
     test_unionTypes__assign_m_int(&v1, Test_Int, 10);
     corto_ptr_init(&v2, test_unionTypes_o);
@@ -1665,7 +1665,7 @@ void test_Copy_tc_unionWithInt(
 void test_Copy_tc_unionWithList(
     test_Copy this)
 {
-    test_unionTypes v1 = {}, v2 = {};
+    test_unionTypes v1 = {0}, v2 = {0};
     test_IntList list = corto_ll_new();
     test_IntList__append(list, 10);
     test_IntList__append(list, 20);
@@ -1674,6 +1674,7 @@ void test_Copy_tc_unionWithList(
     corto_ptr_init(&v1, test_unionTypes_o);
     corto_ptr_init(&v2, test_unionTypes_o);
     test_unionTypes__assign_m_list(&v1, Test_List, list);
+    test_assert(v1.d == Test_List);
     corto_ptr_copy(&v2, test_unionTypes_o, &v1);
     test_assert(v2.d == Test_List);
     test_assert(v2.is.m_list != list);

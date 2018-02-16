@@ -282,6 +282,10 @@ int16_t _corto_interface_init(
     corto_interface _this);
 
 CORTO_EXPORT
+    void _corto_interface_deinit(
+        corto_interface _this);
+
+CORTO_EXPORT
 corto_member _corto_interface_resolveMember_v(
     corto_interface _this,
     const char *name);
@@ -499,10 +503,6 @@ int16_t _corto_struct_construct(
     corto_struct _this);
 
 CORTO_EXPORT
-void _corto_struct_destruct(
-    corto_struct _this);
-
-CORTO_EXPORT
 int16_t _corto_struct_init(
     corto_struct _this);
 
@@ -674,6 +674,7 @@ int16_t _corto_verbatim_init(
 #define corto_interface_compatible_v(_this, type) _corto_interface_compatible_v(corto_interface(_this), corto_type(type))
 #define corto_interface_construct(_this) _corto_interface_construct(corto_interface(_this))
 #define corto_interface_destruct(_this) _corto_interface_destruct(corto_interface(_this))
+#define corto_interface_deinit(_this) _corto_interface_deinit(corto_interface(_this))
 #define corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
 #define corto_interface_resolveMember_v(_this, name) _corto_interface_resolveMember_v(corto_interface(_this), name)
 #define corto_interface_resolveMemberByTag(_this, tag) _corto_interface_resolveMemberByTag(corto_interface(_this), corto_tag(tag))
@@ -706,7 +707,6 @@ int16_t _corto_verbatim_init(
 #define corto_struct_castable_v(_this, type) _corto_struct_castable_v(corto_struct(_this), corto_type(type))
 #define corto_struct_compatible_v(_this, type) _corto_struct_compatible_v(corto_struct(_this), corto_type(type))
 #define corto_struct_construct(_this) _corto_struct_construct(corto_struct(_this))
-#define corto_struct_destruct(_this) _corto_struct_destruct(corto_struct(_this))
 #define corto_struct_init(_this) _corto_struct_init(corto_struct(_this))
 #define corto_struct_resolveMember_v(_this, name) _corto_struct_resolveMember_v(corto_struct(_this), name)
 #define corto_table_construct(_this) _corto_table_construct(corto_table(_this))
@@ -768,6 +768,7 @@ int16_t _corto_verbatim_init(
 #define corto_interface_compatible_v _corto_interface_compatible_v
 #define corto_interface_construct _corto_interface_construct
 #define corto_interface_destruct _corto_interface_destruct
+#define corto_interface_deinit _corto_interface_deinit
 #define corto_interface_init _corto_interface_init
 #define corto_interface_resolveMember_v _corto_interface_resolveMember_v
 #define corto_interface_resolveMemberByTag _corto_interface_resolveMemberByTag
@@ -800,7 +801,6 @@ int16_t _corto_verbatim_init(
 #define corto_struct_castable_v _corto_struct_castable_v
 #define corto_struct_compatible_v _corto_struct_compatible_v
 #define corto_struct_construct _corto_struct_construct
-#define corto_struct_destruct _corto_struct_destruct
 #define corto_struct_init _corto_struct_init
 #define corto_struct_resolveMember_v _corto_struct_resolveMember_v
 #define corto_table_construct _corto_table_construct
@@ -864,6 +864,7 @@ int16_t _corto_verbatim_init(
 #define safe_corto_interface_compatible_v(_this, type) _corto_interface_compatible_v(corto_interface(_this), corto_type(type))
 #define safe_corto_interface_construct(_this) _corto_interface_construct(corto_interface(_this))
 #define safe_corto_interface_destruct(_this) _corto_interface_destruct(corto_interface(_this))
+#define safe_corto_interface_deinit(_this) _corto_interface_deinit(corto_interface(_this))
 #define safe_corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
 #define safe_corto_interface_resolveMember_v(_this, name) _corto_interface_resolveMember_v(corto_interface(_this), name)
 #define safe_corto_interface_resolveMemberByTag(_this, tag) _corto_interface_resolveMemberByTag(corto_interface(_this), corto_tag(tag))
@@ -896,7 +897,6 @@ int16_t _corto_verbatim_init(
 #define safe_corto_struct_castable_v(_this, type) _corto_struct_castable_v(corto_struct(_this), corto_type(type))
 #define safe_corto_struct_compatible_v(_this, type) _corto_struct_compatible_v(corto_struct(_this), corto_type(type))
 #define safe_corto_struct_construct(_this) _corto_struct_construct(corto_struct(_this))
-#define safe_corto_struct_destruct(_this) _corto_struct_destruct(corto_struct(_this))
 #define safe_corto_struct_init(_this) _corto_struct_init(corto_struct(_this))
 #define safe_corto_struct_resolveMember_v(_this, name) _corto_struct_resolveMember_v(corto_struct(_this), name)
 #define safe_corto_table_construct(_this) _corto_table_construct(corto_table(_this))
@@ -923,4 +923,3 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
-

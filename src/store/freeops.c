@@ -274,13 +274,23 @@ void freeops_create(freeops *r, corto_type type) {
         : corto_calloc(sizeof(freeops))
         ;
 
-    corto_metawalk(&s, type, result);
+    if (type->kind == CORTO_COMPOSITE && corto_interface(type)->kind == CORTO_UNION) {
+        freeops_op* op = freeops_add(result);
+        op->kind = FREEOPS_UNION;
+        op->offset = 0;
+        op->subtype = type;
+#ifdef DEBUG_FREEOPS
+        op->member = NULL;
+#endif
+    } else {
+        corto_metawalk(&s, type, result);
+    }
 
 #ifdef DEBUG_FREEOPS
     result->type = type;
 #endif
 
-    if (!r) ((corto_struct)type)->freeops = (uintptr_t)result;
+    if (!r) ((corto_interface)type)->freeops = (uintptr_t)result;
 }
 
 CORTO_SEQUENCE(dummySeq,void*,);
@@ -355,17 +365,36 @@ static
 freeops *nestops(
     corto_type type)
 {
-    freeops *r = (freeops*)((corto_struct)type)->freeops;
+    freeops *r = (freeops*)((corto_interface)type)->freeops;
     if (!r) {
         freeops_create(NULL, type);
-        r = (freeops*)((corto_struct)type)->freeops;
+        r = (freeops*)((corto_interface)type)->freeops;
         corto_assert(r != NULL, "failed to create freeops program");
     }
     return r;
 }
 
+/* Free optional value */
+static
+void freeops_free_optional(
+    corto_type subtype,
+    void *ptr)
+{
+    void *elem = *(void**)ptr;
+    if (elem) {
+        if (subtype) {
+            freeops_ptr_free(subtype, elem);
+        }
+        if (elem) free(elem);
+    }
+}
+
 /* Run a program */
-static void freeops_run(freeops *r, void *v) {
+static
+void freeops_run(
+    freeops *r,
+    void *v)
+{
     int i, size, count;
     void *aptr, *elem, *end, *deref;
     dummySeq *seq;
@@ -380,7 +409,6 @@ static void freeops_run(freeops *r, void *v) {
 #ifdef DEBUG_FREEOPS
         //printf("    %s: v = %p, offset = %d, ptr = %p [%s], member = %s\n", freeops_tostr(op->kind), v, op->offset, ptr, corto_fullpath(NULL, op->subtype), corto_fullpath(NULL, op->member));
 #endif
-
         switch(op->kind) {
         case FREEOPS_REF:
             deref_ref_free(ptr);
@@ -406,17 +434,16 @@ static void freeops_run(freeops *r, void *v) {
         case FREEOPS_UNION: {
             int32_t discriminator = *(int32_t*)v;
             corto_member m = safe_corto_union_findCase(op->subtype, discriminator);
-            freeops_ptr_free(m->type, CORTO_OFFSET(ptr, sizeof(int32_t)));
+            if (m->modifiers & CORTO_OPTIONAL) {
+                freeops_free_optional(m->type, CORTO_OFFSET(v, m->offset));
+            } else {
+                freeops_ptr_free(m->type, CORTO_OFFSET(v, m->offset));
+            }
             break;
         }
+
         case FREEOPS_OPTIONAL:
-            if (op->subtype) {
-                void *elem = *(void**)ptr;
-                if (elem) {
-                    freeops_ptr_free(op->subtype, elem);
-                    free(elem);
-                }
-            }
+            freeops_free_optional(op->subtype, ptr);
             break;
         }
     }
@@ -429,13 +456,14 @@ static void freeops_run(freeops *r, void *v) {
 /* Free a value */
 void freeops_ptr_free(corto_type t, void *ptr) {
     if (t->kind == CORTO_COMPOSITE && ((corto_interface)t)->kind != CORTO_INTERFACE) {
-        freeops *r = (freeops*)((corto_struct)t)->freeops;
+        freeops *r = (freeops*)((corto_interface)t)->freeops;
         if (!r) {
-            corto_critical("cannot free instance of '%s', instructions not defined",
+            corto_critical(
+                "cannot free instance of '%s', instructions not defined",
                 corto_fullpath(NULL, t));
         }
 #ifdef DEBUG_FREEOPS
-        //printf(">> free instance of '%s'\n", corto_fullpath(NULL, t));
+        // printf(">> free instance of '%s'\n", corto_fullpath(NULL, t));
 #endif
         freeops_run(r, ptr);
     } else {
@@ -456,10 +484,10 @@ void freeops_ptr_free(corto_type t, void *ptr) {
 }
 
 /* Delete a program */
-void freeops_delete(corto_struct t) {
-    corto_struct s = (corto_struct)t;
+void freeops_delete(corto_interface t) {
+    corto_interface s = (corto_interface)t;
     if (s->freeops) {
-        freeops *r = (freeops*)t->freeops;
+        freeops *r = (freeops*)s->freeops;
         free(r->ops);
         free(r);
         s->freeops = 0;

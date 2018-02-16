@@ -198,8 +198,6 @@ int16_t corto_struct_construct(
         }
     }
 
-    freeops_create(NULL, (corto_type)this);
-
     return safe_corto_interface_construct(this);
 error:
     return -1;
@@ -237,10 +235,4 @@ corto_member corto_struct_resolveMember_v(
         m = corto_interface_resolveMember_v(corto_interface(base), name);
     } while(!m && (base = corto_interface(base)->base));
     return m;
-}
-
-void corto_struct_destruct(
-    corto_struct this)
-{
-    freeops_delete(this);
 }

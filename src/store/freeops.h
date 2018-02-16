@@ -26,7 +26,7 @@ typedef struct freeops freeops;
 typedef struct freeops_op freeops_op;
 
 void freeops_create(freeops *r, corto_type type);
-void freeops_delete(corto_struct t);
+void freeops_delete(corto_interface t);
 void freeops_ptr_free(corto_type t, void *ptr);
 
 #endif /* CORTO_INIT_SER_H_ */

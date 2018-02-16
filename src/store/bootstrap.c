@@ -532,9 +532,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_interface_members),\
     SSO_OP_OBJ(lang_interface_methods),\
     SSO_OP_OBJ(lang_interface_base),\
+    SSO_OP_OBJ(lang_interface_freeops),\
     SSO_OP_OBJ(lang_interface_init_),\
     SSO_OP_OBJ(lang_interface_construct_),\
     SSO_OP_OBJ(lang_interface_destruct_),\
+    SSO_OP_OBJ(lang_interface_deinit_),\
     SSO_OP_OBJ(lang_interface_resolveMember_),\
     SSO_OP_OBJ(lang_interface_resolveMemberByTag_),\
     SSO_OP_OBJ(lang_interface_compatible_),\
@@ -594,10 +596,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_struct_baseAccess),\
     SSO_OP_OBJ(lang_struct_keys),\
     SSO_OP_OBJ(lang_struct_keycache),\
-    SSO_OP_OBJ(lang_struct_freeops),\
     SSO_OP_OBJ(lang_struct_init_),\
     SSO_OP_OBJ(lang_struct_construct_),\
-    SSO_OP_OBJ(lang_struct_destruct_),\
     SSO_OP_OBJ(lang_struct_compatible_),\
     SSO_OP_OBJ(lang_struct_castable_),\
     SSO_OP_OBJ(lang_struct_resolveMember_),\

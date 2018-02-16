@@ -155,6 +155,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FW_C(parent, name) sso_method CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_IC(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_ICD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
+#define CORTO_FW_ICDF(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 #define CORTO_FW_IFCDD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_), CORTO_ID(parent##_##name##_define_)
 #define CORTO_FW_F(parent, name) sso_method CORTO_ID(parent##_##name##_deinit_)
 #define CORTO_FW_IF(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_)
@@ -180,6 +181,9 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 #define CORTO_ICD_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
 #define CORTO_ICD_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
+
+#define CORTO_ICDF_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
+#define CORTO_ICDF_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
 #define CORTO_IFCDD_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
 #define CORTO_IFCDD_CLASS(name) CORTO_CONSTRUCT(name), CORTO__DEFINE(name), {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
@@ -920,16 +924,18 @@ CORTO_CLASS_O(lang, primitive, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_AT
     CORTO_METHOD_O(lang_primitive, construct, "()", lang_int16, corto_primitive_construct);
 
 /* /corto/lang/interface */
-CORTO_FW_ICD(lang, interface);
-CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_overridable), CORTO_ICD);
+CORTO_FW_ICDF(lang, interface);
+CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_overridable), CORTO_ICDF);
     CORTO_MEMBER_O(lang_interface, kind, lang_compositeKind, CORTO_LOCAL | CORTO_READONLY);
     CORTO_MEMBER_O(lang_interface, nextMemberId, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_interface, members, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_interface, methods, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_REFERENCE_O(lang_interface, base, lang_interface, CORTO_GLOBAL | CORTO_CONST, CORTO_VALID, NULL);
+    CORTO_MEMBER_O(lang_interface, freeops, lang_word, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_METHOD_O(lang_interface, init, "()", lang_int16, corto_interface_init);
     CORTO_METHOD_O(lang_interface, construct, "()", lang_int16, corto_interface_construct);
     CORTO_METHOD_O(lang_interface, destruct, "()", lang_void, corto_interface_destruct);
+    CORTO_METHOD_O(lang_interface, deinit, "()", lang_void, corto_interface_deinit);
     CORTO_METHOD_O(lang_interface, resolveMemberByTag, "(tag tag)", lang_member, corto_interface_resolveMemberByTag);
     CORTO_OVERRIDABLE_O(lang_interface, resolveMember, "(string name)", lang_member, corto_interface_resolveMember_v);
     CORTO_OVERRIDABLE_O(lang_interface, compatible, "(type type)", lang_bool, corto_interface_compatible_v);
@@ -1022,19 +1028,17 @@ CORTO_CLASS_O(lang, bitmask, lang_enum, CORTO_LOCAL | CORTO_READONLY, CORTO_ATTR
     CORTO_METHOD_O(lang_bitmask, init, "()", lang_int16, corto_bitmask_init);
 
 /* /corto/lang/struct */
-CORTO_FW_ICD(lang, struct);
-CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_NAMED, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_ICD);
+CORTO_FW_IC(lang, struct);
+CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|CORTO_ATTR_NAMED, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_ALIAS_O (lang_struct, base, lang_interface_base, CORTO_GLOBAL | CORTO_CONST);
     CORTO_MEMBER_O(lang_struct, baseAccess, lang_modifier, CORTO_GLOBAL | CORTO_CONST);
     CORTO_MEMBER_O(lang_struct, keys, lang_stringseq, CORTO_HIDDEN | CORTO_CONST);
     CORTO_MEMBER_O(lang_struct, keycache, lang_objectseq, CORTO_PRIVATE | CORTO_LOCAL);
-    CORTO_MEMBER_O(lang_struct, freeops, lang_word, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_OVERRIDABLE_O(lang_struct, compatible, "(type type)", lang_bool, corto_struct_compatible_v);
     CORTO_OVERRIDABLE_O(lang_struct, castable, "(type type)", lang_bool, corto_struct_castable_v);
     CORTO_OVERRIDABLE_O(lang_struct, resolveMember, "(string name)", lang_member, corto_struct_resolveMember_v);
     CORTO_METHOD_O(lang_struct, init, "()", lang_int16, corto_struct_init);
     CORTO_METHOD_O(lang_struct, construct, "()", lang_int16, corto_struct_construct);
-    CORTO_METHOD_O(lang_struct, destruct, "()", lang_void, corto_struct_destruct);
 
 /* /corto/lang/union */
 CORTO_FW_IC(lang, union);

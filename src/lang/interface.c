@@ -646,8 +646,9 @@ int16_t corto_interface_construct(
         if (corto_type(this->base)->flags & CORTO_TYPE_HAS_DELEGATE) {
             corto_type(this)->flags |= CORTO_TYPE_HAS_DELEGATE;
         }
-
     }
+
+    freeops_create(NULL, (corto_type)this);
 
     return safe_corto_type_construct(this);
 error:
@@ -682,6 +683,12 @@ void corto_interface_destruct(
     }
 
     corto_type_destruct(corto_type(this));
+}
+
+void corto_interface_deinit(
+    corto_interface this)
+{
+    freeops_delete(this);
 }
 
 int16_t corto_interface_init(
