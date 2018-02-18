@@ -1676,6 +1676,10 @@ corto_object corto_resume(
         parent = root_o;
     }
 
+    if (parent != root_o && !corto_childof(root_o, parent)) {
+        return NULL;
+    }
+
     if (!expr) {
         return NULL;
     }
@@ -3063,10 +3067,13 @@ char* corto_path_intern(
 
     buffer[0] = '\0';
 
-    if (!from) {
+    corto_object parent = corto_parentof(o);
+    if (!from || (!parent && o != root_o)) {
         strcpy(buffer, sep);
-        if (o != root_o) {
+        if (o != root_o && parent) {
             from = root_o;
+        } else if (!parent) {
+            from = NULL;
         }
     }
 
@@ -3161,7 +3168,11 @@ char* corto_path(
 {
     corto_assert_object(from);
     corto_assert_object(o);
-    return corto_path_intern(buffer, from, o, sep, FALSE);
+    if (corto_check_attr(o, CORTO_ATTR_NAMED)) {
+        return corto_path_intern(buffer, from, o, sep, FALSE);
+    } else {
+        return corto_fullpath(buffer, o);
+    }
 }
 
 /* increase refcount of an object */
