@@ -924,12 +924,14 @@ corto_object corto_mount_resume(
             corto_result *iterResult = corto_iter_next(&it);
             if (!o) {
                 if (iterResult->parent[0] == '/') {
-                    corto_error(
-                      "mount %s:%s returned fully qualified parent '%s', expected a path relative to mount",
+                    corto_throw(
+                      "mount '%s' of type '%s' returned full path '%s' (id = '%s'), expected relative path",
                       corto_fullpath(NULL, this),
                       corto_fullpath(NULL, corto_typeof(this)),
-                      iterResult->parent
+                      iterResult->parent,
+                      iterResult->id
                     );
+                    corto_raise();
                     goto error;
                 }
 
