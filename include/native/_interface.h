@@ -24,7 +24,7 @@ int16_t _corto_native_type_init(
     corto_native_type _this);
 
 /* -- Support macro's -- */
-#ifndef BUILDING_CORTO
+#ifndef CORTO_IMPL
 #define corto_native_type_init(_this) _corto_native_type_init(corto_native_type(_this))
 #else
 #define corto_native_type_init _corto_native_type_init
@@ -38,4 +38,3 @@ int16_t _corto_native_type_init(
 #endif
 
 #endif
-

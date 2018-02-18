@@ -65,7 +65,7 @@ void _corto_secure_lock_destruct(
     corto_secure_lock _this);
 
 /* -- Support macro's -- */
-#ifndef BUILDING_CORTO
+#ifndef CORTO_IMPL
 #define corto_secure_key_authenticate_v(_this, user, password) _corto_secure_key_authenticate_v(corto_secure_key(_this), user, password)
 #define corto_secure_key_construct(_this) _corto_secure_key_construct(corto_secure_key(_this))
 #define corto_secure_key_destruct(_this) _corto_secure_key_destruct(corto_secure_key(_this))

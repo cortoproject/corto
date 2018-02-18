@@ -633,7 +633,7 @@ int16_t _corto_verbatim_init(
     corto_verbatim _this);
 
 /* -- Support macro's -- */
-#ifndef BUILDING_CORTO
+#ifndef CORTO_IMPL
 #define corto_alias_construct(_this) _corto_alias_construct(corto_alias(_this))
 #define corto_array_construct(_this) _corto_array_construct(corto_array(_this))
 #define corto_array_destruct(_this) _corto_array_destruct(corto_array(_this))

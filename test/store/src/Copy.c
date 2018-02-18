@@ -1893,7 +1893,7 @@ void test_Copy_tc_unionWithStruct(
     test_Copy this)
 {
     test_unionTypes v1 = {}, v2 = {};
-    Point p = {10, 20};
+    test_Point p = {10, 20};
     test_unionTypes__assign_m_composite(&v1, Test_Composite, &p);
     corto_ptr_init(&v2, test_unionTypes_o);
     corto_ptr_copy(&v2, test_unionTypes_o, &v1);

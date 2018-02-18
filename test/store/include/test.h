@@ -1,5 +1,4 @@
 /* test.h
- *
  * This is the main package file. Include this file in other projects.
  * Only modify inside the header-end and body-end sections.
  */
@@ -20,6 +19,7 @@
 #include <include/_type.h>
 #include <include/_interface.h>
 #include <include/_load.h>
+#include <include/_binding.h>
 #include <include/_api.h>
 
 /* $body() */

@@ -20,7 +20,7 @@ void test_SelectSink_tc_selectLoaderCortoScope(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("/").from("corto").type("package").iter(&it) == 0);
@@ -68,7 +68,7 @@ void test_SelectSink_tc_selectLoaderCortoSingle(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("r").from("corto").type("package").iter(&it) == 0);
@@ -92,7 +92,7 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("//").from("corto").type("package").iter(&it) == 0);
@@ -147,7 +147,7 @@ void test_SelectSink_tc_selectLoaderNestedScope(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto/").type("package").iter(&it) == 0);
@@ -195,7 +195,7 @@ void test_SelectSink_tc_selectLoaderNestedSingle(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto/native").type("package").iter(&it) == 0);
@@ -219,7 +219,7 @@ void test_SelectSink_tc_selectLoaderNestedSingleVirtual(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto/r").type("package").iter(&it) == 0);
@@ -243,7 +243,7 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("corto//").type("package").iter(&it) == 0);
@@ -297,7 +297,7 @@ void test_SelectSink_tc_selectLoaderRootScope(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("/").type("package").iter(&it) == 0);
@@ -331,7 +331,7 @@ void test_SelectSink_tc_selectLoaderRootSingle(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("p").type("package").iter(&it) == 0);
@@ -355,7 +355,7 @@ void test_SelectSink_tc_selectLoaderRootTree(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_iter it;
     test_assert(corto_select("//").type("package").iter(&it) == 0);
@@ -439,7 +439,7 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_object p = corto_declare(root_o, "p", corto_unknown_o);
     test_assert(p != NULL);
@@ -461,7 +461,7 @@ void test_SelectSink_tc_selectLoaderLookupNestedInitialSlash(
     corto_enableload(false);
 
     /* Create loader simulator mount */
-    LoaderSimulatorMount m = LoaderSimulatorMount__create(NULL, NULL);
+    test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
 
     corto_object q = corto_lookup(NULL, "/p/q");
     test_assert(q != NULL);
