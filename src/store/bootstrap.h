@@ -156,10 +156,11 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_FW_IC(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_)
 #define CORTO_FW_ICD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
 #define CORTO_FW_ICDF(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
-#define CORTO_FW_IFCDD(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_), CORTO_ID(parent##_##name##_define_)
+#define CORTO_FW_IFCDE(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_), CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_), CORTO_ID(parent##_##name##_define_)
 #define CORTO_FW_F(parent, name) sso_method CORTO_ID(parent##_##name##_deinit_)
 #define CORTO_FW_IF(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_deinit_)
 #define CORTO_FW_CD(parent, name) sso_method CORTO_ID(parent##_##name##_construct_), CORTO_ID(parent##_##name##_destruct_)
+#define CORTO_FW_IE(parent, name) sso_method CORTO_ID(parent##_##name##_init_), CORTO_ID(parent##_##name##_define_)
 
 /* Delegate assignments */
 #define CORTO_DELEGATE(name, delegate) {{NULL, (corto_function)&CORTO_ID(name##_##delegate##_).v}}
@@ -185,11 +186,14 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ICDF_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
 #define CORTO_ICDF_CLASS(name) CORTO_CONSTRUCT(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
-#define CORTO_IFCDD_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
-#define CORTO_IFCDD_CLASS(name) CORTO_CONSTRUCT(name), CORTO__DEFINE(name), {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
+#define CORTO_IFCDE_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
+#define CORTO_IFCDE_CLASS(name) CORTO_CONSTRUCT(name), CORTO__DEFINE(name), {{NULL, NULL}}, {{NULL, NULL}}, CORTO_DESTRUCT(name), {{NULL, NULL}}
 
 #define CORTO_IF_TYPE(name) CORTO_INIT(name), CORTO_DEINIT(name)
 #define CORTO_IF_CLASS(name)
+
+#define CORTO_IE_TYPE(name) CORTO_INIT(name), {{NULL, NULL}}
+#define CORTO_IE_CLASS(name) {{NULL, NULL}}, CORTO__DEFINE(name), {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}, {{NULL, NULL}}
 
 #define CORTO_F_TYPE(name) {{NULL, NULL}}, CORTO_DEINIT(name)
 #define CORTO_F_CLASS(name)
@@ -672,8 +676,8 @@ CORTO_TYPE_O(lang, unknown, CORTO_VOID, FALSE, CORTO_ATTR_NAMED);
 CORTO_TYPE_O(lang, object, CORTO_VOID, TRUE, CORTO_ATTR_DEFAULT);
 
 /* Package type */
-CORTO_FW_IC(lang, package);
-CORTO_CLASS_NOBASE_O(lang, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
+CORTO_FW_IE(lang, package);
+CORTO_CLASS_NOBASE_O(lang, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IE);
     CORTO_MEMBER_O(lang_package, description, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(lang_package, version, lang_string, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(lang_package, author, lang_string, CORTO_GLOBAL|CORTO_READONLY);
@@ -685,7 +689,7 @@ CORTO_CLASS_NOBASE_O(lang, package, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NU
     CORTO_MEMBER_O(lang_package, use, lang_stringlist, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(lang_package, public, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_MEMBER_O(lang_package, managed, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
-    CORTO_METHOD_O(lang_package, construct, "()", lang_int16, corto_package_construct);
+    CORTO_METHOD_O(lang_package, define, "()", lang_void, corto_package_define);
     CORTO_METHOD_O(lang_package, init, "()", lang_int16, corto_package_init);
 
 CORTO_CLASS_O(lang, application, lang_package, CORTO_GLOBAL, CORTO_ATTR_DEFAULT|CORTO_ATTR_OBSERVABLE, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
@@ -1356,8 +1360,8 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CO
     CORTO_METHOD_O(vstore_query, match, "(vstore/result result)", lang_bool, corto_query_cardinality);
 
 /* /corto/vstore/subscriber */
-CORTO_FW_IFCDD(vstore, subscriber);
-CORTO_PROCEDURE_O(vstore, subscriber, FALSE, NULL, vstore_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_IFCDD);
+CORTO_FW_IFCDE(vstore, subscriber);
+CORTO_PROCEDURE_O(vstore, subscriber, FALSE, NULL, vstore_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_IFCDE);
     CORTO_MEMBER_O(vstore_subscriber, query, vstore_query, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_subscriber, contentType, lang_string, CORTO_GLOBAL);
     CORTO_ALIAS_O(vstore_subscriber, instance, vstore_observer_instance, CORTO_GLOBAL);

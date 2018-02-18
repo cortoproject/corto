@@ -1747,6 +1747,7 @@ test/Suite Loader:/
     void tc_loadSelf()
     void tc_createSelfPackage()
     void tc_locateSelf()
+    void tc_autoloadPackageNoLib()
 
 // Key and lock for security tests
 class TestKey: secure/key:/

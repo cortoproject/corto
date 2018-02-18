@@ -856,7 +856,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_package_public),\
     SSO_OP_OBJ(lang_package_managed),\
     SSO_OP_OBJ(lang_package_init_),\
-    SSO_OP_OBJ(lang_package_construct_),\
+    SSO_OP_OBJ(lang_package_define_),\
     /* time */\
     SSO_OP_OBJ(vstore_time_sec),\
     SSO_OP_OBJ(vstore_time_nanosec),\
@@ -1177,6 +1177,9 @@ int corto_start(
             if (corto_instanceof(corto_class_o, o)) {
                 if (corto_interface_pullDelegate(o, &lang_class_construct__o.v)) {
                     ((corto_type)o)->flags |= CORTO_TYPE_HAS_CONSTRUCT;
+                }
+                if (corto_interface_pullDelegate(o, &lang_class_define__o.v)) {
+                    ((corto_type)o)->flags |= CORTO_TYPE_HAS_DEFINE;
                 }
                 if (corto_interface_pullDelegate(o, &lang_class_destruct__o.v)) {
                     ((corto_type)o)->flags |= CORTO_TYPE_HAS_DESTRUCT;

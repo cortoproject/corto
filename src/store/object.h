@@ -280,7 +280,6 @@ int corto_load_intern(
     corto_string str,
     int argc,
     char* argv[],
-    bool _try,
     bool ignoreRecursive,
     bool alwaysRun);
 
