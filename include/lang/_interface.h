@@ -399,7 +399,7 @@ int16_t _corto_overridable_init(
 /* class corto/lang/package */
 
 CORTO_EXPORT
-int16_t _corto_package_construct(
+void _corto_package_define(
     corto_package _this);
 
 CORTO_EXPORT
@@ -692,7 +692,7 @@ int16_t _corto_verbatim_init(
 #define corto_member_init(_this) _corto_member_init(corto_member(_this))
 #define corto_metaprocedure_construct(_this) _corto_metaprocedure_construct(corto_metaprocedure(_this))
 #define corto_overridable_init(_this) _corto_overridable_init(corto_overridable(_this))
-#define corto_package_construct(_this) _corto_package_construct(corto_package(_this))
+#define corto_package_define(_this) _corto_package_define(corto_package(_this))
 #define corto_package_init(_this) _corto_package_init(corto_package(_this))
 #define corto_primitive_castable_v(_this, type) _corto_primitive_castable_v(corto_primitive(_this), corto_type(type))
 #define corto_primitive_compatible_v(_this, type) _corto_primitive_compatible_v(corto_primitive(_this), corto_type(type))
@@ -786,7 +786,7 @@ int16_t _corto_verbatim_init(
 #define corto_member_init _corto_member_init
 #define corto_metaprocedure_construct _corto_metaprocedure_construct
 #define corto_overridable_init _corto_overridable_init
-#define corto_package_construct _corto_package_construct
+#define corto_package_define _corto_package_define
 #define corto_package_init _corto_package_init
 #define corto_primitive_castable_v _corto_primitive_castable_v
 #define corto_primitive_compatible_v _corto_primitive_compatible_v
@@ -882,7 +882,7 @@ int16_t _corto_verbatim_init(
 #define safe_corto_member_init(_this) _corto_member_init(corto_member(_this))
 #define safe_corto_metaprocedure_construct(_this) _corto_metaprocedure_construct(corto_metaprocedure(_this))
 #define safe_corto_overridable_init(_this) _corto_overridable_init(corto_overridable(_this))
-#define safe_corto_package_construct(_this) _corto_package_construct(corto_package(_this))
+#define safe_corto_package_define(_this) _corto_package_define(corto_package(_this))
 #define safe_corto_package_init(_this) _corto_package_init(corto_package(_this))
 #define safe_corto_primitive_castable_v(_this, type) _corto_primitive_castable_v(corto_primitive(_this), corto_type(type))
 #define safe_corto_primitive_compatible_v(_this, type) _corto_primitive_compatible_v(corto_primitive(_this), corto_type(type))

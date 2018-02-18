@@ -227,3 +227,12 @@ void test_Loader_tc_locateSelf(
     test_assert(sig == 0);
 
 }
+
+void test_Loader_tc_autoloadPackageNoLib(
+    test_Loader this)
+{
+    corto_log_setExceptionAction(CORTO_LOG_ON_EXCEPTION_ABORT);
+    corto_object o = corto_create(root_o, "/driver", corto_package_o);
+    test_assert(o != NULL);
+    test_assert(corto_delete(o) == 0);
+}

@@ -91,6 +91,7 @@ void corto_loader_addDir(
                 }
 
                 if (!S_ISDIR(attr.st_mode)) {
+                    /* Ignore files */
                     continue;
                 }
 
