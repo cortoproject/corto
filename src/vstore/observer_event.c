@@ -35,7 +35,6 @@ void corto_observer_event_handle(
         /* Error */
         corto_raise();
     }
-
 }
 
 int16_t corto_observer_event_init(

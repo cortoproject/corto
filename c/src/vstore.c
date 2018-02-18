@@ -311,17 +311,17 @@ corto_int16 corto_handleAction_init_c_instance(corto_handleAction *d, corto_obje
     return 0;
 }
 
-corto_invokeEvent* _corto_invokeEvent__create(corto_object _parent, const char *_id, corto_mount mount, corto_object instance, corto_function function, uintptr_t args) {
-    corto_invokeEvent* _this;
-    _this = (corto_invokeEvent*)corto_declare(_parent, _id, corto_invokeEvent_o);
+corto_invoke_event* _corto_invoke_event__create(corto_object _parent, const char *_id, corto_mount mount, corto_object instance, corto_function function, uintptr_t args) {
+    corto_invoke_event* _this;
+    _this = (corto_invoke_event*)corto_declare(_parent, _id, corto_invoke_event_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_invokeEvent*)_this)->mount, mount);
-        corto_set_ref(&((corto_invokeEvent*)_this)->instance, instance);
-        corto_set_ref(&((corto_invokeEvent*)_this)->function, function);
-        ((corto_invokeEvent*)_this)->args = args;
+        corto_set_ref(&((corto_invoke_event*)_this)->mount, mount);
+        corto_set_ref(&((corto_invoke_event*)_this)->instance, instance);
+        corto_set_ref(&((corto_invoke_event*)_this)->function, function);
+        ((corto_invoke_event*)_this)->args = args;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -330,19 +330,19 @@ corto_invokeEvent* _corto_invokeEvent__create(corto_object _parent, const char *
     return _this;
 }
 
-corto_int16 _corto_invokeEvent__update(corto_invokeEvent* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args) {
+corto_int16 _corto_invoke_event__update(corto_invoke_event* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_invokeEvent*)((corto_invokeEvent*)CORTO_OFFSET(_this, ((corto_type)corto_invokeEvent_o)->size)))->mount, mount);
-            corto_set_ref(&((corto_invokeEvent*)((corto_invokeEvent*)CORTO_OFFSET(_this, ((corto_type)corto_invokeEvent_o)->size)))->instance, instance);
-            corto_set_ref(&((corto_invokeEvent*)((corto_invokeEvent*)CORTO_OFFSET(_this, ((corto_type)corto_invokeEvent_o)->size)))->function, function);
-            ((corto_invokeEvent*)((corto_invokeEvent*)CORTO_OFFSET(_this, ((corto_type)corto_invokeEvent_o)->size)))->args = args;
+            corto_set_ref(&((corto_invoke_event*)((corto_invoke_event*)CORTO_OFFSET(_this, ((corto_type)corto_invoke_event_o)->size)))->mount, mount);
+            corto_set_ref(&((corto_invoke_event*)((corto_invoke_event*)CORTO_OFFSET(_this, ((corto_type)corto_invoke_event_o)->size)))->instance, instance);
+            corto_set_ref(&((corto_invoke_event*)((corto_invoke_event*)CORTO_OFFSET(_this, ((corto_type)corto_invoke_event_o)->size)))->function, function);
+            ((corto_invoke_event*)((corto_invoke_event*)CORTO_OFFSET(_this, ((corto_type)corto_invoke_event_o)->size)))->args = args;
         } else {
-            corto_set_ref(&((corto_invokeEvent*)_this)->mount, mount);
-            corto_set_ref(&((corto_invokeEvent*)_this)->instance, instance);
-            corto_set_ref(&((corto_invokeEvent*)_this)->function, function);
-            ((corto_invokeEvent*)_this)->args = args;
+            corto_set_ref(&((corto_invoke_event*)_this)->mount, mount);
+            corto_set_ref(&((corto_invoke_event*)_this)->instance, instance);
+            corto_set_ref(&((corto_invoke_event*)_this)->function, function);
+            ((corto_invoke_event*)_this)->args = args;
         }
         if (corto_update_end(_this)) {
             return -1;
@@ -353,12 +353,12 @@ corto_int16 _corto_invokeEvent__update(corto_invokeEvent* _this, corto_mount mou
     return 0;
 }
 
-corto_invokeEvent* _corto_invokeEvent__assign(corto_invokeEvent* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args) {
+corto_invoke_event* _corto_invoke_event__assign(corto_invoke_event* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args) {
     CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_invokeEvent*)_this)->mount, mount);
-    corto_set_ref(&((corto_invokeEvent*)_this)->instance, instance);
-    corto_set_ref(&((corto_invokeEvent*)_this)->function, function);
-    ((corto_invokeEvent*)_this)->args = args;
+    corto_set_ref(&((corto_invoke_event*)_this)->mount, mount);
+    corto_set_ref(&((corto_invoke_event*)_this)->instance, instance);
+    corto_set_ref(&((corto_invoke_event*)_this)->function, function);
+    ((corto_invoke_event*)_this)->args = args;
     return _this;
 }
 

@@ -210,10 +210,10 @@ struct corto_mount_s {
     uintptr_t contentTypeOutHandle;
 };
 
-/*  /corto/vstore/invokeEvent */
-typedef struct corto_invokeEvent corto_invokeEvent;
+/*  /corto/vstore/invoke_event */
+typedef struct corto_invoke_event corto_invoke_event;
 
-struct corto_invokeEvent {
+struct corto_invoke_event {
     corto_event super;
     corto_mount mount;
     corto_object instance;
@@ -391,7 +391,7 @@ typedef corto_iter corto_subscriber_eventIter;
 #define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assert_type((corto_type)corto_mountSubscriptionList_o, o))
 #define corto_time(o) ((corto_time*)corto_assert_type((corto_type)corto_time_o, o))
 #define corto_mount(o) ((corto_mount)corto_assert_type((corto_type)corto_mount_o, o))
-#define corto_invokeEvent(o) ((corto_invokeEvent*)corto_assert_type((corto_type)corto_invokeEvent_o, o))
+#define corto_invoke_event(o) ((corto_invoke_event*)corto_assert_type((corto_type)corto_invoke_event_o, o))
 #define corto_loader(o) ((corto_loader)corto_assert_type((corto_type)corto_loader_o, o))
 #define corto_objectIter(o) ((corto_objectIter*)corto_assert_type((corto_type)corto_objectIter_o, o))
 #define corto_observer_event(o) ((corto_observer_event*)corto_assert_type((corto_type)corto_observer_event_o, o))
@@ -428,7 +428,7 @@ typedef corto_mountSubscription _type_corto_mountSubscription;
 typedef corto_mountSubscriptionList _type_corto_mountSubscriptionList;
 typedef corto_time _type_corto_time;
 typedef corto_mount _type_corto_mount;
-typedef corto_invokeEvent _type_corto_invokeEvent;
+typedef corto_invoke_event _type_corto_invoke_event;
 typedef corto_loader _type_corto_loader;
 typedef corto_objectIter _type_corto_objectIter;
 typedef corto_observer_event _type_corto_observer_event;

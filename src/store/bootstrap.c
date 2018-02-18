@@ -222,7 +222,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_VALUE(vstore_, fmt_data),\
     SSO_OP_VALUE(vstore_, observer_event),\
     SSO_OP_VALUE(vstore_, subscriber_event),\
-    SSO_OP_VALUE(vstore_, invokeEvent),\
+    SSO_OP_VALUE(vstore_, invoke_event),\
     SSO_OP_CLASS(lang_, binary),\
     SSO_OP_CLASS(lang_, boolean),\
     SSO_OP_CLASS(lang_, character),\
@@ -341,12 +341,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(vstore_subscriber_event_handle),\
     SSO_OP_OBJ(vstore_subscriber_event_init_),\
     SSO_OP_OBJ(vstore_subscriber_event_deinit_),\
-    /* invokeEvent */\
-    SSO_OP_OBJ(vstore_invokeEvent_mount),\
-    SSO_OP_OBJ(vstore_invokeEvent_instance),\
-    SSO_OP_OBJ(vstore_invokeEvent_function),\
-    SSO_OP_OBJ(vstore_invokeEvent_args),\
-    SSO_OP_OBJ(vstore_invokeEvent_handle_),\
+    /* invoke_event */\
+    SSO_OP_OBJ(vstore_invoke_event_mount),\
+    SSO_OP_OBJ(vstore_invoke_event_instance),\
+    SSO_OP_OBJ(vstore_invoke_event_function),\
+    SSO_OP_OBJ(vstore_invoke_event_args),\
+    SSO_OP_OBJ(vstore_invoke_event_handle_),\
     /* width */\
     SSO_OP_OBJ(lang_width_WIDTH_8),\
     SSO_OP_OBJ(lang_width_WIDTH_16),\

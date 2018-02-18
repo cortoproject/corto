@@ -56,17 +56,17 @@ corto_time _corto_frame_getTime(
     corto_frame* _this);
 
 
-/* struct corto/vstore/invokeEvent */
+/* struct corto/vstore/invoke_event */
 
 CORTO_EXPORT
-void _corto_invokeEvent_handle_v(
-    corto_invokeEvent* _this);
+void _corto_invoke_event_handle_v(
+    corto_invoke_event* _this);
 
-/* void corto_invokeEvent_handle(corto_invokeEvent) */
-#define corto_invokeEvent_handle(_this) ( \
-    ((corto_function)corto_invokeEvent_handle_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_invokeEvent_handle_o)->index - 1])->fptr)(corto_invokeEvent(_this)) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_invokeEvent_handle_o)->index - 1], NULL, corto_invokeEvent(_this)) \
+/* void corto_invoke_event_handle(corto_invoke_event) */
+#define corto_invoke_event_handle(_this) ( \
+    ((corto_function)corto_invoke_event_handle_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_void (*)(corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_invoke_event_handle_o)->index - 1])->fptr)(corto_invoke_event(_this)) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_invoke_event_handle_o)->index - 1], NULL, corto_invoke_event(_this)) \
     )
 
 
@@ -556,12 +556,12 @@ int16_t _corto_subscriber_event_init(
     corto_subscriber_event* _this);
 
 /* -- Support macro's -- */
-#ifndef BUILDING_CORTO
+#ifndef CORTO_IMPL
 #define corto_dispatcher_post_v(_this, e) _corto_dispatcher_post_v(corto_dispatcher(_this), e)
 #define corto_event_handle(_this) _corto_event_handle(_this)
 #define corto_fmt_data_deinit(_this) _corto_fmt_data_deinit(_this)
 #define corto_frame_getTime(_this) _corto_frame_getTime(_this)
-#define corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
+#define corto_invoke_event_handle_v(_this) _corto_invoke_event_handle_v(_this)
 #define corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
 #define corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
 #define corto_loader_on_query_v(_this, query) _corto_loader_on_query_v(corto_loader(_this), query)
@@ -634,7 +634,7 @@ int16_t _corto_subscriber_event_init(
 #define corto_event_handle _corto_event_handle
 #define corto_fmt_data_deinit _corto_fmt_data_deinit
 #define corto_frame_getTime _corto_frame_getTime
-#define corto_invokeEvent_handle_v _corto_invokeEvent_handle_v
+#define corto_invoke_event_handle_v _corto_invoke_event_handle_v
 #define corto_loader_construct _corto_loader_construct
 #define corto_loader_destruct _corto_loader_destruct
 #define corto_loader_on_query_v _corto_loader_on_query_v
@@ -709,7 +709,7 @@ int16_t _corto_subscriber_event_init(
 #define safe_corto_event_handle(_this) _corto_event_handle(_this)
 #define safe_corto_fmt_data_deinit(_this) _corto_fmt_data_deinit(_this)
 #define safe_corto_frame_getTime(_this) _corto_frame_getTime(_this)
-#define safe_corto_invokeEvent_handle_v(_this) _corto_invokeEvent_handle_v(_this)
+#define safe_corto_invoke_event_handle_v(_this) _corto_invoke_event_handle_v(_this)
 #define safe_corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
 #define safe_corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
 #define safe_corto_loader_on_query_v(_this, query) _corto_loader_on_query_v(corto_loader(_this), query)

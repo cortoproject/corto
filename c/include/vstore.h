@@ -129,21 +129,21 @@ corto_int16 corto_handleAction__call(corto_handleAction *_delegate, corto_event 
 CORTO_EXPORT corto_int16 corto_handleAction__init_c(corto_handleAction *d, corto_void ___ (*callback)(corto_event*));
 #define corto_handleAction_init_c_instance_auto(d, instance, callback)corto_handleAction d; corto_handleAction_init_c_instance(&d, instance, callback)
 CORTO_EXPORT corto_int16 corto_handleAction_init_c_instance(corto_handleAction *d, corto_object instance, corto_void ___ (*callback)(corto_object, corto_event*));
-/* /corto/vstore/invokeEvent */
-CORTO_EXPORT corto_invokeEvent* _corto_invokeEvent__create(corto_object _parent, const char *_id, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
-#define corto_invokeEvent__create(_parent, _id, mount, instance, function, args) _corto_invokeEvent__create(_parent, _id, corto_mount(mount), instance, corto_function(function), args)
-#define corto_invokeEvent__create_auto(_parent, _id, mount, instance, function, args) corto_invokeEvent* _id = corto_invokeEvent__create(_parent, #_id, mount, instance, function, args); (void)_id
-#define corto_invokeEvent__declare(parent, id) (corto_invokeEvent*)corto_declare(parent, id, corto_invokeEvent_o)
-CORTO_EXPORT corto_int16 _corto_invokeEvent__update(corto_invokeEvent* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
-#define corto_invokeEvent__update(_this, mount, instance, function, args) _corto_invokeEvent__update(corto_invokeEvent(_this), corto_mount(mount), instance, corto_function(function), args)
+/* /corto/vstore/invoke_event */
+CORTO_EXPORT corto_invoke_event* _corto_invoke_event__create(corto_object _parent, const char *_id, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
+#define corto_invoke_event__create(_parent, _id, mount, instance, function, args) _corto_invoke_event__create(_parent, _id, corto_mount(mount), instance, corto_function(function), args)
+#define corto_invoke_event__create_auto(_parent, _id, mount, instance, function, args) corto_invoke_event* _id = corto_invoke_event__create(_parent, #_id, mount, instance, function, args); (void)_id
+#define corto_invoke_event__declare(parent, id) (corto_invoke_event*)corto_declare(parent, id, corto_invoke_event_o)
+CORTO_EXPORT corto_int16 _corto_invoke_event__update(corto_invoke_event* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
+#define corto_invoke_event__update(_this, mount, instance, function, args) _corto_invoke_event__update(corto_invoke_event(_this), corto_mount(mount), instance, corto_function(function), args)
 
-CORTO_EXPORT corto_invokeEvent* _corto_invokeEvent__assign(corto_invokeEvent* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
-#define corto_invokeEvent__optional_not_set NULL
-#define corto_invokeEvent__optional_set(mount, instance, function, args) (corto_invokeEvent*)corto_invokeEvent__assign((corto_invokeEvent*)corto_ptr_new(corto_invokeEvent_o), mount, instance, function, args)
-#define corto_invokeEvent__optional_set_cond(cond, mount, instance, function, args) cond ? (corto_invokeEvent*)corto_invokeEvent__assign((corto_invokeEvent*)corto_ptr_new(corto_invokeEvent_o), mount, instance, function, args) : NULL
-#define corto_invokeEvent__unset(_this) _this ? corto_ptr_free(_this, corto_invokeEvent_o), 0 : 0; _this = NULL;
-#define corto_invokeEvent__assign(_this, mount, instance, function, args) _corto_invokeEvent__assign(_this, corto_mount(mount), instance, corto_function(function), args)
-#define corto_invokeEvent__set(_this, mount, instance, function, args) _this = _this ? _this : (corto_invokeEvent*)corto_ptr_new(corto_invokeEvent_o); _corto_invokeEvent__assign(_this, corto_mount(mount), instance, corto_function(function), args)
+CORTO_EXPORT corto_invoke_event* _corto_invoke_event__assign(corto_invoke_event* _this, corto_mount mount, corto_object instance, corto_function function, uintptr_t args);
+#define corto_invoke_event__optional_not_set NULL
+#define corto_invoke_event__optional_set(mount, instance, function, args) (corto_invoke_event*)corto_invoke_event__assign((corto_invoke_event*)corto_ptr_new(corto_invoke_event_o), mount, instance, function, args)
+#define corto_invoke_event__optional_set_cond(cond, mount, instance, function, args) cond ? (corto_invoke_event*)corto_invoke_event__assign((corto_invoke_event*)corto_ptr_new(corto_invoke_event_o), mount, instance, function, args) : NULL
+#define corto_invoke_event__unset(_this) _this ? corto_ptr_free(_this, corto_invoke_event_o), 0 : 0; _this = NULL;
+#define corto_invoke_event__assign(_this, mount, instance, function, args) _corto_invoke_event__assign(_this, corto_mount(mount), instance, corto_function(function), args)
+#define corto_invoke_event__set(_this, mount, instance, function, args) _this = _this ? _this : (corto_invoke_event*)corto_ptr_new(corto_invoke_event_o); _corto_invoke_event__assign(_this, corto_mount(mount), instance, corto_function(function), args)
 
 /* /corto/vstore/loader */
 CORTO_EXPORT corto_loader _corto_loader__create(corto_object _parent, const char *_id, bool autoLoad);

@@ -62,7 +62,7 @@ CORTO_META_OBJECT(struct, event);
 CORTO_META_OBJECT(struct, observer_event);
 CORTO_META_OBJECT(struct, sample);
 CORTO_META_OBJECT(struct, subscriber_event);
-CORTO_META_OBJECT(struct, invokeEvent);
+CORTO_META_OBJECT(struct, invoke_event);
 CORTO_META_OBJECT(struct, time);
 
 CORTO_META_OBJECT(iterator, resultIter);

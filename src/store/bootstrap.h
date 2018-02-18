@@ -456,7 +456,7 @@ CORTO_FWDECL(class, enum);
 CORTO_FWDECL(class, int);
 CORTO_FWDECL(class, float);
 CORTO_FWDECL(class, interface);
-CORTO_FWDECL_VSTORE(struct, invokeEvent);
+CORTO_FWDECL_VSTORE(struct, invoke_event);
 CORTO_FWDECL(class, iterator);
 CORTO_FWDECL_SECURE(class, key);
 CORTO_FWDECL(class, leaf);
@@ -1310,13 +1310,13 @@ CORTO_STRUCT_BASE_O(vstore, subscriber_event, vstore_event, 0, NULL, CORTO_DECLA
     CORTO_METHOD_O(vstore_subscriber_event, init, "()", lang_int16, corto_subscriber_event_init);
     CORTO_METHOD_O(vstore_subscriber_event, deinit, "()", lang_void, corto_subscriber_event_deinit);
 
-/* /corto/vstore/invokeEvent */
-CORTO_STRUCT_BASE_O(vstore, invokeEvent, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_REFERENCE_O(vstore_invokeEvent, mount, vstore_mount, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_invokeEvent, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_invokeEvent, function, lang_function, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_REFERENCE_O(vstore_invokeEvent, args, lang_word, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
-    CORTO_OVERRIDABLE_O(vstore_invokeEvent, handle, "()", lang_void, corto_invokeEvent_handle_v);
+/* /corto/vstore/invoke_event */
+CORTO_STRUCT_BASE_O(vstore, invoke_event, vstore_event, 0, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
+    CORTO_REFERENCE_O(vstore_invoke_event, mount, vstore_mount, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_invoke_event, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_invoke_event, function, lang_function, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_REFERENCE_O(vstore_invoke_event, args, lang_word, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
+    CORTO_OVERRIDABLE_O(vstore_invoke_event, handle, "()", lang_void, corto_invoke_event_handle_v);
 
 /* /corto/vstore/remote */
 CORTO_PROCEDURE_O(vstore, remote, TRUE, NULL, lang_method, CORTO_GLOBAL, CORTO_TYPE_ID(lang_interface), CORTO_DECLARED, CORTO_NODELEGATE);
