@@ -1,7 +1,5 @@
 language: c
 
-sudo: required
-
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -11,9 +9,19 @@ env:
 before_install:
    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-; fi
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+  - os: linux
+    sudo: required
+    dist: precise
+  - os: linux
+    sudo: required
+    dist: trusty
+  - os: linux
+    sudo: required
+    dist: xenial
+  - os: osx
+    sudo: required
 
 compiler:
   - gcc
