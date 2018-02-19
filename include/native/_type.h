@@ -1,11 +1,9 @@
 /* _type.h
- *
- * This file contains generated C type definitions.
- * You should not manually modify the contents of this file.
+ * This file is generated. Do not modify its contents.
  */
 
-#ifndef CORTO_NATIVE__TYPE_H
-#define CORTO_NATIVE__TYPE_H
+#ifndef CORTO_NATIVE_TYPE_H
+#define CORTO_NATIVE_TYPE_H
 
 #include <corto/lang/_type.h>
 #ifdef __cplusplus
@@ -19,20 +17,12 @@ extern "C" {
 
 /* -- Type definitions -- */
 
-/*  /corto/native/type */
-typedef struct corto_native_type_s *corto_native_type;
-
-struct corto_native_type_s {
+/* class corto/native/type */
+typedef struct corto_native_type_s {
     struct corto_binary_s super;
     corto_string name;
-};
+} *corto_native_type;
 
-
-/* -- Casting macro's -- */
-#define corto_native_type(o) ((corto_native_type)corto_assert_type((corto_type)corto_native_type_o, o))
-
-/* -- Non-expanding typedefs -- */
-typedef corto_native_type _type_corto_native_type;
 
 #ifdef __cplusplus
 }

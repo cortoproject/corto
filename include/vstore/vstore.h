@@ -95,6 +95,7 @@
 
 #include <corto/vstore/_load.h>
 #include <corto/vstore/_interface.h>
+#include <corto/vstore/_binding.h>
 
 /* $body() */
 
@@ -103,7 +104,7 @@ extern "C" {
 #endif
 
 
-/* -- CORTO_SELECT function -- */
+/* -- corto_select function -- */
 
 
 typedef struct corto_select__fluent {
@@ -283,7 +284,7 @@ struct corto_select__fluent corto_select(
     ...);
 
 
-/* -- CORTO_SUBSCRIBE function -- */
+/* -- corto_subscribe function -- */
 
 
 typedef struct corto_subscribe__fluent {

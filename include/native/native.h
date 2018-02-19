@@ -14,6 +14,7 @@
 
 #include <corto/native/_load.h>
 #include <corto/native/_interface.h>
+#include <corto/native/_binding.h>
 
 /* $body() */
 /* Enter code that requires types here */

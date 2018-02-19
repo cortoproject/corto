@@ -1,11 +1,9 @@
 /* _type.h
- *
- * This file contains generated C type definitions.
- * You should not manually modify the contents of this file.
+ * This file is generated. Do not modify its contents.
  */
 
-#ifndef CORTO_VSTORE__TYPE_H
-#define CORTO_VSTORE__TYPE_H
+#ifndef CORTO_VSTORE_TYPE_H
+#define CORTO_VSTORE_TYPE_H
 
 #include <corto/lang/_type.h>
 #ifdef __cplusplus
@@ -19,25 +17,20 @@ extern "C" {
 
 /* -- Type definitions -- */
 
-/*  /corto/vstore/dispatcher */
+/* interface corto/vstore/dispatcher */
 typedef void *corto_dispatcher;
 
-
-/*  /corto/vstore/handleAction */
-typedef struct corto_handleAction corto_handleAction;
-
-struct corto_handleAction {
+/* delegate corto/vstore/handleAction */
+typedef struct corto_handleAction {
     corto_delegatedata super;
-};
+} corto_handleAction;
 
-/*  /corto/vstore/event */
-typedef struct corto_event corto_event;
-
-struct corto_event {
+/* struct corto/vstore/event */
+typedef struct corto_event {
     corto_handleAction handleAction;
-};
+} corto_event;
 
-/* /corto/vstore/eventMask */
+/* bitmask corto/vstore/eventMask */
 typedef uint32_t corto_eventMask;
     #define CORTO_DECLARE (0x1)
     #define CORTO_DEFINE (0x2)
@@ -53,34 +46,28 @@ typedef uint32_t corto_eventMask;
     #define CORTO_ON_METAVALUE (0x800)
     #define CORTO_ON_ANY (0xffff)
 
-/*  /corto/vstore/fmt_data */
-typedef struct corto_fmt_data corto_fmt_data;
-
-struct corto_fmt_data {
+/* struct corto/vstore/fmt_data */
+typedef struct corto_fmt_data {
     uintptr_t ptr;
     uintptr_t handle;
     uintptr_t shared_count;
-};
+} corto_fmt_data;
 
-/* /corto/vstore/frameKind */
+/* enum corto/vstore/frameKind */
 typedef enum corto_frameKind {
     CORTO_FRAME_NOW = 0,
     CORTO_FRAME_TIME = 1,
     CORTO_FRAME_DURATION = 2
 } corto_frameKind;
 
-/*  /corto/vstore/frame */
-typedef struct corto_frame corto_frame;
-
-struct corto_frame {
+/* struct corto/vstore/frame */
+typedef struct corto_frame {
     corto_frameKind kind;
     int64_t value;
-};
+} corto_frame;
 
-/*  /corto/vstore/observer */
-typedef struct corto_observer_s *corto_observer;
-
-struct corto_observer_s {
+/* procedure corto/vstore/observer */
+typedef struct corto_observer_s {
     struct corto_function_s super;
     corto_eventMask mask;
     corto_object observable;
@@ -89,12 +76,10 @@ struct corto_observer_s {
     corto_type type;
     bool enabled;
     uint32_t active;
-};
+} *corto_observer;
 
-/*  /corto/vstore/query */
-typedef struct corto_query corto_query;
-
-struct corto_query {
+/* struct corto/vstore/query */
+typedef struct corto_query {
     corto_string select;
     corto_string from;
     corto_string type;
@@ -107,12 +92,10 @@ struct corto_query {
     corto_frame timeBegin;
     corto_frame timeEnd;
     bool content;
-};
+} corto_query;
 
-/*  /corto/vstore/subscriber */
-typedef struct corto_subscriber_s *corto_subscriber;
-
-struct corto_subscriber_s {
+/* procedure corto/vstore/subscriber */
+typedef struct corto_subscriber_s {
     struct corto_observer_s super;
     corto_query query;
     corto_string contentType;
@@ -121,16 +104,16 @@ struct corto_subscriber_s {
     bool isAligning;
     uintptr_t alignMutex;
     corto_objectlist alignQueue;
-};
+} *corto_subscriber;
 
-/* /corto/vstore/ownership */
+/* enum corto/vstore/ownership */
 typedef enum corto_ownership {
     CORTO_REMOTE_SOURCE = 0,
     CORTO_LOCAL_SOURCE = 1,
     CORTO_CACHE_OWNER = 2
 } corto_ownership;
 
-/* /corto/vstore/mountMask */
+/* bitmask corto/vstore/mountMask */
 typedef uint32_t corto_mountMask;
     #define CORTO_MOUNT_QUERY (0x1)
     #define CORTO_MOUNT_HISTORY_QUERY (0x2)
@@ -143,53 +126,43 @@ typedef uint32_t corto_mountMask;
     #define CORTO_MOUNT_INVOKE (0x100)
     #define CORTO_MOUNT_ID (0x200)
 
-/*  /corto/vstore/queuePolicy */
-typedef struct corto_queuePolicy corto_queuePolicy;
-
-struct corto_queuePolicy {
+/* struct corto/vstore/queuePolicy */
+typedef struct corto_queuePolicy {
     uint32_t max;
-};
+} corto_queuePolicy;
 
-/*  /corto/vstore/mountPolicy */
-typedef struct corto_mountPolicy corto_mountPolicy;
-
-struct corto_mountPolicy {
+/* struct corto/vstore/mountPolicy */
+typedef struct corto_mountPolicy {
     corto_ownership ownership;
     corto_mountMask mask;
     double sampleRate;
     corto_queuePolicy queue;
     uint64_t expiryTime;
     bool filterResults;
-};
+} corto_mountPolicy;
 
-/*  /corto/vstore/mountSubscription */
-typedef struct corto_mountSubscription corto_mountSubscription;
-
-struct corto_mountSubscription {
+/* struct corto/vstore/mountSubscription */
+typedef struct corto_mountSubscription {
     corto_query query;
     uint32_t mountCount;
     uint32_t subscriberCount;
     uintptr_t mountCtx;
     uintptr_t subscriberCtx;
-};
+} corto_mountSubscription;
 
 #ifndef corto_mountSubscriptionList_DEFINED
 #define corto_mountSubscriptionList_DEFINED
 typedef corto_ll corto_mountSubscriptionList;
 #endif
 
-/*  /corto/vstore/time */
-typedef struct corto_time corto_time;
-
-struct corto_time {
+/* struct corto/vstore/time */
+typedef struct corto_time {
     int32_t sec;
     uint32_t nanosec;
-};
+} corto_time;
 
-/*  /corto/vstore/mount */
-typedef struct corto_mount_s *corto_mount;
-
-struct corto_mount_s {
+/* class corto/vstore/mount */
+typedef struct corto_mount_s {
     struct corto_subscriber_s super;
     corto_mountPolicy policy;
     corto_object mount;
@@ -208,33 +181,27 @@ struct corto_mount_s {
     bool quit;
     corto_string contentTypeOut;
     uintptr_t contentTypeOutHandle;
-};
+} *corto_mount;
 
-/*  /corto/vstore/invoke_event */
-typedef struct corto_invoke_event corto_invoke_event;
-
-struct corto_invoke_event {
+/* struct corto/vstore/invoke_event */
+typedef struct corto_invoke_event {
     corto_event super;
     corto_mount mount;
     corto_object instance;
     corto_function function;
     uintptr_t args;
-};
+} corto_invoke_event;
 
-/*  /corto/vstore/loader */
-typedef struct corto_loader_s *corto_loader;
-
-struct corto_loader_s {
+/* class corto/vstore/loader */
+typedef struct corto_loader_s {
     struct corto_mount_s super;
     bool autoLoad;
-};
+} *corto_loader;
 
 typedef corto_iter corto_objectIter;
 
-/*  /corto/vstore/observer_event */
-typedef struct corto_observer_event corto_observer_event;
-
-struct corto_observer_event {
+/* struct corto/vstore/observer_event */
+typedef struct corto_observer_event {
     corto_event super;
     corto_observer observer;
     corto_object instance;
@@ -242,9 +209,9 @@ struct corto_observer_event {
     corto_eventMask event;
     corto_object data;
     uintptr_t thread;
-};
+} corto_observer_event;
 
-/* /corto/vstore/operatorKind */
+/* enum corto/vstore/operatorKind */
 typedef enum corto_operatorKind {
     CORTO_ASSIGN = 0,
     CORTO_ASSIGN_ADD = 1,
@@ -281,32 +248,26 @@ typedef enum corto_operatorKind {
     CORTO_REF = 32
 } corto_operatorKind;
 
-/*  /corto/vstore/remote */
-typedef struct corto_remote_s *corto_remote;
-
-struct corto_remote_s {
+/* procedure corto/vstore/remote */
+typedef struct corto_remote_s {
     struct corto_method_s super;
-};
+} *corto_remote;
 
-/* /corto/vstore/resultMask */
+/* bitmask corto/vstore/resultMask */
 typedef uint32_t corto_resultMask;
     #define CORTO_RESULT_LEAF (0x1)
     #define CORTO_RESULT_HIDDEN (0x2)
 
-/*  /corto/vstore/sample */
-typedef struct corto_sample corto_sample;
-
-struct corto_sample {
+/* struct corto/vstore/sample */
+typedef struct corto_sample {
     corto_time timestamp;
     uintptr_t value;
-};
+} corto_sample;
 
 typedef corto_iter corto_sampleIter;
 
-/*  /corto/vstore/result */
-typedef struct corto_result corto_result;
-
-struct corto_result {
+/* struct corto/vstore/result */
+typedef struct corto_result {
     corto_string id;
     corto_string name;
     corto_string parent;
@@ -316,7 +277,7 @@ struct corto_result {
     corto_object object;
     corto_sampleIter history;
     corto_object owner;
-};
+} corto_result;
 
 typedef corto_iter corto_resultIter;
 
@@ -325,19 +286,15 @@ typedef corto_iter corto_resultIter;
 typedef corto_ll corto_resultList;
 #endif
 
-/*  /corto/vstore/route */
-typedef struct corto_route_s *corto_route;
-
-struct corto_route_s {
+/* procedure corto/vstore/route */
+typedef struct corto_route_s {
     struct corto_method_s super;
     corto_string pattern;
     corto_stringseq elements;
-};
+} *corto_route;
 
-/*  /corto/vstore/router */
-typedef struct corto_router_s *corto_router;
-
-struct corto_router_s {
+/* class corto/vstore/router */
+typedef struct corto_router_s {
     struct corto_class_s super;
     corto_type returnType;
     corto_type paramType;
@@ -345,21 +302,17 @@ struct corto_router_s {
     corto_type routerDataType;
     corto_string routerDataName;
     corto_string elementSeparator;
-};
+} *corto_router;
 
-/*  /corto/vstore/routerimpl */
-typedef struct corto_routerimpl_s *corto_routerimpl;
-
-struct corto_routerimpl_s {
+/* class corto/vstore/routerimpl */
+typedef struct corto_routerimpl_s {
     struct corto_class_s super;
     uint16_t maxArgs;
     corto_route matched;
-};
+} *corto_routerimpl;
 
-/*  /corto/vstore/subscriber_event */
-typedef struct corto_subscriber_event corto_subscriber_event;
-
-struct corto_subscriber_event {
+/* struct corto/vstore/subscriber_event */
+typedef struct corto_subscriber_event {
     corto_event super;
     corto_subscriber subscriber;
     corto_object instance;
@@ -367,84 +320,10 @@ struct corto_subscriber_event {
     corto_eventMask event;
     corto_result data;
     corto_fmt_data fmt;
-};
+} corto_subscriber_event;
 
 typedef corto_iter corto_subscriber_eventIter;
 
-
-/* -- Casting macro's -- */
-#define corto_dispatcher(o) ((corto_dispatcher)corto_assert_type((corto_type)corto_dispatcher_o, o))
-#define corto_handleAction(o) ((corto_handleAction*)corto_assert_type((corto_type)corto_handleAction_o, o))
-#define corto_event(o) ((corto_event*)corto_assert_type((corto_type)corto_event_o, o))
-#define corto_eventMask(o) ((corto_eventMask*)corto_assert_type((corto_type)corto_eventMask_o, o))
-#define corto_fmt_data(o) ((corto_fmt_data*)corto_assert_type((corto_type)corto_fmt_data_o, o))
-#define corto_frameKind(o) ((corto_frameKind*)corto_assert_type((corto_type)corto_frameKind_o, o))
-#define corto_frame(o) ((corto_frame*)corto_assert_type((corto_type)corto_frame_o, o))
-#define corto_observer(o) ((corto_observer)corto_assert_type((corto_type)corto_observer_o, o))
-#define corto_query(o) ((corto_query*)corto_assert_type((corto_type)corto_query_o, o))
-#define corto_subscriber(o) ((corto_subscriber)corto_assert_type((corto_type)corto_subscriber_o, o))
-#define corto_ownership(o) ((corto_ownership*)corto_assert_type((corto_type)corto_ownership_o, o))
-#define corto_mountMask(o) ((corto_mountMask*)corto_assert_type((corto_type)corto_mountMask_o, o))
-#define corto_queuePolicy(o) ((corto_queuePolicy*)corto_assert_type((corto_type)corto_queuePolicy_o, o))
-#define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assert_type((corto_type)corto_mountPolicy_o, o))
-#define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assert_type((corto_type)corto_mountSubscription_o, o))
-#define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assert_type((corto_type)corto_mountSubscriptionList_o, o))
-#define corto_time(o) ((corto_time*)corto_assert_type((corto_type)corto_time_o, o))
-#define corto_mount(o) ((corto_mount)corto_assert_type((corto_type)corto_mount_o, o))
-#define corto_invoke_event(o) ((corto_invoke_event*)corto_assert_type((corto_type)corto_invoke_event_o, o))
-#define corto_loader(o) ((corto_loader)corto_assert_type((corto_type)corto_loader_o, o))
-#define corto_objectIter(o) ((corto_objectIter*)corto_assert_type((corto_type)corto_objectIter_o, o))
-#define corto_observer_event(o) ((corto_observer_event*)corto_assert_type((corto_type)corto_observer_event_o, o))
-#define corto_operatorKind(o) ((corto_operatorKind*)corto_assert_type((corto_type)corto_operatorKind_o, o))
-#define corto_remote(o) ((corto_remote)corto_assert_type((corto_type)corto_remote_o, o))
-#define corto_resultMask(o) ((corto_resultMask*)corto_assert_type((corto_type)corto_resultMask_o, o))
-#define corto_sample(o) ((corto_sample*)corto_assert_type((corto_type)corto_sample_o, o))
-#define corto_sampleIter(o) ((corto_sampleIter*)corto_assert_type((corto_type)corto_sampleIter_o, o))
-#define corto_result(o) ((corto_result*)corto_assert_type((corto_type)corto_result_o, o))
-#define corto_resultIter(o) ((corto_resultIter*)corto_assert_type((corto_type)corto_resultIter_o, o))
-#define corto_resultList(o) ((corto_resultList*)corto_assert_type((corto_type)corto_resultList_o, o))
-#define corto_route(o) ((corto_route)corto_assert_type((corto_type)corto_route_o, o))
-#define corto_router(o) ((corto_router)corto_assert_type((corto_type)corto_router_o, o))
-#define corto_routerimpl(o) ((corto_routerimpl)corto_assert_type((corto_type)corto_routerimpl_o, o))
-#define corto_subscriber_event(o) ((corto_subscriber_event*)corto_assert_type((corto_type)corto_subscriber_event_o, o))
-#define corto_subscriber_eventIter(o) ((corto_subscriber_eventIter*)corto_assert_type((corto_type)corto_subscriber_eventIter_o, o))
-
-/* -- Non-expanding typedefs -- */
-typedef corto_dispatcher _type_corto_dispatcher;
-typedef corto_handleAction _type_corto_handleAction;
-typedef corto_event _type_corto_event;
-typedef corto_eventMask _type_corto_eventMask;
-typedef corto_fmt_data _type_corto_fmt_data;
-typedef corto_frameKind _type_corto_frameKind;
-typedef corto_frame _type_corto_frame;
-typedef corto_observer _type_corto_observer;
-typedef corto_query _type_corto_query;
-typedef corto_subscriber _type_corto_subscriber;
-typedef corto_ownership _type_corto_ownership;
-typedef corto_mountMask _type_corto_mountMask;
-typedef corto_queuePolicy _type_corto_queuePolicy;
-typedef corto_mountPolicy _type_corto_mountPolicy;
-typedef corto_mountSubscription _type_corto_mountSubscription;
-typedef corto_mountSubscriptionList _type_corto_mountSubscriptionList;
-typedef corto_time _type_corto_time;
-typedef corto_mount _type_corto_mount;
-typedef corto_invoke_event _type_corto_invoke_event;
-typedef corto_loader _type_corto_loader;
-typedef corto_objectIter _type_corto_objectIter;
-typedef corto_observer_event _type_corto_observer_event;
-typedef corto_operatorKind _type_corto_operatorKind;
-typedef corto_remote _type_corto_remote;
-typedef corto_resultMask _type_corto_resultMask;
-typedef corto_sample _type_corto_sample;
-typedef corto_sampleIter _type_corto_sampleIter;
-typedef corto_result _type_corto_result;
-typedef corto_resultIter _type_corto_resultIter;
-typedef corto_resultList _type_corto_resultList;
-typedef corto_route _type_corto_route;
-typedef corto_router _type_corto_router;
-typedef corto_routerimpl _type_corto_routerimpl;
-typedef corto_subscriber_event _type_corto_subscriber_event;
-typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 
 #ifdef __cplusplus
 }

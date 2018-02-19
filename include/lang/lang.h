@@ -31,6 +31,7 @@
 
 #include <corto/lang/_load.h>
 #include <corto/lang/_interface.h>
+#include <corto/lang/_binding.h>
 
 /* $body() */
 /* Enter code that requires types here */

@@ -14,6 +14,7 @@
 
 #include <corto/secure/_load.h>
 #include <corto/secure/_interface.h>
+#include <corto/secure/_binding.h>
 
 /* $body() */
 /* Enter code that requires types here */
