@@ -74,6 +74,8 @@ test/Suite SubscribeContentType:/
 
     void setup() method
 
+    void tc_subscribeTypeWithConstruct()
+
     void tc_subscribeStringFromObjects()
     void tc_subscribeStringFromString()
     void tc_subscribeStringFromJson()

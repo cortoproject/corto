@@ -155,7 +155,7 @@ void corto_subscriber_addToAlignQueue(
 typedef struct corto_fmtcache {
     corto_fmt src_handle;
     uintptr_t src_ptr;
-    corto_object o;
+    void* o;
     corto_value v;
     const char *type;
     corto_fmt_data cache[CORTO_MAX_CONTENTTYPE];
@@ -166,7 +166,7 @@ static
 corto_fmtcache corto_fmtcache_init(
     corto_fmt src_handle,
     uintptr_t src_ptr,
-    corto_object o,
+    void* o,
     const char *type)
 {
     corto_fmtcache result = {
@@ -223,15 +223,13 @@ corto_fmt_data* corto_fmtcache_serialize(
                 corto_try(!type, "failed to resolve type '%s'", this->type);
 
                 /* Create intermediate object */
-                this->o = corto(CORTO_DECLARE|CORTO_DEFINE, {
-                    .type = type,
-                    .attrs = -1
-                });
+                this->o = corto_mem_new(type);
+
                 corto_try(!this->o, NULL);
                 corto_release(type);
 
                 /* Serialize from source format to intermediate object */
-                this->v = corto_value_object(this->o, NULL);
+                this->v = corto_value_mem(this->o, type);
                 corto_try (
                     this->src_handle->toValue(&this->v, this->src_ptr), NULL);
             }
@@ -279,7 +277,11 @@ void corto_fmtcache_deinit(
 
     /* If src_handle is provided, the object is an intermediate object */
     if (this->o && this->src_handle) {
-        corto_release(this->o);
+        if (this->v.kind == CORTO_MEM) {
+            corto_mem_free(this->o);
+        } else if (this->v.kind == CORTO_OBJECT) {
+            corto_release(this->o);
+        }
     }
 }
 

@@ -479,3 +479,26 @@ void test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
     test_assert(corto_delete(s) == 0);
 
 }
+
+void test_SubscribeContentType_tc_subscribeTypeWithConstruct(
+    test_SubscribeContentType this)
+{
+    test_assertint(test_ContentTypeTest_get_construct_called_count(), 0);
+    corto_object data_o = corto_lookup(NULL, "/data");
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/ContentTypeTest");
+    corto_release(data_o);
+
+    corto_subscriber s = corto_subscribe("json/*")
+        .instance(this)
+        .contentType("text/corto")
+        .callback(string);
+
+    test_assert(s != 0);
+    test_assertint(this->eventsReceived, 3);
+
+    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/ContentTypeTest", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assertint(this->eventsReceived, 4);
+
+    test_assert(corto_delete(s) == 0);
+    test_assertint(test_ContentTypeTest_get_construct_called_count(), 0);
+}
