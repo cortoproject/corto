@@ -16,7 +16,7 @@ void test_SelectContentType_setup(
     corto_object obj_o = corto_void__create(root_o, "obj");
 
     /* Attach json mount to json scope */
-    test_JsonReplicator__create(NULL, NULL, json_o);
+    test_JsonReplicator__create(NULL, NULL, json_o, "/test/Point");
 
     /* Attach str mount to str scope */
     test_StringReplicator__create(NULL, NULL, str_o);
@@ -449,4 +449,57 @@ void test_SelectContentType_tc_selectStringFromString(
     test_assert(!strcmp(str, "{50,60}"));
 
     test_assert(!corto_iter_hasNext(&iter));
+}
+
+void test_SelectContentType_tc_selectTypeWithConstruct(
+    test_SelectContentType this)
+{
+    test_assertint(test_ContentTypeTest_get_construct_called_count(), 0);
+
+    corto_object data_o = corto_lookup(NULL, "data");
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/ContentTypeTest");
+    corto_release(data_o);
+
+    test_assertint(test_ContentTypeTest_get_construct_called_count(), 0);
+
+    corto_iter iter;
+    corto_result *result;
+    corto_string str;
+    corto_int16 ret = corto_select("data/*").contentType("text/corto").iter( &iter );
+    test_assert(ret == 0);
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "a");
+    test_assertstr(result->parent, "/data");
+    test_assertstr(result->type, "/test/ContentTypeTest");
+    str = corto_result_getText(result);
+    test_assert(str != NULL);
+    test_assertstr(str, "{10,20}");
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "b");
+    test_assertstr(result->parent, "/data");
+    test_assertstr(result->type, "/test/ContentTypeTest");
+    str = corto_result_getText(result);
+    test_assert(str != NULL);
+    test_assertstr(str, "{30,40}");
+
+    test_assert(corto_iter_hasNext(&iter));
+    result = corto_iter_next(&iter);
+    test_assert(result != NULL);
+    test_assert(result->id != NULL);
+    test_assertstr(result->id, "c");
+    test_assertstr(result->parent, "/data");
+    test_assertstr(result->type, "/test/ContentTypeTest");
+    str = corto_result_getText(result);
+    test_assert(str != NULL);
+    test_assertstr(str, "{50,60}");
+
+    test_assertint(test_ContentTypeTest_get_construct_called_count(), 0);
 }
