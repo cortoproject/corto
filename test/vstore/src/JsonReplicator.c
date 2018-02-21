@@ -30,7 +30,7 @@ corto_resultIter test_JsonReplicator_on_query(
         "a",
         NULL,
         ".",
-        "/test/Point",
+        this->type,
         (corto_word)corto_strdup("{\"x\":10,\"y\":20}"),
         CORTO_RESULT_LEAF
     );
@@ -39,7 +39,7 @@ corto_resultIter test_JsonReplicator_on_query(
         "b",
         0,
         ".",
-        "/test/Point",
+        this->type,
         (corto_word)corto_strdup("{\"x\":30,\"y\":40}"),
         CORTO_RESULT_LEAF
     );
@@ -48,7 +48,7 @@ corto_resultIter test_JsonReplicator_on_query(
         "c",
         NULL,
         ".",
-        "/test/Point",
+        this->type,
         (corto_word)corto_strdup("{\"x\":50,\"y\":60}"),
         CORTO_RESULT_LEAF
     );
@@ -62,4 +62,3 @@ corto_resultIter test_JsonReplicator_on_query(
     /* Return persistent iterator to request */
     return result;
 }
-

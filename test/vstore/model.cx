@@ -11,12 +11,18 @@ class Foo:/
     int16 construct()
     void destruct()
 
+class ContentTypeTest:/
+    x, y: int32
+    int16 construct()
+    int32 get_construct_called_count() function
+
 struct Point:/
     x, y: int32
     string nameof()
 
 class JsonReplicator : mount, hidden:/
     alias mount: mount/mount
+    type: string
     int16 construct()
     resultIter on_query(vstore/query query) override
 
@@ -34,6 +40,8 @@ class IdMount : mount, hidden:/
 // Test setting content types
 test/Suite SelectContentType:/
     void setup() method
+
+    void tc_selectTypeWithConstruct()
 
     void tc_selectStringFromObjects()
     void tc_selectStringFromString()

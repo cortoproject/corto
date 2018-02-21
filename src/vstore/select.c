@@ -211,10 +211,10 @@ uintptr_t corto_selectConvert(
             corto_throw("unresolved type '%s'", type);
             goto error;
         } else {
-            corto_object o = corto_create(NULL, NULL, t);
+            void *intermediate = corto_mem_new(t);
 
             /* Convert from source format to object */
-            corto_value v = corto_value_object(o, NULL);
+            corto_value v = corto_value_mem(intermediate, t);
             if (srcType->toValue(&v, value)) {
                 corto_throw("failed to convert value to '%s'", type);
                 goto error;
@@ -226,7 +226,7 @@ uintptr_t corto_selectConvert(
                 goto error;
             }
 
-            corto_delete(o);
+            corto_mem_free(intermediate);
         }
     } else {
         /* If formats are equal, just pass through */

@@ -18,7 +18,7 @@ void test_SubscribeContentType_setup(
     corto_object obj_o = corto_void__create(root_o, "obj");
 
     /* Attach json mount to json scope */
-    test_JsonReplicator__create(NULL, NULL, json_o);
+    test_JsonReplicator__create(NULL, NULL, json_o, "/test/Point");
 
     /* Attach str mount to str scope */
     test_StringReplicator__create(NULL, NULL, str_o);
