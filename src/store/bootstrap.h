@@ -134,7 +134,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* SSO */
 #ifndef NDEBUG
-#define CORTO_ADD_MAGIC ,CORTO_MAGIC
+#define CORTO_ADD_MAGIC ,CORTO_MAGIC,0
 #else
 #define CORTO_ADD_MAGIC
 #endif

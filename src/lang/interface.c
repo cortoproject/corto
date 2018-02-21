@@ -550,7 +550,6 @@ int16_t corto_interface_bindMethod(
                     {
                         goto error;
                     }
-
                 }
 
                 corto_set_ref(found, method);
@@ -658,37 +657,39 @@ error:
 void corto_interface_destruct(
     corto_interface this)
 {
-    corto_uint32 i;
-
-    /* Free members */
-    for (i=0; i<this->members.length; i++) {
-        corto_set_ref(&this->members.buffer[i], NULL);
-    }
-
-    if (this->members.buffer) {
-        corto_dealloc(this->members.buffer);
-        this->members.buffer = NULL;
-        this->members.length = 0;
-    }
-
-    /* Free methods */
-    for (i=0; i<this->methods.length; i++) {
-        corto_set_ref(&this->methods.buffer[i], NULL);
-    }
-
-    if (this->methods.buffer) {
-        corto_dealloc(this->methods.buffer);
-        this->methods.buffer = NULL;
-        this->methods.length = 0;
-    }
-
     corto_type_destruct(corto_type(this));
 }
 
 void corto_interface_deinit(
     corto_interface this)
 {
-    freeops_delete(this);
+    if (corto_isbuiltin(this)) {
+        corto_uint32 i;
+
+        /* Free members */
+        for (i=0; i<this->members.length; i++) {
+            corto_set_ref(&this->members.buffer[i], NULL);
+        }
+
+        if (this->members.buffer) {
+            corto_dealloc(this->members.buffer);
+            this->members.buffer = NULL;
+            this->members.length = 0;
+        }
+
+        /* Free methods */
+        for (i=0; i<this->methods.length; i++) {
+            corto_set_ref(&this->methods.buffer[i], NULL);
+        }
+
+        if (this->methods.buffer) {
+            corto_dealloc(this->methods.buffer);
+            this->methods.buffer = NULL;
+            this->methods.length = 0;
+        }
+    } else {
+        freeops_delete(this);
+    }
 }
 
 int16_t corto_interface_init(

@@ -102,6 +102,9 @@ int8_t CORTO_TRACE_NOTIFICATIONS = 0;
 /* When set, the runtime will break at specified breakpoint */
 int32_t CORTO_MEMTRACE_BREAKPOINT;
 
+/* Turn on or off extensive memory tracing */
+bool CORTO_TRACE_MEM = 0;
+
 /* Package loader */
 static corto_loader corto_loaderInstance;
 
@@ -901,8 +904,7 @@ void corto_initObject(
     corto_object o)
 {
     corto_init_builtin(o);
-    corto_walk_opt s =
-        corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk_opt s = corto_ser_init(0, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_walk(&s, o, NULL);
     corto_type t = corto_typeof(o);
     corto_invoke_preDelegate(&t->init, t, o);
@@ -941,7 +943,7 @@ void corto_genericTlsFree(
 }
 
 static
-void corto_patchSequences(void) {
+void corto_init_sequences(void) {
     /* Mount implements dispatcher */
     corto_mount_o->implements.length = 1;
     corto_mount_o->implements.buffer = corto_alloc(sizeof(corto_object));
@@ -951,8 +953,18 @@ void corto_patchSequences(void) {
     corto_handleAction_o->parameters.length = 1;
     corto_handleAction_o->parameters.buffer = corto_calloc(sizeof(corto_parameter));
     corto_parameter *p = &corto_handleAction_o->parameters.buffer[0];
-    corto_set_ref(&p->type, corto_event_o);
-    corto_set_str(&p->name, "event");
+    p->type = (corto_type)corto_event_o;
+    p->name = "event";
+}
+
+static
+void corto_deinit_sequences(void) {
+    /* Mount implements dispatcher */
+    free (corto_mount_o->implements.buffer);
+    corto_mount_o->implements.length = 0;
+
+    free (corto_handleAction_o->parameters.buffer);
+    corto_handleAction_o->parameters.length = 0;
 }
 
 static
@@ -1197,7 +1209,7 @@ int corto_start(
 
     /* Patch sequences- these aren't set statically since sequences are
      * allocated on the heap */
-    corto_patchSequences();
+    corto_init_sequences();
 
     /* Mark the tableinstance type as a container. Even though it does not
      * inherit from the container base class, object management should treat it
@@ -1321,6 +1333,12 @@ int corto_stop(void)
         abort();
     }
 
+    /* Collect cycles */
+    if (CORTO_TRACE_MEM) corto_log_push("SHUTDOWN_COLLECT");
+    //corto_collect(root_o);
+    if (CORTO_TRACE_MEM) corto_log_pop();
+
+
 #ifndef CORTO_STANDALONE_LIB
     if (corto_loaderInstance) {
         corto_debug("cleanup package loader");
@@ -1332,7 +1350,10 @@ int corto_stop(void)
      * in removing the rootscope itself, but it will result in the
      * removal of all non-static objects. */
     corto_debug("cleanup objects");
+
+    if (CORTO_TRACE_MEM) corto_log_push("SHUTDOWN_DROP");
     corto_drop(root_o, FALSE);
+    if (CORTO_TRACE_MEM) corto_log_pop();
 
     corto_int32 i;
     corto_object o;
@@ -1342,15 +1363,28 @@ int corto_stop(void)
     for (i = 0; (o = types[i].o); i++) corto_destruct(o, FALSE);
     for (i = 0; (o = objects[i].o); i++) corto_destruct(o, FALSE);
 
-    /* Free objects */
+    /* Deinitialize objects */
     for (i = 0; (o = objects[i].o); i++) corto_deinit_builtin(o);
     for (i = 0; (o = types[i].o); i++) corto_deinit_builtin(o);
-
+    if (corto_deinit_builtin(corto_secure_o)) goto error;
     if (corto_deinit_builtin(corto_native_o)) goto error;
     if (corto_deinit_builtin(corto_vstore_o)) goto error;
     if (corto_deinit_builtin(corto_lang_o)) goto error;
     if (corto_deinit_builtin(corto_o)) goto error;
     if (corto_deinit_builtin(root_o)) goto error;
+
+    /* Free manually initialized sequences */
+    corto_deinit_sequences();
+
+    /* Cleanup freeops programs after objects have been deinitialized */
+    for (i = 0; (o = types[i].o); i++) {
+        if (corto_instanceof(corto_interface_o, o)) {
+            freeops_delete(o);
+        }
+    }
+
+    corto_entityAdmin_free_contents(&corto_subscriber_admin, true);
+    corto_entityAdmin_free_contents(&corto_mount_admin, true);
 
     /* Deinit adminLock */
     corto_debug("cleanup global administration");
@@ -1358,14 +1392,18 @@ int corto_stop(void)
     corto_rwmutex_free(&corto_subscriberLock);
 
     corto_log_pop();
-
+    corto_fmt_deinit();
     platform_deinit();
 
-    /* Call exithandlers. Do after platform_init as this will unload any loaded
-     * libraries, which may have routines to cleanup TLS data. */
+    /* Call exithandlers. Do after platform_deinit as this will unload any
+     * loaded libraries, which may have routines to cleanup TLS data. */
     corto_exit();
 
-    CORTO_APP_STATUS = 3; /* Shut down */
+    /* Cleanup any TLS data in the mainthread not created through corto */
+    pthread_exit(0);
+
+    /* Corto is now shut down */
+    CORTO_APP_STATUS = 3;
 
     return 0;
 error:

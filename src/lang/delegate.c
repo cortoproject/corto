@@ -80,6 +80,7 @@ int16_t corto_delegate_bind(
         if (corto_procedure(corto_typeof(object))->hasThis) {
             corto_set_ref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
         }
+        
         /* Bind procedure */
         corto_set_ref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
     }

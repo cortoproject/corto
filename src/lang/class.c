@@ -77,7 +77,7 @@ int16_t corto_class_construct(
             } else {
                 this->interfaceVector.buffer[i].vector.buffer = NULL;
             }
-            result = !corto_class_checkInterfaceCompatibility(this, interface, &this->interfaceVector.buffer[i].vector);          
+            result = !corto_class_checkInterfaceCompatibility(this, interface, &this->interfaceVector.buffer[i].vector);
         }
     }
 
@@ -112,14 +112,22 @@ void corto_class_destruct(
     corto_interfaceVector *v;
 
     /* Free interfaceVector */
-    for (i=0; i<this->interfaceVector.length; i++) {
-        v = &this->interfaceVector.buffer[i];
-        v->interface = NULL;
-        for (j=0; j<v->vector.length; j++) {
-            if (v->vector.buffer[j]) {
-                corto_release(v->vector.buffer[j]);
-                v->vector.buffer[j] = NULL;
+    if (corto_isbuiltin(this)) {
+        for (i=0; i<this->interfaceVector.length; i++) {
+            v = &this->interfaceVector.buffer[i];
+            v->interface = NULL;
+            for (j=0; j<v->vector.length; j++) {
+                if (v->vector.buffer[j]) {
+                    corto_release(v->vector.buffer[j]);
+                    v->vector.buffer[j] = NULL;
+                }
             }
+            if (v->vector.buffer) {
+                free(v->vector.buffer);
+            }
+        }
+        if (this->interfaceVector.buffer) {
+            free(this->interfaceVector.buffer);
         }
     }
 
@@ -174,7 +182,7 @@ corto_method corto_class_resolveInterfaceMethod(
 {
     uint32_t i;
     corto_interfaceVector *v = NULL;
-    
+
     /* Lookup interface class */
     corto_interface base = (corto_interface)this;
     do {
@@ -200,4 +208,3 @@ corto_method corto_class_resolveInterfaceMethod(
 error:
     return NULL;
 }
-

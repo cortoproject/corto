@@ -316,3 +316,16 @@ corto_fmt_lookup(
 error:
     return NULL;
 }
+
+void corto_fmt_deinit(void)
+{
+    if (contentTypes) {
+        corto_iter it = corto_ll_iter(contentTypes);
+        while (corto_iter_hasNext(&it)) {
+            corto_fmt fmt = corto_iter_next(&it);
+            if (fmt->name) free(fmt->name);
+            free(fmt);
+        }
+        corto_ll_free(contentTypes);
+    }
+}

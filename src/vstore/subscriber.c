@@ -894,7 +894,6 @@ void corto_subscriber_deinit(
     /* Delete idmatch resources only when subscriber itself is deallocated
      * as notifications might still take place when subscriber is deleted. */
     corto_idmatch_free((corto_idmatch_program)this->idmatch);
-
 }
 
 void corto_subscriber_destruct(
@@ -904,6 +903,8 @@ void corto_subscriber_destruct(
     corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
     corto_mutex_free((corto_mutex)this->alignMutex);
     free((corto_mutex)this->alignMutex);
+
+    corto_function_destruct((corto_function)this);
 }
 
 int16_t corto_subscriber_init(

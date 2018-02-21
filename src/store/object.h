@@ -96,6 +96,9 @@ typedef struct corto__object {
         /* Magic number to check in debugging whether value is an object. This value
          * should not be used in application logic. */
         uint32_t magic;
+
+        /* Used for garbage collector- only enabled in debug builds */
+        uint32_t cycles;
     #endif
     int32_t refcount;
     corto_type type;
@@ -282,6 +285,11 @@ int corto_load_intern(
     char* argv[],
     bool ignoreRecursive,
     bool alwaysRun);
+
+int16_t corto_collect(
+    corto_object root);
+
+void corto_fmt_deinit(void);
 
 #ifdef __cplusplus
 }

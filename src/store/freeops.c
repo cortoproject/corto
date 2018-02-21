@@ -1,7 +1,7 @@
 #include <corto/corto.h>
 #include "object.h"
 
-// #define DEBUG_FREEOPS
+#define DEBUG_FREEOPS
 
 /* Instruction kinds of freeops program */
 typedef enum freeops_kind {
@@ -299,6 +299,7 @@ CORTO_SEQUENCE(dummySeq,void*,);
 #define ARRAY_FREE(action)\
     elem = aptr, end = CORTO_OFFSET(elem, size * count);\
     for (; elem != end; elem = CORTO_OFFSET(elem, size)) {\
+        if (CORTO_TRACE_MEM) {corto_info("ELEM [%d]", (elem - aptr) / size)};\
        action;\
     }
 
@@ -324,7 +325,9 @@ CORTO_SEQUENCE(dummySeq,void*,);
 #define SEQ_OP(size_of, action)\
     SEQ_PREP();\
     size = size_of;\
+    if (CORTO_TRACE_MEM) {corto_log_push(strarg("SEQ (%d)", seq->length))};\
     ARRAY_FREE(action);\
+    if (CORTO_TRACE_MEM) {corto_log_pop();}\
     SEQ_FREE();
 
 #define LIST_OP(size_of, action) {\
@@ -408,7 +411,11 @@ void freeops_run(
 
 #ifdef DEBUG_FREEOPS
         //printf("    %s: v = %p, offset = %d, ptr = %p [%s], member = %s\n", freeops_tostr(op->kind), v, op->offset, ptr, corto_fullpath(NULL, op->subtype), corto_fullpath(NULL, op->member));
+        if (CORTO_TRACE_MEM) {
+            corto_log_push(strarg("MEMBER %p", corto_fullpath(NULL, op->member)));
+        }
 #endif
+
         switch(op->kind) {
         case FREEOPS_REF:
             deref_ref_free(ptr);
@@ -446,6 +453,9 @@ void freeops_run(
             freeops_free_optional(op->subtype, ptr);
             break;
         }
+#ifdef DEBUG_FREEOPS
+        if (CORTO_TRACE_MEM) {corto_log_pop();}
+#endif
     }
 
 #ifdef DEBUG_FREEOPS

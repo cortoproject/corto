@@ -671,14 +671,13 @@ void corto_orphan(
         p_scope = corto_hdr_scope(_parent);
 
         /* Remove object from parent scope */
-        if (corto_rwmutex_write(&p_scope->align.scopeLock)) goto err_parent_mutex;
+        if (corto_rwmutex_write(&p_scope->align.scopeLock)) goto error;
         corto_rb_remove(p_scope->scope, (void*)corto_idof(o));
-
-        if (corto_rwmutex_unlock(&p_scope->align.scopeLock)) goto err_parent_mutex;
+        if (corto_rwmutex_unlock(&p_scope->align.scopeLock)) goto error;
     }
 
     return;
-err_parent_mutex:
+error:
     corto_error("corto_orphan: lock operation of scopeLock of parent failed");
 }
 
@@ -802,7 +801,9 @@ void corto_deinit_scope(
 
     /* Free parent */
     if (scope->parent && !corto_isorphan(o)) {
+        if (CORTO_TRACE_MEM) corto_log_push("DEINIT_SCOPE_RELEASE_PARENT");
         corto_release(scope->parent);
+        if (CORTO_TRACE_MEM) corto_log_pop();
     }
     scope->parent = NULL;
 
@@ -951,6 +952,9 @@ int16_t corto_deinit_builtin(corto_object sso) {
     scope = corto_hdr_scope(o);
 
     corto_assert(scope != NULL, "corto_deinit_builtin: static scoped object has no scope");
+
+    corto_type t = corto_typeof(sso);
+    corto_invoke_postDelegate(&t->deinit, t, sso);
 
     corto_orphan(sso);
 
@@ -2073,18 +2077,23 @@ bool corto_destruct(
 
     corto_assert_object(o);
 
+    if (CORTO_TRACE_MEM) {
+        corto_log_push(
+            strarg("DESTRUCT %s [%p - %d]",
+                corto_fullpath(NULL, o), o, corto_countof(o)));
+    }
+
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     if (!isBuiltin) corto_ainc(&_o->refcount);
 
     if (!corto_check_state(o, CORTO_DELETED)) {
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("destruct", o, NULL);
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
-
         bool defined = corto_check_state(o, CORTO_VALID);
 
         /* Call destructor before marking object state as deleted */
         if (defined && corto_owned(o)) {
+            if (CORTO_TRACE_MEM) corto_log_push("DESTRUCTOR");
             corto_destructor(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
         }
 
         /* From here, object is marked as deleted. */
@@ -2135,17 +2144,17 @@ bool corto_destruct(
 
         /* Deinit observable */
         if (corto_check_attr(o, CORTO_ATTR_OBSERVABLE)) {
+            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_OBSERVABLE");
             corto__deinitObservable(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
         }
 
         /* Deinit scope */
         if (named && !corto_isorphan(o)) {
+            if (CORTO_TRACE_MEM) corto_log_push("ORPHAN");
             corto_orphan(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
         }
-
-        /* Indicate that object has been deleted */
-        result = TRUE;
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
     }
 
     /* Although after the destruct-operation it is ensured that this object no
@@ -2161,19 +2170,21 @@ bool corto_destruct(
 
         /* Deinit writable */
         if (corto_check_attr(o, CORTO_ATTR_WRITABLE)) {
+            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_WRITABLE");
             corto__deinitWritable(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
         }
 
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("deinit", o, NULL);
-
         /* Call deinitializer */
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
+        if (CORTO_TRACE_MEM) corto_log_push("DEINIT");
         corto_deinit(o);
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
+        if (CORTO_TRACE_MEM) corto_log_pop();
 
         /* Do not free type before deinitializing the object, which needs the
          * type to walk over the content of the object. */
+        if (CORTO_TRACE_MEM) corto_log_push(strarg("RELEASE_TYPE [%s]", corto_fullpath(NULL, corto_typeof(o))));
         corto_release(corto_typeof(o));
+        if (CORTO_TRACE_MEM) corto_log_pop();
 
         /* If the object was scoped, check if there is a tree object that needs
          * to be removed. Tree objects can't be cleaned up for as long as the
@@ -2184,7 +2195,9 @@ bool corto_destruct(
             /* Deinit scope not before refcount goes to zero. The data in the scope
              * administration is required to determine whether this object is
              * a builtin object. */
+            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_SCOPE");
             corto_deinit_scope(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
 
             _o = CORTO_OFFSET(o, -sizeof(corto__object));
              corto__scope *scope = corto_hdr_scope(_o);
@@ -2198,15 +2211,16 @@ bool corto_destruct(
             }
         }
 
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("deallocate", o, NULL);
-
 #ifndef NDEBUG
         _o->magic = CORTO_MAGIC_DESTRUCT;
 #endif
+        if (CORTO_TRACE_MEM) {corto_info("DEALLOC %p", o);}
         corto_dealloc(corto_object_startaddr(_o));
 
         result = FALSE;
     }
+
+    if (CORTO_TRACE_MEM) corto_log_pop();
 
     return result;
 }
@@ -2249,6 +2263,8 @@ void corto_drop(
 
     corto_assert_object(o);
 
+    if (CORTO_TRACE_MEM) corto_log_push(strarg("DROP %s [%p]", corto_fullpath(NULL, o), o));
+
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     scope = corto_hdr_scope(_o);
     if (scope) {
@@ -2259,7 +2275,6 @@ void corto_drop(
          * walk in which objects are collected is needed first. During
          * destruction of an object, this scopeLock is also required,
          * which would result in deadlocks. */
-
         corto_rwmutex_read(&scope->align.scopeLock);
         walkData.objects = NULL;
         if (scope->scope) {
@@ -2269,48 +2284,42 @@ void corto_drop(
 
         /* Free objects outside scopeLock */
         if (walkData.objects) {
-            if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) {
-                corto_memtrace(delete ? "drop:delete" : "drop:suspend", o, NULL);
-            }
-
             iter = corto_ll_iter(walkData.objects);
             while(corto_iter_hasNext(&iter)) {
                 collected = corto_iter_next(&iter);
-
-                /* Check if object is resumed before releasing it */
-                corto__object *_o = CORTO_OFFSET(collected, -sizeof(corto__object));
-                corto__persistent *_p = corto_hdr_persistent(_o);
-                bool resumed = _p && _p->resumed;
-
-                if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
-
-                if (delete) {
-                    if (corto_destruct(
-                        collected,
-                        corto_owned(collected) && delete))
-                    {
-                        /* Release the object if it was not a pure resumed object */
-                        if (!resumed) {
-                            corto_release(collected);
-                        }
-                    }
-                } else {
-                    corto_drop(collected, delete);
-                    if (!resumed) {
-                        corto_release(collected);
+                if (CORTO_TRACE_MEM) {
+                    if (!corto_isbuiltin(collected)) {
+                        corto_info("DROPPING '%s' [%p]", corto_fullpath(NULL, collected), collected);
                     }
                 }
 
-                if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
+                corto_destruct(collected, delete);
 
-                /* Release the claim introduced by corto_drop */
-                corto_release(collected);
+                if (CORTO_TRACE_MEM) corto_log_push("NESTED_DROP");
+                corto_drop(collected, delete);
+                if (CORTO_TRACE_MEM) corto_log_pop();
+
+                /* Check if object is resumed before releasing it */
+                if (!corto_isbuiltin(collected)) {
+                    corto__object *_o = CORTO_OFFSET(collected, -sizeof(corto__object));
+                    corto__persistent *_p = corto_hdr_persistent(_o);
+                    bool resumed = _p && _p->resumed;
+
+                    /* Release claim from drop */
+                    if (corto_release(collected)) {
+                        /* Only release when object is not resumed and when
+                         * object wasn't deleted already */
+                        if (!resumed) corto_release(collected);
+                    }
+                }
             }
             corto_ll_free(walkData.objects);
         }
     } else {
         corto_critical("drop: object <%p> is not scoped.", o);
     }
+
+    if (CORTO_TRACE_MEM) corto_log_pop();
 }
 
 /* Delete object */
@@ -3196,11 +3205,16 @@ int32_t corto_claim(corto_object o) {
 
 /* decrease refcount of an object */
 int32_t corto_release(corto_object o) {
+    if (!o) {
+        return 0;
+    }
+
     corto_assert_object(o);
 
     if (corto_isbuiltin(o)) {
         return 1;
     }
+
 
     int32_t i;
     corto__object* _o;
@@ -3208,17 +3222,30 @@ int32_t corto_release(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     i = corto_adec(&_o->refcount);
 
+    if (CORTO_TRACE_MEM) {
+        corto_log_push(strarg("RELEASE %s [%p]", corto_fullpath(NULL, o), o));
+        corto_info("%s %d => %d [ cycles = %d ]",
+            corto_fullpath(NULL, o),
+            corto_countof(o) + 1,
+            corto_countof(o),
+            _o->cycles);
+    }
+
     if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("release", o, NULL);
     if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
 
     if (!i) {
         corto_destruct(o, FALSE);
     } else if (i < 0) {
-        corto_critical("negative reference count of object (%p) '%s' of type '%s'",
-            o, corto_fullpath(NULL, o), corto_fullpath(NULL, corto_typeof(o)));
-        corto_backtrace(stdout);
+        if (_o->cycles <= 1) {
+            corto_critical("negative reference count of object (%p) '%s' of type '%s'",
+                o, corto_fullpath(NULL, o), corto_fullpath(NULL, corto_typeof(o)));
+            corto_backtrace(stdout);
+        }
     }
+
     if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
+    if (CORTO_TRACE_MEM) corto_log_pop();
 
     return i;
 }

@@ -67,6 +67,8 @@ CORTO_EXPORT extern const char* BAKE_VERSION_MINOR;
 CORTO_EXPORT extern const char* BAKE_VERSION_PATCH;
 CORTO_EXPORT extern const char* BAKE_VERSION_SUFFIX;
 
+CORTO_EXPORT extern bool CORTO_TRACE_MEM;
+
 
 /* -- FRAMEWORK FUNCTIONS -- */
 
