@@ -1377,11 +1377,6 @@ int corto_stop(void)
     /* Free manually initialized sequences */
     corto_deinit_sequences();
 
-    /* Cleanup typecache after objects have been deinitialized */
-    for (i = 0; (o = types[i].o); i++) {
-        //free(((corto_type)o)->typecache);
-    }
-
     corto_entityAdmin_free_contents(&corto_subscriber_admin, true);
     corto_entityAdmin_free_contents(&corto_mount_admin, true);
 
