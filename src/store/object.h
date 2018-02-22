@@ -32,7 +32,6 @@
 #include "compare_ser.h"
 #include "copy_ser.h"
 #include "memory_ser.h"
-#include "freeops.h"
 #include "typecache.h"
 #include "fmt.h"
 #include "expr.h"

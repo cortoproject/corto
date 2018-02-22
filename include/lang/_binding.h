@@ -15,11 +15,11 @@
 #define corto_uint32(o) ((uint32_t*)corto_assert_type((corto_type)corto_uint32_o, o))
 #define corto_object(o) ((corto_object)o)
 #define corto_objectseq(o) ((corto_objectseq*)corto_assert_type((corto_type)corto_objectseq_o, o))
+#define corto_word(o) ((uintptr_t*)corto_assert_type((corto_type)corto_word_o, o))
 #define corto_string(o) ((corto_string*)corto_assert_type((corto_type)corto_string_o, o))
 #define corto_inout(o) ((corto_inout*)corto_assert_type((corto_type)corto_inout_o, o))
 #define corto_parameter(o) ((corto_parameter*)corto_assert_type((corto_type)corto_parameter_o, o))
 #define corto_parameterseq(o) ((corto_parameterseq*)corto_assert_type((corto_type)corto_parameterseq_o, o))
-#define corto_word(o) ((uintptr_t*)corto_assert_type((corto_type)corto_word_o, o))
 #define corto_function(o) ((corto_function)corto_assert_type((corto_type)corto_function_o, o))
 #define corto_delegatedata(o) ((corto_delegatedata*)corto_assert_type((corto_type)corto_delegatedata_o, o))
 #define corto_pre_action(o) ((corto_pre_action*)corto_assert_type((corto_type)corto_pre_action_o, o))
@@ -108,11 +108,11 @@ typedef corto_uint16 _type_corto_uint16;
 typedef corto_uint32 _type_corto_uint32;
 typedef corto_object _type_corto_object;
 typedef corto_objectseq _type_corto_objectseq;
+typedef corto_word _type_corto_word;
 typedef corto_string _type_corto_string;
 typedef corto_inout _type_corto_inout;
 typedef corto_parameter _type_corto_parameter;
 typedef corto_parameterseq _type_corto_parameterseq;
-typedef corto_word _type_corto_word;
 typedef corto_function _type_corto_function;
 typedef corto_delegatedata _type_corto_delegatedata;
 typedef corto_pre_action _type_corto_pre_action;
@@ -275,6 +275,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_type_castable_v(_this, type) _corto_type_castable_v(corto_type(_this), corto_type(type))
 #define corto_type_compatible_v(_this, type) _corto_type_compatible_v(corto_type(_this), corto_type(type))
 #define corto_type_construct(_this) _corto_type_construct(corto_type(_this))
+#define corto_type_deinit(_this) _corto_type_deinit(corto_type(_this))
 #define corto_type_destruct(_this) _corto_type_destruct(corto_type(_this))
 #define corto_type_init(_this) _corto_type_init(corto_type(_this))
 #define corto_type_resolveProcedure(_this, name) _corto_type_resolveProcedure(corto_type(_this), name)
@@ -371,6 +372,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_type_castable_v _corto_type_castable_v
 #define corto_type_compatible_v _corto_type_compatible_v
 #define corto_type_construct _corto_type_construct
+#define corto_type_deinit _corto_type_deinit
 #define corto_type_destruct _corto_type_destruct
 #define corto_type_init _corto_type_init
 #define corto_type_resolveProcedure _corto_type_resolveProcedure
@@ -465,6 +467,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_type_castable_v(_this, type) _corto_type_castable_v(corto_type(_this), corto_type(type))
 #define safe_corto_type_compatible_v(_this, type) _corto_type_compatible_v(corto_type(_this), corto_type(type))
 #define safe_corto_type_construct(_this) _corto_type_construct(corto_type(_this))
+#define safe_corto_type_deinit(_this) _corto_type_deinit(corto_type(_this))
 #define safe_corto_type_destruct(_this) _corto_type_destruct(corto_type(_this))
 #define safe_corto_type_init(_this) _corto_type_init(corto_type(_this))
 #define safe_corto_type_resolveProcedure(_this, name) _corto_type_resolveProcedure(corto_type(_this), name)

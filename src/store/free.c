@@ -17,7 +17,8 @@
     corto_member m = \
         safe_corto_union_findCase(field->data.union_type, discriminator);\
     if (m->modifiers & CORTO_OPTIONAL) {\
-        FREE_OPTIONAL(CORTO_OFFSET(ptr, m->offset), corto_free(optional_ptr, m->type));\
+        FREE_OPTIONAL(\
+            CORTO_OFFSET(ptr, m->offset), corto_free(optional_ptr, m->type));\
     } else {\
         corto_free(CORTO_OFFSET(ptr, m->offset), m->type);\
     }\

@@ -912,6 +912,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_OVERRIDABLE_O(lang_type, compatible, "(type type)", lang_bool, corto_type_compatible_v);
     CORTO_METHOD_O(lang_type, resolveProcedure, "(string name)", lang_function, corto_type_resolveProcedure);
     CORTO_METHOD_O(lang_type, init, "()", lang_int16, corto_type_init);
+    CORTO_METHOD_O(lang_type, deinit, "()", lang_void, corto_type_init);
     CORTO_METHOD_O(lang_type, construct, "()", lang_int16, corto_type_construct);
     CORTO_METHOD_O(lang_type, destruct, "()", lang_void, corto_type_destruct);
 
@@ -936,7 +937,6 @@ CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL
     CORTO_MEMBER_O(lang_interface, members, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_interface, methods, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_REFERENCE_O(lang_interface, base, lang_interface, CORTO_GLOBAL | CORTO_CONST, CORTO_VALID, NULL);
-    CORTO_MEMBER_O(lang_interface, freeops, lang_word, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_METHOD_O(lang_interface, init, "()", lang_int16, corto_interface_init);
     CORTO_METHOD_O(lang_interface, construct, "()", lang_int16, corto_interface_construct);
     CORTO_METHOD_O(lang_interface, destruct, "()", lang_void, corto_interface_destruct);

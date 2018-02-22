@@ -161,6 +161,12 @@ int16_t corto_type_init(
     return 0;
 }
 
+void corto_type_deinit(
+    corto_type this)
+{
+    free ((corto_typecache*)this->typecache);
+}
+
 corto_function corto_type_resolveProcedure(
     corto_type this,
     const char *name)

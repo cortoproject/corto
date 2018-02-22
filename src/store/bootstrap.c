@@ -518,6 +518,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_type_resolveProcedure_),\
     SSO_OP_OBJ(lang_type_castable_),\
     SSO_OP_OBJ(lang_type_init_),\
+    SSO_OP_OBJ(lang_type_deinit_),\
     SSO_OP_OBJ(lang_type_construct_),\
     SSO_OP_OBJ(lang_type_destruct_),\
     /* primitive */\
@@ -536,7 +537,6 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     SSO_OP_OBJ(lang_interface_members),\
     SSO_OP_OBJ(lang_interface_methods),\
     SSO_OP_OBJ(lang_interface_base),\
-    SSO_OP_OBJ(lang_interface_freeops),\
     SSO_OP_OBJ(lang_interface_init_),\
     SSO_OP_OBJ(lang_interface_construct_),\
     SSO_OP_OBJ(lang_interface_destruct_),\
@@ -1377,11 +1377,9 @@ int corto_stop(void)
     /* Free manually initialized sequences */
     corto_deinit_sequences();
 
-    /* Cleanup freeops programs after objects have been deinitialized */
+    /* Cleanup typecache after objects have been deinitialized */
     for (i = 0; (o = types[i].o); i++) {
-        if (corto_instanceof(corto_interface_o, o)) {
-            freeops_delete(o);
-        }
+        //free(((corto_type)o)->typecache);
     }
 
     corto_entityAdmin_free_contents(&corto_subscriber_admin, true);

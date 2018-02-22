@@ -463,6 +463,10 @@ int16_t _corto_type_construct(
     corto_type _this);
 
 CORTO_EXPORT
+void _corto_type_deinit(
+    corto_type _this);
+
+CORTO_EXPORT
 void _corto_type_destruct(
     corto_type _this);
 
@@ -525,4 +529,3 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
-

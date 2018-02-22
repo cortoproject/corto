@@ -66,6 +66,9 @@ typedef void *corto_object;
 
 typedef struct corto_objectseq {uint32_t length; corto_object *buffer;} corto_objectseq;
 
+/* binary corto/lang/word */
+typedef uintptr_t corto_word;
+
 /* text corto/lang/string */
 typedef char* corto_string;
 
@@ -85,9 +88,6 @@ typedef struct corto_parameter {
 } corto_parameter;
 
 typedef struct corto_parameterseq {uint32_t length; corto_parameter *buffer;} corto_parameterseq;
-
-/* binary corto/lang/word */
-typedef uintptr_t corto_word;
 
 /* procedure corto/lang/function */
 typedef struct corto_function_s {
@@ -347,7 +347,6 @@ struct corto_interface_s {
     corto_objectseq members;
     corto_objectseq methods;
     corto_interface base;
-    uintptr_t freeops;
 };
 
 typedef struct corto_stringseq {uint32_t length; corto_string *buffer;} corto_stringseq;
@@ -569,3 +568,4 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
+

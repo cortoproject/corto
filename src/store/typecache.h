@@ -43,8 +43,12 @@ typedef struct corto_typecache_field {
     } data;
 } corto_typecache_field;
 
+
 typedef struct corto_typecache {
     uint32_t field_count;
+
+    /* Use a dynamic array that is allocated in the same block as the
+     * typecache, so it can be simply cleaned up with a free() */
     corto_typecache_field fields[];
 } corto_typecache;
 

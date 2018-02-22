@@ -80,7 +80,7 @@ corto_int16 _corto_ptr_deinit(
     /* Don't deinit for reference types- see ptr_init for reason */
     if (!type->reference) {
         if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-            freeops_ptr_free(type, p);
+            corto_free(p, type);
         }
 
         if (type->flags & CORTO_TYPE_HAS_DEINIT) {
@@ -182,7 +182,7 @@ void corto_mem_free(
     corto_type type = corto_mem_typeof(ptr);
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        freeops_ptr_free(type, ptr);
+        corto_free(ptr, type);
     }
 
     ptr = CORTO_OFFSET(ptr, -sizeof(corto_type));

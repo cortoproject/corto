@@ -647,8 +647,6 @@ int16_t corto_interface_construct(
         }
     }
 
-    freeops_create(NULL, (corto_type)this);
-
     return safe_corto_type_construct(this);
 error:
     return -1;
@@ -687,9 +685,8 @@ void corto_interface_deinit(
             this->methods.buffer = NULL;
             this->methods.length = 0;
         }
-    } else {
-        freeops_delete(this);
     }
+
 }
 
 int16_t corto_interface_init(
