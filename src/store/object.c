@@ -5116,7 +5116,8 @@ int16_t corto_deinit(corto_object o) {
     }
 
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
-        freeops_ptr_free(type, o);
+        corto_free(o, type);
+        //freeops_ptr_free(type, o);
     }
 
     return 0;

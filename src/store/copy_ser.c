@@ -485,7 +485,9 @@ int16_t corto_ser_observable(
     corto_type type = corto_value_typeof(info);
 
     void *ptr = corto_value_ptrof(info);
-    void *value = (void*)((corto_word)corto_value_ptrof(&data->value) + ((corto_word)ptr - (corto_word)data->base));
+    void *value =
+        (void*)((corto_word)corto_value_ptrof(&data->value) +
+            ((corto_word)ptr - (corto_word)data->base));
 
     if (!type->reference) {
         corto_copy_ser_t privateData = {

@@ -33,6 +33,7 @@
 #include "copy_ser.h"
 #include "memory_ser.h"
 #include "freeops.h"
+#include "typecache.h"
 #include "fmt.h"
 #include "expr.h"
 #include "cdeclhandler.h"
@@ -206,6 +207,10 @@ void corto_drop(
 bool corto_destruct(
     corto_object o,
     bool delete);
+
+void corto_free(
+    void *base_ptr,
+    corto_type type);
 
 corto_object corto_resume(
     corto_object parent,

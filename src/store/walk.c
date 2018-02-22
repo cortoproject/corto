@@ -22,19 +22,26 @@
 #include <corto/corto.h>
 #include "object.h"
 
-/*#define CORTO_WALK_TRACING*/
-#ifdef CORTO_WALK_TRACING
-static int indent = 0;
-#endif
+int16_t corto_any_walk(
+    corto_walk_opt* this,
+    corto_value* info,
+    void* userData);
 
-int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData);
-
-int16_t corto_walk_ptr(corto_walk_opt* this, void *ptr, corto_type type, void* userData) {
+int16_t corto_walk_ptr(
+    corto_walk_opt* this,
+    void *ptr,
+    corto_type type,
+    void* userData)
+{
     corto_value v = corto_value_value(ptr, type);
     return corto_walk_value(this, &v, userData);
 }
 
-int16_t corto_walk_observable(corto_walk_opt* this, corto_value* info, void* userData) {
+int16_t corto_walk_observable(
+    corto_walk_opt* this,
+    corto_value* info,
+    void* userData)
+{
     corto_walk_cb cb = this->metaprogram[CORTO_MEMBER];
     if (!cb) {
         cb = corto_walk_value;
@@ -50,7 +57,11 @@ int16_t corto_walk_observable(corto_walk_opt* this, corto_value* info, void* use
 }
 
 /* Forward value to the right callback function */
-int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData) {
+int16_t corto_walk_value(
+    corto_walk_opt* this,
+    corto_value* info,
+    void* userData)
+{
     corto_type t;
     int16_t result;
     corto_walk_cb cb;
@@ -80,8 +91,8 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
         this->constructed = true;
     }
 
-    /* If the serializer has a special handler for reference types, use it in case the
-     * type is a reference type. */
+    /* If the serializer has a special handler for reference types, use it in
+     * case the type is a reference type. */
     if (t->reference && ((t->kind == CORTO_VOID) ||
                          ((info->kind != CORTO_OBJECT) &&
                           (info->kind != CORTO_BASE) &&
@@ -89,9 +100,8 @@ int16_t corto_walk_value(corto_walk_opt* this, corto_value* info, void* userData
                           !isObservable)))
     {
         cb = this->reference;
-    } else
-    /* ..otherwise use the program-handler */
-    if (!cb) {
+    } else if (!cb) {
+        /* ..otherwise use the program-handler */
         cb = this->program[t->kind];
     }
 
@@ -105,7 +115,9 @@ error:
     return -1;
 }
 
-void corto_walk_init(corto_walk_opt* this) {
+void corto_walk_init(
+    corto_walk_opt* this)
+{
     memset(this, 0, sizeof(corto_walk_opt));
     this->program[CORTO_ANY] = corto_any_walk;
     this->program[CORTO_COMPOSITE] = corto_walk_members;
@@ -122,7 +134,11 @@ void corto_walk_init(corto_walk_opt* this) {
 }
 
 /* Start serializing */
-int16_t corto_walk(corto_walk_opt* this, corto_object o, void* userData) {
+int16_t corto_walk(
+    corto_walk_opt* this,
+    corto_object o,
+    void* userData)
+{
     corto_value info;
     corto_walk_cb cb;
     int16_t result;
@@ -148,20 +164,7 @@ int16_t corto_walk(corto_walk_opt* this, corto_object o, void* userData) {
         cb = corto_walk_value;
     }
 
-#ifdef CORTO_WALK_TRACING
-    {
-        corto_id id, id2;
-        printf("%*sserialize(%s : %s // %s)\n",
-               indent, " ", corto_fullname(o, id), corto_fullname(corto_typeof(o), id2), corto_check_state(o, CORTO_DELETED)?"destructed":"valid"); fflush(stdout);
-        indent++;
-    }
-#endif
-
     result = cb(this, &info, userData);
-
-#ifdef CORTO_WALK_TRACING
-    indent--;
-#endif
 
     return result;
 error:
@@ -169,7 +172,10 @@ error:
 }
 
 /* Destruct serializerdata */
-int16_t corto_walk_deinit(corto_walk_opt* this, void* userData) {
+int16_t corto_walk_deinit(
+    corto_walk_opt* this,
+    void* userData)
+{
     if (this->destruct) {
         if (this->destruct(this, userData)) {
             goto error;
@@ -179,8 +185,12 @@ error:
     return -1;
 }
 
-corto_bool corto_serializeMatchAccess(corto_operatorKind accessKind, corto_modifier sa, corto_modifier a) {
-    corto_bool result;
+bool corto_serializeMatchAccess(
+    corto_operatorKind accessKind,
+    corto_modifier sa,
+    corto_modifier a)
+{
+    bool result;
 
     switch(accessKind) {
     case CORTO_OR:
@@ -203,7 +213,11 @@ corto_bool corto_serializeMatchAccess(corto_operatorKind accessKind, corto_modif
 }
 
 /* Serialize any-value */
-int16_t corto_any_walk(corto_walk_opt* this, corto_value* info, void* userData) {
+int16_t corto_any_walk(
+    corto_walk_opt* this,
+    corto_value* info,
+    void* userData)
+{
     corto_value v;
     corto_any *any;
     int16_t result = 0;
@@ -257,7 +271,9 @@ static int16_t corto_walk_member(
     }
 
     if (!isAlias || (this->aliasAction != CORTO_WALK_ALIAS_IGNORE)) {
-        if (corto_serializeMatchAccess(this->accessKind, this->access, modifiers)) {
+        if (corto_serializeMatchAccess(
+            this->accessKind, this->access, modifiers))
+        {
             bool isOptional = modifiers & CORTO_OPTIONAL;
 
             member.kind = CORTO_MEMBER;
@@ -265,7 +281,9 @@ static int16_t corto_walk_member(
             member.is.member.o = o;
             member.is.member.t = m;
 
-            if (isOptional && (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH)) {
+            if (isOptional &&
+                (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH))
+            {
                 member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
             } else {
                 member.is.member.v = CORTO_OFFSET(v, m->offset);
@@ -290,10 +308,14 @@ error:
 }
 
 /* Serialize members */
-int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userData) {
+int16_t corto_walk_members(
+    corto_walk_opt* this,
+    corto_value* info,
+    void* userData)
+{
     corto_interface t;
-    corto_void* v;
-    corto_uint32 i;
+    void* v;
+    uint32_t i;
     corto_member m;
     corto_walk_cb cb;
     corto_object o;
@@ -305,7 +327,8 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
     /* Process inheritance */
     if (!this->members.length) {
         if (corto_class_instanceof(corto_struct_o, t) &&
-            corto_serializeMatchAccess(this->accessKind, this->access, ((corto_struct)t)->baseAccess))
+            corto_serializeMatchAccess(
+                this->accessKind, this->access, ((corto_struct)t)->baseAccess))
         {
             corto_value base;
 
@@ -338,8 +361,10 @@ int16_t corto_walk_members(corto_walk_opt* this, corto_value* info, void* userDa
                 goto error;
             }
         }
-    } else if (!this->visitAllCases && (corto_typeof(t) == (corto_type)corto_union_o)) {
-        corto_int32 discriminator = *(corto_int32*)v;
+    } else if (
+        !this->visitAllCases && (corto_typeof(t) == (corto_type)corto_union_o))
+    {
+        int32_t discriminator = *(int32_t*)v;
         corto_member member = safe_corto_union_findCase(t, discriminator);
         if (member) {
             if (corto_walk_member(this, member, o, v, cb, info, userData)) {
@@ -400,15 +425,22 @@ error:
 }
 
 typedef struct __dummySeq {
-    corto_uint32 length;
+    uint32_t length;
     void* buffer;
 }__dummySeq;
 
-static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint32 length, corto_elementWalk_cb action, corto_void* userData) {
+static
+int corto_arrayWalk(
+    corto_collection this,
+    void* array,
+    uint32_t length,
+    corto_elementWalk_cb action,
+    void* userData)
+{
     void* v;
     int result;
     corto_type elementType;
-    corto_uint32 elementSize, i;
+    uint32_t elementSize, i;
 
     result = 1;
 
@@ -428,10 +460,14 @@ static int corto_arrayWalk(corto_collection this, corto_void* array, corto_uint3
 }
 
 /* Serialize elements */
-int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userData) {
+int16_t corto_walk_elements(
+    corto_walk_opt* this,
+    corto_value* info,
+    void* userData)
+{
     struct corto_serializeElement_t walkData;
     corto_collection t;
-    corto_void* v;
+    void* v;
     corto_value elementInfo;
 
     t = corto_collection(corto_value_typeof(info));
@@ -448,7 +484,7 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
     walkData.userData = userData;
     walkData.info = &elementInfo;
 
-    /* Determine callback now, instead of having to do this in the element callback */
+    /* Determine callback now instead of doing it in the element callback */
     walkData.cb = this->metaprogram[CORTO_ELEMENT];
     if (!walkData.cb) {
         walkData.cb = corto_walk_value;
@@ -458,10 +494,16 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
 
     switch(t->kind) {
     case CORTO_ARRAY:
-        result = corto_arrayWalk(t, v, t->max, corto_serializeElement, &walkData);
+        result =
+            corto_arrayWalk(t, v, t->max, corto_serializeElement, &walkData);
         break;
     case CORTO_SEQUENCE:
-        result = corto_arrayWalk(t, ((__dummySeq*)v)->buffer, ((__dummySeq*)v)->length, corto_serializeElement, &walkData);
+        result = corto_arrayWalk(
+            t,
+            ((__dummySeq*)v)->buffer,
+            ((__dummySeq*)v)->length,
+            corto_serializeElement,
+            &walkData);
         break;
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)v;
@@ -469,7 +511,8 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
             if (corto_collection_requiresAlloc(t->elementType)) {
                 result = corto_ll_walk(list, corto_serializeElement, &walkData);
             } else {
-                result = corto_ll_walkPtr(list, corto_serializeElement, &walkData);
+                result =
+                    corto_ll_walkPtr(list, corto_serializeElement, &walkData);
             }
         }
         break;
@@ -480,7 +523,8 @@ int16_t corto_walk_elements(corto_walk_opt* this, corto_value* info, void* userD
             if (corto_collection_requiresAlloc(t->elementType)) {
                 result = corto_rb_walk(tree, corto_serializeElement, &walkData);
             } else {
-                result = corto_rb_walkPtr(tree, corto_serializeElement, &walkData);
+                result =
+                    corto_rb_walkPtr(tree, corto_serializeElement, &walkData);
             }
         }
         break;

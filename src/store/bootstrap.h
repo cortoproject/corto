@@ -206,7 +206,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* type */
 #define CORTO_TYPE_V(parent, name, kind, reference, attr, scopeType, scopeTypeKind, defaultType, defaultProcedureType, DELEGATE) \
-  {kind, reference, attr, {scopeType, scopeTypeKind, defaultType, defaultProcedureType}, 0, 0, 0, {0,NULL}, DELEGATE##_TYPE(parent##_##name)}
+  {kind, reference, attr, {scopeType, scopeTypeKind, defaultType, defaultProcedureType}, 0, 0, 0, {0,NULL}, 0, DELEGATE##_TYPE(parent##_##name)}
 
 /* primitive */
 #define CORTO_PRIMITIVE_V(parent, name, kind, width, scopeType, scopeStateKind, DELEGATE) \
@@ -902,6 +902,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_MEMBER_O(lang_type, size, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, metaprocedures, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_type, typecache, lang_word, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, init, lang_pre_action, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, deinit, lang_post_action, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_type, nameof, lang_name_action, CORTO_LOCAL | CORTO_PRIVATE);

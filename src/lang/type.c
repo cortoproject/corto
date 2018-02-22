@@ -2,6 +2,8 @@
 
 #include <corto/corto.h>
 #include "interface.h"
+#include "src/store/object.h"
+
 corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure) {
     corto_function* f;
     corto_int32 d = 0;
@@ -20,9 +22,7 @@ corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure pr
                   corto_fullpath(NULL, procedure));
                 goto error;
             }
-
         }
-
     }
 
     if (corto_vtableInsert(&this->metaprocedures, corto_function(procedure))) {
@@ -58,7 +58,6 @@ bool corto_type_castable_v(
         if (this->reference && type->reference) {
             return TRUE;
         }
-
     }
 
     if (!result) {
@@ -84,9 +83,7 @@ bool corto_type_compatible_v(
                 if (this->kind == CORTO_VOID) {
                     result = TRUE;
                 }
-
             }
-
         }
 
     } else {
@@ -123,6 +120,8 @@ int16_t corto_type_construct(
         this->flags |= CORTO_TYPE_HAS_DEINIT;
     }
 
+    this->typecache = (uintptr_t)corto_typecache_create(this);
+
     return 0;
 }
 
@@ -141,6 +140,7 @@ void corto_type_destruct(
         this->metaprocedures.buffer = NULL;
     }
 
+    //free((void*)this->typecache);
 }
 
 int16_t corto_type_init(
@@ -184,11 +184,10 @@ corto_function corto_type_resolveProcedure(
                     result = *f;
                     prevD = d;
                 }
-
             }
 
             metaclass = corto_class(corto_interface(metaclass)->base);
-        }while(metaclass && !result);
+        } while(metaclass && !result);
     }
 
     return result;

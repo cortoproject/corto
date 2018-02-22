@@ -134,6 +134,7 @@ struct corto_type_s {
     uint32_t size;
     uint16_t alignment;
     corto_objectseq metaprocedures;
+    uintptr_t typecache;
     corto_pre_action init;
     corto_post_action deinit;
     corto_name_action nameof;
@@ -568,4 +569,3 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
-
