@@ -17,6 +17,7 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
 
 int16_t corto_delegate_validate(
     corto_function object);
+
 int16_t corto_function_construct(
     corto_function this)
 {
@@ -102,7 +103,9 @@ void corto_function_destruct(
     for(i=0; i<this->parameters.length; i++) {
         corto_dealloc(this->parameters.buffer[i].name);
         this->parameters.buffer[i].name = NULL;
-        corto_release(this->parameters.buffer[i].type);
+        if (this->parameters.buffer[i].type) {
+            corto_release(this->parameters.buffer[i].type);
+        }
         this->parameters.buffer[i].type = NULL;
     }
 
@@ -115,7 +118,8 @@ typedef struct corto_functionLookup_t {
     corto_function f;
     corto_bool error;
     corto_id name;
-}corto_functionLookup_t;
+} corto_functionLookup_t;
+
 static int corto_functionLookupWalk(corto_object o, void* userData) {
     corto_functionLookup_t* data;
     corto_int32 d;
@@ -169,7 +173,6 @@ int16_t corto_function_init(
                 if (!corto_functionLookupWalk(scope.buffer[i], &walkData)) {
                     break;
                 }
-
             }
 
             if (walkData.error) {
@@ -183,7 +186,6 @@ int16_t corto_function_init(
         if (corto_function_parseParamString(this, corto_idof(this))) {
             goto error;
         }
-
     }
 
     /* Bind with interface if possible */
@@ -193,9 +195,7 @@ int16_t corto_function_init(
             if (corto_delegate_bind(this)) {
                 goto error;
             }
-
         }
-
     }
 
     return 0;
@@ -306,4 +306,3 @@ error:
     result.buffer = NULL;
     return result;
 }
-

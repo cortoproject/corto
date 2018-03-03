@@ -32,7 +32,7 @@
 #include "compare_ser.h"
 #include "copy_ser.h"
 #include "memory_ser.h"
-#include "freeops.h"
+#include "typecache.h"
 #include "fmt.h"
 #include "expr.h"
 #include "cdeclhandler.h"
@@ -96,6 +96,10 @@ typedef struct corto__object {
         /* Magic number to check in debugging whether value is an object. This value
          * should not be used in application logic. */
         uint32_t magic;
+
+        /* Used for garbage collector- only enabled in debug builds */
+        bool marked;
+        bool cycles;
     #endif
     int32_t refcount;
     corto_type type;
@@ -202,7 +206,15 @@ void corto_drop(
 
 bool corto_destruct(
     corto_object o,
-    bool delete);
+    bool _delete,
+    bool drop);
+
+int16_t corto_deinit(
+    corto_object o);
+
+void corto_free(
+    void *base_ptr,
+    corto_type type);
 
 corto_object corto_resume(
     corto_object parent,
@@ -282,6 +294,12 @@ int corto_load_intern(
     char* argv[],
     bool ignoreRecursive,
     bool alwaysRun);
+
+int16_t corto_collect(
+    corto_object root,
+    bool collect_cycles);
+
+void corto_fmt_deinit(void);
 
 #ifdef __cplusplus
 }

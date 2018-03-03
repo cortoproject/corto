@@ -22,8 +22,6 @@
 #include <corto/corto.h>
 #include "src/lang/primitive.h"
 
-#ifdef CORTO_OPERATORS
-
 typedef void (*corto__unaryOperator)(void* operand, void* result);
 typedef void (*corto__binaryOperator)(void* operand1, void* operand2, void* result);
 
@@ -336,5 +334,3 @@ corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, voi
 error:
     return -1;
 }
-
-#endif

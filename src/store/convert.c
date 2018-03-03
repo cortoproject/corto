@@ -23,8 +23,6 @@
 #include "src/store/object.h"
 #include "src/lang/primitive.h"
 
-#ifdef CORTO_CONVERSIONS
-
 typedef corto_int16 ___ (*corto_conversion)(corto_primitive fromType, void* from, corto_primitive toType, void* to);
 
 static corto_conversion _conversions[CORTO_PRIMITIVE_MAX_CONVERTID+1][CORTO_PRIMITIVE_MAX_CONVERTID+1];
@@ -595,5 +593,3 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
 error:
     return -1;
 }
-
-#endif

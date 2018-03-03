@@ -77,7 +77,10 @@ ffi_type corto_ffi_type_iterator = {
     .elements = (ffi_type**)&corto_ffi_type_iterator_elements
 };
 
-static ffi_type* corto_ffi_type(corto_type t) {
+static
+ffi_type* corto_ffi_type(
+    corto_type t)
+{
     ffi_type *result = NULL;
 
     if (t->reference) {
@@ -151,8 +154,10 @@ static ffi_type* corto_ffi_type(corto_type t) {
     return result;
 }
 
-corto_int16 corto_cdeclInit(corto_function this) {
-    corto_uint32 argsSize = sizeof(ffi_type*) * (this->parameters.length + 1);
+int16_t corto_cdeclInit(
+    corto_function this)
+{
+    uint32_t argsSize = sizeof(ffi_type*) * (this->parameters.length + 1);
     ffi_cif *cif = corto_alloc(sizeof(ffi_cif) + argsSize);
     ffi_type **args = CORTO_OFFSET(cif, sizeof(ffi_cif));
     corto_uint8 hasThis = 0;
@@ -170,7 +175,7 @@ corto_int16 corto_cdeclInit(corto_function this) {
         hasThis = 1;
     }
 
-    corto_uint32 i;
+    uint32_t i;
     for(i = 0; i < this->parameters.length; i++) {
         if (this->parameters.buffer[i].passByReference) {
             args[i + hasThis] = &ffi_type_pointer;
@@ -200,7 +205,8 @@ corto_int16 corto_cdeclInit(corto_function this) {
         cif,
         FFI_DEFAULT_ABI,
         this->parameters.length + hasThis,
-        this->returnsReference ? &ffi_type_pointer : corto_ffi_type(this->returnType),
+        this->returnsReference ?
+            &ffi_type_pointer : corto_ffi_type(this->returnType),
         args);
 
     this->fdata = (corto_word)cif;
@@ -209,6 +215,8 @@ corto_int16 corto_cdeclInit(corto_function this) {
     return 0;
 }
 
-void corto_cdeclDeinit(corto_function f) {
+void corto_cdeclDeinit(
+    corto_function f)
+{
     corto_dealloc((void*)f->fdata);
 }

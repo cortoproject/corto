@@ -51,26 +51,19 @@ extern "C" {
 
 
 /* -- GLOBAL VARIABLES -- */
-
-CORTO_EXPORT extern int8_t CORTO_DEBUG_ENABLED;
-CORTO_EXPORT extern int8_t CORTO_TRACING_ENABLED;
-CORTO_EXPORT extern int8_t CORTO_WARNING_ENABLED;
-
-CORTO_EXPORT extern corto_string CORTO_TRACE_ID;
-CORTO_EXPORT extern corto_object CORTO_TRACE_OBJECT;
-CORTO_EXPORT extern int8_t CORTO_TRACE_NOTIFICATIONS;
-CORTO_EXPORT extern int32_t CORTO_MEMTRACE_BREAKPOINT;
-
 CORTO_EXPORT extern const char* BAKE_VERSION;
 CORTO_EXPORT extern const char* BAKE_VERSION_MAJOR;
 CORTO_EXPORT extern const char* BAKE_VERSION_MINOR;
 CORTO_EXPORT extern const char* BAKE_VERSION_PATCH;
 CORTO_EXPORT extern const char* BAKE_VERSION_SUFFIX;
 
+CORTO_EXPORT extern bool CORTO_TRACE_MEM;
+CORTO_EXPORT extern bool CORTO_COLLECT_CYCLES;
+
 
 /* -- FRAMEWORK FUNCTIONS -- */
 
-/** Start corto
+/** Start corto.
  * This function will initialize the corto object store. Should only be called
  * once per process.
  *
@@ -81,7 +74,7 @@ CORTO_EXPORT
 int corto_start(
     char *appName);
 
-/** Stop corto
+/** Stop corto.
  * This function deinitializes the corto object store. Should only be called once
  * per process, and after corto_start.
  */
@@ -109,7 +102,7 @@ char* corto_get_build(void);
  * @param handler Pointer to function to be executed.
  */
 CORTO_EXPORT
-void corto_onexit(
+void corto_atexit(
     void(*handler)(void*),
     void* userData);
 

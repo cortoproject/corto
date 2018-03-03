@@ -24,7 +24,8 @@
 
 /* If application does not specify PRIMITIVE, replace with generic primitive
  * that automatically walks constants */
-static corto_int16 corto_walk_primitive(
+static
+int16_t corto_walk_primitive(
     corto_walk_opt* s,
     corto_value* v,
     void* userData)
@@ -37,10 +38,15 @@ static corto_int16 corto_walk_primitive(
         return 0;
     }
 }
+
 /* Do metawalk on type */
-corto_int16 _corto_metawalk(corto_walk_opt* s, corto_type type, void* userData) {
+int16_t _corto_metawalk(
+    corto_walk_opt* s,
+    corto_type type,
+    void* userData)
+{
     corto__object* o;
-    corto_int16 result;
+    int16_t result;
 
     /* Since we potentially overwrite some callbacks, make private copy */
     corto_walk_opt private = *s;
@@ -48,7 +54,7 @@ corto_int16 _corto_metawalk(corto_walk_opt* s, corto_type type, void* userData) 
     corto_assert(type != NULL, "corto_metawalk called with NULL type");
 
     /* Instantiate dummy-object */
-    o = corto_alloc(sizeof(corto__object) + type->size); /* alloca is dangerous here because objects can get large, causing stack overflows. */
+    o = corto_alloc(sizeof(corto__object) + type->size);
     memset(o, 0, sizeof(corto__object) + type->size);
     o->type = corto_type(type);
     o->refcount = 1;
@@ -61,20 +67,27 @@ corto_int16 _corto_metawalk(corto_walk_opt* s, corto_type type, void* userData) 
         private.program[CORTO_PRIMITIVE] = corto_walk_primitive;
     }
 
-    result = corto_walk(&private, CORTO_OFFSET(o, sizeof(corto__object)), userData);
+    /* Walking elements of a non-existing collection can be dangerous in case
+     * the collection exists in an observable object or optional value */
+    if (private.program[CORTO_COLLECTION] == corto_walk_elements) {
+        private.program[CORTO_COLLECTION] = NULL;
+    }
+
+    result = corto_walk(
+        &private, CORTO_OFFSET(o, sizeof(corto__object)), userData);
     corto_dealloc(o);
 
     return result;
 }
 
 /* Serialize constants of enumeration */
-corto_int16 corto_walk_constants(
+int16_t corto_walk_constants(
     corto_walk_opt* s,
     corto_value* v,
     void* userData)
 {
     corto_enum t;
-    corto_uint32 i;
+    uint32_t i;
 
     t = corto_enum(corto_value_typeof(v));
 
@@ -102,13 +115,13 @@ error:
 }
 
 /* Serialize union cases */
-corto_int16 corto_walk_cases(
+int16_t corto_walk_cases(
     corto_walk_opt* s,
     corto_value *v,
     void *userData)
 {
     corto_union t = corto_union(corto_value_typeof(v));
-    corto_uint32 i;
+    uint32_t i;
 
     if (s->metaprogram[CORTO_MEMBER]) {
         for (i = 0; i < corto_interface(t)->members.length; i++) {

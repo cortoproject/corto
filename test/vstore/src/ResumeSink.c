@@ -56,8 +56,6 @@ void test_ResumeSink_setup(
     corto_void__create_auto(root_o, mount);
     test_SinkMount__create_auto(root_o, sinkMount, mount, "test/Foo", "{10, 20}");
 
-    CORTO_DEBUG_ENABLED = 1;
-
     /* Setup observers */
     corto_observer_observe(test_ResumeSink_onDeclare_o, this, mount);
     corto_observer_observe(test_ResumeSink_onDefine_o, this, mount);

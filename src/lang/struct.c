@@ -143,6 +143,7 @@ int16_t corto_struct_construct(
     if (this->keys.length != 0) {
         /* If a keylist was provided, test if members have been added and ensure
          * the KEY modifier is enabled */
+
         corto_int32 i;
         for (i = 0; i < this->keys.length; i++) {
             corto_object o = corto_interface_resolveMember(this, this->keys.buffer[i]);
@@ -171,7 +172,6 @@ int16_t corto_struct_construct(
             this->keycache.buffer[this->keycache.length] = m;
             corto_claim(m);
             this->keycache.length ++;
-            corto_release(o);
         }
 
     } else {

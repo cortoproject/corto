@@ -408,17 +408,6 @@ static void corto_notify_observers_intern(corto__observer** observers, corto_obj
 
     corto_object prev = corto_set_source(NULL);
     while((data = *observers)) {
-#ifndef NDEBUG
-        if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_string str = corto_ptr_str(&mask, corto_eventMask_o, 0);
-            corto_debug("notify:  %s %s: %s (%s)",
-                corto_fullpath(NULL, data->_this),
-                corto_fullpath(NULL, data->observer),
-                corto_fullpath(NULL, observable),
-                str);
-            corto_dealloc(str);
-        }
-#endif
         /* Update subscriptions for tree observers */
         corto_updateSubscriptions(data->observer->mask, mask, observable);
 
@@ -891,42 +880,11 @@ int16_t corto_observer_observe(
             this,
             observable
         );
-  #ifndef NDEBUG
-        if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_debug("postpone observe (instance not defined): %s %s %s (%s%s%s%s%s%s%s)",
-                corto_fullpath(NULL, instance),
-                corto_fullpath(NULL, this),
-                corto_fullpath(NULL, observable),
-                mask & CORTO_ON_SELF ? " self" : "",
-                mask & CORTO_ON_SCOPE ? " scope" : "",
-                mask & CORTO_ON_TREE ? " tree" : "",
-                mask & CORTO_DECLARE ? " declare" : "",
-                mask & CORTO_DEFINE ? " define" : "",
-                mask & CORTO_UPDATE ? " update" : "",
-                mask & CORTO_DELETE ? " delete" : "");
-          }
-#endif
         goto postponed;
     }
 
     _o = corto_hdr_observable(
         CORTO_OFFSET(observable, -sizeof(corto__object)));
-
-    #ifndef NDEBUG
-        if (CORTO_TRACE_NOTIFICATIONS) {
-            corto_debug("observe: %s %s %s (%s%s%s%s%s%s%s)",
-                corto_fullpath(NULL, instance),
-                corto_fullpath(NULL, this),
-                corto_fullpath(NULL, observable),
-                mask & CORTO_ON_SELF ? " self" : "",
-                mask & CORTO_ON_SCOPE ? " scope" : "",
-                mask & CORTO_ON_TREE ? " tree" : "",
-                mask & CORTO_DECLARE ? " declare" : "",
-                mask & CORTO_DEFINE ? " define" : "",
-                mask & CORTO_UPDATE ? " update" : "",
-                mask & CORTO_DELETE ? " delete" : "");
-        }
-    #endif
 
     /* Create observerData */
     _observerData = corto_alloc(sizeof(corto__observer));
@@ -1159,15 +1117,6 @@ int16_t corto_observer_unobserve(
                 /* Build new observer array */
                 oldSelfArray = _o->onSelfArray;
                 _o->onSelfArray = corto_observersArrayNew(_o->onSelf);
-
-    #ifndef NDEBUG
-                if (CORTO_TRACE_NOTIFICATIONS) {
-                    corto_debug("unobserve: %s %s %s",
-                        corto_fullpath(NULL, instance),
-                        corto_fullpath(NULL, this),
-                        corto_fullpath(NULL, observable));
-                }
-    #endif
             }
             if (corto_rwmutex_unlock(&_o->align.selfLock)) {
                 goto error;
