@@ -25,20 +25,50 @@ uintptr_t corto_typecache_offset(corto_value *v) {
     return (uintptr_t)CORTO_OFFSET(ptr, -base);
 }
 
+#define EXPAND_WIDTH(constant)\
+    case CORTO_TC_##constant + CORTO_WIDTH_8: return #constant "_8";\
+    case CORTO_TC_##constant + CORTO_WIDTH_16: return #constant "_16";\
+    case CORTO_TC_##constant + CORTO_WIDTH_32: return #constant "_32";\
+    case CORTO_TC_##constant + CORTO_WIDTH_64: return #constant "_64";\
+    case CORTO_TC_##constant + CORTO_WIDTH_WORD: return #constant "_PTR"
+
+#define EXPAND_SUB_KIND(constant)\
+    case CORTO_TC_##constant: return #constant;\
+    case CORTO_TC_##constant + CORTO_TC_SUB_STRING: return #constant "(STRING)";\
+    case CORTO_TC_##constant + CORTO_TC_SUB_REFERENCE: return #constant "(REFERENCE)";\
+    case CORTO_TC_##constant + CORTO_TC_SUB_RESOURCE: return #constant "(RESOURCE)";\
+    case CORTO_TC_##constant + CORTO_TC_SUB_ALLOC: return #constant "(ALLOC)";\
+    case CORTO_TC_##constant + CORTO_TC_SUB_COMPLEX: return #constant "(COMPLEX)";\
+    case CORTO_TC_##constant + CORTO_TC_SUB_SIMPLE_PTR: return #constant "(SIMPLE_PTR)"
+
 static
 const char *corto_typecache_kind_str(
-    corto_typecache_kind kind)
+    uint8_t kind)
 {
     switch(kind) {
-    case CORTO_TC_VALUE: return "VALUE";
     case CORTO_TC_STRING: return "STRING";
     case CORTO_TC_REFERENCE: return "REFERENCE";
-    case CORTO_TC_OPTIONAL: return "OPTIONAL";
-    case CORTO_TC_STRUCT: return "STRUCT";
+    case CORTO_TC_INLINE_REFERENCE: return "INLINE_REFERENCE";
+    EXPAND_WIDTH(BIN);
+    EXPAND_WIDTH(INT);
+    EXPAND_WIDTH(UINT);
+    EXPAND_WIDTH(FLOAT);
+    case CORTO_TC_BOOL: return "BOOL";
+    case CORTO_TC_CHAR: return "CHAR";
+    case CORTO_TC_ENUM: return "ENUM";
+    case CORTO_TC_BITMASK: return "BITMASK";
     case CORTO_TC_UNION: return "UNION";
-    case CORTO_TC_ARRAY: return "ARRAY";
-    case CORTO_TC_SEQUENCE: return "SEQUENCE";
-    case CORTO_TC_LIST: return "LIST";
+    case CORTO_TC_ANY: return "ANY";
+    case CORTO_TC_STRUCT: return "STRUCT";
+    case CORTO_TC_PUSH_COMPOSITE: return "PUSH_COMPOSITE";
+    case CORTO_TC_PUSH_COLLECTION: return "PUSH_COLLECTION";
+    case CORTO_TC_POP_COMPOSITE: return "POP_COMPOSITE";
+    case CORTO_TC_POP_COLLECTION: return "POP_COLLECTION";
+    EXPAND_SUB_KIND(OPTIONAL);
+    EXPAND_SUB_KIND(ARRAY);
+    EXPAND_SUB_KIND(SEQUENCE);
+    EXPAND_SUB_KIND(LIST);
+    EXPAND_SUB_KIND(MAP);
     default:
         corto_error("unknown kind (%d)", kind);
     }
@@ -46,34 +76,22 @@ const char *corto_typecache_kind_str(
 }
 
 static
-char *corto_typecache_res_kind_str(
-    corto_typecache_kind res_kind)
+char *corto_typecache_meta_str(
+    corto_typecache_meta_kind meta_kind)
 {
     corto_buffer buffer = CORTO_BUFFER_INIT;
     corto_buffer_appendstr(&buffer, ""); /* buffer at least has empty string */
 
-    if (res_kind & CORTO_TC_RES_NONE) {
-        corto_buffer_appendstr(&buffer, " NONE");
+    if (meta_kind & CORTO_TC_META_MUST_SERIALIZE) {
+        corto_buffer_appendstr(&buffer, " MUST_SERIALIZE");
     }
-    if (res_kind & CORTO_TC_RES_STRING) {
-        corto_buffer_appendstr(&buffer, " STRING");
-    }
-    if (res_kind & CORTO_TC_RES_REFERENCE) {
-        corto_buffer_appendstr(&buffer, " REFERENCE");
-    }
-    if (res_kind & CORTO_TC_RES_RESOURCE) {
-        corto_buffer_appendstr(&buffer, " RESOURCE");
-    }
-    if (res_kind & CORTO_TC_RES_ALLOC) {
-        corto_buffer_appendstr(&buffer, " ALLOC");
-    }
-    if (res_kind & CORTO_TC_RES_NEEDS_INIT) {
+    if (meta_kind & CORTO_TC_META_NEEDS_INIT) {
         corto_buffer_appendstr(&buffer, " NEEDS_INIT");
     }
-    if (res_kind & CORTO_TC_RES_HAS_INIT) {
+    if (meta_kind & CORTO_TC_META_HAS_INIT) {
         corto_buffer_appendstr(&buffer, " HAS_INIT");
     }
-    if (res_kind & CORTO_TC_RES_HAS_DEINIT) {
+    if (meta_kind & CORTO_TC_META_HAS_DEINIT) {
         corto_buffer_appendstr(&buffer, " HAS_DEINIT");
     }
 
@@ -85,7 +103,7 @@ void corto_typecache_print_field(
     corto_typecache_field *field)
 {
     const char *kind = corto_typecache_kind_str(field->kind);
-    char *res_kind = corto_typecache_res_kind_str(field->res_flags);
+    char *res_kind = corto_typecache_meta_str(field->meta_flags);
 
     corto_info("%s%s '%s' [offset = %d]",
         kind, res_kind, field->name, field->offset);
@@ -129,13 +147,13 @@ corto_typecache_field* corto_typecache_add(
         fields->next = malloc(sizeof(corto_typecache_block));
         fields = fields->next;
         blocks->current = fields;
-        fields->field_count = 0;
+        fields->field_count = 1;
         fields->next = NULL;
         f = &fields->fields[0];
     }
 
     f->kind = 0;
-    f->res_flags = 0;
+    f->meta_flags = 0;
     f->offset = 0;
     f->name = NULL;
 
@@ -153,19 +171,53 @@ bool corto_type_is_string(
 }
 
 static
-void corto_typecache_set_typeflags(
+void corto_typecache_set_meta_flags(
     corto_typecache_field *field,
     corto_type type)
 {
     if (type->flags & CORTO_TYPE_NEEDS_INIT) {
-        field->res_flags |= CORTO_TC_RES_NEEDS_INIT;
+        field->meta_flags |= CORTO_TC_META_NEEDS_INIT;
     }
     if (type->flags & CORTO_TYPE_HAS_INIT) {
-        field->res_flags |= CORTO_TC_RES_HAS_INIT;
+        field->meta_flags |= CORTO_TC_META_HAS_INIT;
     }
     if (type->flags & CORTO_TYPE_HAS_DEINIT) {
-        field->res_flags |= CORTO_TC_RES_HAS_DEINIT;
+        field->meta_flags |= CORTO_TC_META_HAS_DEINIT;
     }
+}
+
+static
+uint8_t corto_typecache_get_subkind(
+    corto_type elementType,
+    bool is_list)
+{
+    bool elemIsStr = corto_type_is_string(elementType);
+    bool elemIsRef = elementType->reference;
+    bool elemHasRes = elementType->flags & CORTO_TYPE_HAS_RESOURCES;
+    bool elemIsSimple = elementType->kind == CORTO_PRIMITIVE;
+    uint8_t result = 0;
+
+    if (elemIsStr) {
+        result = CORTO_TC_SUB_STRING;
+    } else if (elemIsRef) {
+        result = CORTO_TC_SUB_REFERENCE;
+    } else if (elemHasRes) {
+        result = CORTO_TC_SUB_RESOURCE;
+    } else if (is_list) {
+        if (corto_collection_requiresAlloc(elementType)) {
+            result = CORTO_TC_SUB_ALLOC;
+        } else if (elemIsSimple) {
+            result = CORTO_TC_SUB_SIMPLE_PTR;
+        } else {
+            result = CORTO_TC_SUB_COMPLEX;
+        }
+    } else if (elemIsSimple) {
+        result = CORTO_TC_SUB_SIMPLE_PTR;
+    } else {
+        result = CORTO_TC_SUB_COMPLEX;
+    }
+
+    return result;
 }
 
 static
@@ -177,21 +229,6 @@ int16_t corto_typecache_collection(
 {
     corto_collection type = (corto_collection)corto_value_typeof(info);
     corto_type elementType = type->elementType;
-    bool elemIsStr = corto_type_is_string(elementType);
-    bool elemIsRef = elementType->reference;
-    bool elemHasRes = elementType->flags & CORTO_TYPE_HAS_RESOURCES;
-
-    if (elemIsStr) {
-        field->res_flags |= CORTO_TC_RES_STRING;
-    } else if (elemIsRef) {
-        field->res_flags |= CORTO_TC_RES_REFERENCE;
-    } else if (elemHasRes) {
-        field->res_flags |= CORTO_TC_RES_RESOURCE;
-    } else if (type->kind == CORTO_LIST) {
-        if (corto_collection_requiresAlloc(elementType)) {
-            field->res_flags |= CORTO_TC_RES_ALLOC;
-        }
-    }
 
     switch(type->kind) {
     case CORTO_ARRAY:
@@ -206,7 +243,60 @@ int16_t corto_typecache_collection(
         field->kind = CORTO_TC_LIST;
         field->data.sub_type = elementType;
         break;
+    case CORTO_MAP:
+        field->kind = CORTO_TC_MAP;
+        field->data.sub_type = elementType;
+        break;
     default:
+        corto_assert(0, "invalid primitive kind (%d)", type->kind);
+        break;
+    }
+
+    field->kind +=
+        corto_typecache_get_subkind(elementType, type->kind == CORTO_LIST);
+
+    return 0;
+}
+
+static
+int16_t corto_typecache_primitive(
+    corto_walk_opt *opt,
+    corto_value *info,
+    corto_typecache_field *field,
+    corto_typecache_blocks *blocks)
+{
+    corto_primitive type = (corto_primitive)corto_value_typeof(info);
+
+    switch(type->kind) {
+    case CORTO_BOOLEAN:
+        field->kind = CORTO_TC_BOOL;
+        break;
+    case CORTO_CHARACTER:
+        field->kind = CORTO_TC_CHAR;
+        break;
+    case CORTO_BINARY:
+        field->kind = CORTO_TC_BIN + type->width;
+        break;
+    case CORTO_INTEGER:
+        field->kind = CORTO_TC_INT + type->width;
+        break;
+    case CORTO_UINTEGER:
+        field->kind = CORTO_TC_UINT + type->width;
+        break;
+    case CORTO_FLOAT:
+        field->kind = CORTO_TC_FLOAT + type->width;
+        break;
+    case CORTO_TEXT:
+        field->kind = CORTO_TC_STRING;
+        break;
+    case CORTO_ENUM:
+        field->kind = CORTO_TC_ENUM;
+        break;
+    case CORTO_BITMASK:
+        field->kind = CORTO_TC_BITMASK;
+        break;
+    default:
+        corto_assert(0, "invalid primitive kind (%d)", type->kind);
         break;
     }
 
@@ -224,8 +314,6 @@ int16_t corto_typecache_type(
 
     if (type->reference) {
         field->kind = CORTO_TC_REFERENCE;
-    } else if (corto_type_is_string(type)) {
-        field->kind = CORTO_TC_STRING;
     } else if (type->kind == CORTO_COLLECTION) {
         corto_typecache_collection(opt, info, field, blocks);
     } else if (type->kind == CORTO_COMPOSITE) {
@@ -239,6 +327,12 @@ int16_t corto_typecache_type(
             corto_walk_value(opt, info, blocks);
             field->data.skip = blocks->field_count - current_field_count;
         }
+    } else if (type->kind == CORTO_PRIMITIVE) {
+        corto_typecache_primitive(opt, info, field, blocks);
+    } else if (type->kind == CORTO_ANY) {
+        field->kind = CORTO_TC_ANY;
+    } else {
+        corto_assert(0, "unknown typekind");
     }
 
     return 0;
@@ -255,24 +349,30 @@ int16_t corto_typecache_member(
     corto_type type = corto_value_typeof(info);
     corto_member m = info->is.member.t;
 
+    if (type->kind == CORTO_ITERATOR) {
+        /* Don't add iterator fields */
+        return 1;
+    }
+
     corto_typecache_field *field = corto_typecache_add(blocks);
     field->offset = corto_typecache_offset(info);
     field->name = corto_idof(m);
 
     if (!type->reference) {
-        corto_typecache_set_typeflags(field, type);
+        corto_typecache_set_meta_flags(field, type);
+    }
+
+    if (!(m->modifiers & (CORTO_PRIVATE|CORTO_LOCAL))) {
+        field->meta_flags |= CORTO_TC_META_MUST_SERIALIZE;
     }
 
     if (m->modifiers & CORTO_OPTIONAL) {
         field->kind = CORTO_TC_OPTIONAL;
-        if (type->reference) {
-            field->res_flags &= CORTO_TC_RES_REFERENCE;
-        } else if (corto_type_is_string(type)) {
-            field->res_flags &= CORTO_TC_RES_STRING;
-        }
+        field->kind += corto_typecache_get_subkind(type, false);
         field->data.sub_type = type;
     } else if (m->modifiers & CORTO_OBSERVABLE) {
-        field->kind = CORTO_TC_REFERENCE;
+        field->kind = CORTO_TC_INLINE_REFERENCE;
+        field->data.sub_type = type;
     } else {
         corto_typecache_type(opt, info, field, blocks);
     }
@@ -293,11 +393,12 @@ int16_t corto_typecache_object(
     if (type->kind == CORTO_COMPOSITE && ((corto_interface)type)->kind != CORTO_UNION) {
         /* Forward to member callback */
         corto_walk_value(opt, info, userData);
-    } else {
+    } else if (type->kind != CORTO_ITERATOR && (type->kind != CORTO_VOID && !type->reference)) {
         /* Add single instruction for non-composite type */
         corto_typecache_field *field = corto_typecache_add(blocks);
-        corto_typecache_set_typeflags(field, type);
+        corto_typecache_set_meta_flags(field, type);
         field->offset = 0;
+        field->meta_flags |= CORTO_TC_META_MUST_SERIALIZE;
         corto_typecache_type(opt, info, field, blocks);
     }
 

@@ -21,8 +21,6 @@
 
 #include <corto/corto.h>
 
-#ifdef CORTO_CONVERSIONS
-
 #define STRING (CORTO_RED)
 #define REFERENCE (CORTO_CYAN)
 #define BOOLEAN (CORTO_GREEN)
@@ -466,13 +464,3 @@ corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind access
     s.reference = corto_ser_reference;
     return s;
 }
-#else
-corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
-    corto_walk_opt s;
-    CORTO_UNUSED(access);
-    CORTO_UNUSED(accessKind);
-    CORTO_UNUSED(trace);
-    corto_walk_init(&s);
-    return s;
-}
-#endif

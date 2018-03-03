@@ -98,7 +98,8 @@ typedef struct corto__object {
         uint32_t magic;
 
         /* Used for garbage collector- only enabled in debug builds */
-        uint32_t cycles;
+        bool marked;
+        bool cycles;
     #endif
     int32_t refcount;
     corto_type type;
@@ -205,7 +206,11 @@ void corto_drop(
 
 bool corto_destruct(
     corto_object o,
-    bool delete);
+    bool _delete,
+    bool drop);
+
+int16_t corto_deinit(
+    corto_object o);
 
 void corto_free(
     void *base_ptr,
@@ -291,7 +296,8 @@ int corto_load_intern(
     bool alwaysRun);
 
 int16_t corto_collect(
-    corto_object root);
+    corto_object root,
+    bool collect_cycles);
 
 void corto_fmt_deinit(void);
 

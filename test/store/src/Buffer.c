@@ -201,4 +201,3 @@ void test_Buffer_tc_appendToExisting(
     test_assertstr(str, "FooBar");
 
 }
-

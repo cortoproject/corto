@@ -687,6 +687,7 @@ void corto_interface_deinit(
         }
     }
 
+    corto_type_deinit((corto_type)this);
 }
 
 int16_t corto_interface_init(

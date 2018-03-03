@@ -22,8 +22,6 @@
 #include <corto/corto.h>
 #include "src/store/object.h"
 
-#ifdef CORTO_CONVERSIONS
-
 struct corto_string_deserIndexInfo {
     corto_member m;
     corto_type type;
@@ -1063,10 +1061,3 @@ error:
     }
     return NULL;
 }
-#else
-corto_string corto_string_deser(const char *str, corto_string_deser_t* data) {
-    CORTO_UNUSED(str);
-    CORTO_UNUSED(data);
-    return NULL;
-}
-#endif

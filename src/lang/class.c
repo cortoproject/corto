@@ -69,8 +69,8 @@ int16_t corto_class_construct(
         for (i=0; (i<this->implements.length) && !result; i++) {
 
             corto_interface interface = this->implements.buffer[i];
-            this->interfaceVector.buffer[i].interface = interface;
-            this->interfaceVector.buffer[i].vector.length  = interface->methods.length;
+            corto_set_ref(&this->interfaceVector.buffer[i].interface, interface);
+            this->interfaceVector.buffer[i].vector.length = interface->methods.length;
 
             if (interface->methods.length) {
                 this->interfaceVector.buffer[i].vector.buffer = corto_calloc(interface->methods.length * sizeof(corto_function));

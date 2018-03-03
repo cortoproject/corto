@@ -89,23 +89,11 @@ corto_member corto_class_delete_o = NULL;
 corto_member corto_class_validate_o = NULL;
 corto_member corto_class_update_o = NULL;
 
-/* variables that control verbosity of logging functions */
-int8_t CORTO_DEBUG_ENABLED = 0;
-
-/* When set, memory management traces are enabled for this object */
-corto_object CORTO_TRACE_OBJECT = NULL;
-corto_string CORTO_TRACE_ID = NULL;
-
-/* When set, notifications are traced */
-int8_t CORTO_TRACE_NOTIFICATIONS = 0;
-
-/* When set, the runtime will break at specified breakpoint */
-int32_t CORTO_MEMTRACE_BREAKPOINT;
-
 /* Turn on or off extensive memory tracing */
 bool CORTO_TRACE_MEM = 0;
+bool CORTO_COLLECT_CYCLES = 0;
 
-/* Package loader */
+/* Package loader mount */
 static corto_loader corto_loaderInstance;
 
 /* Actions to be run at shutdown */
@@ -114,774 +102,778 @@ static corto_ll corto_exitHandlers = NULL;
 /* String identifying current corto build */
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
+/* Helper macro's for building list of to be initialized objects */
 #define SSO_OBJECT(obj) CORTO_OFFSET(&obj##__o, sizeof(corto_SSO))
-#define SSO_OP_VOID(parent, obj) {SSO_OBJECT(parent##obj), 0}
-#define SSO_OP_VALUE(parent, obj) {SSO_OBJECT(parent##obj), sizeof(corto_##obj)}
-#define SSO_OP_CLASS(parent, obj) {SSO_OBJECT(parent##obj), sizeof(struct corto_##obj##_s)}
-#define SSO_OP_OBJ(obj) {SSO_OBJECT(obj), 0}
+#define BUILTIN_VOID(parent, obj) {SSO_OBJECT(parent##obj), 0}
+#define BUILTIN_VALUE(parent, obj) {SSO_OBJECT(parent##obj), sizeof(corto_##obj)}
+#define BUILTIN_CLASS(parent, obj) {SSO_OBJECT(parent##obj), sizeof(struct corto_##obj##_s)}
+#define BUILTIN_OBJ(obj) {SSO_OBJECT(obj), 0}
 
-/* The ordering of the lists of objects below is important to ensure correct
- * initialization\construction\destruction of objects.
+/* The ordering of the lists of objects below is important to ensure that the
+ * lifecycle hooks of the builtin objects are called in the right order.
  *
  * During intiialization, objects are added to the hierarchy, and their
- * intializers/constructors are called. This will (for types) calculate the type
- * sizes, which will then be verified to be the same as the actual corto type.
+ * init/construct hooks are called. This will (for types) calculate the type
+ * sizes, which will then be verified to be the same as the generated C type.
  *
  * The definitions of these objects are located in bootstrap.h. For an object
  * defined in bootstrap.h to be visible in the store, it needs to be added to
  * the list of to be initialized objects.
+ *
+ * The generated C types can be found in <builtin package>/_type.h. For example
+ * all the types that make up the typesystem can be found in lang/_type.h
  */
 
 /* Tier 1 objects */
-#define SSO_OP_TYPE()\
-    SSO_OP_VALUE(lang_, octet),\
-    SSO_OP_VALUE(lang_, bool),\
-    SSO_OP_VALUE(lang_, char),\
-    SSO_OP_VALUE(lang_, uint8),\
-    SSO_OP_VALUE(lang_, uint16),\
-    SSO_OP_VALUE(lang_, uint32),\
-    SSO_OP_VALUE(lang_, uint64),\
-    SSO_OP_VALUE(lang_, int8),\
-    SSO_OP_VALUE(lang_, int16),\
-    SSO_OP_VALUE(lang_, int32),\
-    SSO_OP_VALUE(lang_, int64),\
-    SSO_OP_VALUE(lang_, float32),\
-    SSO_OP_VALUE(lang_, float64),\
-    SSO_OP_VALUE(lang_, string),\
-    SSO_OP_VALUE(lang_, word),\
-    SSO_OP_VALUE(lang_, constant),\
-    SSO_OP_VALUE(lang_, any),\
-    SSO_OP_VOID(lang_, void),\
-    SSO_OP_VOID(lang_, unknown),\
-    SSO_OP_VALUE(lang_, object),\
-    SSO_OP_VALUE(lang_, width),\
-    SSO_OP_VALUE(lang_, typeKind),\
-    SSO_OP_VALUE(lang_, primitiveKind),\
-    SSO_OP_VALUE(lang_, compositeKind),\
-    SSO_OP_VALUE(lang_, collectionKind),\
-    SSO_OP_VALUE(lang_, equalityKind),\
-    SSO_OP_VALUE(lang_, inout),\
-    SSO_OP_VALUE(vstore_, operatorKind),\
-    SSO_OP_VALUE(vstore_, ownership),\
-    SSO_OP_VALUE(vstore_, mountMask),\
-    SSO_OP_VALUE(vstore_, frameKind),\
-    SSO_OP_VALUE(,secure_accessKind),\
-    SSO_OP_VALUE(,secure_actionKind),\
-    SSO_OP_VALUE(lang_, modifier),\
-    SSO_OP_VALUE(vstore_, eventMask),\
-    SSO_OP_VALUE(vstore_, resultMask),\
-    SSO_OP_VALUE(lang_, state),\
-    SSO_OP_VALUE(lang_, attr),\
-    SSO_OP_VALUE(lang_, int32seq),\
-    SSO_OP_VALUE(lang_, wordseq),\
-    SSO_OP_VALUE(lang_, objectseq),\
-    SSO_OP_VALUE(lang_, interfaceseq),\
-    SSO_OP_VALUE(lang_, parameterseq),\
-    SSO_OP_VALUE(lang_, stringseq),\
-    SSO_OP_VALUE(lang_, interfaceVectorseq),\
-    SSO_OP_VALUE(lang_, interfaceVector),\
-    SSO_OP_VALUE(lang_, objectlist),\
-    SSO_OP_VALUE(lang_, taglist),\
-    SSO_OP_VALUE(lang_, stringlist),\
-    SSO_OP_VALUE(vstore_, resultList),\
-    SSO_OP_VALUE(vstore_, mountSubscriptionList),\
-    SSO_OP_VALUE(lang_, parameter),\
-    SSO_OP_VALUE(lang_, typeOptions),\
-    SSO_OP_VALUE(vstore_, time),\
-    SSO_OP_VALUE(vstore_, frame),\
-    SSO_OP_VALUE(vstore_, sample),\
-    SSO_OP_VALUE(vstore_, sampleIter),\
-    SSO_OP_VALUE(vstore_, subscriber_eventIter),\
-    SSO_OP_VALUE(vstore_, result),\
-    SSO_OP_VALUE(vstore_, queuePolicy),\
-    SSO_OP_VALUE(vstore_, mountPolicy),\
-    SSO_OP_VALUE(lang_, delegatedata),\
-    SSO_OP_VOID(vstore_, dispatcher),\
-    SSO_OP_VALUE(lang_, pre_action),\
-    SSO_OP_VALUE(lang_, name_action),\
-    SSO_OP_VALUE(lang_, post_action),\
-    SSO_OP_VALUE(vstore_, handleAction),\
-    SSO_OP_VALUE(vstore_, resultIter),\
-    SSO_OP_VALUE(vstore_, objectIter),\
-    SSO_OP_VALUE(vstore_, query),\
-    SSO_OP_VALUE(vstore_, mountSubscription),\
-    SSO_OP_CLASS(lang_, function),\
-    SSO_OP_CLASS(lang_, method),\
-    SSO_OP_CLASS(lang_, overridable),\
-    SSO_OP_CLASS(lang_, override),\
-    SSO_OP_CLASS(vstore_, remote),\
-    SSO_OP_CLASS(vstore_, observer),\
-    SSO_OP_CLASS(vstore_, subscriber),\
-    SSO_OP_CLASS(lang_, metaprocedure),\
-    SSO_OP_CLASS(vstore_, route),\
-    SSO_OP_CLASS(lang_, type),\
-    SSO_OP_CLASS(lang_, primitive),\
-    SSO_OP_CLASS(lang_, interface),\
-    SSO_OP_CLASS(lang_, collection),\
-    SSO_OP_CLASS(lang_, iterator),\
-    SSO_OP_CLASS(lang_, struct),\
-    SSO_OP_CLASS(lang_, union),\
-    SSO_OP_VALUE(vstore_, event),\
-    SSO_OP_VALUE(vstore_, fmt_data),\
-    SSO_OP_VALUE(vstore_, observer_event),\
-    SSO_OP_VALUE(vstore_, subscriber_event),\
-    SSO_OP_VALUE(vstore_, invoke_event),\
-    SSO_OP_CLASS(lang_, binary),\
-    SSO_OP_CLASS(lang_, boolean),\
-    SSO_OP_CLASS(lang_, character),\
-    SSO_OP_CLASS(lang_, int),\
-    SSO_OP_CLASS(lang_, uint),\
-    SSO_OP_CLASS(lang_, float),\
-    SSO_OP_CLASS(lang_, text),\
-    SSO_OP_CLASS(lang_, verbatim),\
-    SSO_OP_CLASS(lang_, enum),\
-    SSO_OP_CLASS(lang_, bitmask),\
-    SSO_OP_CLASS(lang_, array),\
-    SSO_OP_CLASS(lang_, sequence),\
-    SSO_OP_CLASS(lang_, list),\
-    SSO_OP_CLASS(lang_, map),\
-    SSO_OP_CLASS(lang_, member),\
-    SSO_OP_CLASS(lang_, case),\
-    SSO_OP_CLASS(lang_, default),\
-    SSO_OP_CLASS(lang_, alias),\
-    SSO_OP_CLASS(lang_, class),\
-    SSO_OP_CLASS(lang_, container),\
-    SSO_OP_CLASS(lang_, leaf),\
-    SSO_OP_CLASS(lang_, table),\
-    SSO_OP_CLASS(lang_, tableinstance),\
-    SSO_OP_CLASS(lang_, procedure),\
-    SSO_OP_CLASS(lang_, delegate),\
-    SSO_OP_CLASS(lang_, target),\
-    SSO_OP_CLASS(lang_, quantity),\
-    SSO_OP_CLASS(lang_, unit),\
-    SSO_OP_CLASS(lang_, tag),\
-    SSO_OP_CLASS(lang_, package),\
-    SSO_OP_CLASS(lang_, application),\
-    SSO_OP_CLASS(lang_, tool),\
-    SSO_OP_CLASS(vstore_, router),\
-    SSO_OP_CLASS(vstore_, routerimpl),\
-    SSO_OP_CLASS(vstore_, mount),\
-    SSO_OP_CLASS(vstore_, loader),\
-    SSO_OP_CLASS(,native_type),\
-    SSO_OP_CLASS(,secure_key),\
-    SSO_OP_CLASS(,secure_lock)
+#define BUILTIN_TYPE()\
+    BUILTIN_VALUE(lang_, octet),\
+    BUILTIN_VALUE(lang_, bool),\
+    BUILTIN_VALUE(lang_, char),\
+    BUILTIN_VALUE(lang_, uint8),\
+    BUILTIN_VALUE(lang_, uint16),\
+    BUILTIN_VALUE(lang_, uint32),\
+    BUILTIN_VALUE(lang_, uint64),\
+    BUILTIN_VALUE(lang_, int8),\
+    BUILTIN_VALUE(lang_, int16),\
+    BUILTIN_VALUE(lang_, int32),\
+    BUILTIN_VALUE(lang_, int64),\
+    BUILTIN_VALUE(lang_, float32),\
+    BUILTIN_VALUE(lang_, float64),\
+    BUILTIN_VALUE(lang_, string),\
+    BUILTIN_VALUE(lang_, word),\
+    BUILTIN_VALUE(lang_, constant),\
+    BUILTIN_VALUE(lang_, any),\
+    BUILTIN_VOID(lang_, void),\
+    BUILTIN_VOID(lang_, unknown),\
+    BUILTIN_VALUE(lang_, object),\
+    BUILTIN_VALUE(lang_, width),\
+    BUILTIN_VALUE(lang_, typeKind),\
+    BUILTIN_VALUE(lang_, primitiveKind),\
+    BUILTIN_VALUE(lang_, compositeKind),\
+    BUILTIN_VALUE(lang_, collectionKind),\
+    BUILTIN_VALUE(lang_, equalityKind),\
+    BUILTIN_VALUE(lang_, inout),\
+    BUILTIN_VALUE(vstore_, operatorKind),\
+    BUILTIN_VALUE(vstore_, ownership),\
+    BUILTIN_VALUE(vstore_, mountMask),\
+    BUILTIN_VALUE(vstore_, frameKind),\
+    BUILTIN_VALUE(,secure_accessKind),\
+    BUILTIN_VALUE(,secure_actionKind),\
+    BUILTIN_VALUE(lang_, modifier),\
+    BUILTIN_VALUE(vstore_, eventMask),\
+    BUILTIN_VALUE(vstore_, resultMask),\
+    BUILTIN_VALUE(lang_, state),\
+    BUILTIN_VALUE(lang_, attr),\
+    BUILTIN_VALUE(lang_, int32seq),\
+    BUILTIN_VALUE(lang_, wordseq),\
+    BUILTIN_VALUE(lang_, objectseq),\
+    BUILTIN_VALUE(lang_, interfaceseq),\
+    BUILTIN_VALUE(lang_, parameterseq),\
+    BUILTIN_VALUE(lang_, stringseq),\
+    BUILTIN_VALUE(lang_, interfaceVectorseq),\
+    BUILTIN_VALUE(lang_, interfaceVector),\
+    BUILTIN_VALUE(lang_, objectlist),\
+    BUILTIN_VALUE(lang_, taglist),\
+    BUILTIN_VALUE(lang_, stringlist),\
+    BUILTIN_VALUE(vstore_, resultList),\
+    BUILTIN_VALUE(vstore_, mountSubscriptionList),\
+    BUILTIN_VALUE(lang_, parameter),\
+    BUILTIN_VALUE(lang_, typeOptions),\
+    BUILTIN_VALUE(vstore_, time),\
+    BUILTIN_VALUE(vstore_, frame),\
+    BUILTIN_VALUE(vstore_, sample),\
+    BUILTIN_VALUE(vstore_, sampleIter),\
+    BUILTIN_VALUE(vstore_, subscriber_eventIter),\
+    BUILTIN_VALUE(vstore_, result),\
+    BUILTIN_VALUE(vstore_, queuePolicy),\
+    BUILTIN_VALUE(vstore_, mountPolicy),\
+    BUILTIN_VALUE(lang_, delegatedata),\
+    BUILTIN_VOID(vstore_, dispatcher),\
+    BUILTIN_VALUE(lang_, pre_action),\
+    BUILTIN_VALUE(lang_, name_action),\
+    BUILTIN_VALUE(lang_, post_action),\
+    BUILTIN_VALUE(vstore_, handleAction),\
+    BUILTIN_VALUE(vstore_, resultIter),\
+    BUILTIN_VALUE(vstore_, objectIter),\
+    BUILTIN_VALUE(vstore_, query),\
+    BUILTIN_VALUE(vstore_, mountSubscription),\
+    BUILTIN_CLASS(lang_, function),\
+    BUILTIN_CLASS(lang_, method),\
+    BUILTIN_CLASS(lang_, overridable),\
+    BUILTIN_CLASS(lang_, override),\
+    BUILTIN_CLASS(vstore_, remote),\
+    BUILTIN_CLASS(vstore_, observer),\
+    BUILTIN_CLASS(vstore_, subscriber),\
+    BUILTIN_CLASS(lang_, metaprocedure),\
+    BUILTIN_CLASS(vstore_, route),\
+    BUILTIN_CLASS(lang_, type),\
+    BUILTIN_CLASS(lang_, primitive),\
+    BUILTIN_CLASS(lang_, interface),\
+    BUILTIN_CLASS(lang_, collection),\
+    BUILTIN_CLASS(lang_, iterator),\
+    BUILTIN_CLASS(lang_, struct),\
+    BUILTIN_CLASS(lang_, union),\
+    BUILTIN_VALUE(vstore_, event),\
+    BUILTIN_VALUE(vstore_, fmt_data),\
+    BUILTIN_VALUE(vstore_, observer_event),\
+    BUILTIN_VALUE(vstore_, subscriber_event),\
+    BUILTIN_VALUE(vstore_, invoke_event),\
+    BUILTIN_CLASS(lang_, binary),\
+    BUILTIN_CLASS(lang_, boolean),\
+    BUILTIN_CLASS(lang_, character),\
+    BUILTIN_CLASS(lang_, int),\
+    BUILTIN_CLASS(lang_, uint),\
+    BUILTIN_CLASS(lang_, float),\
+    BUILTIN_CLASS(lang_, text),\
+    BUILTIN_CLASS(lang_, verbatim),\
+    BUILTIN_CLASS(lang_, enum),\
+    BUILTIN_CLASS(lang_, bitmask),\
+    BUILTIN_CLASS(lang_, array),\
+    BUILTIN_CLASS(lang_, sequence),\
+    BUILTIN_CLASS(lang_, list),\
+    BUILTIN_CLASS(lang_, map),\
+    BUILTIN_CLASS(lang_, member),\
+    BUILTIN_CLASS(lang_, case),\
+    BUILTIN_CLASS(lang_, default),\
+    BUILTIN_CLASS(lang_, alias),\
+    BUILTIN_CLASS(lang_, class),\
+    BUILTIN_CLASS(lang_, container),\
+    BUILTIN_CLASS(lang_, leaf),\
+    BUILTIN_CLASS(lang_, table),\
+    BUILTIN_CLASS(lang_, tableinstance),\
+    BUILTIN_CLASS(lang_, procedure),\
+    BUILTIN_CLASS(lang_, delegate),\
+    BUILTIN_CLASS(lang_, target),\
+    BUILTIN_CLASS(lang_, quantity),\
+    BUILTIN_CLASS(lang_, unit),\
+    BUILTIN_CLASS(lang_, tag),\
+    BUILTIN_CLASS(lang_, package),\
+    BUILTIN_CLASS(lang_, application),\
+    BUILTIN_CLASS(lang_, tool),\
+    BUILTIN_CLASS(vstore_, router),\
+    BUILTIN_CLASS(vstore_, routerimpl),\
+    BUILTIN_CLASS(vstore_, mount),\
+    BUILTIN_CLASS(vstore_, loader),\
+    BUILTIN_CLASS(,native_type),\
+    BUILTIN_CLASS(,secure_key),\
+    BUILTIN_CLASS(,secure_lock)
 
 /* Tier 2 objects */
-#define SSO_OP_OBJECT()\
-    SSO_OP_OBJ(lang_class_construct_),\
-    SSO_OP_OBJ(lang_class_destruct_),\
+#define BUILTIN_OBJECT()\
+    BUILTIN_OBJ(lang_class_construct_),\
+    BUILTIN_OBJ(lang_class_destruct_),\
     /* constant */\
-    SSO_OP_OBJ(lang_constant_init_),\
+    BUILTIN_OBJ(lang_constant_init_),\
     /* function */\
-    SSO_OP_OBJ(lang_function_returnType),\
-    SSO_OP_OBJ(lang_function_returnsReference),\
-    SSO_OP_OBJ(lang_function_parameters),\
-    SSO_OP_OBJ(lang_function_overridable),\
-    SSO_OP_OBJ(lang_function_overloaded),\
-    SSO_OP_OBJ(lang_function_kind),\
-    SSO_OP_OBJ(lang_function_impl),\
-    SSO_OP_OBJ(lang_function_fptr),\
-    SSO_OP_OBJ(lang_function_fdata),\
-    SSO_OP_OBJ(lang_function_size),\
-    SSO_OP_OBJ(lang_function_init_),\
-    SSO_OP_OBJ(lang_function_construct_),\
-    SSO_OP_OBJ(lang_function_destruct_),\
-    SSO_OP_OBJ(lang_function_stringToParameterSeq),\
-    SSO_OP_OBJ(lang_function_parseParamString_),\
+    BUILTIN_OBJ(lang_function_returnType),\
+    BUILTIN_OBJ(lang_function_returnsReference),\
+    BUILTIN_OBJ(lang_function_parameters),\
+    BUILTIN_OBJ(lang_function_overridable),\
+    BUILTIN_OBJ(lang_function_overloaded),\
+    BUILTIN_OBJ(lang_function_kind),\
+    BUILTIN_OBJ(lang_function_impl),\
+    BUILTIN_OBJ(lang_function_fptr),\
+    BUILTIN_OBJ(lang_function_fdata),\
+    BUILTIN_OBJ(lang_function_size),\
+    BUILTIN_OBJ(lang_function_init_),\
+    BUILTIN_OBJ(lang_function_construct_),\
+    BUILTIN_OBJ(lang_function_destruct_),\
+    BUILTIN_OBJ(lang_function_stringToParameterSeq),\
+    BUILTIN_OBJ(lang_function_parseParamString_),\
     /* method */\
-    SSO_OP_OBJ(lang_method_index),\
+    BUILTIN_OBJ(lang_method_index),\
     /* overridable */\
-    SSO_OP_OBJ(lang_overridable_init_),\
+    BUILTIN_OBJ(lang_overridable_init_),\
     /* observer */\
-    SSO_OP_OBJ(vstore_observer_mask),\
-    SSO_OP_OBJ(vstore_observer_observable),\
-    SSO_OP_OBJ(vstore_observer_instance),\
-    SSO_OP_OBJ(vstore_observer_dispatcher),\
-    SSO_OP_OBJ(vstore_observer_type),\
-    SSO_OP_OBJ(vstore_observer_enabled),\
-    SSO_OP_OBJ(vstore_observer_active),\
-    SSO_OP_OBJ(vstore_observer_init_),\
-    SSO_OP_OBJ(vstore_observer_construct_),\
-    SSO_OP_OBJ(vstore_observer_destruct_),\
-    SSO_OP_OBJ(vstore_observer_observe_),\
-    SSO_OP_OBJ(vstore_observer_unobserve_),\
-    SSO_OP_OBJ(vstore_observer_observing_),\
+    BUILTIN_OBJ(vstore_observer_mask),\
+    BUILTIN_OBJ(vstore_observer_observable),\
+    BUILTIN_OBJ(vstore_observer_instance),\
+    BUILTIN_OBJ(vstore_observer_dispatcher),\
+    BUILTIN_OBJ(vstore_observer_type),\
+    BUILTIN_OBJ(vstore_observer_enabled),\
+    BUILTIN_OBJ(vstore_observer_active),\
+    BUILTIN_OBJ(vstore_observer_init_),\
+    BUILTIN_OBJ(vstore_observer_construct_),\
+    BUILTIN_OBJ(vstore_observer_destruct_),\
+    BUILTIN_OBJ(vstore_observer_observe_),\
+    BUILTIN_OBJ(vstore_observer_unobserve_),\
+    BUILTIN_OBJ(vstore_observer_observing_),\
     /* metaprocedure */\
-    SSO_OP_OBJ(lang_metaprocedure_referenceOnly),\
-    SSO_OP_OBJ(lang_metaprocedure_construct_),\
+    BUILTIN_OBJ(lang_metaprocedure_referenceOnly),\
+    BUILTIN_OBJ(lang_metaprocedure_construct_),\
     /* route */\
-    SSO_OP_OBJ(vstore_route_pattern),\
-    SSO_OP_OBJ(vstore_route_elements),\
-    SSO_OP_OBJ(vstore_route_init_),\
-    SSO_OP_OBJ(vstore_route_construct_),\
+    BUILTIN_OBJ(vstore_route_pattern),\
+    BUILTIN_OBJ(vstore_route_elements),\
+    BUILTIN_OBJ(vstore_route_init_),\
+    BUILTIN_OBJ(vstore_route_construct_),\
     /* dispatcher */\
-    SSO_OP_OBJ(vstore_dispatcher_post),\
+    BUILTIN_OBJ(vstore_dispatcher_post),\
     /* event */\
-    SSO_OP_OBJ(vstore_event_handleAction),\
-    SSO_OP_OBJ(vstore_event_handle_),\
+    BUILTIN_OBJ(vstore_event_handleAction),\
+    BUILTIN_OBJ(vstore_event_handle_),\
     /* fmt_data */\
-    SSO_OP_OBJ(vstore_fmt_data_ptr),\
-    SSO_OP_OBJ(vstore_fmt_data_handle),\
-    SSO_OP_OBJ(vstore_fmt_data_shared_count),\
-    SSO_OP_OBJ(vstore_fmt_data_deinit_),\
+    BUILTIN_OBJ(vstore_fmt_data_ptr),\
+    BUILTIN_OBJ(vstore_fmt_data_handle),\
+    BUILTIN_OBJ(vstore_fmt_data_shared_count),\
+    BUILTIN_OBJ(vstore_fmt_data_deinit_),\
     /* observer_event */\
-    SSO_OP_OBJ(vstore_observer_event_observer),\
-    SSO_OP_OBJ(vstore_observer_event_instance),\
-    SSO_OP_OBJ(vstore_observer_event_source),\
-    SSO_OP_OBJ(vstore_observer_event_event),\
-    SSO_OP_OBJ(vstore_observer_event_data),\
-    SSO_OP_OBJ(vstore_observer_event_thread),\
-    SSO_OP_OBJ(vstore_observer_event_handle),\
-    SSO_OP_OBJ(vstore_observer_event_init_),\
-    SSO_OP_OBJ(vstore_observer_event_deinit_),\
+    BUILTIN_OBJ(vstore_observer_event_observer),\
+    BUILTIN_OBJ(vstore_observer_event_instance),\
+    BUILTIN_OBJ(vstore_observer_event_source),\
+    BUILTIN_OBJ(vstore_observer_event_event),\
+    BUILTIN_OBJ(vstore_observer_event_data),\
+    BUILTIN_OBJ(vstore_observer_event_thread),\
+    BUILTIN_OBJ(vstore_observer_event_handle),\
+    BUILTIN_OBJ(vstore_observer_event_init_),\
+    BUILTIN_OBJ(vstore_observer_event_deinit_),\
     /* subscriber_event */\
-    SSO_OP_OBJ(vstore_subscriber_event_subscriber),\
-    SSO_OP_OBJ(vstore_subscriber_event_instance),\
-    SSO_OP_OBJ(vstore_subscriber_event_source),\
-    SSO_OP_OBJ(vstore_subscriber_event_event),\
-    SSO_OP_OBJ(vstore_subscriber_event_data),\
-    SSO_OP_OBJ(vstore_subscriber_event_fmt),\
-    SSO_OP_OBJ(vstore_subscriber_event_handle),\
-    SSO_OP_OBJ(vstore_subscriber_event_init_),\
-    SSO_OP_OBJ(vstore_subscriber_event_deinit_),\
+    BUILTIN_OBJ(vstore_subscriber_event_subscriber),\
+    BUILTIN_OBJ(vstore_subscriber_event_instance),\
+    BUILTIN_OBJ(vstore_subscriber_event_source),\
+    BUILTIN_OBJ(vstore_subscriber_event_event),\
+    BUILTIN_OBJ(vstore_subscriber_event_data),\
+    BUILTIN_OBJ(vstore_subscriber_event_fmt),\
+    BUILTIN_OBJ(vstore_subscriber_event_handle),\
+    BUILTIN_OBJ(vstore_subscriber_event_init_),\
+    BUILTIN_OBJ(vstore_subscriber_event_deinit_),\
     /* invoke_event */\
-    SSO_OP_OBJ(vstore_invoke_event_mount),\
-    SSO_OP_OBJ(vstore_invoke_event_instance),\
-    SSO_OP_OBJ(vstore_invoke_event_function),\
-    SSO_OP_OBJ(vstore_invoke_event_args),\
-    SSO_OP_OBJ(vstore_invoke_event_handle_),\
+    BUILTIN_OBJ(vstore_invoke_event_mount),\
+    BUILTIN_OBJ(vstore_invoke_event_instance),\
+    BUILTIN_OBJ(vstore_invoke_event_function),\
+    BUILTIN_OBJ(vstore_invoke_event_args),\
+    BUILTIN_OBJ(vstore_invoke_event_handle_),\
     /* width */\
-    SSO_OP_OBJ(lang_width_WIDTH_8),\
-    SSO_OP_OBJ(lang_width_WIDTH_16),\
-    SSO_OP_OBJ(lang_width_WIDTH_32),\
-    SSO_OP_OBJ(lang_width_WIDTH_64),\
-    SSO_OP_OBJ(lang_width_WIDTH_WORD),\
+    BUILTIN_OBJ(lang_width_WIDTH_8),\
+    BUILTIN_OBJ(lang_width_WIDTH_16),\
+    BUILTIN_OBJ(lang_width_WIDTH_32),\
+    BUILTIN_OBJ(lang_width_WIDTH_64),\
+    BUILTIN_OBJ(lang_width_WIDTH_WORD),\
     /* typeKind */\
-    SSO_OP_OBJ(lang_typeKind_VOID),\
-    SSO_OP_OBJ(lang_typeKind_ANY),\
-    SSO_OP_OBJ(lang_typeKind_PRIMITIVE),\
-    SSO_OP_OBJ(lang_typeKind_COMPOSITE),\
-    SSO_OP_OBJ(lang_typeKind_COLLECTION),\
-    SSO_OP_OBJ(lang_typeKind_ITERATOR),\
+    BUILTIN_OBJ(lang_typeKind_VOID),\
+    BUILTIN_OBJ(lang_typeKind_ANY),\
+    BUILTIN_OBJ(lang_typeKind_PRIMITIVE),\
+    BUILTIN_OBJ(lang_typeKind_COMPOSITE),\
+    BUILTIN_OBJ(lang_typeKind_COLLECTION),\
+    BUILTIN_OBJ(lang_typeKind_ITERATOR),\
     /* primitiveKind */\
-    SSO_OP_OBJ(lang_primitiveKind_BINARY),\
-    SSO_OP_OBJ(lang_primitiveKind_BOOLEAN),\
-    SSO_OP_OBJ(lang_primitiveKind_CHARACTER),\
-    SSO_OP_OBJ(lang_primitiveKind_INTEGER),\
-    SSO_OP_OBJ(lang_primitiveKind_UINTEGER),\
-    SSO_OP_OBJ(lang_primitiveKind_FLOAT),\
-    SSO_OP_OBJ(lang_primitiveKind_TEXT),\
-    SSO_OP_OBJ(lang_primitiveKind_ENUM),\
-    SSO_OP_OBJ(lang_primitiveKind_BITMASK),\
+    BUILTIN_OBJ(lang_primitiveKind_BINARY),\
+    BUILTIN_OBJ(lang_primitiveKind_BOOLEAN),\
+    BUILTIN_OBJ(lang_primitiveKind_CHARACTER),\
+    BUILTIN_OBJ(lang_primitiveKind_INTEGER),\
+    BUILTIN_OBJ(lang_primitiveKind_UINTEGER),\
+    BUILTIN_OBJ(lang_primitiveKind_FLOAT),\
+    BUILTIN_OBJ(lang_primitiveKind_TEXT),\
+    BUILTIN_OBJ(lang_primitiveKind_ENUM),\
+    BUILTIN_OBJ(lang_primitiveKind_BITMASK),\
     /* compositeKind */\
-    SSO_OP_OBJ(lang_compositeKind_INTERFACE),\
-    SSO_OP_OBJ(lang_compositeKind_STRUCT),\
-    SSO_OP_OBJ(lang_compositeKind_UNION),\
-    SSO_OP_OBJ(lang_compositeKind_CLASS),\
-    SSO_OP_OBJ(lang_compositeKind_DELEGATE),\
-    SSO_OP_OBJ(lang_compositeKind_PROCEDURE),\
+    BUILTIN_OBJ(lang_compositeKind_INTERFACE),\
+    BUILTIN_OBJ(lang_compositeKind_STRUCT),\
+    BUILTIN_OBJ(lang_compositeKind_UNION),\
+    BUILTIN_OBJ(lang_compositeKind_CLASS),\
+    BUILTIN_OBJ(lang_compositeKind_DELEGATE),\
+    BUILTIN_OBJ(lang_compositeKind_PROCEDURE),\
     /* collectionKind */\
-    SSO_OP_OBJ(lang_collectionKind_ARRAY),\
-    SSO_OP_OBJ(lang_collectionKind_SEQUENCE),\
-    SSO_OP_OBJ(lang_collectionKind_LIST),\
-    SSO_OP_OBJ(lang_collectionKind_MAP),\
+    BUILTIN_OBJ(lang_collectionKind_ARRAY),\
+    BUILTIN_OBJ(lang_collectionKind_SEQUENCE),\
+    BUILTIN_OBJ(lang_collectionKind_LIST),\
+    BUILTIN_OBJ(lang_collectionKind_MAP),\
     /* equalityKind */\
-    SSO_OP_OBJ(lang_equalityKind_EQ),\
-    SSO_OP_OBJ(lang_equalityKind_LT),\
-    SSO_OP_OBJ(lang_equalityKind_GT),\
-    SSO_OP_OBJ(lang_equalityKind_NEQ),\
+    BUILTIN_OBJ(lang_equalityKind_EQ),\
+    BUILTIN_OBJ(lang_equalityKind_LT),\
+    BUILTIN_OBJ(lang_equalityKind_GT),\
+    BUILTIN_OBJ(lang_equalityKind_NEQ),\
     /* inout */\
-    SSO_OP_OBJ(lang_inout_IN),\
-    SSO_OP_OBJ(lang_inout_OUT),\
-    SSO_OP_OBJ(lang_inout_INOUT),\
+    BUILTIN_OBJ(lang_inout_IN),\
+    BUILTIN_OBJ(lang_inout_OUT),\
+    BUILTIN_OBJ(lang_inout_INOUT),\
     /* ownership */\
-    SSO_OP_OBJ(vstore_ownership_REMOTE_SOURCE),\
-    SSO_OP_OBJ(vstore_ownership_LOCAL_SOURCE),\
-    SSO_OP_OBJ(vstore_ownership_CACHE_OWNER),\
+    BUILTIN_OBJ(vstore_ownership_REMOTE_SOURCE),\
+    BUILTIN_OBJ(vstore_ownership_LOCAL_SOURCE),\
+    BUILTIN_OBJ(vstore_ownership_CACHE_OWNER),\
     /* readWrite */\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_QUERY),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_HISTORY_QUERY),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_NOTIFY),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_HISTORY_BATCH_NOTIFY),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_BATCH_NOTIFY),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_SUBSCRIBE),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_MOUNT),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_RESUME),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_INVOKE),\
-    SSO_OP_OBJ(vstore_mountMask_MOUNT_ID),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_QUERY),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_HISTORY_QUERY),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_HISTORY_BATCH_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_BATCH_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_SUBSCRIBE),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_MOUNT),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_RESUME),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_INVOKE),\
+    BUILTIN_OBJ(vstore_mountMask_MOUNT_ID),\
     /* frameKind */\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_NOW),\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_TIME),\
-    SSO_OP_OBJ(vstore_frameKind_FRAME_DURATION),\
+    BUILTIN_OBJ(vstore_frameKind_FRAME_NOW),\
+    BUILTIN_OBJ(vstore_frameKind_FRAME_TIME),\
+    BUILTIN_OBJ(vstore_frameKind_FRAME_DURATION),\
     /* accessKind */\
-    SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_GRANTED),\
-    SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_DENIED),\
-    SSO_OP_OBJ(secure_accessKind_SECURE_ACCESS_UNDEFINED),\
+    BUILTIN_OBJ(secure_accessKind_SECURE_ACCESS_GRANTED),\
+    BUILTIN_OBJ(secure_accessKind_SECURE_ACCESS_DENIED),\
+    BUILTIN_OBJ(secure_accessKind_SECURE_ACCESS_UNDEFINED),\
     /* actionKind */\
-    SSO_OP_OBJ(secure_actionKind_SECURE_ACTION_CREATE),\
-    SSO_OP_OBJ(secure_actionKind_SECURE_ACTION_READ),\
-    SSO_OP_OBJ(secure_actionKind_SECURE_ACTION_UPDATE),\
-    SSO_OP_OBJ(secure_actionKind_SECURE_ACTION_DELETE),\
+    BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_CREATE),\
+    BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_READ),\
+    BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_UPDATE),\
+    BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_DELETE),\
     /* operatorKind */\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_ADD),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_SUB),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_MUL),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_DIV),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_MOD),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_XOR),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_OR),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_AND),\
-    SSO_OP_OBJ(vstore_operatorKind_ASSIGN_UPDATE),\
-    SSO_OP_OBJ(vstore_operatorKind_ADD),\
-    SSO_OP_OBJ(vstore_operatorKind_SUB),\
-    SSO_OP_OBJ(vstore_operatorKind_MUL),\
-    SSO_OP_OBJ(vstore_operatorKind_DIV),\
-    SSO_OP_OBJ(vstore_operatorKind_MOD),\
-    SSO_OP_OBJ(vstore_operatorKind_INC),\
-    SSO_OP_OBJ(vstore_operatorKind_DEC),\
-    SSO_OP_OBJ(vstore_operatorKind_XOR),\
-    SSO_OP_OBJ(vstore_operatorKind_OR),\
-    SSO_OP_OBJ(vstore_operatorKind_AND),\
-    SSO_OP_OBJ(vstore_operatorKind_NOT),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_OR),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_AND),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_NOT),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_EQ),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_NEQ),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_GT),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_LT),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_GTEQ),\
-    SSO_OP_OBJ(vstore_operatorKind_COND_LTEQ),\
-    SSO_OP_OBJ(vstore_operatorKind_SHIFT_LEFT),\
-    SSO_OP_OBJ(vstore_operatorKind_SHIFT_RIGHT),\
-    SSO_OP_OBJ(vstore_operatorKind_REF),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_ADD),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_SUB),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_MUL),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_DIV),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_MOD),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_XOR),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_OR),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_AND),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_UPDATE),\
+    BUILTIN_OBJ(vstore_operatorKind_ADD),\
+    BUILTIN_OBJ(vstore_operatorKind_SUB),\
+    BUILTIN_OBJ(vstore_operatorKind_MUL),\
+    BUILTIN_OBJ(vstore_operatorKind_DIV),\
+    BUILTIN_OBJ(vstore_operatorKind_MOD),\
+    BUILTIN_OBJ(vstore_operatorKind_INC),\
+    BUILTIN_OBJ(vstore_operatorKind_DEC),\
+    BUILTIN_OBJ(vstore_operatorKind_XOR),\
+    BUILTIN_OBJ(vstore_operatorKind_OR),\
+    BUILTIN_OBJ(vstore_operatorKind_AND),\
+    BUILTIN_OBJ(vstore_operatorKind_NOT),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_OR),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_AND),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_NOT),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_EQ),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_NEQ),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_GT),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_LT),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_GTEQ),\
+    BUILTIN_OBJ(vstore_operatorKind_COND_LTEQ),\
+    BUILTIN_OBJ(vstore_operatorKind_SHIFT_LEFT),\
+    BUILTIN_OBJ(vstore_operatorKind_SHIFT_RIGHT),\
+    BUILTIN_OBJ(vstore_operatorKind_REF),\
     /* state */\
-    SSO_OP_OBJ(lang_state_VALID),\
-    SSO_OP_OBJ(lang_state_DELETED),\
-    SSO_OP_OBJ(lang_state_DECLARED),\
+    BUILTIN_OBJ(lang_state_VALID),\
+    BUILTIN_OBJ(lang_state_DELETED),\
+    BUILTIN_OBJ(lang_state_DECLARED),\
     /* attr */\
-    SSO_OP_OBJ(lang_attr_ATTR_NAMED),\
-    SSO_OP_OBJ(lang_attr_ATTR_WRITABLE),\
-    SSO_OP_OBJ(lang_attr_ATTR_OBSERVABLE),\
-    SSO_OP_OBJ(lang_attr_ATTR_PERSISTENT),\
-    SSO_OP_OBJ(lang_attr_ATTR_DEFAULT),\
+    BUILTIN_OBJ(lang_attr_ATTR_NAMED),\
+    BUILTIN_OBJ(lang_attr_ATTR_WRITABLE),\
+    BUILTIN_OBJ(lang_attr_ATTR_OBSERVABLE),\
+    BUILTIN_OBJ(lang_attr_ATTR_PERSISTENT),\
+    BUILTIN_OBJ(lang_attr_ATTR_DEFAULT),\
     /* eventKind */\
-    SSO_OP_OBJ(vstore_eventMask_DECLARE),\
-    SSO_OP_OBJ(vstore_eventMask_DEFINE),\
-    SSO_OP_OBJ(vstore_eventMask_DELETE),\
-    SSO_OP_OBJ(vstore_eventMask_INVALIDATE),\
-    SSO_OP_OBJ(vstore_eventMask_UPDATE),\
-    SSO_OP_OBJ(vstore_eventMask_RESUME),\
-    SSO_OP_OBJ(vstore_eventMask_SUSPEND),\
-    SSO_OP_OBJ(vstore_eventMask_ON_SELF),\
-    SSO_OP_OBJ(vstore_eventMask_ON_SCOPE),\
-    SSO_OP_OBJ(vstore_eventMask_ON_TREE),\
-    SSO_OP_OBJ(vstore_eventMask_ON_VALUE),\
-    SSO_OP_OBJ(vstore_eventMask_ON_METAVALUE),\
-    SSO_OP_OBJ(vstore_eventMask_ON_ANY),\
+    BUILTIN_OBJ(vstore_eventMask_DECLARE),\
+    BUILTIN_OBJ(vstore_eventMask_DEFINE),\
+    BUILTIN_OBJ(vstore_eventMask_DELETE),\
+    BUILTIN_OBJ(vstore_eventMask_INVALIDATE),\
+    BUILTIN_OBJ(vstore_eventMask_UPDATE),\
+    BUILTIN_OBJ(vstore_eventMask_RESUME),\
+    BUILTIN_OBJ(vstore_eventMask_SUSPEND),\
+    BUILTIN_OBJ(vstore_eventMask_ON_SELF),\
+    BUILTIN_OBJ(vstore_eventMask_ON_SCOPE),\
+    BUILTIN_OBJ(vstore_eventMask_ON_TREE),\
+    BUILTIN_OBJ(vstore_eventMask_ON_VALUE),\
+    BUILTIN_OBJ(vstore_eventMask_ON_METAVALUE),\
+    BUILTIN_OBJ(vstore_eventMask_ON_ANY),\
     /* modifier */\
-    SSO_OP_OBJ(lang_modifier_GLOBAL),\
-    SSO_OP_OBJ(lang_modifier_LOCAL),\
-    SSO_OP_OBJ(lang_modifier_PRIVATE),\
-    SSO_OP_OBJ(lang_modifier_READONLY),\
-    SSO_OP_OBJ(lang_modifier_CONST),\
-    SSO_OP_OBJ(lang_modifier_NOT_NULL),\
-    SSO_OP_OBJ(lang_modifier_HIDDEN),\
-    SSO_OP_OBJ(lang_modifier_OPTIONAL),\
-    SSO_OP_OBJ(lang_modifier_OBSERVABLE),\
-    SSO_OP_OBJ(lang_modifier_KEY),\
+    BUILTIN_OBJ(lang_modifier_GLOBAL),\
+    BUILTIN_OBJ(lang_modifier_LOCAL),\
+    BUILTIN_OBJ(lang_modifier_PRIVATE),\
+    BUILTIN_OBJ(lang_modifier_READONLY),\
+    BUILTIN_OBJ(lang_modifier_CONST),\
+    BUILTIN_OBJ(lang_modifier_NOT_NULL),\
+    BUILTIN_OBJ(lang_modifier_HIDDEN),\
+    BUILTIN_OBJ(lang_modifier_OPTIONAL),\
+    BUILTIN_OBJ(lang_modifier_OBSERVABLE),\
+    BUILTIN_OBJ(lang_modifier_KEY),\
     /* resultMask */\
-    SSO_OP_OBJ(vstore_resultMask_RESULT_LEAF),\
-    SSO_OP_OBJ(vstore_resultMask_RESULT_HIDDEN),\
+    BUILTIN_OBJ(vstore_resultMask_RESULT_LEAF),\
+    BUILTIN_OBJ(vstore_resultMask_RESULT_HIDDEN),\
     /* typeOptions */\
-    SSO_OP_OBJ(lang_typeOptions_parentType),\
-    SSO_OP_OBJ(lang_typeOptions_parentState),\
-    SSO_OP_OBJ(lang_typeOptions_defaultType),\
-    SSO_OP_OBJ(lang_typeOptions_defaultProcedureType),\
+    BUILTIN_OBJ(lang_typeOptions_parentType),\
+    BUILTIN_OBJ(lang_typeOptions_parentState),\
+    BUILTIN_OBJ(lang_typeOptions_defaultType),\
+    BUILTIN_OBJ(lang_typeOptions_defaultProcedureType),\
     /* type */\
-    SSO_OP_OBJ(lang_type_kind),\
-    SSO_OP_OBJ(lang_type_reference),\
-    SSO_OP_OBJ(lang_type_attr),\
-    SSO_OP_OBJ(lang_type_options),\
-    SSO_OP_OBJ(lang_type_flags),\
-    SSO_OP_OBJ(lang_type_size),\
-    SSO_OP_OBJ(lang_type_alignment),\
-    SSO_OP_OBJ(lang_type_metaprocedures),\
-    SSO_OP_OBJ(lang_type_typecache),\
-    SSO_OP_OBJ(lang_type_init),\
-    SSO_OP_OBJ(lang_type_deinit),\
-    SSO_OP_OBJ(lang_type_nameof),\
-    SSO_OP_OBJ(lang_type_sizeof_),\
-    SSO_OP_OBJ(lang_type_alignmentof_),\
-    SSO_OP_OBJ(lang_type_compatible_),\
-    SSO_OP_OBJ(lang_type_resolveProcedure_),\
-    SSO_OP_OBJ(lang_type_castable_),\
-    SSO_OP_OBJ(lang_type_init_),\
-    SSO_OP_OBJ(lang_type_deinit_),\
-    SSO_OP_OBJ(lang_type_construct_),\
-    SSO_OP_OBJ(lang_type_destruct_),\
+    BUILTIN_OBJ(lang_type_kind),\
+    BUILTIN_OBJ(lang_type_reference),\
+    BUILTIN_OBJ(lang_type_attr),\
+    BUILTIN_OBJ(lang_type_options),\
+    BUILTIN_OBJ(lang_type_flags),\
+    BUILTIN_OBJ(lang_type_size),\
+    BUILTIN_OBJ(lang_type_alignment),\
+    BUILTIN_OBJ(lang_type_metaprocedures),\
+    BUILTIN_OBJ(lang_type_typecache),\
+    BUILTIN_OBJ(lang_type_init),\
+    BUILTIN_OBJ(lang_type_deinit),\
+    BUILTIN_OBJ(lang_type_nameof),\
+    BUILTIN_OBJ(lang_type_sizeof_),\
+    BUILTIN_OBJ(lang_type_alignmentof_),\
+    BUILTIN_OBJ(lang_type_compatible_),\
+    BUILTIN_OBJ(lang_type_resolveProcedure_),\
+    BUILTIN_OBJ(lang_type_castable_),\
+    BUILTIN_OBJ(lang_type_init_),\
+    BUILTIN_OBJ(lang_type_deinit_),\
+    BUILTIN_OBJ(lang_type_construct_),\
+    BUILTIN_OBJ(lang_type_destruct_),\
     /* primitive */\
-    SSO_OP_OBJ(lang_primitive_kind),\
-    SSO_OP_OBJ(lang_primitive_width),\
-    SSO_OP_OBJ(lang_primitive_convertId),\
-    SSO_OP_OBJ(lang_primitive_init_),\
-    SSO_OP_OBJ(lang_primitive_construct_),\
-    SSO_OP_OBJ(lang_primitive_compatible_),\
-    SSO_OP_OBJ(lang_primitive_castable_),\
-    SSO_OP_OBJ(lang_primitive_isInteger_),\
-    SSO_OP_OBJ(lang_primitive_isNumber_),\
+    BUILTIN_OBJ(lang_primitive_kind),\
+    BUILTIN_OBJ(lang_primitive_width),\
+    BUILTIN_OBJ(lang_primitive_convertId),\
+    BUILTIN_OBJ(lang_primitive_init_),\
+    BUILTIN_OBJ(lang_primitive_construct_),\
+    BUILTIN_OBJ(lang_primitive_compatible_),\
+    BUILTIN_OBJ(lang_primitive_castable_),\
+    BUILTIN_OBJ(lang_primitive_isInteger_),\
+    BUILTIN_OBJ(lang_primitive_isNumber_),\
     /* interface */\
-    SSO_OP_OBJ(lang_interface_kind),\
-    SSO_OP_OBJ(lang_interface_nextMemberId),\
-    SSO_OP_OBJ(lang_interface_members),\
-    SSO_OP_OBJ(lang_interface_methods),\
-    SSO_OP_OBJ(lang_interface_base),\
-    SSO_OP_OBJ(lang_interface_init_),\
-    SSO_OP_OBJ(lang_interface_construct_),\
-    SSO_OP_OBJ(lang_interface_destruct_),\
-    SSO_OP_OBJ(lang_interface_deinit_),\
-    SSO_OP_OBJ(lang_interface_resolveMember_),\
-    SSO_OP_OBJ(lang_interface_resolveMemberByTag_),\
-    SSO_OP_OBJ(lang_interface_compatible_),\
-    SSO_OP_OBJ(lang_interface_resolveMethod_),\
-    SSO_OP_OBJ(lang_interface_resolveMethodId_),\
-    SSO_OP_OBJ(lang_interface_resolveMethodById_),\
-    SSO_OP_OBJ(lang_interface_bindMethod_),\
-    SSO_OP_OBJ(lang_interface_baseof_),\
+    BUILTIN_OBJ(lang_interface_kind),\
+    BUILTIN_OBJ(lang_interface_nextMemberId),\
+    BUILTIN_OBJ(lang_interface_members),\
+    BUILTIN_OBJ(lang_interface_methods),\
+    BUILTIN_OBJ(lang_interface_base),\
+    BUILTIN_OBJ(lang_interface_init_),\
+    BUILTIN_OBJ(lang_interface_construct_),\
+    BUILTIN_OBJ(lang_interface_destruct_),\
+    BUILTIN_OBJ(lang_interface_deinit_),\
+    BUILTIN_OBJ(lang_interface_resolveMember_),\
+    BUILTIN_OBJ(lang_interface_resolveMemberByTag_),\
+    BUILTIN_OBJ(lang_interface_compatible_),\
+    BUILTIN_OBJ(lang_interface_resolveMethod_),\
+    BUILTIN_OBJ(lang_interface_resolveMethodId_),\
+    BUILTIN_OBJ(lang_interface_resolveMethodById_),\
+    BUILTIN_OBJ(lang_interface_bindMethod_),\
+    BUILTIN_OBJ(lang_interface_baseof_),\
     /* collection */\
-    SSO_OP_OBJ(lang_collection_kind),\
-    SSO_OP_OBJ(lang_collection_elementType),\
-    SSO_OP_OBJ(lang_collection_max),\
-    SSO_OP_OBJ(lang_collection_castable_),\
-    SSO_OP_OBJ(lang_collection_compatible_),\
-    SSO_OP_OBJ(lang_collection_requiresAlloc),\
-    SSO_OP_OBJ(lang_collection_init_),\
+    BUILTIN_OBJ(lang_collection_kind),\
+    BUILTIN_OBJ(lang_collection_elementType),\
+    BUILTIN_OBJ(lang_collection_max),\
+    BUILTIN_OBJ(lang_collection_castable_),\
+    BUILTIN_OBJ(lang_collection_compatible_),\
+    BUILTIN_OBJ(lang_collection_requiresAlloc),\
+    BUILTIN_OBJ(lang_collection_init_),\
     /* iterator */\
-    SSO_OP_OBJ(lang_iterator_elementType),\
-    SSO_OP_OBJ(lang_iterator_init_),\
-    SSO_OP_OBJ(lang_iterator_castable_),\
-    SSO_OP_OBJ(lang_iterator_compatible_),\
+    BUILTIN_OBJ(lang_iterator_elementType),\
+    BUILTIN_OBJ(lang_iterator_init_),\
+    BUILTIN_OBJ(lang_iterator_castable_),\
+    BUILTIN_OBJ(lang_iterator_compatible_),\
     /* binary */\
-    SSO_OP_OBJ(lang_binary_init_),\
+    BUILTIN_OBJ(lang_binary_init_),\
     /* boolean */\
-    SSO_OP_OBJ(lang_boolean_init_),\
+    BUILTIN_OBJ(lang_boolean_init_),\
     /* char */\
-    SSO_OP_OBJ(lang_character_init_),\
+    BUILTIN_OBJ(lang_character_init_),\
     /* int */\
-    SSO_OP_OBJ(lang_int_min),\
-    SSO_OP_OBJ(lang_int_max),\
-    SSO_OP_OBJ(lang_int_init_),\
+    BUILTIN_OBJ(lang_int_min),\
+    BUILTIN_OBJ(lang_int_max),\
+    BUILTIN_OBJ(lang_int_init_),\
     /* uint */\
-    SSO_OP_OBJ(lang_uint_min),\
-    SSO_OP_OBJ(lang_uint_max),\
-    SSO_OP_OBJ(lang_uint_init_),\
+    BUILTIN_OBJ(lang_uint_min),\
+    BUILTIN_OBJ(lang_uint_max),\
+    BUILTIN_OBJ(lang_uint_init_),\
     /* float */\
-    SSO_OP_OBJ(lang_float_min),\
-    SSO_OP_OBJ(lang_float_max),\
-    SSO_OP_OBJ(lang_float_init_),\
+    BUILTIN_OBJ(lang_float_min),\
+    BUILTIN_OBJ(lang_float_max),\
+    BUILTIN_OBJ(lang_float_init_),\
     /* text */\
-    SSO_OP_OBJ(lang_text_charWidth),\
-    SSO_OP_OBJ(lang_text_length),\
-    SSO_OP_OBJ(lang_text_init_),\
+    BUILTIN_OBJ(lang_text_charWidth),\
+    BUILTIN_OBJ(lang_text_length),\
+    BUILTIN_OBJ(lang_text_init_),\
     /* verbatim */\
-    SSO_OP_OBJ(lang_verbatim_contentType),\
-    SSO_OP_OBJ(lang_verbatim_init_),\
+    BUILTIN_OBJ(lang_verbatim_contentType),\
+    BUILTIN_OBJ(lang_verbatim_init_),\
     /* enum */\
-    SSO_OP_OBJ(lang_enum_constants),\
-    SSO_OP_OBJ(lang_enum_constant_),\
-    SSO_OP_OBJ(lang_enum_init_),\
-    SSO_OP_OBJ(lang_enum_construct_),\
-    SSO_OP_OBJ(lang_enum_destruct_),\
+    BUILTIN_OBJ(lang_enum_constants),\
+    BUILTIN_OBJ(lang_enum_constant_),\
+    BUILTIN_OBJ(lang_enum_init_),\
+    BUILTIN_OBJ(lang_enum_construct_),\
+    BUILTIN_OBJ(lang_enum_destruct_),\
     /* bitmask */\
-    SSO_OP_OBJ(lang_bitmask_init_),\
+    BUILTIN_OBJ(lang_bitmask_init_),\
     /* struct */\
-    SSO_OP_OBJ(lang_struct_base),\
-    SSO_OP_OBJ(lang_struct_baseAccess),\
-    SSO_OP_OBJ(lang_struct_keys),\
-    SSO_OP_OBJ(lang_struct_keycache),\
-    SSO_OP_OBJ(lang_struct_init_),\
-    SSO_OP_OBJ(lang_struct_construct_),\
-    SSO_OP_OBJ(lang_struct_compatible_),\
-    SSO_OP_OBJ(lang_struct_castable_),\
-    SSO_OP_OBJ(lang_struct_resolveMember_),\
+    BUILTIN_OBJ(lang_struct_base),\
+    BUILTIN_OBJ(lang_struct_baseAccess),\
+    BUILTIN_OBJ(lang_struct_keys),\
+    BUILTIN_OBJ(lang_struct_keycache),\
+    BUILTIN_OBJ(lang_struct_init_),\
+    BUILTIN_OBJ(lang_struct_construct_),\
+    BUILTIN_OBJ(lang_struct_compatible_),\
+    BUILTIN_OBJ(lang_struct_castable_),\
+    BUILTIN_OBJ(lang_struct_resolveMember_),\
     /* union */\
-    SSO_OP_OBJ(lang_union_discriminator),\
-    SSO_OP_OBJ(lang_union_init_),\
-    SSO_OP_OBJ(lang_union_construct_),\
-    SSO_OP_OBJ(lang_union_findCase_),\
+    BUILTIN_OBJ(lang_union_discriminator),\
+    BUILTIN_OBJ(lang_union_init_),\
+    BUILTIN_OBJ(lang_union_construct_),\
+    BUILTIN_OBJ(lang_union_findCase_),\
     /* procedure */\
-    SSO_OP_OBJ(lang_procedure_hasThis),\
-    SSO_OP_OBJ(lang_procedure_thisType),\
-    SSO_OP_OBJ(lang_procedure_init_),\
-    SSO_OP_OBJ(lang_procedure_construct_),\
+    BUILTIN_OBJ(lang_procedure_hasThis),\
+    BUILTIN_OBJ(lang_procedure_thisType),\
+    BUILTIN_OBJ(lang_procedure_init_),\
+    BUILTIN_OBJ(lang_procedure_construct_),\
     /* interfaceVector */\
-    SSO_OP_OBJ(lang_interfaceVector_interface),\
-    SSO_OP_OBJ(lang_interfaceVector_vector),\
+    BUILTIN_OBJ(lang_interfaceVector_interface),\
+    BUILTIN_OBJ(lang_interfaceVector_vector),\
     /* class */\
-    SSO_OP_OBJ(lang_class_base),\
-    SSO_OP_OBJ(lang_class_baseAccess),\
-    SSO_OP_OBJ(lang_class_implements),\
-    SSO_OP_OBJ(lang_class_interfaceVector),\
-    SSO_OP_OBJ(lang_class_construct),\
-    SSO_OP_OBJ(lang_class_define),\
-    SSO_OP_OBJ(lang_class_validate),\
-    SSO_OP_OBJ(lang_class_update),\
-    SSO_OP_OBJ(lang_class_destruct),\
-    SSO_OP_OBJ(lang_class_delete),\
-    SSO_OP_OBJ(lang_class_init_),\
-    SSO_OP_OBJ(lang_class_instanceof_),\
-    SSO_OP_OBJ(lang_class_resolveInterfaceMethod_),\
+    BUILTIN_OBJ(lang_class_base),\
+    BUILTIN_OBJ(lang_class_baseAccess),\
+    BUILTIN_OBJ(lang_class_implements),\
+    BUILTIN_OBJ(lang_class_interfaceVector),\
+    BUILTIN_OBJ(lang_class_construct),\
+    BUILTIN_OBJ(lang_class_define),\
+    BUILTIN_OBJ(lang_class_validate),\
+    BUILTIN_OBJ(lang_class_update),\
+    BUILTIN_OBJ(lang_class_destruct),\
+    BUILTIN_OBJ(lang_class_delete),\
+    BUILTIN_OBJ(lang_class_init_),\
+    BUILTIN_OBJ(lang_class_instanceof_),\
+    BUILTIN_OBJ(lang_class_resolveInterfaceMethod_),\
     /* leaf */\
-    SSO_OP_OBJ(lang_container_construct_),\
-    SSO_OP_OBJ(lang_container_type),\
-    SSO_OP_OBJ(lang_container_value),\
+    BUILTIN_OBJ(lang_container_construct_),\
+    BUILTIN_OBJ(lang_container_type),\
+    BUILTIN_OBJ(lang_container_value),\
     /* tableinstance */\
-    SSO_OP_OBJ(lang_tableinstance_type),\
+    BUILTIN_OBJ(lang_tableinstance_type),\
     /* table */\
-    SSO_OP_OBJ(lang_table_construct_),\
+    BUILTIN_OBJ(lang_table_construct_),\
     /* queuePolicy */\
-    SSO_OP_OBJ(vstore_queuePolicy_max),\
+    BUILTIN_OBJ(vstore_queuePolicy_max),\
     /* mountPolicy */\
-    SSO_OP_OBJ(vstore_mountPolicy_ownership),\
-    SSO_OP_OBJ(vstore_mountPolicy_mask),\
-    SSO_OP_OBJ(vstore_mountPolicy_sampleRate),\
-    SSO_OP_OBJ(vstore_mountPolicy_queue),\
-    SSO_OP_OBJ(vstore_mountPolicy_expiryTime),\
-    SSO_OP_OBJ(vstore_mountPolicy_filterResults),\
+    BUILTIN_OBJ(vstore_mountPolicy_ownership),\
+    BUILTIN_OBJ(vstore_mountPolicy_mask),\
+    BUILTIN_OBJ(vstore_mountPolicy_sampleRate),\
+    BUILTIN_OBJ(vstore_mountPolicy_queue),\
+    BUILTIN_OBJ(vstore_mountPolicy_expiryTime),\
+    BUILTIN_OBJ(vstore_mountPolicy_filterResults),\
     /* mountSubscription */\
-    SSO_OP_OBJ(vstore_mountSubscription_query),\
-    SSO_OP_OBJ(vstore_mountSubscription_mountCount),\
-    SSO_OP_OBJ(vstore_mountSubscription_subscriberCount),\
-    SSO_OP_OBJ(vstore_mountSubscription_mountCtx),\
-    SSO_OP_OBJ(vstore_mountSubscription_subscriberCtx),\
+    BUILTIN_OBJ(vstore_mountSubscription_query),\
+    BUILTIN_OBJ(vstore_mountSubscription_mountCount),\
+    BUILTIN_OBJ(vstore_mountSubscription_subscriberCount),\
+    BUILTIN_OBJ(vstore_mountSubscription_mountCtx),\
+    BUILTIN_OBJ(vstore_mountSubscription_subscriberCtx),\
     /* query */\
-    SSO_OP_OBJ(vstore_query_select),\
-    SSO_OP_OBJ(vstore_query_from),\
-    SSO_OP_OBJ(vstore_query_type),\
-    SSO_OP_OBJ(vstore_query_member),\
-    SSO_OP_OBJ(vstore_query_where),\
-    SSO_OP_OBJ(vstore_query_offset),\
-    SSO_OP_OBJ(vstore_query_limit),\
-    SSO_OP_OBJ(vstore_query_soffset),\
-    SSO_OP_OBJ(vstore_query_slimit),\
-    SSO_OP_OBJ(vstore_query_timeBegin),\
-    SSO_OP_OBJ(vstore_query_timeEnd),\
-    SSO_OP_OBJ(vstore_query_content),\
-    SSO_OP_OBJ(vstore_query_cardinality_),\
-    SSO_OP_OBJ(vstore_query_match_),\
+    BUILTIN_OBJ(vstore_query_select),\
+    BUILTIN_OBJ(vstore_query_from),\
+    BUILTIN_OBJ(vstore_query_type),\
+    BUILTIN_OBJ(vstore_query_member),\
+    BUILTIN_OBJ(vstore_query_where),\
+    BUILTIN_OBJ(vstore_query_offset),\
+    BUILTIN_OBJ(vstore_query_limit),\
+    BUILTIN_OBJ(vstore_query_soffset),\
+    BUILTIN_OBJ(vstore_query_slimit),\
+    BUILTIN_OBJ(vstore_query_timeBegin),\
+    BUILTIN_OBJ(vstore_query_timeEnd),\
+    BUILTIN_OBJ(vstore_query_content),\
+    BUILTIN_OBJ(vstore_query_cardinality_),\
+    BUILTIN_OBJ(vstore_query_match_),\
     /* subscriber */\
-    SSO_OP_OBJ(vstore_subscriber_query),\
-    SSO_OP_OBJ(vstore_subscriber_contentType),\
-    SSO_OP_OBJ(vstore_subscriber_instance),\
-    SSO_OP_OBJ(vstore_subscriber_dispatcher),\
-    SSO_OP_OBJ(vstore_subscriber_enabled),\
-    SSO_OP_OBJ(vstore_subscriber_fmt_handle),\
-    SSO_OP_OBJ(vstore_subscriber_idmatch),\
-    SSO_OP_OBJ(vstore_subscriber_isAligning),\
-    SSO_OP_OBJ(vstore_subscriber_alignMutex),\
-    SSO_OP_OBJ(vstore_subscriber_alignQueue),\
-    SSO_OP_OBJ(vstore_subscriber_init_),\
-    SSO_OP_OBJ(vstore_subscriber_deinit_),\
-    SSO_OP_OBJ(vstore_subscriber_construct_),\
-    SSO_OP_OBJ(vstore_subscriber_define_),\
-    SSO_OP_OBJ(vstore_subscriber_destruct_),\
-    SSO_OP_OBJ(vstore_subscriber_subscribe_),\
-    SSO_OP_OBJ(vstore_subscriber_unsubscribe_),\
+    BUILTIN_OBJ(vstore_subscriber_query),\
+    BUILTIN_OBJ(vstore_subscriber_contentType),\
+    BUILTIN_OBJ(vstore_subscriber_instance),\
+    BUILTIN_OBJ(vstore_subscriber_dispatcher),\
+    BUILTIN_OBJ(vstore_subscriber_enabled),\
+    BUILTIN_OBJ(vstore_subscriber_fmt_handle),\
+    BUILTIN_OBJ(vstore_subscriber_idmatch),\
+    BUILTIN_OBJ(vstore_subscriber_isAligning),\
+    BUILTIN_OBJ(vstore_subscriber_alignMutex),\
+    BUILTIN_OBJ(vstore_subscriber_alignQueue),\
+    BUILTIN_OBJ(vstore_subscriber_init_),\
+    BUILTIN_OBJ(vstore_subscriber_deinit_),\
+    BUILTIN_OBJ(vstore_subscriber_construct_),\
+    BUILTIN_OBJ(vstore_subscriber_define_),\
+    BUILTIN_OBJ(vstore_subscriber_destruct_),\
+    BUILTIN_OBJ(vstore_subscriber_subscribe_),\
+    BUILTIN_OBJ(vstore_subscriber_unsubscribe_),\
     /* router */\
-    SSO_OP_OBJ(vstore_router_init_),\
-    SSO_OP_OBJ(vstore_router_construct_),\
-    SSO_OP_OBJ(vstore_router_match),\
-    SSO_OP_OBJ(vstore_router_returnType),\
-    SSO_OP_OBJ(vstore_router_paramType),\
-    SSO_OP_OBJ(vstore_router_paramName),\
-    SSO_OP_OBJ(vstore_router_routerDataType),\
-    SSO_OP_OBJ(vstore_router_routerDataName),\
-    SSO_OP_OBJ(vstore_router_elementSeparator),\
+    BUILTIN_OBJ(vstore_router_init_),\
+    BUILTIN_OBJ(vstore_router_construct_),\
+    BUILTIN_OBJ(vstore_router_match),\
+    BUILTIN_OBJ(vstore_router_returnType),\
+    BUILTIN_OBJ(vstore_router_paramType),\
+    BUILTIN_OBJ(vstore_router_paramName),\
+    BUILTIN_OBJ(vstore_router_routerDataType),\
+    BUILTIN_OBJ(vstore_router_routerDataName),\
+    BUILTIN_OBJ(vstore_router_elementSeparator),\
     /* routerimpl */\
-    SSO_OP_OBJ(vstore_routerimpl_construct_),\
-    SSO_OP_OBJ(vstore_routerimpl_destruct_),\
-    SSO_OP_OBJ(vstore_routerimpl_maxArgs),\
-    SSO_OP_OBJ(vstore_routerimpl_matched),\
-    SSO_OP_OBJ(vstore_routerimpl_matchRoute_),\
-    SSO_OP_OBJ(vstore_routerimpl_findRoute_),\
+    BUILTIN_OBJ(vstore_routerimpl_construct_),\
+    BUILTIN_OBJ(vstore_routerimpl_destruct_),\
+    BUILTIN_OBJ(vstore_routerimpl_maxArgs),\
+    BUILTIN_OBJ(vstore_routerimpl_matched),\
+    BUILTIN_OBJ(vstore_routerimpl_matchRoute_),\
+    BUILTIN_OBJ(vstore_routerimpl_findRoute_),\
     /* mount */\
-    SSO_OP_OBJ(vstore_mount_query),\
-    SSO_OP_OBJ(vstore_mount_contentType),\
-    SSO_OP_OBJ(vstore_mount_policy),\
-    SSO_OP_OBJ(vstore_mount_mount),\
-    SSO_OP_OBJ(vstore_mount_attr),\
-    SSO_OP_OBJ(vstore_mount_subscriptions),\
-    SSO_OP_OBJ(vstore_mount_events),\
-    SSO_OP_OBJ(vstore_mount_historicalEvents),\
-    SSO_OP_OBJ(vstore_mount_lastPoll),\
-    SSO_OP_OBJ(vstore_mount_lastPost),\
-    SSO_OP_OBJ(vstore_mount_lastSleep),\
-    SSO_OP_OBJ(vstore_mount_dueSleep),\
-    SSO_OP_OBJ(vstore_mount_lastQueueSize),\
-    SSO_OP_OBJ(vstore_mount_passThrough),\
-    SSO_OP_OBJ(vstore_mount_explicitResume),\
-    SSO_OP_OBJ(vstore_mount_thread),\
-    SSO_OP_OBJ(vstore_mount_quit),\
-    SSO_OP_OBJ(vstore_mount_contentTypeOut),\
-    SSO_OP_OBJ(vstore_mount_contentTypeOutHandle),\
-    SSO_OP_OBJ(vstore_mount_init_),\
-    SSO_OP_OBJ(vstore_mount_construct_),\
-    SSO_OP_OBJ(vstore_mount_destruct_),\
-    SSO_OP_OBJ(vstore_mount_invoke_),\
-    SSO_OP_OBJ(vstore_mount_id_),\
-    SSO_OP_OBJ(vstore_mount_query_),\
-    SSO_OP_OBJ(vstore_mount_historyQuery_),\
-    SSO_OP_OBJ(vstore_mount_resume_),\
-    SSO_OP_OBJ(vstore_mount_subscribe_),\
-    SSO_OP_OBJ(vstore_mount_unsubscribe_),\
-    SSO_OP_OBJ(vstore_mount_setContentType_),\
-    SSO_OP_OBJ(vstore_mount_setContentTypeIn_),\
-    SSO_OP_OBJ(vstore_mount_setContentTypeOut_),\
-    SSO_OP_OBJ(vstore_mount_return_),\
-    SSO_OP_OBJ(vstore_mount_publish_),\
-    SSO_OP_OBJ(vstore_mount_post_),\
-    SSO_OP_OBJ(vstore_mount_onPoll_),\
-    SSO_OP_OBJ(vstore_mount_on_notify_),\
-    SSO_OP_OBJ(vstore_mount_on_batch_notify_),\
-    SSO_OP_OBJ(vstore_mount_on_history_batch_notify_),\
-    SSO_OP_OBJ(vstore_mount_on_invoke_),\
-    SSO_OP_OBJ(vstore_mount_on_id_),\
-    SSO_OP_OBJ(vstore_mount_on_query_),\
-    SSO_OP_OBJ(vstore_mount_on_history_query_),\
-    SSO_OP_OBJ(vstore_mount_on_resume_),\
-    SSO_OP_OBJ(vstore_mount_on_subscribe_),\
-    SSO_OP_OBJ(vstore_mount_on_unsubscribe_),\
-    SSO_OP_OBJ(vstore_mount_on_mount_),\
-    SSO_OP_OBJ(vstore_mount_on_unmount_),\
-    SSO_OP_OBJ(vstore_mount_on_transaction_begin_),\
-    SSO_OP_OBJ(vstore_mount_on_transaction_end_),\
+    BUILTIN_OBJ(vstore_mount_query),\
+    BUILTIN_OBJ(vstore_mount_contentType),\
+    BUILTIN_OBJ(vstore_mount_policy),\
+    BUILTIN_OBJ(vstore_mount_mount),\
+    BUILTIN_OBJ(vstore_mount_attr),\
+    BUILTIN_OBJ(vstore_mount_subscriptions),\
+    BUILTIN_OBJ(vstore_mount_events),\
+    BUILTIN_OBJ(vstore_mount_historicalEvents),\
+    BUILTIN_OBJ(vstore_mount_lastPoll),\
+    BUILTIN_OBJ(vstore_mount_lastPost),\
+    BUILTIN_OBJ(vstore_mount_lastSleep),\
+    BUILTIN_OBJ(vstore_mount_dueSleep),\
+    BUILTIN_OBJ(vstore_mount_lastQueueSize),\
+    BUILTIN_OBJ(vstore_mount_passThrough),\
+    BUILTIN_OBJ(vstore_mount_explicitResume),\
+    BUILTIN_OBJ(vstore_mount_thread),\
+    BUILTIN_OBJ(vstore_mount_quit),\
+    BUILTIN_OBJ(vstore_mount_contentTypeOut),\
+    BUILTIN_OBJ(vstore_mount_contentTypeOutHandle),\
+    BUILTIN_OBJ(vstore_mount_init_),\
+    BUILTIN_OBJ(vstore_mount_construct_),\
+    BUILTIN_OBJ(vstore_mount_destruct_),\
+    BUILTIN_OBJ(vstore_mount_invoke_),\
+    BUILTIN_OBJ(vstore_mount_id_),\
+    BUILTIN_OBJ(vstore_mount_query_),\
+    BUILTIN_OBJ(vstore_mount_historyQuery_),\
+    BUILTIN_OBJ(vstore_mount_resume_),\
+    BUILTIN_OBJ(vstore_mount_subscribe_),\
+    BUILTIN_OBJ(vstore_mount_unsubscribe_),\
+    BUILTIN_OBJ(vstore_mount_setContentType_),\
+    BUILTIN_OBJ(vstore_mount_setContentTypeIn_),\
+    BUILTIN_OBJ(vstore_mount_setContentTypeOut_),\
+    BUILTIN_OBJ(vstore_mount_return_),\
+    BUILTIN_OBJ(vstore_mount_publish_),\
+    BUILTIN_OBJ(vstore_mount_post_),\
+    BUILTIN_OBJ(vstore_mount_onPoll_),\
+    BUILTIN_OBJ(vstore_mount_on_notify_),\
+    BUILTIN_OBJ(vstore_mount_on_batch_notify_),\
+    BUILTIN_OBJ(vstore_mount_on_history_batch_notify_),\
+    BUILTIN_OBJ(vstore_mount_on_invoke_),\
+    BUILTIN_OBJ(vstore_mount_on_id_),\
+    BUILTIN_OBJ(vstore_mount_on_query_),\
+    BUILTIN_OBJ(vstore_mount_on_history_query_),\
+    BUILTIN_OBJ(vstore_mount_on_resume_),\
+    BUILTIN_OBJ(vstore_mount_on_subscribe_),\
+    BUILTIN_OBJ(vstore_mount_on_unsubscribe_),\
+    BUILTIN_OBJ(vstore_mount_on_mount_),\
+    BUILTIN_OBJ(vstore_mount_on_unmount_),\
+    BUILTIN_OBJ(vstore_mount_on_transaction_begin_),\
+    BUILTIN_OBJ(vstore_mount_on_transaction_end_),\
     /* loader */\
-    SSO_OP_OBJ(vstore_loader_autoLoad),\
-    SSO_OP_OBJ(vstore_loader_construct_),\
-    SSO_OP_OBJ(vstore_loader_destruct_),\
-    SSO_OP_OBJ(vstore_loader_on_query_),\
+    BUILTIN_OBJ(vstore_loader_autoLoad),\
+    BUILTIN_OBJ(vstore_loader_construct_),\
+    BUILTIN_OBJ(vstore_loader_destruct_),\
+    BUILTIN_OBJ(vstore_loader_on_query_),\
     /* delegatedata */\
-    SSO_OP_OBJ(lang_delegatedata_instance),\
-    SSO_OP_OBJ(lang_delegatedata_procedure),\
+    BUILTIN_OBJ(lang_delegatedata_instance),\
+    BUILTIN_OBJ(lang_delegatedata_procedure),\
     /* delegate */\
-    SSO_OP_OBJ(lang_delegate_returnType),\
-    SSO_OP_OBJ(lang_delegate_returnsReference),\
-    SSO_OP_OBJ(lang_delegate_parameters),\
-    SSO_OP_OBJ(lang_delegate_init_),\
-    SSO_OP_OBJ(lang_delegate_compatible_),\
-    SSO_OP_OBJ(lang_delegate_castable_),\
-    SSO_OP_OBJ(lang_delegate_instanceof_),\
-    SSO_OP_OBJ(lang_delegate_bind),\
+    BUILTIN_OBJ(lang_delegate_returnType),\
+    BUILTIN_OBJ(lang_delegate_returnsReference),\
+    BUILTIN_OBJ(lang_delegate_parameters),\
+    BUILTIN_OBJ(lang_delegate_init_),\
+    BUILTIN_OBJ(lang_delegate_compatible_),\
+    BUILTIN_OBJ(lang_delegate_castable_),\
+    BUILTIN_OBJ(lang_delegate_instanceof_),\
+    BUILTIN_OBJ(lang_delegate_bind),\
     /* target */\
-    SSO_OP_OBJ(lang_target_type),\
-    SSO_OP_OBJ(lang_target_construct_),\
+    BUILTIN_OBJ(lang_target_type),\
+    BUILTIN_OBJ(lang_target_construct_),\
     /* quantity */\
-    SSO_OP_OBJ(lang_quantity_base_unit),\
+    BUILTIN_OBJ(lang_quantity_base_unit),\
     /* tag */\
     /* unit */\
-    SSO_OP_OBJ(lang_unit_quantity),\
-    SSO_OP_OBJ(lang_unit_symbol),\
-    SSO_OP_OBJ(lang_unit_conversion),\
-    SSO_OP_OBJ(lang_unit_type),\
-    SSO_OP_OBJ(lang_unit_toQuantity),\
-    SSO_OP_OBJ(lang_unit_fromQuantity),\
-    SSO_OP_OBJ(lang_unit_init_),\
-    SSO_OP_OBJ(lang_unit_construct_),\
+    BUILTIN_OBJ(lang_unit_quantity),\
+    BUILTIN_OBJ(lang_unit_symbol),\
+    BUILTIN_OBJ(lang_unit_conversion),\
+    BUILTIN_OBJ(lang_unit_type),\
+    BUILTIN_OBJ(lang_unit_toQuantity),\
+    BUILTIN_OBJ(lang_unit_fromQuantity),\
+    BUILTIN_OBJ(lang_unit_init_),\
+    BUILTIN_OBJ(lang_unit_construct_),\
     /* array */\
-    SSO_OP_OBJ(lang_array_elementType),\
-    SSO_OP_OBJ(lang_array_init_),\
-    SSO_OP_OBJ(lang_array_construct_),\
-    SSO_OP_OBJ(lang_array_destruct_),\
+    BUILTIN_OBJ(lang_array_elementType),\
+    BUILTIN_OBJ(lang_array_init_),\
+    BUILTIN_OBJ(lang_array_construct_),\
+    BUILTIN_OBJ(lang_array_destruct_),\
     /* sequence */\
-    SSO_OP_OBJ(lang_sequence_init_),\
-    SSO_OP_OBJ(lang_sequence_construct_),\
+    BUILTIN_OBJ(lang_sequence_init_),\
+    BUILTIN_OBJ(lang_sequence_construct_),\
     /* list */\
-    SSO_OP_OBJ(lang_list_init_),\
-    SSO_OP_OBJ(lang_list_construct_),\
+    BUILTIN_OBJ(lang_list_init_),\
+    BUILTIN_OBJ(lang_list_construct_),\
     /* map */\
-    SSO_OP_OBJ(lang_map_keyType),\
-    SSO_OP_OBJ(lang_map_elementType),\
-    SSO_OP_OBJ(lang_map_max),\
-    SSO_OP_OBJ(lang_map_init_),\
-    SSO_OP_OBJ(lang_map_construct_),\
+    BUILTIN_OBJ(lang_map_keyType),\
+    BUILTIN_OBJ(lang_map_elementType),\
+    BUILTIN_OBJ(lang_map_max),\
+    BUILTIN_OBJ(lang_map_init_),\
+    BUILTIN_OBJ(lang_map_construct_),\
     /* member */\
-    SSO_OP_OBJ(lang_member_type),\
-    SSO_OP_OBJ(lang_member_modifiers),\
-    SSO_OP_OBJ(lang_member_default),\
-    SSO_OP_OBJ(lang_member_unit),\
-    SSO_OP_OBJ(lang_member_tags),\
-    SSO_OP_OBJ(lang_member_state),\
-    SSO_OP_OBJ(lang_member_stateCondExpr),\
-    SSO_OP_OBJ(lang_member_id),\
-    SSO_OP_OBJ(lang_member_offset),\
-    SSO_OP_OBJ(lang_member_init_),\
-    SSO_OP_OBJ(lang_member_construct_),\
+    BUILTIN_OBJ(lang_member_type),\
+    BUILTIN_OBJ(lang_member_modifiers),\
+    BUILTIN_OBJ(lang_member_default),\
+    BUILTIN_OBJ(lang_member_unit),\
+    BUILTIN_OBJ(lang_member_tags),\
+    BUILTIN_OBJ(lang_member_state),\
+    BUILTIN_OBJ(lang_member_stateCondExpr),\
+    BUILTIN_OBJ(lang_member_id),\
+    BUILTIN_OBJ(lang_member_offset),\
+    BUILTIN_OBJ(lang_member_init_),\
+    BUILTIN_OBJ(lang_member_construct_),\
     /* alias */\
-    SSO_OP_OBJ(lang_alias_member),\
-    SSO_OP_OBJ(lang_alias_construct_),\
+    BUILTIN_OBJ(lang_alias_member),\
+    BUILTIN_OBJ(lang_alias_construct_),\
     /* case */\
-    SSO_OP_OBJ(lang_case_discriminator),\
-    SSO_OP_OBJ(lang_case_type),\
-    SSO_OP_OBJ(lang_case_modifiers),\
+    BUILTIN_OBJ(lang_case_discriminator),\
+    BUILTIN_OBJ(lang_case_type),\
+    BUILTIN_OBJ(lang_case_modifiers),\
     /* default */\
-    SSO_OP_OBJ(lang_default_type),\
+    BUILTIN_OBJ(lang_default_type),\
     /* parameter */\
-    SSO_OP_OBJ(lang_parameter_name),\
-    SSO_OP_OBJ(lang_parameter_type),\
-    SSO_OP_OBJ(lang_parameter_inout),\
-    SSO_OP_OBJ(lang_parameter_passByReference),\
+    BUILTIN_OBJ(lang_parameter_name),\
+    BUILTIN_OBJ(lang_parameter_type),\
+    BUILTIN_OBJ(lang_parameter_inout),\
+    BUILTIN_OBJ(lang_parameter_passByReference),\
     /* sample */\
-    SSO_OP_OBJ(vstore_sample_timestamp),\
-    SSO_OP_OBJ(vstore_sample_value),\
+    BUILTIN_OBJ(vstore_sample_timestamp),\
+    BUILTIN_OBJ(vstore_sample_value),\
     /* result */\
-    SSO_OP_OBJ(vstore_result_id),\
-    SSO_OP_OBJ(vstore_result_name),\
-    SSO_OP_OBJ(vstore_result_parent),\
-    SSO_OP_OBJ(vstore_result_type),\
-    SSO_OP_OBJ(vstore_result_value),\
-    SSO_OP_OBJ(vstore_result_flags),\
-    SSO_OP_OBJ(vstore_result_object),\
-    SSO_OP_OBJ(vstore_result_history),\
-    SSO_OP_OBJ(vstore_result_owner),\
-    SSO_OP_OBJ(vstore_result_getText_),\
-    SSO_OP_OBJ(vstore_result_fromcontent_),\
-    SSO_OP_OBJ(vstore_result_contentof_),\
+    BUILTIN_OBJ(vstore_result_id),\
+    BUILTIN_OBJ(vstore_result_name),\
+    BUILTIN_OBJ(vstore_result_parent),\
+    BUILTIN_OBJ(vstore_result_type),\
+    BUILTIN_OBJ(vstore_result_value),\
+    BUILTIN_OBJ(vstore_result_flags),\
+    BUILTIN_OBJ(vstore_result_object),\
+    BUILTIN_OBJ(vstore_result_history),\
+    BUILTIN_OBJ(vstore_result_owner),\
+    BUILTIN_OBJ(vstore_result_getText_),\
+    BUILTIN_OBJ(vstore_result_fromcontent_),\
+    BUILTIN_OBJ(vstore_result_contentof_),\
     /* package */\
-    SSO_OP_OBJ(lang_package_description),\
-    SSO_OP_OBJ(lang_package_version),\
-    SSO_OP_OBJ(lang_package_author),\
-    SSO_OP_OBJ(lang_package_organization),\
-    SSO_OP_OBJ(lang_package_url),\
-    SSO_OP_OBJ(lang_package_repository),\
-    SSO_OP_OBJ(lang_package_license),\
-    SSO_OP_OBJ(lang_package_icon),\
-    SSO_OP_OBJ(lang_package_use),\
-    SSO_OP_OBJ(lang_package_public),\
-    SSO_OP_OBJ(lang_package_managed),\
-    SSO_OP_OBJ(lang_package_init_),\
-    SSO_OP_OBJ(lang_package_define_),\
+    BUILTIN_OBJ(lang_package_description),\
+    BUILTIN_OBJ(lang_package_version),\
+    BUILTIN_OBJ(lang_package_author),\
+    BUILTIN_OBJ(lang_package_organization),\
+    BUILTIN_OBJ(lang_package_url),\
+    BUILTIN_OBJ(lang_package_repository),\
+    BUILTIN_OBJ(lang_package_license),\
+    BUILTIN_OBJ(lang_package_icon),\
+    BUILTIN_OBJ(lang_package_use),\
+    BUILTIN_OBJ(lang_package_public),\
+    BUILTIN_OBJ(lang_package_managed),\
+    BUILTIN_OBJ(lang_package_init_),\
+    BUILTIN_OBJ(lang_package_define_),\
     /* time */\
-    SSO_OP_OBJ(vstore_time_sec),\
-    SSO_OP_OBJ(vstore_time_nanosec),\
+    BUILTIN_OBJ(vstore_time_sec),\
+    BUILTIN_OBJ(vstore_time_nanosec),\
     /* frame */\
-    SSO_OP_OBJ(vstore_frame_kind),\
-    SSO_OP_OBJ(vstore_frame_value),\
-    SSO_OP_OBJ(vstore_frame_getTime_),\
+    BUILTIN_OBJ(vstore_frame_kind),\
+    BUILTIN_OBJ(vstore_frame_value),\
+    BUILTIN_OBJ(vstore_frame_getTime_),\
     /* native/type */\
-    SSO_OP_OBJ(native_type_name),\
-    SSO_OP_OBJ(native_type_init_),\
+    BUILTIN_OBJ(native_type_name),\
+    BUILTIN_OBJ(native_type_init_),\
     /* secure/key */\
-    SSO_OP_OBJ(secure_key_construct_),\
-    SSO_OP_OBJ(secure_key_destruct_),\
-    SSO_OP_OBJ(secure_key_authenticate_),\
+    BUILTIN_OBJ(secure_key_construct_),\
+    BUILTIN_OBJ(secure_key_destruct_),\
+    BUILTIN_OBJ(secure_key_authenticate_),\
     /* secure/lock */\
-    SSO_OP_OBJ(secure_lock_mount),\
-    SSO_OP_OBJ(secure_lock_expr),\
-    SSO_OP_OBJ(secure_lock_priority),\
-    SSO_OP_OBJ(secure_lock_construct_),\
-    SSO_OP_OBJ(secure_lock_destruct_),\
-    SSO_OP_OBJ(secure_lock_authorize_)\
+    BUILTIN_OBJ(secure_lock_mount),\
+    BUILTIN_OBJ(secure_lock_expr),\
+    BUILTIN_OBJ(secure_lock_priority),\
+    BUILTIN_OBJ(secure_lock_construct_),\
+    BUILTIN_OBJ(secure_lock_destruct_),\
+    BUILTIN_OBJ(secure_lock_authorize_)\
 
 
 typedef struct corto_bootstrapElement {
@@ -890,18 +882,18 @@ typedef struct corto_bootstrapElement {
 } corto_bootstrapElement;
 
 corto_bootstrapElement types[] = {
-    SSO_OP_TYPE(),
+    BUILTIN_TYPE(),
     {NULL, 0}
 };
 
 corto_bootstrapElement objects[] = {
-    SSO_OP_OBJECT(),
+    BUILTIN_OBJECT(),
     {NULL, 0}
 };
 
 /* Initialization of objects */
 static
-void corto_initObject(
+void corto_init_builtin_object(
     corto_object o)
 {
     corto_init_builtin(o);
@@ -913,25 +905,25 @@ void corto_initObject(
 
 /* Define object */
 static
-void corto_defineObject(
+void corto_define_builtin(
     corto_object o)
 {
     if (corto_define(o)) {
-        corto_throw("construction of builtin-object '%s' failed", corto_idof(o));
+        corto_throw("failed to define builtin-object '%s'", corto_idof(o));
     }
 }
 
-/* Define type */
+/* Define type (same as define_builtin, but with additional size check) */
 static
-void corto_defineType(
+void corto_define_builtin_type(
     corto_object o,
     corto_uint32 size)
 {
-    corto_defineObject(o);
+    corto_define_builtin(o);
 
     if (corto_type(o)->size != size) {
         corto_error(
-          "bootstrap: size validation failed for type '%s' - metatype = %d, c-type = %d.",
+          "size validation failed for type '%s' - metatype = %d, c-type = %d.",
           corto_fullpath(NULL, o), corto_type(o)->size, size);
     }
 }
@@ -940,9 +932,12 @@ static
 void corto_genericTlsFree(
     void *o)
 {
-    corto_dealloc(o);
+    free(o);
 }
 
+/* Sequences are types that are allocated on the heap, and are therefore not
+ * created statically. This function manually creates the necessary sequences
+ * for builtin objects. */
 static
 void corto_init_sequences(void) {
     /* Mount implements dispatcher */
@@ -958,6 +953,7 @@ void corto_init_sequences(void) {
     p->name = "event";
 }
 
+/* Manually free the sequences in builtin objects */
 static
 void corto_deinit_sequences(void) {
     /* Mount implements dispatcher */
@@ -968,11 +964,11 @@ void corto_deinit_sequences(void) {
     corto_handleAction_o->parameters.length = 0;
 }
 
+/* Initialize mandatory corto environment variables if they are not set */
 static
 void corto_environment_init(void)
 {
 /* Only set environment variables if library is installed as corto package */
-#ifndef CORTO_STANDALONE_LIB
 
     /* BAKE_HOME is where corto binaries are located */
     if (!corto_getenv("BAKE_HOME") || !strlen(corto_getenv("BAKE_HOME"))) {
@@ -994,21 +990,10 @@ void corto_environment_init(void)
     if (!corto_getenv("BAKE_VERSION")) {
         corto_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
     }
-#endif
-
-    corto_string traceObject = corto_getenv("CORTO_TRACE_ID");
-    if (traceObject && traceObject[0]) {
-        CORTO_TRACE_ID = traceObject;
-    }
 
     corto_string enableBacktrace = corto_getenv("CORTO_BACKTRACE_ENABLED");
     if (enableBacktrace) {
         CORTO_BACKTRACE_ENABLED = !strcmp(enableBacktrace, "true");
-    }
-
-    corto_string memtraceBreakpoint = corto_getenv("CORTO_MEMTRACE_BREAKPOINT");
-    if (memtraceBreakpoint && memtraceBreakpoint[0]) {
-        CORTO_MEMTRACE_BREAKPOINT = atoi(memtraceBreakpoint);
     }
 
     corto_string errfmt = corto_getenv("CORTO_LOGFMT");
@@ -1017,6 +1002,9 @@ void corto_environment_init(void)
     }
 }
 
+/* Function for automatically loading all configuration files in a path that is
+ * specified in the $CORTO_CONFIG environment variable. This function is
+ * typically called from the gen/_project.c file in managed corto projects. */
 int corto_load_config(void)
 {
     int result = 0;
@@ -1058,7 +1046,8 @@ int corto_load_config(void)
     return result;
 }
 
-/* Bootstrap corto object store */
+/* Bootstrapping corto. Must be called before doing anything else and must only
+ * be called once. */
 int corto_start(
     char *appName)
 {
@@ -1069,6 +1058,7 @@ int corto_start(
         corto_appName += 2;
     }
 
+    /* Initialize platform abstraction layer */
     platform_init(appName);
 
     /* Initialize TLS keys */
@@ -1155,20 +1145,20 @@ int corto_start(
 
     /* Initialize builtin scopes */
     corto_debug("init builtin packages");
-    corto_initObject(root_o);
-    corto_initObject(corto_o);
-    corto_initObject(corto_lang_o);
-    corto_initObject(corto_vstore_o);
-    corto_initObject(corto_native_o);
-    corto_initObject(corto_secure_o);
+    corto_init_builtin_object(root_o);
+    corto_init_builtin_object(corto_o);
+    corto_init_builtin_object(corto_lang_o);
+    corto_init_builtin_object(corto_vstore_o);
+    corto_init_builtin_object(corto_native_o);
+    corto_init_builtin_object(corto_secure_o);
 
     /* Define builtin scopes */
-    corto_defineObject(root_o);
-    corto_defineObject(corto_o);
-    corto_defineObject(corto_lang_o);
-    corto_defineObject(corto_vstore_o);
-    corto_defineObject(corto_native_o);
-    corto_defineObject(corto_secure_o);
+    corto_define_builtin(root_o);
+    corto_define_builtin(corto_o);
+    corto_define_builtin(corto_lang_o);
+    corto_define_builtin(corto_vstore_o);
+    corto_define_builtin(corto_native_o);
+    corto_define_builtin(corto_secure_o);
 
     /* Because at this point the construct/destruct & init/deinit delegates are
      * not yet propagated from base classes to sub classes, type construction
@@ -1205,8 +1195,8 @@ int corto_start(
 
     /* Init objects */
     corto_debug("init builtin objects");
-    for (i = 0; (o = types[i].o); i++) corto_initObject(o);
-    for (i = 0; (o = objects[i].o); i++) corto_initObject(o);
+    for (i = 0; (o = types[i].o); i++) corto_init_builtin_object(o);
+    for (i = 0; (o = objects[i].o); i++) corto_init_builtin_object(o);
 
     /* Patch sequences- these aren't set statically since sequences are
      * allocated on the heap */
@@ -1222,20 +1212,16 @@ int corto_start(
     corto_subscriber_event_handle_o = &vstore_subscriber_event_handle__o.v;
 
     /* Construct objects */
-    for (i = 0; (o = objects[i].o); i++) corto_defineObject(o);
-    for (i = 0; (o = types[i].o); i++) corto_defineType(o, types[i].size);
+    for (i = 0; (o = objects[i].o); i++) corto_define_builtin(o);
+    for (i = 0; (o = types[i].o); i++) corto_define_builtin_type(o, types[i].size);
 
     /* Initialize conversions and operators */
-#ifdef CORTO_CONVERSIONS
     corto_ptr_castInit();
-#endif
-#ifdef CORTO_OPERATORS
     corto_ptr_operatorInit();
-#endif
 
     /* Register exit-handler */
     void corto_loaderOnExit(void* ctx);
-    corto_onexit(corto_loaderOnExit, NULL);
+    corto_atexit(corto_loaderOnExit, NULL);
 
     /* Register library-binding */
     corto_debug("init builtin file extensions");
@@ -1265,7 +1251,6 @@ int corto_start(
 
 /* Only create package mount for non-redistributable version of corto, where
  * packages are installed in a common location */
-#ifndef CORTO_STANDALONE_LIB
     corto_debug("init package loader");
 
     corto_loaderInstance = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
@@ -1277,7 +1262,6 @@ int corto_start(
         corto_raise();
         corto_trace("autoloading of packages disabled");
     }
-#endif
 
     /* Pop init log component */
     corto_log_pop();
@@ -1286,7 +1270,7 @@ int corto_start(
 }
 
 /* Register exithandler */
-void corto_onexit(
+void corto_atexit(
     void(*handler)(void*),
     void* userData)
 {
@@ -1304,23 +1288,8 @@ void corto_onexit(
     corto_mutex_unlock(&corto_adminLock);
 }
 
-/* Call exit-handlers */
-static
-void corto_exit(void)
-{
-    struct corto_exitHandler* h;
-
-    if (corto_exitHandlers) {
-        while((h = corto_ll_takeFirst(corto_exitHandlers))) {
-            h->handler(h->userData);
-            corto_dealloc(h);
-        }
-        corto_ll_free(corto_exitHandlers);
-        corto_exitHandlers = NULL;
-    }
-}
-
-/* Shutdown object store */
+/* Shutdown corto. After this corto will occupy no more resources. Calling corto
+ * functions after corto_stop has been called causes undefined behavior. */
 int corto_stop(void)
 {
     CORTO_APP_STATUS = 2; /* Shutting down */
@@ -1329,31 +1298,25 @@ int corto_stop(void)
 
     corto_trace("shutting down...");
 
+    /* If an application modified the source of the mainthread but has not reset
+     * this value, it may interfere with cleaning up resources so abort */
     if (corto_get_source()) {
         corto_error("owner has not been reset to NULL before shutting down");
         abort();
     }
 
-    /* Collect cycles */
-    if (CORTO_TRACE_MEM) corto_log_push("SHUTDOWN_COLLECT");
-    //corto_collect(root_o);
-    if (CORTO_TRACE_MEM) corto_log_pop();
-
-
-#ifndef CORTO_STANDALONE_LIB
     if (corto_loaderInstance) {
         corto_debug("cleanup package loader");
-        corto_delete(corto_loaderInstance);
+        //corto_release(corto_loaderInstance);
     }
-#endif
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the
-     * removal of all non-static objects. */
+     * removal of all non-builtin objects. */
     corto_debug("cleanup objects");
 
-    if (CORTO_TRACE_MEM) corto_log_push("SHUTDOWN_DROP");
-    corto_drop(root_o, FALSE);
+    if (CORTO_TRACE_MEM) corto_log_push("SHUTDOWN_COLLECT");
+    corto_collect(root_o, CORTO_COLLECT_CYCLES);
     if (CORTO_TRACE_MEM) corto_log_pop();
 
     corto_int32 i;
@@ -1361,12 +1324,28 @@ int corto_stop(void)
 
     /* Destruct objects */
     corto_debug("cleanup builtin objects");
-    for (i = 0; (o = types[i].o); i++) corto_destruct(o, FALSE);
-    for (i = 0; (o = objects[i].o); i++) corto_destruct(o, FALSE);
 
-    /* Deinitialize objects */
-    for (i = 0; (o = objects[i].o); i++) corto_deinit_builtin(o);
-    for (i = 0; (o = types[i].o); i++) corto_deinit_builtin(o);
+    uint32_t types_count = 0;
+    for (i = 0; (o = types[i].o); i++) {
+        corto_destruct(o, false, true);
+        types_count ++;
+    }
+
+    uint32_t objects_count = 0;
+    for (i = 0; (o = objects[i].o); i++) {
+        corto_destruct(o, false, true);
+        objects_count ++;
+    }
+
+    /* Deinitialize objects in reverse order, as deinitialization cleans up the
+     * typecaches required for cleaning up */
+    for (i = objects_count - 1; i >= 0; i--) {
+        corto_deinit_builtin(objects[i].o);
+    }
+    for (i = types_count - 1; i >= 0; i--) {
+        corto_deinit_builtin(types[i].o);
+    }
+
     if (corto_deinit_builtin(corto_secure_o)) goto error;
     if (corto_deinit_builtin(corto_native_o)) goto error;
     if (corto_deinit_builtin(corto_vstore_o)) goto error;
@@ -1377,6 +1356,7 @@ int corto_stop(void)
     /* Free manually initialized sequences */
     corto_deinit_sequences();
 
+    /* Free global entity administrations */
     corto_entityAdmin_free_contents(&corto_subscriber_admin, true);
     corto_entityAdmin_free_contents(&corto_mount_admin, true);
 
@@ -1391,13 +1371,26 @@ int corto_stop(void)
 
     /* Call exithandlers. Do after platform_deinit as this will unload any
      * loaded libraries, which may have routines to cleanup TLS data. */
-    corto_exit();
+     struct corto_exitHandler* h;
 
-    /* Cleanup any TLS data in the mainthread not created through corto */
-    pthread_exit(0);
+     if (corto_exitHandlers) {
+         while((h = corto_ll_takeFirst(corto_exitHandlers))) {
+             h->handler(h->userData);
+             corto_dealloc(h);
+         }
+         corto_ll_free(corto_exitHandlers);
+         corto_exitHandlers = NULL;
+     }
 
     /* Corto is now shut down */
     CORTO_APP_STATUS = 3;
+
+    /*
+     * Cleanup any TLS data in the mainthread not created through corto. Don't
+     * enable this by default as it will exit the process with exit status 0,
+     * which prevents the application from specifying a custom code.
+     */
+    /* pthread_exit(0); */
 
     return 0;
 error:
@@ -1472,9 +1465,16 @@ void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
         corto__object *_o = corto_hdr(o);
         if (_o->magic != CORTO_MAGIC) {
             if (_o->magic == CORTO_MAGIC_DESTRUCT) {
-                corto_critical_fl(file, line, "address <%p> points to an object that is already deleted", o);
+                corto_critical_fl(
+                    file,
+                    line,
+                    "address <%p> points to an object that is already deleted",
+                    o);
             } else {
-                corto_critical_fl(file, line, "address <%p> does not point to an object", o);
+                corto_critical_fl(
+                    file,
+                    line,
+                    "address <%p> does not point to an object", o);
             }
         }
     }

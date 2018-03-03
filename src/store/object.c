@@ -35,10 +35,6 @@ int16_t corto_init(
     corto_object o);
 
 static
-int16_t corto_deinit(
-    corto_object o);
-
-static
 corto_object corto_adopt(
     corto_object parent,
     corto_object child,
@@ -67,86 +63,6 @@ void corto_declaredByMeFree(void *admin) {
         corto_ll_free(admin);
     }
 }
-
-/* Memory tracing utility */
-#ifndef NDEBUG
-static char *memtrace[50];
-static int8_t memtraceSp = 0;
-static int8_t memtraceCount = 0;
-
-static
-void corto_memtracePush(void) {
-    memtraceSp ++;
-}
-
-static
-void corto_memtracePop(void) {
-    memtraceSp --;
-    if (memtrace[memtraceSp]) {
-        corto_dealloc(memtrace[memtraceSp]);
-        memtrace[memtraceSp] = NULL;
-    }
-}
-
-static
-void corto_memtrace(
-    char *oper,
-    corto_object o,
-    const char *context)
-{
-    corto_id path;
-    corto_assert_object(o);
-
-    if (corto_check_attr(o, CORTO_ATTR_NAMED)) {
-        corto_fullpath(path, o);
-    } else {
-        sprintf(path, "[%p]", o);
-    }
-
-    if (memtrace[memtraceSp]) {
-        corto_dealloc(memtrace[memtraceSp]);
-        memtrace[memtraceSp] = NULL;
-    }
-
-    memtrace[memtraceSp] = corto_asprintf("%s (%s) %s", path, oper, context ? context : "");
-
-    if ((CORTO_TRACE_OBJECT == o) || (CORTO_TRACE_ID && !strcmp(path, CORTO_TRACE_ID))) {
-        memtraceCount ++;
-
-        printf("%d: %s: %s (count = %d, deleted = %d)\n",
-            memtraceCount,
-            oper,
-            path,
-            corto_countof(o),
-            corto_check_state(o, CORTO_DELETED));
-
-        if (context) {
-            printf("    %s\n", context);
-        }
-
-        if (memtraceSp) {
-            int32_t i = memtraceSp;
-            do {
-                i --;
-                printf("   from: %s\n", memtrace[i]);
-            } while (i);
-        }
-        if (CORTO_BACKTRACE_ENABLED) {
-            corto_backtrace(stdout);
-        }
-        printf("\n");
-
-        if (CORTO_MEMTRACE_BREAKPOINT == memtraceCount) {
-            printf(" << BREAKPOINT >>\n");
-            abort();
-        }
-    }
-}
-#else
-#define corto_memtracePush()
-#define corto_memtracePop()
-#define corto_memtrace(oper, o, context)
-#endif
 
 /* Has the object been declared by this thread */
 static
@@ -628,11 +544,8 @@ corto_object corto_adopt(
                 corto_declaredByMeAdd(child);
             }
 
-            if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("declare", child, NULL);
-            if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
             /* Parent must not be deleted before all childs are gone. */
             if (claimParent) corto_claim(parent);
-            if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
 
             if (corto_rwmutex_unlock(&p_scope->align.scopeLock)) {
                 corto_critical("corto_adopt: unlock operation on scopeLock of parent failed");
@@ -2040,7 +1953,6 @@ int16_t corto_define_intern(
         if (!result) {
             result = corto_notifyDefined(o, resume, resumed ? CORTO_RESUME : CORTO_DEFINE);
         }
-        if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("define", o, NULL);
     } else {
         corto_type t = corto_typeof(o);
         if (t->flags & CORTO_TYPE_IS_CONTAINER) {
@@ -2067,7 +1979,8 @@ int16_t corto_define(
 /* Destruct object */
 bool corto_destruct(
     corto_object o,
-    bool delete)
+    bool delete,
+    bool drop)
 {
     corto__object* _o;
     bool result = TRUE;
@@ -2099,7 +2012,7 @@ bool corto_destruct(
         /* From here, object is marked as deleted. */
         _o->align.attrs.state |= CORTO_DELETED;
 
-        if (!isBuiltin && named) {
+        if (!isBuiltin && named && drop) {
             corto_drop(o, delete);
         }
 
@@ -2177,7 +2090,11 @@ bool corto_destruct(
 
         /* Call deinitializer */
         if (CORTO_TRACE_MEM) corto_log_push("DEINIT");
-        corto_deinit(o);
+        if (!_o->cycles) {
+            /* If this object is marked as root of a cycle, deinit is called by
+             * the cycle detector */
+            corto_deinit(o);
+        }
         if (CORTO_TRACE_MEM) corto_log_pop();
 
         /* Do not free type before deinitializing the object, which needs the
@@ -2293,7 +2210,7 @@ void corto_drop(
                     }
                 }
 
-                corto_destruct(collected, delete);
+                corto_destruct(collected, delete, true);
 
                 if (CORTO_TRACE_MEM) corto_log_push("NESTED_DROP");
                 corto_drop(collected, delete);
@@ -2340,14 +2257,9 @@ int16_t corto_delete(
         goto error;
     }
 
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("delete", o, NULL);
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
-
-    if (corto_destruct(o, TRUE)) {
+    if (corto_destruct(o, true, true)) {
         corto_release(o);
     }
-
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
 
     return 0;
 error:
@@ -2552,6 +2464,21 @@ bool corto_isbuiltin(
     corto_assert_object(o);
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     return _o->align.attrs.builtin;
+}
+
+/* Is obeject resumed */
+bool corto_isresumed(
+    corto_object o)
+{
+    corto__object* _o;
+    corto_assert_object(o);
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    corto__persistent *_p = corto_hdr_persistent(_o);
+    if (_p) {
+        return _p->resumed;
+    } else {
+        return false;
+    }
 }
 
 /* Is instance of 'src' type an instance of of 'dst' type */
@@ -3198,8 +3125,6 @@ int32_t corto_claim(corto_object o) {
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     i = corto_ainc(&_o->refcount);
 
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("claim", o, NULL);
-
     return i;
 }
 
@@ -3214,7 +3139,6 @@ int32_t corto_release(corto_object o) {
     if (corto_isbuiltin(o)) {
         return 1;
     }
-
 
     int32_t i;
     corto__object* _o;
@@ -3231,11 +3155,8 @@ int32_t corto_release(corto_object o) {
             _o->cycles);
     }
 
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtrace("release", o, NULL);
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePush();
-
     if (!i) {
-        corto_destruct(o, FALSE);
+        corto_destruct(o, false, true);
     } else if (i < 0) {
         if (_o->cycles <= 1) {
             corto_critical("negative reference count of object (%p) '%s' of type '%s'",
@@ -3244,8 +3165,9 @@ int32_t corto_release(corto_object o) {
         }
     }
 
-    if (CORTO_TRACE_OBJECT || CORTO_TRACE_ID) corto_memtracePop();
-    if (CORTO_TRACE_MEM) corto_log_pop();
+    if (CORTO_TRACE_MEM) {
+        corto_log_pop();
+    }
 
     return i;
 }
@@ -5106,7 +5028,6 @@ error:
 }
 
 /* Deinitialize object */
-static
 int16_t corto_deinit(corto_object o) {
     corto_assert_object(o);
     corto_type type = corto_typeof(o);

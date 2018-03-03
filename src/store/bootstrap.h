@@ -134,7 +134,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* SSO */
 #ifndef NDEBUG
-#define CORTO_ADD_MAGIC ,CORTO_MAGIC,0
+#define CORTO_ADD_MAGIC ,CORTO_MAGIC,0,0
 #else
 #define CORTO_ADD_MAGIC
 #endif
@@ -892,8 +892,8 @@ CORTO_STRUCT_O(lang, typeOptions, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL
     CORTO_REFERENCE_O(lang_typeOptions, defaultProcedureType, lang_type, CORTO_GLOBAL, CORTO_VALID, NULL);
 
 /* /corto/lang/type */
-CORTO_FW_ICD(lang, type);
-CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_ICD);
+CORTO_FW_ICDF(lang, type);
+CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_ICDF);
     CORTO_MEMBER_O(lang_type, kind, lang_typeKind, CORTO_GLOBAL | CORTO_READONLY);
     CORTO_MEMBER_O(lang_type, reference, lang_bool, CORTO_GLOBAL | CORTO_CONST);
     CORTO_MEMBER_O(lang_type, attr, lang_attr, CORTO_GLOBAL | CORTO_CONST);
@@ -912,7 +912,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_OVERRIDABLE_O(lang_type, compatible, "(type type)", lang_bool, corto_type_compatible_v);
     CORTO_METHOD_O(lang_type, resolveProcedure, "(string name)", lang_function, corto_type_resolveProcedure);
     CORTO_METHOD_O(lang_type, init, "()", lang_int16, corto_type_init);
-    CORTO_METHOD_O(lang_type, deinit, "()", lang_void, corto_type_init);
+    CORTO_METHOD_O(lang_type, deinit, "()", lang_void, corto_type_deinit);
     CORTO_METHOD_O(lang_type, construct, "()", lang_int16, corto_type_construct);
     CORTO_METHOD_O(lang_type, destruct, "()", lang_void, corto_type_destruct);
 

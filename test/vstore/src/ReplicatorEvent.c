@@ -516,8 +516,8 @@ void test_ReplicatorEvent_tc_rateLimitAlign(
     corto_mount mnt = corto_declare(root_o, "config/influx", corto_mount_o);
     test_assert(mnt != NULL);
     mnt->super.query = (corto_query){
-        .select = "/",
-        .from = "data"
+        .select = corto_strdup("/"),
+        .from = corto_strdup("data")
     };
     mnt->policy = (corto_mountPolicy){
         .mask = CORTO_MOUNT_HISTORY_BATCH_NOTIFY,
@@ -537,4 +537,3 @@ void test_ReplicatorEvent_tc_eventDefineWithUpdate(
 {
     /* Insert implementation */
 }
-

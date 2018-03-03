@@ -50,10 +50,10 @@ CORTO_SEQUENCE(dummy_seq,void*,);
 
 /* Freeing arrays and sequences is similar. Parameterize macro for code reuse */
 #define FREE_ARRAY_OP(kind, ptr, size, action)\
-    case CORTO_TC_ARRAY + CORTO_TC_RES_##kind:\
+    case CORTO_TC_ARRAY + CORTO_TC_SUB_##kind:\
         FREE_ARRAY(ptr, size, action);\
         break;\
-    case CORTO_TC_SEQUENCE + CORTO_TC_RES_##kind:\
+    case CORTO_TC_SEQUENCE + CORTO_TC_SUB_##kind:\
         FREE_SEQUENCE(ptr, size, action);\
         break;\
 
@@ -76,22 +76,17 @@ void corto_free(
     void *base_ptr,
     corto_type type)
 {
-    static uint8_t res_mask =
-        CORTO_TC_RES_STRING|CORTO_TC_RES_REFERENCE|CORTO_TC_RES_RESOURCE;
-
     corto_typecache *cache = (corto_typecache*)type->typecache;
     if (!cache) {
         return;
     }
 
-    // corto_typecache_print(type);
+    /* corto_typecache_print(type); */
 
     int i;
     for (i = 0; i < cache->field_count; i ++) {
         corto_typecache_field *field = &cache->fields[i];
         void *ptr = CORTO_OFFSET(base_ptr, field->offset);
-        uint8_t res_flags = field->res_flags;
-        uint8_t res_kind = res_flags & res_mask;
 
         /* Variables used within macro's */
         void *array_ptr, *end, *elem;
@@ -101,10 +96,9 @@ void corto_free(
         /* Combine field->kind and res_kind so that with a single switch the
          * right instruction can be selected, as opposed to having additional
          * conditional logic in the operations (which would be slower) */
-        switch(field->kind + res_kind) {
+        switch(field->kind) {
 
         /* For these field kinds res_kind is always 0 */
-        case CORTO_TC_VALUE: break;
         case CORTO_TC_STRING: FREE_STRING(ptr); break;
         case CORTO_TC_REFERENCE: FREE_REFERENCE(ptr); break;
         case CORTO_TC_UNION: FREE_UNION(ptr); break;
@@ -114,18 +108,17 @@ void corto_free(
         case CORTO_TC_OPTIONAL:
             FREE_OPTIONAL(ptr,);
             break;
-        case CORTO_TC_OPTIONAL + CORTO_TC_RES_STRING:
+        case CORTO_TC_OPTIONAL + CORTO_TC_SUB_STRING:
             FREE_OPTIONAL(ptr, FREE_STRING(optional_ptr));
             break;
-        case CORTO_TC_OPTIONAL + CORTO_TC_RES_REFERENCE:
-            FREE_OPTIONAL(ptr, FREE_STRING(optional_ptr));
+        case CORTO_TC_OPTIONAL + CORTO_TC_SUB_REFERENCE:
+            FREE_OPTIONAL(ptr, FREE_REFERENCE(optional_ptr));
             break;
-        case CORTO_TC_OPTIONAL + CORTO_TC_RES_RESOURCE:
+        case CORTO_TC_OPTIONAL + CORTO_TC_SUB_RESOURCE:
             FREE_OPTIONAL(ptr, corto_free(optional_ptr, field->data.sub_type));
             break;
 
         /* Array & sequence operations */
-        case CORTO_TC_ARRAY: /* No resources to free */ break;
         case CORTO_TC_SEQUENCE: free(((dummy_seq*)ptr)->buffer); break;
         FREE_ARRAY_OP(STRING, ptr, sizeof(char*), FREE_STRING(elem));
         FREE_ARRAY_OP(REFERENCE, ptr, sizeof(void*), FREE_REFERENCE(elem));
@@ -133,21 +126,22 @@ void corto_free(
 
         /* List operations */
         case CORTO_TC_LIST:
+        case CORTO_TC_LIST + CORTO_TC_SUB_SIMPLE_PTR:
             corto_ll_free(*(corto_ll*)ptr);
             break;
-        case CORTO_TC_LIST + CORTO_TC_RES_ALLOC:
-        case CORTO_TC_LIST + CORTO_TC_RES_STRING:
+        case CORTO_TC_LIST + CORTO_TC_SUB_ALLOC:
+        case CORTO_TC_LIST + CORTO_TC_SUB_STRING:
             FREE_LIST(ptr, free(elem));
             break;
-        case CORTO_TC_LIST + CORTO_TC_RES_REFERENCE:
+        case CORTO_TC_LIST + CORTO_TC_SUB_REFERENCE:
             FREE_LIST(ptr, corto_release(elem));
             break;
-        case CORTO_TC_LIST + CORTO_TC_RES_RESOURCE:
+        case CORTO_TC_LIST + CORTO_TC_SUB_RESOURCE:
             FREE_LIST(ptr, (corto_free(elem, sub_type), free(elem)));
             break;
 
         default:
-            corto_assert(0, "invalid corto_typecache kind (%d)", field->kind);
+            /* Ignore other instructions */
             break;
         }
     }

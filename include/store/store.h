@@ -454,6 +454,24 @@ CORTO_EXPORT
 bool corto_isbuiltin(
     corto_object o);
 
+/** Check if an object is a auto-resumed object.
+ * Resumed objects are not created by the application through a corto_declare,
+ * but have been automatically resumed by, for example, a lookup function.
+ * Resumed objects may at any point become suspended again when there are no
+ * more references to them. Because of this, automatically resumed objects do
+ * not receive an initial refcount of 1 as is the case with regular named
+ * objects.
+ *
+ * To ensure that memory is being properly released, corto keeps track of which
+ * objects are automatically resumed. Only PERSISTENT objects can be resumed.
+ *
+ * @param o The object to check
+ * @return true if the object is automatically resumed.
+ */
+CORTO_EXPORT
+bool corto_isresumed(
+    corto_object o);
+
 /** The current reference count of the object.
  * This function should be used with caution, as it introduces dependencies on
  * the underlying garbage collection mechanism. A valid use for this function
