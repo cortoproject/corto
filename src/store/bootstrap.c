@@ -991,9 +991,9 @@ void corto_environment_init(void)
         corto_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
     }
 
-    corto_string enableBacktrace = corto_getenv("CORTO_BACKTRACE_ENABLED");
+    corto_string enableBacktrace = corto_getenv("CORTO_LOG_BACKTRACE");
     if (enableBacktrace) {
-        CORTO_BACKTRACE_ENABLED = !strcmp(enableBacktrace, "true");
+        CORTO_LOG_BACKTRACE = !strcmp(enableBacktrace, "true");
     }
 
     corto_string errfmt = corto_getenv("CORTO_LOGFMT");
