@@ -168,7 +168,7 @@ int corto_collect_traverse(
     }
 
     /* First, invoke delete/destruct hook, notify and tear down scope admin */
-    if (!corto_check_state(o, CORTO_DELETED)) {
+    if (!corto_check_state(o, CORTO_DELETED) && !builtin) {
         if (corto_destruct(o, false, false)) {
             /* There's a chance that calling the destructor broke a cycle that
              * deleted the object. If not, decrease reference count */
