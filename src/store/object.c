@@ -2090,11 +2090,15 @@ bool corto_destruct(
 
         /* Call deinitializer */
         if (CORTO_TRACE_MEM) corto_log_push("DEINIT");
+#ifndef NDEBUG
         if (!_o->cycles) {
             /* If this object is marked as root of a cycle, deinit is called by
              * the cycle detector */
             corto_deinit(o);
         }
+#else
+        corto_deinit(o);
+#endif
         if (CORTO_TRACE_MEM) corto_log_pop();
 
         /* Do not free type before deinitializing the object, which needs the
@@ -3158,11 +3162,15 @@ int32_t corto_release(corto_object o) {
     if (!i) {
         corto_destruct(o, false, true);
     } else if (i < 0) {
+#ifndef NDEBUG
         if (_o->cycles <= 1) {
+#endif
             corto_critical("negative reference count of object (%p) '%s' of type '%s'",
                 o, corto_fullpath(NULL, o), corto_fullpath(NULL, corto_typeof(o)));
             corto_backtrace(stdout);
+#ifndef NDEBUG
         }
+#endif
     }
 
     if (CORTO_TRACE_MEM) {

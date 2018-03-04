@@ -51,6 +51,7 @@ uint32_t corto_collect_onstack(
     return 0;
 }
 
+#ifndef NDEBUG
 static
 bool corto_collect_eval(
     corto_object o,
@@ -140,6 +141,7 @@ void corto_collect_eval_refs(
         }
     }
 }
+#endif
 
 /* Traverse over all discovered objects from a provided root */
 static
@@ -150,12 +152,14 @@ int corto_collect_traverse(
     corto__object *_o = CORTO_OFFSET(o, -sizeof(corto__object));
 
     /* Don't process object twice */
+#ifndef NDEBUG
     if (_o->marked) {
         corto_collect_eval(o, userData);
         return 1;
     } else {
         _o->marked = true;
     }
+#endif
 
     corto_collect_t *data = userData;
     bool named = corto_check_attr(o, CORTO_ATTR_NAMED);
@@ -196,6 +200,7 @@ int corto_collect_traverse(
     /* If count is non-zero, object has not yet been deleted. It either
      * participates in a cycle or is kept alive by objects that participate in a
      * cycle. */
+#ifndef NDEBUG
     if (count && !builtin && data->collect_cycles) {
         /* Check if object is part of cycle */
         if (!corto_collect_eval(o, data)) {
@@ -221,6 +226,7 @@ int corto_collect_traverse(
             corto_collect_pop(o, data);
         }
     }
+#endif
 
     /* Walk over all objects in hierarchy. If count is zero, object was already
      * freed, which means it cannot have had any children. */
