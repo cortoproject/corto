@@ -92,6 +92,7 @@ corto_member corto_class_update_o = NULL;
 /* Turn on or off extensive memory tracing */
 bool CORTO_TRACE_MEM = 0;
 bool CORTO_COLLECT_CYCLES = 0;
+bool CORTO_COLLECT_TLS = 0;
 
 /* Package loader mount */
 static corto_loader corto_loaderInstance;
@@ -996,7 +997,7 @@ void corto_environment_init(void)
         CORTO_LOG_BACKTRACE = !strcmp(enableBacktrace, "true");
     }
 
-    corto_string errfmt = corto_getenv("CORTO_LOGFMT");
+    corto_string errfmt = corto_getenv("CORTO_LOG_FORMAT");
     if (errfmt && errfmt[0]) {
         corto_log_fmt(errfmt);
     }
@@ -1346,8 +1347,8 @@ int corto_stop(void)
         corto_deinit_builtin(types[i].o);
     }
 
-    if (corto_deinit_builtin(corto_secure_o)) goto error;
     if (corto_deinit_builtin(corto_native_o)) goto error;
+    if (corto_deinit_builtin(corto_secure_o)) goto error;
     if (corto_deinit_builtin(corto_vstore_o)) goto error;
     if (corto_deinit_builtin(corto_lang_o)) goto error;
     if (corto_deinit_builtin(corto_o)) goto error;
@@ -1385,12 +1386,12 @@ int corto_stop(void)
     /* Corto is now shut down */
     CORTO_APP_STATUS = 3;
 
-    /*
-     * Cleanup any TLS data in the mainthread not created through corto. Don't
+    /* Cleanup any TLS data in the mainthread not created through corto. Don't
      * enable this by default as it will exit the process with exit status 0,
-     * which prevents the application from specifying a custom code.
-     */
-    /* pthread_exit(0); */
+     * which prevents the application from specifying a custom code. */
+    if (CORTO_COLLECT_TLS) {
+        pthread_exit(0);
+    }
 
     return 0;
 error:
