@@ -1435,4 +1435,35 @@ char* corto_sig(
 }
 #endif
 
+/* -- C++ SUPPORT TEMPLATES -- */
+#ifdef __cplusplus
+namespace corto {
+
+/* Type-safe corto::declare */
+template <class T>
+typename T::_ref declare(corto_object object, const char *id) {
+    return static_cast<typename T::_ref>(_corto_declare(object, id, (corto_type)T::_o));
+}
+
+/* Type-safe corto::create */
+template <class T>
+typename T::_ref create(corto_object object, const char *id) {
+    return static_cast<typename T::_ref>(_corto_create(object, id, (corto_type)T::_o));
+}
+
+/* Overloaded type-safe corto::declare */
+template <class T>
+typename T::_ref declare() {
+    return static_cast<typename T::_ref>(_corto_declare(NULL, NULL, (corto_type)T::_o));
+}
+
+/* Overloaded type-safe corto::create */
+template <class T>
+typename T::_ref create() {
+    return static_cast<typename T::_ref>(_corto_create(NULL, NULL, (corto_type)T::_o));
+}
+
+}
+#endif
+
 #endif
