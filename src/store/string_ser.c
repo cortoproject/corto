@@ -83,9 +83,9 @@ static corto_int16 corto_ser_primitive(corto_walk_opt* s, corto_value* v, void* 
     if (corto_primitive(t)->kind == CORTO_TEXT) {
         corto_ser_appendColor(data, STRING);
         if (*(corto_string*)o) {
-            size_t length = stresc(NULL, 0, *(corto_string*)o);
+            size_t length = stresc(NULL, 0, '"', *(corto_string*)o);
             corto_string out = corto_alloc(length + 1);
-            stresc(out, length + 1, *(corto_string*)o);
+            stresc(out, length + 1, '"', *(corto_string*)o);
             if (!corto_buffer_append(&data->buffer, "\"%s\"", out)) {
                 corto_dealloc(out);
                 goto finished;

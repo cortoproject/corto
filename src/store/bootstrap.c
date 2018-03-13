@@ -425,6 +425,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_operatorKind_ASSIGN_XOR),\
     BUILTIN_OBJ(vstore_operatorKind_ASSIGN_OR),\
     BUILTIN_OBJ(vstore_operatorKind_ASSIGN_AND),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_SHIFT_LEFT),\
+    BUILTIN_OBJ(vstore_operatorKind_ASSIGN_SHIFT_RIGHT),\
     BUILTIN_OBJ(vstore_operatorKind_ASSIGN_UPDATE),\
     BUILTIN_OBJ(vstore_operatorKind_ADD),\
     BUILTIN_OBJ(vstore_operatorKind_SUB),\

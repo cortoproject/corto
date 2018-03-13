@@ -757,6 +757,8 @@ CORTO_ENUM_O(vstore, operatorKind);
     CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN_XOR);
     CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN_OR);
     CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN_AND);
+    CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN_SHIFT_LEFT);
+    CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN_SHIFT_RIGHT);
     CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN_UPDATE);
     CORTO_CONSTANT_O(vstore_operatorKind, ADD);
     CORTO_CONSTANT_O(vstore_operatorKind, SUB);

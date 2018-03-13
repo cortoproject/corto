@@ -89,6 +89,7 @@ int16_t corto_struct_construct(
     base = (corto_struct)corto_interface(this)->base;
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
+
         /* Test if there are no circular references in the base */
         do {
             if (base == this) {
@@ -96,9 +97,17 @@ int16_t corto_struct_construct(
                     corto_fullpath(NULL, this));
                 goto error;
             }
-
         } while ((base = (corto_struct)((corto_interface)base)->base));
+
         base = (corto_struct)corto_interface(this)->base;
+
+        if (!corto_check_state(base, CORTO_VALID)) {
+            corto_throw("base '%s' must be defined before defining '%s'",
+                corto_fullpath(NULL, base),
+                corto_fullpath(NULL, this));
+            goto error;
+        }
+
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
             corto_throw("struct '%s' inherits from non-struct type '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, base));
