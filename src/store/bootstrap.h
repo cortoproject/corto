@@ -559,9 +559,9 @@ CORTO_FWDECL_VSTORE(enum, frameKind);
 CORTO_FWDECL_VSTORE(enum, ownership);
 CORTO_FWDECL_VSTORE(enum, operatorKind);
 CORTO_FWDECL_SECURE(enum, accessKind);
-CORTO_FWDECL_SECURE(enum, actionKind);
 
 /* Bitmasks */
+CORTO_FWDECL_SECURE(bitmask, actionKind);
 CORTO_FWDECL(bitmask, attr);
 CORTO_FWDECL_VSTORE(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifier);
@@ -609,7 +609,7 @@ CORTO_FWDECL_(method, collection_castable);
 CORTO_FWDECL_(method, type_compatible);
 CORTO_FWDECL_(method, struct_compatible);
 CORTO_FWDECL_(method, interface_resolveMember);
-CORTO_FWDECL__SECURE(method, key_authenticate);
+CORTO_FWDECL__SECURE(method, key_login);
 CORTO_FWDECL__SECURE(method, lock_authorize);
 CORTO_FWDECL__VSTORE(method, routerimpl_findRoute);
 CORTO_FWDECL__VSTORE(method, routerimpl_matchRoute);
@@ -811,11 +811,12 @@ CORTO_ENUM_O(secure, accessKind);
     CORTO_SECURE_CONSTANT_O(secure_accessKind, ACCESS_DENIED);
     CORTO_SECURE_CONSTANT_O(secure_accessKind, ACCESS_UNDEFINED);
 
-CORTO_ENUM_O(secure, actionKind);
+CORTO_BITMASK_O(secure, actionKind);
     CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_CREATE);
     CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_READ);
     CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_UPDATE);
     CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_DELETE);
+    CORTO_SECURE_CONSTANT_O(secure_actionKind, ACTION_ANY);
 
 CORTO_BITMASK_O(lang, state);
     CORTO_CONSTANT_O(lang_state, VALID);
@@ -1512,7 +1513,8 @@ CORTO_FW_CD(secure, key);
 CORTO_CLASS_NOBASE_O(secure, key, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_CD);
     CORTO_METHOD_O(secure_key, construct, "()", lang_int16, corto_secure_key_construct);
     CORTO_METHOD_O(secure_key, destruct, "()", lang_void, corto_secure_key_destruct);
-    CORTO_OVERRIDABLE_O(secure_key, authenticate, "(string user,string password)", lang_string, corto_secure_key_authenticate_v);
+    CORTO_OVERRIDABLE_O(secure_key, login, "(in:string user,in:string password)", lang_string, corto_secure_key_login_v);
+    CORTO_OVERRIDABLE_O(secure_key, logout, "(in:string key)", lang_void, corto_secure_key_login_v);
 
 /* /corto/secure/lock */
 CORTO_FW_CD(secure, lock);

@@ -133,6 +133,10 @@ CORTO_EXPORT
 bool corto_autoload(
     corto_bool autoload);
 
+/** Utility to generate random id */
+CORTO_EXPORT
+char* corto_random_id(
+    uint16_t n);
 
 /* -- RUNTIME CONSISTENCY CHECKING -- */
 

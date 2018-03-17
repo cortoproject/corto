@@ -22,14 +22,23 @@ const char* corto_login(
     const char *password)
 {
     if (corto_secure_keyInstance) {
-        return corto_secure_key_authenticate(
+        return corto_secure_key_login(
             corto_secure_keyInstance,
             (char*)username,
             (char*)password);
     } else {
         return NULL;
     }
+}
 
+void corto_logout(
+    const char *key)
+{
+    if (corto_secure_keyInstance) {
+        /*corto_secure_key_logout(
+            corto_secure_keyInstance,
+            (char*)key);*/
+    }
 }
 
 const char* corto_set_session(
@@ -166,7 +175,7 @@ bool corto_authorize_id(
     return allowed != CORTO_SECURE_ACCESS_DENIED;
 }
 
-corto_string corto_secure_key_authenticate_v(
+corto_string corto_secure_key_login_v(
     corto_secure_key this,
     const char *user,
     const char *password)
@@ -177,6 +186,14 @@ corto_string corto_secure_key_authenticate_v(
     CORTO_UNUSED(password);
 
     return NULL;
+}
+
+void corto_secure_key_logout_v(
+    corto_secure_key this,
+    const char *key)
+{
+    CORTO_UNUSED(this);
+    CORTO_UNUSED(key);
 }
 
 int16_t corto_secure_key_construct(

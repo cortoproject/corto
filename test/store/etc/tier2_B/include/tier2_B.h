@@ -6,6 +6,7 @@
 #ifndef TIER1_TIER2_B_H
 #define TIER1_TIER2_B_H
 
+#include <corto/corto.h>
 #include <tier1/tier2_B/_project.h>
 #include <corto/c/c.h>
 

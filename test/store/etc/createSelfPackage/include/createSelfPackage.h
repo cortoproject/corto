@@ -6,6 +6,7 @@
 #ifndef CREATESELFPACKAGE_H
 #define CREATESELFPACKAGE_H
 
+#include <corto/corto.h>
 #include <createSelfPackage/_project.h>
 #include <corto/c/c.h>
 

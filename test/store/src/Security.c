@@ -14,7 +14,7 @@ void test_Security_setup(
 
 }
 
-void test_Security_tc_authenticate(
+void test_Security_tc_login(
     test_Security this)
 {
     const char *token = corto_login("Ford Prefect", "42");
@@ -27,7 +27,7 @@ void test_Security_tc_authenticate(
 
 }
 
-void test_Security_tc_authenticateFail(
+void test_Security_tc_loginFail(
     test_Security this)
 {
     const char *token = corto_login("Ford Prefect", "41");

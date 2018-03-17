@@ -1,7 +1,7 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <include/test.h>
-corto_string test_TestKey_authenticate(
+corto_string test_TestKey_login(
     test_TestKey this,
     const char *user,
     const char *password)

@@ -415,6 +415,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_READ),\
     BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_UPDATE),\
     BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_DELETE),\
+    BUILTIN_OBJ(secure_actionKind_SECURE_ACTION_ANY),\
     /* operatorKind */\
     BUILTIN_OBJ(vstore_operatorKind_ASSIGN),\
     BUILTIN_OBJ(vstore_operatorKind_ASSIGN_ADD),\
@@ -869,7 +870,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* secure/key */\
     BUILTIN_OBJ(secure_key_construct_),\
     BUILTIN_OBJ(secure_key_destruct_),\
-    BUILTIN_OBJ(secure_key_authenticate_),\
+    BUILTIN_OBJ(secure_key_login_),\
+    BUILTIN_OBJ(secure_key_logout_),\
     /* secure/lock */\
     BUILTIN_OBJ(secure_lock_mount),\
     BUILTIN_OBJ(secure_lock_expr),\

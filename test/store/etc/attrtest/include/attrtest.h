@@ -6,6 +6,7 @@
 #ifndef ATTRTEST_H
 #define ATTRTEST_H
 
+#include <corto/corto.h>
 #include <attrtest/_project.h>
 #include <corto/c/c.h>
 

@@ -1272,8 +1272,7 @@ error:
 }
 
 /* Generate random id */
-static
-char* corto_randomId(
+char* corto_random_id(
     uint16_t n)
 {
     static char *alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1326,7 +1325,7 @@ corto_object corto_declareChild_intern(
         corto_fullpath(typeId, type);
         mountId = corto_select("*").from(parentId).type(typeId).id();
         if (!mountId) {
-            id = corto_randomId(16);
+            id = corto_random_id(16);
         } else {
             id = mountId;
         }

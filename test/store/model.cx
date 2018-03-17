@@ -1751,7 +1751,7 @@ test/Suite Loader:/
 
 // Key and lock for security tests
 class TestKey: secure/key:/
-    string authenticate(string user, string password) override
+    string login(string user, string password) override
 
 struct AccessRule:/
     user: string
@@ -1765,8 +1765,8 @@ class TestLock: secure/lock:/
 // Test security
 test/Suite Security:/
     void setup() method
-    void tc_authenticate()
-    void tc_authenticateFail()
+    void tc_login()
+    void tc_loginFail()
     void tc_authorizeCreate()
     void tc_authorizeSelect()
     void tc_authorizeLookup()
