@@ -19,3 +19,12 @@ corto_secure_accessKind test_TestLock_authorize(
 
     return CORTO_SECURE_ACCESS_UNDEFINED;
 }
+
+int16_t test_TestLock_construct(
+    test_TestLock this)
+{
+    corto_set_str(&this->super.query.select, this->expr);
+    corto_set_str(&this->super.query.from, this->mount);
+    this->super.priority = this->priority;
+    return corto_secure_lock_construct(this);
+}

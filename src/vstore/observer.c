@@ -7,13 +7,13 @@
 
 /* Fluent request */
 typedef struct corto_observeRequest {
-    corto_int16 err;
+    int16_t err;
     corto_object instance;
     corto_eventMask mask;
     corto_dispatcher observable;
     corto_object dispatcher;
     corto_string type;
-    corto_bool enabled;
+    bool enabled;
     void (*callback)(corto_observer_event*);
 } corto_observeRequest;
 
@@ -51,7 +51,8 @@ void corto_observerDelayedAdminAdd(
         corto_tls_set(CORTO_KEY_LISTEN_ADMIN, admin);
     }
 
-    corto_observerDelayedAdmin *elem = corto_alloc(sizeof(corto_observerDelayedAdmin));
+    corto_observerDelayedAdmin *elem =
+        corto_alloc(sizeof(corto_observerDelayedAdmin));
     elem->instance = instance;
     elem->observer = observer;
     elem->observable = observable;
@@ -90,11 +91,13 @@ void corto_observer_delayedAdminDefine(
         while (corto_iter_hasNext(&it)) {
             corto_observerDelayedAdmin *elem = corto_iter_next(&it);
             if (elem->instance == instance) {
-                if (corto_observer_observe(elem->observer, elem->instance, elem->observable)) {
+                if (corto_observer_observe(
+                    elem->observer, elem->instance, elem->observable))
+                {
                     /* This should never happen as the input parameters have
                      * been checked when observe was first called */
                     corto_critical(
-                      "corto: delayed observe for previously undefined instance '%s' failed",
+         "corto: delayed observe for previously undefined instance '%s' failed",
                       corto_fullpath(NULL, instance));
                 }
 
@@ -111,7 +114,7 @@ void corto_observer_delayedAdminDefine(
 
 typedef struct corto_observerElement {
     corto__observer ** observers;
-    corto_bool free;
+    bool free;
 } corto_observerElement;
 
 typedef struct corto_observerAdmin {
@@ -124,7 +127,9 @@ static corto_observerAdmin observerAdmin[CORTO_MAX_THREADS];
 
 /* Assumption: no more notifications are in progress when the thread
  * exits */
-void corto_observerAdminFree(void *admin) {
+void corto_observerAdminFree(
+    void *admin)
+{
     corto_uint32 i;
     corto_thread self = corto_thread_self();
 
@@ -141,7 +146,10 @@ void corto_observerAdminFree(void *admin) {
 }
 
 /* Free observer-array */
-static void corto_observersFree(corto__observer** observers) {
+static
+void corto_observersFree(
+    corto__observer** observers)
+{
     corto__observer* observer;
     while((observer = *observers)) {
         if (!corto_adec(&observer->count)) {
@@ -151,10 +159,14 @@ static void corto_observersFree(corto__observer** observers) {
     }
 }
 
-/* There is a small chance that a thread simultaneously with observe obtains a pointer
- * to an old observers-array, then gets scheduled out and this function in another thread
- * deletes that array. Although unlikely this scenario must be addressed. */
-static void corto_observersArrayFree(corto__observer** array) {
+/* There is a small chance that a thread simultaneously obtains a pointer
+ * to an old observers-array, then gets scheduled out and this function in
+ * another thread deletes that array. Although unlikely this scenario must be
+ * addressed. */
+static
+void corto_observersArrayFree(
+    corto__observer** array)
+{
     if (array) {
         corto_observersFree(array);
         corto_dealloc(&array[-1]);
@@ -162,7 +174,11 @@ static void corto_observersArrayFree(corto__observer** array) {
 }
 
 /* Copyout observers */
-static void corto_observersCopyOut(corto_ll list, corto__observer** observers) {
+static
+void corto_observersCopyOut(
+    corto_ll list,
+    corto__observer** observers)
+{
     corto_iter iter;
     corto_uint32 i;
 
@@ -177,7 +193,12 @@ static void corto_observersCopyOut(corto_ll list, corto__observer** observers) {
 }
 
 /* Event handling. */
-static corto__observer* corto_observerFind(corto_ll on, corto_observer observer, corto_object instance) {
+static
+corto__observer* corto_observerFind(
+    corto_ll on,
+    corto_observer observer,
+    corto_object instance)
+{
     corto_assert_object(observer);
     corto_assert_object(instance);
 
@@ -200,7 +221,10 @@ static corto__observer* corto_observerFind(corto_ll on, corto_observer observer,
 }
 
 /* Create observer-array */
-static corto__observer** corto_observersArrayNew(corto_ll list) {
+static
+corto__observer** corto_observersArrayNew(
+    corto_ll list)
+{
     corto__observer** array;
 
     array = corto_alloc((corto_ll_count(list) + 2) * sizeof(corto__observer*));
@@ -210,17 +234,23 @@ static corto__observer** corto_observersArrayNew(corto_ll list) {
     return &array[1];
 }
 
-static struct corto_observerAdmin* corto_observerAdminGet(void) {
+static
+struct corto_observerAdmin* corto_observerAdminGet(void)
+{
     corto_observerAdmin *admin = corto_tls_get(CORTO_KEY_OBSERVER_ADMIN);
     if (!admin) {
         corto_thread thr = corto_thread_self();
         corto_uint32 i;
         do {
             i = 0;
-            while(observerAdmin[i].id) { /* Find a free slot for thread in administration */
+
+             /* Find a free slot for thread in administration */
+            while(observerAdmin[i].id) {
                 i++;
                 if (i >= CORTO_MAX_THREADS) {
-                    corto_critical("maximum number of supported threads reached! (%d)", CORTO_MAX_THREADS);
+                    corto_critical(
+                        "maximum number of supported threads reached! (%d)",
+                        CORTO_MAX_THREADS);
                 }
             }
         } while(!corto_cas(&observerAdmin[i].id,0,thr));
@@ -231,9 +261,11 @@ static struct corto_observerAdmin* corto_observerAdminGet(void) {
     return admin;
 }
 
-/* Push observer-array to thread administration. Rather than passing the array pass the
- * address of the array so that setting the administration can be done atomic. */
-static corto__observer** corto_observersPush(
+/* Push observer-array to thread administration. Rather than passing the array
+ * pass the address of the array so that setting the administration can be done
+ * atomic. */
+static
+corto__observer** corto_observersPush(
     corto_observerAdmin *admin,
     corto__observer**  *observers)
 {
@@ -247,14 +279,20 @@ static corto__observer** corto_observersPush(
     return result;
 }
 
-static corto_bool corto_observersPop(corto_observerAdmin *admin) {
+static
+bool corto_observersPop(
+    corto_observerAdmin *admin)
+{
     return admin->stack[--admin->sp].free;
 }
 
-static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
+static
+bool corto_observersWaitForUnused(
+    corto__observer** observers)
+{
     corto_thread self = corto_thread_self();
     corto_uint32 i, j;
-    corto_bool inUse, freeArray = TRUE; /* Initialization merely to satisfy the compiler */
+    bool inUse, freeArray = TRUE; /* Initialization to satisfy the compiler */
 
     if (!observers) {
         return FALSE;
@@ -266,7 +304,8 @@ static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
         inUse = FALSE;
         for(i = 0; i < CORTO_MAX_THREADS; i++) {
             if (observerAdmin[i].id) {
-                /* Check whether the observer array is in use by threads other than myself */
+                /* Check whether observer array is in use by threads other than
+                 * myself */
                 if ((observerAdmin[i].id != self)) {
                     for(j = 0; j < observerAdmin[i].sp; j++) {
                         if (observerAdmin[i].stack[j].observers == observers) {
@@ -274,15 +313,18 @@ static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
                         }
                     }
 
-                /* Check whether the observer array is in use by my own thread */
+                /* Check whether observer array is in use by my own thread */
                 } else {
                     freeArray = TRUE;
                     for(j = 0; j < observerAdmin[i].sp; j++) {
-                        /* The array is in use by my own thread so I can't keep spinning. Notify the observing function to
-                         * free the array */
+                        /* The array is in use by my own thread so I can't keep
+                         * spinning. Notify the observing function to free the
+                         * array */
                         if (observerAdmin[i].stack[j].observers == observers) {
-                            observerAdmin[i].stack[j].free = TRUE; /* Signal the notification routine to free the array */
-                            freeArray = FALSE; /* Since the array is still in use by myself don't free array yet */
+                            /* Signal notification routine to free the array */
+                            observerAdmin[i].stack[j].free = TRUE;
+                            /* Since array is still in use by me don't free */
+                            freeArray = FALSE;
                             break;
                         }
                     }
@@ -294,7 +336,10 @@ static corto_bool corto_observersWaitForUnused(corto__observer** observers) {
     return freeArray;
 }
 
-static void corto_updateSubscriptionById(char *id) {
+static
+void corto_updateSubscriptionById(
+    char *id)
+{
     corto_iter it;
 
     corto_select(id).subscribe(&it);
@@ -308,11 +353,18 @@ static void corto_updateSubscriptionById(char *id) {
     }
 }
 
-static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventMask mask, corto_object observable) {
-    /* If there are no subscribers, then there are no mounts that are potentially
-     * interested in subscriptions */
+static
+void corto_updateSubscriptions(
+    corto_eventMask observerMask,
+    corto_eventMask mask,
+    corto_object observable)
+{
+    /* If there are no subscribers, then there are no mounts interested in
+     * subscriptions */
 
-    if (corto_subscriber_admin.count && corto_check_attr(observable, CORTO_ATTR_NAMED)) {
+    if (corto_subscriber_admin.count &&
+        corto_check_attr(observable, CORTO_ATTR_NAMED))
+    {
         if (observerMask & CORTO_ON_TREE) {
             corto_log_push("update-subscription");
 
@@ -332,7 +384,14 @@ static void corto_updateSubscriptions(corto_eventMask observerMask, corto_eventM
     }
 }
 
-static void corto_notify_observer(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+static
+void corto_notify_observer(
+    corto__observer *data,
+    corto_object observable,
+    corto_object source,
+    corto_uint32 mask,
+    int depth)
+{
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -355,7 +414,14 @@ static void corto_notify_observer(corto__observer *data, corto_object observable
     }
 }
 
-static void corto_notify_observer_cdecl(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+static
+void corto_notify_observer_cdecl(
+    corto__observer *data,
+    corto_object observable,
+    corto_object source,
+    corto_uint32 mask,
+    int depth)
+{
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -371,12 +437,21 @@ static void corto_notify_observer_cdecl(corto__observer *data, corto_object obse
                 .data = observable,
                 .observer = observer
             };
-            ((void(*)(corto_observer_event*))((corto_function)observer)->fptr)(&e);
+
+            ((void(*)(corto_observer_event*))
+                ((corto_function)observer)->fptr)(&e);
         }
     }
 }
 
-static void corto_notify_observer_dispatch(corto__observer *data, corto_object observable, corto_object source, corto_uint32 mask, int depth) {
+static
+void corto_notify_observer_dispatch(
+    corto__observer *data,
+    corto_object observable,
+    corto_object source,
+    corto_uint32 mask,
+    int depth)
+{
     corto_observer observer = data->observer;
     corto_eventMask observerMask = observer->mask;
 
@@ -387,7 +462,11 @@ static void corto_notify_observer_dispatch(corto__observer *data, corto_object o
         corto_dispatcher dispatcher = observer->dispatcher;
 
         if (!data->_this || (data->_this != source)) {
-            corto_observer_event *event = corto(CORTO_DECLARE, {.type = corto_observer_event_o, .attrs = -1});
+            corto_observer_event *event =
+                corto(CORTO_DECLARE, {
+                    .type = corto_observer_event_o,
+                    .attrs = -1
+                });
 
             corto_set_ref(&event->observer, observer);
             corto_set_ref(&event->instance, data->_this);
@@ -403,7 +482,13 @@ static void corto_notify_observer_dispatch(corto__observer *data, corto_object o
     }
 }
 
-static void corto_notify_observers_intern(corto__observer** observers, corto_object observable, corto_uint32 mask, int depth) {
+static
+void corto_notify_observers_intern(
+    corto__observer** observers,
+    corto_object observable,
+    corto_uint32 mask,
+    int depth)
+{
     corto__observer* data;
 
     corto_object prev = corto_set_source(NULL);
@@ -412,9 +497,15 @@ static void corto_notify_observers_intern(corto__observer** observers, corto_obj
         corto_updateSubscriptions(data->observer->mask, mask, observable);
 
         switch(data->notifyKind) {
-        case 0: corto_notify_observer(data, observable, prev, mask, depth); break;
-        case 1: corto_notify_observer_cdecl(data, observable, prev, mask, depth); break;
-        case 2: corto_notify_observer_dispatch(data, observable, prev, mask, depth); break;
+        case 0:
+            corto_notify_observer(data, observable, prev, mask, depth);
+            break;
+        case 1:
+            corto_notify_observer_cdecl(data, observable, prev, mask, depth);
+            break;
+        case 2:
+            corto_notify_observer_dispatch(data, observable, prev, mask, depth);
+            break;
         }
 
         observers++;
@@ -422,18 +513,20 @@ static void corto_notify_observers_intern(corto__observer** observers, corto_obj
     corto_set_source(prev);
 }
 
-corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
+int16_t corto_notify(corto_object observable, corto_uint32 mask) {
     corto_assert_object(observable);
     corto_object *parent;
 
     corto_type t = corto_typeof(observable);
     if (mask == CORTO_UPDATE && (t->flags & CORTO_TYPE_HAS_VALIDATE)) {
-        if (corto_invoke_preDelegate(&((corto_class)t)->validate, t, observable)) {
+        if (corto_invoke_preDelegate(
+            &((corto_class)t)->validate, t, observable))
+        {
             goto error;
         }
     }
 
-    corto_bool isOrphan = corto_isorphan(observable);
+    bool isOrphan = corto_isorphan(observable);
     int depth = 0;
     corto__object *__o = CORTO_OFFSET(observable, -sizeof(corto__object));
     corto__observable *_o = NULL;
@@ -445,7 +538,8 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
     /* Notify direct observers */
     if (_o) {
         /* Notify observers of observable */
-        corto__observer** observers = corto_observersPush(admin, &_o->onSelfArray);
+        corto__observer** observers =
+            corto_observersPush(admin, &_o->onSelfArray);
         if (observers) {
             corto_notify_observers_intern(observers, observable, mask, depth);
             if (corto_observersPop(admin)) {
@@ -462,17 +556,21 @@ corto_int16 corto_notify(corto_object observable, corto_uint32 mask) {
 
         if (_parent) {
             if (!isOrphan) {
-                corto__observer** observers = corto_observersPush(admin, &_parent->onChildArray);
+                corto__observer** observers =
+                    corto_observersPush(admin, &_parent->onChildArray);
                 if (observers) {
-                    corto_notify_observers_intern(observers, observable, mask, depth);
+                    corto_notify_observers_intern(
+                        observers, observable, mask, depth);
                     if (corto_observersPop(admin)) {
                         corto_observersArrayFree(observers);
                     }
                 }
             } else {
-                corto__observer** observers = corto_observersPush(admin, &_parent->onSelfArray);
+                corto__observer** observers =
+                    corto_observersPush(admin, &_parent->onSelfArray);
                 if (observers) {
-                    corto_notify_observers_intern(observers, parent, mask, depth);
+                    corto_notify_observers_intern(
+                        observers, parent, mask, depth);
                     if (corto_observersPop(admin)) {
                         corto_observersArrayFree(observers);
                     }
@@ -498,7 +596,10 @@ error:
     return -1;
 }
 
-corto_int16 corto_notify_secured(corto_object observable, corto_uint32 mask) {
+int16_t corto_notify_secured(
+    corto_object observable,
+    corto_uint32 mask)
+{
     if (!corto_authorize(observable, CORTO_SECURE_ACTION_READ)) {
         return 0;
     }
@@ -516,17 +617,22 @@ typedef struct corto_observerAlignData {
     int depth;
 } corto_observerAlignData;
 
-int corto_observerAlignScope(corto_object o, void *userData) {
+int corto_observerAlignScope(
+    corto_object o,
+    void *userData)
+{
     corto_assert_object(o);
 
     corto_observerAlignData *data = userData;
 
-    if ((data->mask & CORTO_DECLARE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
+    if ((data->mask & CORTO_DECLARE) &&
+        (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)))
     {
         corto_notify_observer(data->observer, o, o, CORTO_DECLARE, data->depth);
     }
 
-    if ((data->mask & CORTO_DEFINE) && (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
+    if ((data->mask & CORTO_DEFINE) &&
+        (data->mask & (CORTO_ON_SCOPE|CORTO_ON_TREE)) &&
         corto_check_state(o, CORTO_VALID))
     {
         corto_notify_observer(data->observer, o, o, CORTO_DEFINE, data->depth);
@@ -549,7 +655,11 @@ int corto_observerAlignScope(corto_object o, void *userData) {
     }
 }
 
-void corto_observerAlign(corto_object observable, corto__observer *observer, int mask) {
+void corto_observerAlign(
+    corto_object observable,
+    corto__observer *observer,
+    int mask)
+{
     corto_assert_object(observable);
 
     corto_observerAlignData walkData;
@@ -564,13 +674,15 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
     if (corto_check_attr(observable, CORTO_ATTR_PERSISTENT)) {
         if ((mask & CORTO_DECLARE) && (mask & CORTO_ON_SELF))
         {
-            corto_notify_observer(observer, observable, observable, CORTO_DECLARE, 0);
+            corto_notify_observer(
+                observer, observable, observable, CORTO_DECLARE, 0);
         }
 
         if ((mask & CORTO_DEFINE) && (mask & CORTO_ON_SELF) &&
             corto_check_state(observable, CORTO_VALID))
         {
-            corto_notify_observer(observer, observable, observable, CORTO_DEFINE, 0);
+            corto_notify_observer(
+                observer, observable, observable, CORTO_DEFINE, 0);
         }
     }
 
@@ -583,9 +695,12 @@ void corto_observerAlign(corto_object observable, corto__observer *observer, int
 }
 
 
-static corto_observe__fluent corto_observe__fluentGet(void);
+static
+corto_observe__fluent corto_observe__fluentGet(void);
 
-static corto_observer corto_observeObserve(corto_observeRequest *r)
+static
+corto_observer corto_observeObserve(
+    corto_observeRequest *r)
 {
     corto_observer result = corto_declare(NULL, NULL, corto_observer_o);
 
@@ -619,7 +734,8 @@ error:
     return NULL;
 }
 
-static corto_observe__fluent corto_observeInstance(
+static
+corto_observe__fluent corto_observeInstance(
     corto_object instance)
 {
     corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
@@ -629,7 +745,8 @@ static corto_observe__fluent corto_observeInstance(
     return corto_observe__fluentGet();
 }
 
-static corto_observe__fluent corto_observeType(
+static
+corto_observe__fluent corto_observeType(
     corto_string type)
 {
     corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
@@ -639,7 +756,8 @@ static corto_observe__fluent corto_observeType(
     return corto_observe__fluentGet();
 }
 
-static corto_observe__fluent corto_observeDisabled(void)
+static
+corto_observe__fluent corto_observeDisabled(void)
 {
     corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
@@ -648,7 +766,8 @@ static corto_observe__fluent corto_observeDisabled(void)
     return corto_observe__fluentGet();
 }
 
-static corto_observe__fluent corto_observeDispatcher(
+static
+corto_observe__fluent corto_observeDispatcher(
     corto_dispatcher dispatcher)
 {
     corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
@@ -658,7 +777,8 @@ static corto_observe__fluent corto_observeDispatcher(
     return corto_observe__fluentGet();
 }
 
-static corto_observer corto_observeCallback(
+static
+corto_observer corto_observeCallback(
     void (*callback)(corto_observer_event*))
 {
     corto_observer result = NULL;
@@ -674,7 +794,8 @@ static corto_observer corto_observeCallback(
     return result;
 }
 
-static corto_observe__fluent corto_observe__fluentGet(void)
+static
+corto_observe__fluent corto_observe__fluentGet(void)
 {
     corto_observe__fluent result;
     result.callback = corto_observeCallback;
@@ -685,7 +806,11 @@ static corto_observe__fluent corto_observe__fluentGet(void)
     return result;
 }
 
-struct corto_observe__fluent corto_observe(corto_eventMask mask, corto_object observable) {
+struct
+corto_observe__fluent corto_observe(
+    corto_eventMask mask,
+    corto_object observable)
+{
     corto_observeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_observeRequest));
@@ -700,7 +825,7 @@ struct corto_observe__fluent corto_observe(corto_eventMask mask, corto_object ob
     return corto_observe__fluentGet();
 }
 
-corto_int16 corto_unobserve(corto_observer observer) {
+int16_t corto_unobserve(corto_observer observer) {
     return corto_delete(observer);
 }
 
@@ -711,8 +836,11 @@ int16_t corto_observer_construct(
     corto_log_push("observe");
 
     if (!corto_function(this)->parameters.length) {
-        if (!corto_check_attr(this, CORTO_ATTR_NAMED) || !strchr(corto_idof(this), '(')) {
-            corto_function(this)->parameters.buffer = corto_calloc(sizeof(corto_parameter) * 1);
+        if (!corto_check_attr(this, CORTO_ATTR_NAMED) ||
+            !strchr(corto_idof(this), '('))
+        {
+            corto_function(this)->parameters.buffer =
+                corto_calloc(sizeof(corto_parameter) * 1);
             corto_function(this)->parameters.length = 1;
             corto_parameter *p;
 
@@ -769,9 +897,11 @@ int16_t corto_observer_init(
     corto_set_ref(&corto_function(this)->returnType, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
-    if (corto_check_attr(this, CORTO_ATTR_NAMED) && strchr(corto_idof(this), '(')) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED) &&
+        strchr(corto_idof(this), '('))
+    {
         /* id of function contains a parameter list, parse in function/init */
-        corto_int16 result = safe_corto_function_init(this);
+        int16_t result = safe_corto_function_init(this);
         if (result) {
             goto error;
         }
@@ -781,7 +911,9 @@ int16_t corto_observer_init(
             goto error;
         }
 
-        if (corto_function(this)->parameters.buffer[0].type != corto_type(corto_observer_event_o)) {
+        if (corto_function(this)->parameters.buffer[0].type !=
+            corto_type(corto_observer_event_o))
+        {
             corto_throw("first argument must be of type vstore/eventMask");
             goto error;
         }
@@ -799,7 +931,7 @@ int16_t corto_observer_observe(
 {
     corto__observable* _o;
     corto__observer* _observerData = NULL;
-    corto_bool added = FALSE;
+    bool added = FALSE;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
 
     if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
@@ -963,7 +1095,7 @@ int16_t corto_observer_observe(
             corto_fullpath(observableId, observable);
 
             corto_log_push("align-subscribe");
-            corto_int16 ret = corto_select(
+            int16_t ret = corto_select(
                 mask & CORTO_ON_SELF ? "." :
                 mask & CORTO_ON_SCOPE ? "/" : "//")
               .from(observableId)
@@ -1028,7 +1160,7 @@ bool corto_observer_observing(
 {
     corto__observer* observerData;
     corto__observable* _o;
-    corto_bool result = FALSE;
+    bool result = FALSE;
 
     _o = corto_hdr_observable(CORTO_OFFSET(observable, -sizeof(corto__object)));
     observerData = NULL;
@@ -1077,7 +1209,7 @@ int16_t corto_observer_unobserve(
     corto__observable* _o;
     corto__observer **oldSelfArray = NULL, **oldChildArray = NULL;
     corto_eventMask mask = this->mask;
-    corto_bool removed = FALSE;
+    bool removed = FALSE;
 
     if (!observable) {
         corto_throw("unobserve: observable not provided");

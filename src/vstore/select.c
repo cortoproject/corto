@@ -322,13 +322,15 @@ bool corto_selectMatch(
     if (corto_secured()) {
         if (o) {
             if (!corto_authorize(o, CORTO_SECURE_ACTION_READ)) {
+                corto_debug("no read access: %s", corto_fullpath(NULL, o));
                 goto access_error;
             }
         } else {
             corto_id id;
-            sprintf(id, "%s/%s", item->parent, item->id);
+            sprintf(id, "%s/%s/%s", data->scope, item->parent, item->id);
             corto_path_clean(id, id);
             if (!corto_authorize_id(id, CORTO_SECURE_ACTION_READ)) {
+                corto_debug("no read access: %s", id);
                 goto access_error;
             }
         }
@@ -701,7 +703,7 @@ bool corto_selectIterMount(
 
         corto_fmt fmt_handle = (corto_fmt)mount->contentTypeOutHandle;
         corto_object prev = corto_set_source(mount);
-        corto_object ref = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE, {
+        corto_object ref = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE|CORTO_UNSECURED, {
             .parent = parent,
             .id = result->id,
             .type = type,
@@ -960,7 +962,7 @@ int16_t corto_selectTree(
      * longer valid. corto_selectIterNext will in that case iterate up to the
      * object after the last key. */
     corto_string lastKey = data->item.name;
-    bool noMatch = TRUE;
+    bool match = false;
     data->next = NULL;
     corto_object o = NULL;
 
@@ -995,7 +997,7 @@ int16_t corto_selectTree(
                 if (corto_selectMatch(o, &data->item, data) &&
                    (data->skip >= data->offset))
                 {
-                    noMatch = FALSE;
+                    match = true;
                     corto_setItemData(o, data->next, data);
                 } else {
                     data->skip ++;
@@ -1007,9 +1009,9 @@ int16_t corto_selectTree(
                  * will pass the filter to the mount, and the mount is expected
                  * to only return matching objects. */
                 if (data->mask != CORTO_ON_TREE) {
-                    noMatch = FALSE;
+                    match = true;
                 } else {
-                    noMatch = !corto_selectMatch(NULL, &data->item, data);
+                    match = corto_selectMatch(NULL, &data->item, data);
                 }
                 flags = data->next->flags;
             }
@@ -1046,14 +1048,14 @@ int16_t corto_selectTree(
 
             /* If result is hidden, skip */
             if (flags & CORTO_RESULT_HIDDEN) {
-                noMatch = true;
+                match = false;
             }
         } else {
             data->next = NULL;
         }
 
         if (o) corto_release(o);
-    } while (noMatch && data->next && !data->quit);
+    } while (!match && data->next && !data->quit);
 
     return 0;
 }
@@ -1286,7 +1288,7 @@ int16_t corto_selectSplitScope(
                 corto_set_str(&data->segments[current].expr, ch ? ptr + 1 : NULL);
 
                 /* Lookup object in advance, if it exists */
-                data->segments[current].o = corto(CORTO_LOOKUP, {
+                data->segments[current].o = corto(CORTO_LOOKUP|CORTO_UNSECURED, {
                     .parent = root_o, .id = data->segments[current].scope
                 });
 

@@ -103,7 +103,7 @@ void test_Select_setup(
     corto_void__create(_7, "abcdef");
     corto_void__create(_8, "abcdef");
 
-    corto_enableload(FALSE);
+    corto_enable_load(FALSE);
 
 }
 

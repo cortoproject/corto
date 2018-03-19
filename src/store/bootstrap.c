@@ -655,6 +655,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_query_select),\
     BUILTIN_OBJ(vstore_query_from),\
     BUILTIN_OBJ(vstore_query_type),\
+    BUILTIN_OBJ(vstore_query_instanceof),\
     BUILTIN_OBJ(vstore_query_member),\
     BUILTIN_OBJ(vstore_query_where),\
     BUILTIN_OBJ(vstore_query_offset),\
@@ -868,13 +869,13 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(native_type_name),\
     BUILTIN_OBJ(native_type_init_),\
     /* secure/key */\
+    BUILTIN_OBJ(secure_key_enabled),\
     BUILTIN_OBJ(secure_key_construct_),\
     BUILTIN_OBJ(secure_key_destruct_),\
     BUILTIN_OBJ(secure_key_login_),\
     BUILTIN_OBJ(secure_key_logout_),\
     /* secure/lock */\
-    BUILTIN_OBJ(secure_lock_mount),\
-    BUILTIN_OBJ(secure_lock_expr),\
+    BUILTIN_OBJ(secure_lock_query),\
     BUILTIN_OBJ(secure_lock_priority),\
     BUILTIN_OBJ(secure_lock_construct_),\
     BUILTIN_OBJ(secure_lock_destruct_),\
@@ -1421,7 +1422,7 @@ bool corto_autoload(bool autoload)
 }
 
 /* Enable or disable package loader mount. */
-corto_bool corto_enableload(corto_bool enable)
+corto_bool corto_enable_load(corto_bool enable)
 {
     corto_bool prev = FALSE;
     if (!enable) {

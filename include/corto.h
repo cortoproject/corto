@@ -108,6 +108,30 @@ void corto_atexit(
     void* userData);
 
 
+/* -- SECURITY -- */
+
+
+/** Enable or disable security.
+ * This function enables or disables corto security. When no instance of
+ * corto/secure/key instance has been created this function does nothing.
+ *
+ * By default security is disabled, even after creation of a lock. The reason
+ * for this is that a lock is typically created during loading of configuration
+ * and other configuration items may be loaded after it.
+ *
+ * If the lock would be effective immediately after creating it, it could
+ * prevent other configuration items from loading successfully, as they most
+ * likely rely on data to which access will be restricted by the lock.
+ *
+ * @param enable Specifies whether to enable security.
+ * @return true if security has been enabled, false if failed. The function will
+ *         fail of no instance of corto/secure/key has been created.
+ */
+ CORTO_EXPORT
+ bool corto_enable_security(
+     bool enabled);
+
+
 /* -- AUTOMATIC PACKAGE LOADING -- */
 
 /** Mount package data
@@ -119,7 +143,7 @@ void corto_atexit(
  * @return Previous value.
  */
 CORTO_EXPORT
-bool corto_enableload(
+bool corto_enable_load(
     corto_bool enable);
 
 /** Enable automatic loading of packages

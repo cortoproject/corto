@@ -74,6 +74,9 @@ void test_Observers_tc_notifyReadDenied(
       .callback(notifyReadDenied_onUpdate);
     test_assert(observer != NULL);
 
+    corto_enable_security(true);
+    test_assert(corto_secured() == true);
+
     /* Login & authenticate Ford Prefect */
     const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
@@ -87,19 +90,19 @@ void test_Observers_tc_notifyReadDenied(
 
     /* Deauthenticate process */
     corto_set_session(prev);
+    corto_enable_security(false);
 
     test_assert(corto_delete(observer) == 0);
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(l) == 0);
-
 }
 
 void test_Observers_tc_notifyUpdateDenied(
     test_Observers this)
 {
     test_TestKey__create(NULL, NULL);
-
     test_TestLock l = test_TestLock__create(NULL, NULL, "/o", ".", 0, NULL);
+
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_UPDATE, CORTO_SECURE_ACCESS_DENIED};
     test_AccessRuleList__insert(l->rules, &r);
 
@@ -109,6 +112,9 @@ void test_Observers_tc_notifyUpdateDenied(
     corto_observer observer = corto_observe(CORTO_UPDATE, o)
       .callback(NULL);
     test_assert(observer != NULL);
+
+    corto_enable_security(true);
+    test_assert(corto_secured() == true);
 
     /* Login & authenticate Ford Prefect */
     const char *token = corto_login("Ford Prefect", "42");
@@ -122,11 +128,11 @@ void test_Observers_tc_notifyUpdateDenied(
 
     /* Deauthenticate process */
     corto_set_session(prev);
+    corto_enable_security(false);
 
     test_assert(corto_delete(observer) == 0);
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(l) == 0);
-
 }
 
 void test_Observers_tc_notObserving(
@@ -162,7 +168,6 @@ void test_Observers_tc_observeAlignSelf(
     test_assert(corto_delete(o) == 0);
 
 }
-
 
 void tc_observeAlignCallbackType(corto_observer_event *e) {
     test_Observers this = e->instance;

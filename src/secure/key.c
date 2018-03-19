@@ -1,9 +1,10 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
+
 static corto_secure_key corto_secure_keyInstance;
-static const char *corto_secure_token;
 static corto_thread corto_secure_mainThread;
+static corto_tls CORTO_KEY_SESSION_TOKEN;
 
 static
 corto_entityAdmin corto_lock_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
@@ -11,10 +12,26 @@ corto_entityAdmin corto_lock_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTE
 void corto_secure_init(void) {
     corto_secure_mainThread = corto_thread_self();
     corto_tls_new(&corto_lock_admin.key, corto_entityAdmin_free);
+    corto_tls_new(&CORTO_KEY_SESSION_TOKEN, NULL);
 }
 
-corto_bool corto_secured(void) {
-    return corto_secure_keyInstance != NULL;
+bool corto_secured(void) {
+     if (corto_secure_keyInstance) {
+         return corto_secure_keyInstance->enabled;
+     } else {
+         return false;
+     }
+}
+
+bool corto_enable_security(
+    bool enabled)
+{
+    if (corto_secure_keyInstance) {
+        corto_secure_keyInstance->enabled = enabled;
+        return enabled;
+    } else {
+        return false;
+    }
 }
 
 const char* corto_login(
@@ -24,8 +41,8 @@ const char* corto_login(
     if (corto_secure_keyInstance) {
         return corto_secure_key_login(
             corto_secure_keyInstance,
-            (char*)username,
-            (char*)password);
+            username,
+            password);
     } else {
         return NULL;
     }
@@ -35,22 +52,23 @@ void corto_logout(
     const char *key)
 {
     if (corto_secure_keyInstance) {
-        /*corto_secure_key_logout(
+        corto_secure_key_logout(
             corto_secure_keyInstance,
-            (char*)key);*/
+            key);
     }
 }
 
 const char* corto_set_session(
-    const char *key)
+    const char *session_token)
 {
     if (corto_rwmutex_write(&corto_lock_admin.lock)) {
         corto_throw(NULL);
         goto error;
     }
 
-    const char* prev = corto_secure_token;
-    corto_secure_token = key;
+    const char *prev = corto_tls_get(CORTO_KEY_SESSION_TOKEN);
+    corto_tls_set(CORTO_KEY_SESSION_TOKEN, (void*)session_token);
+
     if (corto_rwmutex_unlock(&corto_lock_admin.lock)) {
         corto_throw(NULL);
         goto error;
@@ -58,14 +76,14 @@ const char* corto_set_session(
 
     return prev;
 error:
-    return key;
+    return session_token;
 }
 
 int16_t corto_secure_registerLock(
     corto_secure_lock lock)
 {
     if (corto_secure_mainThread == corto_thread_self()) {
-        corto_entityAdmin_add(&corto_lock_admin, lock->mount, lock, NULL);
+        corto_entityAdmin_add(&corto_lock_admin, lock->query.from, lock, NULL);
     } else {
         corto_throw("locks can only be created in mainthread");
         goto error;
@@ -80,7 +98,7 @@ int16_t corto_secure_unregisterLock(
     corto_secure_lock lock)
 {
     if (corto_secure_mainThread == corto_thread_self()) {
-        corto_entityAdmin_remove(&corto_lock_admin, lock->mount, lock, NULL, FALSE);
+        corto_entityAdmin_remove(&corto_lock_admin, lock->query.from, lock, NULL, FALSE);
     } else {
         corto_throw("locks can only be removed from mainthread");
         goto error;
@@ -102,7 +120,6 @@ bool corto_authorize(
     } else {
         return TRUE;
     }
-
 }
 
 bool corto_authorize_id(
@@ -110,11 +127,26 @@ bool corto_authorize_id(
     corto_secure_actionKind access)
 {
     corto_secure_accessKind allowed = CORTO_SECURE_ACCESS_UNDEFINED;
+    const char *session_token =
+        corto_tls_get(CORTO_KEY_SESSION_TOKEN);
 
-    if (corto_secure_keyInstance) {
+    if (corto_secure_keyInstance && corto_secure_keyInstance->enabled) {
         int32_t depth = corto_entityAdmin_claimDepthFromId(objectId);
         uint16_t currentDepth = 0;
         int16_t priority = 0;
+
+        /* If no session is set and security is enabled, deny access */
+        if (!session_token) {
+            return false;
+        }
+
+        /* '#' is the builtin token that is used internally by the API, and always
+         * grants access. */
+        if (session_token[0] == '#' &&
+            session_token[1] == '\0')
+        {
+            return true;
+        }
 
         /* Walk over locks in the lock admin */
         corto_entityAdmin *admin = corto_entityAdmin_claim(&corto_lock_admin);
@@ -130,7 +162,7 @@ bool corto_authorize_id(
                 for (e = 0; e < perParent->entities.length; e ++) {
                     corto_entity *entity = &perParent->entities.buffer[e];
                     corto_secure_lock lock = entity->e;
-                    if (lock->expr && *expr && !corto_idmatch(lock->expr, expr)) {
+                    if (lock->query.select && *expr && !corto_idmatch(lock->query.select, expr)) {
                         continue;
                     }
 
@@ -145,7 +177,7 @@ bool corto_authorize_id(
                         {
                             corto_secure_accessKind result;
                             result = corto_secure_lock_authorize(
-                                lock, (char*)corto_secure_token, access);
+                                lock, session_token, access);
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
                              * a higher priority than what was set */
@@ -157,18 +189,14 @@ bool corto_authorize_id(
                                       priority = lock->priority;
                                       currentDepth = depth;
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
 
         } while (--depth >= 0);
+
         corto_entityAdmin_release(&corto_lock_admin);
     }
 

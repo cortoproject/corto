@@ -17,7 +17,7 @@ void test_SelectSink_tc_selectLoaderCortoScope(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -65,7 +65,7 @@ void test_SelectSink_tc_selectLoaderCortoSingle(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -89,7 +89,7 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -144,7 +144,7 @@ void test_SelectSink_tc_selectLoaderNestedScope(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -192,7 +192,7 @@ void test_SelectSink_tc_selectLoaderNestedSingle(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -216,7 +216,7 @@ void test_SelectSink_tc_selectLoaderNestedSingleVirtual(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -240,7 +240,7 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -294,7 +294,7 @@ void test_SelectSink_tc_selectLoaderRootScope(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -328,7 +328,7 @@ void test_SelectSink_tc_selectLoaderRootSingle(
 {
 
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -352,7 +352,7 @@ void test_SelectSink_tc_selectLoaderRootTree(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -436,7 +436,7 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
@@ -458,7 +458,7 @@ void test_SelectSink_tc_selectLoaderLookupNestedInitialSlash(
     test_SelectSink this)
 {
     /* Disable package loader to ensure test results are predictable */
-    corto_enableload(false);
+    corto_enable_load(false);
 
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);

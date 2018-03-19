@@ -2585,3 +2585,36 @@ void test_ObjectMgmt_tc_defaultValues(
     test_assertstr(v->c, "Hello World");
 }
 
+static
+void* thr_recreate_unknown(void* data) {
+    /* Init suite for thread so we can use test_assert */
+    test_thread_init_suite(data);
+
+    corto_object o = corto_create(root_o, "data/nested/o2", corto_void_o);
+    test_assert(o != NULL);
+
+    corto_object nested = corto_parentof(o);
+    test_assert(nested != NULL);
+    test_assert(corto_typeof(nested) == corto_unknown_o);
+    test_assert(!corto_check_state(nested, CORTO_VALID));
+
+    return NULL;
+}
+
+void test_ObjectMgmt_tc_redeclareNestedUnknownOtherThread(
+    test_ObjectMgmt this)
+{
+    /* Recursively declare an object, will create one unknown object */
+    corto_object o = corto_create(root_o, "data/nested/o1", corto_void_o);
+    test_assert(o != NULL);
+    test_assert(corto_check_state(o, CORTO_VALID));
+
+    corto_object nested = corto_parentof(o);
+    test_assert(nested != NULL);
+    test_assert(corto_typeof(nested) == corto_unknown_o);
+    test_assert(!corto_check_state(nested, CORTO_VALID));
+
+    /* Start thread that attempts to redeclare 'nested' with different object */
+    corto_thread thr = corto_thread_new(thr_recreate_unknown, this);
+    corto_thread_join(thr, NULL);
+}

@@ -1,14 +1,15 @@
 /* This is a managed file. Do not delete this comment. */
 
 #include <corto/corto.h>
+
 int16_t corto_secure_registerLock(corto_secure_lock lock);
 int16_t corto_secure_unregisterLock(corto_secure_lock lock);
+
 corto_secure_accessKind corto_secure_lock_authorize_v(
     corto_secure_lock this,
     const char *token,
     corto_secure_actionKind action)
 {
-
     CORTO_UNUSED(this);
     CORTO_UNUSED(token);
     CORTO_UNUSED(action);
@@ -19,7 +20,6 @@ corto_secure_accessKind corto_secure_lock_authorize_v(
 int16_t corto_secure_lock_construct(
     corto_secure_lock this)
 {
-
     if (corto_secure_registerLock(this)) {
         goto error;
     }
@@ -34,4 +34,3 @@ void corto_secure_lock_destruct(
 {
     corto_assert(corto_secure_unregisterLock(this) == 0);
 }
-

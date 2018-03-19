@@ -348,6 +348,7 @@ int16_t corto_invalidate(
 #define CORTO_FORCE_TYPE (0x200)
 #define CORTO_LOOKUP_TYPE (0x400)
 #define CORTO_ASSERT_SUCCESS (0x800)
+#define CORTO_UNSECURED (0x10000)
 
 struct corto_action {
     corto_object parent;

@@ -4,14 +4,13 @@
 void test_Security_setup(
     test_Security this)
 {
-
     corto_void__create_auto(root_o, a);
     corto_void__create_auto(a, b);
     corto_void__create_auto(b, c);
     corto_int32__create_auto(a, d, 10);
-
     test_TestKey__create(NULL, NULL);
-
+    corto_enable_security(true);
+    test_assert(corto_secured() == true);
 }
 
 void test_Security_tc_login(
@@ -83,6 +82,8 @@ void test_Security_tc_authorizeDelete(
 void test_Security_tc_authorizeDeniedCreate(
     test_Security this)
 {
+    test_assert(corto_secured() == 1);
+
     const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     const char *prev = corto_set_session(token);
@@ -905,4 +906,72 @@ void test_Security_tc_lockUndefinedDenySameDepthSamePrio(
     test_assert(b == NULL);
     prev = corto_set_session(prev);
     test_assert(prev == token);
+}
+
+void test_Security_tc_lockDenyTreeGrantSelectScope(
+    test_Security this)
+{
+    const char *token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    const char *prev = corto_set_session(token);
+    test_assert(prev == NULL);
+
+    test_TestLock lock1 = test_TestLock__create(NULL, NULL, "/a", "//", 0, NULL);
+    test_AccessRule rule1 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleList__insert(lock1->rules, &rule1);
+
+    test_TestLock lock2 = test_TestLock__create(NULL, NULL, "/a/b", "/", 0, NULL);
+    test_AccessRule rule2 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleList__insert(lock2->rules, &rule2);
+
+    corto_iter it;
+    test_assert(corto_select("*").from("/a/b").iter(&it) == 0);
+
+    test_assert(corto_iter_hasNext(&it) != 0);
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "c");
+    test_assertstr(r->type, "void");
+    test_assertstr(r->parent, ".");
+
+    test_assert(corto_iter_hasNext(&it) == 0);
+
+    prev = corto_set_session(prev);
+    test_assert(prev == token);
+}
+
+void test_Security_tc_lockDenyTreeGrantScopeSelectThis(
+    test_Security this)
+{
+    const char *token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    const char *prev = corto_set_session(token);
+    test_assert(prev == NULL);
+
+    test_TestLock lock1 = test_TestLock__create(NULL, NULL, "/a", "//", 0, NULL);
+    test_AccessRule rule1 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleList__insert(lock1->rules, &rule1);
+
+    test_TestLock lock2 = test_TestLock__create(NULL, NULL, "/a/b", "/", 0, NULL);
+    test_AccessRule rule2 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
+    test_AccessRuleList__insert(lock2->rules, &rule2);
+
+    corto_iter it;
+    test_assert(corto_select(".").from("/a/b").iter(&it) == 0);
+    test_assert(corto_iter_hasNext(&it) == 0);
+
+    prev = corto_set_session(prev);
+    test_assert(prev == token);
+}
+
+void test_Security_tc_lockDenyTreeSelectMount(
+    test_Security this)
+{
+    corto_enable_security(false);
+}
+
+void test_Security_teardown(
+    test_Security this)
+{
+    corto_enable_security(false);
 }

@@ -34,13 +34,12 @@ typedef uint32_t corto_secure_actionKind;
 
 /* class corto/secure/key */
 typedef struct corto_secure_key_s {
-    int8_t __dummy;
+    bool enabled;
 } *corto_secure_key;
 
 /* class corto/secure/lock */
 typedef struct corto_secure_lock_s {
-    corto_string mount;
-    corto_string expr;
+    corto_query query;
     int16_t priority;
 } *corto_secure_lock;
 

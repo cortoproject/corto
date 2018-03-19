@@ -595,6 +595,7 @@ test/Suite ObjectMgmt:/
     void tc_recreatedOutOfOrder()
     void tc_defineUnknown()
     void tc_defineRedeclaredUnknown()
+    void tc_redeclareNestedUnknownOtherThread()
 
     void tc_lifecycle()
     void tc_lifecycleInitFail()
@@ -1758,13 +1759,18 @@ struct AccessRule:/
     action: secure/actionKind
     access: secure/accessKind
 
-class TestLock: secure/lock:/
+class TestLock: secure/lock, hidden:/
+    mount: string
+    expr: string
+    priority: int32
     rules: list{AccessRule}, not_null
+    int16 construct()
     secure/accessKind authorize(string token, secure/actionKind action) override
 
 // Test security
 test/Suite Security:/
     void setup() method
+    void teardown() method
     void tc_login()
     void tc_loginFail()
     void tc_authorizeCreate()
@@ -1807,6 +1813,9 @@ test/Suite Security:/
     void tc_lockDenyUndefinedLowerDepthSamePrio()
     void tc_lockDenyUndefinedLowerDepthHigherPrio()
     void tc_lockDenyUndefinedLowerDepthLowerPrio()
+    void tc_lockDenyTreeGrantSelectScope()
+    void tc_lockDenyTreeGrantScopeSelectThis()
+    void tc_lockDenyTreeSelectMount()
     void tc_lockSwitchUser()
 
 // Test value casting

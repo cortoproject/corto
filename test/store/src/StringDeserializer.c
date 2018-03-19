@@ -7,7 +7,7 @@ void test_StringDeserializer_setup(
 
     corto_set_attr(CORTO_ATTR_PERSISTENT);
 
-    corto_enableload(FALSE);
+    corto_enable_load(FALSE);
 
 }
 

@@ -610,6 +610,7 @@ CORTO_FWDECL_(method, type_compatible);
 CORTO_FWDECL_(method, struct_compatible);
 CORTO_FWDECL_(method, interface_resolveMember);
 CORTO_FWDECL__SECURE(method, key_login);
+CORTO_FWDECL__SECURE(method, key_logout);
 CORTO_FWDECL__SECURE(method, lock_authorize);
 CORTO_FWDECL__VSTORE(method, routerimpl_findRoute);
 CORTO_FWDECL__VSTORE(method, routerimpl_matchRoute);
@@ -1351,6 +1352,7 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CO
     CORTO_MEMBER_O(vstore_query, select, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, from, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, type, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_query, instanceof, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, member, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, where, lang_string, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_query, offset, lang_uint64, CORTO_GLOBAL);
@@ -1511,6 +1513,7 @@ CORTO_CLASS_O(native, type, lang_binary, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL,
 /* /corto/secure/key */
 CORTO_FW_CD(secure, key);
 CORTO_CLASS_NOBASE_O(secure, key, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_CD);
+    CORTO_MEMBER_O(secure_key, enabled, lang_bool, CORTO_GLOBAL|CORTO_READONLY);
     CORTO_METHOD_O(secure_key, construct, "()", lang_int16, corto_secure_key_construct);
     CORTO_METHOD_O(secure_key, destruct, "()", lang_void, corto_secure_key_destruct);
     CORTO_OVERRIDABLE_O(secure_key, login, "(in:string user,in:string password)", lang_string, corto_secure_key_login_v);
@@ -1519,8 +1522,7 @@ CORTO_CLASS_NOBASE_O(secure, key, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | COR
 /* /corto/secure/lock */
 CORTO_FW_CD(secure, lock);
 CORTO_CLASS_NOBASE_O(secure, lock, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_CD);
-    CORTO_MEMBER_O(secure_lock, mount, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(secure_lock, expr, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(secure_lock, query, vstore_query, CORTO_GLOBAL);
     CORTO_MEMBER_O(secure_lock, priority, lang_int16, CORTO_GLOBAL);
     CORTO_METHOD_O(secure_lock, construct, "()", lang_int16, corto_secure_lock_construct);
     CORTO_METHOD_O(secure_lock, destruct, "()", lang_void, corto_secure_lock_destruct);

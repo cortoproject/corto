@@ -83,6 +83,7 @@ typedef struct corto_query {
     corto_string select;
     corto_string from;
     corto_string type;
+    corto_string instanceof;
     corto_string member;
     corto_string where;
     uint64_t offset;

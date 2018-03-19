@@ -13,7 +13,7 @@ void test_SelectMount_setup(
     /* Create mount */
     this->mount = test_ListMount__create(NULL, NULL, a_o, CORTO_ON_SCOPE, CORTO_REMOTE_SOURCE);
 
-    corto_enableload(FALSE);
+    corto_enable_load(FALSE);
 
 }
 

@@ -39,10 +39,16 @@ int16_t corto_function_construct(
             } else {
                 this->size += sizeof(corto_object);
             }
-
         }
 
         corto_uint32 i;
+        if (this->parameters.length && !this->parameters.buffer) {
+            corto_throw(
+                "function has %d parameters but parameter buffer is NULL",
+                this->parameters.length);
+            goto error;
+        }
+
         for(i=0; i<this->parameters.length; i++) {
             corto_parameter *p = &this->parameters.buffer[i];
             if (p->passByReference || p->inout)

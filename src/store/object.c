@@ -1359,7 +1359,9 @@ corto_object corto_declareChild_intern(
             if ((o_ret = corto_init_scope(parent, id, type, o, orphan, forceType))) {
                 if (o_ret != o) {
                     corto_release(type);
-                    corto_dealloc(corto_object_startaddr(CORTO_OFFSET(o,-sizeof(corto__object))));
+                    corto_dealloc(
+                        corto_object_startaddr(
+                            CORTO_OFFSET(o,-sizeof(corto__object))));
                     o = o_ret;
 
                     if (newobject) {
@@ -1373,11 +1375,15 @@ corto_object corto_declareChild_intern(
 
                     /* If the object just has been declared and not by this thread,
                      * block until the object becomes either defined or deleted */
-                    if (!corto_check_state(o, CORTO_VALID) && !corto_check_state(o, CORTO_DELETED)) {
-                        if (!corto_declaredByMeCheck(o)) {
+                    if (!corto_check_state(o, CORTO_VALID) &&
+                        !corto_check_state(o, CORTO_DELETED))
+                    {
+                        if (!corto_declaredByMeCheck(o) &&
+                            corto_typeof(o) != corto_unknown_o)
+                        {
                             corto_debug(
-                              "corto: declareChild: %s declared in other thread, waiting",
-                              id);
+                              "corto: declareChild: '%s' declared in other thread, waiting",
+                              corto_fullpath(NULL, o));
 
                             corto_read_begin(o);
                             bool deleted = corto_check_state(o, CORTO_DELETED);
@@ -1405,7 +1411,10 @@ corto_object corto_declareChild_intern(
                                 retry = TRUE;
                             }
                         } else {
-                            /* This thread forward declared the object. */
+                            /* This thread forward declared the object or is an
+                             * unknown object declared in another thread.
+                             * Unknown objects are placeholders which can be
+                             * declared by any thread. */
                         }
                     }
                     goto ok;
@@ -1441,7 +1450,9 @@ corto_object corto_declareChild_intern(
             }
 
             /* void objects are instantly valid because they have no value */
-            if (type != corto_unknown_o && (type->kind == CORTO_VOID && !type->reference)) {
+            if (type != corto_unknown_o &&
+               (type->kind == CORTO_VOID && !type->reference))
+            {
                 if (defineVoid) {
                     /* Never resume void objects - there's nothing to resume */
                     int rc = corto_define_intern(o, FALSE);
@@ -5165,6 +5176,11 @@ corto_object _corto(
     bool exists = result != NULL;
     bool gotref = false;
 
+    const char *prev_session = NULL;
+    if (action & CORTO_UNSECURED) {
+        prev_session = corto_set_session("#");
+    }
+
     if (!result) {
         corto_attr attr;
 
@@ -5285,6 +5301,10 @@ corto_object _corto(
         }
     }
 
+    if (action & CORTO_UNSECURED) {
+        corto_set_session(prev_session);
+    }
+
     return result;
 error:
     if (action & CORTO_DECLARE) {
@@ -5296,6 +5316,9 @@ assert_success:
     if (action & CORTO_ASSERT_SUCCESS) {
         corto_raise();
         abort();
+    }
+    if (action & CORTO_UNSECURED) {
+        corto_set_session(prev_session);
     }
     return NULL;
 }
