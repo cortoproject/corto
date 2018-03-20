@@ -8,7 +8,9 @@ corto_int16 corto__enum_bindConstant(corto_enum this, corto_constant* c) {
     if (corto_check_state(corto_type_o, CORTO_VALID)) {
         *c = corto_scope_size(this) - 1;
     }
-    this->constants.buffer = corto_realloc(this->constants.buffer, (this->constants.length+1) * sizeof(corto_constant*));
+    this->constants.buffer = corto_realloc(
+        this->constants.buffer,
+        (this->constants.length+1) * sizeof(corto_constant*));
     this->constants.buffer[this->constants.length] = c;
     this->constants.length++;
 
@@ -23,28 +25,19 @@ struct corto_enum_findConstant_t {
     corto_constant* o;
 };
 
-static int corto_enum_findConstant(corto_object o, void* ctx) {
-    struct corto_enum_findConstant_t* userData;
-
-    userData = ctx;
-    if (*(corto_constant*)o == userData->value) {
-        userData->o = o;
-    }
-    return userData->o == NULL;
-}
-
 corto_object corto_enum_constant(
     corto_enum this,
     int32_t value)
 {
-    struct corto_enum_findConstant_t walkData;
-
     /* Walk scope */
-    walkData.value = value;
-    walkData.o = NULL;
-    corto_scope_walk(this, corto_enum_findConstant, &walkData);
+    int i;
+    for (i = 0; i < this->constants.length; i ++) {
+        if (*(corto_constant*)this->constants.buffer[i] == value) {
+            return this->constants.buffer[i];
+        }
+    }
 
-    return walkData.o;
+    return NULL;
 }
 
 int16_t corto_enum_construct(
@@ -70,7 +63,7 @@ void corto_enum_destruct(
     this->constants.length = 0;
     corto_dealloc(this->constants.buffer);
     this->constants.buffer = NULL;
-    
+
     corto_type_destruct(corto_type(this));
 }
 
@@ -81,4 +74,3 @@ int16_t corto_enum_init(
     corto_primitive(this)->width = CORTO_WIDTH_32;
     return corto_primitive_init((corto_primitive)this);
 }
-
