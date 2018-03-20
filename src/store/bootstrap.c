@@ -1020,21 +1020,20 @@ int corto_load_config(void)
     if (cfg) {
         if (corto_isdir(cfg)) {
             corto_trace("loading configuration");
-            char *prevDir = strdup(corto_cwd());
             corto_ll cfgfiles = corto_opendir(cfg);
-            corto_chdir(cfg);
             corto_iter it = corto_ll_iter(cfgfiles);
             while (corto_iter_hasNext(&it)) {
                 char *file = corto_iter_next(&it);
-                if (corto_use(file, 0, NULL)) {
+                char *full_path = corto_asprintf("%s/%s", cfg, file);
+                if (corto_use(full_path, 0, NULL)) {
                     corto_raise();
                     result = -1;
                     /* Don't break, report all errors */
                 } else {
                     corto_ok("successfuly loaded '%s'", file);
                 }
+                free(full_path);
             }
-            corto_chdir(prevDir);
             corto_closedir(cfgfiles);
         } else if (corto_file_test(cfg)) {
             if (corto_use(cfg, 0, NULL)) {
