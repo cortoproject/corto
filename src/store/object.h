@@ -224,6 +224,8 @@ corto_object corto_resume(
 int16_t corto_suspend(
     corto_object o);
 
+void corto_mark_resumed(
+    corto_object o);
 
 /* -- SCOPE ACTIONS -- */
 

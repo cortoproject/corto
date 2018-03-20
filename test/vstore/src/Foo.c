@@ -18,7 +18,6 @@ int16_t test_Foo_construct(
 	return 0;
 error:
 	return -1;
-
 }
 
 void test_Foo_destruct(
@@ -38,4 +37,3 @@ int16_t test_Foo_init(
 
 	return 0;
 }
-

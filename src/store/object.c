@@ -440,20 +440,6 @@ void corto_adopt_replaceUnknown(
         struct corto_adopt_updateParents_t data = {.old = existing, .new = child};
         corto_rb_walk(c_scope->scope, corto_adopt_updateParents, &data);
     }
-
-    /* If refcount of existing object is not 0 after releasing it, other objects
-     * have references to it. Should not happen. */
-    if(corto_release(existing) != 0) {
-        corto_throw(
-            "%d invalid reference(s) to '%s' [%p] of unknown type",
-            corto_countof(existing),
-            c_scope->id,
-            existing);
-
-        /* Immediately raise, so an application can stop
-         * execution here to debug */
-        corto_raise();
-    }
 }
 
 /* Adopt an object in a scope */
@@ -1496,55 +1482,13 @@ corto_object corto_create_intern(
     return result;
 }
 
-/* Resume object from mount */
-static
-corto_object corto_resume_fromMount(
-    corto_mount m,
-    char *parentId,
-    char* expr,
-    corto_object o)
-{
-    corto_object result = NULL;
-    corto_type mountType = corto_observer(m)->type;
-
-    /* If mount implements resume, this will load the
-     * persistent copy in memory */
-    if (!o || !mountType || (mountType == corto_typeof(o))) {
-        if ((result = corto_mount_resume(
-            m,
-            parentId,
-            expr,
-            o)))
-        {
-            /* Assign source */
-            corto__object *_o = CORTO_OFFSET(result, -sizeof(corto__object));
-            corto__persistent *_p = corto_hdr_persistent(_o);
-            corto_assert(_p != NULL, "cannot resume object that is not persistent");
-            corto_set_ref(&_p->source, m);
-
-            /* If object was resumed without creating an object in the store first, it
-             * means that a lookup or resolve triggered the resume. In that case, set
-             * the 'resume' attribute to true, to indicate that the object should not be
-             * released by a drop operation, but explicitly by an application. */
-            if (!o) {
-                _p->resumed = TRUE;
-            }
-        }
-    }
-
-    return result;
-}
-
 /* Find right mount to resume object from */
 typedef struct corto_resumeWalk_t {
     corto_object o;
-    corto_object p;
-    corto_object parent;
-    corto_mount result;
-    corto_mount lastMount;
-    corto_id parentId;
-    bool parentIdSet;
-    char *exprPtr;
+    corto_object result;
+    char *parent_id;
+    char *id;
+    uint32_t count;
 } corto_resumeWalk_t;
 
 static
@@ -1560,27 +1504,53 @@ int corto_resumeWalk(
 
     /* Either the mount registered for the direct parent of the
      * provided object, or the mount must have ON_TREE set */
-    if ((data->p == data->parent) ||
-      (((corto_observer)mount)->mask & CORTO_ON_TREE))
-    {
+    if (!data->count || ((corto_observer)mount)->mask & CORTO_ON_TREE) {
+
+        /* If object is provided, check if it matches type of mount */
         corto_type mountType = corto_observer(mount)->type;
-
-        if (!mountType || (data->parent == data->p) || (corto_typeof(data->parent) == mountType)) {
-            if (!data->parentIdSet) {
-                /* Parent must be relative to mount point of mount */
-                corto_path(
-                    data->parentId,
-                    data->p,
-                    data->parent,
-                    "/");
-                data->parentIdSet = TRUE;
+        if (!data->o || !mountType || (mountType == corto_typeof(data->o))) {
+            char *last_sep = strrchr(data->id, '/');
+            char *id, *parent;
+            if (last_sep) {
+                last_sep[0] = '\0';
+                id = last_sep + 1;
+                parent = data->id;
+            } else {
+                id = data->id;
+                parent = ".";
             }
 
-            data->result = corto_resume_fromMount(mount, data->parentId, data->exprPtr, data->o);
+            corto_debug("try resume '%s' from '%s' for mount '%s'",
+                id, parent, corto_fullpath(NULL, entity));
+
+            data->result = corto_mount_resume(
+                mount, parent, id, data->o);
+
+            if (last_sep) {
+                last_sep[0] = '/';
+            }
+
             if (data->result) {
-                data->lastMount = mount;
-                return 0;
+                corto__object *_o =
+                    CORTO_OFFSET(data->result, -sizeof(corto__object));
+                corto__persistent *_p = corto_hdr_persistent(_o);
+                corto_assert(
+                    _p != NULL, "cannot resume object that is not persistent");
+                corto_set_ref(&_p->source, mount);
+
+                /* If object was resumed without creating an object in the store
+                 * first, it means that a lookup or resolve triggered the
+                 * resume. In that case, set the 'resume' attribute to true, to
+                 * indicate that the object should not be released by a drop
+                 * operation, but explicitly by an application. */
+                if (!data->o) {
+                    _p->resumed = TRUE;
+                }
             }
+        }
+
+        if (data->result) {
+            return 0;
         }
     }
 
@@ -1618,71 +1588,63 @@ corto_object corto_resume(
         corto_fullpath(NULL, parent),
         corto_fullpath(NULL, corto_typeof(parent)));
 
-    corto_id exprBuff;
-
     corto_resumeWalk_t walkData = {
-        .o = NULL,
-        .p = parent,
-        .parent = parent,
+        .o = o,
         .result = NULL,
-        .lastMount = NULL,
-        .parentId = {0},
-        .parentIdSet = FALSE,
-        .exprPtr = exprBuff
+        .parent_id = NULL,
+        .id = NULL,
+        .count = 0
     };
 
-    /* If expression contains / cut expression up without modifying original
-     * parameter value */
-    strcpy(exprBuff, expr);
+    corto_id full_id;
 
-    char *nextSep = NULL;
-    do {
-        corto_object prev = walkData.result;
+    if (o) {
+        corto_path(full_id, NULL, o, "/");
+    } else {
+        corto_path(full_id, NULL, parent, "/");
+        if (parent != root_o) {
+            strcat(full_id, "/");
+        }
+        strcat(full_id, expr);
+    }
 
-        nextSep = strchr(walkData.exprPtr, '/');
-        if (nextSep) {
-            *nextSep = '\0';
+    walkData.parent_id = full_id;
+
+    char *next_ptr, *id_ptr = strrchr(full_id, '/');
+
+    while (!walkData.result) {
+        if (id_ptr == full_id) {
+            /* If id_ptr is equal to start of full_id, match from root. This is
+             * guaranteed the last iteration. */
+            walkData.id = &full_id[1]; /* Start after initial '/' */
+            walkData.parent_id = "/";
         } else {
-            /* If object is last one to be resumed in expression, pass it to
-             * mount resume function. */
-            walkData.o = o;
+            id_ptr[0] = '\0';
+            walkData.id = id_ptr + 1;
         }
 
-        walkData.result = NULL;
+        corto_debug(
+            "walk entities for '%s' with id '%s'",
+            walkData.parent_id,
+            walkData.id);
 
-        /* If expression consists of multiple elements, and one element has been
-         * found in a mount, it is likely that the next elements are going to be
-         * found in the same mount, so start searching there. */
-        if (walkData.lastMount && corto_observer(walkData.lastMount)->mask & CORTO_ON_TREE) {
-            corto_path(
-                walkData.parentId,
-                walkData.p,
-                walkData.parent,
-                "/");
+        corto_entityAdmin_walk(
+            &corto_mount_admin,
+            corto_resumeWalk,
+            walkData.parent_id,
+            false,
+            &walkData);
 
-            walkData.result = corto_resume_fromMount(
-                walkData.lastMount,
-                walkData.parentId,
-                walkData.exprPtr,
-                walkData.o);
+        if (id_ptr == full_id) {
+            break;
         }
 
-        while (!walkData.result && walkData.p) {
-            corto_id pId;
-            corto_fullpath(pId, walkData.p);
-            corto_entityAdmin_walk(&corto_mount_admin, corto_resumeWalk, pId, false, &walkData);
-            if (!walkData.result) {
-                walkData.p = corto_parentof(walkData.p);
-            }
-        }
+        next_ptr = strrchr(full_id, '/');
+        id_ptr[0] = '/';
+        id_ptr = next_ptr;
 
-        if (prev) {
-            corto_release(prev);
-        }
-
-        walkData.parent = walkData.result;
-        walkData.exprPtr = nextSep + 1;
-    } while (walkData.parent && nextSep);
+        walkData.count ++;
+    }
 
     corto_log_pop_dbg();
 
@@ -1837,6 +1799,7 @@ corto_object corto_declareChildRecursive_intern(
         strcpy(buf, id);
         corto_object firstNonExist = NULL;
         bool newobject;
+        bool unknown_parent = false;
 
         next = &cur[next - id];
         *next = '\0';
@@ -1844,6 +1807,7 @@ corto_object corto_declareChildRecursive_intern(
 
         do {
             newobject = false;
+
             result = corto_declareChild_intern(
                 parent,
                 cur,
@@ -1854,13 +1818,30 @@ corto_object corto_declareChildRecursive_intern(
                 &newobject,
                 attrs);
 
+            if (unknown_parent) {
+                /* Parent of this object is of unknown type and was created
+                 * specifically for this object. Unknown objects should be
+                 * automatically deleted when their children are deleted. */
+                corto_release(parent);
+
+                unknown_parent = false;
+            }
+
             /* Keep track of first non-existing object. If something
              * goes wrong objects starting from here must be deleted. */
             if (!firstNonExist && newobject) {
                 firstNonExist = result;
             }
+
             if (!newobject && result) {
                 corto_release(result);
+            }
+
+            /* If a new object was created of which the type is unknown, its
+             * lifecycle will be tied to the object for which it was created.
+             * Keep track of this event, so we can release later. */
+            if (newobject && corto_typeof(result) == corto_unknown_o) {
+                unknown_parent = true;
             }
 
             parent = result;
@@ -1895,7 +1876,8 @@ corto_object corto_declareChildRecursive_intern(
             }
         }
     } else {
-        result = corto_declareChild_intern(parent, id, type, orphan, forceType, TRUE, NULL, attrs);
+        result = corto_declareChild_intern(
+            parent, id, type, orphan, forceType, TRUE, NULL, attrs);
         if (defineSelf) {
             result = corto_create_intern(result, resume);
         }
@@ -1960,9 +1942,12 @@ int16_t corto_define_intern(
 
         bool resumed = corto_resumeDeclared(o, resume);
         result = corto_defineDeclared(o);
+
         if (!result) {
-            result = corto_notifyDefined(o, resume, resumed ? CORTO_RESUME : CORTO_DEFINE);
+            result = corto_notifyDefined(
+                o, resume, resumed ? CORTO_RESUME : CORTO_DEFINE);
         }
+
     } else {
         corto_type t = corto_typeof(o);
         if (t->flags & CORTO_TYPE_IS_CONTAINER) {
@@ -2232,9 +2217,7 @@ void corto_drop(
 
                 /* Check if object is resumed before releasing it */
                 if (!corto_isbuiltin(collected)) {
-                    corto__object *_o = CORTO_OFFSET(collected, -sizeof(corto__object));
-                    corto__persistent *_p = corto_hdr_persistent(_o);
-                    bool resumed = _p && _p->resumed;
+                    bool resumed = corto_isresumed(collected);
 
                     /* Release claim from drop */
                     if (corto_release(collected)) {
@@ -2484,14 +2467,29 @@ bool corto_isbuiltin(
 bool corto_isresumed(
     corto_object o)
 {
-    corto__object* _o;
     corto_assert_object(o);
-    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    if (corto_typeof(o) == corto_unknown_o) {
+        return true;
+    }
+
+    corto__object* _o = CORTO_OFFSET(o, -sizeof(corto__object));
     corto__persistent *_p = corto_hdr_persistent(_o);
     if (_p) {
         return _p->resumed;
     } else {
         return false;
+    }
+}
+
+void corto_mark_resumed(
+    corto_object o)
+{
+    corto__object* _o;
+    corto_assert_object(o);
+    _o = CORTO_OFFSET(o, -sizeof(corto__object));
+    corto__persistent *_p = corto_hdr_persistent(_o);
+    if (_p) {
+        _p->resumed = 1;
     }
 }
 
@@ -3209,9 +3207,9 @@ corto_object corto_lookup_intern(
     corto__object *_o, *_result;
     corto__scope* scope;
     corto_rb tree;
-    corto_object prev = NULL, known_prev = NULL;;
+    corto_object prev = NULL;
     char ch;
-    const char *next, *ptr = id, *last_known_ptr = id;
+    const char *next, *ptr = id;
 
     if (!id || !id[0]) {
         corto_throw("invalid identifier");
@@ -3226,14 +3224,13 @@ corto_object corto_lookup_intern(
     do {
         _o = CORTO_OFFSET(o, -sizeof(corto__object));
         scope = corto_hdr_scope(_o);
-        if (i) {
-            prev = o;
-        }
-        i++;
+
+        prev = o;
 
         if (ptr[0] == '/') {
             ptr ++;
         }
+
         if (!ptr[0]) {
             break;
         }
@@ -3306,7 +3303,6 @@ corto_object corto_lookup_intern(
             } else {
                 o = NULL;
             }
-
         } else {
             /* Walking a non-scoped object should not be possible */
             corto_critical("corto_lookup: object '%s' has no scope",
@@ -3314,49 +3310,42 @@ corto_object corto_lookup_intern(
             goto error;
         }
 
-        /* Keep object. If the refcount was zero, this object will be deleted soon, so prevent the object from being referenced again. */
+        /* Keep object. If the refcount was zero, this object will be deleted
+         * soon, so prevent the object from being referenced again. */
         if (o && (corto_claim(o) == 1)) {
-             /* Set the refcount to zero again. There can be no more objects that are looking up this object right now because
-              * we have the scopeLock of the parent. Additionally, the object will not yet have been free'd because the destruct
-              * function also needs the parent's scopelock to remove the object from the scope.
+             /* Set the refcount to zero again. There can be no more objects
+              * that are looking up this object right now because we have the
+              * scopeLock of the parent. Additionally, the object will not yet
+              * have been free'd because the destruct function also needs
+              * the parent's scopelock to remove the object from the scope.
               *
-              * The refcount needs to be re-set to zero, because after the scopeLock is released, other threads - other than the destruct
-              * thread might try to acquire this object. Setting the refcount back to zero will enable these lookups to also detect
-              * that the object is being deleted.
+              * The refcount needs to be re-set to zero, because after the
+              * scopeLock is released, other threads - other than the destruct
+              * thread might try to acquire this object. Setting the refcount
+              * back to zero will enable these lookups to also detect that the
+              * object is being deleted.
               */
             _result = CORTO_OFFSET(o, -sizeof(corto__object));
             _result->refcount = 0;
             o = NULL;
         }
 
-        if (prev) {
+        if (i) {
             corto_release(prev);
         }
+
+        i++;
 
         if (!o) {
             break;
         }
 
         ptr = next;
-
-        if (corto_typeof(o) != corto_unknown_o) {
-            known_prev = o;
-            last_known_ptr = ptr;
-        }
     } while (ch);
 
-    if (resume && parent != corto_lang_o) {
-        if (!known_prev) {
-            known_prev = parent;
-        }
-        if (!last_known_ptr) {
-            last_known_ptr = id;
-        }
-        if (last_known_ptr[0] == '/') {
-            last_known_ptr ++;
-        }
+    if (!o && resume && parent != corto_lang_o) {
         if (!o) {
-            o = corto_resume(known_prev, last_known_ptr, NULL);
+            o = corto_resume(prev, ptr, NULL);
         }
     }
 

@@ -448,7 +448,7 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     test_assert(q != NULL);
 
     /* Ensure that 'p' hasn't been resumed */
-    /* test_assert(corto_parentof(q) == p); - TODO: not yet implemented */
+    test_assert(corto_parentof(q) == p);
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(q) == 0);

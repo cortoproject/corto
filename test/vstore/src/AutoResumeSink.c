@@ -22,7 +22,6 @@ void test_AutoResumeSink_onDelete(
 {
     test_AutoResumeSink this = e->instance;
     this->deleted ++;
-
 }
 
 void test_AutoResumeSink_on_resume(
@@ -30,7 +29,6 @@ void test_AutoResumeSink_on_resume(
 {
     test_AutoResumeSink this = e->instance;
     this->resumed ++;
-
 }
 
 void test_AutoResumeSink_onSuspend(
@@ -38,7 +36,6 @@ void test_AutoResumeSink_onSuspend(
 {
     test_AutoResumeSink this = e->instance;
     this->suspended ++;
-
 }
 
 void test_AutoResumeSink_on__update(
@@ -46,7 +43,6 @@ void test_AutoResumeSink_on__update(
 {
     test_AutoResumeSink this = e->instance;
     this->updated ++;
-
 }
 
 void test_AutoResumeSink_setup(
@@ -837,4 +833,3 @@ void test_AutoResumeSink_onUpdate(
 {
     /* Insert implementation */
 }
-

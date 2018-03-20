@@ -162,7 +162,10 @@ bool corto_authorize_id(
                 for (e = 0; e < perParent->entities.length; e ++) {
                     corto_entity *entity = &perParent->entities.buffer[e];
                     corto_secure_lock lock = entity->e;
-                    if (lock->query.select && *expr && !corto_idmatch(lock->query.select, expr)) {
+                    if (lock->query.select &&
+                        *expr &&
+                        !corto_idmatch(lock->query.select, expr))
+                    {
                         continue;
                     }
 
@@ -170,14 +173,17 @@ bool corto_authorize_id(
                      * higher than set value. */
                     if (lock->priority >= priority) {
                         /* More specific locks take precedence over less specific
-                         * locks, unless priority is higher */
+                         * locks, unless priority is higher or a more specific
+                         * lock returned UNDEFINED */
                         if ((allowed == CORTO_SECURE_ACCESS_UNDEFINED) ||
                             (currentDepth == depth) ||
                             (lock->priority > priority))
                         {
                             corto_secure_accessKind result;
+
                             result = corto_secure_lock_authorize(
                                 lock, session_token, access);
+
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
                              * a higher priority than what was set */
@@ -194,10 +200,16 @@ bool corto_authorize_id(
                     }
                 }
             }
-
         } while (--depth >= 0);
 
         corto_entityAdmin_release(&corto_lock_admin);
+    }
+
+    if (allowed == CORTO_SECURE_ACCESS_DENIED) {
+        corto_trace(
+            "denied access to object '%s' for session '%s'",
+            objectId,
+            session_token);
     }
 
     return allowed != CORTO_SECURE_ACCESS_DENIED;

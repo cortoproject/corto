@@ -89,13 +89,13 @@ void test_ResumeSink_tc_cleanupParentFromResumedChild(
     corto_object a = corto_parentof(k);
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/x/a");
-    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+    test_assert(corto_typeof(a) == (corto_type)corto_unknown_o);
     test_assertint(corto_countof(a), 1);
 
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/x");
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
     test_assertint(corto_countof(x), 1);
 
     test_assert(corto_delete(k) == 0);
@@ -309,7 +309,6 @@ void test_ResumeSink_tc_defineNested1(
 void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     test_ResumeSink this)
 {
-
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
     corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount/nested");
@@ -332,10 +331,8 @@ void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(a) == 0);
-    test_assert(corto_delete(x) == 0);
     test_assert(corto_delete(mount) == 0);
     test_assert(corto_delete(vmount) == 0);
-
 }
 
 void test_ResumeSink_tc_defineNested1FromVirtualMountPoint(
@@ -708,7 +705,7 @@ void test_ResumeSink_tc_lookupNested1FromNestedVirtualMountPoint(
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -825,15 +822,19 @@ void test_ResumeSink_tc_lookupNested1NotExist(
     test_Foo o = corto_lookup(root_o, "mount/x/notexists");
     test_assert(o == NULL);
 
-    /* x is resumed and suspended */
-    test_assertint(*test_constructCalled_o, 1);
-    test_assertint(*test_destructCalled_o, 1);
-    test_assertint(this->declared, 1);
+    /* Verify that x is not in the store */
+    corto_object x = corto(CORTO_LOOKUP, {.id = "mount/x"});
+    test_assert(x == NULL);
+
+    /* x was created as unknown and was never constructed or destructed */
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 1);
-    test_assertint(this->suspended, 1);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
 
     corto_release(sinkMount);
 
@@ -965,12 +966,12 @@ void test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
     corto_object a = corto_lookup(vmount, "x/a");
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
-    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+    test_assert(corto_typeof(a) == (corto_type)corto_unknown_o);
 
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(k) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -1081,12 +1082,12 @@ void test_ResumeSink_tc_lookupNested2FromVirtualMountPoint(
     corto_object a = corto_parentof(k);
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/x/a");
-    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+    test_assert(corto_typeof(a) == (corto_type)corto_unknown_o);
 
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/x");
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(k) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -1112,15 +1113,23 @@ void test_ResumeSink_tc_lookupNested2NotExist(
     test_Foo o = corto_lookup(root_o, "mount/x/a/notexists");
     test_assert(o == NULL);
 
-    /* x is resumed and suspended */
-    test_assertint(*test_constructCalled_o, 2);
-    test_assertint(*test_destructCalled_o, 2);
-    test_assertint(this->declared, 2);
+    /* Verify that a is not in the store */
+    corto_object a = corto(CORTO_LOOKUP, {.id = "mount/x/a"});
+    test_assert(a == NULL);
+
+    /* Verify that x is not in the store */
+    corto_object x = corto(CORTO_LOOKUP, {.id = "mount/x"});
+    test_assert(x == NULL);
+
+    /* x and a are not resumed and suspended */
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
-    test_assertint(this->suspended, 2);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
 
     corto_release(sinkMount);
 
@@ -1880,7 +1889,6 @@ void test_ResumeSink_tc_resolveNotExist(
 void test_ResumeSink_tc_resumeNestedFromMultiple(
     test_ResumeSink this)
 {
-
     /* Create two mounts that mounts data under vmount, which does not exist in the
      * RAM store. */
     test_VirtualSinkMount mount1 = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
@@ -1898,8 +1906,8 @@ void test_ResumeSink_tc_resumeNestedFromMultiple(
     test_assert(o != NULL);
     test_assertstr(corto_fullpath(NULL, o), "/vmount/x/a");
 
-    /* Two queries, to resume x and x/a */
-    test_assertint(mount1->count + mount2->count, 2);
+    /* One query, only x/a is resumed */
+    test_assertint(mount1->count + mount2->count, 1);
 
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(mount1) == 0);

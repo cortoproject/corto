@@ -900,7 +900,9 @@ corto_object corto_mount_resume(
 
     /* Resume object */
     if (this->explicitResume) {
-        corto_debug("mount: on_resume parent=%s, expr=%s (mount = %s, o = %p)", parent, name, corto_fullpath(NULL, this), o);
+        corto_debug(
+            "mount: on_resume parent=%s, expr=%s (mount = %s, o = %p)",
+            parent, name, corto_fullpath(NULL, this), o);
         result = corto_mount_on_resume(this, parent, name, o);
     } else {
         corto_id type;
@@ -919,7 +921,9 @@ corto_object corto_mount_resume(
 
         q.type = type;
         q.content = TRUE;
+
         corto_resultIter it = corto_mount_query(this, &q);
+
         if (corto_iter_hasNext(&it)) {
             corto_result *iterResult = corto_iter_next(&it);
             if (!o) {
@@ -936,8 +940,14 @@ corto_object corto_mount_resume(
                 }
 
                 corto_id fullpath;
-                sprintf(fullpath, "%s/%s/%s", corto_subscriber(this)->query.from, iterResult->parent, iterResult->id);
+                sprintf(
+                    fullpath,
+                    "%s/%s/%s",
+                    corto_subscriber(this)->query.from,
+                    iterResult->parent,
+                    iterResult->id);
                 corto_path_clean(fullpath, fullpath);
+
                 corto_object type_o = corto_resolve(NULL, iterResult->type);
                 if (type_o) {
                     o = corto_declare(root_o, fullpath, type_o);
@@ -945,7 +955,6 @@ corto_object corto_mount_resume(
                         corto_throw("failed to create object %s/%s",
                           parent, name);
                     }
-
                     newObject = TRUE;
                     corto_release(type_o);
                 } else {
@@ -955,7 +964,6 @@ corto_object corto_mount_resume(
                         corto_fullpath(NULL, this));
                     goto error;
                 }
-
             }
 
             if (o) {
@@ -967,12 +975,17 @@ corto_object corto_mount_resume(
 
                 if (newObject) {
                     /* Use define that won't resume */
-                    corto(CORTO_DEFINE, {.object = o});
+                    if (!corto(CORTO_DEFINE, {.object = o})) {
+                        corto_throw(
+                            "failed to define '%s' while resuming",
+                            corto_fullpath(NULL, o));
+                        corto_delete(o);
+                        goto error;
+                    }
                 }
 
                 result = o;
             }
-
         }
 
         if (corto_iter_hasNext(&it)) {
@@ -986,7 +999,6 @@ corto_object corto_mount_resume(
             } while (corto_iter_hasNext(&it));
             goto error;
         }
-
     }
 
     /* Restore owner & attributes */
