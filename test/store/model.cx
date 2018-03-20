@@ -930,6 +930,12 @@ test/Suite Lookup:/
 
 // Test matcher
 test/Suite Matcher:/
+  void tc_emptyString()              // '' => *
+  void tc_null()                     // null => *
+  void tc_scopeEmptyString()         // '' => *
+  void tc_scopeNull()                // null => *
+  void tc_treeEmptyString()          // '' => *
+  void tc_treeNull()                 // null => *
   void tc_id()                       // a => a
   void tc_idFail()                   // a => b
   void tc_idOr()                     // a => a|b

@@ -804,3 +804,44 @@ void test_Matcher_tc_treeOffsetOrFail(
 
 }
 
+void test_Matcher_tc_emptyString(
+    test_Matcher this)
+{
+    corto_bool result = corto_idmatch("*", "");
+    test_assertint(result, TRUE);
+}
+
+void test_Matcher_tc_null(
+    test_Matcher this)
+{
+    corto_bool result = corto_idmatch("*", NULL);
+    test_assertint(result, TRUE);
+}
+
+void test_Matcher_tc_scopeEmptyString(
+    test_Matcher this)
+{
+    corto_bool result = corto_idmatch("/", "");
+    test_assertint(result, TRUE);
+}
+
+void test_Matcher_tc_scopeNull(
+    test_Matcher this)
+{
+    corto_bool result = corto_idmatch("/", NULL);
+    test_assertint(result, TRUE);
+}
+
+void test_Matcher_tc_treeEmptyString(
+    test_Matcher this)
+{
+    corto_bool result = corto_idmatch("//", "");
+    test_assertint(result, TRUE);
+}
+
+void test_Matcher_tc_treeNull(
+    test_Matcher this)
+{
+    corto_bool result = corto_idmatch("//", NULL);
+    test_assertint(result, TRUE);
+}
