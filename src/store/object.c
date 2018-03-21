@@ -265,10 +265,15 @@ corto_equalityKind corto_compareLookupIntern(
     }
 
     if (matchArgs) {
-        if (!ch2 && (ch1 == '(')) {
+        if (!ch2 && ((ch1 == '('))) {
             r = 0;
             goto compare;
         }
+    }
+
+    if (!ch1 && (ch2 == '{')) {
+        r = 0;
+        goto compare;
     }
 
     r = ch1 - ch2;
@@ -3224,21 +3229,58 @@ int32_t corto_release(corto_object o) {
     return i;
 }
 
+/* Create anonymous object from string provided to corto_resolve */
+static
+const char* corto_create_anonymous(
+    corto_object from,
+    corto_object type,
+    const char *value,
+    corto_object* out)
+{
+    const char *ptr = value;
+    bool is_primitive = corto_type(type)->kind == CORTO_PRIMITIVE;
+
+    corto_object result = corto_declare(NULL, NULL, type);
+
+    corto_string_deser_t data = {
+        .out = result,
+        .scope = from,
+        .type = type,
+        .isObject = true
+    };
+
+    if (is_primitive) {
+        ptr += 1;
+    }
+
+    ptr = corto_string_deser(ptr, &data);
+    *out = result;
+
+    if (corto_define(result)) {
+        corto_release(result);
+        *out = NULL;
+        ptr = NULL;
+    }
+
+    if (is_primitive && ptr) {
+        ptr += 1;
+    }
+
+    return ptr;
+}
+
 /* internal function for looking up objects in store & vstore (optional) */
 static
 corto_object corto_lookup_intern(
+    corto_object orig_parent, /* Used when searching for anonymous objects */
     corto_object parent,
     const char *id,
-    bool resume)
+    bool resume,
+    bool secure)
 {
     corto_assert_object(parent);
 
-    corto_log_push_dbg("lookup");
-
-    if (!parent) {
-        parent = root_o;
-    }
-
+    if (!parent) parent = root_o;
     corto_object o = parent;
     corto__object *_o, *_result;
     corto__scope* scope;
@@ -3246,6 +3288,8 @@ corto_object corto_lookup_intern(
     corto_object prev = NULL;
     char ch;
     const char *next, *ptr = id;
+
+    corto_log_push_dbg("lookup");
 
     if (!id || !id[0]) {
         corto_throw("invalid identifier");
@@ -3267,14 +3311,14 @@ corto_object corto_lookup_intern(
             ptr ++;
         }
 
-        if (!ptr[0]) {
+        if (!ptr[0] || ptr[0] == '{') {
             break;
         }
 
-        bool containsArgs = FALSE;
-        for (next = ptr; (ch = *next) && (ch != '/'); next ++) {
+        bool containsArgs = false;
+        for (next = ptr; (ch = *next) && (ch != '/') && (ch != '{'); next ++) {
             if (ch == '(') {
-                containsArgs = TRUE;
+                containsArgs = true;
                 for (next ++; (ch = *next) && (ch != ')'); next ++);
             }
         }
@@ -3366,30 +3410,54 @@ corto_object corto_lookup_intern(
             o = NULL;
         }
 
-        if (i) {
-            corto_release(prev);
+        if (i ++) {
+            corto_release(prev); /* first parent wasn't looked up */
         }
 
-        i++;
-
         if (!o) {
-            break;
+            break; /* break before setting ptr to next */
         }
 
         ptr = next;
     } while (ch);
 
+    /* If object could not be found, try to resume it from mounts */
     if (!o && resume && parent != corto_lang_o) {
         if (!o) {
-            if (corto_resume(prev, ptr, &o)) {
+            /* Make sure that id passed to resume doesn't contain {} */
+            corto_id buffer;
+            const char *id = ptr, *value_start;
+            if ((value_start = strchr(id, '{'))) {
+                strcpy(buffer, id);
+                buffer[value_start - id] = '\0';
+                ptr = value_start;
+            }
+
+            if (corto_resume(prev, id, &o)) {
                 /* Resume failed */
                 goto error;
             }
         }
     }
 
-    if (o && corto_secured() && !corto_authorize(o, CORTO_SECURE_ACTION_READ)) {
-        goto access_error;
+    /* If object was found and search string ends in '{', create an
+     * anonymous object */
+    if (o && ptr[0] == '{') {
+        corto_object out = NULL;
+        do {
+            ptr = corto_create_anonymous(orig_parent, o, ptr, &out);
+            corto_release(o);
+            o = out;
+
+            /* May contain at most two value sections */
+        } while (o && ptr != NULL && ptr[0]);
+    } else if (secure) {
+        /* If an object is anonymous, it does not need to be security checked */
+        if (o && corto_secured() &&
+            !corto_authorize(o, CORTO_SECURE_ACTION_READ))
+        {
+            goto access_error;
+        }
     }
 
     corto_log_pop_dbg();
@@ -3407,242 +3475,67 @@ corto_object corto_lookup(
     corto_object scope,
     const char *id)
 {
-    return corto_lookup_intern(scope, id, TRUE);
+    return corto_lookup_intern(scope, scope, id, true, true);
 }
 
-/* Create anonymous object from string provided to corto_resolve */
-static
-const char* corto_resolveAnonymous(
-    corto_object scope,
-    corto_object o,
-    const char *str,
-    corto_object* out)
+corto_object corto_resolve_intern(
+    corto_object parent,
+    const char *id,
+    bool should_resume)
 {
-    const char *ptr = str;
-    corto_object result = corto_declare(NULL, NULL, o);
-    corto_string_deser_t data = {
-        .out = result,
-        .scope = scope,
-        .type = o,
-        .isObject = TRUE
+    bool err_raised = false;
+    corto_object o = NULL;
+    if (!id || !id[0]) {
+        return NULL;
+    }
+
+    /* If expression is fixed to a scope, call lookup directly */
+    if (id[0] == '.') {
+        return corto_lookup_intern(parent, parent, id, should_resume, true);
+    } else if (id[0] == '/') {
+        return corto_lookup_intern(parent, root_o, id, should_resume, true);
+    }
+
+    corto_log_push_dbg("resolve");
+
+    if (!parent) {
+        parent = root_o;
+    }
+
+    corto_object from[4] = {
+        corto_lang_o,
+        parent,
+        corto_o,
+        corto_vstore_o
     };
 
-    if (corto_type(o)->kind == CORTO_PRIMITIVE) {
-        ptr += 1;
+    int loop;
+    for (loop = 0; !o && !err_raised && (loop < 4); loop ++) {
+        corto_object scope = from[loop];
+        if (!scope)
+            continue; /* If NULL, scope has already been processed */
+
+        do {
+            if (scope == corto_o) from[2] = NULL;
+            if (scope == corto_vstore_o) from[3] = NULL;
+            o = corto_lookup_intern(parent, scope, id, should_resume, false);
+            err_raised = corto_raised();
+        } while (!o &&
+            !err_raised &&
+            (loop == 1) &&
+            (scope = corto_parentof(scope)));
     }
 
-    ptr = corto_string_deser(ptr, &data);
-    *out = result;
-
-    corto_define(result);
-
-    return ptr;
-}
-
-/* Resolve object according to rules of looking up types:
- * - if path is absolute, do regular lookup
- * - look first in corto/lang
- * - then look in provided path
- * - then look in /corto
- */
-corto_object corto_resolve_intern(
-    corto_object _scope,
-    const char *str,
-    bool shouldResume)
-{
-    corto_object scope, _scope_start, o, lookup;
-    const char* ptr;
-    char *bptr;
-    corto_id buffer;
-    char ch;
-    bool fullyQualified = FALSE;
-    bool cortoSearched = FALSE, cortoCoreSearched = FALSE;
-    int step = 3;
-
-    if (!str) {
-        return NULL;
-    }
-
-    ch = str[0];
-
-    if (!ch) {
-        return NULL;
-    }
-
-    if (ch == '.') {
-        _scope_start = _scope;
-    } else {
-        _scope_start = corto_lang_o;
-    }
-    scope = _scope_start;
-
-    if (!_scope) {
-        _scope = root_o;
-    }
-
-    /* Optimization: do not resume objects from builtin scopes, except if they
-     * are in / or /corto. */
-    if (shouldResume) {
-        shouldResume =
-            !corto_isbuiltin(_scope) || _scope == corto_o || _scope == root_o;
-    }
-
-    if (ch == '/') {
-        str += 1;
-        scope = root_o;
-        fullyQualified = TRUE;
-    }
-
-repeat:
-    lookup = NULL;
-    do {
-        o = scope;
-
-        ptr = str;
-        ch = *ptr;
-        if (!ch) {
-            break;
-        }
-        while (ch) {
-            if (scope == corto_o) {
-                cortoSearched = TRUE;
-            } else if (scope == corto_vstore_o) {
-                cortoCoreSearched = TRUE;
-            }
-
-            bptr = buffer;
-            while ((ch = *ptr) && (ch != ':') && (ch != '{') && (ch != '/')) {
-                *bptr = ch;
-                bptr++;
-                ptr++;
-                if (ch == '(') {
-                    while ((ch = *ptr) && (ch != ')')) {
-                        *bptr = ch;
-                        bptr++;
-                        ptr++;
-                    }
-                }
-            }
-            *bptr = '\0';
-
-            /* If buffer is empty, just return current object */
-            if (!*buffer) {
-                if (step == 3) {
-                    return NULL; /* If nothing has been resolved yet, this is
-                                  * not a resolvable expression. */
-                } else {
-                    break;
-                }
-            }
-
-            if (buffer[0] == '.') {
-                if (buffer[1] == '.') {
-                    o = corto_parentof(o);
-                    if (!o) {
-                        corto_throw("cannot resolve parent of root");
-                        goto error;
-                    }
-                    corto_set_ref(&lookup, o);
-                }
-            } else {
-                corto_object prevLookup = lookup;
-
-                o = corto_lookup_intern(o, buffer, shouldResume);
-
-                /* Release lookup after(!) potentially resuming an object. In
-                 * case of a nested resume, a parent will have been
-                 * resumed first. Releasing the parent before resuming the
-                 * child will remove the parent from the store. Becuase the
-                 * child claims the parent, this won't happen after the
-                 * resume. */
-                if (prevLookup) {
-                    corto_release(prevLookup); /* Free reference */
-                }
-
-                lookup = o;
-
-                if (!o) {
-                    if (corto_raised()) {
-                        corto_throw(NULL);
-                        goto error;
-                    }
-                    break;
-                }
-            }
-
-            /* Expect scope or serializable string */
-            if (ch) {
-                if (ch == '{') {
-                    do {
-                        corto_object prev = o;
-                        ptr = corto_resolveAnonymous(_scope, o, (char*)ptr, &o);
-                        if (!ptr) {
-                            o = NULL;
-                        }
-                        corto_release(prev);
-                    } while (ptr && (ch = *ptr) && (ch == '{'));
-
-
-                    break;
-                } else if (ch == '/') {
-                    ptr += 1;
-                } else {
-                    corto_throw("invalid ':' in expression '%s'", str);
-                    o = NULL;
-                    break;
-                }
-            }
-        }
-        if (o) break;
-    } while((step == 2) && (scope = corto_parentof(scope)));
-
-    /* Do lookup in actual scope first, then in corto/vstore, then corto */
-    if (!o && step && !fullyQualified) {
-        switch(--step) {
-        case 2:
-            if ((_scope == corto_o) || (_scope == corto_lang_o)) {
-                _scope_start = scope = root_o;
-            } else {
-                _scope_start = scope = _scope;
-            }
-            goto repeat;
-        case 1:
-            if (!cortoCoreSearched) {
-                _scope_start = scope = corto_vstore_o;
-                goto repeat;
-            }
-            break;
-        case 0:
-            if (!cortoSearched) {
-                _scope_start = scope = corto_o;
-                goto repeat;
-            }
-            break;
-        }
-
-         /* Do goto instead of a recursive call. Besides saving (a little bit of) performance,
-            this also preserves the original searchscope, which is needed in anonymous type lookups, which
-            uses the stringserializer. In a serialized string references to other objects may be relatively
-            scoped. For example: the string sequence{F} results in an anonymous sequence object with
-            elementType 'F', which is looked up in scope '_scope_start'. */
-    }
-
-    /* If the current object is not obtained by a lookup, it is not yet keeped. */
-    if (!lookup && o) {
-        corto_claim(o);
-    }
-
-    if (corto_secured()) {
+    if (!err_raised && corto_secured()) {
         if (o && !corto_authorize(o, CORTO_SECURE_ACTION_READ)) {
-            goto access_error;
+            corto_release(o);
+            o = NULL;
         }
     }
+
+    corto_log_pop_dbg();
 
     return o;
-access_error:
-    corto_release(o);
-error:
-    return NULL;
 }
 
 /* External resolve function */
@@ -5268,7 +5161,11 @@ corto_object _corto(
             gotref = true;
         } else {
             result = corto_lookup_intern(
-                params.parent, (char*)params.id, (action & CORTO_RESUME) != 0);
+                params.parent, /* orig_parent */
+                params.parent, /* parent */
+                (char*)params.id, /* id */
+                (action & CORTO_RESUME) != 0, /* resume */
+                true); /* secure */
             gotref = true;
         }
     } else if (action & CORTO_FORCE_TYPE) {

@@ -6,7 +6,6 @@ void test_AutoResumeSink_onDeclare(
 {
     test_AutoResumeSink this = e->instance;
     this->declared ++;
-
 }
 
 void test_AutoResumeSink_onDefine(
@@ -208,10 +207,10 @@ void test_AutoResumeSink_tc_defineNested2(
     test_assertint(this->declared, 2);
     test_assertint(this->defined, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
+    test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 0);
 
-    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
 
     corto_object sinkMount = corto_resolve(root_o, "sinkMount");
@@ -227,10 +226,10 @@ void test_AutoResumeSink_tc_defineNested2(
     test_assertint(this->declared, 3);
     test_assertint(this->defined, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 3);
+    test_assertint(this->resumed, 2);
     test_assertint(this->suspended, 0);
 
-    test_assertint(*test_constructCalled_o, 3);
+    test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
 
     /* Foo constructor modifies members */
@@ -248,11 +247,11 @@ void test_AutoResumeSink_tc_defineNested2(
     test_assertint(this->defined, 0);
     test_assertint(this->updated, 0);
     test_assertint(this->deleted, 0);
-    test_assertint(this->resumed, 3);
-    test_assertint(this->suspended, 3);
+    test_assertint(this->resumed, 2);
+    test_assertint(this->suspended, 2);
 
-    test_assertint(*test_constructCalled_o, 3);
-    test_assertint(*test_destructCalled_o, 3);
+    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_destructCalled_o, 2);
 
     corto_release(sinkMount);
 
@@ -384,13 +383,13 @@ void test_AutoResumeSink_tc_resolveNested1(
     test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
-    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 2);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
+    test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 0);
 
     /* Foo constructor modifies members */
@@ -401,14 +400,14 @@ void test_AutoResumeSink_tc_resolveNested1(
     corto_release(o);
     corto_release(sinkMount);
 
-    test_assertint(*test_constructCalled_o, 2);
-    test_assertint(*test_destructCalled_o, 2);
+    test_assertint(*test_constructCalled_o, 1);
+    test_assertint(*test_destructCalled_o, 1);
     test_assertint(this->declared, 2);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
-    test_assertint(this->suspended, 2);
+    test_assertint(this->resumed, 1);
+    test_assertint(this->suspended, 1);
 
 }
 
@@ -437,13 +436,13 @@ void test_AutoResumeSink_tc_resolveNested1FromMount(
     test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
-    test_assertint(*test_constructCalled_o, 2);
+    test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 2);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
+    test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 0);
 
     /* Foo constructor modifies values */
@@ -455,14 +454,14 @@ void test_AutoResumeSink_tc_resolveNested1FromMount(
     corto_release(sinkMount);
     corto_release(mount);
 
-    test_assertint(*test_constructCalled_o, 2);
-    test_assertint(*test_destructCalled_o, 2);
+    test_assertint(*test_constructCalled_o, 1);
+    test_assertint(*test_destructCalled_o, 1);
     test_assertint(this->declared, 2);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
-    test_assertint(this->suspended, 2);
+    test_assertint(this->resumed, 1);
+    test_assertint(this->suspended, 1);
 
 }
 
@@ -551,18 +550,17 @@ void test_AutoResumeSink_tc_resolveNested1NotExist(
     test_Foo o = corto_resolve(root_o, "mount/x/notexists");
     test_assert(o == NULL);
 
-    /* x is resumed and suspended */
-    test_assertint(*test_constructCalled_o, 1);
-    test_assertint(*test_destructCalled_o, 1);
-    test_assertint(this->declared, 1);
+    /* x is not resumed and suspended */
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 1);
-    test_assertint(this->suspended, 1);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
 
     corto_release(sinkMount);
-
 }
 
 void test_AutoResumeSink_tc_resolveNested2(
@@ -587,13 +585,13 @@ void test_AutoResumeSink_tc_resolveNested2(
     test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
-    test_assertint(*test_constructCalled_o, 3);
+    test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 3);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 3);
+    test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 0);
 
     /* Foo constructor modifies members */
@@ -604,14 +602,14 @@ void test_AutoResumeSink_tc_resolveNested2(
     corto_release(o);
     corto_release(sinkMount);
 
-    test_assertint(*test_constructCalled_o, 3);
-    test_assertint(*test_destructCalled_o, 3);
+    test_assertint(*test_constructCalled_o, 1);
+    test_assertint(*test_destructCalled_o, 1);
     test_assertint(this->declared, 3);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 3);
-    test_assertint(this->suspended, 3);
+    test_assertint(this->resumed, 1);
+    test_assertint(this->suspended, 1);
 
 }
 
@@ -640,13 +638,13 @@ void test_AutoResumeSink_tc_resolveNested2FromMount(
     test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
 
-    test_assertint(*test_constructCalled_o, 3);
+    test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
     test_assertint(this->declared, 3);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 3);
+    test_assertint(this->resumed, 1);
     test_assertint(this->suspended, 0);
 
     /* Foo constructor modifies members */
@@ -658,14 +656,14 @@ void test_AutoResumeSink_tc_resolveNested2FromMount(
     corto_release(sinkMount);
     corto_release(mount);
 
-    test_assertint(*test_constructCalled_o, 3);
-    test_assertint(*test_destructCalled_o, 3);
+    test_assertint(*test_constructCalled_o, 1);
+    test_assertint(*test_destructCalled_o, 1);
     test_assertint(this->declared, 3);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 3);
-    test_assertint(this->suspended, 3);
+    test_assertint(this->resumed, 1);
+    test_assertint(this->suspended, 1);
 
 }
 
@@ -769,14 +767,14 @@ void test_AutoResumeSink_tc_resolveNested2NotExist(
     test_assert(o == NULL);
 
     /* x is resumed and suspended */
-    test_assertint(*test_constructCalled_o, 2);
-    test_assertint(*test_destructCalled_o, 2);
-    test_assertint(this->declared, 2);
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
-    test_assertint(this->suspended, 2);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
 
     corto_release(sinkMount);
 

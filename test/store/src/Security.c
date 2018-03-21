@@ -157,6 +157,23 @@ void test_Security_tc_authorizeDeniedResolve(
     test_assert(prev == token);
 }
 
+void test_Security_tc_authorizeResolveParentDenied(
+    test_Security this)
+{
+    const char *token = corto_login("Ford Prefect", "42");
+    test_assert(token != NULL);
+    const char *prev = corto_set_session(token);
+    test_assert(prev == NULL);
+
+    test_TestLock l = test_TestLock__create(NULL, NULL, "/a", ".", 0, NULL);
+    test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
+    test_AccessRuleList__insert(l->rules, &r);
+    corto_object b = corto_resolve(root_o, "/a/b");
+    test_assert(b != NULL);
+    prev = corto_set_session(prev);
+    test_assert(prev == token);
+}
+
 void test_Security_tc_authorizeDeniedScopeClaim(
     test_Security this)
 {

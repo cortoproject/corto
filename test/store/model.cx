@@ -1783,6 +1783,7 @@ test/Suite Security:/
     void tc_authorizeSelect()
     void tc_authorizeLookup()
     void tc_authorizeResolve()
+    void tc_authorizeResolveParentDenied()
     void tc_authorizeUpdate()
     void tc_authorizeUpdateVoid()
     void tc_authorizeDelete()

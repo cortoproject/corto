@@ -6,7 +6,6 @@ void test_ResumeSink_onDeclare(
 {
     test_ResumeSink this = e->instance;
     this->declared ++;
-
 }
 
 void test_ResumeSink_onDefine(
@@ -1444,7 +1443,7 @@ void test_ResumeSink_tc_resolveNested1FromNestedVirtualMountPoint(
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(a) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -1563,14 +1562,14 @@ void test_ResumeSink_tc_resolveNested1NotExist(
     test_assert(o == NULL);
 
     /* x is resumed and suspended */
-    test_assertint(*test_constructCalled_o, 1);
-    test_assertint(*test_destructCalled_o, 1);
-    test_assertint(this->declared, 1);
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 1);
-    test_assertint(this->suspended, 1);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
 
     corto_release(sinkMount);
 
@@ -1702,12 +1701,12 @@ void test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
     corto_object a = corto_resolve(vmount, "x/a");
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
-    test_assert(corto_typeof(a) == (corto_type)corto_float32_o);
+    test_assert(corto_typeof(a) == (corto_type)corto_unknown_o);
 
     corto_object x = corto_parentof(a);
     test_assert(x != NULL);
     test_assertstr(corto_fullpath(NULL, x), "/vmount/nested/x");
-    test_assert(corto_typeof(x) == (corto_type)corto_int32_o);
+    test_assert(corto_typeof(x) == (corto_type)corto_unknown_o);
 
     test_assert(corto_delete(k) == 0);
     test_assert(corto_delete(mount) == 0);
@@ -1839,14 +1838,14 @@ void test_ResumeSink_tc_resolveNested2NotExist(
     test_assert(o == NULL);
 
     /* x is resumed and suspended */
-    test_assertint(*test_constructCalled_o, 2);
-    test_assertint(*test_destructCalled_o, 2);
-    test_assertint(this->declared, 2);
+    test_assertint(*test_constructCalled_o, 0);
+    test_assertint(*test_destructCalled_o, 0);
+    test_assertint(this->declared, 0);
     test_assertint(this->defined, 0);
     test_assertint(this->deleted, 0);
     test_assertint(this->updated, 0);
-    test_assertint(this->resumed, 2);
-    test_assertint(this->suspended, 2);
+    test_assertint(this->resumed, 0);
+    test_assertint(this->suspended, 0);
 
     corto_release(sinkMount);
 
