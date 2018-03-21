@@ -130,6 +130,8 @@ bool corto_authorize_id(
     const char *session_token =
         corto_tls_get(CORTO_KEY_SESSION_TOKEN);
 
+    corto_secure_lock active_lock = NULL;
+
     if (corto_secure_keyInstance && corto_secure_keyInstance->enabled) {
         int32_t depth = corto_entityAdmin_claimDepthFromId(objectId);
         uint16_t currentDepth = 0;
@@ -147,6 +149,8 @@ bool corto_authorize_id(
         {
             return true;
         }
+
+        corto_log_push_dbg("authorize:eval-locks");
 
         /* Walk over locks in the lock admin */
         corto_entityAdmin *admin = corto_entityAdmin_claim(&corto_lock_admin);
@@ -166,6 +170,12 @@ bool corto_authorize_id(
                         *expr &&
                         !corto_idmatch(lock->query.select, expr))
                     {
+                        corto_debug(
+                            "skip lock '%s' for '%s' ('%s' does not match '%s')",
+                            corto_fullpath(NULL, lock),
+                            objectId,
+                            lock->query.select,
+                            expr);
                         continue;
                     }
 
@@ -184,6 +194,9 @@ bool corto_authorize_id(
                             result = corto_secure_lock_authorize(
                                 lock, session_token, access);
 
+                            corto_debug("eval '%s' result = %d, priority = %d",
+                                corto_fullpath(NULL, lock), result, lock->priority);
+
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
                              * a higher priority than what was set */
@@ -194,6 +207,12 @@ bool corto_authorize_id(
                                       allowed = result;
                                       priority = lock->priority;
                                       currentDepth = depth;
+                                      active_lock = lock;
+                                      corto_debug(
+                                          "set active '%s' result = %d, priority = %d",
+                                          corto_fullpath(NULL, lock),
+                                          allowed,
+                                          lock->priority);
                                 }
                             }
                         }
@@ -203,13 +222,22 @@ bool corto_authorize_id(
         } while (--depth >= 0);
 
         corto_entityAdmin_release(&corto_lock_admin);
-    }
 
-    if (allowed == CORTO_SECURE_ACCESS_DENIED) {
-        corto_trace(
-            "denied access to object '%s' for session '%s'",
-            objectId,
-            session_token);
+        if (allowed == CORTO_SECURE_ACCESS_DENIED) {
+            corto_ok(
+                "#[red]deny#[normal] access to '%s' for session '%s' by '%s'",
+                objectId,
+                session_token,
+                corto_fullpath(NULL, active_lock));
+        } else {
+            corto_debug(
+                "#[green]allow#[normal] access to '%s' for session '%s' by '%s'",
+                objectId,
+                session_token,
+                corto_fullpath(NULL, active_lock));
+        }
+
+        corto_log_pop_dbg();
     }
 
     return allowed != CORTO_SECURE_ACCESS_DENIED;
