@@ -176,7 +176,7 @@ CORTO_DECL_TRANSFORM(string, boolean) {
 CORTO_DECL_TRANSFORM(enum, string) {
     corto_object constant;
     CORTO_UNUSED(toType);
-    constant = corto_enum_constant((corto_enum)fromType, *(corto_int32*)from);
+    constant = corto_enum_constant_from_value((corto_enum)fromType, *(corto_int32*)from);
     if (!constant) {
         corto_throw("value %d is not valid for enumeration '%s'",
             *(corto_uint32*)from,
@@ -192,7 +192,7 @@ CORTO_DECL_TRANSFORM(string, enum) {
     corto_constant* o;
     CORTO_UNUSED(fromType);
 
-    o = FIND(toType, *(corto_string*)from);
+    o = corto_enum_constant_from_id((corto_enum)toType, *(corto_string*)from);
     if (!o) {
         corto_throw(
             "constant identifier '%s' is not valid for enumeration '%s'",
@@ -201,7 +201,6 @@ CORTO_DECL_TRANSFORM(string, enum) {
         goto error;
     } else {
         *(corto_int32*)to = *o;
-        corto_release(o);
     }
     return 0;
 error:

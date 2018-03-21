@@ -1029,7 +1029,8 @@ CORTO_CLASS_O(lang, enum, lang_primitive, CORTO_LOCAL | CORTO_READONLY, CORTO_AT
     CORTO_METHOD_O(lang_enum, init, "()", lang_int16, corto_enum_init);
     CORTO_METHOD_O(lang_enum, construct, "()", lang_int16, corto_enum_construct);
     CORTO_METHOD_O(lang_enum, destruct, "()", lang_void, corto_enum_destruct);
-    CORTO_METHOD_O(lang_enum, constant, "(int32 value)", lang_object, corto_enum_constant);
+    CORTO_METHOD_O(lang_enum, constant_from_value, "(int32 value)", lang_object, corto_enum_constant_from_value);
+    CORTO_METHOD_O(lang_enum, constant_from_id, "(string id)", lang_object, corto_enum_constant_from_id);
 
 /* /corto/lang/bitmask */
 CORTO_FW_I(lang, bitmask);
@@ -1443,7 +1444,7 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_METHOD_O(vstore_mount, id, "()", lang_string, corto_mount_id);
     CORTO_METHOD_O(vstore_mount, query, "(vstore/query query)", vstore_resultIter, corto_mount_query);
     CORTO_METHOD_O(vstore_mount, historyQuery, "(vstore/query query)", vstore_resultIter, corto_mount_query);
-    CORTO_METHOD_O(vstore_mount, resume, "(string parent,string name,object o)", lang_object, corto_mount_resume);
+    CORTO_METHOD_O(vstore_mount, resume, "(string parent,string name,inout:object o)", lang_int16, corto_mount_resume);
     CORTO_METHOD_O(vstore_mount, subscribe, "(/corto/vstore/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(vstore_mount, unsubscribe, "(/corto/vstore/query query)", lang_void, corto_mount_unsubscribe);
     CORTO_OVERRIDABLE_O(vstore_mount, on_invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_on_invoke_v);

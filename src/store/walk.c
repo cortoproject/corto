@@ -204,7 +204,7 @@ bool corto_serializeMatchAccess(
         break;
     default:
         corto_error("unsupported operator %s for serializer accessKind.",
-            corto_idof(corto_enum_constant(corto_operatorKind_o, accessKind)));
+            corto_idof(corto_enum_constant_from_value(corto_operatorKind_o, accessKind)));
         result = FALSE;
         break;
     }

@@ -25,11 +25,42 @@ struct corto_enum_findConstant_t {
     corto_constant* o;
 };
 
-corto_object corto_enum_constant(
+corto_object corto_enum_constant_from_value(
     corto_enum this,
     int32_t value)
 {
-    /* Walk scope */
+    /* Walk constants */
+    int i;
+    for (i = 0; i < this->constants.length; i ++) {
+        if (*(corto_constant*)this->constants.buffer[i] == value) {
+            return this->constants.buffer[i];
+        }
+    }
+
+    return NULL;
+}
+
+corto_object corto_enum_constant_from_id(
+    corto_enum this,
+    const char *id)
+{
+    /* Walk constants */
+    int i;
+    for (i = 0; i < this->constants.length; i ++) {
+        corto_constant *constant = this->constants.buffer[i];
+        if (!stricmp(corto_idof(constant), id)) {
+            return this->constants.buffer[i];
+        }
+    }
+
+    return NULL;
+}
+
+corto_object corto_enum_value(
+    corto_enum this,
+    int32_t value)
+{
+    /* Walk constants */
     int i;
     for (i = 0; i < this->constants.length; i ++) {
         if (*(corto_constant*)this->constants.buffer[i] == value) {

@@ -585,7 +585,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_verbatim_init_),\
     /* enum */\
     BUILTIN_OBJ(lang_enum_constants),\
-    BUILTIN_OBJ(lang_enum_constant_),\
+    BUILTIN_OBJ(lang_enum_constant_from_value_),\
+    BUILTIN_OBJ(lang_enum_constant_from_id_),\
     BUILTIN_OBJ(lang_enum_init_),\
     BUILTIN_OBJ(lang_enum_construct_),\
     BUILTIN_OBJ(lang_enum_destruct_),\

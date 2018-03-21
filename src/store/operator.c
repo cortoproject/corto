@@ -298,7 +298,7 @@ corto_int16 corto_ptr_unaryOp(corto_type type, corto_operatorKind operator, void
         } else {
             corto_throw(
               "unary operator '%s' is not implemented for type '%s'",
-              corto_idof(corto_enum_constant(corto_operatorKind_o, operator)),
+              corto_idof(corto_enum_constant_from_value(corto_operatorKind_o, operator)),
               corto_fullpath(NULL, type));
             goto error;
         }
@@ -316,7 +316,7 @@ corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, voi
             impl(operand1, operand2, result);
         } else {
             corto_throw("binary operator '%s' is not implemented for type '%s'",
-              corto_idof(corto_enum_constant(corto_operatorKind_o, operator)),
+              corto_idof(corto_enum_constant_from_value(corto_operatorKind_o, operator)),
               corto_fullpath(NULL, type));
             goto error;
         }
