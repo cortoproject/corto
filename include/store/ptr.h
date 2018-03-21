@@ -116,6 +116,20 @@ CORTO_EXPORT
 corto_type corto_mem_typeof(
     void *ptr);
 
+/** Deserialize value into mem pointer.
+ *
+ * @param ptr A pointer to the value.
+ * @param fmt Format of the serialized value.
+ * @param value The serialized value.
+ * @see corto_ptr_new
+ */
+CORTO_EXPORT
+int16_t corto_mem_deserialize(
+    void *ptr,
+    const char *fmt,
+    const void *value);
+
+
 /** Populate a collection with specified number of elements.
  * This function fills a collection with initialized elements. Depending on
  * the kind of the collection the function will either populate an array, sequence

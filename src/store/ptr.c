@@ -196,6 +196,24 @@ corto_type corto_mem_typeof(
     return *(corto_type*)ptr;
 }
 
+int16_t corto_mem_deserialize(
+    void *ptr,
+    const char *fmt,
+    const void *value)
+{
+    corto_fmt fmt_handle;
+
+    if (!(fmt_handle = corto_fmt_lookup(fmt))) {
+        goto error;
+    }
+
+    corto_value v = corto_value_mem(ptr, corto_mem_typeof(ptr));
+
+    return fmt_handle->toValue(&v, (corto_word)value);
+error:
+    return -1;
+}
+
 int16_t _corto_ptr_resize(
     void *ptr,
     corto_type type,
