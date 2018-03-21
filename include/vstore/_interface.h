@@ -197,11 +197,11 @@ corto_resultIter _corto_mount_query(
     corto_query *query);
 
 CORTO_EXPORT
-corto_object _corto_mount_resume(
+int16_t _corto_mount_resume(
     corto_mount _this,
     const char *parent,
     const char *name,
-    corto_object o);
+    corto_object *o);
 
 CORTO_EXPORT
 void _corto_mount_return(
@@ -421,4 +421,3 @@ int16_t _corto_subscriber_event_init(
 #endif
 
 #endif
-

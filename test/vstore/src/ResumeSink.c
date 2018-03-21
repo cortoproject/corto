@@ -63,13 +63,11 @@ void test_ResumeSink_setup(
     corto_observer_observe(test_ResumeSink_onUpdate_o, this, mount);
     corto_observer_observe(test_ResumeSink_on_resume_o, this, mount);
     corto_observer_observe(test_ResumeSink_onSuspend_o, this, mount);
-
 }
 
 void test_ResumeSink_tc_cleanupParentFromResumedChild(
     test_ResumeSink this)
 {
-
     /* Create a mount that mounts data under vmount, which does not exist in the
      * RAM store. */
     corto_object mount = test_VirtualSinkMount__create(NULL, NULL, "/vmount");
@@ -1944,4 +1942,97 @@ void test_ResumeSink_tc_cleanupResumedParentOfCreatedChild(
     corto_object child = corto_create(parent, "child", corto_void_o);
     test_assert(child != NULL);
     test_assert(corto_release(parent) == 1);
+}
+
+void test_ResumeSink_tc_lookupContentTypeFail(
+    test_ResumeSink this)
+{
+    /* Create mount intentionally with a type that doesn't match the JSON */
+    corto_object data_o = corto_create(root_o, "data", corto_void_o);
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/InvalidPoint");
+
+    corto_object a = corto_lookup(NULL, "data/a");
+    test_assert(a == NULL);
+    test_assert(corto_catch() != 0);
+}
+
+void test_ResumeSink_tc_defineContentTypeFail(
+    test_ResumeSink this)
+{
+    /* Create mount intentionally with a type that doesn't match the JSON */
+    corto_object data_o = corto_create(root_o, "data", corto_void_o);
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/InvalidPoint");
+
+    corto_object a = corto_declare(root_o, "data/a", test_InvalidPoint_o);
+    test_assert(a != NULL);
+
+    test_assert(corto_define(a) != 0);
+    test_assert(corto_catch() != 0);
+    test_assert(corto_delete(a) == 0);
+}
+
+void test_ResumeSink_tc_resolveContentTypeFail(
+    test_ResumeSink this)
+{
+    /* Create mount intentionally with a type that doesn't match the JSON */
+    corto_object data_o = corto_create(root_o, "data", corto_void_o);
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/InvalidPoint");
+
+    corto_object a = corto_resolve(root_o, "data/a");
+    test_assert(a == NULL);
+    test_assert(corto_catch() != 0);
+}
+
+void test_ResumeSink_tc_createContentTypeFail(
+    test_ResumeSink this)
+{
+    /* Create mount intentionally with a type that doesn't match the JSON */
+    corto_object data_o = corto_create(root_o, "data", corto_void_o);
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/InvalidPoint");
+
+    corto_object a = corto_create(root_o, "data/a", test_InvalidPoint_o);
+    test_assert(a == NULL);
+    test_assert(corto_catch() != 0);
+}
+
+void test_ResumeSink_tc_resumeWithAutoFilter(
+    test_ResumeSink this)
+{
+    /* JSON mount always returns all results regardless of filter */
+    corto_object data_o = corto_create(root_o, "data", corto_void_o);
+    test_JsonReplicator__create(NULL, NULL, data_o, "/test/Point");
+
+    /* Resume object. Should work even though mount returns multiple objects */
+    corto_object a = corto_create(root_o, "data/a", test_Point_o);
+    test_assert(a != NULL);
+
+    test_assert(corto_delete(a) == 0);
+}
+
+void test_ResumeSink_tc_declareAndResume(
+    test_ResumeSink this)
+{
+    /* Create a mount that mounts data under / */
+    corto_object data_o = corto_lookup(root_o, "data");
+    corto_object m = test_SinkMount__create(
+        NULL, NULL, data_o, "test/Point", "{10, 20}");
+    test_assert(m != NULL);
+
+    /* Declare and resume object from mount */
+    test_Point *x = corto(CORTO_DECLARE|CORTO_RESUME, {
+        .parent = data_o,
+        .id = "x",
+        .type = test_Point_o
+    });
+
+    test_assert(x != NULL);
+    test_assert(corto_typeof(x) == (corto_type)test_Point_o);
+    test_assert(corto_parentof(x) == data_o);
+    test_assertstr(corto_idof(x), "x");
+    test_assertint(x->x, 10);
+    test_assertint(x->y, 20);
+    test_assert(corto_check_state(x, CORTO_VALID));
+
+    test_assert(corto_delete(x) == 0);
+    test_assert(corto_delete(m) == 0);
 }

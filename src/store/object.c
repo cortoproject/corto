@@ -48,7 +48,8 @@ bool corto_source_match(
 static
 int16_t corto_define_intern(
     corto_object o,
-    bool resume);
+    bool resume,
+    bool only_when_resumed);
 
 static
 int16_t corto_lock_intern(
@@ -1063,7 +1064,7 @@ int16_t corto_defineContainer(
                         corto_fullpath(NULL, parent));
                     goto error;
                 }
-                if (corto_define_intern(o, resume)) {
+                if (corto_define_intern(o, resume, false)) {
                     corto_release(o);
                     goto error;
                 }
@@ -1077,7 +1078,7 @@ int16_t corto_defineContainer(
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
             if (corto_typeof(corto_typeof(c)) == corto_type(corto_table_o)) {
-                if (corto_define_intern(c, resume)) {
+                if (corto_define_intern(c, resume, false)) {
                     corto_release(c);
                     goto error;
                 }
@@ -1090,7 +1091,7 @@ int16_t corto_defineContainer(
         int32_t i, error = 0;
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
-            if (corto_define_intern(c, resume)) {
+            if (corto_define_intern(c, resume, false)) {
                 error = 1;
             }
         }
@@ -1441,7 +1442,7 @@ corto_object corto_declareChild_intern(
             {
                 if (defineVoid) {
                     /* Never resume void objects - there's nothing to resume */
-                    int rc = corto_define_intern(o, FALSE);
+                    int rc = corto_define_intern(o, false, false);
                     corto_assert(rc == 0, "void objects should not fail to define");
                 }
             }
@@ -1474,7 +1475,7 @@ corto_object corto_create_intern(
 {
     if (result && !corto_check_state(result, CORTO_VALID))
     {
-        if (corto_define_intern(result, resume)) {
+        if (corto_define_intern(result, resume, false)) {
             corto_delete(result);
             result = NULL;
         }
@@ -1489,6 +1490,7 @@ typedef struct corto_resumeWalk_t {
     char *parent_id;
     char *id;
     uint32_t count;
+    bool error;
 } corto_resumeWalk_t;
 
 static
@@ -1523,8 +1525,14 @@ int corto_resumeWalk(
             corto_debug("try resume '%s' from '%s' for mount '%s'",
                 id, parent, corto_fullpath(NULL, entity));
 
-            data->result = corto_mount_resume(
-                mount, parent, id, data->o);
+            corto_object resumed = data->o;
+
+            if(corto_mount_resume(mount, parent, id, &resumed)) {
+                corto_throw(NULL);
+                goto error;
+            }
+
+            data->result = resumed;
 
             if (last_sep) {
                 last_sep[0] = '/';
@@ -1555,18 +1563,24 @@ int corto_resumeWalk(
     }
 
     return 1;
+error:
+    data->error = true;
+    return 0;
 }
 
 /* Try resuming an object from a mount.
  * Precondition: 'expr' contains the expression starting from the object that
  * could not be found in the object store. */
-corto_object corto_resume(
+int16_t corto_resume(
     corto_object parent,
     const char *expr,
-    corto_object o)
+    corto_object *o_out)
 {
+    corto_object o = *o_out;
+
     if (o == root_o) {
-        return o;
+        *o_out = NULL;
+        return 0;
     }
 
     if (!parent) {
@@ -1574,11 +1588,13 @@ corto_object corto_resume(
     }
 
     if (parent != root_o && !corto_childof(root_o, parent)) {
-        return NULL;
+        *o_out = NULL;
+        return 0;
     }
 
     if (!expr) {
-        return NULL;
+        *o_out = NULL;
+        return 0;
     }
 
     corto_log_push_dbg("resume");
@@ -1590,10 +1606,6 @@ corto_object corto_resume(
 
     corto_resumeWalk_t walkData = {
         .o = o,
-        .result = NULL,
-        .parent_id = NULL,
-        .id = NULL,
-        .count = 0
     };
 
     corto_id full_id;
@@ -1635,6 +1647,11 @@ corto_object corto_resume(
             false,
             &walkData);
 
+        if (walkData.error) {
+            corto_log_pop_dbg();
+            goto error;
+        }
+
         if (id_ptr == full_id) {
             break;
         }
@@ -1648,12 +1665,18 @@ corto_object corto_resume(
 
     corto_log_pop_dbg();
 
-    return walkData.result;
+    if (o_out) {
+        *o_out = walkData.result;
+    }
+
+    return 0;
+error:
+    return -1;
 }
 
 /* Resume a declared object */
 static
-bool corto_resumeDeclared(
+int corto_resumeDeclared(
     corto_object o,
     bool resume)
 {
@@ -1672,8 +1695,13 @@ bool corto_resumeDeclared(
          * persistent copy is already available */
         if (!_p->source && corto_check_attr(o, CORTO_ATTR_NAMED)) {
             if (resume) {
-                if (corto_resume(corto_parentof(o), corto_idof(o), o)) {
-                    resumed = TRUE;
+                corto_object out = o;
+                if (!corto_resume(corto_parentof(o), corto_idof(o), &out)) {
+                    if (out) {
+                        resumed = TRUE;
+                    }
+                } else {
+                    goto error;
                 }
             }
 
@@ -1687,6 +1715,8 @@ bool corto_resumeDeclared(
     }
 
     return resumed;
+error:
+    return -1;
 }
 
 /* Construct a declared object */
@@ -1861,7 +1891,7 @@ corto_object corto_declareChildRecursive_intern(
             if (defineSelf) {
                 /* Call constructor */
                 if (!corto_check_state(result, CORTO_VALID)) {
-                    if (corto_define_intern(result, resume)) {
+                    if (corto_define_intern(result, resume, false)) {
                         result = NULL; /* Signal failure */
                     }
                 }
@@ -1917,7 +1947,8 @@ corto_object _corto_create(
 static
 int16_t corto_define_intern(
     corto_object o,
-    bool resume)
+    bool resume,
+    bool only_when_resumed)
 {
     int16_t result = 0;
 
@@ -1940,14 +1971,19 @@ int16_t corto_define_intern(
             }
         }
 
-        bool resumed = corto_resumeDeclared(o, resume);
-        result = corto_defineDeclared(o);
-
-        if (!result) {
-            result = corto_notifyDefined(
-                o, resume, resumed ? CORTO_RESUME : CORTO_DEFINE);
+        int resumed = corto_resumeDeclared(o, resume);
+        if (resumed == -1) {
+            corto_throw(NULL);
+            goto error;
         }
 
+        if (!only_when_resumed || resumed) {
+            result = corto_defineDeclared(o);
+            if (!result) {
+                result = corto_notifyDefined(
+                    o, resume, resumed ? CORTO_RESUME : CORTO_DEFINE);
+            }
+        }
     } else {
         corto_type t = corto_typeof(o);
         if (t->flags & CORTO_TYPE_IS_CONTAINER) {
@@ -1968,7 +2004,7 @@ error:
 int16_t corto_define(
     corto_object o)
 {
-    return corto_define_intern(o, TRUE);
+    return corto_define_intern(o, true, false);
 }
 
 /* Destruct object */
@@ -3345,7 +3381,10 @@ corto_object corto_lookup_intern(
 
     if (!o && resume && parent != corto_lang_o) {
         if (!o) {
-            o = corto_resume(prev, ptr, NULL);
+            if (corto_resume(prev, ptr, &o)) {
+                /* Resume failed */
+                goto error;
+            }
         }
     }
 
@@ -3792,7 +3831,11 @@ int16_t corto_update(corto_object o) {
             goto error;
         }
         if (!corto_check_state(o, CORTO_VALID)) {
-            mask |= corto_resumeDeclared(o, true) ? CORTO_RESUME : CORTO_DEFINE;
+            int resumed = corto_resumeDeclared(o, true);
+            if (resumed == -1) {
+                goto error;
+            }
+            mask |= resumed ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
                 result = corto_notifyDefined(o, true, mask);
@@ -3804,7 +3847,11 @@ int16_t corto_update(corto_object o) {
         }
     } else {
         if (!corto_check_state(o, CORTO_VALID)) {
-            mask |= corto_resumeDeclared(o, true) ? CORTO_RESUME : CORTO_DEFINE;
+            int resumed = corto_resumeDeclared(o, true);
+            if (resumed == -1) {
+                goto error;
+            }
+            mask |= resumed ? CORTO_RESUME : CORTO_DEFINE;
             result = corto_defineDeclared(o);
             if (!result) {
                 result = corto_notifyDefined(o, true, mask);
@@ -3856,7 +3903,9 @@ int16_t corto_update_begin_intern(
     }
 
     if (!corto_check_state(o, CORTO_VALID)) {
-        corto_resumeDeclared(o, resume);
+        if (corto_resumeDeclared(o, resume) == -1) {
+            goto error;
+        }
     }
 
     if (!(type->flags & CORTO_TYPE_HAS_TARGET) && (corto_typeof(type) != (corto_type)corto_target_o) && !corto_owned(o)) {
@@ -5264,9 +5313,18 @@ corto_object _corto(
                     goto error;
                 }
             } else {
-                if (corto_define_intern(result, (action & CORTO_RESUME) != 0)) {
+                if (corto_define_intern(
+                    result, (action & CORTO_RESUME) != 0, false))
+                {
                     goto error;
                 }
+            }
+        } else if (action & CORTO_RESUME) {
+            /* Only define when resuming object */
+            if (corto_define_intern(result, true, true)) {
+                corto_delete(result);
+                result = NULL;
+                goto error;
             }
         }
     }
@@ -5297,7 +5355,7 @@ corto_object _corto(
     return result;
 error:
     if (action & CORTO_DECLARE) {
-        corto_delete(result);
+        if (result) corto_delete(result);
     } else if (!exists) {
         corto_release(result);
     }

@@ -643,8 +643,10 @@ bool corto_selectIterMount(
         data->item.type[0] = '\0';
     }
 
-    /* If src & dst contentTypes are different, translate */
+    /* If src & dst contentTypes are different and result is not hidden,
+     * translate */
     corto_fmt srcType = corto_selectSrcContentType(data);
+
     if (data->dstSer && (data->dstSer != srcType)) {
         /* Convert value */
         data->dstSer->release(data->item.value);

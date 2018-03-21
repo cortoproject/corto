@@ -14,7 +14,6 @@ void test_AutoResumeSink_onDefine(
 {
     test_AutoResumeSink this = e->instance;
     this->defined ++;
-
 }
 
 void test_AutoResumeSink_onDelete(

@@ -5,10 +5,11 @@
 int16_t test_JsonReplicator_construct(
     test_JsonReplicator this)
 {
-    corto_mount_setContentType(this, "application/json");
+    corto_mount_setContentType(this, "text/json");
+    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->policy.filterResults = true;
     return corto_mount_construct(this);
 }
-
 
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {

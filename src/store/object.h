@@ -216,10 +216,10 @@ void corto_free(
     void *base_ptr,
     corto_type type);
 
-corto_object corto_resume(
+int16_t corto_resume(
     corto_object parent,
     const char *expr,
-    corto_object o);
+    corto_object *o);
 
 int16_t corto_suspend(
     corto_object o);

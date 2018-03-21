@@ -20,7 +20,12 @@ bool corto_query_match(
     corto_assert(result->parent != NULL, "no parent specified in result");
     corto_assert(result->type != NULL, "no type specified in result");
 
-    if (this->type && this->type[0] && strcmp(this->type, result->type)) {
+    const char *result_type = result->type;
+    const char *query_type = this->type;
+    if (result_type[0] == '/') result_type ++;
+    if (query_type[0] == '/') query_type ++;
+
+    if (this->type && this->type[0] && strcmp(result_type, query_type)) {
         return false;
     }
 
@@ -34,4 +39,3 @@ bool corto_query_match(
 
     return true;
 }
-

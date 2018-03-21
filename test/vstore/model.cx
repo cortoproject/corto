@@ -20,6 +20,9 @@ struct Point:/
     x, y: int32
     string nameof()
 
+struct InvalidPoint:/
+    x, y: Point // This will throw an error when trying to deserialize a number
+
 class JsonReplicator : mount, hidden:/
     alias mount: mount/mount
     type: string
@@ -364,6 +367,12 @@ test/Suite ResumeSink:/
     void tc_resumeNestedFromMultiple()
     void tc_cleanupParentFromResumedChild()
     void tc_cleanupResumedParentOfCreatedChild()
+    void tc_resolveContentTypeFail()
+    void tc_lookupContentTypeFail()
+    void tc_defineContentTypeFail()
+    void tc_createContentTypeFail()
+    void tc_resumeWithAutoFilter()
+    void tc_declareAndResume()
 
     observer onDeclare: declare | on_tree
     observer onDefine: define | on_tree

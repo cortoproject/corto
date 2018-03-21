@@ -880,18 +880,101 @@ corto_resultIter corto_mount_historyQuery(
     return result;
 }
 
-corto_object corto_mount_resume(
+int16_t corto_mount_resumeResult(
     corto_mount this,
     const char *parent,
-    const char *name,
-    corto_object o)
+    const char *id,
+    corto_result *r,
+    corto_object *o_out)
 {
-    /* If objects from mount are not owned locally they cannot be resumed */
-    if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
-        return NULL;
+    corto_bool new_object = false;
+    corto_id fullpath;
+    corto_object type_o;
+    corto_object result = NULL;
+
+    corto_object o = *o_out;
+
+    if (r->parent[0] == '/') {
+        corto_throw(
+          "mount returned full path '%s', expected relative path",
+          r->parent);
+        corto_raise();
+        goto error;
     }
 
-    corto_log_push(strarg("resume:%s/%s", parent, name));
+    if (!o) {
+        sprintf(
+            fullpath,
+            "%s/%s/%s",
+            corto_subscriber(this)->query.from,
+            r->parent,
+            r->id);
+        corto_path_clean(fullpath, fullpath);
+
+        type_o = corto_resolve(NULL, r->type);
+        if (type_o) {
+            o = corto_declare(root_o, fullpath, type_o);
+            if (!o) {
+                corto_throw("failed to create object %s/%s",
+                   parent, id);
+                goto error;
+            }
+            new_object = true;
+            corto_release(type_o);
+        } else {
+            corto_throw("mount returned unknown type '%s'",
+                r->type);
+            goto error;
+        }
+    }
+
+    if (o) {
+        corto_value v = corto_value_object(o, NULL);
+        if (this->contentTypeOutHandle && r->value) {
+            if(((corto_fmt)this->contentTypeOutHandle)->toValue(
+                &v, r->value))
+            {
+                corto_throw("failed to deserialize into resumed object '%s/%s'",
+                    parent, id);
+                goto error;
+            }
+        }
+
+        if (new_object) {
+            /* Use define that won't resume */
+            if (!corto(CORTO_DEFINE, {.object = o})) {
+                corto_throw(
+                    "failed to define '%s' while resuming",
+                    corto_fullpath(NULL, o));
+                goto error;
+            }
+        }
+
+        result = o;
+    }
+
+    *o_out = result;
+
+    return 0;
+error:
+    return -1;
+}
+
+int16_t corto_mount_resume(
+    corto_mount this,
+    const char *parent,
+    const char *id,
+    corto_object *o_out)
+{
+    corto_object o = *o_out;
+
+    /* If objects from mount are not owned locally they cannot be resumed */
+    if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
+        *o_out = NULL;
+        return 0;
+    }
+
+    corto_log_push(strarg("resume:%s/%s", parent, id));
 
     /* Ensure that if object is created, owner & attributes are set correctly */
     corto_attr prevAttr = corto_set_attr(CORTO_ATTR_PERSISTENT | corto_get_attr());
@@ -902,117 +985,99 @@ corto_object corto_mount_resume(
     if (this->explicitResume) {
         corto_debug(
             "mount: on_resume parent=%s, expr=%s (mount = %s, o = %p)",
-            parent, name, corto_fullpath(NULL, this), o);
-        result = corto_mount_on_resume(this, parent, name, o);
+            parent, id, corto_fullpath(NULL, this), o);
+        result = corto_mount_on_resume(this, parent, id, o);
     } else {
-        corto_id type;
-        corto_query q;
-        corto_bool newObject = FALSE;
+        corto_query q = {0};
+        corto_id type = {0};
 
-        /* Prepare request */
-        memset(&q, 0, sizeof(q));
-        q.select = (char*)name;
-        q.from = (char*)parent;
+        /* If an object is provided, narrow down results to its type */
         if (o) {
             corto_fullpath(type, corto_typeof(o));
-        } else {
-            type[0] = '\0';
         }
 
+        /* Prepare request */
+        q.select = (char*)id;
+        q.from = (char*)parent;
         q.type = type;
         q.content = TRUE;
 
+        /* Query the mount */
         corto_resultIter it = corto_mount_query(this, &q);
 
         if (corto_iter_hasNext(&it)) {
-            corto_result *iterResult = corto_iter_next(&it);
-            if (!o) {
-                if (iterResult->parent[0] == '/') {
-                    corto_throw(
-                      "mount '%s' of type '%s' returned full path '%s' (id = '%s'), expected relative path",
-                      corto_fullpath(NULL, this),
-                      corto_fullpath(NULL, corto_typeof(this)),
-                      iterResult->parent,
-                      iterResult->id
-                    );
-                    corto_raise();
-                    goto error;
-                }
+            corto_result *r = corto_iter_next(&it);
 
-                corto_id fullpath;
-                sprintf(
-                    fullpath,
-                    "%s/%s/%s",
-                    corto_subscriber(this)->query.from,
-                    iterResult->parent,
-                    iterResult->id);
-                corto_path_clean(fullpath, fullpath);
-
-                corto_object type_o = corto_resolve(NULL, iterResult->type);
-                if (type_o) {
-                    o = corto_declare(root_o, fullpath, type_o);
-                    if (!o) {
-                        corto_throw("failed to create object %s/%s",
-                          parent, name);
+            /* If mount requests that corto should filter its results, it may
+             * return more than one result */
+            if (this->policy.filterResults) {
+                do {
+                    /* If this mount required corto to filter its own results,
+                     * test if returned object is requested object */
+                    if (!corto_query_match(&q, r)) {
+                        if (corto_iter_hasNext(&it)) {
+                            r = corto_iter_next(&it);
+                            continue;
+                        } else {
+                            /* Object was not found */
+                            r = NULL;
+                            break;
+                        }
+                    } else {
+                        /* Match has been found */
+                        break;
                     }
-                    newObject = TRUE;
-                    corto_release(type_o);
-                } else {
-                    corto_throw("unresolved type '%s' of object '%s' returned by '%s'",
-                        iterResult->type,
-                        iterResult->id,
-                        corto_fullpath(NULL, this));
-                    goto error;
-                }
+                } while (true);
             }
 
-            if (o) {
-                corto_value v = corto_value_object(o, NULL);
-                if (this->contentTypeOutHandle && iterResult->value) {
-                    ((corto_fmt)this->contentTypeOutHandle)->toValue(
-                        &v, iterResult->value);
-                }
+            if (r) {
+                corto_object out = o;
+                int16_t resume_failed = corto_mount_resumeResult(
+                    this, parent, id, r, &out);
+                result = out;
 
-                if (newObject) {
-                    /* Use define that won't resume */
-                    if (!corto(CORTO_DEFINE, {.object = o})) {
-                        corto_throw(
-                            "failed to define '%s' while resuming",
-                            corto_fullpath(NULL, o));
-                        corto_delete(o);
+                if (corto_iter_hasNext(&it)) {
+                    if (!this->policy.filterResults) {
+                        /* If mount is doing its own filtering but is returning
+                         * more than one result, something is wrong */
+                        corto_error(
+                         "query select='%s',from='%s' yielded multiple objects",
+                          id,
+                          parent);
+
+                        /* Clean up resources */
+                        corto_iter_release(&it);
                         goto error;
                     }
                 }
 
-                result = o;
+                /* Goto error after resources have been cleaned up */
+                if (resume_failed) {
+                    goto error;
+                }
             }
         }
-
-        if (corto_iter_hasNext(&it)) {
-            corto_error(
-              "corto: mount should not return more than one object (scope = '%s', id = '%s')",
-              parent,
-              name);
-            do {
-                corto_result *r = corto_iter_next(&it);
-                fprintf(stderr, "  excess result: %s/%s\n", r->parent, r->id);
-            } while (corto_iter_hasNext(&it));
-            goto error;
-        }
     }
 
-    /* Restore owner & attributes */
+    if (result) {
+        corto_debug("resumed '%s/%s'",
+            parent, id);
+    }
+
     corto_set_attr(prevAttr);
     corto_set_source(prevOwner);
-    if (result) {
-        corto_debug("resumed '%s/%s' from '%s'", parent, name, corto_fullpath(NULL, this));
+    corto_log_pop();
+
+    if (o_out) {
+        *o_out = result;
     }
 
-    corto_log_pop();
-    return result;
+    return 0;
 error:
+    corto_set_attr(prevAttr);
+    corto_set_source(prevOwner);
     corto_log_pop();
-    return NULL;
+    return -1;
 }
 
 void corto_mount_return(
@@ -1041,7 +1106,7 @@ void corto_mount_return(
         return;
     }
 
-    if (!r->value && this->contentTypeOutHandle) {
+    if (!r->value && this->contentTypeOutHandle && !(r->flags & CORTO_RESULT_HIDDEN)) {
         corto_error("mount: returned result that doesn't set value but mount has contentType");
         return;
     }
