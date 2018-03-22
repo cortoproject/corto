@@ -759,6 +759,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_loader_construct_),\
     BUILTIN_OBJ(vstore_loader_destruct_),\
     BUILTIN_OBJ(vstore_loader_on_query_),\
+    BUILTIN_OBJ(vstore_loader_on_resume_),\
     /* delegatedata */\
     BUILTIN_OBJ(lang_delegatedata_instance),\
     BUILTIN_OBJ(lang_delegatedata_procedure),\

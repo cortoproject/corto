@@ -16,6 +16,14 @@ extern "C" {
 /* class corto/secure/key */
 
 CORTO_EXPORT
+int16_t _corto_secure_key_construct(
+    corto_secure_key _this);
+
+CORTO_EXPORT
+void _corto_secure_key_destruct(
+    corto_secure_key _this);
+
+CORTO_EXPORT
 corto_string _corto_secure_key_login_v(
     corto_secure_key _this,
     const char *user,
@@ -25,14 +33,6 @@ CORTO_EXPORT
 void _corto_secure_key_logout_v(
     corto_secure_key _this,
     const char *key);
-
-CORTO_EXPORT
-int16_t _corto_secure_key_construct(
-    corto_secure_key _this);
-
-CORTO_EXPORT
-void _corto_secure_key_destruct(
-    corto_secure_key _this);
 
 
 /* class corto/secure/lock */
@@ -56,3 +56,4 @@ void _corto_secure_lock_destruct(
 #endif
 
 #endif
+

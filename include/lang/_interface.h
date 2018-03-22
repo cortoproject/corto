@@ -154,14 +154,14 @@ bool _corto_delegate_instanceof(
 /* class corto/lang/enum */
 
 CORTO_EXPORT
-corto_object _corto_enum_constant_from_value(
-    corto_enum _this,
-    int32_t value);
-
-CORTO_EXPORT
 corto_object _corto_enum_constant_from_id(
     corto_enum _this,
     const char *id);
+
+CORTO_EXPORT
+corto_object _corto_enum_constant_from_value(
+    corto_enum _this,
+    int32_t value);
 
 CORTO_EXPORT
 int16_t _corto_enum_construct(
@@ -534,3 +534,4 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
+

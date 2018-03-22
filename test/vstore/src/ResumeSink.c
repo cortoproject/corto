@@ -29,7 +29,6 @@ void test_ResumeSink_on_resume(
 {
     test_ResumeSink this = e->instance;
     this->resumed ++;
-
 }
 
 void test_ResumeSink_onSuspend(

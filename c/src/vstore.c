@@ -927,7 +927,7 @@ corto_ownership* _corto_ownership__assign(corto_ownership* _this, corto_ownershi
     return _this;
 }
 
-corto_query* _corto_query__create(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_query__create(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     corto_query* _this;
     _this = (corto_query*)corto_declare(_parent, _id, corto_query_o);
     if (!_this) {
@@ -937,6 +937,7 @@ corto_query* _corto_query__create(corto_object _parent, const char *_id, const c
         corto_set_str(&((corto_query*)_this)->select, select);
         corto_set_str(&((corto_query*)_this)->from, from);
         corto_set_str(&((corto_query*)_this)->type, type);
+        corto_set_str(&((corto_query*)_this)->instanceof, instanceof);
         corto_set_str(&((corto_query*)_this)->member, member);
         corto_set_str(&((corto_query*)_this)->where, where);
         ((corto_query*)_this)->offset = offset;
@@ -957,13 +958,14 @@ corto_query* _corto_query__create(corto_object _parent, const char *_id, const c
     return _this;
 }
 
-corto_int16 _corto_query__update(corto_query* _this, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_int16 _corto_query__update(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_set_str(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->select, select);
             corto_set_str(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->from, from);
             corto_set_str(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->type, type);
+            corto_set_str(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->instanceof, instanceof);
             corto_set_str(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->member, member);
             corto_set_str(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->where, where);
             ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->offset = offset;
@@ -980,6 +982,7 @@ corto_int16 _corto_query__update(corto_query* _this, const char * select, const 
             corto_set_str(&((corto_query*)_this)->select, select);
             corto_set_str(&((corto_query*)_this)->from, from);
             corto_set_str(&((corto_query*)_this)->type, type);
+            corto_set_str(&((corto_query*)_this)->instanceof, instanceof);
             corto_set_str(&((corto_query*)_this)->member, member);
             corto_set_str(&((corto_query*)_this)->where, where);
             ((corto_query*)_this)->offset = offset;
@@ -1002,11 +1005,12 @@ corto_int16 _corto_query__update(corto_query* _this, const char * select, const 
     return 0;
 }
 
-corto_query* _corto_query__assign(corto_query* _this, const char * select, const char * from, const char * type, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_query__assign(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
     CORTO_UNUSED(_this);
     corto_set_str(&((corto_query*)_this)->select, select);
     corto_set_str(&((corto_query*)_this)->from, from);
     corto_set_str(&((corto_query*)_this)->type, type);
+    corto_set_str(&((corto_query*)_this)->instanceof, instanceof);
     corto_set_str(&((corto_query*)_this)->member, member);
     corto_set_str(&((corto_query*)_this)->where, where);
     ((corto_query*)_this)->offset = offset;

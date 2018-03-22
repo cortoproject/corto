@@ -24,13 +24,13 @@ typedef enum corto_secure_accessKind {
     CORTO_SECURE_ACCESS_UNDEFINED = 2
 } corto_secure_accessKind;
 
-/* enum corto/secure/actionKind */
+/* bitmask corto/secure/actionKind */
 typedef uint32_t corto_secure_actionKind;
-    #define CORTO_SECURE_ACTION_CREATE (1)
-    #define CORTO_SECURE_ACTION_READ (2)
-    #define CORTO_SECURE_ACTION_UPDATE (4)
-    #define CORTO_SECURE_ACTION_DELETE (8)
-    #define CORTO_SECURE_ACTION_ANY (15)
+    #define CORTO_SECURE_ACTION_CREATE (0x1)
+    #define CORTO_SECURE_ACTION_READ (0x2)
+    #define CORTO_SECURE_ACTION_UPDATE (0x4)
+    #define CORTO_SECURE_ACTION_DELETE (0x8)
+    #define CORTO_SECURE_ACTION_ANY (0xf)
 
 /* class corto/secure/key */
 typedef struct corto_secure_key_s {
@@ -48,3 +48,4 @@ typedef struct corto_secure_lock_s {
 }
 #endif
 #endif
+

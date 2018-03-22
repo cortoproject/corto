@@ -181,14 +181,15 @@ corto_resultIter test_SinkMount_on_query(
     return result;
 }
 
-corto_object test_SinkMount_on_resume(
+int16_t test_SinkMount_on_resume(
     test_SinkMount this,
     const char *parent,
     const char *id,
-    corto_object object)
+    corto_object *object)
 {
     corto_iter iter = corto_ll_iter(this->items);
     corto_object result = NULL;
+    corto_object o = *object;
 
     /* Find object. Do proper error handling, so testcases are easy to debug */
     corto_resultIter__foreach(iter, e) {
@@ -201,9 +202,9 @@ corto_object test_SinkMount_on_resume(
                     goto error;
                 }
 
-                if (object && (t != corto_typeof(object))) {
+                if (o && (t != corto_typeof(o))) {
                     corto_throw("type '%s' does not match type of object '%s'",
-                      e.type, corto_fullpath(NULL, corto_typeof(object)));
+                      e.type, corto_fullpath(NULL, corto_typeof(o)));
                 }
 
                 corto_object p = corto_lookup(
@@ -215,14 +216,14 @@ corto_object test_SinkMount_on_resume(
                     goto error;
                 }
 
-                if (object && (p != corto_parentof(object))) {
+                if (o && (p != corto_parentof(o))) {
                     corto_throw("parent '%s' does not match parent of object '%s'",
-                      e.type, corto_fullpath(NULL, corto_parentof(object)));
+                      e.type, corto_fullpath(NULL, corto_parentof(o)));
                     goto error;
                 }
 
-                if (object) {
-                    result = object;
+                if (o) {
+                    result = o;
                 } else {
                     result = corto_declare(p, e.id, t);
                     if (!result) {
@@ -237,19 +238,19 @@ corto_object test_SinkMount_on_resume(
                     corto_deserialize_value(result, "text/corto", (corto_string)e.value);
                 }
 
-                if (!object) {
+                if (!o) {
                     corto_define(result);
                 }
 
                 corto_release(t);
                 corto_release(p);
             }
-
         }
-
     }
 
-    return result;
+    *object = result;
+
+    return 0;
 error:
-    return NULL;
+    return -1;
 }

@@ -754,18 +754,17 @@ corto_resultIter corto_mount_on_query_v(
     return result;
 }
 
-corto_object corto_mount_on_resume_v(
+int16_t corto_mount_on_resume_v(
     corto_mount this,
     const char *parent,
     const char *id,
-    corto_object object)
+    corto_object *object)
 {
     CORTO_UNUSED(this);
     CORTO_UNUSED(parent);
     CORTO_UNUSED(id);
     CORTO_UNUSED(object);
-
-    return NULL;
+    return 0;
 }
 
 uintptr_t corto_mount_on_subscribe_v(
@@ -974,7 +973,7 @@ int16_t corto_mount_resume(
         return 0;
     }
 
-    corto_log_push(strarg("resume:%s/%s", parent, id));
+    corto_log_push(strarg("mount-resume:%s, %s", parent, id));
 
     /* Ensure that if object is created, owner & attributes are set correctly */
     corto_attr prevAttr = corto_set_attr(CORTO_ATTR_PERSISTENT | corto_get_attr());
@@ -983,10 +982,10 @@ int16_t corto_mount_resume(
 
     /* Resume object */
     if (this->explicitResume) {
-        corto_debug(
-            "mount: on_resume parent=%s, expr=%s (mount = %s, o = %p)",
-            parent, id, corto_fullpath(NULL, this), o);
-        result = corto_mount_on_resume(this, parent, id, o);
+        result = o;
+        if (corto_mount_on_resume(this, parent, id, &result)) {
+            goto error;
+        }
     } else {
         corto_query q = {0};
         corto_id type = {0};

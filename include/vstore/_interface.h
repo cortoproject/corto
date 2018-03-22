@@ -65,6 +65,13 @@ corto_resultIter _corto_loader_on_query_v(
     corto_loader _this,
     corto_query *query);
 
+CORTO_EXPORT
+int16_t _corto_loader_on_resume(
+    corto_loader _this,
+    const char *parent,
+    const char *id,
+    corto_object *object);
+
 
 /* class corto/vstore/mount */
 
@@ -139,11 +146,11 @@ corto_resultIter _corto_mount_on_query_v(
     corto_query *query);
 
 CORTO_EXPORT
-corto_object _corto_mount_on_resume_v(
+int16_t _corto_mount_on_resume_v(
     corto_mount _this,
     const char *parent,
     const char *id,
-    corto_object object);
+    corto_object *object);
 
 CORTO_EXPORT
 uintptr_t _corto_mount_on_subscribe_v(
@@ -200,8 +207,8 @@ CORTO_EXPORT
 int16_t _corto_mount_resume(
     corto_mount _this,
     const char *parent,
-    const char *name,
-    corto_object *o);
+    const char *id,
+    corto_object *o_out);
 
 CORTO_EXPORT
 void _corto_mount_return(
@@ -421,3 +428,4 @@ int16_t _corto_subscriber_event_init(
 #endif
 
 #endif
+

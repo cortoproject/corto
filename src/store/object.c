@@ -1513,9 +1513,18 @@ int corto_resumeWalk(
      * provided object, or the mount must have ON_TREE set */
     if (!data->count || ((corto_observer)mount)->mask & CORTO_ON_TREE) {
 
-        /* If object is provided, check if it matches type of mount */
+        /* Don't try to resume if mount type doesn't match */
         corto_type mountType = corto_observer(mount)->type;
-        if (!data->o || !mountType || (mountType == corto_typeof(data->o))) {
+        if (mountType) {
+            if (data->o && corto_typeof(data->o) != mountType) {
+                return 1;
+            }
+        }
+
+        if (!data->o ||
+            !mountType ||
+            (mountType == corto_typeof(data->o)))
+        {
             char *last_sep = strrchr(data->id, '/');
             char *id, *parent;
             if (last_sep) {
@@ -1532,8 +1541,8 @@ int corto_resumeWalk(
 
             corto_object resumed = data->o;
 
-            if(corto_mount_resume(mount, parent, id, &resumed)) {
-                corto_throw(NULL);
+            if (corto_mount_resume(mount, parent, id, &resumed)) {
+                corto_throw("resuming '%s' from '%s' failed", id, parent);
                 goto error;
             }
 
@@ -1547,17 +1556,17 @@ int corto_resumeWalk(
                 corto__object *_o =
                     CORTO_OFFSET(data->result, -sizeof(corto__object));
                 corto__persistent *_p = corto_hdr_persistent(_o);
-                corto_assert(
-                    _p != NULL, "cannot resume object that is not persistent");
-                corto_set_ref(&_p->source, mount);
+                if (_p) {
+                    corto_set_ref(&_p->source, mount);
 
-                /* If object was resumed without creating an object in the store
-                 * first, it means that a lookup or resolve triggered the
-                 * resume. In that case, set the 'resume' attribute to true, to
-                 * indicate that the object should not be released by a drop
-                 * operation, but explicitly by an application. */
-                if (!data->o) {
-                    _p->resumed = TRUE;
+                    /* If object was resumed without creating an object in the
+                     * store first, it means that a lookup or resolve triggered
+                     * the resume. In that case, set the 'resume' attribute to
+                     * true, to indicate that the object should not be released
+                     * by a drop operation, but explicitly by an application. */
+                    if (!data->o) {
+                        _p->resumed = TRUE;
+                    }
                 }
             }
         }
@@ -1602,12 +1611,8 @@ int16_t corto_resume(
         return 0;
     }
 
-    corto_log_push_dbg("resume");
-
-    corto_debug("try resume '%s' from '%s' (%s)",
-        expr,
-        corto_fullpath(NULL, parent),
-        corto_fullpath(NULL, corto_typeof(parent)));
+    corto_log_push_dbg(
+        strarg("resume:%s, %s", corto_fullpath(NULL, parent), expr));
 
     corto_resumeWalk_t walkData = {
         .o = o,
@@ -1625,20 +1630,10 @@ int16_t corto_resume(
         strcat(full_id, expr);
     }
 
-    walkData.parent_id = full_id;
-
-    char *next_ptr, *id_ptr = strrchr(full_id, '/');
-
+    /* Search mounts at different levels in the hierarchy for the object */
     while (!walkData.result) {
-        if (id_ptr == full_id) {
-            /* If id_ptr is equal to start of full_id, match from root. This is
-             * guaranteed the last iteration. */
-            walkData.id = &full_id[1]; /* Start after initial '/' */
-            walkData.parent_id = "/";
-        } else {
-            id_ptr[0] = '\0';
-            walkData.id = id_ptr + 1;
-        }
+        char *next_ptr = corto_path_tok(
+            &walkData.id, &walkData.parent_id, full_id);
 
         corto_debug(
             "walk entities for '%s' with id '%s'",
@@ -1657,13 +1652,9 @@ int16_t corto_resume(
             goto error;
         }
 
-        if (id_ptr == full_id) {
+        if (!next_ptr) {
             break;
         }
-
-        next_ptr = strrchr(full_id, '/');
-        id_ptr[0] = '/';
-        id_ptr = next_ptr;
 
         walkData.count ++;
     }
@@ -3289,7 +3280,8 @@ corto_object corto_lookup_intern(
     char ch;
     const char *next, *ptr = id;
 
-    corto_log_push_dbg("lookup");
+    corto_log_push_dbg(strarg("lookup:%s, %s",
+        corto_fullpath(NULL, parent), id));
 
     if (!id || !id[0]) {
         corto_throw("invalid identifier");
@@ -3299,6 +3291,9 @@ corto_object corto_lookup_intern(
     if (id[0] == '/') {
         o = root_o;
     }
+
+    resume = resume &&
+        (!corto_isbuiltin(parent) || parent == corto_o || parent == root_o);
 
     int i = 0;
     do {
@@ -3496,7 +3491,8 @@ corto_object corto_resolve_intern(
         return corto_lookup_intern(parent, root_o, id, should_resume, true);
     }
 
-    corto_log_push_dbg("resolve");
+    corto_log_push_dbg(strarg("resolve:%s, %s",
+        corto_fullpath(NULL, parent), id));
 
     if (!parent) {
         parent = root_o;

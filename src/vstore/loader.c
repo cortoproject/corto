@@ -28,12 +28,15 @@ int16_t corto_loader_construct(
 void corto_loader_destruct(
     corto_loader this)
 {
-    corto_assert(corto_adec(&constructOnce) >= 0, "loader destructed too many times");
+    corto_assert(
+        corto_adec(&constructOnce) >= 0, "loader destructed too many times");
     safe_corto_mount_destruct(this);
 }
 
-
-void corto_loader_iterRelease(corto_iter *iter) {
+static
+void corto_loader_iterRelease(
+    corto_iter *iter)
+{
     corto_ll_iter_s *data = iter->ctx;
 
     /* Delete data from request */
@@ -49,7 +52,11 @@ void corto_loader_iterRelease(corto_iter *iter) {
     corto_ll_iterRelease(iter);
 }
 
-corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
+static
+bool corto_loader_checkIfAdded(
+    corto_ll list,
+    corto_string name)
+{
     corto_iter it = corto_ll_iter(list);
     while (corto_iter_hasNext(&it)) {
         corto_result *r = corto_iter_next(&it);
@@ -60,12 +67,18 @@ corto_bool corto_loader_checkIfAdded(corto_ll list, corto_string name) {
     return FALSE;
 }
 
+static
 void corto_loader_addDir(
     corto_ll list,
-    corto_string path,
+    const char* path,
     corto_query *q)
 {
-    corto_ll dirs = corto_opendir(path);
+    char *package_path = (char*)path;
+
+    if (q->from[0] != '.') {
+        package_path = corto_asprintf("%s/%s", path, q->from);
+    }
+    corto_ll dirs = corto_opendir(package_path);
 
     /* Walk files, add files to result */
     if (dirs) {
@@ -74,11 +87,13 @@ void corto_loader_addDir(
         while (corto_iter_hasNext(&iter)) {
             corto_string f = corto_iter_next(&iter);
 
-            if (!corto_loader_checkIfAdded(list, f) && corto_idmatch(q->select, f)) {
+            if (!corto_loader_checkIfAdded(list, f) &&
+                corto_idmatch(q->select, f))
+            {
                 struct stat attr;
 
                 corto_id fpath;
-                sprintf(fpath, "%s/%s", path, f);
+                sprintf(fpath, "%s/%s", package_path, f);
                 if (!corto_file_test(fpath)) {
                     continue;
                 }
@@ -134,6 +149,10 @@ void corto_loader_addDir(
         /* Catch error logged by corto_opendir */
         corto_catch();
     }
+
+    if (package_path != path) {
+        free(package_path);
+    }
 }
 
 corto_resultIter corto_loader_on_query_v(
@@ -142,21 +161,12 @@ corto_resultIter corto_loader_on_query_v(
 {
     corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
+    const char *targetPath = corto_load_targetPath();
+    const char *homePath = corto_load_homePath();
 
-    corto_log_push("vstore/loader");
+    corto_log_push_dbg("vstore-loader");
 
     CORTO_UNUSED(this);
-
-    corto_string targetPath, homePath;
-    targetPath = corto_envparse("$BAKE_TARGET/lib/corto/%s.%s/%s",
-      BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
-      query->from);
-    corto_path_clean(targetPath, targetPath);
-
-    homePath = corto_envparse("$BAKE_HOME/lib/corto/%s.%s/%s",
-      BAKE_VERSION_MAJOR, BAKE_VERSION_MINOR,
-      query->from);
-    corto_path_clean(homePath, homePath);
 
     corto_loader_addDir(data, targetPath, query);
 
@@ -169,10 +179,173 @@ corto_resultIter corto_loader_on_query_v(
     result = corto_ll_iterAlloc(data);
     result.release = corto_loader_iterRelease;
 
-    corto_dealloc(targetPath);
-    corto_dealloc(homePath);
-
-    corto_log_pop();
+    corto_log_pop_dbg();
 
     return result;
+}
+
+static
+corto_object corto_loader_create_package(
+    corto_loader this,
+    corto_object o,
+    const char *id,
+    const char *path)
+{
+    char *project_file = corto_asprintf("%s/project.json", path);
+    if (corto_file_test(project_file) == 1) {
+        char *json = corto_file_load(project_file);
+        if (corto_deserialize(&o, "text/json", json)) {
+            free(json);
+            goto error;
+        }
+        free(json);
+    }
+
+    free (project_file);
+    return o;
+error:
+    free (project_file);
+    return NULL;
+}
+
+int16_t corto_loader_on_resume(
+    corto_loader this,
+    const char *parent,
+    const char *id,
+    corto_object *object)
+{
+    corto_log_push_dbg("vstore-loader:resume");
+
+    /* The loader may be asked to resume objects that are not packages, but live
+     * inside a package. Therefore it will attempt to load all objects in the
+     * 'parent/id' expression until the object has been found. */
+    corto_id full_id;
+    corto_path_combine(full_id, parent, id);
+    char *obj_id = NULL, *package_id = NULL;
+    corto_object o = *object;
+
+    corto_trace("RESUME");
+
+    /* Step 1: try to find package */
+    const char *pkg = corto_locate(full_id, NULL, CORTO_LOCATE_PACKAGE);
+    if (pkg) {
+        package_id = full_id;
+    } else {
+        /* If package was not found, try to find package in parents */
+        char *next_ptr;
+        do {
+            next_ptr = corto_path_tok(&obj_id, &package_id, full_id);
+            if (package_id[0] != '/' || package_id[1]) {
+                pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
+            } else {
+                pkg = NULL;
+            }
+        } while (next_ptr && !pkg);
+        if (!pkg) {
+            package_id = NULL;
+            if (obj_id) {
+                obj_id[-1] = '/';
+            }
+        }
+    }
+
+    /* Step 2: load package if found */
+    bool proceed = false;
+    if (package_id) {
+        corto_debug("package '%s' located while looking for '%s/%s'",
+            package_id, package_id, obj_id);
+
+        /* Test if package is already loaded. If it is, but the object could not
+         * be found in the store (which is why corto attempts to resume it), it
+         * does not exist. */
+        corto_object package_object = corto(CORTO_LOOKUP, {
+            .parent = root_o, .id = package_id
+        });
+
+        if (package_object) {
+            corto_release(package_object);
+            /* Package is already loaded, but object doesn't exist */
+        } else {
+            /* Only load package if it is a library */
+            if (corto_locate(package_id, NULL, CORTO_LOCATE_LIB)) {
+                /* Package wasn't found in store, try load it now */
+                if (corto_use(package_id, 0, NULL)) {
+                    goto error;
+                }
+            }
+            proceed = true;
+        }
+    }
+
+    if (proceed) {
+        /* Step 3: find or create package object or object inside package */
+        if (o) {
+            /* If an object was provided to this function, check if it has been
+             * defined by loading the package */
+            if (!corto_check_state(o, CORTO_VALID)) {
+                /* If requesting object inside package, it wasn't created */
+                if (obj_id) {
+                    /* Object was not loaded by this package */
+                    corto_debug("object '%s' not found in package '%s'",
+                        obj_id, package_id);
+                    *object = NULL;
+                } else {
+                    /* If the package has been loaded and we're not requesting
+                     * an object inside the package but the package object
+                     * itself, the package is likely unmanaged and does not
+                     * create its own package object. In that case, create one
+                     * from the project.json (which should be available). */
+                    if (!corto_loader_create_package(this, o, package_id, pkg)){
+                        /* If package was loaded successfully, but value of the
+                         * package object could not be loaded from the project
+                         * file, that's an error. */
+                        goto error;
+                    }
+                }
+            } /* else object already points to resumed object */
+        } else {
+            /* Restore full id */
+            if (obj_id) {
+                obj_id[-1] = '/';
+            }
+
+            /* Check if object was loaded by package */
+            o = corto(CORTO_LOOKUP, {
+                .parent = root_o, /* package loader is always mounted on root */
+                .id = full_id
+            });
+
+            /* If object was loaded by package, return it */
+            if (o) {
+                *object = o;
+                corto_debug("object '%s' found", full_id);
+            } else {
+                /* If package has been loaded and requesting the package object
+                 * but it wasn't created by the package loader, create it (see
+                 * above). */
+                if (!obj_id) {
+                    o = corto_loader_create_package(this, o, package_id, pkg);
+                    if (!o) {
+                        /* If package was loaded successfully, but value of the
+                         * package object could not be loaded from the project
+                         * file, that's an error. */
+                        goto error;
+                    }
+                    *object = o;
+                    corto_debug("object created for package '%s'", full_id);
+                } else {
+                    corto_debug("object '%s' not found in package '%s'",
+                        obj_id, package_id);
+                }
+            }
+        }
+    }  else {
+        corto_debug("no package found while searching for '%s'", full_id);
+    }
+
+    corto_log_pop_dbg();
+    return 0;
+error:
+    corto_log_pop_dbg();
+    return -1;
 }

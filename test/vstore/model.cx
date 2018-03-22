@@ -222,7 +222,7 @@ class SinkMount : vstore/mount, hidden:/
     items: resultList, private|not_null
     int16 construct()
     resultIter on_query(vstore/query query) override
-    object on_resume(string parent, string id, object object) override
+    int16 on_resume(string parent, string id, inout:object object) override
 
 class AutoResumeSinkMount : vstore/mount, hidden:/
     alias mount: mount/mount

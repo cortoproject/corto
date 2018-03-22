@@ -89,6 +89,7 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
 #define corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
 #define corto_loader_on_query_v(_this, query) _corto_loader_on_query_v(corto_loader(_this), query)
+#define corto_loader_on_resume(_this, parent, id, object) _corto_loader_on_resume(corto_loader(_this), parent, id, object)
 #define corto_mount_construct(_this) _corto_mount_construct(corto_mount(_this))
 #define corto_mount_destruct(_this) _corto_mount_destruct(corto_mount(_this))
 #define corto_mount_historyQuery(_this, query) _corto_mount_historyQuery(corto_mount(_this), query)
@@ -113,7 +114,7 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define corto_mount_post(_this, e) _corto_mount_post(corto_mount(_this), e)
 #define corto_mount_publish(_this, event, from, id, type, value) _corto_mount_publish(corto_mount(_this), event, from, id, type, value)
 #define corto_mount_query(_this, query) _corto_mount_query(corto_mount(_this), query)
-#define corto_mount_resume(_this, parent, name, o) _corto_mount_resume(corto_mount(_this), parent, name, o)
+#define corto_mount_resume(_this, parent, id, o_out) _corto_mount_resume(corto_mount(_this), parent, id, o_out)
 #define corto_mount_return(_this, r) _corto_mount_return(corto_mount(_this), r)
 #define corto_mount_setContentType(_this, type) _corto_mount_setContentType(corto_mount(_this), type)
 #define corto_mount_setContentTypeIn(_this, type) _corto_mount_setContentTypeIn(corto_mount(_this), type)
@@ -164,6 +165,7 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define corto_loader_construct _corto_loader_construct
 #define corto_loader_destruct _corto_loader_destruct
 #define corto_loader_on_query_v _corto_loader_on_query_v
+#define corto_loader_on_resume _corto_loader_on_resume
 #define corto_mount_construct _corto_mount_construct
 #define corto_mount_destruct _corto_mount_destruct
 #define corto_mount_historyQuery _corto_mount_historyQuery
@@ -237,6 +239,7 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define safe_corto_loader_construct(_this) _corto_loader_construct(corto_loader(_this))
 #define safe_corto_loader_destruct(_this) _corto_loader_destruct(corto_loader(_this))
 #define safe_corto_loader_on_query_v(_this, query) _corto_loader_on_query_v(corto_loader(_this), query)
+#define safe_corto_loader_on_resume(_this, parent, id, object) _corto_loader_on_resume(corto_loader(_this), parent, id, object)
 #define safe_corto_mount_construct(_this) _corto_mount_construct(corto_mount(_this))
 #define safe_corto_mount_destruct(_this) _corto_mount_destruct(corto_mount(_this))
 #define safe_corto_mount_historyQuery(_this, query) _corto_mount_historyQuery(corto_mount(_this), query)
@@ -261,7 +264,7 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define safe_corto_mount_post(_this, e) _corto_mount_post(corto_mount(_this), e)
 #define safe_corto_mount_publish(_this, event, from, id, type, value) _corto_mount_publish(corto_mount(_this), event, from, id, type, value)
 #define safe_corto_mount_query(_this, query) _corto_mount_query(corto_mount(_this), query)
-#define safe_corto_mount_resume(_this, parent, name, o) _corto_mount_resume(corto_mount(_this), parent, name, o)
+#define safe_corto_mount_resume(_this, parent, id, o_out) _corto_mount_resume(corto_mount(_this), parent, id, o_out)
 #define safe_corto_mount_return(_this, r) _corto_mount_return(corto_mount(_this), r)
 #define safe_corto_mount_setContentType(_this, type) _corto_mount_setContentType(corto_mount(_this), type)
 #define safe_corto_mount_setContentTypeIn(_this, type) _corto_mount_setContentTypeIn(corto_mount(_this), type)
@@ -357,8 +360,8 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
     )
 #define corto_mount_on_resume(_this, parent, id, object) ( \
     ((corto_function)corto_mount_on_resume_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_object (*)(corto_object, const char *, const char *, corto_object))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_resume_o)->index - 1])->fptr)(corto_mount(_this), parent, id, object) \
-    : *(corto_object*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_resume_o)->index - 1], alloca(sizeof(corto_object)), corto_mount(_this), parent, id, object) \
+    ? ((_type_corto_int16 (*)(corto_object, const char *, const char *, corto_object *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_resume_o)->index - 1])->fptr)(corto_mount(_this), parent, id, object) \
+    : *(int16_t*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_resume_o)->index - 1], alloca(sizeof(int16_t)), corto_mount(_this), parent, id, object) \
     )
 #define corto_mount_on_subscribe(_this, query, ctx) ( \
     ((corto_function)corto_mount_on_subscribe_o)->kind == CORTO_PROCEDURE_CDECL \

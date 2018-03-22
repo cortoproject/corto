@@ -4,7 +4,10 @@
 #include "interface.h"
 #include "src/store/object.h"
 
-corto_int16 corto_type_bindMetaprocedure(corto_type this, corto_metaprocedure procedure) {
+corto_int16 corto_type_bindMetaprocedure(
+    corto_type this,
+    corto_metaprocedure procedure)
+{
     corto_function* f;
     corto_int32 d = 0;
 
@@ -140,7 +143,7 @@ void corto_type_destruct(
         this->metaprocedures.buffer = NULL;
     }
 
-    //free((void*)this->typecache);
+    // free((void*)this->typecache);
 }
 
 int16_t corto_type_init(
@@ -185,7 +188,9 @@ corto_function corto_type_resolveProcedure(
         corto_class metaclass = corto_class(corto_typeof(this));
         /* Walk inheritance of metaclass to find metaprocedure */
         do {
-            if ((f = corto_vtableLookup(&corto_type(metaclass)->metaprocedures, name, &d))) {
+            if ((f = corto_vtableLookup(
+                &corto_type(metaclass)->metaprocedures, name, &d)))
+            {
                 if (d < prevD) {
                     result = *f;
                     prevD = d;

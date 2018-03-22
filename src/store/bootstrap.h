@@ -392,6 +392,12 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
     sso_method parent##_##name##___o = \
     {CORTO_SSO_PO_V(parent, #name args, lang_overridable), {{(corto_type)&returnType##__o.v, FALSE, {0,NULL}, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, 0}}}
 
+/* override method */
+#define CORTO_OVERRIDE_O(parent, name, args, returnType, impl) \
+    void __##impl(void *f, void *r, void *a); \
+    sso_method parent##_##name##___o = \
+    {CORTO_SSO_PO_V(parent, #name args, lang_override), {{(corto_type)&returnType##__o.v, FALSE, {0,NULL}, FALSE, FALSE, CORTO_PROCEDURE_CDECL, (corto_word)ffi_call, (corto_word)_##impl, 0, 0}}}
+
 /* interface method object */
 #define CORTO_IMETHOD_O(parent, name, args, returnType) \
     sso_method parent##_##name##__o = \
@@ -1444,14 +1450,14 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_METHOD_O(vstore_mount, id, "()", lang_string, corto_mount_id);
     CORTO_METHOD_O(vstore_mount, query, "(vstore/query query)", vstore_resultIter, corto_mount_query);
     CORTO_METHOD_O(vstore_mount, historyQuery, "(vstore/query query)", vstore_resultIter, corto_mount_query);
-    CORTO_METHOD_O(vstore_mount, resume, "(string parent,string name,inout:object o)", lang_int16, corto_mount_resume);
+    CORTO_METHOD_O(vstore_mount, resume, "(string parent,string id,inout:object o_out)", lang_int16, corto_mount_resume);
     CORTO_METHOD_O(vstore_mount, subscribe, "(/corto/vstore/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(vstore_mount, unsubscribe, "(/corto/vstore/query query)", lang_void, corto_mount_unsubscribe);
     CORTO_OVERRIDABLE_O(vstore_mount, on_invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_on_invoke_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_id, "()", lang_string, corto_mount_on_id_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_query_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_history_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_history_query_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_resume, "(string parent,string id,object object)", lang_object, corto_mount_on_resume_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_resume, "(string parent,string id,inout:object object)", lang_int16, corto_mount_on_resume_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_notify, "(vstore/subscriber_event event)", lang_void, corto_mount_on_notify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_history_batch_notify, "(vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
@@ -1531,11 +1537,13 @@ CORTO_CLASS_NOBASE_O(secure, lock, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CO
 
 /* /corto/vstore/loader */
 CORTO_FW_CD(vstore, loader);
-CORTO_CLASS_O(vstore, loader, vstore_mount, CORTO_PRIVATE|CORTO_LOCAL, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_CD);
+CORTO_CLASS_O(vstore, loader, vstore_mount, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_CD);
     CORTO_MEMBER_O(vstore_loader, autoLoad, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(vstore_loader, construct, "()", lang_int16, corto_loader_construct);
     CORTO_METHOD_O(vstore_loader, destruct, "()", lang_void, corto_loader_destruct);
     CORTO_OVERRIDABLE_O(vstore_loader, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_loader_on_query_v);
+    CORTO_OVERRIDE_O(vstore_loader, on_resume, "(string parent,string id,inout:object object)", lang_int16, corto_loader_on_resume);
+
 
 #ifdef __cplusplus
 }
