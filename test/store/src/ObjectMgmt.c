@@ -510,7 +510,9 @@ void test_ObjectMgmt_tc_createNested(
 void test_ObjectMgmt_tc_createNestedLastFail(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(
+        NULL, NULL, 0, 0, 0, 0, 0, 0);
+
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onCreateNested);
@@ -1116,14 +1118,13 @@ void test_ObjectMgmt_tc_declareNestedLastFail(
 void test_ObjectMgmt_tc_declareNestedSecondFail(
     test_ObjectMgmt this)
 {
-    test_EventCount *counter = test_EventCount__create(NULL, NULL, 0, 0, 0, 0, 0, 0);
+    test_EventCount *counter = test_EventCount__create(
+        NULL, NULL, 0, 0, 0, 0, 0, 0);
     corto_observer o = corto_observe(CORTO_ON_ANY | CORTO_ON_TREE, root_o)
         .instance(counter)
         .callback(onDeclareNested);
     test_assert(o != NULL);
 
-    /* Trick: Create a tableinstance that only allows int32 objects in its scope,
-     * so that the first created object will fail, as it will be a void. */
     corto_tableinstance myRoot = corto_declare(root_o, "a", corto_tableinstance_o);
     test_assert(myRoot != NULL);
     corto_set_ref(&myRoot->type, corto_int32_o);
@@ -2353,7 +2354,10 @@ void test_ObjectMgmt_tc_redeclareNestedUnknown(
 void test_ObjectMgmt_tc_redeclareUnknown(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_declare(root_o, "foo", corto_unknown_o);
+    corto_object notexist = corto_declare(root_o, "foo/notexist", corto_int32_o);
+    test_assert(notexist != NULL);
+
+    corto_object o = corto_parentof(notexist);
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_unknown_o);
@@ -2413,7 +2417,10 @@ void test_ObjectMgmt_tc_redeclareOutOfOrder(
 void test_ObjectMgmt_tc_redeclareRecursiveUnknownDontForceType(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_declare(root_o, "foo/bar", corto_unknown_o);
+    corto_object notexist = corto_declare(root_o, "foo/bar/notexist", corto_int32_o);
+    test_assert(notexist != NULL);
+
+    corto_object o = corto_parentof(notexist);
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_unknown_o);
@@ -2435,7 +2442,10 @@ void test_ObjectMgmt_tc_redeclareRecursiveUnknownDontForceType(
 void test_ObjectMgmt_tc_redeclareUnknownDontForceType(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_declare(root_o, "foo", corto_unknown_o);
+    corto_object notexist = corto_declare(root_o, "foo/notexist", corto_int32_o);
+    test_assert(notexist != NULL);
+
+    corto_object o = corto_parentof(notexist);
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_unknown_o);
@@ -2457,7 +2467,10 @@ void test_ObjectMgmt_tc_redeclareUnknownDontForceType(
 void test_ObjectMgmt_tc_defineUnknown(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_declare(root_o, "foo", corto_unknown_o);
+    corto_object notexist = corto_declare(root_o, "foo/notexist", corto_int32_o);
+    test_assert(notexist != NULL);
+
+    corto_object o = corto_parentof(notexist);
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_unknown_o);
@@ -2536,7 +2549,10 @@ void test_ObjectMgmt_tc_recreateNestedUnknown(
 void test_ObjectMgmt_tc_recreateUnknown(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_declare(root_o, "foo", corto_unknown_o);
+    corto_object notexist = corto_declare(root_o, "foo/notexist", corto_int32_o);
+    test_assert(notexist != NULL);
+
+    corto_object o = corto_parentof(notexist);
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_unknown_o);
@@ -2555,7 +2571,11 @@ void test_ObjectMgmt_tc_recreateUnknown(
 void test_ObjectMgmt_tc_defineRedeclaredUnknown(
     test_ObjectMgmt this)
 {
-    corto_object o = corto_declare(root_o, "foo", corto_unknown_o);
+    /* Indirectly create unknown object */
+    corto_object notexist = corto_declare(root_o, "foo/notexist", corto_int32_o);
+    test_assert(notexist != NULL);
+
+    corto_object o = corto_parentof(notexist);
     test_assert(o != NULL);
     test_assert(!corto_check_state(o, CORTO_VALID));
     test_assert(corto_typeof(o) == corto_unknown_o);

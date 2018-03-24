@@ -486,6 +486,7 @@ void test_AutoResumeSink_tc_resolveNested1FromObjectFromMount(
 
     corto_object x = corto_resolve(mount, "x");
     test_assert(x != NULL);
+    test_assertint(corto_countof(x), 1);
 
     test_assertint(*test_constructCalled_o, 1);
     test_assertint(*test_destructCalled_o, 0);
@@ -502,6 +503,8 @@ void test_AutoResumeSink_tc_resolveNested1FromObjectFromMount(
     test_assert(corto_sourceof(o) == sinkMount);
     test_assert(corto_check_state(o, CORTO_VALID | CORTO_DECLARED));
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
+    test_assertint(corto_countof(o), 1);
+    test_assertint(corto_countof(x), 2);
 
     test_assertint(*test_constructCalled_o, 2);
     test_assertint(*test_destructCalled_o, 0);
@@ -515,7 +518,7 @@ void test_AutoResumeSink_tc_resolveNested1FromObjectFromMount(
     test_assert(o->x == 20);
     test_assert(o->y == 40);
 
-    /* This should remove o from the store and "suspend" it to the sink */
+    /* This should remove o from the store and suspend it to the sink */
     corto_release(o);
     corto_release(x);
     corto_release(sinkMount);

@@ -438,11 +438,16 @@ void test_SelectSink_tc_selectLoaderLookupFromUnknown(
     /* Disable package loader to ensure test results are predictable */
     corto_enable_load(false);
 
+    /* Indirectly create an unknown object 'p' */
+    corto_object notexist = corto_declare(root_o, "p/notexist", corto_uint32_o);
+    test_assert(notexist != NULL);
+
+    corto_object p = corto_parentof(notexist);
+    test_assert(p != NULL);
+    test_assert(corto_typeof(p) == corto_unknown_o);
+
     /* Create loader simulator mount */
     test_LoaderSimulatorMount m = test_LoaderSimulatorMount__create(NULL, NULL);
-
-    corto_object p = corto_declare(root_o, "p", corto_unknown_o);
-    test_assert(p != NULL);
 
     corto_object q = corto_lookup(NULL, "p/q");
     test_assert(q != NULL);
