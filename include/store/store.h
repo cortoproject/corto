@@ -991,6 +991,15 @@ CORTO_EXPORT
 const char *corto_set_session(
     const char *token);
 
+/** Get active session.
+ * This gets the global session variable for the corto process.
+ *
+ * @return The current session token.
+ * @see corto_set_session
+ */
+CORTO_EXPORT
+const char *corto_get_session(void);
+
 /** Authorize the current session for an action on an object.
  *
  * @param o The object for which to authorize.

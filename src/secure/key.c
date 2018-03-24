@@ -79,6 +79,11 @@ error:
     return session_token;
 }
 
+const char *corto_get_session(void)
+{
+    return corto_tls_get(CORTO_KEY_SESSION_TOKEN);
+}
+
 int16_t corto_secure_registerLock(
     corto_secure_lock lock)
 {
@@ -122,6 +127,34 @@ bool corto_authorize(
     }
 }
 
+static
+const char* corto_access_kind_to_str(
+    corto_secure_accessKind access)
+{
+    return access == CORTO_SECURE_ACCESS_UNDEFINED
+        ? "undefined"
+        : access == CORTO_SECURE_ACCESS_DENIED
+            ? "denied"
+            : "granted"
+            ;
+}
+
+static
+const char* corto_action_kind_to_str(
+    corto_secure_actionKind action)
+{
+    return action == CORTO_SECURE_ACTION_CREATE
+        ? "create"
+        : action == CORTO_SECURE_ACTION_READ
+            ? "read"
+            : action == CORTO_SECURE_ACTION_UPDATE
+                ? "update"
+                : action == CORTO_SECURE_ACTION_DELETE
+                    ? "delete"
+                    : "?"
+                    ;
+}
+
 bool corto_authorize_id(
     const char *objectId,
     corto_secure_actionKind access)
@@ -150,7 +183,10 @@ bool corto_authorize_id(
             return true;
         }
 
-        corto_log_push_dbg("authorize:eval-locks");
+        corto_log_push_dbg(
+            strarg("authorize:%s, %s",
+                corto_action_kind_to_str(access),
+                objectId));
 
         /* Walk over locks in the lock admin */
         corto_entityAdmin *admin = corto_entityAdmin_claim(&corto_lock_admin);
@@ -194,8 +230,10 @@ bool corto_authorize_id(
                             result = corto_secure_lock_authorize(
                                 lock, session_token, access);
 
-                            corto_debug("eval '%s' result = %d, priority = %d",
-                                corto_fullpath(NULL, lock), result, lock->priority);
+                            corto_debug("eval '%s' result = '%s', priority = %d",
+                                corto_fullpath(NULL, lock),
+                                corto_access_kind_to_str(result),
+                                lock->priority);
 
                             /* Only overwrite value if access is undefined, result
                              * is not undefined or access is denied and lock has
@@ -209,9 +247,9 @@ bool corto_authorize_id(
                                       currentDepth = depth;
                                       active_lock = lock;
                                       corto_debug(
-                                          "set active '%s' result = %d, priority = %d",
+                                          "set active '%s' result = '%s', priority = %d",
                                           corto_fullpath(NULL, lock),
-                                          allowed,
+                                          corto_access_kind_to_str(allowed),
                                           lock->priority);
                                 }
                             }
@@ -230,7 +268,7 @@ bool corto_authorize_id(
                 session_token,
                 corto_fullpath(NULL, active_lock));
         } else {
-            corto_debug(
+            corto_trace(
                 "#[green]allow#[normal] access to '%s' for session '%s' by '%s'",
                 objectId,
                 session_token,
