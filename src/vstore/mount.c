@@ -914,7 +914,7 @@ int16_t corto_mount_resumeResult(
         if (type_o) {
             o = corto_declare(root_o, fullpath, type_o);
             if (!o) {
-                corto_throw("failed to create object %s/%s",
+                corto_throw("failed to create object '%s/%s'",
                    parent, id);
                 goto error;
             }

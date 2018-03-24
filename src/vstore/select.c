@@ -478,7 +478,6 @@ corto_resultIter corto_selectRequestMount(
           corto_fullpath(NULL, mount),
           data->location);
 
-
         corto_query r = {
           .from = parent,
           .select = expr,
@@ -1178,9 +1177,10 @@ void* corto_selectNext(
     corto_log_push("next");
 
     if (data->next) {
-        corto_debug("yield ('%s', '%s')",
+        corto_trace("yield (id: '%s', from: '%s', type: '%s')",
             data->next->id,
-            data->next->parent);
+            data->next->parent,
+            data->next->type);
         data->count ++;
     }
 
