@@ -224,8 +224,6 @@ int16_t corto_loader_on_resume(
     char *obj_id = NULL, *package_id = NULL;
     corto_object o = *object;
 
-    corto_trace("RESUME");
-
     /* Step 1: try to find package */
     const char *pkg = corto_locate(full_id, NULL, CORTO_LOCATE_PACKAGE);
     if (pkg) {
