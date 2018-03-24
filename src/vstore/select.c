@@ -203,8 +203,7 @@ uintptr_t corto_selectConvert(
         return 0;
     }
 
-    /* If source serializer is loaded, a conversion is
-     * needed */
+    /* If source serializer is loaded, a conversion is needed */
     if (srcType && (srcType != data->dstSer)) {
         corto_object t = corto_resolve(NULL, type);
         if (!t) {
@@ -318,6 +317,13 @@ bool corto_selectMatch(
 {
     bool result = TRUE;
     char *id = o ? corto_idof(o) : item->id;
+
+    /* If item is hidden, it will not be shown to the application but is just
+     * used to indicate that a mount has objects at a deeper nesting level. It
+     * is therefore not required to apply filters */
+    if (item->flags & CORTO_RESULT_HIDDEN) {
+        return true;
+    }
 
     if (corto_secured()) {
         if (o) {
