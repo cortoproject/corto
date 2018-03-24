@@ -672,11 +672,9 @@ corto_object corto_init_scope(
 
         /* Call framework initializer. */
         if (corto_init(o)) {
+
             /* Remove object from scope */
             corto_orphan(o);
-
-            /* Reset parent so deinitScope won't release it */
-            scope->parent = NULL;
 
             corto_throw(NULL);
             goto error;
@@ -1282,6 +1280,44 @@ char* corto_random_id(
     return result;
 }
 
+#ifndef NDEBUG
+static
+bool corto_valid_identifier(
+    const char *id,
+    const char **reason)
+{
+    const char *ptr;
+    char ch;
+    bool in_arg_list = false;
+    for (ptr = id; (ch = *ptr); ptr ++) {
+        switch (ch) {
+        case '/':
+        case '{':
+        case '}':
+            if (!in_arg_list) {
+                *reason = "contains invalid characters";
+                return false;
+            }
+            break;
+        case '(':
+            in_arg_list = true;
+            break;
+        case ')':
+            if (!in_arg_list) {
+                *reason = "contains ')' without a '('";
+                return false;
+            }
+            if (ptr[1]) {
+                *reason = "should not contain characters after a '('";
+                return false;
+            }
+            break;
+        }
+    }
+    return true;
+}
+#endif
+
 /* Declare named object */
 static
 corto_object corto_declareChild_intern(
@@ -1298,7 +1334,8 @@ corto_object corto_declareChild_intern(
     bool retry = FALSE;
     char *mountId = NULL;
 
-    corto_log_push_dbg("declare");
+    corto_log_push_dbg(strarg("declare:%s, %s",
+        corto_fullpath(NULL, parent), id));
 
     corto_assert_object(parent);
     corto_assert_object(type);
@@ -1324,18 +1361,35 @@ corto_object corto_declareChild_intern(
     }
 
     if (!id[0]) {
-        corto_throw("invalid id (cannot be an empty string)");
+        corto_throw("object identifier may not be an empty string");
         goto error;
     }
 
+    #ifndef NDEBUG
+    const char *reason = NULL;
+    if (!corto_valid_identifier(id, &reason)) {
+        corto_throw("object identifier '%s' %s", id, reason);
+        goto error;
+    }
+    #endif
+
     /* Save cycles by not building a path when security is not enabled */
     if (corto_secured()) {
-        corto_id fullId;
-        corto_fullpath(fullId, parent);
-        strcat(fullId, "/");
-        strcat(fullId, id);
-        if (!corto_authorize_id(fullId, CORTO_SECURE_ACTION_CREATE)) {
-            goto access_error;
+        /* If specified type is unknown, this object is declared as part of
+         * a recursive declaration. Disable security, as we don't want to
+         * potentially deny access to creating an unknown object while the
+         * user has access to the actual object being declared.
+         *
+         * Note that becuase it is not possible for a user to create an object
+         * with an 'unknown' type directly, this behavior cannot be exploited.
+         */
+        if (type != corto_unknown_o) {
+            corto_id parent_id, full_id;
+            corto_fullpath(parent_id, parent);
+            corto_path_combine(full_id, parent_id, id);
+            if (!corto_authorize_id(full_id, CORTO_SECURE_ACTION_CREATE)) {
+                goto access_error;
+            }
         }
     }
 
@@ -1823,17 +1877,13 @@ corto_object corto_declareChildRecursive_intern(
         corto_id buf;
         char *cur = buf;
         strcpy(buf, id);
-        corto_object firstNonExist = NULL;
-        bool newobject;
-        bool unknown_parent = false;
+        corto_object prev_parent = false;
 
         next = &cur[next - id];
         *next = '\0';
         next ++;
 
         do {
-            newobject = false;
-
             result = corto_declareChild_intern(
                 parent,
                 cur,
@@ -1841,36 +1891,22 @@ corto_object corto_declareChildRecursive_intern(
                 orphan,
                 next ? FALSE : forceType,
                 FALSE /* prevent sending VALID event for void objects */,
-                &newobject,
+                NULL,
                 attrs);
 
-            if (unknown_parent) {
-                /* Parent of this object is of unknown type and was created
-                 * specifically for this object. Unknown objects should be
-                 * automatically deleted when their children are deleted. */
-                corto_release(parent);
-
-                unknown_parent = false;
-            }
-
-            /* Keep track of first non-existing object. If something
-             * goes wrong objects starting from here must be deleted. */
-            if (!firstNonExist && newobject) {
-                firstNonExist = result;
-            }
-
-            if (!newobject && result) {
-                corto_release(result);
-            }
-
-            /* If a new object was created of which the type is unknown, its
-             * lifecycle will be tied to the object for which it was created.
-             * Keep track of this event, so we can release later. */
-            if (newobject && corto_typeof(result) == corto_unknown_o) {
-                unknown_parent = true;
-            }
-
             parent = result;
+
+            /* Release the refcount that we get from declaring intermediate
+             * objects. Intermediate parents should only have their refcount
+             * increased because of new children. */
+            if (prev_parent) {
+                corto_release(prev_parent);
+                prev_parent = NULL;
+            }
+            /* If next is NULL, this is the last object to declare */
+            if (next) {
+                prev_parent = result;
+            }
 
             cur = next;
             if (cur && (next = (char*)strelem(cur))) {
@@ -1880,27 +1916,17 @@ corto_object corto_declareChildRecursive_intern(
         } while (result && cur);
 
         if (result) {
-            if (!newobject) {
-                corto_claim(result);
-            }
-
             if (defineSelf) {
                 /* Call constructor */
                 if (!corto_check_state(result, CORTO_VALID)) {
                     if (corto_define_intern(result, resume, false)) {
-                        result = NULL; /* Signal failure */
+                        corto_release(result);
+                        result = NULL;
                     }
                 }
             }
         }
 
-        /* If one of the operations failed, delete all objects */
-        if (!result) {
-            /* Recursively delete objects */
-            if (firstNonExist) {
-                corto_delete(firstNonExist);
-            }
-        }
     } else {
         result = corto_declareChild_intern(
             parent, id, type, orphan, forceType, TRUE, NULL, attrs);
@@ -1918,8 +1944,13 @@ corto_object _corto_declare(
     const char *id,
     corto_type type)
 {
+    if (type == corto_unknown_o) {
+        corto_throw("declaring an object with unknown type is illegal");
+        return NULL;
+    }
     if (parent) {
-        return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, FALSE, FALSE, TRUE, corto_get_attr());
+        return corto_declareChildRecursive_intern(
+           parent, id, type, FALSE, TRUE, FALSE, FALSE, TRUE, corto_get_attr());
     } else {
         return corto_declare_intern(type, FALSE, corto_get_attr());
     }
@@ -1931,10 +1962,16 @@ corto_object _corto_create(
     const char  *id,
     corto_type type)
 {
+    if (type == corto_unknown_o) {
+        corto_throw("creating an object with unknown type is illegal");
+        return NULL;
+    }
     if (parent) {
-        return corto_declareChildRecursive_intern(parent, id, type, FALSE, TRUE, TRUE, TRUE, TRUE, corto_get_attr());
+        return corto_declareChildRecursive_intern(
+            parent, id, type, FALSE, TRUE, TRUE, TRUE, TRUE, corto_get_attr());
     } else {
-        corto_object result = corto_declare_intern(type, FALSE, corto_get_attr());
+        corto_object result = corto_declare_intern(
+            type, FALSE, corto_get_attr());
         return corto_create_intern(result, TRUE);
     }
 }
@@ -5121,6 +5158,10 @@ corto_object _corto(
         }
 
         if (action & CORTO_DECLARE) {
+            if (params.type == corto_unknown_o) {
+                corto_throw("declaring an object with unknown type is illegal");
+                goto error;
+            }
             if (params.parent) {
                 if ((action & CORTO_RECURSIVE_DECLARE) == CORTO_RECURSIVE_DECLARE) {
                     result = corto_declareChildRecursive_intern(
