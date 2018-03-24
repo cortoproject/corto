@@ -41,6 +41,38 @@ bool corto_struct_compatible_v(
     return result;
 }
 
+static
+void corto_struct_add_keys(
+    corto_struct this,
+    corto_struct from)
+{
+    corto_interface from_interface = (corto_interface)from;
+
+    /* Also include keys from base class */
+    if (from_interface->base) {
+        corto_struct_add_keys(this, corto_struct(from_interface->base));
+    }
+
+    int i;
+    for (i = 0; i < from_interface->members.length; i ++) {
+        corto_member m = from_interface->members.buffer[i];
+        if ((m->modifiers & CORTO_KEY) == CORTO_KEY) {
+            this->keys.buffer =
+                corto_realloc(this->keys.buffer,
+                    sizeof(char*) * (this->keys.length + 1));
+            this->keys.buffer[this->keys.length] =
+                corto_strdup(corto_idof(m));
+            this->keys.length ++;
+            this->keycache.buffer =
+                corto_realloc(this->keycache.buffer,
+                    sizeof(corto_object) * (this->keycache.length + 1));
+            this->keycache.buffer[this->keycache.length] = m;
+            corto_claim(m);
+            this->keycache.length ++;
+        }
+    }
+}
+
 int16_t corto_struct_construct(
     corto_struct this)
 {
@@ -89,7 +121,6 @@ int16_t corto_struct_construct(
     base = (corto_struct)corto_interface(this)->base;
     /* Get maximum alignment from self and base-class and copy template parameters */
     if (base) {
-
         /* Test if there are no circular references in the base */
         do {
             if (base == this) {
@@ -182,29 +213,10 @@ int16_t corto_struct_construct(
             corto_claim(m);
             this->keycache.length ++;
         }
-
     } else {
         /* If no keylist was provided, walk over members and add keys to the
          * list automatically based on order of occurrence. */
-        corto_int32 i;
-        corto_interface interface = corto_interface(this);
-        for (i = 0; i < interface->members.length; i ++) {
-            corto_member m = interface->members.buffer[i];
-            if ((m->modifiers & CORTO_KEY) == CORTO_KEY) {
-                this->keys.buffer =
-                    corto_realloc(this->keys.buffer,
-                        sizeof(char*) * (this->keys.length + 1));
-                this->keys.buffer[this->keys.length] =
-                    corto_strdup(corto_idof(m));
-                this->keys.length ++;
-                this->keycache.buffer =
-                    corto_realloc(this->keycache.buffer,
-                        sizeof(corto_object) * (this->keycache.length + 1));
-                this->keycache.buffer[this->keycache.length] = m;
-                corto_claim(m);
-                this->keycache.length ++;
-            }
-        }
+        corto_struct_add_keys(this, this);
     }
 
     return safe_corto_interface_construct(this);
