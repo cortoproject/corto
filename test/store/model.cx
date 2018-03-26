@@ -927,6 +927,8 @@ test/Suite Lookup:/
     void tc_lookupCaseInsensitive()
 
     void tc_lookupAll()
+    void tc_lookupUnknown()
+    void tc_lookupNoResume()
 
 // Test matcher
 test/Suite Matcher:/

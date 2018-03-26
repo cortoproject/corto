@@ -3315,7 +3315,7 @@ corto_object corto_lookup_intern(
     corto_rb tree;
     corto_object prev = NULL;
     char ch;
-    const char *next, *ptr = id;
+    const char *next, *ptr = id, *lastelem = NULL;
 
     corto_log_push_dbg(strarg("lookup:%s, %s",
         corto_fullpath(NULL, parent), id));
@@ -3450,25 +3450,31 @@ corto_object corto_lookup_intern(
             break; /* break before setting ptr to next */
         }
 
+        lastelem = ptr;
         ptr = next;
     } while (ch);
 
-    /* If object could not be found, try to resume it from mounts */
+    /* If object could not be found, try to resume it from mounts, only if
+     * resume is enabled */
+    if (resume && o && corto_typeof(o) == corto_unknown_o) {
+        /* Unknown objects cannot be looked up, but they can be resumed */
+        corto_release(o);
+        o = NULL;
+        ptr = lastelem;
+    }
     if (!o && resume && parent != corto_lang_o) {
-        if (!o) {
-            /* Make sure that id passed to resume doesn't contain {} */
-            corto_id buffer;
-            const char *id = ptr, *value_start;
-            if ((value_start = strchr(id, '{'))) {
-                strcpy(buffer, id);
-                buffer[value_start - id] = '\0';
-                ptr = value_start;
-            }
+        /* Make sure that id passed to resume doesn't contain {} */
+        corto_id buffer;
+        const char *id = ptr, *value_start;
+        if ((value_start = strchr(id, '{'))) {
+            strcpy(buffer, id);
+            buffer[value_start - id] = '\0';
+            ptr = value_start;
+        }
 
-            if (corto_resume(prev, id, &o)) {
-                /* Resume failed */
-                goto error;
-            }
+        if (corto_resume(prev, id, &o)) {
+            /* Resume failed */
+            goto error;
         }
     }
 

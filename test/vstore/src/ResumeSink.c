@@ -959,7 +959,7 @@ void test_ResumeSink_tc_lookupNested2FromNestedVirtualMountPoint(
     test_assertstr(corto_fullpath(NULL, k), "/vmount/nested/x/a/k");
     test_assert(corto_typeof(k) == (corto_type)corto_int32_o);
 
-    corto_object a = corto_lookup(vmount, "x/a");
+    corto_object a = corto_parentof(k);
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
     test_assert(corto_typeof(a) == (corto_type)corto_unknown_o);
@@ -1697,7 +1697,7 @@ void test_ResumeSink_tc_resolveNested2FromNestedVirtualMountPoint(
     test_assertstr(corto_fullpath(NULL, k), "/vmount/nested/x/a/k");
     test_assert(corto_typeof(k) == (corto_type)corto_int32_o);
 
-    corto_object a = corto_resolve(vmount, "x/a");
+    corto_object a = corto_parentof(k);
     test_assert(a != NULL);
     test_assertstr(corto_fullpath(NULL, a), "/vmount/nested/x/a");
     test_assert(corto_typeof(a) == (corto_type)corto_unknown_o);
@@ -2032,5 +2032,36 @@ void test_ResumeSink_tc_declareAndResume(
     test_assert(corto_check_state(x, CORTO_VALID));
 
     test_assert(corto_delete(x) == 0);
+    test_assert(corto_delete(m) == 0);
+}
+
+void test_ResumeSink_tc_lookupAndResumeUnknown(
+    test_ResumeSink this)
+{
+    /* Lookup /data object */
+    corto_object data_o = corto_lookup(root_o, "data");
+
+    /* Create data/x as unknown object */
+    corto_object y = corto_create(data_o, "x/y", corto_int32_o);
+    test_assert(y != NULL);
+    test_assert(corto_typeof(y) == (corto_type)corto_int32_o);
+
+    corto_object x = corto_parentof(y);
+    test_assert(x != NULL);
+    test_assert(corto_typeof(x) == corto_unknown_o);
+
+    /* Create mount on /data */
+    corto_object m = test_SinkMount__create(
+        NULL, NULL, data_o, "test/Point", "{10, 20}");
+    test_assert(m != NULL);
+
+    /* Lookup x */
+    corto_object o = corto_lookup(NULL, "data/x");
+    test_assert(o != NULL);
+    test_assert(o != x);
+    test_assert(corto_typeof(o) == (corto_type)test_Point_o);
+
+    test_assert(corto_delete(y) == 0);
+    test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(m) == 0);
 }

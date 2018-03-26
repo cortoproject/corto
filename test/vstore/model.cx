@@ -373,6 +373,7 @@ test/Suite ResumeSink:/
     void tc_createContentTypeFail()
     void tc_resumeWithAutoFilter()
     void tc_declareAndResume()
+    void tc_lookupAndResumeUnknown()
 
     observer onDeclare: declare | on_tree
     observer onDefine: define | on_tree

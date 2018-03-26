@@ -25,19 +25,21 @@ int tc_resolveAllWalk(corto_object o, void *ctx) {
     corto_id id;
     corto_object r;
 
-    corto_fullpath(id, o);
-    r = corto_resolve(NULL, id);
+    if (corto_typeof(o) != corto_unknown_o) {
+        corto_fullpath(id, o);
+        r = corto_resolve(NULL, id);
 
-    /* Set errormessage to ease debugging */
-    if (!r) corto_throw("failed to resolve %s", id);
-    test_assert(r != NULL);
-    if (r != o) {
-        corto_throw("got %s, expected %s",
-          corto_fullpath(NULL, r),
-          corto_fullpath(NULL, o));
+        /* Set errormessage to ease debugging */
+        if (!r) corto_error("failed to resolve %s", id);
+        test_assert(r != NULL);
+        if (r != o) {
+            corto_throw("got %s, expected %s",
+              corto_fullpath(NULL, r),
+              corto_fullpath(NULL, o));
+        }
+        test_assert(r == o);
+        corto_release(r);
     }
-    test_assert(r == o);
-    corto_release(r);
 
     corto_objectseq scope = corto_scope_claim(o);
     int i;

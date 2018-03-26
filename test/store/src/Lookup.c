@@ -8,14 +8,18 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
     corto_id id;
     corto_object r;
 
-    corto_path(id, NULL, o, "/");
-    r = corto_lookup(NULL, id);
+    if (corto_typeof(o) != corto_unknown_o) {
+        corto_path(id, NULL, o, "/");
+        r = corto_lookup(NULL, id);
 
-    /* Set errormessage to ease debugging */
-    if (!r) corto_throw("failed to lookup %s", id);
-    test_assert(r != NULL);
-    test_assert(r == o);
-    corto_release(r);
+        /* Set errormessage to ease debugging */
+        if (!r) {
+            corto_error("failed to lookup %s (%s, %p, root = %p)", id);
+        }
+        test_assert(r != NULL);
+        test_assert(r == o);
+        corto_release(r);
+    }
 
     corto_objectseq scope = corto_scope_claim(o);
     int i;
@@ -416,4 +420,48 @@ void test_Lookup_tc_lookupThisInExpr(
     test_assert(o == corto_mount_o);
     corto_release(o);
 
+}
+
+void test_Lookup_tc_lookupNoResume(
+    test_Lookup this)
+{
+    corto_object world = corto_create(root_o, "hello/world", corto_int32_o);
+    test_assert(world != NULL);
+    test_assert(corto_typeof(world) == (corto_type)corto_int32_o);
+    test_assert(corto_countof(world) == 1);
+
+    corto_object hello = corto_parentof(world);
+    test_assert(hello != NULL);
+    test_assert(corto_typeof(hello) == corto_unknown_o);
+    test_assert(corto_countof(hello) == 1);
+
+    /* Should not be able to lookup unknown object */
+    corto_object o = corto(CORTO_LOOKUP, {.parent = root_o, .id = "hello"});
+    test_assert(o != NULL);
+    test_assert(o == hello);
+    test_assert(corto_countof(o) == 2);
+    corto_release(o);
+
+    test_assert(corto_delete(world) == 0);
+}
+
+void test_Lookup_tc_lookupUnknown(
+    test_Lookup this)
+{
+    corto_object world = corto_create(root_o, "hello/world", corto_int32_o);
+    test_assert(world != NULL);
+    test_assert(corto_typeof(world) == (corto_type)corto_int32_o);
+    test_assert(corto_countof(world) == 1);
+
+    corto_object hello = corto_parentof(world);
+    test_assert(hello != NULL);
+    test_assert(corto_typeof(hello) == corto_unknown_o);
+    test_assert(corto_countof(hello) == 1);
+
+    /* Should not be able to lookup unknown object */
+    corto_object o = corto_lookup(root_o, "hello");
+    test_assert(o == NULL);
+    test_assert(corto_countof(hello) == 1);
+
+    test_assert(corto_delete(world) == 0);
 }

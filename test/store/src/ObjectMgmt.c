@@ -481,7 +481,7 @@ void test_ObjectMgmt_tc_createNested(
     test_assert(corto_check_state(c, CORTO_DECLARED));
     test_assert(corto_check_state(c, CORTO_VALID));
 
-    corto_object b = corto_lookup(root_o, "a/b");
+    corto_object b = corto_parentof(c);
     test_assert(b != NULL);
     test_assert(corto_parentof(c) == b);
     test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
@@ -489,7 +489,7 @@ void test_ObjectMgmt_tc_createNested(
     test_assert(corto_check_state(b, CORTO_DECLARED));
     test_assert(!corto_check_state(b, CORTO_VALID));
 
-    corto_object a = corto_lookup(root_o, "a");
+    corto_object a = corto_parentof(b);
     test_assert(a != NULL);
     test_assert(corto_parentof(b) == a);
     test_assert(corto_typeof(a) == corto_type(corto_unknown_o));
@@ -1024,7 +1024,7 @@ void test_ObjectMgmt_tc_declareNested(
     test_assert(corto_check_state(c, CORTO_DECLARED));
     test_assert(!corto_check_state(c, CORTO_VALID));
 
-    corto_object b = corto_lookup(root_o, "a/b");
+    corto_object b = corto_parentof(c);
     test_assert(b != NULL);
     test_assert(corto_parentof(c) == b);
     test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
@@ -1032,7 +1032,7 @@ void test_ObjectMgmt_tc_declareNested(
     test_assert(corto_check_state(b, CORTO_DECLARED));
     test_assert(!corto_check_state(b, CORTO_VALID));
 
-    corto_object a = corto_lookup(root_o, "a");
+    corto_object a = corto_parentof(b);
     test_assert(a != NULL);
     test_assert(corto_parentof(b) == a);
     test_assert(corto_typeof(a) == corto_type(corto_unknown_o));
@@ -1978,7 +1978,7 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
     test_assert(corto_check_state(c, CORTO_DECLARED));
     test_assert(!corto_check_state(c, CORTO_VALID));
 
-    corto_object b = corto_lookup(root_o, "a/b");
+    corto_object b = corto_parentof(c);
     test_assert(b != NULL);
     test_assert(corto_parentof(c) == b);
     test_assert(corto_typeof(b) == corto_type(corto_unknown_o));
@@ -1986,7 +1986,7 @@ void test_ObjectMgmt_tc_declareNestedFirstExists(
     test_assert(corto_check_state(b, CORTO_DECLARED));
     test_assert(!corto_check_state(b, CORTO_VALID));
 
-    corto_object a = corto_lookup(root_o, "a");
+    corto_object a = corto_parentof(b);
     test_assert(a != NULL);
     test_assert(corto_parentof(b) == a);
     test_assert(corto_typeof(a) == corto_type(corto_float32_o));
