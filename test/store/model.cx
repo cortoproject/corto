@@ -1114,6 +1114,11 @@ test/Suite Select:/
     void tc_selectInvertCaseFilter()
     void tc_selectInvertCaseScope()
 
+    void tc_selectIdUnknown()
+    void tc_selectThisUnknown()
+    void tc_selectScopeUnknown()
+    void tc_selectTreeUnknown()
+
 
 // Event test support type
 class EventTest:/
