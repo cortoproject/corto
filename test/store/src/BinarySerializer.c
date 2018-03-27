@@ -30,20 +30,20 @@ void test_BinarySerializer_tc_copyReferenceType(
     corto_value src_value = corto_value_mem(corto_o, corto_package_o);
 
     /* Serialize source to binary */
-    corto_word src = fmt->fromValue(&src_value);
+    void *src = corto_fmt_from_value(fmt, NULL, &src_value);
     test_assert(src != 0);
 
     /* Copy from source */
-    corto_word dst = fmt->copy(src);
+    void *dst = corto_fmt_copy(fmt, src);
     test_assert(dst != 0);
 
-    corto_value dst_value = corto_value_mem((void*)dst, corto_package_o);
+    corto_value dst_value = corto_value_mem(dst, corto_package_o);
 
     /* Test if values are equal */
     test_assertint(corto_value_compare(&src_value, &dst_value), 0);
 
-    corto_mem_free((void*)src);
-    corto_mem_free((void*)dst);
+    corto_mem_free(src);
+    corto_mem_free(dst);
 }
 
 void test_BinarySerializer_tc_serializeReferenceTypeWithInit(
@@ -72,7 +72,8 @@ void test_BinarySerializer_tc_copyListWithReferenceType(
     corto_fmt fmt = corto_fmt_lookup("binary/corto");
     test_assert(fmt != NULL);
 
-    test_struct_listReference *o = corto_create(NULL, NULL, test_struct_listReference_o);
+    test_struct_listReference *o =
+        corto_create(NULL, NULL, test_struct_listReference_o);
 
     /* Populate list */
     corto_objectlist__append(o->m, corto_o);
@@ -83,20 +84,20 @@ void test_BinarySerializer_tc_copyListWithReferenceType(
     corto_value src_value = corto_value_mem(o, test_struct_listReference_o);
 
     /* Serialize source to binary */
-    corto_word src = fmt->fromValue(&src_value);
+    void *src = corto_fmt_from_value(fmt, NULL, &src_value);
     test_assert(src != 0);
 
     /* Copy from source */
-    corto_word dst = fmt->copy(src);
+    void *dst = corto_fmt_copy(fmt, src);
     test_assert(dst != 0);
 
-    corto_value dst_value = corto_value_mem((void*)dst, test_struct_listReference_o);
+    corto_value dst_value = corto_value_mem(dst, test_struct_listReference_o);
 
     /* Test if values are equal */
     test_assert(corto_value_compare(&src_value, &dst_value) == 0);
 
-    corto_mem_free((void*)src);
-    corto_mem_free((void*)dst);
+    corto_mem_free(src);
+    corto_mem_free(dst);
     test_assert(corto_delete(o) == 0);
 }
 
@@ -116,23 +117,25 @@ void test_BinarySerializer_tc_copyListWithReferenceWithInitType(
     test_FooList__append(o->m, e);
     test_FooList__append(o->m, e);
 
-    corto_value src_value = corto_value_mem(o, test_CompositeWithReferenceTypeWithInit_o);
+    corto_value src_value =
+        corto_value_mem(o, test_CompositeWithReferenceTypeWithInit_o);
 
     /* Serialize source to binary */
-    corto_word src = fmt->fromValue(&src_value);
+    void *src = corto_fmt_from_value(fmt, NULL, &src_value);
     test_assert(src != 0);
 
     /* Copy from source */
-    corto_word dst = fmt->copy(src);
+    void *dst = corto_fmt_copy(fmt, src);
     test_assert(dst != 0);
 
-    corto_value dst_value = corto_value_mem((void*)dst, test_CompositeWithReferenceTypeWithInit_o);
+    corto_value dst_value =
+        corto_value_mem(dst, test_CompositeWithReferenceTypeWithInit_o);
 
     /* Test if values are equal */
     test_assert(corto_value_compare(&src_value, &dst_value) == 0);
 
-    corto_mem_free((void*)src);
-    corto_mem_free((void*)dst);
+    corto_mem_free(src);
+    corto_mem_free(dst);
     test_assert(corto_delete(o) == 0);
 }
 
@@ -142,9 +145,11 @@ void test_BinarySerializer_tc_copyListWithReferenceWithDefaults(
     corto_fmt fmt = corto_fmt_lookup("binary/corto");
     test_assert(fmt != NULL);
 
-    test_CompositeWithReferenceTypeDefaults *o = corto_create(NULL, NULL, test_CompositeWithReferenceTypeDefaults_o);
+    test_CompositeWithReferenceTypeDefaults *o =
+        corto_create(NULL, NULL, test_CompositeWithReferenceTypeDefaults_o);
 
-    test_DefaultValues e = corto_create(NULL, NULL, test_DefaultValues_o); /* Element */
+    /* Element */
+    test_DefaultValues e = corto_create(NULL, NULL, test_DefaultValues_o);
 
     /* Populate list */
     test_DefaultValuesList__append(o->m, e);
@@ -152,22 +157,24 @@ void test_BinarySerializer_tc_copyListWithReferenceWithDefaults(
     test_DefaultValuesList__append(o->m, e);
     test_DefaultValuesList__append(o->m, e);
 
-    corto_value src_value = corto_value_mem(o, test_CompositeWithReferenceTypeDefaults_o);
+    corto_value src_value =
+        corto_value_mem(o, test_CompositeWithReferenceTypeDefaults_o);
 
     /* Serialize source to binary */
-    corto_word src = fmt->fromValue(&src_value);
+    void *src = corto_fmt_from_value(fmt, NULL, &src_value);
     test_assert(src != 0);
 
     /* Copy from source */
-    corto_word dst = fmt->copy(src);
+    void *dst = corto_fmt_copy(fmt, src);
     test_assert(dst != 0);
 
-    corto_value dst_value = corto_value_mem((void*)dst, test_CompositeWithReferenceTypeDefaults_o);
+    corto_value dst_value =
+        corto_value_mem(dst, test_CompositeWithReferenceTypeDefaults_o);
 
     /* Test if values are equal */
     test_assert(corto_value_compare(&src_value, &dst_value) == 0);
 
-    corto_mem_free((void*)src);
-    corto_mem_free((void*)dst);
+    corto_mem_free(src);
+    corto_mem_free(dst);
     test_assert(corto_delete(o) == 0);
 }

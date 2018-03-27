@@ -2409,7 +2409,7 @@ char* corto_serialize_value(
 
     corto_value v = corto_value_object(o, NULL);
 
-    return (char*)type->fromValue(&v);
+    return (char*)corto_fmt_from_value(type, NULL, &v);
 error:
     return NULL;
 }
@@ -2429,7 +2429,8 @@ int16_t corto_deserialize_value(
     }
 
     corto_value v = corto_value_object(o, NULL);
-    return type->toValue(&v, (corto_word)data);
+
+    return corto_fmt_to_value(type, NULL, &v, data);
 error:
     return -1;
 }
@@ -2447,7 +2448,7 @@ char* corto_serialize(
         goto error;
     }
 
-    return (corto_string)type->fromObject(o);;
+    return (char*)corto_fmt_from_object(type, NULL, o);
 error:
     return NULL;
 }
@@ -2464,7 +2465,7 @@ int16_t corto_deserialize(
         goto error;
     }
 
-    return type->toObject(o, (uintptr_t)data);
+    return corto_fmt_to_object(type, NULL, o, data);
 error:
     return -1;
 }
@@ -5242,8 +5243,7 @@ corto_object _corto(
                     "contentType specified but no value provided");
 
                 corto_value v = corto_value_object(result, params.type);
-
-                if (params.fmt->toValue(&v, (uintptr_t)params.value)) {
+                if (corto_fmt_to_value(params.fmt, NULL, &v, params.value)) {
                     goto error;
                 }
             }

@@ -22,5 +22,67 @@
 #ifndef CORTO_FMT
 #define CORTO_FMT
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct corto_fmt_s *corto_fmt;
+
+typedef struct corto_fmt_opt {
+    const char *from;
+} corto_fmt_opt;
+
+CORTO_EXPORT
+void* corto_fmt_from_value(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_value *v);
+
+CORTO_EXPORT
+int16_t corto_fmt_to_value(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_value *v,
+    const void *data);
+
+CORTO_EXPORT
+void* corto_fmt_from_result(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_result *result);
+
+CORTO_EXPORT
+int16_t corto_fmt_to_result(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_result *result,
+    const void *data);
+
+CORTO_EXPORT
+void* corto_fmt_from_object(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_object object);
+
+CORTO_EXPORT
+int16_t corto_fmt_to_object(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_object *object_out,
+    const void *data);
+
+CORTO_EXPORT
+void* corto_fmt_copy(
+    corto_fmt fmt,
+    const void *data);
+
+CORTO_EXPORT
+void corto_fmt_release(
+    corto_fmt fmt,
+    void *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

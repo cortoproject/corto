@@ -930,8 +930,14 @@ int16_t corto_mount_resumeResult(
     if (o) {
         corto_value v = corto_value_object(o, NULL);
         if (this->contentTypeOutHandle && r->value) {
-            if(((corto_fmt)this->contentTypeOutHandle)->toValue(
-                &v, r->value))
+            corto_fmt_opt opt = {
+                .from = this->super.query.from
+            };
+            if (corto_fmt_to_value(
+                (corto_fmt)this->contentTypeOutHandle,
+                 &opt,
+                 &v,
+                 (void*)r->value))
             {
                 corto_throw("failed to deserialize into resumed object '%s/%s'",
                     parent, id);

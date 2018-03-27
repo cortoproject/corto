@@ -154,7 +154,7 @@ void corto_subscriber_addToAlignQueue(
 
 typedef struct corto_fmtcache {
     corto_fmt src_handle;
-    uintptr_t src_ptr;
+    void* src_ptr;
     void* o;
     corto_value v;
     const char *type;
@@ -165,13 +165,13 @@ typedef struct corto_fmtcache {
 static
 corto_fmtcache corto_fmtcache_init(
     corto_fmt src_handle,
-    uintptr_t src_ptr,
-    void* o,
+    void *src_ptr,
+    void *o,
     const char *type)
 {
     corto_fmtcache result = {
         .src_handle = src_handle,
-        .src_ptr = src_ptr,
+        .src_ptr = (void*)src_ptr,
         .o = o,
         .type = type,
         .count = 1
@@ -179,7 +179,7 @@ corto_fmtcache corto_fmtcache_init(
 
     /* Reserve first spot for format of publisher */
     result.cache[0].handle = (uintptr_t)src_handle;
-    result.cache[0].ptr = src_ptr;
+    result.cache[0].ptr = (uintptr_t)src_ptr;
     result.cache[0].shared_count = 0;
 
     if (o) {
@@ -193,6 +193,8 @@ static
 corto_fmt_data* corto_fmtcache_serialize(
     corto_fmtcache *this,
     corto_fmt dst_handle,
+    corto_subscriber subscriber,
+    corto_object source,
     bool copy)
 {
     int32_t index = -1;
@@ -222,6 +224,12 @@ corto_fmt_data* corto_fmtcache_serialize(
                 corto_type type = corto_resolve(NULL, this->type);
                 corto_try(!type, "failed to resolve type '%s'", this->type);
 
+                /* Get source from mount */
+                corto_fmt_opt src_opt = {0};
+                if (source && corto_instanceof(corto_mount_o, source)) {
+                    src_opt.from = ((corto_mount)source)->super.query.from;
+                }
+
                 /* Create intermediate object */
                 this->o = corto_mem_new(type);
 
@@ -231,11 +239,17 @@ corto_fmt_data* corto_fmtcache_serialize(
                 /* Serialize from source format to intermediate object */
                 this->v = corto_value_mem(this->o, type);
                 corto_try (
-                    this->src_handle->toValue(&this->v, this->src_ptr), NULL);
+                    corto_fmt_to_value(
+                        this->src_handle, &src_opt, &this->v, this->src_ptr),
+                    NULL);
             }
 
             /* Serialize to destination format */
-            this->cache[index].ptr = dst_handle->fromValue(&this->v);
+            corto_fmt_opt dst_opt = {
+                .from = subscriber->query.from
+            };
+            this->cache[index].ptr = (uintptr_t)corto_fmt_from_value(
+                dst_handle, &dst_opt, &this->v);
             this->cache[index].handle = (uintptr_t)dst_handle;
             this->count ++;
         }
@@ -303,7 +317,11 @@ int16_t corto_subscriber_invoke(
         /* Use serialization cache if available & if subscriber requests a
          * destination format. */
         fmt = corto_fmtcache_serialize(
-            cache, (corto_fmt)s->fmt_handle, !synchronous);
+            cache,
+            (corto_fmt)s->fmt_handle,
+            s,
+            r->owner,
+            !synchronous);
     }
 
     if (synchronous) {
@@ -346,7 +364,10 @@ int16_t corto_subscriber_invoke(
         /* Asynchronously deliver event to subscriber. If no event was provided,
          * create a new one */
         if (!event) {
-            event = corto(CORTO_DECLARE, {.type = corto_subscriber_event_o, .attrs = -1});
+            event = corto(CORTO_DECLARE, {
+                .type = corto_subscriber_event_o,
+                .attrs = -1
+            });
             corto_set_ref(&event->subscriber, s);
             corto_set_ref(&event->instance, instance);
             corto_set_ref(&event->source, NULL);
@@ -442,7 +463,8 @@ int16_t corto_notify_subscribersById(
     }
 
     /* Temporary storage for serialized values */
-    corto_fmtcache cache = corto_fmtcache_init(fmt_handle, value, o, type);
+    corto_fmtcache cache =
+        corto_fmtcache_init(fmt_handle, (void*)value, o, type);
 
     /* Normalize id and path */
     const char *sep = NULL, *id = strrchr(path, '/');

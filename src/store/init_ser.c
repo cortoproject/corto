@@ -140,7 +140,7 @@ corto_int16 corto_ser_initMember(
             goto error;
         }
 
-        return fmt->toValue(v, (corto_word)m->_default);
+        return corto_fmt_to_value(fmt, NULL, v, m->_default);
     }
 
     if (!t->reference && t->flags & CORTO_TYPE_HAS_INIT) {

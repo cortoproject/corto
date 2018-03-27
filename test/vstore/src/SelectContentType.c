@@ -25,7 +25,6 @@ void test_SelectContentType_setup(
     test_Point__create(obj_o, "a", 10, 20);
     test_Point__create(obj_o, "b", 30, 40);
     test_Point__create(obj_o, "c", 50, 60);
-
 }
 
 void test_SelectContentType_tc_selectBinaryFromJson(
@@ -35,7 +34,8 @@ void test_SelectContentType_tc_selectBinaryFromJson(
     corto_result *result;
     test_Point *p;
 
-    corto_int16 ret = corto_select("json/*").contentType("binary/corto").iter( &iter );
+    corto_int16 ret =
+        corto_select("json/*").contentType("binary/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));

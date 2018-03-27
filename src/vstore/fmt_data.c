@@ -21,6 +21,6 @@ void corto_fmt_data_deinit(
     }
     if (this->ptr && should_free) {
         corto_fmt fmt = (corto_fmt)this->handle;
-        fmt->release(this->ptr);
+        corto_fmt_release(fmt, (void*)this->ptr);
     }
 }

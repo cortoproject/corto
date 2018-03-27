@@ -24,12 +24,56 @@
 #include "memory_ser.h"
 #include "init_ser.h"
 
+struct corto_fmt_s {
+    corto_string name;
+    bool isBinary;
+
+    /* Translate values to and from a contentType value */
+    void* ___ (*fromValue)(
+        corto_fmt_opt *data,
+        corto_value *v);
+
+    int16_t ___ (*toValue)(
+        corto_fmt_opt *data,
+        corto_value *v,
+        const void* content);
+
+    /* Translate results to and from self-contained contentType values */
+    void* ___ (*fromResult)(
+        corto_fmt_opt *data,
+        corto_result *o);
+
+    int16_t ___ (*toResult)(
+        corto_fmt_opt *data,
+        corto_result* o,
+        const void* content);
+
+    /* Translate objects to and from self-contained contentType values */
+    void* ___ (*fromObject)(
+        corto_fmt_opt *data,
+        corto_object o);
+
+    int16_t ___ (*toObject)(
+        corto_fmt_opt *data,
+        corto_object* o,
+        const void* content);
+
+    /* Duplicate a contentType value */
+    void* ___ (*copy)(
+        const void* content);
+
+    /* Free a contentType value */
+    void (*release)(
+        void* content);
+};
+
 extern corto_mutex_s corto_adminLock;
 
 static corto_ll contentTypes = NULL;
 
 static
-corto_word corto_fmt_ptr_fromValue(
+void* corto_fmt_ptr_fromValue(
+    corto_fmt_opt *opt,
     corto_value *v)
 {
     corto_type t = corto_value_typeof(v);
@@ -42,13 +86,14 @@ corto_word corto_fmt_ptr_fromValue(
         memcpy(ptr, corto_value_ptrof(v), t->size);
     }
 
-    return (corto_word)ptr;
+    return ptr;
 }
 
 static
-corto_int16 corto_fmt_ptr_toValue(
+int16_t corto_fmt_ptr_toValue(
+    corto_fmt_opt *opt,
     corto_value *v,
-    corto_word ptr)
+    const void* ptr)
 {
     corto_type t = corto_type(*(corto_type*)CORTO_OFFSET(ptr, -sizeof(corto_type)));
     *v = corto_value_mem((void*)ptr, t);
@@ -57,7 +102,7 @@ corto_int16 corto_fmt_ptr_toValue(
 
 static
 void corto_fmt_ptr_release(
-    corto_word ptr)
+    void* ptr)
 {
     if (ptr) {
         corto_mem_free((void*)ptr);
@@ -65,16 +110,17 @@ void corto_fmt_ptr_release(
 }
 
 static
-corto_word corto_fmt_ptr_copy(
-    corto_word src)
+void* corto_fmt_ptr_copy(
+    const void* src)
 {
     corto_type t = corto_mem_typeof((void*)src);
     corto_value srcValue = corto_value_mem((void*)src, t);
-    return corto_fmt_ptr_fromValue(&srcValue);
+    return corto_fmt_ptr_fromValue(NULL, &srcValue);
 }
 
 static
-corto_word corto_fmt_str_fromValue(
+void* corto_fmt_str_fromValue(
+    corto_fmt_opt *opt,
     corto_value *v)
 {
     corto_string_ser_t serData;
@@ -91,13 +137,14 @@ corto_word corto_fmt_str_fromValue(
     corto_string result = corto_buffer_str(&serData.buffer);
     corto_walk_deinit(&s, &serData);
 
-    return (corto_word)result;
+    return result;
 }
 
 static
-corto_int16 corto_fmt_str_toValue(
+int16_t corto_fmt_str_toValue(
+    corto_fmt_opt *opt,
     corto_value *v,
-    corto_word str)
+    const void* str)
 {
     corto_string_deser_t serData = {
         .out = corto_value_ptrof(v),
@@ -122,8 +169,9 @@ error:
 
 static
 int16_t corto_fmt_str_toObject(
+    corto_fmt_opt *opt,
     corto_object *o,
-    corto_word data)
+    const void* data)
 {
     corto_object obj = *(void**)o;
     corto_string_deser_t serData = {
@@ -169,8 +217,8 @@ corto_fmt corto_findContentType(
         result->isBinary = isBinary;
         result->toValue = corto_fmt_str_toValue;
         result->fromValue = corto_fmt_str_fromValue;
-        result->release = (void ___ (*)(corto_word))corto_dealloc;
-        result->copy = (corto_word ___ (*)(corto_word)) corto_strdup;
+        result->release = (void ___ (*)(void*))corto_dealloc;
+        result->copy = (void* ___ (*)(const void*)) corto_strdup;
         result->toObject = corto_fmt_str_toObject;
         corto_ll_append(contentTypes, result);
 
@@ -234,7 +282,7 @@ corto_fmt_lookup(
         corto_id id;
         sprintf(id, "%s_fromValue", packagePtr);
         result->fromValue =
-            (corto_word ___ (*)(corto_value*))corto_load_proc(packageId, &dl, id);
+            (void* ___ (*)(corto_fmt_opt*, corto_value*))corto_load_proc(packageId, &dl, id);
         if (!result->fromValue) {
             corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -242,7 +290,8 @@ corto_fmt_lookup(
 
         sprintf(id, "%s_toValue", packagePtr);
         result->toValue =
-            (corto_int16 ___ (*)(corto_value*, corto_word)) corto_load_proc(packageId, &dl, id);
+            (int16_t ___ (*)(corto_fmt_opt*, corto_value*, const void*))
+                corto_load_proc(packageId, &dl, id);
         if (!result->toValue) {
             corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
@@ -251,50 +300,60 @@ corto_fmt_lookup(
 
         sprintf(id, "%s_fromResult", packagePtr);
         result->fromResult =
-          (corto_word ___ (*)(corto_result*))corto_load_proc(packageId, &dl, id);
+          (void* ___ (*)(corto_fmt_opt*, corto_result*))
+            corto_load_proc(packageId, &dl, id);
         if (!result->fromResult) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw(
+                "symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
         sprintf(id, "%s_toResult", packagePtr);
         result->toResult =
-          (corto_int16 ___ (*)(corto_result*, corto_word))corto_load_proc(packageId, &dl, id);
+          (int16_t ___ (*)(corto_fmt_opt*, corto_result*, const void*))
+            corto_load_proc(packageId, &dl, id);
         if (!result->toResult) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw(
+                "symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
 
         sprintf(id, "%s_fromObject", packagePtr);
         result->fromObject =
-          (corto_word ___ (*)(corto_object))corto_load_proc(packageId, &dl, id);
+          (void* ___ (*)(corto_fmt_opt*, corto_object))
+            corto_load_proc(packageId, &dl, id);
         if (!result->fromObject) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw(
+                "symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
         sprintf(id, "%s_toObject", packagePtr);
         result->toObject =
-          (corto_int16 ___ (*)(corto_object*, corto_word))corto_load_proc(packageId, &dl, id);
+          (int16_t ___ (*)(corto_fmt_opt*, corto_object*, const void*))
+            corto_load_proc(packageId, &dl, id);
         if (!result->toObject) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw(
+                "symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
         sprintf(id, "%s_copy", packagePtr);
         result->copy =
-            (corto_word ___ (*)(corto_word))corto_load_proc(packageId, &dl, id);
+            (void* ___ (*)(const void*))corto_load_proc(packageId, &dl, id);
         if (!result->copy) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw(
+                "symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
         sprintf(id, "%s_release", packagePtr);
         result->release =
-            (void ___ (*)(corto_word))corto_load_proc(packageId, &dl, id);
+            (void ___ (*)(void*))corto_load_proc(packageId, &dl, id);
         if (!result->release) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw(
+                "symbol '%s' missing for contentType '%s'", id, contentType);
             goto error;
         }
 
@@ -327,5 +386,72 @@ void corto_fmt_deinit(void)
             free(fmt);
         }
         corto_ll_free(contentTypes);
+    }
+}
+
+void* corto_fmt_from_value(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_value *v)
+{
+    return fmt->fromValue(opt, v);
+}
+
+int16_t corto_fmt_to_value(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_value *v,
+    const void *data)
+{
+    return fmt->toValue(opt, v, data);
+}
+
+void* corto_fmt_from_result(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_result *result)
+{
+    return fmt->fromResult(opt, result);
+}
+
+int16_t corto_fmt_to_result(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_result *result,
+    const void *data)
+{
+    return fmt->toResult(opt, result, data);
+}
+
+void* corto_fmt_from_object(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_object object)
+{
+    return fmt->fromObject(opt, object);
+}
+
+int16_t corto_fmt_to_object(
+    corto_fmt fmt,
+    corto_fmt_opt *opt,
+    corto_object *object_out,
+    const void *data)
+{
+    return fmt->toObject(opt, object_out, data);
+}
+
+void* corto_fmt_copy(
+    corto_fmt fmt,
+    const void *data)
+{
+    return fmt->copy(data);
+}
+
+void corto_fmt_release(
+    corto_fmt fmt,
+    void *data)
+{
+    if (fmt->release) {
+        fmt->release(data);
     }
 }

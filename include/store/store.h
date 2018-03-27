@@ -122,37 +122,13 @@
 #include <corto/store/walk.h>
 
 #include <corto/store/string_ser.h>
+#include <corto/store/fmt.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef int (*corto_scope_walk_cb)(corto_object o, void* userData);
-typedef struct corto_fmt_s *corto_fmt;
-
-struct corto_fmt_s {
-    corto_string name;
-    bool isBinary;
-
-    /* Translate values to and from a contentType value */
-    corto_word ___ (*fromValue)(corto_value *v);
-    int16_t ___ (*toValue)(corto_value *v, corto_word content);
-
-    /* Translate results to and from self-contained contentType values */
-    corto_word ___ (*fromResult)(corto_result *o);
-    int16_t ___ (*toResult)(corto_result* o, corto_word content);
-
-    /* Translate objects to and from self-contained contentType values */
-    corto_word ___ (*fromObject)(corto_object o);
-    int16_t ___ (*toObject)(corto_object* o, corto_word content);
-
-    /* Duplicate a contentType value */
-    corto_word ___ (*copy)(corto_word content);
-
-    /* Free a contentType value */
-    void (*release)(corto_word content);
-};
-
 
 /* -- LIFECYCLE API -- */
 

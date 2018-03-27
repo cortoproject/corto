@@ -100,7 +100,7 @@ struct corto_select_data {
     uint32_t exprCount;
     uint32_t exprCurrent;
 
-    corto_string fullscope;             /* Scope + scope part of expression */
+    corto_string fullscope;         /* Scope + scope part of expression */
     corto_select_segment segments[CORTO_MAX_SCOPE_DEPTH]; /* Scopes to walk (parsed scope) */
     uint32_t segment;               /* Scope currently being walked */
 
@@ -176,6 +176,13 @@ struct corto_select_data {
 };
 
 static
+corto_mount corto_selectCurrentMount(
+    corto_select_data *data)
+{
+    return data->mounts[data->stack[data->sp].currentMount - 1];
+}
+
+static
 corto_fmt corto_selectSrcContentType(
     corto_select_data *data)
 {
@@ -190,6 +197,13 @@ uintptr_t corto_selectConvert(
     uintptr_t value)
 {
     uintptr_t result = 0;
+    corto_mount mount = corto_selectCurrentMount(data);
+    corto_fmt_opt src_opt = {
+        .from = mount->super.query.from
+    };
+    corto_fmt_opt dst_opt = {
+        .from = data->scope
+    };
 
     if (!value) {
         return 0;
@@ -199,7 +213,8 @@ uintptr_t corto_selectConvert(
 
     if (!srcType && value) {
         corto_warning("mount '%s' provides value but no contentType",
-            corto_fullpath(NULL, data->mounts[data->stack[data->sp].currentMount - 1]));
+            corto_fullpath(NULL,
+                data->mounts[data->stack[data->sp].currentMount - 1]));
         return 0;
     }
 
@@ -214,13 +229,14 @@ uintptr_t corto_selectConvert(
 
             /* Convert from source format to object */
             corto_value v = corto_value_mem(intermediate, t);
-            if (srcType->toValue(&v, value)) {
+
+            if (corto_fmt_to_value(srcType, &src_opt, &v, (void*)value)) {
                 corto_throw("failed to convert value to '%s'", type);
                 goto error;
             }
 
             /* Convert from object to destination format */
-            if (!(result = data->dstSer->fromValue(&v))) {
+            if (!(result = (uintptr_t)corto_fmt_from_value(data->dstSer, &dst_opt, &v))) {
                 corto_throw("failed to convert value to '%s'", data->contentType);
                 goto error;
             }
@@ -296,16 +312,26 @@ void corto_setItemData(
     }
 
     if (data->contentType) {
+        corto_fmt_opt dst_opt = {
+            .from = data->scope
+        };
         if (item->value) {
-            data->dstSer->release(item->value);
+            corto_fmt_release(data->dstSer, (void*)item->value);
         }
 
         corto_value v = corto_value_object(o, NULL);
-        item->value = data->dstSer->fromValue(&v);
+        item->value =
+            (uintptr_t)corto_fmt_from_value(data->dstSer, &dst_opt, &v);
     }
 
-    if (corto_scope_size(o)) {
+    item->flags = 0;
+
+    if (!corto_scope_size(o)) {
         item->flags = CORTO_RESULT_LEAF;
+    }
+
+    if (corto_typeof(o) == corto_unknown_o) {
+        item->flags |= CORTO_RESULT_HIDDEN;
     }
 }
 
@@ -535,7 +561,7 @@ void* corto_selectHistoryNext(
     dstValue = corto_selectConvert(ctx->data, ctx->data->item.type, s->value);
 
     if (ctx->sample.value) {
-        ctx->data->dstSer->release(ctx->sample.value);
+        corto_fmt_release(ctx->data->dstSer, (void*)ctx->sample.value);
     }
 
     ctx->sample.value = dstValue;
@@ -551,7 +577,7 @@ void corto_selectHistoryRelease(
     corto_selectHistoryIter_t *ctx = it->ctx;
 
     if (ctx->sample.value) {
-        ctx->data->dstSer->release(ctx->sample.value);
+        corto_fmt_release(ctx->data->dstSer, (void*)ctx->sample.value);
     }
 
     corto_iter_release(&ctx->iter);
@@ -654,7 +680,7 @@ bool corto_selectIterMount(
 
     if (data->dstSer && (data->dstSer != srcType)) {
         /* Convert value */
-        data->dstSer->release(data->item.value);
+        corto_fmt_release(data->dstSer, (void*)data->item.value);
         data->item.value = corto_selectConvert(
           data, result->type, result->value);
         data->valueAllocated = TRUE;
@@ -830,10 +856,6 @@ bool corto_selectIterNext(
         }
     } while (retry);
 
-    if (hasData && (data->mask == CORTO_ON_SELF)) {
-        data->mask = 0;
-    }
-
     return hasData;
 }
 
@@ -984,7 +1006,9 @@ int16_t corto_selectTree(
         corto_resultMask flags = CORTO_RESULT_LEAF, hasData = FALSE;
 
         /* Unwind stack for depleted iterators */
-        while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) && data->sp && !data->quit) {
+        while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) &&
+            data->sp && !data->quit)
+        {
             /* Cache name as next line might delete object */
             if (frame->o) {
                 strcpy(data->item.name, corto_idof(frame->o));
@@ -1006,10 +1030,11 @@ int16_t corto_selectTree(
                 {
                     match = true;
                     corto_setItemData(o, data->next, data);
+                    flags = data->next->flags;
                 } else {
                     data->skip ++;
+                    flags = 0;
                 }
-                flags = 0;
             } else {
                 /* If doing a lookup on a tree, select requests all objects from
                  * a mount and thus needs to perform matching. If not, select
@@ -1056,9 +1081,16 @@ int16_t corto_selectTree(
             /* If result is hidden, skip */
             if (flags & CORTO_RESULT_HIDDEN) {
                 match = false;
+                if (data->mask == CORTO_ON_SELF) {
+                    data->next = NULL;
+                }
             }
         } else {
             data->next = NULL;
+        }
+
+        if (match && (data->mask == CORTO_ON_SELF)) {
+            data->mask = 0;
         }
 
         if (o) corto_release(o);
@@ -1072,8 +1104,8 @@ static
 void corto_selectReset(
     corto_select_data *data)
 {
-    if (data->item.value && data->dstSer && data->dstSer->release && data->valueAllocated) {
-        data->dstSer->release(data->item.value);
+    if (data->item.value && data->dstSer && data->valueAllocated) {
+        corto_fmt_release(data->dstSer, (void*)data->item.value);
     }
 
     if (data->item.object) {
@@ -1177,10 +1209,11 @@ void* corto_selectNext(
     corto_log_push("next");
 
     if (data->next) {
-        corto_trace("yield (id: '%s', from: '%s', type: '%s')",
+        corto_trace("yield (id: '%s', from: '%s', type: '%s', ref: %p)",
             data->next->id,
             data->next->parent,
-            data->next->type);
+            data->next->type,
+            data->next->object);
         data->count ++;
     }
 

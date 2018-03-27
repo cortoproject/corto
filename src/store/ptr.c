@@ -209,7 +209,7 @@ int16_t corto_mem_deserialize(
 
     corto_value v = corto_value_mem(ptr, corto_mem_typeof(ptr));
 
-    return fmt_handle->toValue(&v, (corto_word)value);
+    return corto_fmt_to_value(fmt_handle, NULL, &v, value);
 error:
     return -1;
 }

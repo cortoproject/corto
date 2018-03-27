@@ -2,6 +2,7 @@
 
 #include <corto/corto.h>
 #include "src/store/object.h"
+
 corto_string corto_result_contentof(
     corto_result* this,
     const char *contentType)
@@ -13,7 +14,7 @@ corto_string corto_result_contentof(
         goto error;
     }
 
-    if (!(result = (corto_string)type->fromResult(this))) {
+    if (!(result = corto_fmt_from_result(type, NULL, this))) {
         goto error;
     }
 
@@ -32,7 +33,7 @@ int16_t corto_result_fromcontent(
         goto error;
     }
 
-    if (type->toResult(this, (corto_word)content)) {
+    if (corto_fmt_to_result(type, NULL, this, (void*)content)) {
         goto error;
     }
 
@@ -46,4 +47,3 @@ corto_string corto_result_getText(
 {
     return (corto_string)this->value;
 }
-
