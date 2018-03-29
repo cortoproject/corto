@@ -1066,7 +1066,7 @@ int corto_start(
     }
 
     /* Initialize platform abstraction layer */
-    platform_init(appName);
+    corto_platform_init(appName);
 
     /* Initialize TLS keys */
     corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
