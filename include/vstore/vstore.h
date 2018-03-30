@@ -198,6 +198,26 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*soffset)(
         uint64_t offset);
 
+    /** Return unknown objects.
+     * An unknown object is used as a placeholder for a parent that has not yet
+     * been created explicitly while one or more children of the parent have
+     * been created.
+     *
+     * Unknown objects by themselves do not conceptually represent data, and
+     * should not ordinarily be synchronized. Scenarios where an application
+     * might be interested in unknown objects is where it is not guaranteed that
+     * the hierarchy will be fully constructed, but applications still need to
+     * be able to discover paths to where potential child objects are (like in
+     * a tool that allows browsing the entire store).
+     *
+     * Because it is not illegal for multiple mounts to return the same
+     * unknown object, disabling this filter may result in duplicate results.
+     * One mount may return a normal object, while another mount may return the
+     * same object identifier as unknown. Multiple unknown objects can also be
+     * returned.
+     */
+    struct corto_select__fluent (*yield_unknown)();
+
     /** Return an iterator to the requested results.
      * Results are returned as corto_result instances. A corto_result contains
      * metadata and when a content type is specified, a serialized value of an
@@ -333,6 +353,13 @@ typedef struct corto_subscribe__fluent {
      */
     struct corto_subscribe__fluent (*type)(
         const char *type);
+
+    /** Return unknown objects.
+     * For a description of this function, see corto_select. This setting only
+     * affects behavior of the subscriber during alignment, when it calls
+     * corto_select.
+     */
+    struct corto_subscribe__fluent (*yield_unknown)(void);
 
     /** Create a mount of the specified type.
      *

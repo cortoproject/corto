@@ -58,6 +58,7 @@ typedef struct corto_selectRequest {
     bool isHistoricalQuery;
     bool queryVstore;
     bool queryStore;
+    bool yield_unknown;
 } corto_selectRequest;
 
 typedef struct corto_select_data corto_select_data;
@@ -134,6 +135,7 @@ struct corto_select_data {
     bool isHistoricalQuery;
     bool queryVstore;
     bool queryStore;
+    bool yield_unknown;
 
     /* Filters */
     corto_string typeFilter;
@@ -331,7 +333,9 @@ void corto_setItemData(
     }
 
     if (corto_typeof(o) == corto_unknown_o) {
-        item->flags |= CORTO_RESULT_HIDDEN;
+        if (!data->yield_unknown) {
+            item->flags |= CORTO_RESULT_HIDDEN;
+        }
     }
 }
 
@@ -1558,6 +1562,7 @@ corto_resultIter corto_selectPrepareIterator (
     data->isHistoricalQuery = r->isHistoricalQuery;
     data->queryStore = r->queryStore;
     data->queryVstore = r->queryVstore;
+    data->yield_unknown = r->yield_unknown;
     data->item.parent = data->parent;
     data->item.name = data->name;
     data->item.type = data->type;
@@ -2097,6 +2102,18 @@ corto_select__fluent corto_selectorVstore(
     return corto_select__fluentGet();
 }
 
+static
+corto_select__fluent corto_selectorYieldUnknown(void)
+{
+    corto_selectRequest *request =
+      corto_tls_get(CORTO_KEY_FLUENT);
+    if (request) {
+        request->yield_unknown = true;
+        corto_debug("YIELD_UNKNOWN 'true'");
+    }
+    return corto_select__fluentGet();
+}
+
 static corto_select__fluent corto_select__fluentGet(void)
 {
     corto_select__fluent result;
@@ -2123,6 +2140,7 @@ static corto_select__fluent corto_select__fluentGet(void)
     result.instance = corto_selectorInstance;
     result.mount = corto_selectorMount;
     result.vstore = corto_selectorVstore;
+    result.yield_unknown = corto_selectorYieldUnknown;
     return result;
 }
 
@@ -2136,13 +2154,12 @@ corto_select__fluent corto_select(
     if (!request) {
         request = corto_calloc(sizeof(corto_selectRequest));
         corto_tls_set(CORTO_KEY_FLUENT, request);
-        request->queryStore = true;
-        request->queryVstore = true;
     } else {
         memset(request, 0, sizeof(corto_selectRequest));
-        request->queryStore = true;
-        request->queryVstore = true;
     }
+
+    request->queryStore = true;
+    request->queryVstore = true;
 
     if (expr) {
         va_start(arglist, expr);

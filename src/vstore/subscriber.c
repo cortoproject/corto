@@ -21,6 +21,7 @@ typedef struct corto_subscribeRequest {
     const char *contentType;
     corto_dispatcher dispatcher;
     bool enabled;
+    bool yield_unknown;
     void (*callback)(corto_subscriber_event*);
 } corto_subscribeRequest;
 
@@ -631,6 +632,8 @@ corto_subscriber corto_subscribeSubscribe(
         s->query.from = NULL;
     }
 
+    s->query.yield_unknown = r->yield_unknown;
+
     corto_set_str(&s->query.select, r->expr);
     corto_set_str(&s->contentType, r->contentType);
     corto_set_ref(&((corto_observer)s)->instance, r->instance);
@@ -721,6 +724,17 @@ corto_subscribe__fluent corto_subscribeFrom(
 }
 
 static
+corto_subscribe__fluent corto_subscribeYieldUnknown(void)
+{
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    if (request) {
+        request->yield_unknown = true;
+    }
+
+    return corto_subscribe__fluentGet();
+}
+
+static
 corto_subscriber corto_subscribeCallback(
     void (*callback)(corto_subscriber_event*))
 {
@@ -783,6 +797,7 @@ corto_subscribe__fluent corto_subscribe__fluentGet(void)
     result.type = corto_subscribeType;
     result.dispatcher = corto_subscribeDispatcher;
     result.mount = corto_subscribeMount;
+    result.yield_unknown = corto_subscribeYieldUnknown;
     return result;
 }
 
@@ -983,20 +998,19 @@ int16_t corto_subscriber_subscribe(
 
     /* If subscriber was not yet enabled, subscribe to mounts */
     int16_t ret;
-    if (!this->contentType) {
-        ret = corto_select(this->query.select)
-          .from(this->query.from)
-          .type(this->query.type)
-          .instance(this) /* this prevents mounts from subscribing to themselves */
-          .subscribe(&it);
-    } else {
-        ret = corto_select(this->query.select)
-          .from(this->query.from)
-          .type(this->query.type)
-          .contentType(this->contentType)
-          .instance(this) /* this prevents mounts from subscribing to themselves */
-          .subscribe(&it);
+
+    corto_select__fluent fl = corto_select(this->query.select);
+    fl.from(this->query.from);
+    fl.type(this->query.type);
+    fl.instance(this); /* this prevents mounts from subscribing to themselves */
+    if (this->query.yield_unknown) {
+        fl.yield_unknown();
     }
+    if (this->contentType) {
+        fl.contentType(this->contentType);
+    }
+    ret = fl.subscribe(&it);
+
     if (ret) {
         goto error;
     }
