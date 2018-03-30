@@ -1066,7 +1066,7 @@ int corto_start(
     }
 
     /* Initialize platform abstraction layer */
-    platform_init(appName);
+    corto_platform_init(appName);
 
     /* Initialize TLS keys */
     corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
@@ -1374,9 +1374,9 @@ int corto_stop(void)
 
     corto_log_pop();
     corto_fmt_deinit();
-    platform_deinit();
+    corto_platform_deinit();
 
-    /* Call exithandlers. Do after platform_deinit as this will unload any
+    /* Call exithandlers. Do after corto_platform_deinit as this will unload any
      * loaded libraries, which may have routines to cleanup TLS data. */
      struct corto_exitHandler* h;
 
