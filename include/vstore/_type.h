@@ -93,6 +93,7 @@ typedef struct corto_query {
     corto_frame timeBegin;
     corto_frame timeEnd;
     bool content;
+    bool yield_unknown;
 } corto_query;
 
 /* procedure corto/vstore/subscriber */
