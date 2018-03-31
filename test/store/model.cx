@@ -4,7 +4,10 @@ int8 initCalled: 0
 int8 constructCalled: 0
 int8 destructCalled: 0
 
-// Support types
+//------------------------------------------------------------------------------
+// SUPPORT TYPES
+//------------------------------------------------------------------------------
+
 uint uintw: WIDTH_WORD
 int intw: WIDTH_WORD
 
@@ -477,7 +480,76 @@ struct InitTest:/
 struct NestedInitTest:/
     m_nested: InitTest
 
-// Test initializer functionality
+class AttrConstructorTest:/
+    int16 construct()
+
+class AnonymousTest:/
+    objects: list{object}, not_null
+
+// Function overloading support types and procedures
+void ol_null(object a)
+void ol_null(string a)
+void ol_null(bool a)
+
+void ol_object(object a)
+void ol_string(string a)
+void ol_bool(bool a)
+
+void ol_wildcard(int32 a, string b)
+void ol_wildcard(float32 a, string b)
+
+void ol_int(int32 a)
+void ol_uint(int32 a)
+
+void ol_num(int32 a)
+void ol_num(float64 a)
+
+enum Color:/ Red, Orange, Yellow, Green, Blue
+void ol_any(bool a)
+void ol_any(char a)
+void ol_any(int32 a)
+void ol_any(float32 a)
+void ol_any(string a)
+void ol_any(object a)
+void ol_any(Color a)
+
+class Animal:/
+    a: bool
+
+class Dog : Animal:/
+    b: bool
+
+class GoldenRetriever : Dog:/
+    c: bool
+
+class Cat : Animal:/
+    b: bool
+
+void ol_inherit(Animal a)
+void ol_inherit(Dog a)
+
+// Key and lock for security tests
+class TestKey: secure/key:/
+    string login(string user, string password) override
+
+struct AccessRule:/
+    user: string
+    action: secure/actionKind
+    access: secure/accessKind
+
+class TestLock: secure/lock, hidden:/
+    mount: string
+    expr: string
+    priority: int32
+    rules: list{AccessRule}, not_null
+    int16 construct()
+    secure/accessKind authorize(string token, secure/actionKind action) override
+
+//------------------------------------------------------------------------------
+// OBJECT MANAGEMENT SUITES
+//------------------------------------------------------------------------------
+
+// Test initializer serializer
 test/Suite Init:/
     void tc_list()
     void tc_list_not_null()
@@ -495,7 +567,7 @@ test/Suite Init:/
     void tc_target()
     void tc_nestedInit()
 
-// Object management testcases
+// Test object management
 test/Suite ObjectMgmt:/
     prevAttr: lang/attr, local|private
 
@@ -608,18 +680,267 @@ test/Suite ObjectMgmt:/
 
     void tc_defaultValues()
 
-test/Suite Tags:/
-    void tc_findTag()
-    void tc_tagNotFound()
-
 // Test whether attributes are set correctly in different contexts
-class AttrConstructorTest:/
-  int16 construct()
-
 test/Suite AttrCheck:/
     void tc_packageMainAttr()
     void tc_packageObjectAttr()
     void tc_constructorAttr()
+
+
+//------------------------------------------------------------------------------
+// OBJECT OWNERSHIP SUITES
+//------------------------------------------------------------------------------
+
+// Test ownership scenarios
+test/Suite Ownership:/
+    observable: word
+
+    void setup() method
+
+    void tc_checkOwnerNull()
+    void tc_checkOwnerReplicator()
+
+    void tc_declareOwned()
+    void tc_createOwned()
+    void tc_updateOwned()
+    void tc_deleteOwned()
+    void tc_releaseOwned()
+
+    void tc_updateNotOwned()
+    void tc_updateNotOwnedTarget()
+    void tc_deleteNotOwned()
+    void tc_releaseNotOwned()
+
+    void tc_invokeOwned()
+    void tc_invokeNotOwned()
+
+    void tc_ownedSelfSelf()
+    void tc_ownedSelfObj()
+    void tc_ownedObjSelf()
+    void tc_ownedObjObj()
+    void tc_ownedObjObjSame()
+    void tc_ownedSelfMount()
+    void tc_ownedMountSelf()
+    void tc_ownedObjMount()
+    void tc_ownedMountObj()
+    void tc_ownedMountMount()
+    void tc_ownedMountMountSame()
+
+    observer onDelete: DELETE
+
+
+//------------------------------------------------------------------------------
+// SERIALIZER SUITES
+//------------------------------------------------------------------------------
+
+// Test corto string serializer
+test/Suite StringSerializer:/
+    void tc_serBoolTrue()
+    void tc_serBoolFalse()
+
+    void tc_serChar()
+    void tc_serCharNull()
+    void tc_serCharEscape()
+
+    void tc_serInt8()
+    void tc_serInt8Minus()
+
+    void tc_serInt16()
+    void tc_serInt16Minus()
+
+    void tc_serInt32()
+    void tc_serInt32Minus()
+
+    void tc_serInt64()
+    void tc_serInt64Minus()
+
+    void tc_serUint8()
+    void tc_serUint16()
+    void tc_serUint32()
+    void tc_serUint64()
+
+    void tc_serString()
+    void tc_serStringEscape()
+    void tc_serStringWhitespace()
+    void tc_serStringNull()
+
+    void tc_serComposite()
+    void tc_serInheritance()
+    void tc_serCompositeNested()
+
+    void tc_serArray()
+    void tc_serArrayComplex()
+    void tc_serSequence()
+    void tc_serSequenceComplex()
+    void tc_serList()
+    void tc_serListComplex()
+
+    void tc_serAnonymous()
+    void tc_serTwoAnonymous()
+    void tc_serSameAnonymous()
+    void tc_serLongAnonymous()
+    void tc_serCycle()
+    void tc_serAnonymousComplex()
+    void tc_serAnonymousComplexString()
+    void tc_serAnonymousComplexStringEsc()
+
+    void tc_serStructPrimitive()
+    void tc_serStructString()
+    void tc_serStructObservableInt()
+    void tc_serStructObservableString()
+    void tc_serStructObservableReference()
+    void tc_serStructObservableStruct()
+    void tc_serStructObservableArray()
+    void tc_serStructObservableSequence()
+    void tc_serStructObservableList()
+    void tc_serStructOptionalInt()
+    void tc_serStructOptionalString()
+    void tc_serStructOptionalReference()
+    void tc_serStructOptionalStruct()
+    void tc_serStructOptionalArray()
+    void tc_serStructOptionalSequence()
+    void tc_serStructOptionalList()
+    void tc_serStructTargetInt()
+    void tc_serStructTargetString()
+    void tc_serStructTargetReference()
+    void tc_serStructTargetStruct()
+    void tc_serStructTargetArray()
+    void tc_serStructTargetSequence()
+    void tc_serStructTargetList()
+    void tc_serStructArrayInt()
+    void tc_serStructArrayString()
+    void tc_serStructArrayReference()
+    void tc_serStructArrayStruct()
+    void tc_serStructSequenceInt()
+    void tc_serStructSequenceString()
+    void tc_serStructSequenceReference()
+    void tc_serStructSequenceStruct()
+    void tc_serStructListInt()
+    void tc_serStructListString()
+    void tc_serStructListReference()
+    void tc_serStructListStruct()
+    void tc_serStructInherit()
+
+// Test corto string deserializer
+test/Suite StringDeserializer:/
+    void setup() method
+    void teardown() method
+
+    void tc_errMissingType()
+    void tc_errExcessElements()
+    void tc_errUnresolvedType()
+    void tc_errUnresolvedMember()
+    void tc_errNotAType()
+    void tc_errTypeMismatch()
+
+    void tc_deserExisting()
+    void tc_deserExisting_w_type()
+    void tc_deserExisting_w_scopedType()
+
+    void tc_deserBoolTrue()
+    void tc_deserBoolFalse()
+    void tc_deserBoolInvalid()
+
+    void tc_deserChar()
+    void tc_deserCharQuoted()
+    void tc_deserCharNull()
+    void tc_deserCharNullQuoted()
+    void tc_deserCharEscape()
+    void tc_deserCharEscapeQuoted()
+
+    void tc_deserInt8()
+    void tc_deserInt8Minus()
+    void tc_deserInt8Overflow()
+
+    void tc_deserInt16()
+    void tc_deserInt16Minus()
+    void tc_deserInt16Overflow()
+
+    void tc_deserInt32()
+    void tc_deserInt32Minus()
+    void tc_deserInt32Overflow()
+
+    void tc_deserInt64()
+    void tc_deserInt64Minus()
+
+    void tc_deserUint8()
+    void tc_deserUint8Overflow()
+
+    void tc_deserUint16()
+    void tc_deserUint16Overflow()
+
+    void tc_deserUint32()
+    void tc_deserUint32Overflow()
+
+    void tc_deserUint64()
+
+    void tc_deserString()
+    void tc_deserStringQuotes()
+    void tc_deserStringQuotesWhitespaces()
+    void tc_deserStringEscape()
+    void tc_deserStringEscapeQuotes()
+    void tc_deserStringWhitespace()
+    void tc_deserStringWhitespaceTrailing()
+    void tc_deserStringWhitespaceTrailingNoType()
+    void tc_deserStringMember()
+    void tc_deserStringMemberNoQuotes()
+
+    void tc_deserStringMemberEscape()
+    void tc_deserStringMemberEscapeNoQuotes()
+
+    void tc_deserComposite()
+    void tc_deserCompositeNoType()
+    void tc_deserCompositeWhitespace()
+    void tc_deserCompositeMembers()
+    void tc_deserCompositeMixed()
+
+    void tc_deserArray()
+    void tc_deserArrayComplex()
+    void tc_deserArrayReference()
+
+    void tc_deserSequence()
+    void tc_deserSequenceComplex()
+    void tc_deserSequenceReference()
+
+    void tc_deserList()
+    void tc_deserListComplex()
+    void tc_deserListReference()
+
+    void tc_deserInheritance()
+    void tc_deserInheritanceMembers()
+    void tc_deserInheritanceMixed()
+
+    void tc_deserCompositeNested()
+    void tc_deserCompositeNestedMembers()
+    void tc_deserCompositeNestedMixed()
+
+    void tc_deserAlias()
+
+    void tc_deserAnonymousSimple()
+    void tc_deserAnonymousNested()
+    void tc_deserAnonymousMultiple()
+    void tc_deserAnonymousReuse()
+    void tc_deserAnonymousReuseNested()
+    void tc_deserAnonymousCycle()
+    void tc_deserAnonymousTwice()
+    void tc_deserAnonymousComplex()
+    void tc_deserAnonymousComplexString()
+    void tc_deserAnonymousComplexStringEsc()
+
+    void tc_deserTargetOwned()
+    void tc_deserTargetOwnedObj()
+    void tc_deserTargetOwnedMount()
+    void tc_deserTargetNotOwned()
+    void tc_deserTargetNotOwnedObj()
+    void tc_deserTargetNotOwnedMount()
+    void tc_deserTargetMemberOwned()
+    void tc_deserTargetMemberNotOwned()
+    void tc_deserTargetRefMemberOwned()
+    void tc_deserTargetRefMemberNotOwned()
+    void tc_deserTargetAnonymousOwned()
+    void tc_deserTargetAnonymousNotOwned()
+    void tc_deserTargetRefAnonymousMemberOwned()
+    void tc_deserTargetRefAnonymousMemberNotOwned()
 
 // Test compare serializer
 test/Suite Compare:/
@@ -763,42 +1084,10 @@ test/Suite BinarySerializer:/
     void tc_copyListWithReferenceWithInitType()
     void tc_copyListWithReferenceWithDefaults()
 
-// Test ownership scenarios
-test/Suite Ownership:/
-    observable: word
 
-    void setup() method
-
-    void tc_checkOwnerNull()
-    void tc_checkOwnerReplicator()
-
-    void tc_declareOwned()
-    void tc_createOwned()
-    void tc_updateOwned()
-    void tc_deleteOwned()
-    void tc_releaseOwned()
-
-    void tc_updateNotOwned()
-    void tc_updateNotOwnedTarget()
-    void tc_deleteNotOwned()
-    void tc_releaseNotOwned()
-
-    void tc_invokeOwned()
-    void tc_invokeNotOwned()
-
-    void tc_ownedSelfSelf()
-    void tc_ownedSelfObj()
-    void tc_ownedObjSelf()
-    void tc_ownedObjObj()
-    void tc_ownedObjObjSame()
-    void tc_ownedSelfMount()
-    void tc_ownedMountSelf()
-    void tc_ownedObjMount()
-    void tc_ownedMountObj()
-    void tc_ownedMountMount()
-    void tc_ownedMountMountSame()
-
-    observer onDelete: DELETE
+//------------------------------------------------------------------------------
+// OBJECT IDENTIFIER SUITES
+//------------------------------------------------------------------------------
 
 // Generate fully scoped names
 test/Suite Fullname:/
@@ -838,6 +1127,10 @@ test/Suite RelativeName:/
     void tc_fromDisjunct()
     void tc_fromSelf()
     void tc_rootFromObj()
+
+//------------------------------------------------------------------------------
+// OBJECT LOOKUP SUITES
+//------------------------------------------------------------------------------
 
 void functionToResolve(int32 a, int32 b)
 
@@ -930,195 +1223,10 @@ test/Suite Lookup:/
     void tc_lookupUnknown()
     void tc_lookupNoResume()
 
-// Test matcher
-test/Suite Matcher:/
-  void tc_emptyString()              // '' => *
-  void tc_null()                     // null => *
-  void tc_scopeEmptyString()         // '' => *
-  void tc_scopeNull()                // null => *
-  void tc_treeEmptyString()          // '' => *
-  void tc_treeNull()                 // null => *
-  void tc_id()                       // a => a
-  void tc_idFail()                   // a => b
-  void tc_idOr()                     // a => a|b
-  void tc_idOrFail()                 // c => a|b
-  void tc_idOrMulti()                // a => a|b|c|d|e|f
-  void tc_idOrMultiFail()            // g => a|b|c|d|e|f
-  void tc_idAnd()                    // a => a&a
-  void tc_idAndFail()                // a => a&b
-  void tc_idNot()                    // a => ^b
-  void tc_idNotFail()                // b => ^b
-  void tc_idNotOr()                  // a => ^b|c
-  void tc_idNotOrFail()              // a => ^a|b
-  void tc_idNotAnd()                 // a => ^a&b
-  void tc_idNotAndFail()             // a => ^a&a
-  void tc_filterIdA()                // ax => a*
-  void tc_filterIdAFail()            // bx => a*
-  void tc_filterIdQ()                // ax => a?
-  void tc_filterIdQFail()            // bx => a?
-  void tc_filterA()                  // ax => *
-  void tc_filterQQ()                 // ax => ??
-  void tc_filterQFail()              // ax => ?
-  void tc_filterQQFail()             // a => ??
-  void tc_filterQA()                 // ax => ?*
-  void tc_filterAQ()                 // ax => *?
-  void tc_filterFail()               // ax => b*
-  void tc_filterOr()                 // ax => a*|b*
-  void tc_filterOrFail()             // cx => a*|b*
-  void tc_filterAnd()                // ax => a*&*x
-  void tc_filterAndFail()            // ax => a*&*y
-  void tc_filterNot()                // ax => ^b*
-  void tc_filterNotFail()            // bx => ^b*
-  void tc_filterNotOr()              // ax => ^b*|c*
-  void tc_filterNotOrFail()          // ax => ^a*|b*
-  void tc_filterNotAnd()             // ax => ^a*&*y
-  void tc_filterNotAndFail()         // ax => ^a*&*x
-  void tc_filterNotFilter()          // ax => *x^b*
-  void tc_filterNotFilterFail()      // ax => *x^a*
-  void tc_separatorId()              // [a,b] => a,b
-  void tc_separatorIdFail()          // c => a,b
-  void tc_separatorFilter()          // ax => b*,*x
-  void tc_separatorFilterFail()      // ax => b*,*y
-  void tc_separatorNotFilter()       // ax => ^b*,*y
-  void tc_separatorNotFilterFail()   // ax => ^a*,*y
-  void tc_scopeId()                  // /a => /a
-  void tc_scopeFilter()              // /a => /*
-  void tc_scopeImplicit()            // /a => /
-  void tc_scopeIdFail()              // /a => /b
-  void tc_scopeIdMulti()             // /a/b => /a/b
-  void tc_scopeIdMultiFail()         // /a/b => /a/c
-  void tc_scopeFilter()              // /ax => /a*
-  void tc_scopeFilterFail()          // /ax => /b*
-  void tc_scopeImplicitFail()        // a => /
-  void tc_scopeOr()                  // /a => /a|b
-  void tc_scopeOrFail()              // /a/c => /a/b|c
-  void tc_scopeOrMulti()             // /a/b => /a/b|c
-  void tc_scopeOrMultiFail()         // /a/d => /a/b|c
-  void tc_scopeFilterMulti()         // /ax/b => /*x/b
-  void tc_scopeFilterMultiFail1()    // /ax/b => /*y/b
-  void tc_scopeFilterMultiFail2()    // /ax/b => /*x/c
-  void tc_scopeIdMultiSingleFail()   // /a/b => /a
-  void tc_scopeIdSingleMultiFail()   // /a => /a/b
-  void tc_scopeFilterSingleMultiFail() // /a => /a/*
-  void tc_scopeFilterMultiSingleFail() // /a/b => /*
-  void tc_treeId()                   // /a => //a
-  void tc_treeImplicit()             // /a => //
-  void tc_treeFilter()               // /a => //*
-  void tc_treeIdFail()               // /a => //b
-  void tc_treeImplicitFail()         // a => //
-  void tc_treeFilterFail()           // /a* => //b
-  void tc_treeNested()               // /a/b => //b
-  void tc_treeNestedFail()           // /a/b => //a
-  void tc_treeNestedScope()          // /a/b/c => //b/c
-  void tc_treeNestedScopeFail()      // /a/b/d => //b/c
-  void tc_treeOffset()               // /a/b/c => a//c
-  void tc_treeOffsetFail()           // /a => a//
-  void tc_treeOffsetNested()         // /a/b/c/d => /a/b//d
-  void tc_treeOffsetNestedFail()     // /b/c/d => /a/b//d
-  void tc_treeOffsetAny()            // /a/b/c => /a//
-  void tc_treeOffsetAnyFail()        // /a => /a//
-  void tc_treeOffsetOr()             // /b/c/d => /a|b//d
-  void tc_treeOffsetOrFail()         // /c/c/d => /a|b//d
 
-
-// Test corto_select
-test/Suite Select:/
-    void setup() method
-    void teardown() method
-
-    resultList collect(string scope, string expr, uint64 offset, uint64 limit) function
-    bool hasObject(resultList items, string parent, string name, string type) function
-
-    void tc_selectFromNull()
-    void tc_selectFromRoot()
-    void tc_selectFromCorto()
-
-    void tc_selectThis()
-    void tc_selectParent()
-    void tc_selectIdentifier()
-    void tc_selectIdentifierCaps()
-    void tc_selectNumeric()
-    void tc_selectUnderscore()
-    void tc_selectScopedThis()
-    void tc_selectScopedParent()
-    void tc_selectScopedIdentifier()
-
-    void tc_selectScope()
-    void tc_selectScopeWithWildcard()
-    void tc_selectScopeWithAsterisk()
-    void tc_selectScopeWithWildcardFilter()
-    void tc_selectScopeWithAsteriskFilter()
-
-    void tc_selectTree()
-    void tc_selectTreeWithWildcard()
-    void tc_selectTreeWithWildcardFilter()
-    void tc_selectTreeWithAsteriskFilter()
-    void tc_selectTreeFromScope()
-
-    void tc_selectFilterAsterisk()
-    void tc_selectFilterWildcard()
-
-    void tc_selectOrder()
-
-    void tc_selectDeleteFirst()
-    void tc_selectDeletePrevious()
-    void tc_selectDeleteCurrent()
-    void tc_selectDeleteNext()
-    void tc_selectDeleteParent()
-
-    void tc_selectTreeDeleteFirst()
-    void tc_selectTreeDeletePrevious()
-    void tc_selectTreeDeleteCurrent()
-    void tc_selectTreeDeleteNext()
-    void tc_selectTreeDeleteParent()
-    void tc_selectTreeDeleteGrandparent()
-
-    void tc_selectObject()
-    void tc_selectObjectScope()
-    void tc_selectObjectTree()
-    void tc_selectObjectParentScope()
-    void tc_selectObjectParentTree()
-    void tc_selectObjectTrailingScope()
-    void tc_selectObjectPrefixScope()
-    void tc_selectObjectPrefixTrailingScope()
-    void tc_selectObjectTrailingTree()
-
-    void tc_selectEmptyParentString()
-    void tc_selectEmptyParentAst()
-    void tc_selectEmptyQueryString()
-    void tc_selectEmptyStrings()
-    void tc_selectFromRootThis()
-    void tc_selectFromRootNull()
-    void tc_selectFromRootEmpty()
-    void tc_selectFromLangParent()
-    void tc_selectFromPartialMatchedElement()
-
-    void tc_selectParentNoSlash()
-
-    void tc_selectOffsetScope()
-    void tc_selectOffsetTree()
-    void tc_selectOffsetLimitOvershootScope()
-    void tc_selectOffsetLimitOvershootTree()
-    void tc_selectOffsetLimit()
-    void tc_selectOffsetLargerThanLimit()
-    void tc_selectLimitScope()
-    void tc_selectLimitTree()
-    void tc_selectLimitOvershootScope()
-    void tc_selectLimitOvershootTree()
-    void tc_selectOffsetLimitFilter()
-
-    void tc_selectParentWithSink()
-    void tc_selectSeparator()
-
-    void tc_selectInvertCase()
-    void tc_selectInvertCaseFilter()
-    void tc_selectInvertCaseScope()
-
-    void tc_selectIdUnknown()
-    void tc_selectThisUnknown()
-    void tc_selectScopeUnknown()
-    void tc_selectTreeUnknown()
-
+//------------------------------------------------------------------------------
+// OBSERVER SUITES
+//------------------------------------------------------------------------------
 
 // Event test support type
 class EventTest:/
@@ -1173,7 +1281,6 @@ class EventTest:/
     countUpdateDefineSelf: uint32, readonly
     countUpdateDefineScope: uint32, readonly
     countUpdateDefineTree: uint32, readonly
-
 
 // Test notifications
 test/Suite Event:/
@@ -1276,129 +1383,10 @@ test/Suite Observers:/
     observer: vstore/observer, private
     count: int32
 
-// Event test support type
-class SubscriberTest:/
-    lastParent: string, readonly
-    lastId: string, readonly
-    lastMask: eventMask, readonly
-    triggered: list{subscriber}, readonly|not_null
 
-    int16 construct()
-    void destruct()
-    void clear()
-
-    subscriber onAll:   query={select=".,//" from="/testScope"}
-    subscriber onSelf:  query={select="."    from="/testScope"}
-    subscriber onScope: query={select="/"    from="/testScope"}
-    subscriber onTree:  query={select="//"   from="/testScope"}
-    countDeclare: uint32, readonly
-    countDeclareSelf: uint32, readonly
-    countDeclareScope: uint32, readonly
-    countDeclareTree: uint32, readonly
-
-    countDefine: uint32, readonly
-    countDefineSelf: uint32, readonly
-    countDefineScope: uint32, readonly
-    countDefineTree: uint32, readonly
-
-    countUpdate: uint32, readonly
-    countUpdateSelf: uint32, readonly
-    countUpdateScope: uint32, readonly
-    countUpdateTree: uint32, readonly
-
-test/Suite SubscriberEvent:/
-    void setup() method
-    void teardown() method
-
-    void tc_onDeclare()
-    void tc_onDeclareSelf()
-    void tc_onDeclareScope()
-    void tc_onDeclareTree()
-
-    void tc_onDefine()
-    void tc_onDefineSelf()
-    void tc_onDefineScope()
-    void tc_onDefineTree()
-
-    void tc_onUpdate()
-    void tc_onUpdateSelf()
-    void tc_onUpdateScope()
-    void tc_onUpdateTree()
-
-    prevAttr: lang/attr
-    st: SubscriberTest
-
-test/Suite Subscribe:/
-    subscriber noInitialSep: query={select="*" from="testScope"}
-    triggered: uint8
-    owner: object
-    result: vstore/result
-    void tc_noInitialSep()
-    void tc_subscribeInvertCase()
-    void tc_subscribeInvertCaseFilter()
-    void tc_subscribeInvertCaseParent()
-    void tc_subscribeInvertCaseFromPublish()
-    void tc_subscribeInvertCaseFilterFromPublish()
-    void tc_subscribeInvertCaseParentFromPublish()
-    void tc_subscribeNestedIdFromRoot()
-    void tc_subscribeNestedScopeFromRoot()
-    void tc_subscribeFromImplicit()
-    void tc_subscribeFromNull()
-    void tc_subscribeFromEmpty()
-    void tc_subscribeFromRoot()
-    void tc_subscribeFromScope()
-    void tc_subscribeFromScopeNoInitialSlash()
-    void tc_subscribeFromNested()
-    void tc_subscribeFromNestedNoInitialSlash()
-    void tc_subscribePartialMatchingParent()
-    void tc_subscribePartialMatchingParentObject()
-    void tc_subscribeOwnerSet()
-    void tc_subscribeAlignSelf()
-    void tc_subscribeAlignType()
-    void tc_subscribeMultiDifferentParent()
-    void tc_subscribeMultiDifferentParentVirtual()
-
-// Function overloading support types
-void ol_null(object a)
-void ol_null(string a)
-void ol_null(bool a)
-
-void ol_object(object a)
-void ol_string(string a)
-void ol_bool(bool a)
-
-void ol_wildcard(int32 a, string b)
-void ol_wildcard(float32 a, string b)
-
-void ol_int(int32 a)
-void ol_uint(int32 a)
-
-void ol_num(int32 a)
-void ol_num(float64 a)
-
-enum Color:/ Red, Orange, Yellow, Green, Blue
-void ol_any(bool a)
-void ol_any(char a)
-void ol_any(int32 a)
-void ol_any(float32 a)
-void ol_any(string a)
-void ol_any(object a)
-void ol_any(Color a)
-
-class Animal:/
-    a: bool
-
-class Dog : Animal:/
-    b: bool
-
-class GoldenRetriever : Dog:/
-    c: bool
-
-class Cat : Animal:/
-    b: bool
-
-void ol_inherit(Animal a)
-void ol_inherit(Dog a)
+//------------------------------------------------------------------------------
+// PROCEDURE SUITES
+//------------------------------------------------------------------------------
 
 // Function overloading test suite
 test/Suite Overload:/
@@ -1508,277 +1496,10 @@ test/Suite MethodResolver:/
 test/Suite MethodInvoking:/
     void tc_interfaceMethod()
 
-// Test Corto string serializer
-test/Suite StringSerializer:/
-    void tc_serBoolTrue()
-    void tc_serBoolFalse()
 
-    void tc_serChar()
-    void tc_serCharNull()
-    void tc_serCharEscape()
-
-    void tc_serInt8()
-    void tc_serInt8Minus()
-
-    void tc_serInt16()
-    void tc_serInt16Minus()
-
-    void tc_serInt32()
-    void tc_serInt32Minus()
-
-    void tc_serInt64()
-    void tc_serInt64Minus()
-
-    void tc_serUint8()
-    void tc_serUint16()
-    void tc_serUint32()
-    void tc_serUint64()
-
-    void tc_serString()
-    void tc_serStringEscape()
-    void tc_serStringWhitespace()
-    void tc_serStringNull()
-
-    void tc_serComposite()
-    void tc_serInheritance()
-    void tc_serCompositeNested()
-
-    void tc_serArray()
-    void tc_serArrayComplex()
-    void tc_serSequence()
-    void tc_serSequenceComplex()
-    void tc_serList()
-    void tc_serListComplex()
-
-    void tc_serAnonymous()
-    void tc_serTwoAnonymous()
-    void tc_serSameAnonymous()
-    void tc_serLongAnonymous()
-    void tc_serCycle()
-    void tc_serAnonymousComplex()
-    void tc_serAnonymousComplexString()
-    void tc_serAnonymousComplexStringEsc()
-
-    void tc_serStructPrimitive()
-    void tc_serStructString()
-    void tc_serStructObservableInt()
-    void tc_serStructObservableString()
-    void tc_serStructObservableReference()
-    void tc_serStructObservableStruct()
-    void tc_serStructObservableArray()
-    void tc_serStructObservableSequence()
-    void tc_serStructObservableList()
-    void tc_serStructOptionalInt()
-    void tc_serStructOptionalString()
-    void tc_serStructOptionalReference()
-    void tc_serStructOptionalStruct()
-    void tc_serStructOptionalArray()
-    void tc_serStructOptionalSequence()
-    void tc_serStructOptionalList()
-    void tc_serStructTargetInt()
-    void tc_serStructTargetString()
-    void tc_serStructTargetReference()
-    void tc_serStructTargetStruct()
-    void tc_serStructTargetArray()
-    void tc_serStructTargetSequence()
-    void tc_serStructTargetList()
-    void tc_serStructArrayInt()
-    void tc_serStructArrayString()
-    void tc_serStructArrayReference()
-    void tc_serStructArrayStruct()
-    void tc_serStructSequenceInt()
-    void tc_serStructSequenceString()
-    void tc_serStructSequenceReference()
-    void tc_serStructSequenceStruct()
-    void tc_serStructListInt()
-    void tc_serStructListString()
-    void tc_serStructListReference()
-    void tc_serStructListStruct()
-    void tc_serStructInherit()
-
-class AnonymousTest:/
-    objects: list{object}, not_null
-
-// String deserializer testcases
-test/Suite StringDeserializer:/
-    void setup() method
-    void teardown() method
-
-    void tc_errMissingType()
-    void tc_errExcessElements()
-    void tc_errUnresolvedType()
-    void tc_errUnresolvedMember()
-    void tc_errNotAType()
-    void tc_errTypeMismatch()
-
-    void tc_deserExisting()
-    void tc_deserExisting_w_type()
-    void tc_deserExisting_w_scopedType()
-
-    void tc_deserBoolTrue()
-    void tc_deserBoolFalse()
-    void tc_deserBoolInvalid()
-
-    void tc_deserChar()
-    void tc_deserCharQuoted()
-    void tc_deserCharNull()
-    void tc_deserCharNullQuoted()
-    void tc_deserCharEscape()
-    void tc_deserCharEscapeQuoted()
-
-    void tc_deserInt8()
-    void tc_deserInt8Minus()
-    void tc_deserInt8Overflow()
-
-    void tc_deserInt16()
-    void tc_deserInt16Minus()
-    void tc_deserInt16Overflow()
-
-    void tc_deserInt32()
-    void tc_deserInt32Minus()
-    void tc_deserInt32Overflow()
-
-    void tc_deserInt64()
-    void tc_deserInt64Minus()
-
-    void tc_deserUint8()
-    void tc_deserUint8Overflow()
-
-    void tc_deserUint16()
-    void tc_deserUint16Overflow()
-
-    void tc_deserUint32()
-    void tc_deserUint32Overflow()
-
-    void tc_deserUint64()
-
-    void tc_deserString()
-    void tc_deserStringQuotes()
-    void tc_deserStringQuotesWhitespaces()
-    void tc_deserStringEscape()
-    void tc_deserStringEscapeQuotes()
-    void tc_deserStringWhitespace()
-    void tc_deserStringWhitespaceTrailing()
-    void tc_deserStringWhitespaceTrailingNoType()
-    void tc_deserStringMember()
-    void tc_deserStringMemberNoQuotes()
-
-    void tc_deserStringMemberEscape()
-    void tc_deserStringMemberEscapeNoQuotes()
-
-    void tc_deserComposite()
-    void tc_deserCompositeNoType()
-    void tc_deserCompositeWhitespace()
-    void tc_deserCompositeMembers()
-    void tc_deserCompositeMixed()
-
-    void tc_deserArray()
-    void tc_deserArrayComplex()
-    void tc_deserArrayReference()
-
-    void tc_deserSequence()
-    void tc_deserSequenceComplex()
-    void tc_deserSequenceReference()
-
-    void tc_deserList()
-    void tc_deserListComplex()
-    void tc_deserListReference()
-
-    void tc_deserInheritance()
-    void tc_deserInheritanceMembers()
-    void tc_deserInheritanceMixed()
-
-    void tc_deserCompositeNested()
-    void tc_deserCompositeNestedMembers()
-    void tc_deserCompositeNestedMixed()
-
-    void tc_deserAlias()
-
-    void tc_deserAnonymousSimple()
-    void tc_deserAnonymousNested()
-    void tc_deserAnonymousMultiple()
-    void tc_deserAnonymousReuse()
-    void tc_deserAnonymousReuseNested()
-    void tc_deserAnonymousCycle()
-    void tc_deserAnonymousTwice()
-    void tc_deserAnonymousComplex()
-    void tc_deserAnonymousComplexString()
-    void tc_deserAnonymousComplexStringEsc()
-
-    void tc_deserTargetOwned()
-    void tc_deserTargetOwnedObj()
-    void tc_deserTargetOwnedMount()
-    void tc_deserTargetNotOwned()
-    void tc_deserTargetNotOwnedObj()
-    void tc_deserTargetNotOwnedMount()
-    void tc_deserTargetMemberOwned()
-    void tc_deserTargetMemberNotOwned()
-    void tc_deserTargetRefMemberOwned()
-    void tc_deserTargetRefMemberNotOwned()
-    void tc_deserTargetAnonymousOwned()
-    void tc_deserTargetAnonymousNotOwned()
-    void tc_deserTargetRefAnonymousMemberOwned()
-    void tc_deserTargetRefAnonymousMemberNotOwned()
-
-// Test environment variable parsing functions
-test/Suite Env:/
-    void tc_envparseSimpleFormat()
-    void tc_envparseSimpleReplace()
-    void tc_envparseReplaceMultiple()
-    void tc_envparseReplaceWithSameVariable()
-    void tc_envparseFormatAndReplace()
-    void tc_envparseVariableNotFound()
-
-    void tc_setenvSimple()
-    void tc_setenvSimpleFormat()
-    void tc_setenvSimpleReplace()
-    void tc_setenvReplaceMultiple()
-    void tc_setenvReplaceWithSameVariable()
-    void tc_setenvFormatAndReplace()
-    void tc_setenvVariableNotFound()
-    void tc_setenvNull()
-
-// Test buffer implementation
-test/Suite Buffer:/
-    void tc_append()
-    void tc_appendToExisting()
-    void tc_appendEmpty()
-    void tc_appendEmptyToExisting()
-    void tc_appendNull()
-    void tc_appendNullToExisting()
-    void tc_appendLarge()
-    void tc_appendLargeMulti()
-    void tc_appendLargeOverflow()
-    void tc_appendOverflow()
-
-// Test loader
-test/Suite Loader:/
-    void tc_loadNonExistent()
-    void tc_loadDepOnChild()
-    void tc_loadDepOnParent()
-    void tc_loadDepOnSibling()
-    void tc_loadChildNoDep()
-    void tc_loadSelf()
-    void tc_createSelfPackage()
-    void tc_locateSelf()
-    void tc_autoloadPackageNoLib()
-
-// Key and lock for security tests
-class TestKey: secure/key:/
-    string login(string user, string password) override
-
-struct AccessRule:/
-    user: string
-    action: secure/actionKind
-    access: secure/accessKind
-
-class TestLock: secure/lock, hidden:/
-    mount: string
-    expr: string
-    priority: int32
-    rules: list{AccessRule}, not_null
-    int16 construct()
-    secure/accessKind authorize(string token, secure/actionKind action) override
+//------------------------------------------------------------------------------
+// SECURITY SUITES
+//------------------------------------------------------------------------------
 
 // Test security
 test/Suite Security:/
@@ -1831,6 +1552,10 @@ test/Suite Security:/
     void tc_lockDenyTreeGrantScopeSelectThis()
     void tc_lockDenyTreeSelectMount()
     void tc_lockSwitchUser()
+
+//------------------------------------------------------------------------------
+// PTR AND VALUE SUITES
+//------------------------------------------------------------------------------
 
 // Test value casting
 test/Suite ValueCast:/
@@ -1912,6 +1637,11 @@ test/Suite Ptr:/
     void tc_ptr_initDeinitReferenceType()
     void tc_ptr_newFreeReferenceType()
 
+
+//------------------------------------------------------------------------------
+// MISC SUITES
+//------------------------------------------------------------------------------
+
 // Test containers, leafs and tables
 test/Suite Container:/
     void tc_tableSingleKey()
@@ -1929,3 +1659,20 @@ test/Suite Container:/
     void tc_leafRoot()
     void tc_complexContainer()
     void tc_anonymousContainer()
+
+// Test tags
+test/Suite Tags:/
+    void tc_findTag()
+    void tc_tagNotFound()
+
+// Test package loader
+test/Suite Loader:/
+    void tc_loadNonExistent()
+    void tc_loadDepOnChild()
+    void tc_loadDepOnParent()
+    void tc_loadDepOnSibling()
+    void tc_loadChildNoDep()
+    void tc_loadSelf()
+    void tc_createSelfPackage()
+    void tc_locateSelf()
+    void tc_autoloadPackageNoLib()
