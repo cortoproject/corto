@@ -222,6 +222,7 @@ uintptr_t corto_selectConvert(
 
     /* If source serializer is loaded, a conversion is needed */
     if (srcType && (srcType != data->dstSer)) {
+
         corto_object t = corto_resolve(NULL, type);
         if (!t) {
             corto_throw("unresolved type '%s'", type);
@@ -245,6 +246,7 @@ uintptr_t corto_selectConvert(
 
             corto_mem_free(intermediate);
         }
+
     } else {
         /* If formats are equal, just pass through */
         result = value;
@@ -254,12 +256,6 @@ uintptr_t corto_selectConvert(
 error:
     return 0;
 }
-
-void corto_pathstr(
-    char *out,
-    char *from,
-    char *to,
-    int tolen);
 
 static
 void corto_setItemData(
@@ -279,7 +275,7 @@ void corto_setItemData(
 
     /* Compute path from scope to result */
     strcpy(from, data->scope ? data->scope : "");
-    corto_pathstr(item->parent, from, to, -1);
+    corto_path_offset(item->parent, from, to, -1, true);
 
     if (corto_idof(o)) {
         strcpy(item->id, corto_idof(o));
@@ -667,7 +663,7 @@ bool corto_selectIterMount(
         strcat(rpath, "/");
         strcat(rpath, local_parent);
         corto_path_clean(rpath, rpath);
-        corto_pathstr(data->item.parent, path, rpath, -1);
+        corto_path_offset(data->item.parent, path, rpath, -1, true);
     } else {
         data->item.parent[0] = '\0';
     }

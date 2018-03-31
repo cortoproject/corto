@@ -4,6 +4,10 @@ int8 initCalled: 0
 int8 constructCalled: 0
 int8 destructCalled: 0
 
+//------------------------------------------------------------------------------
+// SUPPORT TYPES
+//------------------------------------------------------------------------------
+
 class Foo:/
     fail: bool, local
     x, y: int32
@@ -23,24 +27,319 @@ struct Point:/
 struct InvalidPoint:/
     x, y: Point // This will throw an error when trying to deserialize a number
 
+class FooDispatcher: implements={dispatcher}:/
+    void post(vstore/event e)
+
+class SubscriberTest:/
+    lastParent: string, readonly
+    lastId: string, readonly
+    lastMask: eventMask, readonly
+    triggered: list{subscriber}, readonly|not_null
+
+    int16 construct()
+    void destruct()
+    void clear()
+
+    subscriber onAll:   query={select=".,//" from="/testScope"}
+    subscriber onSelf:  query={select="."    from="/testScope"}
+    subscriber onScope: query={select="/"    from="/testScope"}
+    subscriber onTree:  query={select="//"   from="/testScope"}
+    countDeclare: uint32, readonly
+    countDeclareSelf: uint32, readonly
+    countDeclareScope: uint32, readonly
+    countDeclareTree: uint32, readonly
+
+    countDefine: uint32, readonly
+    countDefineSelf: uint32, readonly
+    countDefineScope: uint32, readonly
+    countDefineTree: uint32, readonly
+
+    countUpdate: uint32, readonly
+    countUpdateSelf: uint32, readonly
+    countUpdateScope: uint32, readonly
+    countUpdateTree: uint32, readonly
+
+struct Refs:/
+    sibling: object
+    nested_sibling: object
+    at_from: object
+    inside_from: object
+    inside_from_nested1: object
+    inside_from_nested2: object
+    parent_from: object
+    at_root: object
+    from: object
+    root: object
+    null_ref: object
+
+//------------------------------------------------------------------------------
+// SUPPORT MOUNT TYPES
+//------------------------------------------------------------------------------
+
+// Mount that serves up data in JSON
 class JsonReplicator : mount, hidden:/
     alias mount: mount/mount
     type: string
     int16 construct()
     resultIter on_query(vstore/query query) override
 
+// Mount that serves up data as corto strings
 class StringReplicator : mount, hidden:/
     alias mount: mount/mount
     int16 construct()
     resultIter on_query(vstore/query query) override
 
+// Mount that provides id service
 class IdMount : mount, hidden:/
     alias mount: mount/mount
     alias type: observer/type
     int16 construct()
     string on_id() override
 
-// Test setting content types
+// Mount that provides objects specified in list
+class ListMount : mount, hidden:/
+    alias mount : mount/mount
+    alias mask : observer/mask
+    kind : ownership
+    items: resultList, private|not_null
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+
+// Mount that uses iterator
+class MountWIterData: mount, hidden:/
+    alias mount: mount/mount
+    resultIter on_query(vstore/query query) override
+
+// Mount that counts iterator calls
+class MountIterCount: mount, hidden:/
+    alias mount: mount/mount
+    nextCount: int32, readonly
+    hasNextCount: int32, readonly
+    releaseCount: int32, readonly
+    result: vstore/result, readonly
+    id: string, readonly
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+
+// Mount with nested objects
+class VirtualMount: mount, hidden:/
+    mount: string
+    data: resultList, private|not_null
+    resultIter on_query(vstore/query query) override
+    int16 construct()
+
+// Mount that returns data with an initial slash in the parent
+class MountInitialSlash: mount:/
+    resultIter on_query(vstore/query query) override
+
+// Mount that serves up historical data
+class HistoryMount : vstore/mount, hidden:/
+    alias mount: mount/mount
+    int16 construct()
+    vstore/resultIter on_history_query(vstore/query query) override
+
+    struct data:/
+        result: vstore/result
+        history: list{string}, not_null
+
+    history: list{data}, private|not_null
+
+// LOCAL mount
+class SinkMount : vstore/mount, hidden:/
+    alias mount: mount/mount
+    type: string
+    value: string
+    items: resultList, private|not_null
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+    int16 on_resume(string parent, string id, inout:object object) override
+
+// Mount used for various purposes
+class AutoResumeSinkMount : vstore/mount, hidden:/
+    alias mount: mount/mount
+    type: string
+    value: string
+    subscribes: list{vstore/query}, readonly|not_null
+    unsubscribes: list{vstore/query}, readonly|not_null
+    mounts: list{vstore/query}, readonly|not_null
+    unmounts: list{vstore/query}, readonly|not_null
+    items: resultList, private|not_null
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+    word on_subscribe(vstore/query query, word ctx) override
+    void on_unsubscribe(vstore/query query, word ctx) override
+    word on_mount(vstore/query query, word ctx) override
+    void on_unmount(vstore/query query, word ctx) override
+
+// LOCAL mount that serves up nested data
+class VirtualSinkMount : vstore/mount, hidden:/
+    from: string
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+    items: resultList, private|not_null
+    count: int32, readonly
+
+// Mount that returns specified item using iterator
+class ObjectMount : vstore/mount, hidden:/
+    select: string
+    from: string
+    item: result
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+
+// The loader is a complex mount that filters on type, hides store packages and
+// has to take into account that builtin packages do not have the persistent
+// attribute. This class simulates the loader so the combination of these usecases
+// can be verified.
+class LoaderSimulatorMount : vstore/mount, hidden:/
+    int16 construct()
+    resultIter on_query(vstore/query query) override
+    queryCount: int32, private
+    items: resultList, private|not_null
+
+// Mount that serves up a single object
+class SimpleMount: vstore/mount:/
+    resultIter on_query(vstore/query query) override
+
+// LOCAL mount with no data
+class EmptySinkMount : vstore/mount, hidden:/
+    alias mount: mount/mount
+    int16 construct()
+
+// Mount that counts received events
+class EventReplicator: mount, hidden:/
+  alias query: subscriber/query
+  alias policy: mount/policy
+
+  declareCount: int32, readonly
+  updateCount: int32, readonly
+  deleteCount: int32, readonly
+
+  void on_notify(vstore/subscriber_event event) override
+
+
+//------------------------------------------------------------------------------
+// DISPATCHER SUITES
+//------------------------------------------------------------------------------
+
+test/Suite Dispatcher:/
+    observerPosted: bool
+    subscriberPosted: bool
+    void tc_subscriberDispatcher()
+    void tc_subscriberDispatcherMulti()
+    void tc_observerDispatcher()
+    void tc_observerDispatcherMulti()
+    void tc_observerSubscriberDispatcher()
+
+
+//------------------------------------------------------------------------------
+// SELECT SUITES
+//------------------------------------------------------------------------------
+
+// Test select query engine
+test/Suite Select:/
+    void setup() method
+    void teardown() method
+
+    resultList collect(string scope, string expr, uint64 offset, uint64 limit) function
+    bool hasObject(resultList items, string parent, string name, string type) function
+
+    void tc_selectFromNull()
+    void tc_selectFromRoot()
+    void tc_selectFromCorto()
+
+    void tc_selectThis()
+    void tc_selectParent()
+    void tc_selectIdentifier()
+    void tc_selectIdentifierCaps()
+    void tc_selectNumeric()
+    void tc_selectUnderscore()
+    void tc_selectScopedThis()
+    void tc_selectScopedParent()
+    void tc_selectScopedIdentifier()
+
+    void tc_selectScope()
+    void tc_selectScopeWithWildcard()
+    void tc_selectScopeWithAsterisk()
+    void tc_selectScopeWithWildcardFilter()
+    void tc_selectScopeWithAsteriskFilter()
+
+    void tc_selectTree()
+    void tc_selectTreeWithWildcard()
+    void tc_selectTreeWithWildcardFilter()
+    void tc_selectTreeWithAsteriskFilter()
+    void tc_selectTreeFromScope()
+
+    void tc_selectFilterAsterisk()
+    void tc_selectFilterWildcard()
+
+    void tc_selectOrder()
+
+    void tc_selectDeleteFirst()
+    void tc_selectDeletePrevious()
+    void tc_selectDeleteCurrent()
+    void tc_selectDeleteNext()
+    void tc_selectDeleteParent()
+
+    void tc_selectTreeDeleteFirst()
+    void tc_selectTreeDeletePrevious()
+    void tc_selectTreeDeleteCurrent()
+    void tc_selectTreeDeleteNext()
+    void tc_selectTreeDeleteParent()
+    void tc_selectTreeDeleteGrandparent()
+
+    void tc_selectObject()
+    void tc_selectObjectScope()
+    void tc_selectObjectTree()
+    void tc_selectObjectParentScope()
+    void tc_selectObjectParentTree()
+    void tc_selectObjectTrailingScope()
+    void tc_selectObjectPrefixScope()
+    void tc_selectObjectPrefixTrailingScope()
+    void tc_selectObjectTrailingTree()
+
+    void tc_selectEmptyParentString()
+    void tc_selectEmptyParentAst()
+    void tc_selectEmptyQueryString()
+    void tc_selectEmptyStrings()
+    void tc_selectFromRootThis()
+    void tc_selectFromRootNull()
+    void tc_selectFromRootEmpty()
+    void tc_selectFromLangParent()
+    void tc_selectFromPartialMatchedElement()
+
+    void tc_selectParentNoSlash()
+
+    void tc_selectOffsetScope()
+    void tc_selectOffsetTree()
+    void tc_selectOffsetLimitOvershootScope()
+    void tc_selectOffsetLimitOvershootTree()
+    void tc_selectOffsetLimit()
+    void tc_selectOffsetLargerThanLimit()
+    void tc_selectLimitScope()
+    void tc_selectLimitTree()
+    void tc_selectLimitOvershootScope()
+    void tc_selectLimitOvershootTree()
+    void tc_selectOffsetLimitFilter()
+
+    void tc_selectParentWithSink()
+    void tc_selectSeparator()
+
+    void tc_selectInvertCase()
+    void tc_selectInvertCaseFilter()
+    void tc_selectInvertCaseScope()
+
+    void tc_selectIdUnknown()
+    void tc_selectThisUnknown()
+    void tc_selectScopeUnknown()
+    void tc_selectTreeUnknown()
+
+    void tc_selectIdYieldUnknown()
+    void tc_selectThisYieldUnknown()
+    void tc_selectScopeYieldUnknown()
+    void tc_selectTreeYieldUnknown()
+
+// Request data with content type
 test/Suite SelectContentType:/
     void setup() method
 
@@ -58,80 +357,7 @@ test/Suite SelectContentType:/
     void tc_selectBinaryFromString()
     void tc_selectBinaryFromJson()
 
-class FooDispatcher: implements={dispatcher}:/
-    void post(vstore/event e)
-
-// Test dispatchers
-test/Suite Dispatcher:/
-    observerPosted: bool
-    subscriberPosted: bool
-    void tc_subscriberDispatcher()
-    void tc_subscriberDispatcherMulti()
-    void tc_observerDispatcher()
-    void tc_observerDispatcherMulti()
-    void tc_observerSubscriberDispatcher()
-
-// Test content types with subscribers
-test/Suite SubscribeContentType:/
-    eventsReceived: int32
-
-    void setup() method
-
-    void tc_subscribeTypeWithConstruct()
-
-    void tc_subscribeStringFromObjects()
-    void tc_subscribeStringFromString()
-    void tc_subscribeStringFromJson()
-    void tc_subscribeStringFromObjectsDispatch()
-    void tc_subscribeStringFromStringDispatch()
-    void tc_subscribeStringFromJsonDispatch()
-
-    void tc_subscribeJsonFromObjects()
-    void tc_subscribeJsonFromString()
-    void tc_subscribeJsonFromJson()
-    void tc_subscribeJsonFromObjectsDispatch()
-    void tc_subscribeJsonFromStringDispatch()
-    void tc_subscribeJsonFromJsonDispatch()
-
-    void tc_subscribeBinaryFromObjects()
-    void tc_subscribeBinaryFromString()
-    void tc_subscribeBinaryFromJson()
-    void tc_subscribeBinaryFromObjectsDispatch()
-    void tc_subscribeBinaryFromStringDispatch()
-    void tc_subscribeBinaryFromJsonDispatch()
-
-class ListMount : mount, hidden:/
-    alias mount : mount/mount
-    alias mask : observer/mask
-    kind : ownership
-    items: resultList, private|not_null
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-
-class MountWIterData: mount, hidden:/
-    alias mount: mount/mount
-    resultIter on_query(vstore/query query) override
-
-class MountIterCount: mount, hidden:/
-    alias mount: mount/mount
-    nextCount: int32, readonly
-    hasNextCount: int32, readonly
-    releaseCount: int32, readonly
-    result: vstore/result, readonly
-    id: string, readonly
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-
-class VirtualMount: mount, hidden:/
-    mount: string
-    data: resultList, private|not_null
-    resultIter on_query(vstore/query query) override
-    int16 construct()
-
-class MountInitialSlash: mount:/
-    resultIter on_query(vstore/query query) override
-
-// Test corto_select requesting data from mounts
+// Request data from REMOTE mounts
 test/Suite SelectMount:/
     void setup() method
     void teardown() method
@@ -196,18 +422,7 @@ test/Suite SelectMount:/
     void tc_selectTreeFromInitialSlashInMountResult()
     void tc_selectScopeFromInitialSlashInMountResult()
 
-
-class HistoryMount : vstore/mount, hidden:/
-    alias mount: mount/mount
-    int16 construct()
-    vstore/resultIter on_history_query(vstore/query query) override
-
-    struct data:/
-        result: vstore/result
-        history: list{string}, not_null
-
-    history: list{data}, private|not_null
-
+// Request data from HISTORY mounts
 test/Suite SelectHistory:/
     void setup() method
     void tc_selectNowToDepth()
@@ -215,60 +430,7 @@ test/Suite SelectHistory:/
     void tc_selectAll()
     void tc_selectJson()
 
-class SinkMount : vstore/mount, hidden:/
-    alias mount: mount/mount
-    type: string
-    value: string
-    items: resultList, private|not_null
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-    int16 on_resume(string parent, string id, inout:object object) override
-
-class AutoResumeSinkMount : vstore/mount, hidden:/
-    alias mount: mount/mount
-    type: string
-    value: string
-    subscribes: list{vstore/query}, readonly|not_null
-    unsubscribes: list{vstore/query}, readonly|not_null
-    mounts: list{vstore/query}, readonly|not_null
-    unmounts: list{vstore/query}, readonly|not_null
-    items: resultList, private|not_null
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-    word on_subscribe(vstore/query query, word ctx) override
-    void on_unsubscribe(vstore/query query, word ctx) override
-    word on_mount(vstore/query query, word ctx) override
-    void on_unmount(vstore/query query, word ctx) override
-
-class VirtualSinkMount : vstore/mount, hidden:/
-    from: string
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-    items: resultList, private|not_null
-    count: int32, readonly
-
-class ObjectMount : vstore/mount, hidden:/
-    select: string
-    from: string
-    item: result
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-
-// The loader is a complex mount that filters on type, hides store packages and
-// has to take into account that builtin packages do not have the persistent
-// attribute. This class simulates the loader so the combination of these usecases
-// can be verified.
-class LoaderSimulatorMount : vstore/mount, hidden:/
-    int16 construct()
-    resultIter on_query(vstore/query query) override
-    queryCount: int32, private
-    items: resultList, private|not_null
-
-// Simple mount serving single object
-class SimpleMount: vstore/mount:/
-    resultIter on_query(vstore/query query) override
-
-// Request data from a SINK mount
+// Request data from a LOCAL mount
 test/Suite SelectSink:/
     void setup() method
     void teardown() method
@@ -313,8 +475,7 @@ test/Suite SelectSink:/
     void tc_selectObjectFromVstore_w_InvalidObjectInStore()
     void tc_selectObjectFromVstore_w_ValidObjectInStore()
 
-
-// Resume data from SINK mount
+// Resume data from LOCAL mount
 test/Suite ResumeSink:/
     void setup() method
     void teardown() method
@@ -426,10 +587,6 @@ test/Suite SelectSinkWithType:/
     void tc_selectMixedScopeNested1()
     void tc_selectMixedScopeNested2()
 
-class EmptySinkMount : vstore/mount, hidden:/
-    alias mount: mount/mount
-    int16 construct()
-
 // Test pass-through behavior for SINK mounts that don't override on_query
 test/Suite SelectSinkNoOnRequest:/
     void setup() method
@@ -437,16 +594,133 @@ test/Suite SelectSinkNoOnRequest:/
     void tc_selectSingle()
     void tc_selectScope()
 
+// Request serialized objects with references (requires relative object ids)
+test/Suite SelectContentTypeRefs:/
+    nest0: object
+    nest1: object
+    nest2: object
+    nest3: object
+    nest4: object
+    nest5: object
+    sibling: object
+    nested_sibling: object
 
-class EventReplicator: mount, hidden:/
-  alias query: subscriber/query
-  alias policy: mount/policy
+    void setup() method
 
-  declareCount: int32, readonly
-  updateCount: int32, readonly
-  deleteCount: int32, readonly
+    void tc_selectIdWithRefsFromRoot()
+    void tc_selectIdWithRefsFromNested1()
+    void tc_selectIdWithRefsFromNested2()
 
-  void on_notify(vstore/subscriber_event event) override
+    void tc_selectThisWithRefsFromRoot()
+    void tc_selectThisWithRefsFromNested1()
+    void tc_selectThisWithRefsFromNested2()
+
+    void tc_selectScopeWithRefsFromRoot()
+    void tc_selectScopeWithRefsFromNested1()
+    void tc_selectScopeWithRefsFromNested2()
+
+    void tc_selectScopeNestedWithRefsFromRoot()
+    void tc_selectScopeNestedWithRefsFromNested1()
+    void tc_selectScopeNestedWithRefsFromNested2()
+
+    void tc_selectTreeWithRefsFromRoot()
+    void tc_selectTreeWithRefsFromNested1()
+    void tc_selectTreeWithRefsFromNested2()
+
+    void tc_selectTreeNestedWithRefsFromRoot()
+    void tc_selectTreeNestedWithRefsFromNested1()
+    void tc_selectTreeNestedWithRefsFromNested2()
+
+
+//------------------------------------------------------------------------------
+// SUBSCRIBER SUITES
+//------------------------------------------------------------------------------
+
+test/Suite SubscriberEvent:/
+    void setup() method
+    void teardown() method
+
+    void tc_onDeclare()
+    void tc_onDeclareSelf()
+    void tc_onDeclareScope()
+    void tc_onDeclareTree()
+
+    void tc_onDefine()
+    void tc_onDefineSelf()
+    void tc_onDefineScope()
+    void tc_onDefineTree()
+
+    void tc_onUpdate()
+    void tc_onUpdateSelf()
+    void tc_onUpdateScope()
+    void tc_onUpdateTree()
+
+    prevAttr: lang/attr
+    st: SubscriberTest
+
+test/Suite Subscribe:/
+    subscriber noInitialSep: query={select="*" from="testScope"}
+    triggered: uint8
+    owner: object
+    result: vstore/result
+    void tc_noInitialSep()
+    void tc_subscribeInvertCase()
+    void tc_subscribeInvertCaseFilter()
+    void tc_subscribeInvertCaseParent()
+    void tc_subscribeInvertCaseFromPublish()
+    void tc_subscribeInvertCaseFilterFromPublish()
+    void tc_subscribeInvertCaseParentFromPublish()
+    void tc_subscribeNestedIdFromRoot()
+    void tc_subscribeNestedScopeFromRoot()
+    void tc_subscribeFromImplicit()
+    void tc_subscribeFromNull()
+    void tc_subscribeFromEmpty()
+    void tc_subscribeFromRoot()
+    void tc_subscribeFromScope()
+    void tc_subscribeFromScopeNoInitialSlash()
+    void tc_subscribeFromNested()
+    void tc_subscribeFromNestedNoInitialSlash()
+    void tc_subscribePartialMatchingParent()
+    void tc_subscribePartialMatchingParentObject()
+    void tc_subscribeOwnerSet()
+    void tc_subscribeAlignSelf()
+    void tc_subscribeAlignType()
+    void tc_subscribeMultiDifferentParent()
+    void tc_subscribeMultiDifferentParentVirtual()
+
+// Test content types with subscribers
+test/Suite SubscribeContentType:/
+    eventsReceived: int32
+
+    void setup() method
+
+    void tc_subscribeTypeWithConstruct()
+
+    void tc_subscribeStringFromObjects()
+    void tc_subscribeStringFromString()
+    void tc_subscribeStringFromJson()
+    void tc_subscribeStringFromObjectsDispatch()
+    void tc_subscribeStringFromStringDispatch()
+    void tc_subscribeStringFromJsonDispatch()
+
+    void tc_subscribeJsonFromObjects()
+    void tc_subscribeJsonFromString()
+    void tc_subscribeJsonFromJson()
+    void tc_subscribeJsonFromObjectsDispatch()
+    void tc_subscribeJsonFromStringDispatch()
+    void tc_subscribeJsonFromJsonDispatch()
+
+    void tc_subscribeBinaryFromObjects()
+    void tc_subscribeBinaryFromString()
+    void tc_subscribeBinaryFromJson()
+    void tc_subscribeBinaryFromObjectsDispatch()
+    void tc_subscribeBinaryFromStringDispatch()
+    void tc_subscribeBinaryFromJsonDispatch()
+
+
+//------------------------------------------------------------------------------
+// MOUNT SUITES
+//------------------------------------------------------------------------------
 
 // Test events received by replicator
 test/Suite ReplicatorEvent:/
@@ -462,6 +736,7 @@ test/Suite ReplicatorEvent:/
     void tc_rateLimitThreeObjects()
     void tc_rateLimitAlign()
 
+// Test mount subscription callbacks
 test/Suite MountSubscription:/
     void tc_subscribeSingle()
     void tc_subscribeScope()
@@ -486,6 +761,7 @@ test/Suite MountSubscription:/
     void tc_subscribeNestedForMountWithTypeFilter()
     void tc_subscribeOnMountWithFromNull()
 
+// Test mount on_mount callback
 test/Suite MountMounts:/
     void tc_mountOnDefine()
     void tc_mountOnSubscribe()

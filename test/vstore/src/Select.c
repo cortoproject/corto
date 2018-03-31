@@ -105,7 +105,6 @@ void test_Select_setup(
     corto_void__create(_8, "abcdef");
 
     corto_enable_load(FALSE);
-
 }
 
 void test_Select_tc_selectDeleteCurrent(
@@ -1854,8 +1853,138 @@ void test_Select_tc_selectTreeUnknown(
     test_assert(corto_delete(world) == 0);
 }
 
+void test_Select_tc_selectIdYieldUnknown(
+    test_Select this)
+{
+    corto_object hello = corto_create(root_o, "foo/bar/hello", corto_void_o);
+    test_assert(hello != NULL);
+    test_assert(corto_typeof(hello) == corto_void_o);
+
+    corto_object bar = corto_parentof(hello);
+    test_assert(bar != NULL);
+    test_assert(corto_typeof(bar) == corto_unknown_o);
+    test_assert(corto_countof(bar) == 1);
+
+    corto_iter it;
+    int16_t ret = corto_select("bar").from("foo").yield_unknown().iter(&it);
+    test_assert(ret == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "unknown");
+    test_assert(corto_iter_hasNext(&it) == 0);
+
+    test_assert(corto_delete(hello) == 0);
+}
+
+void test_Select_tc_selectScopeYieldUnknown(
+    test_Select this)
+{
+    corto_object hello = corto_create(root_o, "data/bar/hello", corto_void_o);
+    test_assert(hello != NULL);
+    test_assert(corto_typeof(hello) == corto_void_o);
+
+    corto_object bar = corto_parentof(hello);
+    test_assert(bar != NULL);
+    test_assert(corto_typeof(bar) == corto_unknown_o);
+    test_assert(corto_countof(bar) == 1);
+
+    corto_iter it;
+    int16_t ret = corto_select("/").from("data").yield_unknown().iter(&it);
+    test_assert(ret == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "unknown");
+    test_assert(corto_iter_hasNext(&it) == 0);
+
+    test_assert(corto_delete(hello) == 0);
+}
+
+void test_Select_tc_selectThisYieldUnknown(
+    test_Select this)
+{
+    corto_object bar = corto_create(root_o, "foo/bar", corto_void_o);
+    test_assert(bar != NULL);
+    test_assert(corto_typeof(bar) == corto_void_o);
+
+    corto_object foo = corto_parentof(bar);
+    test_assert(foo != NULL);
+    test_assert(corto_typeof(foo) == corto_unknown_o);
+    test_assert(corto_countof(foo) == 1);
+
+    corto_iter it;
+    int16_t ret = corto_select(".").from("foo").yield_unknown().iter(&it);
+    test_assert(ret == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "foo");
+    test_assertstr(r->parent, "..");
+    test_assertstr(r->type, "unknown");
+    test_assert(corto_iter_hasNext(&it) == 0);
+
+    test_assert(corto_delete(bar) == 0);
+}
+
+void test_Select_tc_selectTreeYieldUnknown(
+    test_Select this)
+{
+    corto_object world = corto_create(root_o, "data/bar/hello/world", corto_void_o);
+    test_assert(world != NULL);
+    test_assert(corto_typeof(world) == corto_void_o);
+
+    corto_object hello = corto_parentof(world);
+    test_assert(hello != NULL);
+    test_assert(corto_typeof(hello) == corto_unknown_o);
+    test_assert(corto_countof(hello) == 1);
+
+    corto_object bar = corto_parentof(hello);
+    test_assert(bar != NULL);
+    test_assert(corto_typeof(bar) == corto_unknown_o);
+    test_assert(corto_countof(bar) == 1);
+
+    corto_iter it;
+    int16_t ret = corto_select("//").from("data").yield_unknown().iter(&it);
+    test_assert(ret == 0);
+
+    corto_result *r;
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "unknown");
+
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "hello");
+    test_assertstr(r->parent, "bar");
+    test_assertstr(r->type, "unknown");
+
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assertstr(r->id, "world");
+    test_assertstr(r->parent, "bar/hello");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(corto_delete(world) == 0);
+}
+
 void test_Select_teardown(
     test_Select this)
 {
-    /* << Insert implementation >> */
+    /* Insert implementation */
 }

@@ -28,105 +28,6 @@ typedef struct corto_subscribeRequest {
 corto_entityAdmin corto_subscriber_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
 
 static
-const char tochar(
-    const char *to,
-    const char *ptr,
-    int len)
-{
-    if (len > 0) {
-        if (ptr - to < len) {
-            return ptr[0];
-        } else {
-            return '\0';
-        }
-    } else {
-        return ptr[0];
-    }
-}
-
-#define tch tochar(to, tptr, tolen)
-
-static
-bool chicmp(
-    char ch1,
-    char ch2)
-{
-    if (ch1 < 97) ch1 = tolower(ch1);
-    if (ch2 < 97) ch2 = tolower(ch2);
-    return ch1 == ch2;
-}
-
-/* Function returns the 'to' path relative to 'from', and ensures that the
- * output can be used in an "from + / + out + / + id" expression to reconstruct
- * a correct full path to an object. */
-void corto_pathstr(
-    char *out,
-    const char *from,
-    const char *to,
-    int tolen)
-{
-    char *outptr = out, *firstid = out;
-
-    /* If 'from' is empty, and 'to' contains a path to an object other than
-     * root, construct a 'from' that includes the root, so that a user can do
-     * out + '/' + id to create the full path. If 'to' is pointing to root, do
-     * not append root, as out + '/' + id would then result in a double '/' */
-    if (!from || !from[0]) {
-        bool to_isRoot = to && (to[0] == '/') && !to[1];
-        if (!to_isRoot) {
-            (outptr ++)[0] = '/';
-            firstid++;
-        } else {
-            /* If to is root, and from is empty return an empty string */
-            (outptr++)[0] = '\0';
-            return;
-        }
-    }
-
-    const char *fptr = from ? from[0] == '/' ? &from[1] : from : "";
-    const char *tptr = to ? to[0] == '/' ? &to[1] : to : "";
-
-    /* First, move ptrs until paths diverge */
-    while (fptr[0] && chicmp(fptr[0], tch)) {
-        fptr ++;
-        tptr ++;
-    }
-
-    /* Check if paths are equal */
-    if (!fptr[0] && !tch) {
-        (outptr++)[0] = '.';
-    } else if (fptr[0]) {
-        /* If fptr was split on a '..', don't insert a '..' for that */
-        if (fptr[0] == '/') fptr ++;
-
-        /* Next, for every identifier in 'from', add '..' */
-        while (fptr[0]) {
-            if (fptr[0] == '/') {
-                if (outptr != firstid) (outptr++)[0] = '/';
-                (outptr++)[0] = '.';
-                (outptr++)[0] = '.';
-            }
-            fptr ++;
-        }
-        /* Add '..' for last identifier */
-        if (outptr != firstid) (outptr++)[0] = '/';
-        (outptr++)[0] = '.';
-        (outptr++)[0] = '.';
-    }
-
-    /* Finally, append remaining elements from to */
-    if (tch) {
-        if (tch == '/') tptr ++;
-        if (outptr != firstid) (outptr++)[0] = '/';
-        do {
-            (outptr++)[0] = tch;
-            tptr ++;
-        } while (tch);
-    }
-    outptr[0] = '\0';
-}
-
-static
 int corto_subscriber_findEvent(
     void *o1,
     void *o2)
@@ -552,7 +453,8 @@ int16_t corto_notify_subscribersById(
                     if (!fromptr[1]) {
                         fromptr ++;
                     }
-                    corto_pathstr(relativeParent, fromptr, parent, sepLength);
+                    corto_path_offset(
+                        relativeParent, fromptr, parent, sepLength, true);
                     relativeParentSet = TRUE;
                 }
 
