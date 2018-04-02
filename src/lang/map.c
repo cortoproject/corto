@@ -9,10 +9,25 @@ int16_t corto_map_construct(
     corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
     corto_type(this)->size = sizeof(corto_map);
     corto_type(this)->alignment = CORTO_ALIGNMENT(corto_map);
-    corto_collection(this)->elementType = this->elementType;
-    corto_claim(this->elementType);
+    
+    corto_type elementType = this->elementType;
+    if (!elementType) {
+        corto_error("no elementtype provided for list");
+        goto error;
+    }
+
+    if (elementType->flags & CORTO_TYPE_HAS_REFERENCES ||
+        elementType->reference)
+    {
+        corto_type(this)->flags |= CORTO_TYPE_HAS_REFERENCES;
+    }
+
+    corto_set_ref(&corto_collection(this)->elementType, elementType);
     corto_collection(this)->max = this->max;
+
     return corto_type_construct(corto_type(this));
+error:
+    return -1;
 }
 
 int16_t corto_map_init(

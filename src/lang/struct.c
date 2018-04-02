@@ -161,7 +161,9 @@ int16_t corto_struct_construct(
         if (corto_type(base)->flags & CORTO_TYPE_HAS_RESOURCES) {
             corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
         }
-
+        if (corto_type(base)->flags & CORTO_TYPE_HAS_REFERENCES) {
+            corto_type(this)->flags |= CORTO_TYPE_HAS_REFERENCES;
+        }
         if (corto_type(base)->flags & CORTO_TYPE_NEEDS_INIT) {
             corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
         }

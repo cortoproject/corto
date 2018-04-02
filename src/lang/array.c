@@ -8,16 +8,17 @@ int16_t corto_array_construct(
     corto_uint32 elementTypeSize;
     corto_type elementType;
 
-    /* Copy array::elementType to collection::elementType, transfer ownership of reference. */
+    /* Copy array elementType to collection, transfer ownership of reference. */
     if (this->elementType) {
         if (!corto_collection(this)->elementType) {
-            corto_claim(this->elementType);
-            corto_collection(this)->elementType = this->elementType;
+            corto_set_ref(
+                &corto_collection(this)->elementType, this->elementType);
         }
     } else if (corto_collection(this)->elementType) {
         if (!this->elementType) {
-            corto_claim(corto_collection(this)->elementType);
-            this->elementType = corto_collection(this)->elementType;
+            corto_set_ref(
+                &this->elementType, corto_collection(this)->elementType);
+
         }
     } else {
         corto_throw("no elementType provided for array");
@@ -26,7 +27,10 @@ int16_t corto_array_construct(
 
     /* Arrays can only be defined when their elementType is also defined. */
    if (!corto_check_state((corto_collection(this)->elementType), CORTO_VALID)) {
-       if (!(corto_instanceof(corto_type(corto_type_o), corto_collection(this)->elementType) && corto_type(corto_collection(this)->elementType)->reference)) {
+       if (!(corto_instanceof(
+           corto_type(corto_type_o), corto_collection(this)->elementType) &&
+           corto_type(corto_collection(this)->elementType)->reference))
+       {
             corto_throw(
                 "elementType '%s' is not defined",
                 corto_fullpath(NULL, corto_collection(this)->elementType));
@@ -56,6 +60,11 @@ int16_t corto_array_construct(
     if (elementType->flags & CORTO_TYPE_HAS_RESOURCES) {
         corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
     }
+    if (elementType->flags & CORTO_TYPE_HAS_REFERENCES ||
+        elementType->reference)
+    {
+        corto_type(this)->flags |= CORTO_TYPE_HAS_REFERENCES;
+    }
     if (elementType->flags & CORTO_TYPE_NEEDS_INIT) {
         corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
     }
@@ -81,4 +90,3 @@ int16_t corto_array_init(
     corto_collection(this)->kind = CORTO_ARRAY;
     return corto_collection_init(corto_collection(this));
 }
-

@@ -193,13 +193,25 @@ corto_fmt corto_selectSrcContentType(
 }
 
 static
-uintptr_t corto_selectConvert(
+int16_t corto_selectConvert(
     corto_select_data *data,
     corto_string type,
-    uintptr_t value)
+    uintptr_t *dst,
+    uintptr_t src,
+    bool *converted)
 {
-    uintptr_t result = 0;
     corto_mount mount = corto_selectCurrentMount(data);
+    corto_fmt srcType = corto_selectSrcContentType(data);
+    void *dst_value = (void*)*dst;
+    bool should_convert = false;
+
+    if (!srcType && dst_value) {
+        corto_warning("mount '%s' provides value but no contentType",
+            corto_fullpath(NULL,
+                data->mounts[data->stack[data->sp].currentMount - 1]));
+        goto error;
+    }
+
     corto_fmt_opt src_opt = {
         .from = mount->super.query.from
     };
@@ -207,54 +219,67 @@ uintptr_t corto_selectConvert(
         .from = data->scope
     };
 
-    if (!value) {
-        return 0;
+    bool different_from = false, different_fmt = false;
+    if (srcType && data->dstSer) {
+        if (src_opt.from && dst_opt.from) {
+            different_from = strcmp(src_opt.from, dst_opt.from) != 0;
+        } else if (src_opt.from || dst_opt.from) {
+            different_from = true;
+        }
+        different_fmt = srcType != data->dstSer;
     }
 
-    corto_fmt srcType = corto_selectSrcContentType(data);
-
-    if (!srcType && value) {
-        corto_warning("mount '%s' provides value but no contentType",
-            corto_fullpath(NULL,
-                data->mounts[data->stack[data->sp].currentMount - 1]));
-        return 0;
-    }
+    should_convert = different_from || different_fmt;
 
     /* If source serializer is loaded, a conversion is needed */
-    if (srcType && (srcType != data->dstSer)) {
-
-        corto_object t = corto_resolve(NULL, type);
+    if (src && (different_from || different_fmt)) {
+        corto_type t = corto_type(corto_resolve(NULL, type));
         if (!t) {
             corto_throw("unresolved type '%s'", type);
             goto error;
         } else {
-            void *intermediate = corto_mem_new(t);
+            if (different_fmt || t->flags & CORTO_TYPE_HAS_REFERENCES) {
+                if (dst_value) {
+                    corto_fmt_release(data->dstSer, dst_value);
+                }
 
-            /* Convert from source format to object */
-            corto_value v = corto_value_mem(intermediate, t);
+                void *intermediate = corto_mem_new(t);
 
-            if (corto_fmt_to_value(srcType, &src_opt, &v, (void*)value)) {
-                corto_throw("failed to convert value to '%s'", type);
-                goto error;
+                /* Convert from source format to object */
+                corto_value v = corto_value_mem(intermediate, t);
+                if (corto_fmt_to_value(srcType, &src_opt, &v, (char*)src)) {
+                    corto_throw("failed to convert value to '%s'", type);
+                    goto error;
+                }
+
+                /* Convert from object to destination format */
+                if (!(*dst = (uintptr_t)corto_fmt_from_value(
+                    data->dstSer, &dst_opt, &v)))
+                {
+                    corto_throw(
+                        "failed to convert value to '%s'", data->contentType);
+                    goto error;
+                }
+
+                corto_mem_free(intermediate);
+            } else {
+                /* If value doesn't contain any references and is of the same
+                 * format, there's no point in converting */
+                should_convert = false;
             }
-
-            /* Convert from object to destination format */
-            if (!(result = (uintptr_t)corto_fmt_from_value(data->dstSer, &dst_opt, &v))) {
-                corto_throw("failed to convert value to '%s'", data->contentType);
-                goto error;
-            }
-
-            corto_mem_free(intermediate);
         }
-
-    } else {
-        /* If formats are equal, just pass through */
-        result = value;
     }
 
-    return result;
-error:
+    if (!should_convert) {
+        /* If formats are equal, just pass through */
+        *dst = src;
+    }
+
+    if (converted) *converted = should_convert;
+
     return 0;
+error:
+    return -1;
 }
 
 static
@@ -555,16 +580,15 @@ void* corto_selectHistoryNext(
     corto_iter *it)
 {
     corto_selectHistoryIter_t *ctx = it->ctx;
-    uintptr_t dstValue;
     corto_sample *s = corto_iter_next(&ctx->iter);
 
-    dstValue = corto_selectConvert(ctx->data, ctx->data->item.type, s->value);
+    corto_selectConvert(
+        ctx->data,
+        ctx->data->item.type,
+        &ctx->sample.value,
+        s->value,
+        NULL); /* Wouldn't be here if we didn't need a conversion */
 
-    if (ctx->sample.value) {
-        corto_fmt_release(ctx->data->dstSer, (void*)ctx->sample.value);
-    }
-
-    ctx->sample.value = dstValue;
     ctx->sample.timestamp = s->timestamp;
 
     return &ctx->sample;
@@ -674,33 +698,30 @@ bool corto_selectIterMount(
         data->item.type[0] = '\0';
     }
 
-    /* If src & dst contentTypes are different and result is not hidden,
-     * translate */
-    corto_fmt srcType = corto_selectSrcContentType(data);
+    /* Translate format if necessary */
+    if (corto_selectConvert(
+      data,
+      result->type, /* type of result */
+      &data->item.value, /* src */
+      result->value, /* dst */
+      &data->valueAllocated)) /* converted or not */
+    {
+        corto_throw(NULL);
+        goto error;
+    }
 
-    if (data->dstSer && (data->dstSer != srcType)) {
-        /* Convert value */
-        corto_fmt_release(data->dstSer, (void*)data->item.value);
-        data->item.value = corto_selectConvert(
-          data, result->type, result->value);
-        data->valueAllocated = TRUE;
-
-        /* Wrap history iterator in other iterator that converts contentType */
-        if (data->isHistoricalQuery) {
-            data->item.history.hasNext = corto_selectHistoryHasNext;
-            data->item.history.next = corto_selectHistoryNext;
-            data->item.history.release = corto_selectHistoryRelease;
-            data->item.history.ctx = &data->historyIterData;
-            data->historyIterData.iter = result->history;
-            data->historyIterData.data = data;
-            data->historyIterData.sample.value = 0;
-        }
+    /* Wrap history iterator in other iterator that converts contentType */
+    if (data->valueAllocated) {
+        data->item.history.hasNext = corto_selectHistoryHasNext;
+        data->item.history.next = corto_selectHistoryNext;
+        data->item.history.release = corto_selectHistoryRelease;
+        data->item.history.ctx = &data->historyIterData;
+        data->historyIterData.iter = result->history;
+        data->historyIterData.data = data;
+        data->historyIterData.sample.value = 0;
     } else {
+        /* Otherwise just assign iterator */
         data->item.history = result->history;
-        if (data->dstSer) {
-            data->item.value = result->value;
-        }
-        data->valueAllocated = FALSE;
     }
 
     if (data->resume) {
@@ -731,7 +752,7 @@ bool corto_selectIterMount(
               corto_fullpath(NULL, mount),
               rpath);
             corto_release(type);
-            goto resume_failed;
+            goto error;
         }
 
         corto_fmt fmt_handle = (corto_fmt)mount->contentTypeOutHandle;
@@ -753,7 +774,7 @@ bool corto_selectIterMount(
               local_parent,
               result->id,
               corto_fullpath(NULL, mount));
-            goto resume_failed;
+            goto error;
         }
 
         corto_ok("resumed '%s'", corto_fullpath(NULL, ref));
@@ -764,7 +785,7 @@ bool corto_selectIterMount(
         }
     }
 
-resume_failed:
+error:
     return true;
 noMatch:
     return false;

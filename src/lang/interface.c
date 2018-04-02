@@ -315,6 +315,10 @@ static int corto_interface_insertMemberAction(void* o, void* userData) {
             corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
         }
 
+        if ((m->type->flags & CORTO_TYPE_HAS_REFERENCES) || m->type->reference){
+            corto_type(this)->flags |= CORTO_TYPE_HAS_REFERENCES;
+        }
+
         if (!m->type->reference && (m->type->flags & CORTO_TYPE_NEEDS_INIT)) {
             /* Only initialize non-composite members if they set NOT_NULL */
             if (m->modifiers & CORTO_NOT_NULL || m->type->kind == CORTO_COMPOSITE) {

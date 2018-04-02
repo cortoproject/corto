@@ -107,4 +107,3 @@ bool corto_collection_requiresAlloc(
 
     return result;
 }
-

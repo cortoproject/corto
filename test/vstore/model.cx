@@ -73,7 +73,7 @@ struct Refs:/
     null_ref: object
 
 //------------------------------------------------------------------------------
-// SUPPORT MOUNT TYPES
+// MOUNT SUPPORT TYPES
 //------------------------------------------------------------------------------
 
 // Mount that serves up data in JSON
@@ -208,14 +208,23 @@ class EmptySinkMount : vstore/mount, hidden:/
 
 // Mount that counts received events
 class EventReplicator: mount, hidden:/
-  alias query: subscriber/query
-  alias policy: mount/policy
+    alias query: subscriber/query
+    alias policy: mount/policy
 
-  declareCount: int32, readonly
-  updateCount: int32, readonly
-  deleteCount: int32, readonly
+    declareCount: int32, readonly
+    updateCount: int32, readonly
+    deleteCount: int32, readonly
 
-  void on_notify(vstore/subscriber_event event) override
+    void on_notify(vstore/subscriber_event event) override
+
+// Mount that counts received events
+class RefMount: mount, hidden:/
+    int16 construct()
+    from: string
+    last_json: string, readonly
+    items: list{vstore/result}, readonly | not_null
+    void on_notify(vstore/subscriber_event event) override
+    resultIter on_query(vstore/query query) override
 
 
 //------------------------------------------------------------------------------
@@ -631,6 +640,11 @@ test/Suite SelectContentTypeRefs:/
     void tc_selectTreeNestedWithRefsFromNested1()
     void tc_selectTreeNestedWithRefsFromNested2()
 
+    void tc_selectFromMountPoint()
+    void tc_selectFromMountParent()
+    void tc_selectFromMountNested1()
+    void tc_selectFromMountNested2()
+
 
 //------------------------------------------------------------------------------
 // SUBSCRIBER SUITES
@@ -760,6 +774,38 @@ test/Suite MountSubscription:/
     void tc_subscribeForMountWithTypeFilter()
     void tc_subscribeNestedForMountWithTypeFilter()
     void tc_subscribeOnMountWithFromNull()
+
+// Test reference identifier translation
+test/Suite MountContentTypeRefs:/
+    void setup() method
+
+    void tc_selectRootFromMountAtRoot()
+    void tc_selectDataFromMountAtRoot()
+    void tc_selectDataNested1FromMountAtRoot()
+    void tc_selectDataNested2FromMountAtRoot()
+
+    void tc_selectRootFromMountAtData()
+    void tc_selectDataFromMountAtData()
+    void tc_selectDataNested1FromMountAtData()
+    void tc_selectDataNested2FromMountAtData()
+
+    void tc_selectRootFromMountAtDataNested1()
+    void tc_selectDataFromMountAtDataNested1()
+    void tc_selectDataNested1FromMountAtDataNested1()
+    void tc_selectDataNested2FromMountAtDataNested1()
+
+    void tc_selectRootFromMountAtDataNested2()
+    void tc_selectDataFromMountAtDataNested2()
+    void tc_selectDataNested1FromMountAtDataNested2()
+    void tc_selectDataNested2FromMountAtDataNested2()
+
+    void tc_toMountAtRoot()
+    void tc_toMountAtData()
+    void tc_toMountAtDataNested1()
+    void tc_toMountAtDataNested2()
+
+    void tc_resumeWithRefToSelf()
+    void tc_resumeWithRefCycle()
 
 // Test mount on_mount callback
 test/Suite MountMounts:/
