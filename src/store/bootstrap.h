@@ -585,7 +585,7 @@ CORTO_FWDECL(sequence, stringseq);
 CORTO_FWDECL(sequence, wordseq);
 
 /* Lists */
-CORTO_FWDECL_VSTORE(list, resultList);
+CORTO_FWDECL_VSTORE(list, resultlist);
 CORTO_FWDECL(list, objectlist);
 CORTO_FWDECL(list, taglist);
 CORTO_FWDECL(list, stringlist);
@@ -879,7 +879,7 @@ CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
 CORTO_LIST_O(lang, stringlist, lang_string, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(lang, taglist, lang_tag, 0);
-CORTO_LIST_O(vstore, resultList, vstore_result, 0);
+CORTO_LIST_O(vstore, resultlist, vstore_result, 0);
 CORTO_LIST_O(vstore, mountSubscriptionList, vstore_mountSubscription, 0);
 
 /* Delegate types */

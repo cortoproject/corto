@@ -176,7 +176,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_VALUE(lang_, objectlist),\
     BUILTIN_VALUE(lang_, taglist),\
     BUILTIN_VALUE(lang_, stringlist),\
-    BUILTIN_VALUE(vstore_, resultList),\
+    BUILTIN_VALUE(vstore_, resultlist),\
     BUILTIN_VALUE(vstore_, mountSubscriptionList),\
     BUILTIN_VALUE(lang_, parameter),\
     BUILTIN_VALUE(lang_, typeOptions),\

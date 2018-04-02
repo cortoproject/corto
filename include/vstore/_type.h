@@ -285,10 +285,7 @@ typedef struct corto_result {
 
 typedef corto_iter corto_resultIter;
 
-#ifndef corto_resultList_DEFINED
-#define corto_resultList_DEFINED
-typedef corto_ll corto_resultList;
-#endif
+typedef corto_ll corto_resultlist;
 
 /* procedure corto/vstore/route */
 typedef struct corto_route_s {
@@ -333,4 +330,3 @@ typedef corto_iter corto_subscriber_eventIter;
 }
 #endif
 #endif
-

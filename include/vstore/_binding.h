@@ -35,7 +35,7 @@
 #define corto_sampleIter(o) ((corto_sampleIter*)corto_assert_type((corto_type)corto_sampleIter_o, o))
 #define corto_result(o) ((corto_result*)corto_assert_type((corto_type)corto_result_o, o))
 #define corto_resultIter(o) ((corto_resultIter*)corto_assert_type((corto_type)corto_resultIter_o, o))
-#define corto_resultList(o) ((corto_resultList*)corto_assert_type((corto_type)corto_resultList_o, o))
+#define corto_resultlist(o) ((corto_resultlist*)corto_assert_type((corto_type)corto_resultlist_o, o))
 #define corto_route(o) ((corto_route)corto_assert_type((corto_type)corto_route_o, o))
 #define corto_router(o) ((corto_router)corto_assert_type((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assert_type((corto_type)corto_routerimpl_o, o))
@@ -72,7 +72,7 @@ typedef corto_sample _type_corto_sample;
 typedef corto_sampleIter _type_corto_sampleIter;
 typedef corto_result _type_corto_result;
 typedef corto_resultIter _type_corto_resultIter;
-typedef corto_resultList _type_corto_resultList;
+typedef corto_resultlist _type_corto_resultlist;
 typedef corto_route _type_corto_route;
 typedef corto_router _type_corto_router;
 typedef corto_routerimpl _type_corto_routerimpl;
@@ -404,4 +404,3 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 /* -- Short object variable translation -- */
 
 #endif
-

@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-corto_resultList test_Select_collect(
+corto_resultlist test_Select_collect(
     const char *scope,
     const char *expr,
     uint64_t offset,
@@ -34,7 +34,7 @@ error:
 }
 
 bool test_Select_hasObject(
-    corto_resultList items,
+    corto_resultlist items,
     const char *parent,
     const char *name,
     const char *type)

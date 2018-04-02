@@ -640,12 +640,6 @@ test/Suite SelectContentTypeRefs:/
     void tc_selectTreeNestedWithRefsFromNested1()
     void tc_selectTreeNestedWithRefsFromNested2()
 
-    void tc_selectFromMountPoint()
-    void tc_selectFromMountParent()
-    void tc_selectFromMountNested1()
-    void tc_selectFromMountNested2()
-
-
 //------------------------------------------------------------------------------
 // SUBSCRIBER SUITES
 //------------------------------------------------------------------------------

@@ -378,20 +378,20 @@ CORTO_EXPORT corto_resultIter* _corto_resultIter__assign(corto_resultIter* _this
 #define corto_resultIter__assign(_this) _corto_resultIter__assign(_this)
 #define corto_resultIter__set(_this) _this = _this ? _this : (corto_resultIter*)corto_ptr_new(corto_resultIter_o); _corto_resultIter__assign(_this)
 
-/* /corto/vstore/resultList */
-CORTO_EXPORT corto_resultList* _corto_resultList__create(corto_object _parent, const char *_id, corto_uint32 length, corto_result* elements);
-#define corto_resultList__create(_parent, _id, length, elements) _corto_resultList__create(_parent, _id, length, elements)
-#define corto_resultList__create_auto(_parent, _id, length, elements) corto_resultList* _id = corto_resultList__create(_parent, #_id, length, elements); (void)_id
-#define corto_resultList__declare(parent, id) (corto_resultList*)corto_declare(parent, id, corto_resultList_o)
-CORTO_EXPORT corto_int16 _corto_resultList__update(corto_resultList* _this, corto_uint32 length, corto_result* elements);
-#define corto_resultList__update(_this, length, elements) _corto_resultList__update(corto_resultList(_this), length, elements)
-CORTO_EXPORT corto_resultList* _corto_resultList__assign(corto_resultList* _this, corto_uint32 length, corto_result* elements);
-#define corto_resultList__optional_not_set NULL
-#define corto_resultList__optional_set(length, elements) (corto_resultList*)corto_resultList__assign((corto_resultList*)corto_ptr_new(corto_resultList_o), length, elements)
-#define corto_resultList__optional_set_cond(__cond, length, elements) __cond ? (corto_resultList*)corto_resultList__assign((corto_resultList*)corto_ptr_new(corto_resultList_o), length, elements) : NULL
-#define corto_resultList__unset(_this) _this ? corto_ptr_free(_this, corto_resultList_o), 0 : 0; _this = NULL;
-#define corto_resultList__assign(_this, length, elements) _corto_resultList__assign(_this, length, elements)
-#define corto_resultList__set(_this, length, elements) _this = _this ? _this : (corto_resultList*)corto_ptr_new(corto_resultList_o); _corto_resultList__assign(_this, length, elements)
+/* /corto/vstore/resultlist */
+CORTO_EXPORT corto_resultlist* _corto_resultlist__create(corto_object _parent, const char *_id, corto_uint32 length, corto_result* elements);
+#define corto_resultlist__create(_parent, _id, length, elements) _corto_resultlist__create(_parent, _id, length, elements)
+#define corto_resultlist__create_auto(_parent, _id, length, elements) corto_resultlist* _id = corto_resultlist__create(_parent, #_id, length, elements); (void)_id
+#define corto_resultlist__declare(parent, id) (corto_resultlist*)corto_declare(parent, id, corto_resultlist_o)
+CORTO_EXPORT corto_int16 _corto_resultlist__update(corto_resultlist* _this, corto_uint32 length, corto_result* elements);
+#define corto_resultlist__update(_this, length, elements) _corto_resultlist__update(corto_resultlist(_this), length, elements)
+CORTO_EXPORT corto_resultlist* _corto_resultlist__assign(corto_resultlist* _this, corto_uint32 length, corto_result* elements);
+#define corto_resultlist__optional_not_set NULL
+#define corto_resultlist__optional_set(length, elements) (corto_resultlist*)corto_resultlist__assign((corto_resultlist*)corto_ptr_new(corto_resultlist_o), length, elements)
+#define corto_resultlist__optional_set_cond(__cond, length, elements) __cond ? (corto_resultlist*)corto_resultlist__assign((corto_resultlist*)corto_ptr_new(corto_resultlist_o), length, elements) : NULL
+#define corto_resultlist__unset(_this) _this ? corto_ptr_free(_this, corto_resultlist_o), 0 : 0; _this = NULL;
+#define corto_resultlist__assign(_this, length, elements) _corto_resultlist__assign(_this, length, elements)
+#define corto_resultlist__set(_this, length, elements) _this = _this ? _this : (corto_resultlist*)corto_ptr_new(corto_resultlist_o); _corto_resultlist__assign(_this, length, elements)
 
 /* /corto/vstore/resultMask */
 CORTO_EXPORT corto_resultMask* _corto_resultMask__create(corto_object _parent, const char *_id, corto_resultMask value);
@@ -554,15 +554,15 @@ CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__last(corto_mo
 CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__get(corto_mountSubscriptionList list, corto_uint32 index);
 CORTO_EXPORT void corto_mountSubscriptionList__clear(corto_mountSubscriptionList list);
 
-/* /corto/vstore/resultList */
-CORTO_EXPORT corto_result* corto_resultList__insert_alloc(corto_resultList list);
-CORTO_EXPORT corto_result* corto_resultList__insert(corto_resultList list, corto_result* element);
-CORTO_EXPORT corto_result* corto_resultList__append_alloc(corto_resultList list);
-CORTO_EXPORT corto_result* corto_resultList__append(corto_resultList list, corto_result* element);
-CORTO_EXPORT corto_result* corto_resultList__takeFirst(corto_resultList list);
-CORTO_EXPORT corto_result* corto_resultList__last(corto_resultList list);
-CORTO_EXPORT corto_result* corto_resultList__get(corto_resultList list, corto_uint32 index);
-CORTO_EXPORT void corto_resultList__clear(corto_resultList list);
+/* /corto/vstore/resultlist */
+CORTO_EXPORT corto_result* corto_resultlist__insert_alloc(corto_resultlist list);
+CORTO_EXPORT corto_result* corto_resultlist__insert(corto_resultlist list, corto_result* element);
+CORTO_EXPORT corto_result* corto_resultlist__append_alloc(corto_resultlist list);
+CORTO_EXPORT corto_result* corto_resultlist__append(corto_resultlist list, corto_result* element);
+CORTO_EXPORT corto_result* corto_resultlist__takeFirst(corto_resultlist list);
+CORTO_EXPORT corto_result* corto_resultlist__last(corto_resultlist list);
+CORTO_EXPORT corto_result* corto_resultlist__get(corto_resultlist list, corto_uint32 index);
+CORTO_EXPORT void corto_resultlist__clear(corto_resultlist list);
 #define corto_objectIter__foreach(iter, elem) \
     corto_object elem;\
     while(corto_iter_hasNext(&iter) ? elem = (corto_object)corto_iter_next(&iter), TRUE : FALSE)
@@ -584,4 +584,3 @@ CORTO_EXPORT void corto_resultList__clear(corto_resultList list);
 }
 #endif
 #endif
-

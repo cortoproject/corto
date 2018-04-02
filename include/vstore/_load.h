@@ -43,7 +43,7 @@ CORTO_META_OBJECT(enum, ownership);
 CORTO_META_OBJECT(bitmask, mountMask);
 CORTO_META_OBJECT(enum, frameKind);
 
-CORTO_META_OBJECT(list, resultList);
+CORTO_META_OBJECT(list, resultlist);
 CORTO_META_OBJECT(list, mountSubscriptionList);
 CORTO_META_OBJECT(sequence, augmentseq);
 

@@ -1210,17 +1210,17 @@ corto_resultIter* _corto_resultIter__assign(corto_resultIter* _this) {
     return _this;
 }
 
-corto_resultList* _corto_resultList__create(corto_object _parent, const char *_id, corto_uint32 length, corto_result* elements) {
-    corto_resultList* _this;
-    _this = (corto_resultList*)corto_declare(_parent, _id, corto_resultList_o);
+corto_resultlist* _corto_resultlist__create(corto_object _parent, const char *_id, corto_uint32 length, corto_result* elements) {
+    corto_resultlist* _this;
+    _this = (corto_resultlist*)corto_declare(_parent, _id, corto_resultlist_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_uint32 i = 0;
-        corto_resultList__clear(*_this);
+        corto_resultlist__clear(*_this);
         for (i = 0; i < length; i ++) {
-            corto_resultList__append(*_this, &elements[i]);
+            corto_resultlist__append(*_this, &elements[i]);
         }
         if (corto_define(_this)) {
             corto_release(_this);
@@ -1230,20 +1230,20 @@ corto_resultList* _corto_resultList__create(corto_object _parent, const char *_i
     return _this;
 }
 
-corto_int16 _corto_resultList__update(corto_resultList* _this, corto_uint32 length, corto_result* elements) {
+corto_int16 _corto_resultlist__update(corto_resultlist* _this, corto_uint32 length, corto_result* elements) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_uint32 i = 0;
-            corto_resultList__clear(*((corto_resultList*)CORTO_OFFSET(_this, ((corto_type)corto_resultList_o)->size)));
+            corto_resultlist__clear(*((corto_resultlist*)CORTO_OFFSET(_this, ((corto_type)corto_resultlist_o)->size)));
             for (i = 0; i < length; i ++) {
-                corto_resultList__append(*((corto_resultList*)CORTO_OFFSET(_this, ((corto_type)corto_resultList_o)->size)), &elements[i]);
+                corto_resultlist__append(*((corto_resultlist*)CORTO_OFFSET(_this, ((corto_type)corto_resultlist_o)->size)), &elements[i]);
             }
         } else {
             corto_uint32 i = 0;
-            corto_resultList__clear(*_this);
+            corto_resultlist__clear(*_this);
             for (i = 0; i < length; i ++) {
-                corto_resultList__append(*_this, &elements[i]);
+                corto_resultlist__append(*_this, &elements[i]);
             }
         }
         if (corto_update_end(_this)) {
@@ -1255,12 +1255,12 @@ corto_int16 _corto_resultList__update(corto_resultList* _this, corto_uint32 leng
     return 0;
 }
 
-corto_resultList* _corto_resultList__assign(corto_resultList* _this, corto_uint32 length, corto_result* elements) {
+corto_resultlist* _corto_resultlist__assign(corto_resultlist* _this, corto_uint32 length, corto_result* elements) {
     CORTO_UNUSED(_this);
     corto_uint32 i = 0;
-    corto_resultList__clear(*_this);
+    corto_resultlist__clear(*_this);
     for (i = 0; i < length; i ++) {
-        corto_resultList__append(*_this, &elements[i]);
+        corto_resultlist__append(*_this, &elements[i]);
     }
     return _this;
 }
@@ -1821,7 +1821,7 @@ void corto_mountSubscriptionList__clear(corto_mountSubscriptionList list) {
     corto_ll_clear(list);
 }
 
-corto_result* corto_resultList__insert_alloc(corto_resultList list) {
+corto_result* corto_resultlist__insert_alloc(corto_resultlist list) {
     corto_result* result;
     result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
@@ -1831,13 +1831,13 @@ corto_result* corto_resultList__insert_alloc(corto_resultList list) {
     return result;
 }
 
-corto_result* corto_resultList__insert(corto_resultList list, corto_result* element) {
-    corto_result *result = corto_resultList__insert_alloc(list);
+corto_result* corto_resultlist__insert(corto_resultlist list, corto_result* element) {
+    corto_result *result = corto_resultlist__insert_alloc(list);
     corto_ptr_copy(result, corto_result_o, element);
     return result;
 }
 
-corto_result* corto_resultList__append_alloc(corto_resultList list) {
+corto_result* corto_resultlist__append_alloc(corto_resultlist list) {
     corto_result* result;
     result = (corto_result*)corto_calloc(corto_type_sizeof(corto_type(corto_result_o)));
     {
@@ -1847,25 +1847,25 @@ corto_result* corto_resultList__append_alloc(corto_resultList list) {
     return result;
 }
 
-corto_result* corto_resultList__append(corto_resultList list, corto_result* element) {
-    corto_result *result = corto_resultList__append_alloc(list);
+corto_result* corto_resultlist__append(corto_resultlist list, corto_result* element) {
+    corto_result *result = corto_resultlist__append_alloc(list);
     corto_ptr_copy(result, corto_result_o, element);
     return result;
 }
 
-corto_result* corto_resultList__takeFirst(corto_resultList list) {
+corto_result* corto_resultlist__takeFirst(corto_resultlist list) {
     return (corto_result*)(corto_word)corto_ll_takeFirst(list);
 }
 
-corto_result* corto_resultList__last(corto_resultList list) {
+corto_result* corto_resultlist__last(corto_resultlist list) {
     return (corto_result*)(corto_word)corto_ll_last(list);
 }
 
-corto_result* corto_resultList__get(corto_resultList list, corto_uint32 index) {
+corto_result* corto_resultlist__get(corto_resultlist list, corto_uint32 index) {
     return (corto_result*)corto_ll_get(list, index);
 }
 
-void corto_resultList__clear(corto_resultList list) {
+void corto_resultlist__clear(corto_resultlist list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
@@ -1874,4 +1874,3 @@ void corto_resultList__clear(corto_resultList list) {
     }
     corto_ll_clear(list);
 }
-
