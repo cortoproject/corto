@@ -3470,7 +3470,7 @@ corto_object corto_lookup_intern(
         if ((value_start = strchr(id, '{'))) {
             strcpy(buffer, id);
             buffer[value_start - id] = '\0';
-            ptr = value_start;
+            id = buffer;
         }
 
         if (corto_resume(prev, id, &o)) {
