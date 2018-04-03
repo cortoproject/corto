@@ -243,7 +243,7 @@ corto_equalityKind corto_compareLookupIntern(
     char ch1, ch2;
 
     ch2 = *ptr2;
-    while((ch1 = *ptr1) && ch2 && (ch2 != '/')) {
+    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{')) {
         if (ch1 == ch2) {
             ptr1++; ptr2++;
             ch2 = *ptr2;
@@ -271,9 +271,12 @@ corto_equalityKind corto_compareLookupIntern(
         }
     }
 
-    if (!ch1 && (ch2 == '{')) {
-        r = 0;
-        goto compare;
+    if (ch2 == '{') {
+        if (!ch1) {
+            goto match;
+        } else {
+            ch2 = 0;
+        }
     }
 
     r = ch1 - ch2;
@@ -3463,6 +3466,7 @@ corto_object corto_lookup_intern(
         o = NULL;
         ptr = lastelem;
     }
+
     if (!o && resume && parent != corto_lang_o) {
         /* Make sure that id passed to resume doesn't contain {} */
         corto_id buffer;

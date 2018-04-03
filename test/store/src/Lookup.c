@@ -465,3 +465,185 @@ void test_Lookup_tc_lookupUnknown(
 
     test_assert(corto_delete(world) == 0);
 }
+
+void test_Lookup_tc_lookupAnonymous(
+    test_Lookup this)
+{
+    corto_object o = corto_resolve(NULL, "corto/lang/string{\"Hello World\"}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)corto_string_o);
+
+    corto_string s = *(corto_string*)o;
+    test_assertstr(s, "Hello World");
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousAnonymousType(
+    test_Lookup this)
+{
+    corto_object o = corto_lookup(NULL, "corto/lang/list{int32}{1, 2, 3}");
+    test_assert(o != NULL);
+
+    corto_type t = corto_typeof(o);
+    test_assert(t->kind == CORTO_COLLECTION);
+    test_assert(corto_collection(t)->kind == CORTO_LIST);
+    test_assert(corto_collection(t)->elementType == corto_type(corto_int32_o));
+
+    corto_ll l = *(corto_ll*)o;
+    test_assert(corto_ll_count(l) == 3);
+    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 0), 1);
+    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 1), 2);
+    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 2), 3);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNested(
+    test_Lookup this)
+{
+    corto_object o = corto_lookup(NULL, "test/Point{10, 20}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_Point_o);
+
+    test_Point *p = o;
+    test_assertint(p->x, 10);
+    test_assertint(p->y, 20);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNestedWithKeys(
+    test_Lookup this)
+{
+    corto_object o = corto_lookup(NULL, "test/Point{y=10, x=20}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_Point_o);
+
+    test_Point *p = o;
+    test_assertint(p->x, 20);
+    test_assertint(p->y, 10);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNestedWithRefRelativeToParent(
+    test_Lookup this)
+{
+    corto_object data = corto_lookup(NULL, "data");
+    test_assert(data != NULL);
+
+    corto_object nested = corto_create(root_o, "data/nested", corto_void_o);
+    test_assert(nested != NULL);
+    test_assert(corto_parentof(nested) == data);
+    test_assertstr(corto_idof(nested), "nested");
+
+    corto_object o = corto_lookup(data, "/test/ReferenceMember{nested, 10}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+
+    test_ReferenceMember *p = o;
+    test_assert(p->m == nested);
+    test_assertint(p->n, 10);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNestedWithRefCorto(
+    test_Lookup this)
+{
+    corto_object o = corto_lookup(NULL, "test/ReferenceMember{lang, 10}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+
+    test_ReferenceMember *p = o;
+    test_assert(p->m == corto_lang_o);
+    test_assertint(p->n, 10);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNestedWithRefLang(
+    test_Lookup this)
+{
+    corto_object o = corto_lookup(NULL, "test/ReferenceMember{int32, 10}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+
+    test_ReferenceMember *p = o;
+    test_assert(p->m == corto_int32_o);
+    test_assertint(p->n, 10);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNestedWithRefNested(
+    test_Lookup this)
+{
+    corto_object nested = corto_create(root_o, "/data/nested", corto_void_o);
+    test_assert(nested != NULL);
+    test_assertstr(corto_idof(nested), "nested");
+
+    corto_object o = corto_lookup(NULL, "test/ReferenceMember{/data/nested, 10}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+
+    test_ReferenceMember *p = o;
+    test_assert(p->m == nested);
+    test_assertint(p->n, 10);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousNestedWithRefRoot(
+    test_Lookup this)
+{
+    corto_object o = corto_lookup(NULL, "test/ReferenceMember{/, 10}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)test_ReferenceMember_o);
+
+    test_ReferenceMember *p = o;
+    test_assert(p->m == root_o);
+    test_assertint(p->n, 10);
+
+    corto_release(o);
+}
+
+void test_Lookup_tc_lookupAnonymousWithPartialMatch(
+    test_Lookup this)
+{
+    /* Create isolated scope with partial match */
+    corto_object partial = corto_create(
+        root_o, "data/PointPartial", corto_void_o);
+    test_assert(partial != NULL);
+
+    /* Create type with same layout as test/Point */
+    corto_struct s = corto_declare(root_o, "data/Point", corto_struct_o);
+    test_assert(s != NULL);
+    corto_member x = corto_declare(s, "x", corto_member_o);
+    x->type = (corto_type)corto_int32_o;
+    test_assert(corto_define(x) == 0);
+    corto_member y = corto_declare(s, "y", corto_member_o);
+    y->type = (corto_type)corto_int32_o;
+    test_assert(corto_define(y) == 0);
+    test_assert(corto_define(s) == 0);
+
+    corto_object o = corto_lookup(root_o, "data/Point{10,20}");
+    test_assert(o != NULL);
+
+    test_assert(corto_typeof(o) == (corto_type)s);
+
+    test_Point *p = o;
+    test_assertint(p->x, 10);
+    test_assertint(p->y, 20);
+
+    corto_release(o);
+}
