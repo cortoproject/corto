@@ -3694,14 +3694,21 @@ corto_object corto_get_source() {
 /* Publish new value for object */
 int16_t corto_publish(
     corto_eventMask event,
+    const char *from,
     const char *id,
     const char *type,
     const char *contentType,
     void *content)
 {
     corto_assert(id != NULL, "NULL passed to 'id' parameter of corto_publish");
+    corto_id full_id_buffer;
+    const char *full_id = id;
+    if (from) {
+        corto_path_combine(full_id_buffer, from, id);
+        full_id = full_id_buffer;
+    }
 
-    corto_object o = FIND(NULL, id);
+    corto_object o = FIND(NULL, full_id);
 
     int16_t result = 0;
 
@@ -3712,11 +3719,20 @@ int16_t corto_publish(
         case CORTO_DEFINE:
         case CORTO_UPDATE:
             if (corto_typeof(o)->kind != CORTO_VOID) {
-                if (!(result = corto_update_begin(o))) {
-                    if ((result = corto_deserialize_value(o, contentType, content))) {
-                        corto_update_cancel(o);
-                    } else {
-                        corto_update_end(o);
+                if (contentType) {
+                    corto_fmt fmt = corto_fmt_lookup(contentType);
+                    if (!(result = corto_update_begin(o))) {
+                        corto_fmt_opt opt = {
+                            .from = from
+                        };
+
+                        if ((result =
+                            corto_fmt_to_object(fmt, &opt, &o, content)))
+                        {
+                            corto_update_cancel(o);
+                        } else {
+                            corto_update_end(o);
+                        }
                     }
                 }
             } else {
@@ -3730,7 +3746,7 @@ int16_t corto_publish(
         corto_release(o);
     } else {
         if (corto_notify_subscribersById(
-          event, id, type, contentType, (corto_word)content))
+          event, from, id, type, contentType, (corto_word)content))
         {
             result = -1;
         }

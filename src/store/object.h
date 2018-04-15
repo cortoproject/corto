@@ -262,7 +262,8 @@ int16_t corto_notify_subscribers(
 
 int16_t corto_notify_subscribersById(
     corto_eventMask mask,
-    const char *path,
+    const char *from,
+    const char *id,
     const char *type,
     const char *fmtId,
     corto_word value);

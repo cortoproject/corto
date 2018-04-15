@@ -793,10 +793,25 @@ test/Suite MountContentTypeRefs:/
     void tc_selectDataNested1FromMountAtDataNested2()
     void tc_selectDataNested2FromMountAtDataNested2()
 
-    void tc_toMountAtRoot()
-    void tc_toMountAtData()
-    void tc_toMountAtDataNested1()
-    void tc_toMountAtDataNested2()
+    void tc_publishFromRootToMountAtRoot()
+    void tc_publishFromDataToMountAtRoot()
+    void tc_publishFromDataNested1ToMountAtRoot()
+    void tc_publishFromDataNested2ToMountAtRoot()
+
+    void tc_publishFromRootToMountAtData()
+    void tc_publishFromDataToMountAtData()
+    void tc_publishFromDataNested1ToMountAtData()
+    void tc_publishFromDataNested2ToMountAtData()
+
+    void tc_publishFromRootToMountAtDataNested1()
+    void tc_publishFromDataToMountAtDataNested1()
+    void tc_publishFromDataNested1ToMountAtDataNested1()
+    void tc_publishFromDataNested2ToMountAtDataNested1()
+
+    void tc_publishFromRootToMountAtDataNested2()
+    void tc_publishFromDataToMountAtDataNested2()
+    void tc_publishFromDataNested1ToMountAtDataNested2()
+    void tc_publishFromDataNested2ToMountAtDataNested2()
 
     void tc_resumeWithRefToSelf()
     void tc_resumeWithRefCycle()

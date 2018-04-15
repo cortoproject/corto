@@ -74,7 +74,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromJson(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
 
     test_assertint(this->eventsReceived, 4);
 
@@ -96,7 +96,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
 
     test_assertint(this->eventsReceived, 4);
 
@@ -156,7 +156,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromString(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -177,7 +177,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -224,7 +224,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromJson(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -245,7 +245,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -304,7 +304,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromString(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -325,7 +325,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -372,7 +372,7 @@ void test_SubscribeContentType_tc_subscribeStringFromJson(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -393,7 +393,7 @@ void test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/Point", "text/json", "{\"x\":70,\"y\":80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -452,7 +452,7 @@ void test_SubscribeContentType_tc_subscribeStringFromString(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -473,7 +473,7 @@ void test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "str/c", "/test/Point", "text/corto", "{70,80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);
@@ -496,7 +496,7 @@ void test_SubscribeContentType_tc_subscribeTypeWithConstruct(
     test_assert(s != 0);
     test_assertint(this->eventsReceived, 3);
 
-    test_assert(corto_publish(CORTO_UPDATE, "json/c", "/test/ContentTypeTest", "text/json", "{\"x\":70,\"y\":80}") == 0);
+    test_assert(corto_publish(CORTO_UPDATE, NULL, "json/c", "/test/ContentTypeTest", "text/json", "{\"x\":70,\"y\":80}") == 0);
     test_assertint(this->eventsReceived, 4);
 
     test_assert(corto_delete(s) == 0);

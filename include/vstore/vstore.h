@@ -456,6 +456,7 @@ int16_t corto_unsubscribe(
 CORTO_EXPORT
 int16_t corto_publish(
     corto_eventMask event,
+    const char *from,
     const char *id,
     const char *type,
     const char *contentType,

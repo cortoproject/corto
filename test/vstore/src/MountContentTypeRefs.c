@@ -643,29 +643,120 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
     test_assert(corto_delete(m) == 0);
 }
 
-void test_MountContentTypeRefs_tc_toMountAtData(
+void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtData(
     test_MountContentTypeRefs this)
 {
     /* Insert implementation */
 }
 
-void test_MountContentTypeRefs_tc_toMountAtDataNested1(
+void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtDataNested1(
     test_MountContentTypeRefs this)
 {
     /* Insert implementation */
 }
 
-void test_MountContentTypeRefs_tc_toMountAtDataNested2(
+void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtDataNested2(
     test_MountContentTypeRefs this)
 {
     /* Insert implementation */
 }
 
-void test_MountContentTypeRefs_tc_toMountAtRoot(
+void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtRoot(
     test_MountContentTypeRefs this)
 {
     /* Insert implementation */
+}
 
+void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtData(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtDataNested1(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtDataNested2(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtRoot(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataToMountAtData(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataToMountAtDataNested1(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataToMountAtDataNested2(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromDataToMountAtRoot(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromRootToMountAtData(
+    test_MountContentTypeRefs this)
+{
+    test_RefMount m = test_RefMount__create(NULL, NULL, "/data");
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"config\","
+         "\"nested_sibling\":\"config/helloworld\","
+         "\"at_from\":\"data/foo\","
+         "\"inside_from\":\"data/foo/bar\","
+         "\"inside_from_nested1\":\"data/foo/bar/hello\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello/world\","
+         "\"parent_from\":null,"
+         "\"at_root\":\"data\","
+         "\"from\":\"data\","
+         "\"root\":\".\","
+         "\"null_ref\":null}";
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/", "/data/obj", "type/Refs", "text/json", json) == 0);
+
+    test_assert(corto_delete(m) == 0);
+}
+
+void test_MountContentTypeRefs_tc_publishFromRootToMountAtDataNested1(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromRootToMountAtDataNested2(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
+}
+
+void test_MountContentTypeRefs_tc_publishFromRootToMountAtRoot(
+    test_MountContentTypeRefs this)
+{
+    /* Insert implementation */
 }
 
 void test_MountContentTypeRefs_tc_resumeWithRefCycle(

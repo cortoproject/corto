@@ -818,13 +818,13 @@ void corto_mount_publish(
     const char *type,
     uintptr_t value)
 {
-    corto_id identifier;
-    sprintf(identifier, "%s/%s/%s", corto_subscriber(this)->query.from, from, id);
-    corto_path_clean(identifier, identifier);
+    corto_id path;
+    corto_path_combine(path, corto_subscriber(this)->query.from, from);
 
     corto_publish(
         event,
-        identifier,
+        path,
+        id,
         type,
         this->contentTypeOut,
         (void*)value

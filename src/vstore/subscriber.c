@@ -55,11 +55,13 @@ void corto_subscriber_addToAlignQueue(
 }
 
 typedef struct corto_fmtcache {
+    const char *from;
+    const char *type;
+    corto_type type_cached;
     corto_fmt src_handle;
     void* src_ptr;
     void* o;
     corto_value v;
-    const char *type;
     corto_fmt_data cache[CORTO_MAX_CONTENTTYPE];
     int32_t count;
 } corto_fmtcache;
@@ -67,15 +69,17 @@ typedef struct corto_fmtcache {
 static
 corto_fmtcache corto_fmtcache_init(
     corto_fmt src_handle,
+    const char *from,
     void *src_ptr,
     void *o,
     const char *type)
 {
     corto_fmtcache result = {
+        .from = from,
+        .type = type,
         .src_handle = src_handle,
         .src_ptr = (void*)src_ptr,
         .o = o,
-        .type = type,
         .count = 1
     };
 
@@ -100,13 +104,34 @@ corto_fmt_data* corto_fmtcache_serialize(
     bool copy)
 {
     int32_t index = -1;
+    const char *sub_from = ((corto_subscriber)subscriber)->query.from;
+    bool different_from = false, different_fmt = false, type_has_refs = false;
 
-    if (dst_handle && this->src_handle && dst_handle == this->src_handle) {
+    if (this->src_handle && dst_handle) {
+        if (sub_from && this->from) {
+            different_from = strcmp(sub_from, this->from) != 0;
+        } else if (sub_from || this->from) {
+            different_from = true;
+        }
+        different_fmt = this->src_handle != dst_handle;
+    } else if (this->src_handle || dst_handle) {
+        different_fmt = true;
+    }
+
+    if (!this->type_cached) {
+        this->type_cached = corto_resolve(NULL, this->type);
+        corto_try(!this->type_cached,
+            "failed to resolve type '%s'", this->type);
+    }
+
+    type_has_refs = this->type_cached->flags & CORTO_TYPE_HAS_REFERENCES;
+
+    if (!different_fmt && (!different_from || !type_has_refs)) {
         /* Requested same format as provided by publisher */
         index = 0;
 
     } else if (dst_handle && this->src_ptr) {
-        /* Subcsriber requests different format */
+        /* Subcsriber requests different format or from is different */
 
         /* Check if format has been serialized */
         for (index = 0; index < this->count; index++) {
@@ -122,10 +147,6 @@ corto_fmt_data* corto_fmtcache_serialize(
             if (!this->o) {
                 /* Create intermediate object for serializing between formats */
 
-                /* Resolve type of object */
-                corto_type type = corto_resolve(NULL, this->type);
-                corto_try(!type, "failed to resolve type '%s'", this->type);
-
                 /* Get source from mount */
                 corto_fmt_opt src_opt = {0};
                 if (source && corto_instanceof(corto_mount_o, source)) {
@@ -133,13 +154,12 @@ corto_fmt_data* corto_fmtcache_serialize(
                 }
 
                 /* Create intermediate object */
-                this->o = corto_mem_new(type);
+                this->o = corto_mem_new(this->type_cached);
 
                 corto_try(!this->o, NULL);
-                corto_release(type);
 
                 /* Serialize from source format to intermediate object */
-                this->v = corto_value_mem(this->o, type);
+                this->v = corto_value_mem(this->o, this->type_cached);
                 corto_try (
                     corto_fmt_to_value(
                         this->src_handle, &src_opt, &this->v, this->src_ptr),
@@ -198,6 +218,11 @@ void corto_fmtcache_deinit(
         } else if (this->v.kind == CORTO_OBJECT) {
             corto_release(this->o);
         }
+    }
+
+    /* Release cached type */
+    if (this->type_cached) {
+        corto_release(this->type_cached);
     }
 }
 
@@ -323,7 +348,8 @@ error:
 
 int16_t corto_notify_subscribersById(
     corto_eventMask mask,
-    const char *path,
+    const char *from,
+    const char *object_id,
     const char *type,
     const char *fmt,
     corto_word value)
@@ -366,9 +392,16 @@ int16_t corto_notify_subscribersById(
 
     /* Temporary storage for serialized values */
     corto_fmtcache cache =
-        corto_fmtcache_init(fmt_handle, (void*)value, o, type);
+        corto_fmtcache_init(fmt_handle, from, (void*)value, o, type);
 
     /* Normalize id and path */
+    corto_id path_buffer;
+    const char *path = object_id;
+    if (from) {
+        corto_path_combine(path_buffer, from, object_id);
+        path = path_buffer;
+    }
+
     const char *sep = NULL, *id = strrchr(path, '/');
     const char *parent = NULL;
     if (id) {
@@ -508,6 +541,7 @@ int16_t corto_notify_subscribers(corto_eventMask mask, corto_object o) {
 
         result = corto_notify_subscribersById(
           mask,
+          NULL,
           corto_fullpath(path, o),
           corto_fullpath(type, corto_typeof(o)),
           NULL,
