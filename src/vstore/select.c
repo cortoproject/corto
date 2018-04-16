@@ -1508,9 +1508,8 @@ corto_resultIter corto_selectPrepareIterator (
 
     if (r->q.type && strlen(r->q.type)) {
         data->typeFilter = strdup(r->q.type);
-    } else {
-        data->typeFilter = NULL;
     }
+
     if (r->q.instanceof) {
         data->instanceof = corto_resolve(NULL, r->q.instanceof);
         if (!data->instanceof) {
@@ -1525,7 +1524,6 @@ corto_resultIter corto_selectPrepareIterator (
     data->item.type = data->type;
     data->item.id = data->id;
     data->item.flags = CORTO_RESULT_LEAF;
-    data->valueAllocated = FALSE;
 
     if (data->req.contentType) {
         if (!(data->dstSer = corto_fmt_lookup(data->req.contentType))) {
@@ -1533,7 +1531,7 @@ corto_resultIter corto_selectPrepareIterator (
         }
     }
 
-    corto_resultIter result = {0};
+    corto_resultIter result;
     result.ctx = data;
     result.hasNext = corto_selectHasNext;
     result.next = corto_selectNext;
@@ -1553,16 +1551,18 @@ corto_resultIter corto_selectPrepareIterator (
     if (!data->exprCount) {
         corto_debug("expression added: '%s'", data->req.q.select);
     }
-    data->exprCurrent = 0;
 
-    if (corto_idmatchParseIntern(&data->program, data->req.q.select, TRUE, FALSE)) {
+    if (corto_idmatchParseIntern(
+        &data->program, data->req.q.select, TRUE, FALSE))
+    {
         corto_throw("select failed");
         goto error;
     }
 
     /* Prepare type filter */
     if (data->typeFilter) {
-        data->typeFilterProgram = corto_idmatch_compile(data->typeFilter, TRUE, TRUE);
+        data->typeFilterProgram = corto_idmatch_compile(
+            data->typeFilter, TRUE, TRUE);
     }
 
     if (corto_selectRun(data)) {
