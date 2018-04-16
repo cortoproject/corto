@@ -22,6 +22,7 @@ typedef struct corto_subscribeRequest {
     corto_dispatcher dispatcher;
     bool enabled;
     bool yield_unknown;
+    bool queue;
     void (*callback)(corto_subscriber_event*);
 } corto_subscribeRequest;
 
@@ -136,14 +137,17 @@ corto_fmt_data* corto_fmtcache_serialize(
         /* Check if format has been serialized */
         for (index = 0; index < this->count; index++) {
             if (this->cache[index].handle == (uintptr_t)dst_handle) {
-                /* Index points to correct format */
-                break;
+                /* Index points to correct format if either from is the same, or
+                 * if the format has already been serialized for the current
+                 * from, in which case it should have a refcount > 0. */
+                if (!different_from || this->cache[index].shared_count) {
+                    break;
+                }
             }
         }
 
-        if (index == this->count) {
+        if (index >= this->count) {
             /* Format has not yet been serialized */
-
             if (!this->o) {
                 /* Create intermediate object for serializing between formats */
 
@@ -172,6 +176,7 @@ corto_fmt_data* corto_fmtcache_serialize(
             };
             this->cache[index].ptr = (uintptr_t)corto_fmt_from_value(
                 dst_handle, &dst_opt, &this->v);
+
             this->cache[index].handle = (uintptr_t)dst_handle;
             this->count ++;
         }
@@ -187,8 +192,9 @@ corto_fmt_data* corto_fmtcache_serialize(
              * currently requesting the serialization. */
             *(int32_t*)this->cache[index].shared_count = 2;
         } else {
-            /* Do an atomic incrememt, as asynchronous subscribers may already
-             * have been notified */
+            /* Do an _atomic_ incrememt, as asynchronous subscribers may already
+             * have been notified and may simultaneously decrease
+             * shared_count when the serialized value has been delivered. */
             corto_ainc((int32_t*)this->cache[index].shared_count);
         }
     }
@@ -199,17 +205,26 @@ error:
 }
 
 static
-void corto_fmtcache_deinit(
+void corto_fmtcache_purge(
     corto_fmtcache *this)
 {
     /* Only cleanup first element when it has a shared count */
     if (this->cache[0].shared_count) {
         corto_fmt_data_deinit(&this->cache[0]);
+        this->cache[0].handle = 0;
     }
     int i;
     for (i = 1; i < this->count; i ++) {
         corto_fmt_data_deinit(&this->cache[i]);
+        this->cache[i].handle = 0;
     }
+}
+
+static
+void corto_fmtcache_deinit(
+    corto_fmtcache *this)
+{
+    corto_fmtcache_purge(this);
 
     /* If src_handle is provided, the object is an intermediate object */
     if (this->o && this->src_handle) {
@@ -438,6 +453,11 @@ int16_t corto_notify_subscribersById(
             corto_entityPerParent *subPerParent = &admin->entities[depth].buffer[sp];
             bool relativeParentSet = FALSE;
 
+            /* If the value contains references, it will have to be
+             * re-serailized so that references are relative to the 'from'
+             * parameter of the subscriber query */
+            corto_fmtcache_purge(&cache);
+
             /* Verify if path matches with subscribers in current branch */
             const char *expr = corto_matchParent(subPerParent->parent, path);
             if (!expr) {
@@ -552,10 +572,15 @@ int16_t corto_notify_subscribers(corto_eventMask mask, corto_object o) {
 }
 
 static
-corto_subscriber corto_subscribeSubscribe(
+corto_subscribe__fluent corto_subscribe__fluentGet(void);
+
+static
+void corto_subscriberInitializeWithRequest(
+    corto_subscriber s,
     corto_subscribeRequest *r)
 {
-    corto_subscriber s = corto_declare(NULL, NULL, corto_subscriber_o);
+    s->queue = r->queue;
+
     corto_set_str(&s->query.from, r->scope);
 
     if (r->scope && *r->scope) {
@@ -579,18 +604,24 @@ corto_subscriber corto_subscribeSubscribe(
     ((corto_function)s)->fptr = (corto_word)r->callback;
     ((corto_function)s)->kind = CORTO_PROCEDURE_CDECL;
 
+    corto_dealloc(r->expr);
+}
+
+static
+corto_subscriber corto_subscribeSubscribe(
+    corto_subscribeRequest *r)
+{
+    corto_subscriber s = corto_declare(NULL, NULL, corto_subscriber_o);
+
+    corto_subscriberInitializeWithRequest(s, r);
+
     if (corto_define(s)) {
         corto_delete(s);
         s = NULL;
     }
 
-    corto_dealloc(r->expr);
-
     return s;
 }
-
-static
-corto_subscribe__fluent corto_subscribe__fluentGet(void);
 
 static
 corto_subscribe__fluent corto_subscribeContentType(
@@ -671,6 +702,17 @@ corto_subscribe__fluent corto_subscribeYieldUnknown(void)
 }
 
 static
+corto_subscribe__fluent corto_subscribeQueue(void)
+{
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    if (request) {
+        request->queue = true;
+    }
+
+    return corto_subscribe__fluentGet();
+}
+
+static
 corto_subscriber corto_subscribeCallback(
     void (*callback)(corto_subscriber_event*))
 {
@@ -699,17 +741,10 @@ corto_mount corto_subscribeMount(
         fmt = corto_fmt_lookup("text/corto");
     }
 
-    /* declareChild */
     corto_mount m = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {.type = type});
 
-    corto_subscriber s = corto_subscriber(m);
-    corto_query *q = &s->query;
-    corto_set_str(&q->from, r->scope);
-    corto_set_str(&q->select, r->expr);
-    corto_set_str(&q->type, r->type);
-    corto_set_str(&s->contentType, r->contentType);
+    corto_subscriberInitializeWithRequest(corto_subscriber(m), r);
 
-    ((corto_observer)s)->enabled = true;
     if (policy) {
         m->policy = *policy;
     }
@@ -734,6 +769,7 @@ corto_subscribe__fluent corto_subscribe__fluentGet(void)
     result.dispatcher = corto_subscribeDispatcher;
     result.mount = corto_subscribeMount;
     result.yield_unknown = corto_subscribeYieldUnknown;
+    result.queue = corto_subscribeQueue;
     return result;
 }
 
@@ -925,6 +961,10 @@ int16_t corto_subscriber_subscribe(
         corto_debug("TYPE '%s'", this->query.type);
     }
 
+    if (this->queue) {
+        corto_debug("QUEUE");
+    }
+
     /* Add subscriber to global subscriber admin */
     corto_entityAdmin_add(
         &corto_subscriber_admin,
@@ -955,37 +995,41 @@ int16_t corto_subscriber_subscribe(
     corto_claim(this);
 
     /* Align subscriber */
-    corto_mutex_lock((corto_mutex)this->alignMutex);
-    this->isAligning = true;
+    if (!this->queue) {
+        corto_mutex_lock((corto_mutex)this->alignMutex);
+        this->isAligning = true;
 
-    /* Enable observer within aligner lock, so no messages are delivered before
-     * alignment has started */
-    corto_observer(this)->enabled = TRUE;
+        /* Enable observer within aligner lock, so no messages are delivered before
+         * alignment has started */
+        corto_observer(this)->enabled = TRUE;
 
-    if (corto_ll_count(this->alignQueue)) {
-        corto_warning("messages in align queue before aligned messages");
-    }
+        if (corto_ll_count(this->alignQueue)) {
+            corto_warning("messages in align queue before aligned messages");
+        }
 
-    /* Populate alignment queue. Any message delivered to the subscriber will
-     * end up in the queue */
-    while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
-        corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL, NULL);
+        /* Populate alignment queue. Any message delivered to the subscriber will
+         * end up in the queue */
+        while (corto_iter_hasNext(&it)) {
+            corto_result *r = corto_iter_next(&it);
+            corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL, NULL);
 
-        /* Nifty trick to take ownership of the serialized value- that way there
-         * is no need to make a copy. The corto_select function will now not
-         * attempt to free the serialized value. */
-        r->value = 0;
-    }
+            /* Nifty trick to take ownership of the serialized value- that way there
+             * is no need to make a copy. The corto_select function will now not
+             * attempt to free the serialized value. */
+            r->value = 0;
+        }
 
-    this->isAligning = false;
+        this->isAligning = false;
 
-    /* Flush messages in alignQueue to subscriber */
-    if (corto_subscriber_flushAlignQueue(this)) {
+        /* Flush messages in alignQueue to subscriber */
+        if (corto_subscriber_flushAlignQueue(this)) {
+            corto_mutex_unlock((corto_mutex)this->alignMutex);
+            goto error;
+        }
         corto_mutex_unlock((corto_mutex)this->alignMutex);
-        goto error;
+    } else {
+        corto_iter_release(&it);
     }
-    corto_mutex_unlock((corto_mutex)this->alignMutex);
 
     return 0;
 error:
