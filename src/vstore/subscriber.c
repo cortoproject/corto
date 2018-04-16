@@ -147,15 +147,15 @@ corto_fmt_data* corto_fmtcache_serialize(
         }
 
         if (index >= this->count) {
+
             /* Format has not yet been serialized */
             if (!this->o) {
                 /* Create intermediate object for serializing between formats */
 
                 /* Get source from mount */
-                corto_fmt_opt src_opt = {0};
-                if (source && corto_instanceof(corto_mount_o, source)) {
-                    src_opt.from = ((corto_mount)source)->super.query.from;
-                }
+                corto_fmt_opt src_opt = {
+                    .from = this->from
+                };
 
                 /* Create intermediate object */
                 this->o = corto_mem_new(this->type_cached);
