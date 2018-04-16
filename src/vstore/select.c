@@ -419,6 +419,7 @@ bool corto_selectMatch(
                 /* If a SINK mount doesn't implement the on_query method, select will
                  * return the contents of the object store */
                 if ((r->policy.ownership == CORTO_LOCAL_SOURCE) && !r->passThrough) {
+
                     if (rType) {
                         /* If the type matches, the object is managed by the
                          * mount. This prevents returning duplicate results. */
@@ -523,10 +524,10 @@ corto_resultIter corto_selectRequestMount(
         corto_query *q = &corto_subscriber(mount)->query;
         char *parent = corto_selectRelativeParent(q, data);
 
-        corto_debug("query (select='%s' from='%s') mount '%s', location '%s'",
+        corto_trace("query '%s' (select:'%s', from:'%s') at store-location '%s'",
+          corto_fullpath(NULL, mount),
           expr,
           parent,
-          corto_fullpath(NULL, mount),
           data->location);
 
         corto_query r = {
@@ -638,20 +639,21 @@ bool corto_selectIterMount(
     }
 
     corto_debug(
-        "mount returned (id = '%s', parent = '%s' type = '%s' leaf = '%s')",
+        "mount yields (id:'%s', parent:'%s' type:'%s' leaf:'%s')",
         result->id, local_parent, result->type, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
 
     /* Filter data early if mount indicates it doesn't do any filtering, and
      * this is not a tree query */
-    if (data->filterProgram &&
-        mount->policy.filterResults &&
-        data->mask != CORTO_ON_TREE)
-    {
-        if (!corto_selectMatch(NULL, result, data)) {
-            goto noMatch;
+    if (mount->policy.filterResults) {
+        if (data->filterProgram &&
+            data->mask != CORTO_ON_TREE)
+        {
+            if (!corto_selectMatch(NULL, result, data)) {
+                goto noMatch;
+            }
         }
-
-        char *parent = corto_selectRelativeParent(&corto_subscriber(mount)->query, data);
+        char *parent = corto_selectRelativeParent(
+            &corto_subscriber(mount)->query, data);
 
         if (strcmp(parent, local_parent)) {
             goto noMatch;
@@ -840,6 +842,9 @@ bool corto_selectIterNext(
             if (result) {
                 hasData = TRUE;
                 corto_claim(result);
+
+                /* Reset flags */
+                data->item.flags = 0;
             }
             corto_scope_unlock(frame->o);
         }
@@ -956,9 +961,12 @@ int corto_selectLoadMountWalk(
     data->mounts[data->mountsLoaded] = mount;
     data->mountsLoaded ++;
 
-    corto_debug("add mount '%s' of type = '%s', mountsLoaded = %d",
+    corto_trace("matched #[cyan]%s#[normal] mount '%s' @ '%s' (#%d)",
+      mount->policy.ownership == CORTO_LOCAL_SOURCE
+        ? "local"
+        : "remote",
       corto_fullpath(NULL, mount),
-      corto_fullpath(NULL, corto_typeof(mount)),
+      mount->super.query.from,
       data->mountsLoaded);
 
     return 1;
@@ -1090,8 +1098,9 @@ int16_t corto_selectTree(
                         data->location[len] = '/';
                         len ++;
                     }
-                    strcpy(&data->location[len], data->item.name);
+                    strcpy(&data->location[len], data->item.id);
                     frame->currentMount = prevFrame->currentMount;
+
                     frame->iter = corto_selectRequestMount(
                       data, data->mounts[frame->currentMount - 1]);
 

@@ -228,6 +228,12 @@ class RefMount: mount, hidden:/
     void on_notify(vstore/subscriber_event event) override
     resultIter on_query(vstore/query query) override
 
+// Mount that serves up child with hidden parent
+class HiddenParentMount: mount:/
+    int16 construct()
+    on_query_count: uint64, readonly
+    items: list{vstore/result}, readonly | not_null
+    resultIter on_query(vstore/query query) override
 
 //------------------------------------------------------------------------------
 // DISPATCHER SUITES
@@ -350,6 +356,9 @@ test/Suite Select:/
     void tc_selectScopeYieldUnknown()
     void tc_selectTreeYieldUnknown()
 
+    void tc_selectUnmatchingObjectAfterUnknown()
+    void tc_selectChildAfterUnmatchingUnknownParent()
+
 // Request data with content type
 test/Suite SelectContentType:/
     void setup() method
@@ -432,6 +441,11 @@ test/Suite SelectMount:/
     void tc_selectFromRootNoInitialSlashInFrom()
     void tc_selectTreeFromInitialSlashInMountResult()
     void tc_selectScopeFromInitialSlashInMountResult()
+
+    void tc_selectChildAfterUnmatchingHiddenParent()
+    void tc_selectTreeFromAutoFilteredMount()
+    void tc_selectRecursiveFromMountPointParent()
+
 
 // Request data from HISTORY mounts
 test/Suite SelectHistory:/

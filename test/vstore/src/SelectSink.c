@@ -1311,7 +1311,5 @@ void test_SelectSink_tc_selectObjectFromVstore_w_ValidObjectInStore(
 void test_SelectSink_teardown(
     test_SelectSink this)
 {
-
     /* << Insert implementation >> */
-
 }

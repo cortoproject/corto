@@ -1983,6 +1983,55 @@ void test_Select_tc_selectTreeYieldUnknown(
     test_assert(corto_delete(world) == 0);
 }
 
+void test_Select_tc_selectUnmatchingObjectAfterUnknown(
+    test_Select this)
+{
+    /* Create unknown object 'foo' and void `foo/bar` */
+    corto_create(root_o, "data/foo/bar", corto_void_o);
+
+    /* Create select query that first finds foo and then foo/bar with a filter
+     * that should exclude foo/bar */
+    corto_iter it;
+    int16_t ret = corto_select("//foo").from("/data").iter(&it);
+    test_assert(ret == 0);
+
+    /* 'foo' should not be returned because it is unknown. foo/bar should not be
+     * returned because the filter doesn't match. */
+    test_assert(corto_iter_hasNext(&it) == 0);
+
+    /* This test failed because the unknown object would set a HIDDEN flag on
+     * the internal corto_result used by the corto_select iterator. This flag
+     * was not cleaned up before a check took place that ensured that
+     * corto_select would always evaluate HIDDEN objects in case of a recursive
+     * query, to see if the hidden object has any children. This bypasses all
+     * filters, and thus foo/bar shows up, even though it doesn't match the id
+     * expression. At a later point, the flag is set to the correct value, which
+     * is why the object isn't actually hidden from the application. */
+}
+
+void test_Select_tc_selectChildAfterUnmatchingUnknownParent(
+    test_Select this)
+{
+    /* Create unknown object 'foo' and void `foo/bar` */
+    corto_create(root_o, "data/foo/bar", corto_void_o);
+
+    /* Create select query that doesn't match data/foo but does match foo/bar */
+    corto_iter it;
+    int16_t ret = corto_select("//bar").from("/data").iter(&it);
+    test_assert(ret == 0);
+
+    /* 'foo' should not be returned because it is unknown. foo/bar should be
+     * returned because the filter matches. */
+    test_assert(corto_iter_hasNext(&it) != 0);
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, "foo");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == 0);
+}
+
 void test_Select_teardown(
     test_Select this)
 {

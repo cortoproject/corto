@@ -1619,3 +1619,94 @@ void test_SelectMount_tc_selectTreeFromInitialSlashInMountResult(
 
     test_assert(corto_iter_hasNext(&it) == false);
 }
+
+void test_SelectMount_tc_selectChildAfterUnmatchingHiddenParent(
+    test_SelectMount this)
+{
+    /* Create mount with a hidden parent 'foo' and child 'foo/bar' */
+    corto_mount m = corto_subscribe("//")
+        .from("/data")
+        .mount(test_HiddenParentMount_o, NULL, NULL);
+    test_assert(m != NULL);
+
+    /* Create select query that doesn't match data/foo but does match foo/bar */
+    corto_iter it;
+    int16_t ret = corto_select("//bar").from("/data").iter(&it);
+    test_assert(ret == 0);
+
+    /* 'foo' should not be returned because it is hidden. foo/bar should be
+     * returned because the filter matches. */
+    test_assert(corto_iter_hasNext(&it) != 0);
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, "foo");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == 0);
+}
+
+void test_SelectMount_tc_selectTreeFromAutoFilteredMount(
+    test_SelectMount this)
+{
+    /* Reuse HiddenParentMount mount with a parent 'foo' and child 'foo/bar' */
+    test_HiddenParentMount m = (test_HiddenParentMount)corto_subscribe("//")
+        .from("/data")
+        .mount(test_HiddenParentMount_o, NULL, NULL);
+    test_assert(m != NULL);
+
+    /* Create select query that selects objects */
+    corto_iter it;
+    int16_t ret = corto_select("//").from("/data").iter(&it);
+    test_assert(ret == 0);
+
+    /* 'foo' should not be returned because it is hidden. foo/bar should be
+     * returned because the filter matches. */
+    test_assert(corto_iter_hasNext(&it) != 0);
+    corto_result *r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "bar");
+    test_assertstr(r->parent, "foo");
+    test_assertstr(r->type, "void");
+
+    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assertint(m->on_query_count, 2);
+
+    /* This test ensures that even though corto_select query has no id filter,
+     * corto_select still filters the parent returned by the mount. Failing to
+     * do so would result in an endless iteration where the mount just returns
+     * the first object */
+}
+
+void test_SelectMount_tc_selectRecursiveFromMountPointParent(
+    test_SelectMount this)
+{
+    /* Create mount on /data */
+    corto_object from = corto_create(root_o, "data/mount", corto_void_o);
+    test_SinkMount m1 = test_SinkMount__create(root_o, "m1", from, NULL, NULL);
+
+    corto_iter it;
+    corto_result *r;
+    corto_select("//").from("data").iter(&it);
+    /*test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "x");
+    test_assertstr(r->parent, "mount");
+    test_assertstr(r->type, "int32");
+
+    test_assert(corto_iter_hasNext(&it));
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "a");
+    test_assertstr(r->parent, "mount/x");
+    test_assertstr(r->type, "int32");*/
+
+    while (corto_iter_hasNext(&it)) {
+        corto_result *r = corto_iter_next(&it);
+        printf("(id:%s, parent:%s, type:%s)\n", r->id, r->parent, r->type);
+    }
+
+    test_assert(corto_iter_hasNext(&it));
+    test_assert(corto_delete(m1) == 0);
+}

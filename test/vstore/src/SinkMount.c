@@ -4,7 +4,6 @@
 int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
-
     corto_set_str(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
       this->type ? this->type : "int32";
@@ -17,7 +16,7 @@ int16_t test_SinkMount_construct(
         ".",
         type,
         (corto_word)this->value,
-        FALSE
+        0
     );
 
     corto_result__assign(
@@ -27,7 +26,7 @@ int16_t test_SinkMount_construct(
         ".",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     corto_result__assign(
@@ -37,7 +36,7 @@ int16_t test_SinkMount_construct(
         ".",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     // Second tier
@@ -58,7 +57,7 @@ int16_t test_SinkMount_construct(
         "x",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     corto_result__assign(
@@ -68,7 +67,7 @@ int16_t test_SinkMount_construct(
         "x",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     // Third tier
@@ -79,7 +78,7 @@ int16_t test_SinkMount_construct(
         "x/a",
         type,
         (corto_word)this->value,
-        FALSE
+        0
     );
 
     corto_result__assign(
@@ -89,7 +88,7 @@ int16_t test_SinkMount_construct(
         "x/a",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     corto_result__assign(
@@ -99,7 +98,7 @@ int16_t test_SinkMount_construct(
         "x/a",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     // Fourth tier
@@ -110,7 +109,7 @@ int16_t test_SinkMount_construct(
         "x/a/k",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     corto_result__assign(
@@ -120,7 +119,7 @@ int16_t test_SinkMount_construct(
         "x/a/k",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     corto_result__assign(
@@ -130,7 +129,7 @@ int16_t test_SinkMount_construct(
         "x/a/k",
         type,
         (corto_word)this->value,
-        FALSE
+        CORTO_RESULT_LEAF
     );
 
     corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
@@ -168,15 +167,15 @@ corto_resultIter test_SinkMount_on_query(
                     e.flags
                 );
             }
-
         }
-
     }
 
     /* Create persistent iterator */
     corto_iter result = corto_ll_iterAlloc(data);
+
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
+
     /* Return persistent iterator to request */
     return result;
 }
