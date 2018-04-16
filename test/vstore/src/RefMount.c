@@ -94,6 +94,8 @@ void test_RefMount_on_notify(
     test_RefMount this,
     corto_subscriber_event *event)
 {
+    corto_set_str(&this->last_id, event->data.id);
+    corto_set_str(&this->last_parent, event->data.parent);
     corto_set_str(&this->last_json, (char*)event->data.value);
 }
 

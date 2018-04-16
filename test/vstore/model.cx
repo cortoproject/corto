@@ -222,6 +222,8 @@ class RefMount: mount, hidden:/
     int16 construct()
     from: string
     last_json: string, readonly
+    last_id: string, readonly
+    last_parent: string, readonly
     items: list{vstore/result}, readonly | not_null
     void on_notify(vstore/subscriber_event event) override
     resultIter on_query(vstore/query query) override

@@ -125,6 +125,8 @@ corto_fmt_data* corto_fmtcache_serialize(
             "failed to resolve type '%s'", this->type);
     }
 
+    /* If type has no references, it doesn't matter whether the subscriber and
+     * publisher 'from' match or not */
     type_has_refs = this->type_cached->flags & CORTO_TYPE_HAS_REFERENCES;
 
     if (!different_fmt && (!different_from || !type_has_refs)) {
@@ -132,7 +134,7 @@ corto_fmt_data* corto_fmtcache_serialize(
         index = 0;
 
     } else if (dst_handle && this->src_ptr) {
-        /* Subcsriber requests different format or from is different */
+        /* Subscriber requests different format or from is different */
 
         /* Check if format has been serialized */
         for (index = 0; index < this->count; index++) {

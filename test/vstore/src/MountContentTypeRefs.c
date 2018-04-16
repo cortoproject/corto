@@ -646,67 +646,542 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
 void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtData(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"bar\","
+         "\"inside_from\":\"bar/hello\","
+         "\"inside_from_nested1\":\"bar/hello/world\","
+         "\"inside_from_nested2\":\"bar/hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"foo/bar\","
+         "\"inside_from\":\"foo/bar/hello\","
+         "\"inside_from_nested1\":\"foo/bar/hello/world\","
+         "\"inside_from_nested2\":\"foo/bar/hello/world/test\","
+         "\"parent_from\":\".\","
+         "\"at_root\":\".\","
+         "\"from\":\"foo\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "foo");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtDataNested1(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"bar\","
+         "\"inside_from\":\"bar/hello\","
+         "\"inside_from_nested1\":\"bar/hello/world\","
+         "\"inside_from_nested2\":\"bar/hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"bar\","
+         "\"inside_from\":\"bar/hello\","
+         "\"inside_from_nested1\":\"bar/hello/world\","
+         "\"inside_from_nested2\":\"bar/hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtDataNested2(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo/bar")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"bar\","
+         "\"inside_from\":\"bar/hello\","
+         "\"inside_from_nested1\":\"bar/hello/world\","
+         "\"inside_from_nested2\":\"bar/hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"hello\","
+         "\"inside_from_nested1\":\"hello/world\","
+         "\"inside_from_nested2\":\"hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\"/data/foo\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo", "bar/obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtRoot(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"bar\","
+         "\"inside_from\":\"bar/hello\","
+         "\"inside_from_nested1\":\"bar/hello/world\","
+         "\"inside_from_nested2\":\"bar/hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"config\","
+         "\"nested_sibling\":\"config/helloworld\","
+         "\"at_from\":\"data/foo/bar\","
+         "\"inside_from\":\"data/foo/bar/hello\","
+         "\"inside_from_nested1\":\"data/foo/bar/hello/world\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello/world/test\","
+         "\"parent_from\":\"data\","
+         "\"at_root\":\"data\","
+         "\"from\":\"data/foo\","
+         "\"root\":\".\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "data/foo");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtData(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"hello\","
+         "\"inside_from_nested1\":\"hello/world\","
+         "\"inside_from_nested2\":\"hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"foo/bar\","
+         "\"inside_from\":\"foo/bar/hello\","
+         "\"inside_from_nested1\":\"foo/bar/hello/world\","
+         "\"inside_from_nested2\":\"foo/bar/hello/world/test\","
+         "\"parent_from\":\".\","
+         "\"at_root\":\".\","
+         "\"from\":\"foo/bar\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo/bar", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "foo/bar");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtDataNested1(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"hello\","
+         "\"inside_from_nested1\":\"hello/world\","
+         "\"inside_from_nested2\":\"hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"bar\","
+         "\"inside_from\":\"bar/hello\","
+         "\"inside_from_nested1\":\"bar/hello/world\","
+         "\"inside_from_nested2\":\"bar/hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\"bar\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo/bar", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "bar");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtDataNested2(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo/bar")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"hello\","
+         "\"inside_from_nested1\":\"hello/world\","
+         "\"inside_from_nested2\":\"hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"hello\","
+         "\"inside_from_nested1\":\"hello/world\","
+         "\"inside_from_nested2\":\"hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo/bar", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtRoot(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"hello\","
+         "\"inside_from_nested1\":\"hello/world\","
+         "\"inside_from_nested2\":\"hello/world/test\","
+         "\"parent_from\":\"/data\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"config\","
+         "\"nested_sibling\":\"config/helloworld\","
+         "\"at_from\":\"data/foo/bar\","
+         "\"inside_from\":\"data/foo/bar/hello\","
+         "\"inside_from_nested1\":\"data/foo/bar/hello/world\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello/world/test\","
+         "\"parent_from\":\"data\","
+         "\"at_root\":\"data\","
+         "\"from\":\"data/foo/bar\","
+         "\"root\":\".\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data/foo/bar", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "data/foo/bar");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataToMountAtData(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"foo\","
+         "\"inside_from\":\"foo/bar\","
+         "\"inside_from_nested1\":\"foo/bar/hello\","
+         "\"inside_from_nested2\":\"foo/bar/hello/world\","
+         "\"parent_from\":\"/\","
+         "\"at_root\":\"/data\"," /* Deliberately use full path to validate that
+                                   * no serialization takes place (should
+                                   * otherwise be '.') */
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"foo\","
+         "\"inside_from\":\"foo/bar\","
+         "\"inside_from_nested1\":\"foo/bar/hello\","
+         "\"inside_from_nested2\":\"foo/bar/hello/world\","
+         "\"parent_from\":\"/\","
+         "\"at_root\":\"/data\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data", "obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataToMountAtDataNested1(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"foo\","
+         "\"inside_from\":\"foo/bar\","
+         "\"inside_from_nested1\":\"foo/bar/hello\","
+         "\"inside_from_nested2\":\"foo/bar/hello/world\","
+         "\"parent_from\":\"/\","
+         "\"at_root\":\".\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\".\","
+         "\"inside_from\":\"bar\","
+         "\"inside_from_nested1\":\"bar/hello\","
+         "\"inside_from_nested2\":\"bar/hello/world\","
+         "\"parent_from\":\"/\","
+         "\"at_root\":\"/data\","
+         "\"from\":\"/data\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data", "foo/obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataToMountAtDataNested2(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo/bar")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"foo\","
+         "\"inside_from\":\"foo/bar\","
+         "\"inside_from_nested1\":\"foo/bar/hello\","
+         "\"inside_from_nested2\":\"foo/bar/hello/world\","
+         "\"parent_from\":\"/\","
+         "\"at_root\":\".\","
+         "\"from\":\".\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    char *expect =
+        "{\"sibling\":\"/config\","
+         "\"nested_sibling\":\"/config/helloworld\","
+         "\"at_from\":\"/data/foo\","
+         "\"inside_from\":\".\","
+         "\"inside_from_nested1\":\"hello\","
+         "\"inside_from_nested2\":\"hello/world\","
+         "\"parent_from\":\"/\","
+         "\"at_root\":\"/data\","
+         "\"from\":\"/data\","
+         "\"root\":\"/\","
+         "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/data", "foo/bar/obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromDataToMountAtRoot(
@@ -752,6 +1227,8 @@ void test_MountContentTypeRefs_tc_publishFromDataToMountAtRoot(
             CORTO_UPDATE, "/data", "obj", "test/Refs", "text/json", json) == 0);
 
     test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "data");
 
     test_assert(corto_delete(m) == 0);
 }
@@ -769,26 +1246,26 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtData(
     char *json =
         "{\"sibling\":\"config\","
          "\"nested_sibling\":\"config/helloworld\","
-         "\"at_from\":\"data/foo\","
-         "\"inside_from\":\"data/foo/bar\","
-         "\"inside_from_nested1\":\"data/foo/bar/hello\","
-         "\"inside_from_nested2\":\"data/foo/bar/hello/world\","
+         "\"at_from\":\"data\","
+         "\"inside_from\":\"data/foo\","
+         "\"inside_from_nested1\":\"data/foo/bar\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello\","
          "\"parent_from\":null,"
          "\"at_root\":\"data\","
-         "\"from\":\"data\","
+         "\"from\":\".\","
          "\"root\":\".\","
          "\"null_ref\":null}";
 
      char *expect =
          "{\"sibling\":\"/config\","
           "\"nested_sibling\":\"/config/helloworld\","
-          "\"at_from\":\"foo\","
-          "\"inside_from\":\"foo/bar\","
-          "\"inside_from_nested1\":\"foo/bar/hello\","
-          "\"inside_from_nested2\":\"foo/bar/hello/world\","
+          "\"at_from\":\".\","
+          "\"inside_from\":\"foo\","
+          "\"inside_from_nested1\":\"foo/bar\","
+          "\"inside_from_nested2\":\"foo/bar/hello\","
           "\"parent_from\":null,"
           "\"at_root\":\".\","
-          "\"from\":\".\","
+          "\"from\":\"/\","
           "\"root\":\"/\","
           "\"null_ref\":null}";
 
@@ -799,6 +1276,8 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtData(
             CORTO_UPDATE, "/", "/data/obj", "test/Refs", "text/json", json) == 0);
 
     test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
 
     test_assert(corto_delete(m) == 0);
 }
@@ -806,19 +1285,148 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtData(
 void test_MountContentTypeRefs_tc_publishFromRootToMountAtDataNested1(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"config\","
+         "\"nested_sibling\":\"config/helloworld\","
+         "\"at_from\":\"data\","
+         "\"inside_from\":\"data/foo\","
+         "\"inside_from_nested1\":\"data/foo/bar\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello\","
+         "\"parent_from\":null,"
+         "\"at_root\":\"data\","
+         "\"from\":\".\","
+         "\"root\":\".\","
+         "\"null_ref\":null}";
+
+     char *expect =
+         "{\"sibling\":\"/config\","
+          "\"nested_sibling\":\"/config/helloworld\","
+          "\"at_from\":\"/data\","
+          "\"inside_from\":\".\","
+          "\"inside_from_nested1\":\"bar\","
+          "\"inside_from_nested2\":\"bar/hello\","
+          "\"parent_from\":null,"
+          "\"at_root\":\"/data\","
+          "\"from\":\"/\","
+          "\"root\":\"/\","
+          "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/", "data/foo/obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromRootToMountAtDataNested2(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/data/foo/bar")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"config\","
+         "\"nested_sibling\":\"config/helloworld\","
+         "\"at_from\":\"data\","
+         "\"inside_from\":\"data/foo\","
+         "\"inside_from_nested1\":\"data/foo/bar\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello\","
+         "\"parent_from\":null,"
+         "\"at_root\":\"data\","
+         "\"from\":\".\","
+         "\"root\":\".\","
+         "\"null_ref\":null}";
+
+     char *expect =
+         "{\"sibling\":\"/config\","
+          "\"nested_sibling\":\"/config/helloworld\","
+          "\"at_from\":\"/data\","
+          "\"inside_from\":\"/data/foo\","
+          "\"inside_from_nested1\":\".\","
+          "\"inside_from_nested2\":\"hello\","
+          "\"parent_from\":null,"
+          "\"at_root\":\"/data\","
+          "\"from\":\"/\","
+          "\"root\":\"/\","
+          "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/", "data/foo/bar/obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, ".");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_publishFromRootToMountAtRoot(
     test_MountContentTypeRefs this)
 {
-    /* Insert implementation */
+    test_RefMount m = (test_RefMount)corto_subscribe("*")
+        .from("/")
+        .queue()
+        .mount(test_RefMount_o, NULL, NULL);
+
+    test_assert(m != NULL);
+
+    char *json =
+        "{\"sibling\":\"config\","
+         "\"nested_sibling\":\"config/helloworld\","
+         "\"at_from\":\"data\","
+         "\"inside_from\":\"data/foo\","
+         "\"inside_from_nested1\":\"data/foo/bar\","
+         "\"inside_from_nested2\":\"data/foo/bar/hello\","
+         "\"parent_from\":null,"
+         "\"at_root\":\"data\","
+         "\"from\":\".\","
+         "\"root\":\".\","
+         "\"null_ref\":null}";
+
+     char *expect =
+         "{\"sibling\":\"config\","
+          "\"nested_sibling\":\"config/helloworld\","
+          "\"at_from\":\"data\","
+          "\"inside_from\":\"data/foo\","
+          "\"inside_from_nested1\":\"data/foo/bar\","
+          "\"inside_from_nested2\":\"data/foo/bar/hello\","
+          "\"parent_from\":null,"
+          "\"at_root\":\"data\","
+          "\"from\":\".\","
+          "\"root\":\".\","
+          "\"null_ref\":null}";
+
+    test_assertstr(m->last_json, NULL);
+
+    test_assert(
+        corto_publish(
+            CORTO_UPDATE, "/", "data/obj", "test/Refs", "text/json", json) == 0);
+
+    test_assertstr(m->last_json, expect);
+    test_assertstr(m->last_id, "obj");
+    test_assertstr(m->last_parent, "data");
+
+    test_assert(corto_delete(m) == 0);
 }
 
 void test_MountContentTypeRefs_tc_resumeWithRefCycle(
