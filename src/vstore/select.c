@@ -39,7 +39,7 @@ int (*corto_mountAction)(
 
 /* Fluent request */
 typedef struct corto_select_request {
-    corto_query query;
+    corto_query q;
     const char *contentType;
     corto_mountAction mountAction;
     corto_object instance;
@@ -78,10 +78,8 @@ typedef struct corto_select_frame {
 } corto_select_frame;
 
 struct corto_select_data {
-    corto_string scope;                      /* Scope passed to select */
-    corto_string expr;                       /* Current expression */
-    corto_string exprStart;                  /* Points to start of full expr */
-    const char *contentType;
+    corto_select_request req;
+    corto_object instanceof;
 
     /* Object filter */
     corto_string filter;
@@ -100,7 +98,6 @@ struct corto_select_data {
     corto_select_frame stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     uint8_t sp;
     corto_eventMask mask;
-    corto_mountMask mountMask;
 
     /* Mounts currently loaded */
     corto_mount mounts[CORTO_MAX_MOUNTS_PER_SELECT];
@@ -112,25 +109,12 @@ struct corto_select_data {
     corto_fmt dstSer;
 
     /* Limit results */
-    uint64_t offset;
-    uint64_t limit;
-    uint64_t soffset;
-    uint64_t slimit;
     uint64_t count;
     uint64_t skip;
-
-    /* History */
-    corto_frame from;
-    corto_frame to;
-    bool isHistoricalQuery;
-    bool queryVstore;
-    bool queryStore;
-    bool yield_unknown;
 
     /* Filters */
     corto_string typeFilter;
     corto_idmatch_program typeFilterProgram;   /* Parsed program */
-    corto_type instanceof;
 
     /* Full path representing the current location of select */
     corto_id location;
@@ -139,9 +123,6 @@ struct corto_select_data {
     bool resume;
     bool resumeKeep;
 
-    /* Additional action to be performed when data is requested from mount */
-    corto_mountAction mountAction;
-
     /* Indicates if the walk should stop */
     bool quit;
     bool *quitPtr; /* If quit was not set to TRUE, this structure will be
@@ -149,12 +130,6 @@ struct corto_select_data {
                           * iteration stopped because quit was set to TRUE. The
                           * variable assigned to quitPtr must be initialized to
                           * FALSE. */
-
-    /* Ignore data from the instance (mount) if set */
-    corto_object instance;
-
-    /* Ignore all other mounts if set */
-    corto_mount mount;
 
     /* Pre allocated for selectItem */
     corto_id id;
@@ -206,7 +181,7 @@ int16_t corto_selectConvert(
         .from = mount->super.query.from
     };
     corto_fmt_opt dst_opt = {
-        .from = data->scope
+        .from = data->req.q.from
     };
 
     bool different_from = false, different_fmt = false;
@@ -247,7 +222,7 @@ int16_t corto_selectConvert(
                     data->dstSer, &dst_opt, &v)))
                 {
                     corto_throw(
-                        "failed to convert value to '%s'", data->contentType);
+                        "failed to convert value to '%s'", data->req.contentType);
                     goto error;
                 }
 
@@ -289,7 +264,7 @@ void corto_setItemData(
     }
 
     /* Compute path from scope to result */
-    strcpy(from, data->scope ? data->scope : "");
+    strcpy(from, data->req.q.from ? data->req.q.from : "");
     corto_path_offset(item->parent, from, to, -1, true);
 
     if (corto_idof(o)) {
@@ -324,9 +299,9 @@ void corto_setItemData(
         corto_walk(&s, corto_typeof(o), &serData);
     }
 
-    if (data->contentType) {
+    if (data->req.contentType) {
         corto_fmt_opt dst_opt = {
-            .from = data->scope
+            .from = data->req.q.from
         };
         if (item->value) {
             corto_fmt_release(data->dstSer, (void*)item->value);
@@ -344,7 +319,7 @@ void corto_setItemData(
     }
 
     if (corto_typeof(o) == corto_unknown_o) {
-        if (!data->yield_unknown) {
+        if (!data->req.q.yield_unknown) {
             item->flags |= CORTO_RESULT_HIDDEN;
         }
     }
@@ -374,7 +349,7 @@ bool corto_selectMatch(
             }
         } else {
             corto_id id;
-            sprintf(id, "%s/%s/%s", data->scope, item->parent, item->id);
+            sprintf(id, "%s/%s/%s", data->req.q.from, item->parent, item->id);
             corto_path_clean(id, id);
             if (!corto_authorize_id(id, CORTO_SECURE_ACTION_READ)) {
                 corto_debug("no read access: %s", id);
@@ -509,7 +484,7 @@ corto_resultIter corto_select_requestMount(
     corto_select_data *data,
     corto_mount mount)
 {
-    if (data->mountAction || (!data->quit && data->queryVstore)) {
+    if (data->req.mountAction || (!data->quit && data->req.queryVstore)) {
         char *expr = data->mask == CORTO_ON_TREE ? "*" : data->filter ? data->filter : "*";
         corto_query *q = &corto_subscriber(mount)->query;
         char *parent = corto_selectRelativeParent(q, data);
@@ -524,18 +499,18 @@ corto_resultIter corto_select_requestMount(
           .from = parent,
           .select = expr,
           .type = data->type,
-          .offset = (data->offset > data->count) ? data->offset - data->count : 0,
-          .limit = (data->offset > data->count || !data->limit) ? data->limit : data->limit - (data->offset - data->count),
-          .soffset = data->soffset,
-          .slimit = data->slimit,
-          .content = data->contentType ? TRUE : FALSE,
-          .timeBegin = data->from,
-          .timeEnd = data->to};
+          .offset = (data->req.q.offset > data->count) ? data->req.q.offset - data->count : 0,
+          .limit = (data->req.q.offset > data->count || !data->req.q.limit) ? data->req.q.limit : data->req.q.limit - (data->req.q.offset - data->count),
+          .soffset = data->req.q.soffset,
+          .slimit = data->req.q.slimit,
+          .content = data->req.contentType ? TRUE : FALSE,
+          .timeBegin = data->req.q.timeBegin,
+          .timeEnd = data->req.q.timeEnd};
 
-        if (data->mountAction) {
+        if (data->req.mountAction) {
             /* If mount-action returns non-zero, quit the walk asap */
-            if (!data->mountAction(mount, &r, data)) {
-                data->mountAction = NULL;
+            if (!data->req.mountAction(mount, &r, data)) {
+                data->req.mountAction = NULL;
                 data->quit = TRUE;
                 if (data->quitPtr) {
                     *(data->quitPtr) = TRUE;
@@ -544,10 +519,10 @@ corto_resultIter corto_select_requestMount(
         }
 
         /* If this is a dry run, don't request data from mount */
-        if (data->quit || !data->queryVstore) {
+        if (data->quit || !data->req.queryVstore) {
             return CORTO_ITER_EMPTY;
         } else {
-            if (data->isHistoricalQuery) {
+            if (data->req.isHistoricalQuery) {
                 return corto_mount_historyQuery(mount, &r);
             } else {
                 return corto_mount_query(mount, &r);
@@ -674,7 +649,7 @@ bool corto_selectIterMount(
 
     if (local_parent) {
         corto_id path;
-        strcpy(path, data->scope ? data->scope : "");
+        strcpy(path, data->req.q.from ? data->req.q.from : "");
         strcpy(rpath, corto_subscriber(mount)->query.from);
         strcat(rpath, "/");
         strcat(rpath, local_parent);
@@ -796,7 +771,7 @@ bool corto_selectIterNext(
     *o_out = NULL;
 
     /* Select data from scope */
-    if (data->queryStore && frame->o) {
+    if (data->req.queryStore && frame->o) {
 
         /* Don't walk over objects if a frame contains a expr or if the
          * frame is already walking over a mount */
@@ -888,23 +863,23 @@ int corto_selectLoadMountWalk(
     CORTO_UNUSED(instance);
 
     /* If user specified only one mount to query from, ignore other mounts */
-    if (data->mount && (mount != data->mount)) {
+    if (data->req.mount && (mount != data->req.mount)) {
         return 1;
     }
 
     /* Don't request data from self */
-    if (data->instance && (mount == data->instance)) {
+    if (data->req.instance && (mount == data->req.instance)) {
         return 1;
     }
 
     /* If historical data is requested, only load historians and don't request
      * ordinary data from historians. */
-    if (data->isHistoricalQuery) {
+    if (data->req.isHistoricalQuery) {
         if (!(mount->policy.mask & CORTO_MOUNT_HISTORY_QUERY)) {
             return 1;
         }
-    } else if (data->mountMask) {
-        if (!(mount->policy.mask & data->mountMask)) {
+    } else if (data->req.mountMask) {
+        if (!(mount->policy.mask & data->req.mountMask)) {
             return 1;
         }
     } else {
@@ -1045,7 +1020,7 @@ int16_t corto_selectTree(
 
             if (o) {
                 if (corto_selectMatch(o, &data->item, data) &&
-                   (data->skip >= data->offset))
+                   (data->skip >= data->req.q.offset))
                 {
                     match = true;
                     corto_setItemData(o, data->next, data);
@@ -1266,9 +1241,8 @@ void corto_selectRelease(
 
     CORTO_UNUSED(iter);
 
-    if (data->exprStart) corto_dealloc(data->exprStart);
     if (data->program.tokens) corto_dealloc(data->program.tokens);
-    if (data->scope) corto_dealloc(data->scope);
+    if (data->req.q.from) corto_dealloc(data->req.q.from);
     if (data->fullscope) corto_dealloc(data->fullscope);
     if (data->filterProgram) corto_idmatch_free(data->filterProgram);
     if (data->typeFilterProgram) corto_idmatch_free(data->typeFilterProgram);
@@ -1292,7 +1266,7 @@ void corto_selectRelease(
 
     corto_selectReset(data);
 
-    data->expr = NULL;
+    data->req.q.select = NULL;
     data->program.tokens = NULL;
     data->item.value = 0;
     corto_dealloc(data);
@@ -1376,14 +1350,14 @@ int16_t corto_selectRun(
     corto_string filter = NULL;
     corto_select_frame *frame = &data->stack[0];
 
-    strcpy(fullscope, data->scope ? data->scope : "/");
+    strcpy(fullscope, data->req.q.from ? data->req.q.from : "/");
     data->mask = CORTO_ON_SCOPE;
 
-    if (*fullscope && strcmp(fullscope, "/") && (*data->expr != '/')) {
+    if (*fullscope && strcmp(fullscope, "/") && (*data->req.q.select != '/')) {
         strcat(fullscope, "/");
     }
 
-    strcat(fullscope, data->expr ? data->expr : "");
+    strcat(fullscope, data->req.q.select ? data->req.q.select : "");
     int scope = corto_idmatch_get_scope(&data->program);
     data->mask = scope == 2 ? CORTO_ON_TREE
                : scope == 1 ? CORTO_ON_SCOPE
@@ -1393,7 +1367,7 @@ int16_t corto_selectRun(
     corto_path_clean(data->fullscope, data->fullscope);
 
     /* Does expression contain a filter? */
-    if (data->expr && (data->expr[strlen(data->expr) - 1] != '/')) {
+    if (data->req.q.select && (data->req.q.select[strlen(data->req.q.select) - 1] != '/')) {
         char *ptr = strrchr(data->fullscope, '/');
         if (ptr) {
             filter = ptr + 1;
@@ -1450,23 +1424,23 @@ bool corto_selectNextExpr(
     bool result = FALSE;
 
     if (data->exprCurrent < data->exprCount) {
-        data->expr = &data->expr[strlen(data->expr) + 1];
+        data->req.q.select = &data->req.q.select[strlen(data->req.q.select) + 1];
         data->exprCurrent ++;
         result = TRUE;
 
-        corto_debug("evaluate expression '%s'", data->expr);
+        corto_debug("evaluate expression '%s'", data->req.q.select);
 
         corto_selectReset(data);
         data->segment = 0;
 
         if (data->program.tokens) corto_dealloc(data->program.tokens);
-        if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
-            corto_throw("select '%s' failed", data->expr);
+        if (corto_idmatchParseIntern(&data->program, data->req.q.select, TRUE, FALSE)) {
+            corto_throw("select '%s' failed", data->req.q.select);
             goto error;
         }
 
         if (corto_selectRun(data)) {
-            corto_throw("select '%s' failed", data->expr);
+            corto_throw("select '%s' failed", data->req.q.select);
             goto error;
         }
     }
@@ -1489,10 +1463,10 @@ bool corto_selectHasNext(corto_resultIter *iter) {
 
     CORTO_UNUSED(iter);
 
-    if (data->limit) {
-         if (data->limit <= data->count)
+    if (data->req.q.limit) {
+         if (data->req.q.limit <= data->count)
          {
-              corto_debug("limit reached, stop iterating (%d)", data->limit);
+              corto_debug("limit reached, stop iterating (%d)", data->req.q.limit);
               goto stop;
          }
     }
@@ -1528,74 +1502,38 @@ corto_resultIter corto_selectPrepareIterator (
     struct corto_select_request *r)
 {
     corto_select_data *data = corto_calloc(sizeof(corto_select_data));
+    data->req = *r;
 
-    corto_resultIter result;
-    memset(&result, 0, sizeof(corto_resultIter));
-
-    const char *scope = r->query.from;
-
-    if (scope && *scope) {
-        if (*scope != '/') {
-            /* Normalize scope to properly formatted identifier */
-            data->scope = corto_asprintf("/%s", scope);
-        } else {
-            data->scope = corto_strdup(scope);
-        }
-    } else {
-        /* If no scope is provided, a NULL indicates that the result of select
-         * must include the root scope ('/') in the parent field of results. */
-        data->scope = NULL;
-    }
-
-    if (r->query.select && *(r->query.select)) {
-        data->expr = r->query.select;
-    } else {
-        data->expr = corto_strdup(".");
-        corto_dealloc(r->query.select);
-    }
-    data->exprStart = data->expr;
-
-    data->contentType = r->contentType;
     data->mountsLoaded = -1;
-    data->offset = r->query.offset;
-    data->limit = r->query.limit;
-    if (r->query.type && strlen(r->query.type)) {
-        data->typeFilter = strdup(r->query.type);
+
+    if (r->q.type && strlen(r->q.type)) {
+        data->typeFilter = strdup(r->q.type);
     } else {
         data->typeFilter = NULL;
     }
-    if (r->query.instanceof) {
-        data->instanceof = corto_resolve(NULL, r->query.instanceof);
+    if (r->q.instanceof) {
+        data->instanceof = corto_resolve(NULL, r->q.instanceof);
         if (!data->instanceof) {
-            corto_throw("type '%s' specified in instanceof not found", r->query.instanceof);
+            corto_throw(
+                "type '%s' specified in instanceof not found", r->q.instanceof);
             goto error;
         }
     }
-    data->soffset = r->query.soffset;
-    data->slimit = r->query.slimit;
-    data->from = r->query.timeBegin;
-    data->to = r->query.timeEnd;
-    data->isHistoricalQuery = r->isHistoricalQuery;
-    data->queryStore = r->queryStore;
-    data->queryVstore = r->queryVstore;
-    data->yield_unknown = r->query.yield_unknown;
+
     data->item.parent = data->parent;
     data->item.name = data->name;
     data->item.type = data->type;
     data->item.id = data->id;
     data->item.flags = CORTO_RESULT_LEAF;
-    data->mountAction = r->mountAction;
-    data->instance = r->instance;
-    data->mount = r->mount;
     data->valueAllocated = FALSE;
-    data->mountMask = r->mountMask;
 
-    if (data->contentType) {
-        if (!(data->dstSer = corto_fmt_lookup(data->contentType))) {
+    if (data->req.contentType) {
+        if (!(data->dstSer = corto_fmt_lookup(data->req.contentType))) {
             goto error;
         }
     }
 
+    corto_resultIter result = {0};
     result.ctx = data;
     result.hasNext = corto_selectHasNext;
     result.next = corto_selectNext;
@@ -1603,7 +1541,7 @@ corto_resultIter corto_selectPrepareIterator (
 
     /* Split expression on ,. Expressions with multiple segments should be
      * evaluated sequentially. */
-    char *ptr = data->expr, *prev = ptr;
+    char *ptr = data->req.q.select, *prev = ptr;
     (void)prev;
     while ((ptr = strchr(ptr, ','))) {
         *ptr = '\0';
@@ -1613,11 +1551,11 @@ corto_resultIter corto_selectPrepareIterator (
         prev = ptr;
     }
     if (!data->exprCount) {
-        corto_debug("expression added: '%s'", data->expr);
+        corto_debug("expression added: '%s'", data->req.q.select);
     }
     data->exprCurrent = 0;
 
-    if (corto_idmatchParseIntern(&data->program, data->expr, TRUE, FALSE)) {
+    if (corto_idmatchParseIntern(&data->program, data->req.q.select, TRUE, FALSE)) {
         corto_throw("select failed");
         goto error;
     }
@@ -1660,7 +1598,7 @@ corto_select__fluent corto_selectorOffset(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.offset = offset;
+        request->q.offset = offset;
         corto_debug("OFFSET %llu", offset);
     }
     return corto_select__fluentGet();
@@ -1674,7 +1612,7 @@ corto_select__fluent corto_selectorLimit(
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         corto_debug("LIMIT %llu", limit);
-        request->query.limit = limit;
+        request->q.limit = limit;
     }
     return corto_select__fluentGet();
 }
@@ -1686,7 +1624,7 @@ corto_select__fluent corto_selectorSlimit(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.slimit = limit;
+        request->q.slimit = limit;
         request->isHistoricalQuery = true;
     }
     return corto_select__fluentGet();
@@ -1699,7 +1637,7 @@ corto_select__fluent corto_selectorSoffset(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.soffset = offset;
+        request->q.soffset = offset;
         request->isHistoricalQuery = true;
     }
     return corto_select__fluentGet();
@@ -1713,7 +1651,7 @@ corto_select__fluent corto_selectorType(
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         corto_debug("TYPE '%s'", type);
-        request->query.type = type;
+        request->q.type = type;
     }
     return corto_select__fluentGet();
 }
@@ -1726,7 +1664,7 @@ corto_select__fluent corto_selectorInstanceof(
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         corto_debug("INSTANCEOF '%s'", instanceof);
-        request->query.instanceof = instanceof;
+        request->q.instanceof = instanceof;
     }
     return corto_select__fluentGet();
 }
@@ -1988,8 +1926,8 @@ corto_select__fluent corto_selectorFromNow(void)
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.timeBegin.kind = CORTO_FRAME_NOW;
-        request->query.timeBegin.value = 0;
+        request->q.timeBegin.kind = CORTO_FRAME_NOW;
+        request->q.timeBegin.value = 0;
         request->isHistoricalQuery = true;
     }
     return corto_select__fluentGet();
@@ -2002,13 +1940,13 @@ corto_select__fluent corto_selectorFromTime(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.timeBegin.kind = CORTO_FRAME_TIME;
+        request->q.timeBegin.kind = CORTO_FRAME_TIME;
         union {
             corto_time t;
             uint64_t i;
         } toInt;
         toInt.t = t;
-        request->query.timeBegin.value = toInt.i;
+        request->q.timeBegin.value = toInt.i;
         request->isHistoricalQuery = true;
     }
     return corto_select__fluentGet();
@@ -2020,8 +1958,8 @@ corto_select__fluent corto_selectorToNow(void)
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.timeEnd.kind = CORTO_FRAME_NOW;
-        request->query.timeBegin.value = 0;
+        request->q.timeEnd.kind = CORTO_FRAME_NOW;
+        request->q.timeBegin.value = 0;
         request->isHistoricalQuery = true;
 
     }
@@ -2035,13 +1973,13 @@ corto_select__fluent corto_selectorToTime(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.timeEnd.kind = CORTO_FRAME_TIME;
+        request->q.timeEnd.kind = CORTO_FRAME_TIME;
         union {
             corto_time t;
             uint64_t i;
         } toInt;
         toInt.t = t;
-        request->query.timeEnd.value = toInt.i;
+        request->q.timeEnd.value = toInt.i;
         request->isHistoricalQuery = true;
     }
     return corto_select__fluentGet();
@@ -2054,13 +1992,13 @@ corto_select__fluent corto_selectorForDuration(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.timeEnd.kind = CORTO_FRAME_DURATION;
+        request->q.timeEnd.kind = CORTO_FRAME_DURATION;
         union {
             corto_time t;
             uint64_t i;
         } toInt;
         toInt.t = t;
-        request->query.timeEnd.value = toInt.i;
+        request->q.timeEnd.value = toInt.i;
         request->isHistoricalQuery = true;
     }
     return corto_select__fluentGet();
@@ -2099,8 +2037,16 @@ corto_select__fluent corto_selectorFrom(
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.from = scope;
-        corto_debug("FROM '%s'", scope);
+        if (scope && *scope) {
+            if (*scope != '/') {
+                /* Normalize scope to properly formatted identifier */
+                request->q.from = corto_asprintf("/%s", scope);
+            } else {
+                request->q.from = corto_strdup(scope);
+            }
+        }
+
+        corto_debug("FROM '%s'", request->q.from);
     }
     return corto_select__fluentGet();
 }
@@ -2124,7 +2070,7 @@ corto_select__fluent corto_selectorYieldUnknown(void)
     corto_select_request *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->query.yield_unknown = true;
+        request->q.yield_unknown = true;
         corto_debug("YIELD_UNKNOWN 'true'");
     }
     return corto_select__fluentGet();
@@ -2174,18 +2120,23 @@ corto_select__fluent corto_select(
         memset(request, 0, sizeof(corto_select_request));
     }
 
-    request->queryStore = true;
-    request->queryVstore = true;
-
     if (expr) {
         va_start(arglist, expr);
-        request->query.select = corto_vasprintf(expr, arglist);
+        request->q.select = corto_vasprintf(expr, arglist);
         va_end(arglist);
     }
 
-    corto_log_push("select");
-    corto_debug(strarg("SELECT '%s'", request->query.select));
+    if (!request->q.select || !request->q.select[0]) {
+        free(request->q.select);
+        request->q.select = corto_strdup(".");
+    }
 
-    request->query.from = NULL;
+    corto_log_push("select");
+    corto_debug(strarg("SELECT '%s'", request->q.select));
+
+    request->queryStore = true;
+    request->queryVstore = true;
+    request->q.from = NULL;
+
     return corto_select__fluentGet();
 }
