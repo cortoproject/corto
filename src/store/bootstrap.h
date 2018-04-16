@@ -1377,6 +1377,7 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CO
 CORTO_FW_IFCDE(vstore, subscriber);
 CORTO_PROCEDURE_O(vstore, subscriber, FALSE, NULL, vstore_observer, CORTO_HIDDEN, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_IFCDE);
     CORTO_MEMBER_O(vstore_subscriber, query, vstore_query, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_subscriber, queue, lang_bool, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_subscriber, contentType, lang_string, CORTO_GLOBAL);
     CORTO_ALIAS_O(vstore_subscriber, instance, vstore_observer_instance, CORTO_GLOBAL);
     CORTO_ALIAS_O(vstore_subscriber, dispatcher, vstore_observer_dispatcher, CORTO_GLOBAL);

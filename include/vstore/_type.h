@@ -100,6 +100,7 @@ typedef struct corto_query {
 typedef struct corto_subscriber_s {
     struct corto_observer_s super;
     corto_query query;
+    bool queue;
     corto_string contentType;
     uintptr_t fmt_handle;
     uintptr_t idmatch;

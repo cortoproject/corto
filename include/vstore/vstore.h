@@ -332,8 +332,8 @@ typedef struct corto_subscribe__fluent {
         corto_dispatcher dispatcher);
 
     /** Specify an instance.
-     * Instances are passed to subscriber callbacks. They are typically used to pass
-     * the `this` variable when an subscriber is associated with a class.
+     * Instances are passed to subscriber callbacks. They are typically used to
+     * pass the `this` variable when an subscriber is associated with a class.
      *
      * @param instance A corto object.
      */
@@ -341,7 +341,7 @@ typedef struct corto_subscribe__fluent {
         corto_object instance);
 
     /** Request results in a specific contentType.
-     * @param contentType A MIME identifier identifying a contentType.
+     * @param contentType An identifier identifying a serializer format.
      */
     struct corto_subscribe__fluent (*contentType)(
         const char *contentType);
@@ -349,7 +349,7 @@ typedef struct corto_subscribe__fluent {
     /** Filter objects by type.
      * The subscriber will only trigger on objects of the specified type.
      *
-     * @param type A valid corto type identifier.
+     * @param type A valid corto type identifier expression.
      */
     struct corto_subscribe__fluent (*type)(
         const char *type);
@@ -360,6 +360,12 @@ typedef struct corto_subscribe__fluent {
      * corto_select.
      */
     struct corto_subscribe__fluent (*yield_unknown)(void);
+
+    /** Don't synchronize existing objects.
+     * The subscriber will not yield objects that existed before the
+     * subscriber was created.
+     */
+    struct corto_subscribe__fluent (*queue)(void); /* Unstable API */
 
     /** Create a mount of the specified type.
      *

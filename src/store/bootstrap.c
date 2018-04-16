@@ -671,6 +671,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_query_match_),\
     /* subscriber */\
     BUILTIN_OBJ(vstore_subscriber_query),\
+    BUILTIN_OBJ(vstore_subscriber_queue),\
     BUILTIN_OBJ(vstore_subscriber_contentType),\
     BUILTIN_OBJ(vstore_subscriber_instance),\
     BUILTIN_OBJ(vstore_subscriber_dispatcher),\
