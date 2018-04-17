@@ -235,6 +235,14 @@ class HiddenParentMount: mount:/
     items: list{vstore/result}, readonly | not_null
     resultIter on_query(vstore/query query) override
 
+// Mount that provides custom partial trees
+class SparseMount: mount:/
+    int16 construct()
+    void add_object(string id, string parent, string type, vstore/resultMask flags)
+    on_query_count: uint64, readonly
+    items: list{vstore/result}, readonly | not_null
+    resultIter on_query(vstore/query query) override
+
 //------------------------------------------------------------------------------
 // DISPATCHER SUITES
 //------------------------------------------------------------------------------
@@ -446,6 +454,9 @@ test/Suite SelectMount:/
     void tc_selectTreeFromAutoFilteredMount()
     void tc_selectRecursiveFromMountPointParent()
 
+// Test configurations with multiple intertwined mounts
+test/Suite MultiMount:/
+    void setup() method
 
 // Request data from HISTORY mounts
 test/Suite SelectHistory:/
