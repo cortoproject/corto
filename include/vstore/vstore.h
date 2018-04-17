@@ -375,7 +375,18 @@ typedef struct corto_subscribe__fluent {
      * @return A new mount object
      */
     corto_mount ___ (*mount)(
-        corto_class type, corto_mountPolicy* policy, const char *value);
+        corto_class type,
+        corto_mountPolicy* policy,
+        const char *value);
+
+    /** Create named subscriber.
+     *
+     * @param parent Parent of subscriber.
+     * @param id Id of subscriber.
+     */
+    struct corto_subscribe__fluent (*named)(
+        corto_object parent,
+        const char *id); /* Unstable API */
 
     /** Specify callback, create subscriber.
      * Provide a callback function that is invoked when a matching event occurs.

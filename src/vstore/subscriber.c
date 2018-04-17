@@ -23,6 +23,8 @@ typedef struct corto_subscribeRequest {
     bool enabled;
     bool yield_unknown;
     bool queue;
+    corto_object parent;
+    const char *id;
     void (*callback)(corto_subscriber_event*);
 } corto_subscribeRequest;
 
@@ -613,7 +615,8 @@ static
 corto_subscriber corto_subscribeSubscribe(
     corto_subscribeRequest *r)
 {
-    corto_subscriber s = corto_declare(NULL, NULL, corto_subscriber_o);
+    corto_subscriber s = corto_declare(
+        r->parent, r->id, corto_subscriber_o);
 
     corto_subscriberInitializeWithRequest(s, r);
 
@@ -715,6 +718,20 @@ corto_subscribe__fluent corto_subscribeQueue(void)
 }
 
 static
+corto_subscribe__fluent corto_subscribeNamed(
+    corto_object parent,
+    const char *id)
+{
+    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    if (request) {
+        request->parent = parent;
+        request->id = id;
+    }
+
+    return corto_subscribe__fluentGet();
+}
+
+static
 corto_subscriber corto_subscribeCallback(
     void (*callback)(corto_subscriber_event*))
 {
@@ -743,7 +760,10 @@ corto_mount corto_subscribeMount(
         fmt = corto_fmt_lookup("text/corto");
     }
 
-    corto_mount m = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {.type = type});
+    corto_mount m = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {
+        .parent = r->parent,
+        .id = r->id,
+        .type = type});
 
     corto_subscriberInitializeWithRequest(corto_subscriber(m), r);
 
@@ -772,6 +792,7 @@ corto_subscribe__fluent corto_subscribe__fluentGet(void)
     result.mount = corto_subscribeMount;
     result.yield_unknown = corto_subscribeYieldUnknown;
     result.queue = corto_subscribeQueue;
+    result.named = corto_subscribeNamed;
     return result;
 }
 
