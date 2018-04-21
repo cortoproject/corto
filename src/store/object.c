@@ -5044,12 +5044,14 @@ int16_t corto_deinit(corto_object o) {
         goto error;\
     }\
     corto_type base = (corto_type)cur->base;\
-    if (base && base->flags & flag) {\
-        ret corto_invoke_##prepost##Delegate(\
-            &action, (corto_type)base, o);\
+    if (base) {\
+        if (base->flags & flag) {\
+            ret corto_invoke_##prepost##Delegate(\
+                &action, (corto_type)base, o);\
+        }\
     } else {\
         corto_throw("interface '%s' does not have a baseclass",\
-            corto_fullpath(NULL, cur));\
+            corto_fullpath(NULL, cur), cur);\
     }\
 
 #define SUPER_PRE(o, flag, action, name)\
