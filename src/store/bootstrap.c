@@ -103,6 +103,11 @@ static corto_ll corto_exitHandlers = NULL;
 /* String identifying current corto build */
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
+/* Builtin variables to automatically created objects */
+corto_object data_o = NULL;
+corto_object config_o = NULL;
+corto_object home_o = NULL;
+
 /* Helper macro's for building list of to be initialized objects */
 #define SSO_OBJECT(obj) CORTO_OFFSET(&obj##__o, sizeof(corto_SSO))
 #define BUILTIN_VOID(parent, obj) {SSO_OBJECT(parent##obj), 0}
@@ -1240,7 +1245,8 @@ int corto_start(
     int corto_file_loader(corto_string file, int argc, char* argv[], void *data);
     corto_load_register("", corto_file_loader, NULL);
 
-    /* Always randomize seed */
+    /* Randomize seed by default (application can easily override by calling
+     * srand again) */
     srand (time(NULL));
 
     CORTO_APP_STATUS = 0; /* Running */
@@ -1248,13 +1254,13 @@ int corto_start(
     /* Create builtin root scopes */
     corto_debug("init root scopes");
 
-    corto_object config_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
+    config_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "config", .type = corto_void_o});
 
-    corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
+    data_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "data", .type = corto_void_o});
 
-    corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
+    home_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "home", .type = corto_void_o});
 
 /* Only create package mount for non-redistributable version of corto, where
