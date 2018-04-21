@@ -128,9 +128,9 @@
 extern "C" {
 #endif
 
-extern corto_object data_o;
-extern corto_object config_o;
-extern corto_object home_o;
+CORTO_EXPORT extern corto_object data_o;
+CORTO_EXPORT extern corto_object config_o;
+CORTO_EXPORT extern corto_object home_o;
 
 typedef int (*corto_scope_walk_cb)(corto_object o, void* userData);
 
