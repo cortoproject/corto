@@ -115,6 +115,7 @@
 
 #include <corto/_project.h>
 
+#include <corto/store/expr.h>
 #include <corto/store/invoke.h>
 #include <corto/store/ptr.h>
 #include <corto/store/time.h>

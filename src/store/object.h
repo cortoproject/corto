@@ -33,7 +33,6 @@
 #include "copy_ser.h"
 #include "memory_ser.h"
 #include "typecache.h"
-#include "expr.h"
 #include "cdeclhandler.h"
 
 #ifdef __cplusplus
