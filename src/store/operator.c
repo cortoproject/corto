@@ -63,11 +63,22 @@ static void CORTO_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* resu
         *(bool*)result = !strcmp(str1, str2);
     }
 }
-static void CORTO_NAME_BINARYOP(string,cond_neq)(void* op1, void* op2, void* result) {
+static
+void CORTO_NAME_BINARYOP(string,cond_neq)(
+    void* op1,
+    void* op2,
+    void* result)
+{
     CORTO_NAME_BINARYOP(string,cond_eq)(op1, op2, result);
     *(bool*)result = !*(bool*)result;
 }
-static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) {
+
+static
+void CORTO_NAME_BINARYOP(string,add)(
+    void* op1,
+    void* op2,
+    void* result)
+{
     corto_uint32 len = strlen(*(corto_string*)op1) + strlen(*(corto_string*)op2);
     if (*(corto_string*)result) {
         corto_dealloc(*(corto_string*)result);
@@ -75,9 +86,27 @@ static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) 
     *(corto_string*)result = corto_alloc(len + 1);
     sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
 }
-static void CORTO_NAME_BINARYOP(string,assign)(void* op1, void* op2, void* result) {
-    corto_set_str((corto_string*)result, *(corto_string*)op2);
-    corto_set_str((corto_string*)op1, *(corto_string*)op2);
+
+static
+void CORTO_NAME_BINARYOP(string,assign)(
+    void* op1, 
+    void* op2,
+    void* result)
+{
+    if (result) {
+        if (op2) {
+            corto_set_str((corto_string*)result, *(corto_string*)op2);
+        } else {
+            corto_set_str((corto_string*)result, NULL);
+        }
+    }
+    if (op1) {
+        if (op2) {
+            corto_set_str((corto_string*)op1, *(corto_string*)op2);
+        } else {
+            corto_set_str((corto_string*)op1, NULL);
+        }
+    }
 }
 
 
