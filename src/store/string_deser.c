@@ -486,7 +486,7 @@ static corto_int16 corto_string_deserParseValue(
         goto error;
     }
 
-    /* No more elements where available in the index, meaning an excess element */
+    /* No more elements available in the index, thus an excess element */
     if (!info) {
         corto_throw("excess elements in scope @ '%s'", value);
         goto error;
@@ -536,25 +536,33 @@ static corto_int16 corto_string_deserParseValue(
 
     /* Convert string to primitive value */
     if (offset && (info->type->kind == CORTO_PRIMITIVE)) {
-        if (corto_primitive(info->type)->kind != CORTO_TEXT) {
-            if (corto_ptr_cast(corto_primitive(corto_string_o), &value, corto_primitive(info->type), offset)) {
+        corto_primitiveKind kind = corto_primitive(info->type)->kind;
+        if (kind == CORTO_TEXT) {
+            if (strcmp(value, "null")) {
+                corto_set_str(offset, value);
+            } else {
+                corto_set_str(offset, NULL);
+            }
+        } else if (kind == CORTO_BOOLEAN) {
+            if (!stricmp(value, "true")) {
+                *(bool*)offset = true;
+            } else if (!stricmp(value, "false")) {
+                *(bool*)offset = false;
+            } else {
+                corto_throw("invalid boolean value '%s'", value);
                 goto error;
             }
         } else {
-            corto_uint32 length;
-            corto_string deserialized;
-
-            if (strcmp(value, "null")) {
-                length = strlen(value);
-                deserialized = corto_alloc(length+1);
-                memcpy(deserialized, value, length);
-                deserialized[length] = '\0';
-            } else {
-                deserialized = NULL;
+            if (corto_ptr_cast(
+                corto_primitive(corto_string_o),
+                &value,
+                corto_primitive(info->type),
+                offset))
+            {
+                goto error;
             }
-
-            corto_set_str(offset, deserialized);
         }
+
     }
 
     /* Members are only parsed once */

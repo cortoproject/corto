@@ -714,7 +714,22 @@ void test_ValueCast_tc_castStringBool(
 
     ptr = corto_value_ptrof(&out);
     test_assert(ptr != NULL);
+    test_assertint(*ptr, TRUE);
+
+    v = NULL;
+
+    ret = corto_value_cast(&left, corto_bool_o, &out);
+    test_assert(ret == 0);
+    test_assert(out.kind == CORTO_VALUE);
+
+    type = corto_value_typeof(&out);
+    test_assert(type != NULL);
+    test_assert(type == corto_type(corto_bool_o));
+
+    ptr = corto_value_ptrof(&out);
+    test_assert(ptr != NULL);
     test_assertint(*ptr, FALSE);
+
 
     corto_value_free(&out);
 
@@ -811,4 +826,3 @@ void test_ValueCast_tc_castStringUint(
     corto_value_free(&out);
 
 }
-
