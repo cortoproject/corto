@@ -28,11 +28,13 @@ extern "C" {
 
 /** Is operator an assigment operator.
  */
+CORTO_EXPORT
 bool corto_operator_is_assignment(
     corto_operatorKind _operator);
 
 /** Is operator a conditional operator.
  */
+CORTO_EXPORT
 bool corto_operator_is_conditional(
      corto_operatorKind _operator);
 
@@ -41,6 +43,7 @@ bool corto_operator_is_conditional(
  * expressive, which will be used to determine the type of the binary
  * expression.
  */
+CORTO_EXPORT
 uint8_t corto_expr_type_score(
     corto_primitive t);
 
@@ -61,6 +64,7 @@ uint8_t corto_expr_type_score(
  * @param dst Type of the target expression.
  * @param dst_is_ref Is the target expression a reference.
  */
+CORTO_EXPORT
 corto_type corto_expr_typeof(
     corto_type src,
     corto_type dst,
@@ -88,6 +92,7 @@ corto_type corto_expr_typeof(
  * @param operand_type [out] Cast operands to this before applying operator.
  * @param expr_type [out] Type of the expression.
  */
+CORTO_EXPORT
 int16_t corto_expr_binary_typeof(
     corto_type left_type,
     corto_bool left_is_ref,

@@ -72,7 +72,7 @@ bool corto_operator_is_assignment(
         break;
     }
     return result;
- }
+}
 
 bool corto_operator_is_conditional(
      corto_operatorKind _operator)
