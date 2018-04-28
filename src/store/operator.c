@@ -89,7 +89,7 @@ void CORTO_NAME_BINARYOP(string,add)(
 
 static
 void CORTO_NAME_BINARYOP(string,assign)(
-    void* op1, 
+    void* op1,
     void* op2,
     void* result)
 {
@@ -296,6 +296,8 @@ void corto_ptr_operatorInit(void) {
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_OR, bool, cond_or);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_AND, bool, cond_and);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_ASSIGN, bool, assign);
+
+    CORTO_BINARY_OP_INIT(CORTO_CHARACTER, CORTO_WIDTH_8, CORTO_ASSIGN, char, assign);
 
     CORTO_INTEGER_OPS_INIT(CORTO_BINARY, CORTO_WIDTH_8, octet);
     CORTO_INTEGER_OPS_INIT(CORTO_BINARY, CORTO_WIDTH_WORD, word);
