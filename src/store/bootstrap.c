@@ -984,25 +984,23 @@ void corto_environment_init(void)
 {
 /* Only set environment variables if library is installed as corto package */
 
-    /* BAKE_HOME is where corto binaries are located */
-    if (!corto_getenv("BAKE_HOME") || !strlen(corto_getenv("BAKE_HOME"))) {
-        corto_setenv("BAKE_HOME", "/usr/local");
-    }
-
     /* If there is no home directory, default to /usr/local. This should be
      * avoided in development environments. */
     if (!corto_getenv("HOME") || !strlen(corto_getenv("HOME"))) {
         corto_setenv("HOME", "/usr/local");
     }
 
-    /* BAKE_TARGET is where a project will be built */
-    if (!corto_getenv("BAKE_TARGET") || !strlen(corto_getenv("BAKE_TARGET"))) {
-        corto_setenv("BAKE_TARGET", "~/.corto");
-    }
-
     /* BAKE_VERSION points to the current major-minor version */
     if (!corto_getenv("BAKE_VERSION")) {
         corto_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
+    }
+
+    if (!corto_getenv("BAKE_HOME")) {
+        corto_setenv("BAKE_HOME", ".");
+    }
+
+    if (!corto_getenv("BAKE_TARGET")) {
+        corto_setenv("BAKE_TARGET", ".");
     }
 
     corto_string enableBacktrace = corto_getenv("CORTO_LOG_BACKTRACE");
@@ -1086,6 +1084,11 @@ int corto_start(
     corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
     corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
 
+    /* If BAKE_HOME is not set to a public package repository, default to
+     * standalone mode */
+    char *BAKE_HOME = corto_getenv("BAKE_HOME");
+    bool standalone = !BAKE_HOME || !BAKE_HOME[0];
+
     /* Initialize operating system environment */
     corto_environment_init();
 
@@ -1099,7 +1102,12 @@ int corto_start(
         corto_getenv("BAKE_TARGET"),
         corto_getenv("BAKE_HOME"),
         corto_getenv("BAKE_VERSION"),
-        corto_get_build());
+        corto_get_build(),
+        standalone);
+
+    if (standalone) {
+        corto_trace("standalone mode enabled");
+    }
 
     /* Initialize security */
     corto_debug("init security");
