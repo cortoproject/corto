@@ -4,7 +4,6 @@
 int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
-
     corto_set_str(&corto_subscriber(this)->query.type, this->type);
     corto_string type =
       this->type ? this->type : "int32";

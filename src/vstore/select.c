@@ -206,10 +206,9 @@ int16_t corto_selectConvert(
     bool should_convert = false;
 
     if (!srcType && dst_value) {
-        corto_warning("mount '%s' provides value but no contentType",
+        corto_debug("mount '%s' provides value but no contentType",
             corto_fullpath(NULL,
                 data->mounts[data->stack[data->sp].currentMount - 1]));
-        goto error;
     }
 
     corto_fmt_opt src_opt = {
@@ -651,7 +650,8 @@ bool corto_selectIterMount(
             goto noMatch;
         }
 
-        char *parent = corto_selectRelativeParent(&corto_subscriber(mount)->query, data);
+        char *parent = corto_selectRelativeParent(
+            &corto_subscriber(mount)->query, data);
 
         if (strcmp(parent, local_parent)) {
             goto noMatch;
