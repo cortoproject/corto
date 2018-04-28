@@ -3,7 +3,7 @@
     "type": "package",
     "value": {
         "public": false,
-        "link": ["m"],
+        "lib": ["m"],
         "use": ["corto/test"]
     }
 }
