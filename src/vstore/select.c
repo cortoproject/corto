@@ -711,7 +711,7 @@ bool corto_selectIterMount(
     }
 
     /* Wrap history iterator in other iterator that converts contentType */
-    if (data->valueAllocated) {
+    if (data->valueAllocated && result->history.hasNext) {
         data->item.history.hasNext = corto_selectHistoryHasNext;
         data->item.history.next = corto_selectHistoryNext;
         data->item.history.release = corto_selectHistoryRelease;
