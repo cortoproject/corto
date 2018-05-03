@@ -321,7 +321,12 @@ void corto_ptr_operatorInit(void) {
     CORTO_STRING_OPS_INIT();
 }
 
-corto_int16 corto_ptr_unaryOp(corto_type type, corto_operatorKind operator, void* operand, void* result) {
+int16_t corto_ptr_unaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void* operand,
+    void* result)
+{
     if (type->kind == CORTO_PRIMITIVE) {
         corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
@@ -340,7 +345,22 @@ error:
     return -1;
 }
 
-corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, void *operand1, void *operand2, void *result) {
+int16_t corto_ptr_binaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void *operand1,
+    void *operand2,
+    void *result)
+{
+    /* Convenience: allow passing NULL to binaryOp for null values */
+    void *nullptr = NULL;
+    if (!operand1) {
+        operand1 = &nullptr;
+    }
+    if (!operand2) {
+        operand2 = &nullptr;
+    }
+    
     if (type->kind == CORTO_PRIMITIVE) {
         corto__binaryOperator impl = corto_binaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
