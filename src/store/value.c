@@ -26,7 +26,9 @@
 #include "copy_ser.h"
 #include "init_ser.h"
 
-corto_type corto_value_typeof(corto_value* val) {
+corto_type corto_value_typeof(
+    corto_value* val)
+{
     corto_type result;
 
     switch(val->kind) {
@@ -90,8 +92,10 @@ corto_type corto_value_typeof(corto_value* val) {
     return result;
 }
 
-corto_void* corto_value_ptrof(corto_value* val) {
-    corto_void* result;
+void* corto_value_ptrof(
+    corto_value* val)
+{
+    void* result;
     switch(val->kind) {
     case CORTO_OBJECT:
         result = val->is.object.o;
@@ -100,7 +104,11 @@ corto_void* corto_value_ptrof(corto_value* val) {
         result = val->is.base.v;
         break;
     case CORTO_LITERAL:
-        result = &val->is.literal.v;
+        if (val->is.literal.kind != CORTO_LITERAL_NULL) {
+            result = &val->is.literal.v;
+        } else {
+            result = NULL;
+        }
         break;
     case CORTO_VALUE:
     case CORTO_MEM:
@@ -126,7 +134,10 @@ corto_void* corto_value_ptrof(corto_value* val) {
     return result;
 }
 
-corto_int16 corto_value_ptrset(corto_value *val, void *ptr) {
+int16_t corto_value_ptrset(
+    corto_value *val,
+    void *ptr)
+{
     switch(val->kind) {
     case CORTO_OBJECT:
         val->is.object.o = ptr;
@@ -162,7 +173,9 @@ error:
     return -1;
 }
 
-corto_object corto_value_objectof(corto_value* val) {
+corto_object corto_value_objectof(
+    corto_value* val)
+{
     corto_object result;
 
     switch(val->kind) {
@@ -198,10 +211,15 @@ corto_object corto_value_objectof(corto_value* val) {
         result = NULL;
         break;
     }
+
     return result;
 }
 
-corto_int16 corto_value_memberExpr(corto_value *val, corto_string member, corto_value *out) {
+int16_t corto_value_memberExpr(
+    corto_value *val,
+    corto_string member,
+    corto_value *out)
+{
     corto_type t = corto_value_typeof(val);
     corto_object o = corto_value_objectof(val);
     void *ptr = corto_value_ptrof(val);
@@ -252,7 +270,10 @@ error:
     return -1;
 }
 
-corto_value _corto_value_object(corto_object o, corto_type t) {
+corto_value _corto_value_object(
+    corto_object o,
+    corto_type t)
+{
     corto_value val;
     val.kind = CORTO_OBJECT;
     val.parent = NULL;
@@ -265,7 +286,10 @@ corto_value _corto_value_object(corto_object o, corto_type t) {
     return val;
 }
 
-corto_value _corto_value_base(void *v, corto_type t) {
+corto_value _corto_value_base(
+    void *v,
+    corto_type t)
+{
     corto_value val;
     val.kind = CORTO_BASE;
     val.parent = NULL;
@@ -274,7 +298,10 @@ corto_value _corto_value_base(void *v, corto_type t) {
     return val;
 }
 
-corto_value _corto_value_value(void* v, corto_type t) {
+corto_value _corto_value_value(
+    void* v,
+    corto_type t)
+{
     corto_value val;
     val.kind = CORTO_VALUE;
     val.parent = NULL;
@@ -285,13 +312,20 @@ corto_value _corto_value_value(void* v, corto_type t) {
     return val;
 }
 
-corto_value _corto_value_mem(void* v, corto_type t) {
+corto_value _corto_value_mem(
+    void* v,
+    corto_type t)
+{
     corto_value val = _corto_value_value(v, t);
     val.kind = CORTO_MEM;
     return val;
 }
 
-corto_value corto_value_member(corto_object o, corto_member t, corto_void* v) {
+corto_value corto_value_member(
+    corto_object o,
+    corto_member t,
+    void* v)
+{
     corto_value val;
     val.kind = CORTO_MEMBER;
     val.parent = NULL;
@@ -300,7 +334,12 @@ corto_value corto_value_member(corto_object o, corto_member t, corto_void* v) {
     val.is.member.v = v;
     return val;
 }
-corto_value corto_value_constant(corto_object o, corto_constant* t, corto_void* v) {
+
+corto_value corto_value_constant(
+    corto_object o,
+    corto_constant* t,
+    void* v)
+{
     corto_value val;
     val.kind = CORTO_CONSTANT;
     val.parent = NULL;
@@ -309,7 +348,13 @@ corto_value corto_value_constant(corto_object o, corto_constant* t, corto_void* 
     val.is.constant.v = v;
     return val;
 }
-corto_value _corto_value_element(corto_object o, corto_type t, corto_uint32 index, corto_void* v) {
+
+corto_value _corto_value_element(
+    corto_object o,
+    corto_type t,
+    uint32_t index,
+    void* v)
+{
     corto_value val;
     val.kind = CORTO_ELEMENT;
     val.parent = NULL;
@@ -320,7 +365,13 @@ corto_value _corto_value_element(corto_object o, corto_type t, corto_uint32 inde
     return val;
 }
 
-corto_value _corto_value_mapElement(corto_object o, corto_type t, corto_type keyType, corto_void *key, corto_void* v) {
+corto_value _corto_value_mapElement(
+    corto_object o,
+    corto_type t,
+    corto_type keyType,
+    void *key,
+    void* v)
+{
     corto_value val;
     val.kind = CORTO_MAP_ELEMENT;
     val.parent = NULL;
@@ -332,7 +383,10 @@ corto_value _corto_value_mapElement(corto_object o, corto_type t, corto_type key
     return val;
 }
 
-corto_value corto_value_literal(corto_literalKind kind, corto_void* value) {
+corto_value corto_value_literal(
+    corto_literalKind kind,
+    void* value)
+{
     corto_value val;
     val.kind = CORTO_LITERAL;
     val.is.literal.kind = kind;
@@ -367,56 +421,48 @@ corto_value corto_value_literal(corto_literalKind kind, corto_void* value) {
     return val;
 }
 
-corto_value corto_value_bool(corto_bool value) {
+corto_value corto_value_bool(
+    corto_bool value)
+{
     return corto_value_literal(CORTO_LITERAL_BOOLEAN, &value);
 }
-corto_value corto_value_char(corto_char value) {
+
+corto_value corto_value_char(
+    corto_char value)
+{
     return corto_value_literal(CORTO_LITERAL_CHARACTER, &value);
 }
-corto_value corto_value_int(corto_uint64 value) {
+
+corto_value corto_value_int(
+    corto_uint64 value)
+{
     return corto_value_literal(CORTO_LITERAL_INTEGER, &value);
 }
-corto_value corto_value_uint(corto_uint64 value) {
+
+corto_value corto_value_uint(
+    corto_uint64 value)
+{
     return corto_value_literal(CORTO_LITERAL_UNSIGNED_INTEGER, &value);
 }
-corto_value corto_value_float(corto_float64 value) {
+
+corto_value corto_value_float(
+    corto_float64 value)
+{
     return corto_value_literal(CORTO_LITERAL_FLOATING_POINT, &value);
 }
-corto_value corto_value_string(corto_string value) {
+
+corto_value corto_value_string(
+    corto_string value)
+{
     return corto_value_literal(CORTO_LITERAL_STRING, &value);
 }
 
-void corto_valueSetValue(corto_value* val, corto_void* v) {
-    switch(val->kind) {
-    case CORTO_OBJECT:
-        val->is.object.o = v; /* Dangerous, but allowed */
-        break;
-    case CORTO_BASE:
-        val->is.base.v = v;
-        break;
-    case CORTO_MEMBER:
-        val->is.member.v = v;
-        break;
-    case CORTO_CONSTANT:
-        val->is.constant.v = v;
-        break;
-    case CORTO_ELEMENT:
-        val->is.element.v = v;
-        break;
-    case CORTO_MAP_ELEMENT:
-        val->is.mapElement.v = v;
-        break;
-    case CORTO_VALUE:
-    case CORTO_MEM:
-        val->is.value.v = v; // ??
-        break;
-    default:
-        corto_assert(0, "corto_valueSetValue: invalid valueKind %d.", val->kind);
-        break;
-    }
+corto_value corto_value_null(void)
+{
+    return corto_value_literal(CORTO_LITERAL_NULL, NULL);
 }
 
-corto_int16 corto_value_unaryOp(
+int16_t corto_value_unaryOp(
     corto_operatorKind _operator,
     corto_value *value,
     corto_value *result)
@@ -443,7 +489,7 @@ error:
     return -1;
 }
 
-corto_int16 _corto_value_cast(
+int16_t _corto_value_cast(
     corto_value *in,
     corto_type dstType,
     corto_value *out)
@@ -465,13 +511,13 @@ error:
     return -1;
 }
 
-corto_int16 corto_value_binaryOp(
+int16_t corto_value_binaryOp(
     corto_operatorKind _operator,
     corto_value *left,
     corto_value *right,
     corto_value *result)
 {
-    corto_value dummy = corto_value_empty();
+    corto_value dummy = corto_value_init();
     corto_uint64 *v = &dummy.is.value.storage;
     corto_type leftType = corto_value_typeof(left);
     corto_type rightType = corto_value_typeof(right);
@@ -496,7 +542,7 @@ corto_int16 corto_value_binaryOp(
         }
     }
 
-    corto_value leftCast = corto_value_empty(), rightCast = corto_value_empty();
+    corto_value leftCast = corto_value_init(), rightCast = corto_value_init();
     if (leftType != operType) {
         if (corto_value_cast(left, operType, &leftCast)) {
             goto error;
@@ -534,14 +580,16 @@ error:
     return -1;
 }
 
-corto_value corto_value_empty(void) {
+corto_value corto_value_init(void) {
     corto_value v;
     memset(&v, 0, sizeof(corto_value));
     v.kind = CORTO_VALUE;
     return v;
 }
 
-void corto_value_free(corto_value *v) {
+void corto_value_free(
+    corto_value *v)
+{
     corto_type t = NULL;
     switch(v->kind) {
     case CORTO_LITERAL:
@@ -562,7 +610,7 @@ void corto_value_free(corto_value *v) {
             }
         }
     }
-    *v = corto_value_empty();
+    *v = corto_value_init();
 }
 
 int16_t corto_value_compare(
@@ -586,7 +634,7 @@ int16_t corto_value_copy(
 {
     corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
-    corto_int16 result;
+    int16_t result;
     corto_bool newObject = FALSE;
 
     if (!corto_value_ptrof(dst)) {
@@ -600,6 +648,149 @@ int16_t corto_value_copy(
 
     if (newObject) {
         corto_define(corto_value_ptrof(dst));
+    }
+
+    return result;
+}
+
+int16_t corto_value_to_boolean(
+    corto_value *value,
+    bool *out)
+{
+    corto_value result = corto_value_init();
+
+    if (corto_value_cast(value, corto_bool_o, &result)) {
+        return -1;
+    }
+
+    *out = *(bool*)corto_value_ptrof(&result);
+
+    return 0;
+}
+
+int16_t corto_value_to_character(
+    corto_value *value,
+    char *out)
+{
+    corto_value result = corto_value_init();
+
+    if (corto_value_cast(value, corto_char_o, &result)) {
+        return -1;
+    }
+
+    *out = *(char*)corto_value_ptrof(&result);
+
+    return 0;
+}
+
+int16_t corto_value_to_int(
+    corto_value *value,
+    int64_t *out)
+{
+    corto_value result = corto_value_init();
+
+    if (corto_value_cast(value, corto_int64_o, &result)) {
+        return -1;
+    }
+
+    *out = *(int64_t*)corto_value_ptrof(&result);
+
+    return 0;
+}
+
+int16_t corto_value_to_uint(
+    corto_value *value,
+    uint64_t *out)
+{
+    corto_value result = corto_value_init();
+
+    if (corto_value_cast(value, corto_uint64_o, &result)) {
+        return -1;
+    }
+
+    *out = *(uint64_t*)corto_value_ptrof(&result);
+
+    return 0;
+}
+
+int16_t corto_value_to_float(
+    corto_value *value,
+    double *out)
+{
+    corto_value result = corto_value_init();
+
+    if (corto_value_cast(value, corto_float64_o, &result)) {
+        return -1;
+    }
+
+    *out = *(double*)corto_value_ptrof(&result);
+
+    return 0;
+}
+
+int16_t corto_value_to_string(
+    corto_value *value,
+    char **out)
+{
+    corto_value result = corto_value_init();
+
+    if (corto_value_cast(value, corto_string_o, &result)) {
+        return -1;
+    }
+
+    *out = *(char**)corto_value_ptrof(&result);
+
+    return 0;
+}
+
+int16_t corto_value_unit(
+    corto_value *value,
+    char *unit)
+{
+    if (value->kind == CORTO_VALUE) {
+        value->is.value.unit = unit;
+    } else if (value->kind == CORTO_LITERAL) {
+        value->is.literal.unit = unit;
+    } else {
+        corto_throw("cannot set unit of non-literal value");
+        goto error;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+char* corto_value_unitof(
+    corto_value *value)
+{
+    char *result = NULL;
+
+    switch(value->kind) {
+    case CORTO_OBJECT:
+    case CORTO_BASE:
+    case CORTO_MEM:
+    case CORTO_CONSTANT:
+    case CORTO_ELEMENT:
+    case CORTO_MAP_ELEMENT:
+        result = NULL;
+        break;
+    case CORTO_LITERAL:
+        result = value->is.literal.unit;
+        break;
+    case CORTO_VALUE:
+        result = value->is.value.unit;
+        break;
+    case CORTO_MEMBER:
+        if (value->is.member.t->unit) {
+            result = value->is.member.t->unit->symbol;
+        }
+        break;
+    default:
+        corto_critical(
+            "corto_value_unitof: invalid corto_valueKind (%d)", value->kind);
+        result = NULL;
+        break;
     }
 
     return result;

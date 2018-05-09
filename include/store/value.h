@@ -101,6 +101,7 @@ struct corto_value {
             corto_object o;
             corto_type t;
             void* v;
+            char* unit;
             corto_uint64 storage; /* Optional storage for a value */
         } value;
         struct {
@@ -113,6 +114,7 @@ struct corto_value {
                 corto_float64 _floating_point;
                 corto_string _string;
             } v;
+            char* unit;
         } literal;
         struct {
             corto_object o;
@@ -219,7 +221,7 @@ int16_t corto_value_memberExpr(
 
 /** Perform unary operator on a corto_value.
  * The result corto_value has to at least be an initialized corto_value (use
- * corto_value_empty for new values). The value does not have to be of a
+ * corto_value_init for new values). The value does not have to be of a
  * matching type. If the result corto_value owned any resources, they will be
  * deallocated / released before assigning the new value.
  *
@@ -237,7 +239,7 @@ int16_t corto_value_unaryOp(
 
 /** Perform binary operator on two corto_values.
  * The result corto_value has to at least be an initialized corto_value (use
- * corto_value_empty for new values). The value does not have to be of a
+ * corto_value_init for new values). The value does not have to be of a
  * matching type. If the result corto_value owned any resources, they will be
  * deallocated / released before assigning the new value.
  *
@@ -276,7 +278,7 @@ void corto_value_free(
  * @return A corto_value instance of kind CORTO_VALUE with ptr set to NULL.
  */
 CORTO_EXPORT
-corto_value corto_value_empty(void);
+corto_value corto_value_init(void);
 
 /** Initialize a new corto_value instance holding an object.
  * A value representing an object in the corto object store.
@@ -485,6 +487,93 @@ corto_value corto_value_float(
 CORTO_EXPORT
 corto_value corto_value_string(
     char *value);
+
+/** Initialize a new corto_value instance holding a null literal.
+ * @return A new corto_value instance.
+ */
+CORTO_EXPORT
+corto_value corto_value_null(void);
+
+/** Set the unit of a value.
+ * This function only works for literal values.
+ *
+ * @param value A value.
+ * @param unit The unit to assign to the value.
+ * @return zero if success, nonzero if failed.
+ */
+CORTO_EXPORT
+int16_t corto_value_unit(
+    corto_value *value,
+    char *unit);
+
+/** Get the unit for a value.
+ *
+ * @param value A value.
+ * @return The unit string. NULL if value does not have a unit.
+ */
+CORTO_EXPORT
+char* corto_value_unitof(
+    corto_value *value);
+
+/** Get value as bool.
+ *
+ * @param value A value value.
+ * @return An integer value.
+ */
+CORTO_EXPORT
+int16_t corto_value_to_boolean(
+    corto_value *value,
+    bool *out);
+
+/** Get value as character.
+ *
+ * @param value A value value.
+ * @return An integer value.
+ */
+CORTO_EXPORT
+int16_t corto_value_to_character(
+    corto_value *value,
+    char *out);
+
+/** Get value as signed integer.
+ *
+ * @param value A value value.
+ * @return An integer value.
+ */
+CORTO_EXPORT
+int16_t corto_value_to_int(
+    corto_value *value,
+    int64_t *out);
+
+/** Get value as signed integer.
+ *
+ * @param value A value value.
+ * @return An integer value.
+ */
+CORTO_EXPORT
+int16_t corto_value_to_uint(
+    corto_value *value,
+    uint64_t *out);
+
+/** Get value as signed integer.
+ *
+ * @param value A value value.
+ * @return An integer value.
+ */
+CORTO_EXPORT
+int16_t corto_value_to_float(
+    corto_value *value,
+    double *out);
+
+/** Get value as signed integer.
+ *
+ * @param value A value value.
+ * @return An integer value.
+ */
+CORTO_EXPORT
+int16_t corto_value_to_string(
+    corto_value *value,
+    char **out);
 
 int16_t corto_binaryExpr_getType(
     corto_type leftType,
