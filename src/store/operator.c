@@ -37,21 +37,40 @@ void CORTO_NAME_UNARYOP(type,name)(void* op, void* result) {\
 }
 
 #define CORTO_NUMERIC_BINARY_OP(type, op, name)\
-static void CORTO_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
+static \
+void CORTO_NAME_BINARYOP(type,name)(\
+    void* op1,\
+    void* op2,\
+    void* result)\
+{\
     *(corto_##type*)result = *(corto_##type*)op1 op *(corto_##type*)op2;\
 }
 
 #define CORTO_NUMERIC_COND_UNARY_OP(type, op, name)\
-static void CORTO_NAME_UNARYOP(type,name)(void* op, void* result) {\
+static \
+void CORTO_NAME_UNARYOP(type,name)(\
+    void* op,\
+    void* result)\
+{\
     *(corto_bool*)result = op *(corto_##type*)op;\
 }
 
 #define CORTO_NUMERIC_COND_BINARY_OP(type, op, name)\
-static void CORTO_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
+static \
+void CORTO_NAME_BINARYOP(type,name)(\
+    void* op1,\
+    void* op2,\
+    void* result)\
+{\
     *(corto_bool*)result = *(corto_##type*)op1 op *(corto_##type*)op2;\
 }
 
-static void CORTO_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* result) {
+static
+void CORTO_NAME_BINARYOP(string, cond_eq)(
+    void* op1,
+    void* op2,
+    void* result)
+{
     char *str1 = *(char**)op1, *str2 = *(char**)op2;
     if (!str1 || !str2) {
         if (str1 == str2) {
@@ -63,8 +82,9 @@ static void CORTO_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* resu
         *(bool*)result = !strcmp(str1, str2);
     }
 }
+
 static
-void CORTO_NAME_BINARYOP(string,cond_neq)(
+void CORTO_NAME_BINARYOP(string, cond_neq)(
     void* op1,
     void* op2,
     void* result)
@@ -74,7 +94,45 @@ void CORTO_NAME_BINARYOP(string,cond_neq)(
 }
 
 static
-void CORTO_NAME_BINARYOP(string,add)(
+void CORTO_NAME_BINARYOP(string, cond_and)(
+    void* op1,
+    void* op2,
+    void* result)
+{
+    if (!op1 || !op2 || !*(char**)op1 || !*(char**)op2) {
+        *(bool*)result = false;
+    } else {
+        *(bool*)result = true;
+    }
+}
+
+static
+void CORTO_NAME_BINARYOP(string, cond_or)(
+    void* op1,
+    void* op2,
+    void* result)
+{
+    if (op1 || op2 || *(char**)op1 || *(char**)op2) {
+        *(bool*)result = true;
+    } else {
+        *(bool*)result = false;
+    }
+}
+
+static
+void CORTO_NAME_UNARYOP(string, cond_not)(
+    void* op,
+    void* result)
+{
+    if (op || *(char**)op) {
+        *(bool*)result = false;
+    } else {
+        *(bool*)result = true;
+    }
+}
+
+static
+void CORTO_NAME_BINARYOP(string, add)(
     void* op1,
     void* op2,
     void* result)
@@ -88,7 +146,7 @@ void CORTO_NAME_BINARYOP(string,add)(
 }
 
 static
-void CORTO_NAME_BINARYOP(string,assign)(
+void CORTO_NAME_BINARYOP(string, assign)(
     void* op1,
     void* op2,
     void* result)
@@ -187,6 +245,9 @@ CORTO_NUMERIC_BINARY_OP(bool, !=, cond_neq)
 CORTO_NUMERIC_BINARY_OP(bool, ||, cond_or)
 CORTO_NUMERIC_BINARY_OP(bool, &&, cond_and)
 CORTO_NUMERIC_BINARY_OP(bool, =, assign)
+CORTO_NUMERIC_BINARY_OP(bool, &, and)
+CORTO_NUMERIC_BINARY_OP(bool, |, or)
+CORTO_NUMERIC_BINARY_OP(bool, ^, xor)
 
 /* Integer operator implementations */
 CORTO_INTEGER_OPS(octet)
@@ -212,6 +273,10 @@ CORTO_FLOAT_OPS(float64)
 
 #define CORTO_STRING_OP_INIT(operatorKind, name)\
     corto_binaryOps[corto__primitive_convertId(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_BINARYOP(string, name);
+
+#define CORTO_STRING_UNARY_OP_INIT(operatorKind, name)\
+    corto_unaryOps[corto__primitive_convertId(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_UNARYOP(string, name);
+
 
 #define CORTO_INTEGER_UNARY_OPS_INIT(typeKind, typeWidth, type)\
 CORTO_UNARY_OP_INIT(typeKind, typeWidth, CORTO_INC, type, inc)\
@@ -286,6 +351,9 @@ CORTO_FLOAT_BINARY_OPS_INIT(typeKind, typeWidth, type)
 #define CORTO_STRING_OPS_INIT()\
 CORTO_STRING_OP_INIT(CORTO_COND_EQ, cond_eq)\
 CORTO_STRING_OP_INIT(CORTO_COND_NEQ, cond_neq)\
+CORTO_STRING_OP_INIT(CORTO_COND_AND, cond_and)\
+CORTO_STRING_OP_INIT(CORTO_COND_OR, cond_or)\
+CORTO_STRING_UNARY_OP_INIT(CORTO_COND_NOT, cond_not)\
 CORTO_STRING_OP_INIT(CORTO_ASSIGN, assign)\
 CORTO_STRING_OP_INIT(CORTO_ADD, add)
 
@@ -296,6 +364,9 @@ void corto_ptr_operatorInit(void) {
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_OR, bool, cond_or);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_AND, bool, cond_and);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_ASSIGN, bool, assign);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_AND, bool, and);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_OR, bool, or);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_XOR, bool, xor);
 
     CORTO_BINARY_OP_INIT(CORTO_CHARACTER, CORTO_WIDTH_8, CORTO_ASSIGN, char, assign);
 
@@ -360,7 +431,7 @@ int16_t corto_ptr_binaryOp(
     if (!operand2) {
         operand2 = &nullptr;
     }
-    
+
     if (type->kind == CORTO_PRIMITIVE) {
         corto__binaryOperator impl = corto_binaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
