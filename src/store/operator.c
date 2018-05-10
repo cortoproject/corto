@@ -99,7 +99,7 @@ void CORTO_NAME_BINARYOP(string, cond_and)(
     void* op2,
     void* result)
 {
-    if (!op1 || !op2 || !*(char**)op1 || !*(char**)op2) {
+    if (!*(char**)op1 || !*(char**)op2) {
         *(bool*)result = false;
     } else {
         *(bool*)result = true;
@@ -112,7 +112,7 @@ void CORTO_NAME_BINARYOP(string, cond_or)(
     void* op2,
     void* result)
 {
-    if (op1 || op2 || *(char**)op1 || *(char**)op2) {
+    if (*(char**)op1 || *(char**)op2) {
         *(bool*)result = true;
     } else {
         *(bool*)result = false;
@@ -124,7 +124,7 @@ void CORTO_NAME_UNARYOP(string, cond_not)(
     void* op,
     void* result)
 {
-    if (op || *(char**)op) {
+    if (op && *(char**)op) {
         *(bool*)result = false;
     } else {
         *(bool*)result = true;
@@ -398,6 +398,16 @@ int16_t corto_ptr_unaryOp(
     void* operand,
     void* result)
 {
+    void *nullptr = NULL;
+    if (!operand) {
+        operand = &nullptr;
+    }
+
+    if (!type && !*(char**)operand) {
+        /* operand is a 'null' */
+        type = (corto_type)corto_string_o;
+    }
+
     if (type->kind == CORTO_PRIMITIVE) {
         corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
@@ -430,6 +440,11 @@ int16_t corto_ptr_binaryOp(
     }
     if (!operand2) {
         operand2 = &nullptr;
+    }
+
+    if (!type && !*(char**)operand1 && !*(char**)operand2) {
+        /* operand is a 'null' */
+        type = (corto_type)corto_string_o;
     }
 
     if (type->kind == CORTO_PRIMITIVE) {

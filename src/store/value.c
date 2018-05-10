@@ -498,13 +498,17 @@ int16_t _corto_value_cast(
     void *src = corto_value_ptrof(in);
     corto_type srcType = corto_value_typeof(in);
 
-    if (corto_ptr_cast(srcType, src, dstType, dst)) {
-        goto error;
-    }
+    if (!src && dstType == (corto_type)corto_bool_o) {
+        *out = corto_value_bool(false);
+    } else {
+        if (corto_ptr_cast(srcType, src, dstType, dst)) {
+            goto error;
+        }
 
-    out->kind = CORTO_VALUE;
-    out->is.value.v = (void*)&out->is.value.storage;
-    out->is.value.t = dstType;
+        out->kind = CORTO_VALUE;
+        out->is.value.v = (void*)&out->is.value.storage;
+        out->is.value.t = dstType;
+    }
 
     return 0;
 error:
@@ -543,12 +547,19 @@ int16_t corto_value_binaryOp(
     }
 
     corto_value leftCast = corto_value_init(), rightCast = corto_value_init();
+    if (!leftType) {
+        leftType = operType;
+    } else
     if (leftType != operType) {
         if (corto_value_cast(left, operType, &leftCast)) {
             goto error;
         }
         lPtr = &leftCast;
     }
+
+    if (!rightType) {
+        rightType = operType;
+    } else
     if (rightType != operType) {
         if (corto_value_cast(right, operType, &rightCast)) {
             goto error;

@@ -105,7 +105,7 @@ corto_type corto_expr_typeof(
     corto_type result = src;
 
     if (!src && !dst) {
-        corto_throw("both source and destination type are NULL");
+        /* Valid scenario: null && null */
         return NULL;
     }
 
@@ -128,8 +128,8 @@ corto_type corto_expr_typeof(
                     /* If dst is a string, interpret null as string */
                     result = corto_type(corto_string_o);
                 } else if (kind == CORTO_BOOLEAN) {
-                    /* If dst is a bool, interpret null as an object */
-                    result = corto_type(corto_object_o);
+                    /* If dst is a bool, interpret null as an string */
+                    result = corto_type(corto_string_o);
                 } else {
                     /* Can't assign null to other kinds of primitives */
                     goto error;
@@ -172,18 +172,21 @@ int16_t corto_expr_binary_typeof(
 
     if (corto_operator_is_conditional(_operator)) {
         *expr_type = corto_type(corto_bool_o);
+    } else {
+        *expr_type = NULL;
     }
 
-    if (!(left_type = corto_expr_typeof(left_type, NULL, FALSE))) {
-        goto error;
-    }
-
-    if (!(right_type = corto_expr_typeof(right_type, left_type, left_is_ref))) {
-        goto error;
-    }
+    left_type = corto_expr_typeof(left_type, NULL, FALSE);
+    right_type = corto_expr_typeof(right_type, left_type, left_is_ref);
 
     if (!left_type) {
         left_type = right_type;
+    }
+
+    /* NULL input, NULL output */
+    if (!right_type) {
+        *operand_type = NULL;
+        return 0;
     }
 
     /* If types are not scoped, verify whether they're equal */
