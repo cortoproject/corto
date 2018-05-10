@@ -137,12 +137,29 @@ void CORTO_NAME_BINARYOP(string, add)(
     void* op2,
     void* result)
 {
-    corto_uint32 len = strlen(*(corto_string*)op1) + strlen(*(corto_string*)op2);
+    char *str1 = *(char**)op1;
+    char *str2 = *(char**)op2;
+    uint32_t len = 0;
+
+    if (str1) len += strlen(str1);
+    if (str2) len += strlen(str2);
+
     if (*(corto_string*)result) {
         corto_dealloc(*(corto_string*)result);
     }
-    *(corto_string*)result = corto_alloc(len + 1);
-    sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
+
+    if (str1 || str2) {
+        *(char**)result = corto_alloc(len + 1);
+        if (str1 && str2) {
+            sprintf(*(char**)result, "%s%s", str1, str2);
+        } else if (str1) {
+            strcpy(*(char**)result, str1);
+        } else {
+            strcpy(*(char**)result, str2);
+        }
+    } else {
+        *(char**)result = NULL;
+    }
 }
 
 static
