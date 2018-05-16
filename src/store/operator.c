@@ -21,6 +21,7 @@
 
 #include <corto/corto.h>
 #include "src/lang/primitive.h"
+#include "object.h"
 
 typedef void (*corto__unaryOperator)(void* operand, void* result);
 typedef void (*corto__binaryOperator)(void* operand1, void* operand2, void* result);
@@ -443,12 +444,14 @@ error:
     return -1;
 }
 
-int16_t corto_ptr_binaryOp(
+static
+int16_t corto_intern_binaryOp(
     corto_type type,
     corto_operatorKind operator,
     void *operand1,
     void *operand2,
-    void *result)
+    void *result,
+    bool always_copy)
 {
     /* Convenience: allow passing NULL to binaryOp for null values */
     void *nullptr = NULL;
@@ -460,12 +463,13 @@ int16_t corto_ptr_binaryOp(
     }
 
     if (!type && !*(char**)operand1 && !*(char**)operand2) {
-        /* operand is a 'null' */
+        /* both operands are 'null' */
         type = (corto_type)corto_string_o;
     }
 
     if (type->kind == CORTO_PRIMITIVE) {
-        corto__binaryOperator impl = corto_binaryOps[corto_primitive(type)->convertId][operator];
+        corto__binaryOperator impl =
+            corto_binaryOps[corto_primitive(type)->convertId][operator];
         if (impl) {
             impl(operand1, operand2, result);
         } else {
@@ -474,17 +478,52 @@ int16_t corto_ptr_binaryOp(
               corto_fullpath(NULL, type));
             goto error;
         }
+
     } else if (operator == CORTO_ASSIGN) {
-        corto_ptr_copy(operand1, type, operand2);
-        if (result && result != operand1) {
-            corto_ptr_copy(result, type, operand1);
+        if (!always_copy && type->reference) {
+            corto_set_ref(operand1, *(corto_object*)operand2);
+            if (result && result != operand1) {
+                *(corto_object*)result = *(corto_object*)operand1;
+            }
+        } else {
+            corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+            corto_copy_ser_t data;
+            data.value = corto_value_mem(operand1, type);
+            corto_value src = corto_value_mem(operand2, type);
+            corto_walk_value(&s, &src, &data);
+
+            if (result && result != operand1) {
+                *(void**)result = operand1;
+            }
         }
     } else {
-        corto_throw("invalid operand for non-scalar type");
+        corto_throw("invalid operator for non-primitive type");
         goto error;
     }
 
     return 0;
 error:
     return -1;
+}
+
+int16_t corto_ptr_binaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void *operand1,
+    void *operand2,
+    void *result)
+{
+    return corto_intern_binaryOp(
+        type, operator, operand1, operand2, result, false);
+}
+
+int16_t corto_mem_binaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void *operand1,
+    void *operand2,
+    void *result)
+{
+    return corto_intern_binaryOp(
+        type, operator, operand1, operand2, result, true);
 }

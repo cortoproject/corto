@@ -97,16 +97,19 @@ bool corto_operator_is_conditional(
     return result;
 }
 
-corto_type corto_expr_typeof(
+int16_t corto_expr_typeof(
     corto_type src,
     corto_type dst,
-    bool dst_is_ref)
+    bool src_is_ref,
+    bool dst_is_ref,
+    corto_type *type_out)
 {
     corto_type result = src;
 
     if (!src && !dst) {
         /* Valid scenario: null && null */
-        return NULL;
+        *type_out = NULL;
+        return 0;
     }
 
     if (!src) {
@@ -132,25 +135,43 @@ corto_type corto_expr_typeof(
                     result = corto_type(corto_string_o);
                 } else {
                     /* Can't assign null to other kinds of primitives */
+                    corto_throw("cannot assign null to value of type '%s'",
+                        corto_fullpath(NULL, dst));
                     goto error;
                 }
+            } else if (dst->kind == CORTO_COLLECTION &&
+                (corto_collection(dst)->kind == CORTO_LIST ||
+                corto_collection(dst)->kind == CORTO_MAP))
+            {
+                result = dst;
             } else {
                 /* Can't assign null to other values */
+                corto_throw("cannot assign null to value of type '%s'",
+                    corto_fullpath(NULL, dst));
                 goto error;
             }
         } else {
             /* This and dst don't have a type. Don't know what to do */
+            corto_throw("cannot derive type, source and target are 'null'");
             goto error;
         }
 
     } else if ((dst && (dst->kind == CORTO_VOID) && dst->reference)) {
-        result = corto_object_o;
+        if (src_is_ref || (src && src->reference)) {
+            result = corto_object_o;
+        } else {
+            corto_throw(
+                "cannot assign non-reference value to '%s'",
+                    corto_fullpath(NULL, dst));
+            goto error;
+        }
     }
 
-    return result;
+    *type_out = result;
+
+    return 0;
 error:
-    corto_throw("failed to derive type");
-    return NULL;
+    return -1;
 }
 
 int16_t corto_expr_binary_typeof(
@@ -176,8 +197,14 @@ int16_t corto_expr_binary_typeof(
         *expr_type = NULL;
     }
 
-    left_type = corto_expr_typeof(left_type, NULL, FALSE);
-    right_type = corto_expr_typeof(right_type, left_type, left_is_ref);
+    corto_try (corto_expr_typeof(
+        left_type, NULL, left_is_ref, FALSE, &left_type), NULL);
+
+    corto_catch();
+
+    corto_try (corto_expr_typeof(
+        right_type, left_type, right_is_ref, left_is_ref, &right_type), NULL);
+
 
     if (!left_type) {
         left_type = right_type;
@@ -273,6 +300,47 @@ int16_t corto_expr_binary_typeof(
     }
     if (!*expr_type) {
         *expr_type = *operand_type;
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
+int16_t corto_expr_is_ref(
+    corto_value_kind kind,
+    corto_value_ref_kind ref_kind,
+    corto_type type,
+    bool *result)
+{
+    if (ref_kind == CORTO_BY_REFERENCE) {
+        if (kind == CORTO_OBJECT) {
+            *result = true;
+        } else if (type && type->reference) {
+            *result = true;
+        } else if (!type && kind == CORTO_LITERAL) {
+            *result = true; /* null literal */
+        } else {
+            corto_throw(
+            "cannot take reference of non-reference expression of type '%s'",
+                corto_fullpath(NULL, type));
+            goto error;
+        }
+    } else if (ref_kind == CORTO_BY_TYPE) {
+        if (type && type->reference) {
+            *result = true;
+        } else if (type && type->kind == CORTO_VOID) {
+            *result = true; /* void values can't be used by value */
+        } else {
+            *result = false;
+        }
+    } else if (ref_kind == CORTO_BY_VALUE) {
+        if (type && type->kind == CORTO_VOID && !type->reference) {
+            corto_throw("cannot take value of void value");
+            goto error;
+        } else {
+            *result = false;
+        }
     }
 
     return 0;

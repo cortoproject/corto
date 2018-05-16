@@ -36,7 +36,7 @@
  *
  * The second array is called `metaprogram` and contains callbacks that are
  * invoked when walking over a certain kind of meta-structure, expressed by
- * corto_valueKind (OBJECT, MEMBER, ELEMENT, etc).
+ * corto_value_kind (OBJECT, MEMBER, ELEMENT, etc).
  *
  * The walk API is recursively implemented, which means that to visit deeper
  * levels of nesting, a walk method has to be invoked recursively. Scalar values

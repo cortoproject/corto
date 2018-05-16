@@ -60,7 +60,7 @@ corto_int16 corto_ser_initCollection(
 {
     corto_collection t = (corto_collection)corto_value_typeof(v);
     void *o = corto_value_ptrof(v);
-    corto_member m = v->is.member.t;
+    corto_member m = v->is.member.member;
 
     switch(t->kind) {
         case CORTO_ARRAY:
@@ -102,7 +102,7 @@ corto_int16 corto_ser_initObservable(
     corto_value* v,
     void* userData)
 {
-    corto_member m = v->is.member.t;
+    corto_member m = v->is.member.member;
 
     /* Initialize member to a new object of member type */
     corto_type t = corto_value_typeof(v);
@@ -129,7 +129,7 @@ corto_int16 corto_ser_initMember(
     corto_value* v,
     void* userData)
 {
-    corto_member m = v->is.member.t;
+    corto_member m = v->is.member.member;
     corto_type t = m->type;
 
     if (m->_default) {

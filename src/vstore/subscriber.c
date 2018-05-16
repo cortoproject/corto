@@ -193,7 +193,7 @@ void corto_fmtcache_deinit(
 
     /* If src_handle is provided, the object is an intermediate object */
     if (this->o && this->src_handle) {
-        if (this->v.kind == CORTO_MEM) {
+        if (this->v.ref_kind == CORTO_BY_VALUE) {
             corto_mem_free(this->o);
         } else if (this->v.kind == CORTO_OBJECT) {
             corto_release(this->o);

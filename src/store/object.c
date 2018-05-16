@@ -4963,7 +4963,7 @@ int corto_compare(
     corto_compare_ser_t data;
     corto_walk_opt s;
 
-    data.value = corto_value_value(o2, corto_typeof(o2));
+    data.value = corto_value_ptr(o2, corto_typeof(o2));
 
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 

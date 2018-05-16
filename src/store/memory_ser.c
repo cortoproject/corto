@@ -149,7 +149,7 @@ corto_int16 corto_ser_freeReference(corto_walk_opt* s, corto_value* v, void* use
 }
 
 corto_int16 corto_ser_freeMember(corto_walk_opt* s, corto_value* v, void* userData) {
-    corto_member m = v->is.member.t;
+    corto_member m = v->is.member.member;
     void *ptr = corto_value_ptrof(v);
 
     corto_walk_value(s, v, userData);

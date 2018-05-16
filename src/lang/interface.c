@@ -832,7 +832,7 @@ int16_t corto_interface_findTag_member(
     void *userData)
 {
     struct corto_interface_findTag_t *data = userData;
-    corto_member m = info->is.member.t;
+    corto_member m = info->is.member.member;
 
     if (corto_ll_count(m->tags)) {
         if (corto_ll_hasObject(m->tags, data->tag)) {

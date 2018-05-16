@@ -22,6 +22,8 @@
 #ifndef CORTO_EXPR_H
 #define CORTO_EXPR_H
 
+#include <corto/corto.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,10 +67,12 @@ uint8_t corto_expr_type_score(
  * @param dst_is_ref Is the target expression a reference.
  */
 CORTO_EXPORT
-corto_type corto_expr_typeof(
+int16_t corto_expr_typeof(
     corto_type src,
     corto_type dst,
-    bool dst_is_ref);
+    bool src_is_ref,
+    bool dst_is_ref,
+    corto_type *type_out);
 
 /** Determine type of a binary expression.
  * The type of a binary expression is determined by the types of its operands
@@ -101,6 +105,14 @@ int16_t corto_expr_binary_typeof(
     corto_operatorKind _operator,
     corto_type *operand_type,
     corto_type *expr_type);
+
+
+CORTO_EXPORT
+int16_t corto_expr_is_ref(
+    corto_value_kind kind,
+    corto_value_ref_kind ref_kind,
+    corto_type type,
+    bool *result);
 
 #ifdef __cplusplus
 }

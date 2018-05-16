@@ -540,8 +540,29 @@ void corto_ptr_castInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, void *to) {
+int16_t _corto_ptr_cast(
+    corto_type fromType,
+    void *from,
+    corto_type toType,
+    void *to)
+{
     corto_conversion c;
+
+    if (fromType && !from) {
+        corto_throw("cannot cast NULL pointer of type '%s'",
+            corto_fullpath(NULL, fromType));
+        goto error;
+    }
+
+    if (!fromType) {
+        corto_throw("cannot cast to NULL type");
+        goto error;
+    }
+
+    if (!to) {
+        corto_throw("destination pointer is NULL");
+        goto error;
+    }
 
     if (fromType->reference) {
         if (toType->reference) {

@@ -37,8 +37,8 @@ int16_t corto_ser_any(
         value->value = corto_calloc(corto_type_sizeof(ptr->type));
     }
 
-    v = corto_value_value(ptr->value, ptr->type);
-    privateData.value = corto_value_value(value->value, value->type);
+    v = corto_value_ptr(ptr->value, ptr->type);
+    privateData.value = corto_value_ptr(value->value, value->type);
 
     /* Set base of privateData. Because we're reusing the serializer, the
      * construct callback won't be called again */
@@ -384,7 +384,7 @@ int16_t corto_ser_collection(
                  * while providing a sequence type. */
                 array2 = corto_collection_resizeArray(corto_collection(t2), dst, size1);
 
-                privateData.value = corto_value_value(array2, corto_type(t2));
+                privateData.value = corto_value_ptr(array2, corto_type(t2));
                 privateData.base = array1;
                 result = corto_walk_elements(s, info, &privateData);
             } else if (dstList) {
@@ -440,7 +440,7 @@ int16_t corto_ser_member(
     void *userData)
 {
     corto_copy_ser_t *data = userData;
-    corto_member m = info->is.member.t;
+    corto_member m = info->is.member.member;
 
     if (m->modifiers & CORTO_OPTIONAL) {
         void *ptr = corto_value_ptrof(info);
@@ -455,7 +455,7 @@ int16_t corto_ser_member(
             }
 
             corto_copy_ser_t privateData = {
-                .value = corto_value_value(valueOptional, m->type),
+                .value = corto_value_ptr(valueOptional, m->type),
                 .base = ptrOptional
             };
 
