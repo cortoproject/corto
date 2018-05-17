@@ -253,3 +253,25 @@ test/Suite assign_ref_to_object_obj:/
     void tc_byval_fromobj_bytype()
     void tc_byval_fromobj_byval()
     void tc_byval_fromobj_byref()
+
+test/Suite assign_ref_to_object_ptr:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
