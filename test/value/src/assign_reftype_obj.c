@@ -397,6 +397,7 @@ void test_assign_reftype_obj_tc_bytype_frommbr_bytype(
     test_assert(result.kind == CORTO_POINTER);
     void *ptr = corto_value_ptrof(&result);
     test_assert(ptr != NULL);
+
     test_assert(*(corto_object*)ptr == foo);
 
     test_assert(corto_delete(foo) == 0);

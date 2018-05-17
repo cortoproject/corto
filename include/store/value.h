@@ -109,6 +109,7 @@ struct corto_value {
             void* ptr;
             char* unit;
             uint64_t storage; /* Optional storage for a value */
+            bool owned;
         } pointer;
         struct {
             corto_literal_kind kind;

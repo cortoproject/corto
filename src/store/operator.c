@@ -493,7 +493,9 @@ int16_t corto_intern_binaryOp(
             corto_walk_value(&s, &src, &data);
 
             if (result && result != operand1) {
-                *(void**)result = operand1;
+                data.value = corto_value_mem(result, type);
+                corto_value src = corto_value_mem(operand2, type);
+                corto_walk_value(&s, &src, &data);
             }
         }
     } else {

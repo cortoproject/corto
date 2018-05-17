@@ -541,6 +541,7 @@ void test_ValueExpr_tc_exprMemMemberInOut(
     test_Point p = {10, 20};
     corto_value pY, pValue = corto_value_ptr(&p, test_Point_o);
     test_assert(corto_value_memberExpr(&pValue, "y", &pY) == 0);
+    void *y_ptr = corto_value_ptrof(&pY);
     corto_value v = corto_value_int(30);
 
     corto_int16 ret = corto_value_binaryOp(CORTO_ADD, &pY, &v, &pY);
@@ -553,12 +554,12 @@ void test_ValueExpr_tc_exprMemMemberInOut(
 
     corto_int32 *ptr = corto_value_ptrof(&pY);
     test_assert(ptr != NULL);
+    test_assert(ptr == y_ptr);
     test_assertint(*ptr, 50);
     test_assertint(p.x, 10);
     test_assertint(p.y, 50);
 
     corto_value_free(&pY);
-
 }
 
 void test_ValueExpr_tc_exprMemMemberOut(
@@ -654,13 +655,13 @@ void test_ValueExpr_tc_exprMemPtrOut(
     test_assert(type != NULL);
     test_assert(type == corto_type(corto_int64_o));
 
-    corto_int64 *ptr = corto_value_ptrof(&out);
+    corto_uint64 *ptr = corto_value_ptrof(&out);
     test_assert(ptr != NULL);
+    test_assert(ptr == &v);
     test_assertint(*ptr, 30);
     test_assertint(v, 30);
 
     corto_value_free(&out);
-
 }
 
 void test_ValueExpr_tc_exprMemSameInOut(
@@ -880,4 +881,3 @@ void test_ValueExpr_tc_sub(
     corto_value_free(&out);
 
 }
-

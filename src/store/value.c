@@ -268,15 +268,14 @@ corto_value _corto_value_object(
     corto_object o,
     corto_type t)
 {
-    corto_value val;
-    val.kind = CORTO_OBJECT;
-    val.parent = NULL;
-    val.is.object.ref = o;
-    if (t) {
-        val.is.object.type = t;
-    } else {
-        val.is.object.type = corto_typeof(o);
-    }
+    corto_value val = {
+        .kind = CORTO_OBJECT,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.object.ref = o,
+        .is.object.type = t ? t : corto_typeof(o)
+    };
+
     return val;
 }
 
@@ -284,11 +283,14 @@ corto_value _corto_value_base(
     void *v,
     corto_type t)
 {
-    corto_value val;
-    val.kind = CORTO_BASE;
-    val.parent = NULL;
-    val.is.base.ptr = v;
-    val.is.base.type = t;
+    corto_value val = {
+        .kind = CORTO_BASE,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.object.ref = v,
+        .is.object.type = t
+    };
+
     return val;
 }
 
@@ -296,13 +298,16 @@ corto_value _corto_value_pointer(
     void* v,
     corto_type t)
 {
-    corto_value val;
-    val.kind = CORTO_POINTER;
-    val.parent = NULL;
-    val.is.pointer.storage = 0;
-    val.is.pointer.ref = NULL;
-    val.is.pointer.type = t;
-    val.is.pointer.ptr = v;
+    corto_value val = {
+        .kind = CORTO_POINTER,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.pointer.storage = 0,
+        .is.pointer.ref = NULL,
+        .is.pointer.type = t,
+        .is.pointer.ptr = v
+    };
+
     return val;
 }
 
@@ -329,12 +334,15 @@ corto_value corto_value_member(
     corto_member t,
     void* v)
 {
-    corto_value val;
-    val.kind = CORTO_MEMBER;
-    val.parent = NULL;
-    val.is.member.ref = o;
-    val.is.member.member = t;
-    val.is.member.ptr = v;
+    corto_value val = {
+        .kind = CORTO_MEMBER,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.member.ref = o,
+        .is.member.member = t,
+        .is.member.ptr = v
+    };
+
     return val;
 }
 
@@ -343,12 +351,15 @@ corto_value corto_value_constant(
     corto_constant* t,
     void* v)
 {
-    corto_value val;
-    val.kind = CORTO_CONSTANT;
-    val.parent = NULL;
-    val.is.constant.ref = o;
-    val.is.constant.constant = t;
-    val.is.constant.ptr = v;
+    corto_value val = {
+        .kind = CORTO_CONSTANT,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.constant.ref = o,
+        .is.constant.constant = t,
+        .is.constant.ptr = v
+    };
+
     return val;
 }
 
@@ -358,13 +369,16 @@ corto_value _corto_value_element(
     uint32_t index,
     void* v)
 {
-    corto_value val;
-    val.kind = CORTO_ELEMENT;
-    val.parent = NULL;
-    val.is.element.ref = o;
-    val.is.element.type = t;
-    val.is.element.index = index;
-    val.is.element.ptr = v;
+    corto_value val = {
+        .kind = CORTO_ELEMENT,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.element.ref = o,
+        .is.element.type = t,
+        .is.element.index = index,
+        .is.element.ptr = v
+    };
+
     return val;
 }
 
@@ -375,14 +389,17 @@ corto_value _corto_value_mapElement(
     void *key,
     void* v)
 {
-    corto_value val;
-    val.kind = CORTO_MAP_ELEMENT;
-    val.parent = NULL;
-    val.is.map_element.ref = o;
-    val.is.map_element.type = t;
-    val.is.map_element.key_type = keyType;
-    val.is.map_element.key = key;
-    val.is.map_element.ptr = v;
+    corto_value val = {
+        .kind = CORTO_ELEMENT,
+        .ref_kind = CORTO_BY_TYPE,
+        .parent = NULL,
+        .is.map_element.ref = o,
+        .is.map_element.type = t,
+        .is.map_element.key_type = keyType,
+        .is.map_element.key = key,
+        .is.map_element.ptr = v
+    };
+
     return val;
 }
 
@@ -390,10 +407,12 @@ corto_value corto_value_literal(
     corto_literal_kind kind,
     void* value)
 {
-    corto_value val;
-    val.kind = CORTO_LITERAL;
-    val.is.literal.kind = kind;
-    val.parent = NULL;
+    corto_value val = {
+        .kind = CORTO_LITERAL,
+        .ref_kind = CORTO_BY_TYPE,
+        .is.literal.kind = kind,
+        .parent = NULL
+    };
 
     switch(kind) {
     case CORTO_LITERAL_BOOLEAN:
@@ -496,6 +515,7 @@ corto_value corto_value_init(void) {
     corto_value v;
     memset(&v, 0, sizeof(corto_value));
     v.kind = CORTO_POINTER;
+    v.ref_kind = CORTO_BY_TYPE;
     return v;
 }
 
@@ -517,7 +537,9 @@ void corto_value_free(
         corto_ptr_deinit(ptr, t);
         if (v->kind == CORTO_POINTER) {
             if (ptr != (void*)&v->is.pointer.storage) {
-                corto_dealloc(ptr);
+                if (v->is.pointer.owned) {
+                    corto_dealloc(ptr);
+                }
             }
         }
     }
@@ -753,7 +775,9 @@ int16_t corto_value_binaryOp(
         left_ref_kind = left->ref_kind,
         right_ref_kind = right->ref_kind;
 
-    corto_uint64 *result_ptr = &dummy.is.pointer.storage;
+    uintptr_t *result_ptr = NULL;
+    bool use_left_as_result = false;
+    bool result_owned = false;
 
     bool left_isref, right_isref, right_isnull = !corto_value_ptrof(right) ||
         (right->kind == CORTO_LITERAL &&
@@ -814,14 +838,6 @@ int16_t corto_value_binaryOp(
         corto_expr_is_ref(
             right->kind, right_ref_kind, right_type ?
                 right_type : left_type, &right_isref), NULL);
-
-    /* Obtain result pointer */
-    if (result) {
-        result_ptr = corto_value_ptrof(result);
-        if (!result_ptr) {
-            result_ptr = &result->is.pointer.storage;
-        }
-    }
 
     /* Determine type of binary expression and types to cast operands to */
     if (!result ||
@@ -906,6 +922,34 @@ int16_t corto_value_binaryOp(
         right_arg = right_ptr ? *(corto_object*)right_ptr : NULL;
     }
 
+    /* Get pointer for storing the result */
+    if (result) {
+        if (result->kind != CORTO_LITERAL) {
+            result_ptr = corto_value_ptrof(result);
+            if (!result_ptr) {
+                if (result_type->kind == CORTO_PRIMITIVE) {
+                    result_ptr = &result->is.pointer.storage;
+                } else {
+                    if (_operator == CORTO_ASSIGN) {
+                        use_left_as_result = true;
+                    } else {
+                        /* If result value is provided, but it does not contain
+                         * a pointer that can hold the result value, allocate
+                         * memory */
+                        result_ptr = corto_calloc(result_type->size);
+                    }
+                }
+                result_owned = true;
+            }
+        } else {
+            result_ptr = &result->is.pointer.storage;
+            result_owned = true;
+        }
+    } else if (result_type->kind == CORTO_PRIMITIVE) {
+        result_ptr = &dummy.is.pointer.storage;
+        result_owned = true;
+    }
+
     /* Perform operation */
     if (left_isref) {
         /* If this is a reference operation, use ptr with a reference type */
@@ -923,11 +967,20 @@ int16_t corto_value_binaryOp(
     {
         result->kind = CORTO_POINTER;
         result->is.pointer.type = result_type;
-        if (result_type->reference) {
-            result->is.pointer.storage = *(corto_uint64*)result_ptr;
+        result->is.pointer.owned = result_owned;
+
+        if (use_left_as_result) {
+            if (result_type->reference) {
+                result->is.pointer.storage = (uintptr_t)left_arg;
+                result->is.pointer.ptr = &result->is.pointer.storage;
+            } else {
+                result->is.pointer.ptr = left_arg;
+            }
+        } else if (result_type->reference) {
+            result->is.pointer.storage = *(uintptr_t*)result_ptr;
             result->is.pointer.ptr = &result->is.pointer.storage;
         } else {
-            result->is.pointer.ptr = *(void**)result_ptr;
+            result->is.pointer.ptr = result_ptr;
         }
     }
 

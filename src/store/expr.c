@@ -157,7 +157,7 @@ int16_t corto_expr_typeof(
         }
 
     } else if ((dst && (dst->kind == CORTO_VOID) && dst->reference)) {
-        if (src_is_ref || (src && src->reference)) {
+        if (src_is_ref) {
             result = corto_object_o;
         } else {
             corto_throw(
@@ -335,12 +335,13 @@ int16_t corto_expr_is_ref(
             *result = false;
         }
     } else if (ref_kind == CORTO_BY_VALUE) {
-        if (type && type->kind == CORTO_VOID && !type->reference) {
-            corto_throw("cannot take value of void value");
-            goto error;
-        } else {
-            *result = false;
+        if (type && type->kind == CORTO_VOID) {
+            if (!type->reference || kind != CORTO_OBJECT) {
+                corto_throw("cannot take value of void value");
+                goto error;
+            }
         }
+        *result = false;
     }
 
     return 0;
