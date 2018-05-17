@@ -592,7 +592,7 @@ int16_t corto_value_to_boolean(
 {
     corto_value result = corto_value_init();
 
-    if (corto_value_cast(value, corto_bool_o, &result)) {
+    if (corto_value_cast(value, corto_bool_o, false, &result)) {
         return -1;
     }
 
@@ -607,7 +607,7 @@ int16_t corto_value_to_character(
 {
     corto_value result = corto_value_init();
 
-    if (corto_value_cast(value, corto_char_o, &result)) {
+    if (corto_value_cast(value, corto_char_o, false, &result)) {
         return -1;
     }
 
@@ -622,7 +622,7 @@ int16_t corto_value_to_int(
 {
     corto_value result = corto_value_init();
 
-    if (corto_value_cast(value, corto_int64_o, &result)) {
+    if (corto_value_cast(value, corto_int64_o, false, &result)) {
         return -1;
     }
 
@@ -637,7 +637,7 @@ int16_t corto_value_to_uint(
 {
     corto_value result = corto_value_init();
 
-    if (corto_value_cast(value, corto_uint64_o, &result)) {
+    if (corto_value_cast(value, corto_uint64_o, false, &result)) {
         return -1;
     }
 
@@ -652,7 +652,7 @@ int16_t corto_value_to_float(
 {
     corto_value result = corto_value_init();
 
-    if (corto_value_cast(value, corto_float64_o, &result)) {
+    if (corto_value_cast(value, corto_float64_o, false, &result)) {
         return -1;
     }
 
@@ -667,7 +667,7 @@ int16_t corto_value_to_string(
 {
     corto_value result = corto_value_init();
 
-    if (corto_value_cast(value, corto_string_o, &result)) {
+    if (corto_value_cast(value, corto_string_o, false, &result)) {
         return -1;
     }
 
@@ -728,25 +728,65 @@ char* corto_value_unitof(
     return result;
 }
 
+static
+bool corto_is_ref_container(
+    corto_type type)
+{
+    return type &&
+        ((type->kind == CORTO_VOID && type->reference) ||
+        (type->kind == CORTO_COMPOSITE &&
+            corto_interface(type)->kind == CORTO_INTERFACE));
+}
+
+int16_t corto_value_is_ref(
+    corto_value *v,
+    bool *result)
+{
+    return corto_expr_is_ref(
+        v->kind, v->ref_kind, corto_value_typeof(v), result);
+}
+
 int16_t _corto_value_cast(
     corto_value *in,
-    corto_type dstType,
+    corto_type dst_type,
+    bool src_is_ref,
     corto_value *out)
 {
     void *dst = (void*)&out->is.pointer.storage;
     void *src = corto_value_ptrof(in);
-    corto_type srcType = corto_value_typeof(in);
+    corto_type src_type = corto_value_typeof(in);
+    bool dst_is_refcontainer = corto_is_ref_container(dst_type);
+    bool dst_is_bool = dst_type->kind == CORTO_PRIMITIVE &&
+        corto_primitive(dst_type)->kind == CORTO_BOOLEAN;
 
-    if (!src && dstType == (corto_type)corto_bool_o) {
-        *out = corto_value_bool(false);
+    if ((!src || src_is_ref) && dst_is_bool) {
+        if (src) {
+            *out = corto_value_bool(true);
+        } else {
+            *out = corto_value_bool(false);
+        }
+    } else
+    if (dst_is_refcontainer || corto_type_instanceof(dst_type, src_type)) {
+        bool any_ref = dst_type->kind == CORTO_VOID && dst_type->reference;
+        if ((any_ref && src_is_ref) || corto_type_castable(dst_type, src_type))
+        {
+            *out = corto_value_pointer(src, dst_type);
+        } else {
+            corto_throw("cannot cast type '%s' to '%s'",
+                corto_fullpath(NULL, src_type),
+                corto_fullpath(NULL, dst_type));
+            goto error;
+        }
+
     } else {
-        if (corto_ptr_cast(srcType, src, dstType, dst)) {
+        if (corto_ptr_cast(src_type, src, dst_type, dst)) {
             goto error;
         }
 
         out->kind = CORTO_POINTER;
+        out->ref_kind = CORTO_BY_TYPE;
         out->is.pointer.ptr = (void*)&out->is.pointer.storage;
-        out->is.pointer.type = dstType;
+        out->is.pointer.type = dst_type;
     }
 
     return 0;
@@ -783,10 +823,7 @@ int16_t corto_value_binaryOp(
         (right->kind == CORTO_LITERAL &&
          right->is.literal.kind == CORTO_LITERAL_NULL);
 
-     bool left_is_refcontainer = left_type &&
-         ((left_type->kind == CORTO_VOID && left_type->reference) ||
-         (left_type->kind == CORTO_COMPOSITE &&
-             corto_interface(left_type)->kind == CORTO_INTERFACE));
+     bool left_is_refcontainer = corto_is_ref_container(left_type);
 
     if (_operator == CORTO_ASSIGN) {
         if (left->kind == CORTO_OBJECT) {
@@ -873,11 +910,13 @@ int16_t corto_value_binaryOp(
         left_type = oper_type;
         left_isref = right_isref;
     } else
-    if (left_type != oper_type && left_type->kind == oper_type->kind) {
-        if (corto_value_cast(left, oper_type, &leftCast)) {
+    if (left_type != oper_type) {
+        if (corto_value_cast(left, oper_type, left_isref, &leftCast)) {
             goto error;
         }
         left_casted = &leftCast;
+        corto_try(corto_value_is_ref(left_casted, &left_isref), NULL);
+        left_type = oper_type;
     }
 
     /* Cast right operand */
@@ -885,11 +924,13 @@ int16_t corto_value_binaryOp(
         right_type = oper_type;
         right_isref = left_isref;
     } else
-    if (right_type != oper_type && right_type->kind == oper_type->kind) {
-        if (corto_value_cast(right, oper_type, &rightCast)) {
+    if (right_type != oper_type) {
+        if (corto_value_cast(right, oper_type, right_isref, &rightCast)) {
             goto error;
         }
         right_casted = &rightCast;
+        corto_try(corto_value_is_ref(right_casted, &right_isref), NULL);
+        right_type = oper_type;
     }
 
     /* Test if operands are either by_reference or by_value */

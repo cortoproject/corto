@@ -205,7 +205,6 @@ int16_t corto_expr_binary_typeof(
     corto_try (corto_expr_typeof(
         right_type, left_type, right_is_ref, left_is_ref, &right_type), NULL);
 
-
     if (!left_type) {
         left_type = right_type;
     }
@@ -270,10 +269,7 @@ int16_t corto_expr_binary_typeof(
             castType = NULL;
             /* Check if types are compatible */
 
-        } else if ((right_type->reference ||
-                   (right_is_ref)) &&
-                   !left_type->reference)
-        {
+        } else if (right_is_ref && !left_type->reference) {
             if (corto_type_castable(left_type, corto_object_o)) {
                 castType = left_type;
             }
@@ -283,10 +279,7 @@ int16_t corto_expr_binary_typeof(
                 corto_fullpath(NULL, right_type));
             goto error;
         }
-    } else if ((right_type->reference ||
-                (right_is_ref)) &&
-                !left_type->reference)
-    {
+    } else if (right_is_ref && !left_type->reference) {
         if (corto_type_castable(left_type, corto_object_o)) {
             castType = left_type;
         }
