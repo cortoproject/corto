@@ -272,16 +272,17 @@ int16_t corto_expr_binary_typeof(
         } else if (right_is_ref && !left_type->reference) {
             if (corto_type_castable(left_type, corto_object_o)) {
                 castType = left_type;
+            } else {
+                goto cast_error;
             }
         } else {
-            corto_throw("cannot cast from '%s' to '%s'",
-                corto_fullpath(NULL, left_type),
-                corto_fullpath(NULL, right_type));
-            goto error;
+            goto cast_error;
         }
     } else if (right_is_ref && !left_type->reference) {
         if (corto_type_castable(left_type, corto_object_o)) {
             castType = left_type;
+        } else {
+            goto cast_error;
         }
     }
 
@@ -296,6 +297,10 @@ int16_t corto_expr_binary_typeof(
     }
 
     return 0;
+cast_error:
+    corto_throw("cannot cast from '%s%s' to '%s%s'",
+        corto_fullpath(NULL, left_type), left_is_ref ? "&" : "",
+        corto_fullpath(NULL, right_type), right_is_ref ? "&" : "");
 error:
     return -1;
 }

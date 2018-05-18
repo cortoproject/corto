@@ -269,9 +269,8 @@ int16_t corto_value_binaryOp(
  */
 CORTO_EXPORT
 int16_t _corto_value_cast(
-    corto_value *value,
+    corto_value *src,
     corto_type dst_type,
-    bool src_is_ref,
     corto_value *result);
 
 CORTO_EXPORT
@@ -611,7 +610,7 @@ int16_t corto_value_compare(
 #define corto_value_mem(v, t) _corto_value_mem(v, corto_type(t))
 #define corto_value_element(o, t, i, v) _corto_value_element(o, corto_type(t), i, v)
 #define corto_value_mapElement(o, t, kt, k, v) _corto_value_mapElement(o, corto_type(t), corto_type(kt), k, v)
-#define corto_value_cast(in, dst_type, src_is_ref, out) _corto_value_cast(in, corto_type(dst_type), src_is_ref, out)
+#define corto_value_cast(in, dst_type, out) _corto_value_cast(in, corto_type(dst_type), out)
 
 #ifdef __cplusplus
 }
