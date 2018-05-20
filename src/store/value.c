@@ -274,14 +274,22 @@ int16_t corto_value_memberExpr(
 
     char *cur = tokens, *prev = tokens;
     do {
+        bool next_is_collection = false;
         if (cur[0] == '[') {
-            char *end = strchr(cur, ']');
-            if (!end) {
+            /* Parse element expression */
+            cur = strchr(cur, ']');
+            if (!cur) {
                 corto_throw("missing ']' in member expression");
                 goto error;
             }
-            *end = '\0';
-            uint32_t index = atoi(cur + 1);
+            *cur = '\0';
+            if (!cur[1]) {
+                cur = NULL; /* End of expression */
+            } else {
+                cur ++;
+            }
+
+            uint32_t index = atoi(prev + 1);
 
             if (t->kind != CORTO_COLLECTION) {
                 corto_throw("cannot resolve [%d] from non-collection type '%s'",
@@ -301,13 +309,36 @@ int16_t corto_value_memberExpr(
             *out = corto_value_element(
                 o, t, index, ptr);
 
-            cur = end + 1;
         } else {
-            if (cur && (cur = strchr(cur + 1, '.'))) *cur = '\0';
+            /* Parse member expression */
+            char *next_dot = strchr(cur + 1, '.');
+            char *next_bracket = strchr(cur + 1, '[');
+
+            if (next_dot && next_bracket) {
+                if (next_dot > next_bracket) {
+                    cur = next_bracket;
+                } else {
+                    cur = next_dot;
+                }
+            } else if (next_dot) {
+                cur = next_dot;
+            } else if (next_bracket) {
+                cur = next_bracket;
+            } else {
+                cur = NULL;
+            }
+
+            if (cur) {
+                if (cur[0] == '[') {
+                    next_is_collection = true;
+                }
+                *cur = '\0';
+            }
 
             if (!corto_instanceof(corto_interface_o, t)) {
                 corto_throw(
-                    "cannot get member from a non-composite value (type is '%s')",
+                    "cannot get member '%s' from a non-composite value (type is '%s')",
+                    prev,
                     corto_fullpath(NULL, t));
                 goto error;
             }
@@ -338,7 +369,12 @@ int16_t corto_value_memberExpr(
             }
         }
 
-        prev = cur + 1;
+        if (next_is_collection) {
+            prev = cur;
+            *prev = '[';
+        } else {
+            prev = cur + 1;
+        }
     } while (cur);
 
     return 0;
