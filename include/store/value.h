@@ -219,7 +219,7 @@ corto_object corto_value_objectof(
 CORTO_EXPORT
 int16_t corto_value_memberExpr(
     corto_value *value,
-    char *member,
+    const char *member,
     corto_value *out);
 
 /** Perform unary operator on a corto_value.

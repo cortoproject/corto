@@ -209,9 +209,60 @@ corto_object corto_value_objectof(
     return result;
 }
 
+static
+void* corto_value_get_element_ptr(
+    void *ptr,
+    corto_collection type,
+    uint32_t index)
+{
+    void *result = NULL;
+    uint32_t max = 0;
+
+    if (!ptr) {
+        corto_throw("cannot take index from NULL");
+        goto error;
+    }
+
+    switch(type->kind) {
+    case CORTO_SEQUENCE:
+        ptr = ((corto_objectseq*)ptr)->buffer;
+        max = ((corto_objectseq*)ptr)->length;
+    case CORTO_ARRAY: {
+        uint32_t element_size = corto_type_sizeof(type->elementType);
+        if (!max) max = type->max;
+        if (index >= max) {
+            corto_throw("index %d is out of bounds", index);
+            goto error;
+        }
+        result = CORTO_OFFSET(ptr, element_size * index);
+        break;
+    }
+    case CORTO_LIST: {
+        corto_ll list = *(corto_ll*)ptr;
+        if (index >= corto_ll_count(list)) {
+            corto_throw("index %d is out of bounds", index);
+            goto error;
+        }
+
+        if (corto_collection_requiresAlloc(type->elementType)) {
+            result = corto_ll_get(list, index);
+        } else {
+            result = corto_ll_getPtr(list, index);
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return result;
+error:
+    return NULL;
+}
+
 int16_t corto_value_memberExpr(
     corto_value *val,
-    corto_string member,
+    const char* member,
     corto_value *out)
 {
     corto_type t = corto_value_typeof(val);
@@ -223,37 +274,68 @@ int16_t corto_value_memberExpr(
 
     char *cur = tokens, *prev = tokens;
     do {
-        if (cur && (cur = strchr(cur + 1, '.'))) *cur = '\0';
-
-        if (!corto_instanceof(corto_interface_o, t)) {
-            corto_throw(
-                "cannot get member from a non-composite value (type is '%s')",
-                corto_fullpath(NULL, t));
-            goto error;
-        }
-
-        if (!strcmp(prev, "super")) {
-            if (!(t = (corto_type)corto_interface(t)->base)) {
-                corto_throw("super unpexpected: interface '%s' does not have a base",
-                    corto_fullpath(NULL, t));
+        if (cur[0] == '[') {
+            char *end = strchr(cur, ']');
+            if (!end) {
+                corto_throw("missing ']' in member expression");
                 goto error;
-            } else {
-                *out = corto_value_base(ptr, t);
             }
+            *end = '\0';
+            uint32_t index = atoi(cur + 1);
+
+            if (t->kind != CORTO_COLLECTION) {
+                corto_throw("cannot resolve [%d] from non-collection type '%s'",
+                    index, corto_fullpath(NULL, t));
+                goto error;
+            }
+
+            corto_collection collection_type = corto_collection(t);
+
+            ptr = corto_value_get_element_ptr(ptr, collection_type, index);
+            if (!ptr) {
+                corto_throw(NULL);
+                goto error;
+            }
+
+            t = collection_type->elementType;
+            *out = corto_value_element(
+                o, t, index, ptr);
+
+            cur = end + 1;
         } else {
-            corto_member m = corto_interface_resolveMember(t, prev);
-            if (!m) {
+            if (cur && (cur = strchr(cur + 1, '.'))) *cur = '\0';
+
+            if (!corto_instanceof(corto_interface_o, t)) {
                 corto_throw(
-                    "unresolved member '%s' in type '%s'",
-                    prev,
+                    "cannot get member from a non-composite value (type is '%s')",
                     corto_fullpath(NULL, t));
                 goto error;
             }
 
-            ptr = CORTO_OFFSET(ptr, m->offset);
-            t = m->type;
+            if (!strcmp(prev, "super")) {
+                if (!(t = (corto_type)corto_interface(t)->base)) {
+                    corto_throw(
+                      "super unpexpected: interface '%s' does not have a base",
+                        corto_fullpath(NULL, t));
+                    goto error;
+                } else {
+                    *out = corto_value_base(ptr, t);
+                }
+            } else {
+                corto_member m = corto_interface_resolveMember(t, prev);
+                if (!m) {
+                    corto_throw(
+                        "unresolved member '%s' in type '%s'",
+                        prev,
+                        corto_fullpath(NULL, t));
+                    goto error;
+                }
 
-            *out = corto_value_member(o, m, ptr);
+                ptr = CORTO_OFFSET(ptr, m->offset);
+                t = m->type;
+
+                *out = corto_value_member(o, m, ptr);
+            }
         }
 
         prev = cur + 1;
@@ -287,8 +369,9 @@ corto_value _corto_value_base(
         .kind = CORTO_BASE,
         .ref_kind = CORTO_BY_TYPE,
         .parent = NULL,
-        .is.object.ref = v,
-        .is.object.type = t
+        .is.base.ref = v,
+        .is.base.type = t,
+        .is.base.ptr = v
     };
 
     return val;
@@ -912,10 +995,10 @@ int16_t corto_value_binaryOp(
         left_isref = right_isref;
     } else
     if (left_type != oper_type) {
-        if (corto_value_cast(left, oper_type, &left_value)) {
+        if (corto_value_cast(left, oper_type, &left_val)) {
             goto error;
         }
-        left_casted = &left_value;
+        left_casted = &left_val;
         corto_try(corto_value_is_ref(left_casted, &left_isref), NULL);
         left_type = oper_type;
     }
@@ -926,10 +1009,10 @@ int16_t corto_value_binaryOp(
         right_isref = left_isref;
     } else
     if (right_type != oper_type) {
-        if (corto_value_cast(right, oper_type, &right_value)) {
+        if (corto_value_cast(right, oper_type, &right_val)) {
             goto error;
         }
-        right_casted = &right_value;
+        right_casted = &right_val;
         corto_try(corto_value_is_ref(right_casted, &right_isref), NULL);
         right_type = oper_type;
     }
