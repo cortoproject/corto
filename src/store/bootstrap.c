@@ -159,6 +159,7 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(lang_, collectionKind),\
     BUILTIN_VALUE(lang_, equalityKind),\
     BUILTIN_VALUE(lang_, inout),\
+    BUILTIN_VALUE(lang_, ref_kind),\
     BUILTIN_VALUE(vstore_, operatorKind),\
     BUILTIN_VALUE(vstore_, ownership),\
     BUILTIN_VALUE(vstore_, mountMask),\
@@ -392,6 +393,10 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_inout_IN),\
     BUILTIN_OBJ(lang_inout_OUT),\
     BUILTIN_OBJ(lang_inout_INOUT),\
+    /* ref_kind */\
+    BUILTIN_OBJ(lang_ref_kind_BY_TYPE),\
+    BUILTIN_OBJ(lang_ref_kind_BY_VALUE),\
+    BUILTIN_OBJ(lang_ref_kind_BY_REFERENCE),\
     /* ownership */\
     BUILTIN_OBJ(vstore_ownership_REMOTE_SOURCE),\
     BUILTIN_OBJ(vstore_ownership_LOCAL_SOURCE),\

@@ -84,6 +84,7 @@
 #define corto_overridable(o) ((corto_overridable)corto_assert_type((corto_type)corto_overridable_o, o))
 #define corto_override(o) ((corto_override)corto_assert_type((corto_type)corto_override_o, o))
 #define corto_procedure(o) ((corto_procedure)corto_assert_type((corto_type)corto_procedure_o, o))
+#define corto_ref_kind(o) ((corto_ref_kind*)corto_assert_type((corto_type)corto_ref_kind_o, o))
 #define corto_sequence(o) ((corto_sequence)corto_assert_type((corto_type)corto_sequence_o, o))
 #define corto_table(o) ((corto_table)corto_assert_type((corto_type)corto_table_o, o))
 #define corto_tableinstance(o) ((corto_tableinstance)corto_assert_type((corto_type)corto_tableinstance_o, o))
@@ -177,6 +178,7 @@ typedef corto_octet _type_corto_octet;
 typedef corto_overridable _type_corto_overridable;
 typedef corto_override _type_corto_override;
 typedef corto_procedure _type_corto_procedure;
+typedef corto_ref_kind _type_corto_ref_kind;
 typedef corto_sequence _type_corto_sequence;
 typedef corto_table _type_corto_table;
 typedef corto_tableinstance _type_corto_tableinstance;

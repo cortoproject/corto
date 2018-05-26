@@ -58,12 +58,6 @@
 extern "C" {
 #endif
 
-typedef enum corto_value_ref_kind {
-    CORTO_BY_TYPE,
-    CORTO_BY_VALUE,
-    CORTO_BY_REFERENCE
-} corto_value_ref_kind;
-
 /* Base corto value kinds */
 typedef enum corto_value_kind {
     CORTO_OBJECT = 0,
@@ -92,7 +86,7 @@ typedef struct corto_value corto_value;
 struct corto_value {
     corto_value* parent; /* Used for nested values, like foo.bar (parent = foo) */
     corto_value_kind kind;
-    corto_value_ref_kind ref_kind;
+    corto_ref_kind ref_kind;
     union {
         struct {
             corto_object ref;

@@ -108,9 +108,16 @@ int16_t corto_expr_binary_typeof(
 
 
 CORTO_EXPORT
+int16_t corto_binary_expr_ref_kind(
+    corto_value_kind kind,
+    corto_ref_kind ref_kind,
+    corto_type type,
+    bool *result);
+
+CORTO_EXPORT
 int16_t corto_expr_is_ref(
     corto_value_kind kind,
-    corto_value_ref_kind ref_kind,
+    corto_ref_kind ref_kind,
     corto_type type,
     bool *result);
 

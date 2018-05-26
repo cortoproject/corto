@@ -557,6 +557,7 @@ CORTO_FWDECL(enum, collectionKind);
 CORTO_FWDECL(enum, compositeKind);
 CORTO_FWDECL(enum, equalityKind);
 CORTO_FWDECL(enum, inout);
+CORTO_FWDECL(enum, ref_kind);
 CORTO_FWDECL(enum, primitiveKind);
 CORTO_FWDECL(enum, procedureKind);
 CORTO_FWDECL(enum, typeKind);
@@ -753,6 +754,11 @@ CORTO_ENUM_O(lang, inout);
     CORTO_CONSTANT_O(lang_inout, IN);
     CORTO_CONSTANT_O(lang_inout, OUT);
     CORTO_CONSTANT_O(lang_inout, INOUT);
+
+CORTO_ENUM_O(lang, ref_kind);
+    CORTO_CONSTANT_O(lang_ref_kind, BY_TYPE);
+    CORTO_CONSTANT_O(lang_ref_kind, BY_VALUE);
+    CORTO_CONSTANT_O(lang_ref_kind, BY_REFERENCE);
 
 CORTO_ENUM_O(vstore, operatorKind);
     CORTO_CONSTANT_O(vstore_operatorKind, ASSIGN);
