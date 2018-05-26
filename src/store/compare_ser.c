@@ -40,8 +40,8 @@ int16_t corto_ser_any(
     corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) +
         ((corto_word)this - (corto_word)data->base));
 
-    corto_value v = corto_value_value(this->value, this->type);
-    privateData.value = corto_value_value(value->value, value->type);
+    corto_value v = corto_value_ptr(this->value, this->type);
+    privateData.value = corto_value_ptr(value->value, value->type);
 
     /* Set base of privateData. Because we're reusing the serializer, the
      * construct callback won't be called again */

@@ -46,7 +46,7 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value* v, void* userDa
     corto_int16 result = 0;
     corto_id id;
     corto_value anyValue;
-    anyValue = corto_value_value(this->value, this->type);
+    anyValue = corto_value_ptr(this->value, this->type);
 
     if (!corto_buffer_append(&data->buffer, "{%s,", corto_fullpath(id, this->type))) {
         goto finished;
@@ -320,7 +320,7 @@ static corto_int16 corto_ser_item(corto_walk_opt* s, corto_value* v, void* userD
     if (v->kind == CORTO_MEMBER) {
         if (!data->compactNotation) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
-            if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.t))) goto finished;
+            if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.member))) goto finished;
             if (!corto_ser_appendColor(data, CORTO_BOLD)) goto finished;
             if (!corto_buffer_append(&data->buffer, "=")) goto finished;
             if (!corto_ser_appendColor(data, CORTO_NORMAL)) goto finished;

@@ -1,0 +1,11 @@
+{
+    "id": "test",
+    "type": "package",
+    "value": {
+        "public": false,
+        "lib": ["m"],
+        "api": false,
+        "local": true,
+        "use": ["corto/test"]
+    }
+}

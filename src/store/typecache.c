@@ -347,7 +347,7 @@ int16_t corto_typecache_member(
     corto_typecache_blocks *blocks = userData;
 
     corto_type type = corto_value_typeof(info);
-    corto_member m = info->is.member.t;
+    corto_member m = info->is.member.member;
 
     if (type->kind == CORTO_ITERATOR) {
         /* Don't add iterator fields */

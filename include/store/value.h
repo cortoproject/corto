@@ -59,20 +59,19 @@ extern "C" {
 #endif
 
 /* Base corto value kinds */
-typedef enum corto_valueKind {
+typedef enum corto_value_kind {
     CORTO_OBJECT = 0,
-    CORTO_BASE = 1, /* serialize inheritance relation */
-    CORTO_VALUE = 2,
-    CORTO_MEM = 3, /* used internally. allows copying non-object memory of reference type by value. */
+    CORTO_BASE = 1,
+    CORTO_POINTER = 2,
     CORTO_LITERAL = 4,
     CORTO_MEMBER = 5,
     CORTO_ELEMENT = 6,
     CORTO_MAP_ELEMENT = 7,
-    CORTO_CONSTANT = 8 /* must be last */
-}corto_valueKind;
+    CORTO_CONSTANT = 8
+} corto_value_kind;
 
 /* Base corto literal kinds */
-typedef enum corto_literalKind {
+typedef enum corto_literal_kind {
     CORTO_LITERAL_BOOLEAN,
     CORTO_LITERAL_CHARACTER,
     CORTO_LITERAL_INTEGER,
@@ -80,69 +79,67 @@ typedef enum corto_literalKind {
     CORTO_LITERAL_FLOATING_POINT,
     CORTO_LITERAL_STRING,
     CORTO_LITERAL_NULL
-}corto_literalKind;
+} corto_literal_kind;
 
 /* Struct capable of representing any corto value */
 typedef struct corto_value corto_value;
 struct corto_value {
     corto_value* parent; /* Used for nested values, like foo.bar (parent = foo) */
-    corto_valueKind kind;
+    corto_value_kind kind;
+    corto_ref_kind ref_kind;
     union {
         struct {
-            corto_object o;
-            corto_type t; /* Can differ from typeof(o) when using inheritance */
+            corto_object ref;
+            corto_type type; /* Can differ from typeof(o) when using inheritance */
         } object;
         struct {
-            corto_object o;
-            corto_type t;
-            void *v;
+            corto_object ref;
+            corto_type type;
+            void *ptr;
         } base;
         struct {
-            corto_object o;
-            corto_type t;
-            void* v;
+            corto_object ref;
+            corto_type type;
+            void* ptr;
             char* unit;
-            corto_uint64 storage; /* Optional storage for a value */
-        } value;
+            uint64_t storage; /* Optional storage for a value */
+            bool owned;
+        } pointer;
         struct {
-            corto_literalKind kind;
+            corto_literal_kind kind;
             union {
-                corto_bool _boolean;
-                corto_char _character;
-                corto_int64 _integer;
-                corto_uint64 _unsigned_integer;
-                corto_float64 _floating_point;
-                corto_string _string;
-            } v;
+                bool _boolean;
+                char _character;
+                int64_t _integer;
+                uint64_t _unsigned_integer;
+                double _floating_point;
+                char* _string;
+            } as;
             char* unit;
         } literal;
         struct {
-            corto_object o;
-            corto_member t;
-            void* v;
+            corto_object ref;
+            corto_member member;
+            void* ptr;
         } member;
         struct {
-            corto_object o;
-            corto_constant* t;
-            void* v;
+            corto_object ref;
+            corto_constant* constant;
+            void* ptr;
         } constant;
         struct {
-            corto_object o;
-            struct {
-                corto_type type;
-                uint32_t index;
-            } t;
-            void* v;
+            corto_object ref;
+            corto_type type;
+            uint32_t index;
+            void* ptr;
         } element;
         struct {
-            corto_object o;
-            struct {
-                corto_type type;
-                corto_type keyType;
-                void *key;
-            }t;
-            void* v;
-        } mapElement;
+            corto_object ref;
+            corto_type type;
+            corto_type key_type;
+            void *key;
+            void* ptr;
+        } map_element;
     } is;
 };
 
@@ -216,7 +213,7 @@ corto_object corto_value_objectof(
 CORTO_EXPORT
 int16_t corto_value_memberExpr(
     corto_value *value,
-    char *member,
+    const char *member,
     corto_value *out);
 
 /** Perform unary operator on a corto_value.
@@ -266,8 +263,8 @@ int16_t corto_value_binaryOp(
  */
 CORTO_EXPORT
 int16_t _corto_value_cast(
-    corto_value *value,
-    corto_type resultType,
+    corto_value *src,
+    corto_type dst_type,
     corto_value *result);
 
 CORTO_EXPORT
@@ -275,7 +272,7 @@ void corto_value_free(
     corto_value *v);
 
 /** Initialize a new corto_value instance.
- * @return A corto_value instance of kind CORTO_VALUE with ptr set to NULL.
+ * @return A corto_value instance of kind CORTO_POINTER with ptr set to NULL.
  */
 CORTO_EXPORT
 corto_value corto_value_init(void);
@@ -305,7 +302,7 @@ corto_value _corto_value_object(
  * code and was less intuitive.
  *
  * It is good practice to make the parent field of a BASE corto_value (eventually)
- * point to a value of the CORTO_OBJECT kind for objects, or CORTO_VALUE for non-object
+ * point to a value of the CORTO_OBJECT kind for objects, or CORTO_POINTER for non-object
  * values.
  *
  * @param ptr A pointer to a value.
@@ -317,6 +314,11 @@ corto_value _corto_value_base(
     void *ptr,
     corto_type type);
 
+CORTO_EXPORT
+corto_value _corto_value_pointer(
+    void *ptr,
+    corto_type t);
+
 /** Initialize a new corto_value instance holding a generic value.
  * A value representing any value that does not fall in any of the
  * other categories.
@@ -326,12 +328,12 @@ corto_value _corto_value_base(
  * @return A new corto_value instance.
  */
 CORTO_EXPORT
-corto_value _corto_value_value(
+corto_value _corto_value_ptr(
     void *ptr,
     corto_type t);
 
 /** Initialize a new corto_value instance holding a generic value.
- * Similar to corto_value_value, with the exception that if of a reference type,
+ * Similar to corto_value_ptr, with the exception that if of a reference type,
  * and encountered by a walk routine, the routine initiates a walk by value instead
  * of invoking the reference callback.
  *
@@ -345,7 +347,7 @@ corto_value _corto_value_value(
  * walk over the value of a non-object pointer of a reference type.
  *
  * Value instances of kind CORTO_MEM explicitly do not have an associated object,
- * which is another difference with values of the CORTO_VALUE kind.
+ * which is another difference with values of the CORTO_POINTER kind.
  *
  * Given the exotic nature of this functionality it is recommended that
  * applications avoid it unless they have a keen understanding of what the
@@ -435,7 +437,7 @@ corto_value corto_value_mapElement(
  */
 CORTO_EXPORT
 corto_value corto_value_literal(
-    corto_literalKind kind,
+    corto_literal_kind kind,
     void *ptr);
 
 /** Initialize a new corto_value instance holding a boolean literal.
@@ -597,11 +599,12 @@ int16_t corto_value_compare(
 /* Type safe macro's */
 #define corto_value_object(o, t) _corto_value_object(o, corto_type(t))
 #define corto_value_base(v, t) _corto_value_base(v, corto_type(t))
-#define corto_value_value(v, t) _corto_value_value(v, corto_type(t))
+#define corto_value_pointer(v, t) _corto_value_pointer(v, corto_type(t))
+#define corto_value_ptr(v, t) _corto_value_ptr(v, corto_type(t))
 #define corto_value_mem(v, t) _corto_value_mem(v, corto_type(t))
 #define corto_value_element(o, t, i, v) _corto_value_element(o, corto_type(t), i, v)
 #define corto_value_mapElement(o, t, kt, k, v) _corto_value_mapElement(o, corto_type(t), corto_type(kt), k, v)
-#define corto_value_cast(in, dstType, out) _corto_value_cast(in, corto_type(dstType), out)
+#define corto_value_cast(in, dst_type, out) _corto_value_cast(in, corto_type(dst_type), out)
 
 #ifdef __cplusplus
 }

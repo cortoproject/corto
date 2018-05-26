@@ -958,6 +958,21 @@ CORTO_EXPORT corto_quantity _corto_quantity__assign(corto_quantity _this, corto_
 #define corto_quantity__assign(_this, base_unit) _corto_quantity__assign(_this, corto_unit(base_unit))
 #define corto_quantity__set(_this, base_unit) _this = _this ? _this : (corto_quantity*)corto_ptr_new(corto_quantity_o); _corto_quantity__assign(_this, corto_unit(base_unit))
 
+/* ref_kind */
+CORTO_EXPORT corto_ref_kind* _corto_ref_kind__create(corto_object _parent, const char *_id, corto_ref_kind value);
+#define corto_ref_kind__create(_parent, _id, value) _corto_ref_kind__create(_parent, _id, value)
+#define corto_ref_kind__create_auto(_parent, _id, value) corto_ref_kind* _id = corto_ref_kind__create(_parent, #_id, value); (void)_id
+#define corto_ref_kind__declare(parent, id) (corto_ref_kind*)corto_declare(parent, id, corto_ref_kind_o)
+CORTO_EXPORT corto_int16 _corto_ref_kind__update(corto_ref_kind* _this, corto_ref_kind value);
+#define corto_ref_kind__update(_this, value) _corto_ref_kind__update(corto_ref_kind(_this), value)
+CORTO_EXPORT corto_ref_kind* _corto_ref_kind__assign(corto_ref_kind* _this, corto_ref_kind value);
+#define corto_ref_kind__optional_not_set NULL
+#define corto_ref_kind__optional_set(value) (corto_ref_kind*)corto_ref_kind__assign((corto_ref_kind*)corto_ptr_new(corto_ref_kind_o), value)
+#define corto_ref_kind__optional_set_cond(__cond, value) __cond ? (corto_ref_kind*)corto_ref_kind__assign((corto_ref_kind*)corto_ptr_new(corto_ref_kind_o), value) : NULL
+#define corto_ref_kind__unset(_this) _this ? corto_ptr_free(_this, corto_ref_kind_o), 0 : 0; _this = NULL;
+#define corto_ref_kind__assign(_this, value) _corto_ref_kind__assign(_this, value)
+#define corto_ref_kind__set(_this, value) _this = _this ? _this : (corto_ref_kind*)corto_ptr_new(corto_ref_kind_o); _corto_ref_kind__assign(_this, value)
+
 /* sequence */
 CORTO_EXPORT corto_sequence _corto_sequence__create(corto_object _parent, const char *_id, corto_type elementType, uint32_t max);
 #define corto_sequence__create(_parent, _id, elementType, max) _corto_sequence__create(_parent, _id, corto_type(elementType), max)

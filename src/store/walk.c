@@ -33,7 +33,7 @@ int16_t corto_walk_ptr(
     corto_type type,
     void* userData)
 {
-    corto_value v = corto_value_value(ptr, type);
+    corto_value v = corto_value_ptr(ptr, type);
     return corto_walk_value(this, &v, userData);
 }
 
@@ -68,7 +68,7 @@ int16_t corto_walk_value(
     bool isObservable = false;
 
     if (info->kind == CORTO_MEMBER) {
-        corto_member m = info->is.member.t;
+        corto_member m = info->is.member.member;
         if (m->modifiers & CORTO_OBSERVABLE) {
             isObservable = true;
         }
@@ -96,7 +96,7 @@ int16_t corto_walk_value(
     if (t->reference && ((t->kind == CORTO_VOID) ||
                          ((info->kind != CORTO_OBJECT) &&
                           (info->kind != CORTO_BASE) &&
-                          (info->kind != CORTO_MEM) &&
+                          (info->ref_kind != CORTO_BY_VALUE) &&
                           !isObservable)))
     {
         cb = this->reference;
@@ -149,8 +149,8 @@ int16_t corto_walk(
 
     info.kind = CORTO_OBJECT;
     info.parent = NULL;
-    info.is.object.o = o;
-    info.is.object.t = corto_typeof(o);
+    info.is.object.ref = o;
+    info.is.object.type = corto_typeof(o);
 
     if (this->construct) {
         if (this->construct(this, &info, userData)) {
@@ -226,7 +226,7 @@ int16_t corto_any_walk(
 
     if (any->type) {
         v.parent = info;
-        v = corto_value_value(any->value, corto_type(any->type));
+        v = corto_value_ptr(any->value, corto_type(any->type));
         result = corto_walk_value(this, &v, userData);
     }
 
@@ -278,22 +278,22 @@ static int16_t corto_walk_member(
 
             member.kind = CORTO_MEMBER;
             member.parent = info;
-            member.is.member.o = o;
-            member.is.member.t = m;
+            member.is.member.ref = o;
+            member.is.member.member = m;
 
             if (isOptional &&
                 (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH))
             {
-                member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
+                member.is.member.ptr = *(void**)CORTO_OFFSET(v, m->offset);
             } else {
-                member.is.member.v = CORTO_OFFSET(v, m->offset);
+                member.is.member.ptr = CORTO_OFFSET(v, m->offset);
             }
 
             /* Don't serialize if member is optional and not set */
             if (!isOptional ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_ALWAYS) ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_PASSTHROUGH) ||
-                member.is.member.v)
+                member.is.member.ptr)
             {
                 if (cb(this, &member, userData)) {
                     goto error;
@@ -337,9 +337,9 @@ int16_t corto_walk_members(
             if (cb && ((corto_interface)t)->base) {
                 base.kind = CORTO_BASE;
                 base.parent = info;
-                base.is.base.v = v;
-                base.is.base.t = (corto_type)((corto_interface)t)->base;
-                base.is.base.o = o;
+                base.is.base.ptr = v;
+                base.is.base.type = (corto_type)((corto_interface)t)->base;
+                base.is.base.ref = o;
 
                 if (cb(this, &base, userData)) {
                     goto error;
@@ -409,7 +409,7 @@ int corto_serializeElement(void* e, void* userData) {
     info = data->info;
 
     /* Set element value */
-    info->is.element.v = e;
+    info->is.element.ptr = e;
 
     /* Forward element to serializer callback */
     if (data->cb(this, info, data->userData)) {
@@ -417,7 +417,7 @@ int corto_serializeElement(void* e, void* userData) {
     }
 
     /* Increase index */
-    info->is.element.t.index++;
+    info->is.element.index++;
 
     return 1;
 error:
@@ -475,10 +475,10 @@ int16_t corto_walk_elements(
 
     /* Value object for element */
     elementInfo.kind = CORTO_ELEMENT;
-    elementInfo.is.element.o = corto_value_objectof(info);
+    elementInfo.is.element.ref = corto_value_objectof(info);
     elementInfo.parent = info;
-    elementInfo.is.element.t.type = t->elementType;
-    elementInfo.is.element.t.index = 0;
+    elementInfo.is.element.type = t->elementType;
+    elementInfo.is.element.index = 0;
 
     walkData.this = this;
     walkData.userData = userData;

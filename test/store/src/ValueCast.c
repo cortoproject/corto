@@ -6,12 +6,12 @@ void test_ValueCast_tc_castBinaryBool(
     test_ValueCast this)
 {
     corto_word w = 10;
-    corto_value left = corto_value_value(&w, corto_word_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&w, corto_word_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -25,7 +25,7 @@ void test_ValueCast_tc_castBinaryBool(
 
     ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -41,12 +41,12 @@ void test_ValueCast_tc_castBinaryChar(
     test_ValueCast this)
 {
     corto_word w = 65;
-    corto_value left = corto_value_value(&w, corto_word_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&w, corto_word_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_char_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -62,12 +62,12 @@ void test_ValueCast_tc_castBinaryFloat(
     test_ValueCast this)
 {
     corto_word w = 10;
-    corto_value left = corto_value_value(&w, corto_word_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&w, corto_word_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_float64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -83,12 +83,12 @@ void test_ValueCast_tc_castBinaryInt(
     test_ValueCast this)
 {
     corto_word w = 10;
-    corto_value left = corto_value_value(&w, corto_word_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&w, corto_word_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -104,12 +104,12 @@ void test_ValueCast_tc_castBinaryString(
     test_ValueCast this)
 {
     corto_word w = 10;
-    corto_value left = corto_value_value(&w, corto_word_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&w, corto_word_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -125,12 +125,12 @@ void test_ValueCast_tc_castBinaryUint(
     test_ValueCast this)
 {
     corto_word w = 10;
-    corto_value left = corto_value_value(&w, corto_word_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&w, corto_word_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -146,12 +146,12 @@ void test_ValueCast_tc_castBitmaskInt(
     test_ValueCast this)
 {
     corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
-    corto_value left = corto_value_value(&v, corto_attr_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_attr_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -167,12 +167,12 @@ void test_ValueCast_tc_castBitmaskString(
     test_ValueCast this)
 {
     corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
-    corto_value left = corto_value_value(&v, corto_attr_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_attr_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -188,12 +188,12 @@ void test_ValueCast_tc_castBitmaskUint(
     test_ValueCast this)
 {
     corto_attr v = CORTO_ATTR_NAMED | CORTO_ATTR_WRITABLE;
-    corto_value left = corto_value_value(&v, corto_attr_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_attr_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -209,12 +209,12 @@ void test_ValueCast_tc_castBoolBinary(
     test_ValueCast this)
 {
     corto_bool v = TRUE;
-    corto_value left = corto_value_value(&v, corto_bool_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_bool_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_word_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -228,7 +228,7 @@ void test_ValueCast_tc_castBoolBinary(
 
     ret = corto_value_cast(&left, corto_word_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -244,12 +244,12 @@ void test_ValueCast_tc_castBoolInt(
     test_ValueCast this)
 {
     corto_bool v = TRUE;
-    corto_value left = corto_value_value(&v, corto_bool_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_bool_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -263,7 +263,7 @@ void test_ValueCast_tc_castBoolInt(
 
     ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -279,12 +279,12 @@ void test_ValueCast_tc_castBoolString(
     test_ValueCast this)
 {
     corto_bool v = TRUE;
-    corto_value left = corto_value_value(&v, corto_bool_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_bool_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -298,7 +298,7 @@ void test_ValueCast_tc_castBoolString(
 
     ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -314,12 +314,12 @@ void test_ValueCast_tc_castBoolUint(
     test_ValueCast this)
 {
     corto_bool v = TRUE;
-    corto_value left = corto_value_value(&v, corto_bool_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_bool_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -333,7 +333,7 @@ void test_ValueCast_tc_castBoolUint(
 
     ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -349,12 +349,12 @@ void test_ValueCast_tc_castEnumInt(
     test_ValueCast this)
 {
     corto_width v = CORTO_WIDTH_WORD;
-    corto_value left = corto_value_value(&v, corto_width_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_width_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -370,12 +370,12 @@ void test_ValueCast_tc_castEnumString(
     test_ValueCast this)
 {
     corto_width v = CORTO_WIDTH_WORD;
-    corto_value left = corto_value_value(&v, corto_width_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_width_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -391,12 +391,12 @@ void test_ValueCast_tc_castEnumUint(
     test_ValueCast this)
 {
     corto_width v = CORTO_WIDTH_WORD;
-    corto_value left = corto_value_value(&v, corto_width_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_width_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -412,12 +412,12 @@ void test_ValueCast_tc_castFloatBool(
     test_ValueCast this)
 {
     corto_float64 v = 10.5;
-    corto_value left = corto_value_value(&v, corto_float64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_float64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -430,7 +430,7 @@ void test_ValueCast_tc_castFloatBool(
     v = 0;
     ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -446,12 +446,12 @@ void test_ValueCast_tc_castFloatInt(
     test_ValueCast this)
 {
     corto_float64 v = 10.5;
-    corto_value left = corto_value_value(&v, corto_float64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_float64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -467,12 +467,12 @@ void test_ValueCast_tc_castFloatString(
     test_ValueCast this)
 {
     corto_float64 v = 10.5;
-    corto_value left = corto_value_value(&v, corto_float64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_float64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -490,12 +490,12 @@ void test_ValueCast_tc_castFloatUint(
     test_ValueCast this)
 {
     corto_float64 v = 10.5;
-    corto_value left = corto_value_value(&v, corto_float64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_float64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -513,12 +513,12 @@ void test_ValueCast_tc_castIntBinary(
     test_ValueCast this)
 {
     corto_int64 v = 10;
-    corto_value left = corto_value_value(&v, corto_int64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_int64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_word_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -536,12 +536,12 @@ void test_ValueCast_tc_castIntBool(
     test_ValueCast this)
 {
     corto_int64 v = 10;
-    corto_value left = corto_value_value(&v, corto_int64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_int64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -554,7 +554,7 @@ void test_ValueCast_tc_castIntBool(
     v = 0;
     ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -572,12 +572,12 @@ void test_ValueCast_tc_castIntChar(
     test_ValueCast this)
 {
     corto_int64 v = 65;
-    corto_value left = corto_value_value(&v, corto_int64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_int64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_char_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -595,12 +595,12 @@ void test_ValueCast_tc_castIntFloat(
     test_ValueCast this)
 {
     corto_int64 v = 10;
-    corto_value left = corto_value_value(&v, corto_int64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_int64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_float64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -618,12 +618,12 @@ void test_ValueCast_tc_castIntString(
     test_ValueCast this)
 {
     corto_int64 v = 10;
-    corto_value left = corto_value_value(&v, corto_int64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_int64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_string_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -641,12 +641,12 @@ void test_ValueCast_tc_castIntUint(
     test_ValueCast this)
 {
     corto_int64 v = 10;
-    corto_value left = corto_value_value(&v, corto_int64_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_int64_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -664,12 +664,12 @@ void test_ValueCast_tc_castStringBinary(
     test_ValueCast this)
 {
     corto_string v = "0xa";
-    corto_value left = corto_value_value(&v, corto_string_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_string_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_word_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -687,12 +687,12 @@ void test_ValueCast_tc_castStringBool(
     test_ValueCast this)
 {
     corto_string v = "true";
-    corto_value left = corto_value_value(&v, corto_string_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_string_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -706,7 +706,7 @@ void test_ValueCast_tc_castStringBool(
 
     ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -720,7 +720,7 @@ void test_ValueCast_tc_castStringBool(
 
     ret = corto_value_cast(&left, corto_bool_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -739,12 +739,12 @@ void test_ValueCast_tc_castStringEnum(
     test_ValueCast this)
 {
     corto_string v = "WIDTH_WORD";
-    corto_value left = corto_value_value(&v, corto_string_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_string_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_width_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -762,12 +762,12 @@ void test_ValueCast_tc_castStringFloat(
     test_ValueCast this)
 {
     corto_string v = "10.5";
-    corto_value left = corto_value_value(&v, corto_string_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_string_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_float64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -785,12 +785,12 @@ void test_ValueCast_tc_castStringInt(
     test_ValueCast this)
 {
     corto_string v = "10";
-    corto_value left = corto_value_value(&v, corto_string_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_string_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_int64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);
@@ -808,12 +808,12 @@ void test_ValueCast_tc_castStringUint(
     test_ValueCast this)
 {
     corto_string v = "10";
-    corto_value left = corto_value_value(&v, corto_string_o);
-    corto_value out = corto_value_value(NULL, NULL);
+    corto_value left = corto_value_ptr(&v, corto_string_o);
+    corto_value out = corto_value_ptr(NULL, NULL);
 
     corto_int16 ret = corto_value_cast(&left, corto_uint64_o, &out);
     test_assert(ret == 0);
-    test_assert(out.kind == CORTO_VALUE);
+    test_assert(out.kind == CORTO_POINTER);
 
     corto_type type = corto_value_typeof(&out);
     test_assert(type != NULL);

@@ -404,3 +404,4 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 /* -- Short object variable translation -- */
 
 #endif
+

@@ -102,6 +102,7 @@ CORTO_META_OBJECT(enum, procedureKind);
 CORTO_META_OBJECT(enum, equalityKind);
 CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(enum, inout);
+CORTO_META_OBJECT(enum, ref_kind);
 CORTO_META_OBJECT(bitmask, eventMask);
 CORTO_META_OBJECT(bitmask, modifier);
 CORTO_META_OBJECT(bitmask, state);

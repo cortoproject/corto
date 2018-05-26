@@ -22,6 +22,9 @@ class Foo:/
 class Bar:/
     int16 init()
 
+class PointClass:/
+    x, y: int32
+
 struct Point:/
     x, y: int32
     string nameof()

@@ -584,3 +584,4 @@ CORTO_EXPORT void corto_resultlist__clear(corto_resultlist list);
 }
 #endif
 #endif
+

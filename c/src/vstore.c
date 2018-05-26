@@ -1874,3 +1874,4 @@ void corto_resultlist__clear(corto_resultlist list) {
     }
     corto_ll_clear(list);
 }
+

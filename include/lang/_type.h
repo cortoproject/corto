@@ -500,6 +500,13 @@ typedef struct corto_procedure_s {
     corto_type thisType;
 } *corto_procedure;
 
+/* enum corto/lang/ref_kind */
+typedef enum corto_ref_kind {
+    CORTO_BY_TYPE = 0,
+    CORTO_BY_VALUE = 1,
+    CORTO_BY_REFERENCE = 2
+} corto_ref_kind;
+
 /* class corto/lang/sequence */
 typedef struct corto_sequence_s {
     struct corto_collection_s super;

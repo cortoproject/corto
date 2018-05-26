@@ -35,8 +35,8 @@
  * `corto_ptr_deinit` for stack/heap values initialized with `corto_ptr_init`.
  */
 
-#ifndef CORTO_PTR_H_
-#define CORTO_PTR_H_
+#ifndef CORTO_POINTER_H_
+#define CORTO_POINTER_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -216,6 +216,22 @@ int16_t corto_ptr_unaryOp(
     void* ptr,
     void* result);
 
+/** Perform unary operator on a value.
+ * @param type The type of the value.
+ * @param _operator The operator to perform.
+ * @param ptr A pointer to the operand value.
+ * @param result A pointer to the result value.
+ * @return 0 if success, nonzero if failed.
+ * @see corto_ptr_binaryOp corto_ptr_cast
+ */
+CORTO_EXPORT
+int16_t corto_mem_unaryOp(
+    corto_type type,
+    corto_operatorKind _operator,
+    void* ptr,
+    void* result);
+
+
 /** Perform binary operator with two values.
  * @param type The type of the left and right value.
  * @param _operator The operator to perform.
@@ -227,6 +243,14 @@ int16_t corto_ptr_unaryOp(
  */
 CORTO_EXPORT
 int16_t corto_ptr_binaryOp(
+    corto_type type,
+    corto_operatorKind _operator,
+    void *left,
+    void *right,
+    void *result);
+
+CORTO_EXPORT
+int16_t corto_mem_binaryOp(
     corto_type type,
     corto_operatorKind _operator,
     void *left,
@@ -310,4 +334,4 @@ int16_t _corto_ptr_deinit(
 }
 #endif
 
-#endif /* CORTO_PTR_H_ */
+#endif /* CORTO_POINTER_H_ */

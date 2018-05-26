@@ -98,9 +98,9 @@ int16_t corto_walk_constants(
             /* Fill info */
             info.parent = v;
             info.kind = CORTO_CONSTANT;
-            info.is.constant.t = t->constants.buffer[i];
-            info.is.constant.v = NULL;
-            info.is.constant.o = corto_value_objectof(v);
+            info.is.constant.constant = t->constants.buffer[i];
+            info.is.constant.ptr = NULL;
+            info.is.constant.ref = corto_value_objectof(v);
 
             /* Serialize constant */
             if (s->metaprogram[CORTO_CONSTANT](s, &info, userData)) {

@@ -107,6 +107,7 @@ int16_t corto_type_construct(
     case CORTO_VOID:
         this->size = this->reference ? sizeof(void*) : 0;
         this->alignment = CORTO_ALIGNMENT(void*);
+        break;
     default:
         break;
     }

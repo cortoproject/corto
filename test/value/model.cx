@@ -1,0 +1,343 @@
+in package test
+
+class reftype:/
+    x, y: int32
+
+class refmbr:/
+    x, y: int32
+    m: reftype
+
+struct valtype:/
+    x, y: int32
+
+struct valmbr:/
+    x, y: int32
+    m: valtype
+
+test/Suite assign_reftype_obj:/
+    void tc_byref_frommbr_bytype()
+    void tc_byref_frommbr_byval()
+    void tc_byref_frommbr_byref()
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+    void tc_byref_fromnull()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+    void tc_bytype_frommbr_bytype()
+    void tc_bytype_frommbr_byval()
+    void tc_bytype_frommbr_byref()
+    void tc_bytype_fromnull()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+    void tc_byval_frommbr_bytype()
+    void tc_byval_frommbr_byval()
+    void tc_byval_frommbr_byref()
+    void tc_byval_fromnull()
+
+test/Suite assign_reftype_ptr:/
+    void tc_byref_frommbr_bytype()
+    void tc_byref_frommbr_byval()
+    void tc_byref_frommbr_byref()
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+    void tc_byref_fromnull()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+    void tc_bytype_frommbr_bytype()
+    void tc_bytype_frommbr_byval()
+    void tc_bytype_frommbr_byref()
+    void tc_bytype_fromnull()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+    void tc_byval_frommbr_bytype()
+    void tc_byval_frommbr_byval()
+    void tc_byval_frommbr_byref()
+    void tc_byval_fromnull()
+
+test/Suite assign_valtype_obj:/
+    void tc_byref_frommbr_bytype()
+    void tc_byref_frommbr_byval()
+    void tc_byref_frommbr_byref()
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+    void tc_bytype_frommbr_bytype()
+    void tc_bytype_frommbr_byval()
+    void tc_bytype_frommbr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+    void tc_byval_frommbr_bytype()
+    void tc_byval_frommbr_byval()
+    void tc_byval_frommbr_byref()
+
+test/Suite assign_valtype_ptr:/
+    void tc_byref_frommbr_bytype()
+    void tc_byref_frommbr_byval()
+    void tc_byref_frommbr_byref()
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+    void tc_bytype_frommbr_bytype()
+    void tc_bytype_frommbr_byval()
+    void tc_bytype_frommbr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+    void tc_byval_frommbr_bytype()
+    void tc_byval_frommbr_byval()
+    void tc_byval_frommbr_byref()
+
+test/Suite assign_number_obj:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_number_ptr:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_value_to_object_obj:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_value_to_object_ptr:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_ref_to_object_obj:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_ref_to_object_ptr:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_val_to_bool_obj:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_ref_to_bool_obj:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()
+
+test/Suite assign_bool_to_bool_obj:/
+    void tc_byref_fromptr_bytype()
+    void tc_byref_fromptr_byval()
+    void tc_byref_fromptr_byref()
+    void tc_byref_fromobj_bytype()
+    void tc_byref_fromobj_byval()
+    void tc_byref_fromobj_byref()
+
+    void tc_bytype_fromobj_bytype()
+    void tc_bytype_fromobj_byval()
+    void tc_bytype_fromobj_byref()
+    void tc_bytype_fromptr_bytype()
+    void tc_bytype_fromptr_byval()
+    void tc_bytype_fromptr_byref()
+
+    void tc_byval_fromptr_bytype()
+    void tc_byval_fromptr_byval()
+    void tc_byval_fromptr_byref()
+    void tc_byval_fromobj_bytype()
+    void tc_byval_fromobj_byval()
+    void tc_byval_fromobj_byref()

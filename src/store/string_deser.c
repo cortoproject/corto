@@ -154,7 +154,7 @@ corto_int16 corto_string_deserBuildIndexPrimitive(
     data = userData;
 
     /* Lookup member */
-    m = v->is.member.t;
+    m = v->is.member.member;
 
     /* Create new info-object */
     newInfo = corto_alloc(sizeof(struct corto_string_deserIndexInfo));

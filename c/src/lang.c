@@ -2836,6 +2836,45 @@ corto_quantity _corto_quantity__assign(corto_quantity _this, corto_unit base_uni
     return _this;
 }
 
+corto_ref_kind* _corto_ref_kind__create(corto_object _parent, const char *_id, corto_ref_kind value) {
+    corto_ref_kind* _this;
+    _this = (corto_ref_kind*)corto_declare(_parent, _id, corto_ref_kind_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        *_this = value;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_ref_kind__update(corto_ref_kind* _this, corto_ref_kind value) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            *((corto_ref_kind*)CORTO_OFFSET(_this, ((corto_type)corto_ref_kind_o)->size)) = value;
+        } else {
+            *_this = value;
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_ref_kind* _corto_ref_kind__assign(corto_ref_kind* _this, corto_ref_kind value) {
+    CORTO_UNUSED(_this);
+    *_this = value;
+    return _this;
+}
+
 corto_sequence _corto_sequence__create(corto_object _parent, const char *_id, corto_type elementType, uint32_t max) {
     corto_sequence _this;
     _this = (corto_sequence)corto_declare(_parent, _id, corto_sequence_o);
