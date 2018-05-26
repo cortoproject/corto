@@ -65,7 +65,9 @@ corto_type corto_value_typeof(
             result = NULL;
             break;
         default:
-            corto_critical("corto_value_typeof: invalid corto_literal_kind(%d)", val->is.literal.kind);
+            corto_critical(
+              "corto_value_typeof: invalid corto_literal_kind(%d)",
+              val->is.literal.kind);
             result = NULL;
             break;
         }
@@ -83,7 +85,8 @@ corto_type corto_value_typeof(
         result = val->is.map_element.type;
         break;
     default:
-        corto_critical("corto_value_typeof: invalid corto_value_kind(%d).", val->kind);
+        corto_critical(
+          "corto_value_typeof: invalid corto_value_kind(%d).", val->kind);
         result = NULL;
         break;
     }
@@ -125,7 +128,8 @@ void* corto_value_ptrof(
         result = val->is.map_element.ptr;
         break;
     default:
-        corto_critical("corto_value_ptrof: invalid corto_value_kind(%d).", val->kind);
+        corto_critical(
+          "corto_value_ptrof: invalid corto_value_kind(%d).", val->kind);
         result = NULL;
         break;
     }
@@ -162,7 +166,8 @@ int16_t corto_value_ptrset(
         corto_throw("cannot set pointer for literal");
         goto error;
     default:
-        corto_critical("corto_value_ptrset: invalid corto_value_kind(%d).", val->kind);
+        corto_critical(
+          "corto_value_ptrset: invalid corto_value_kind(%d).", val->kind);
         break;
     }
     return 0;
@@ -201,7 +206,8 @@ corto_object corto_value_objectof(
         result = val->is.map_element.ref;
         break;
     default:
-        corto_critical("corto_value_objectof: invalid corto_value_kind(%d).", val->kind);
+        corto_critical(
+          "corto_value_objectof: invalid corto_value_kind(%d).", val->kind);
         result = NULL;
         break;
     }
@@ -337,7 +343,7 @@ int16_t corto_value_memberExpr(
 
             if (!corto_instanceof(corto_interface_o, t)) {
                 corto_throw(
-                    "cannot get member '%s' from a non-composite value (type is '%s')",
+            "cannot get member '%s' from a non-composite value (type is '%s')",
                     prev,
                     corto_fullpath(NULL, t));
                 goto error;
@@ -684,7 +690,8 @@ int16_t corto_value_copy(
     corto_value *dst,
     corto_value *src)
 {
-    corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+    corto_walk_opt s = corto_copy_ser(
+      CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
     int16_t result;
     corto_bool newObject = FALSE;
@@ -886,11 +893,17 @@ int16_t _corto_value_cast(
             *out = corto_value_bool(false);
         }
     } else
-    if (dst_is_refcontainer || corto_type_instanceof(dst_type, src_type)) {
+    if (dst_is_refcontainer ||
+        (corto_type_instanceof(dst_type, src_type) && src_is_ref))
+    {
         bool any_ref = dst_type->kind == CORTO_VOID && dst_type->reference;
         if ((any_ref && src_is_ref) || corto_type_castable(dst_type, src_type))
         {
-            *out = corto_value_pointer(src, dst_type);
+            if (in->kind == CORTO_OBJECT) {
+                *out = corto_value_object(src, dst_type);
+            } else {
+                *out = corto_value_pointer(src, dst_type);
+            }
         } else {
             corto_throw("cannot cast type '%s%s' to '%s'",
                 corto_fullpath(NULL, src_type), src_is_ref ? "&" : "",
@@ -931,11 +944,12 @@ int16_t corto_value_binaryOp(
         oper_type = NULL,
         result_type = NULL;
 
-    corto_value_ref_kind
+    corto_ref_kind
         left_ref_kind = left->ref_kind,
         right_ref_kind = right->ref_kind;
 
     corto_value left_val, right_val;
+    bool is_assignment = _operator == CORTO_ASSIGN;
 
     uintptr_t *result_ptr = NULL;
     bool use_left_as_result = false;
@@ -945,9 +959,9 @@ int16_t corto_value_binaryOp(
         (right->kind == CORTO_LITERAL &&
          right->is.literal.kind == CORTO_LITERAL_NULL);
 
-     bool left_is_refcontainer = corto_is_ref_container(left_type);
+    bool left_is_refcontainer = corto_is_ref_container(left_type);
 
-    if (_operator == CORTO_ASSIGN) {
+    if (is_assignment) {
         if (left->kind == CORTO_OBJECT) {
             if (left->ref_kind == CORTO_BY_REFERENCE) {
                 corto_throw("cannot assign objects as reference");
@@ -959,7 +973,9 @@ int16_t corto_value_binaryOp(
             }
         }
 
-        if (left_type->reference && left_ref_kind == CORTO_BY_VALUE && right_isnull) {
+        if (left_type->reference &&
+            left_ref_kind == CORTO_BY_VALUE && right_isnull)
+        {
             corto_throw("cannot assign null to value of reference");
             goto error;
         }
@@ -1044,7 +1060,9 @@ int16_t corto_value_binaryOp(
         right_type = oper_type;
         right_isref = left_isref;
     } else
-    if (right_type != oper_type) {
+    if (right_type != oper_type ||
+       (is_assignment && right_isref && !left_isref))
+    {
         if (corto_value_cast(right, oper_type, &right_val)) {
             goto error;
         }
@@ -1076,10 +1094,18 @@ int16_t corto_value_binaryOp(
     if (right->kind == CORTO_OBJECT && right_isref) {
         right_arg = &right_ptr;
     }
-    if (left->kind != CORTO_OBJECT && left_type->reference && !left_isref) {
+    if (left->kind != CORTO_OBJECT &&
+        left_type &&
+        left_type->reference &&
+        !left_isref)
+    {
         left_arg = left_ptr ? *(corto_object*)left_ptr : NULL;
     }
-    if (right->kind != CORTO_OBJECT && right_type->reference && !right_isref) {
+    if (right->kind != CORTO_OBJECT &&
+        right_type &&
+        right_type->reference &&
+        !right_isref)
+    {
         right_arg = right_ptr ? *(corto_object*)right_ptr : NULL;
     }
 
@@ -1088,7 +1114,7 @@ int16_t corto_value_binaryOp(
         if (result->kind != CORTO_LITERAL) {
             result_ptr = corto_value_ptrof(result);
             if (!result_ptr) {
-                if (result_type->kind == CORTO_PRIMITIVE) {
+                if (!result_type || result_type->kind == CORTO_PRIMITIVE) {
                     result_ptr = &result->is.pointer.storage;
                 } else {
                     if (_operator == CORTO_ASSIGN) {
@@ -1137,7 +1163,7 @@ int16_t corto_value_binaryOp(
             } else {
                 result->is.pointer.ptr = left_arg;
             }
-        } else if (result_type->reference) {
+        } else if (result_type && result_type->reference) {
             result->is.pointer.storage = *(uintptr_t*)result_ptr;
             result->is.pointer.ptr = &result->is.pointer.storage;
         } else {

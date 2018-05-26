@@ -151,7 +151,7 @@ int16_t corto_expr_typeof(
                 goto error;
             }
         } else {
-            /* This and dst don't have a type. Don't know what to do */
+            /* Src and dst don't have a type. Don't know what to do */
             corto_throw("cannot derive type, source and target are 'null'");
             goto error;
         }
@@ -161,7 +161,8 @@ int16_t corto_expr_typeof(
             result = corto_object_o;
         } else {
             corto_throw(
-                "cannot assign non-reference value to '%s'",
+                "cannot assign non-reference value of type '%s' to '%s'",
+                    corto_fullpath(NULL, src),
                     corto_fullpath(NULL, dst));
             goto error;
         }
@@ -307,7 +308,7 @@ error:
 
 int16_t corto_expr_is_ref(
     corto_value_kind kind,
-    corto_value_ref_kind ref_kind,
+    corto_ref_kind ref_kind,
     corto_type type,
     bool *result)
 {
@@ -337,7 +338,11 @@ int16_t corto_expr_is_ref(
             if (!type->reference || kind != CORTO_OBJECT) {
                 corto_throw("cannot take value of void value");
                 goto error;
-            }
+            } /* else {
+                Even though the value of a void reftype is a reference, 'false'
+                indicates to the expression evaluation algorithm that we should
+                obtain *o, not &o, in case 'o' is an object itself.
+            } */
         }
         *result = false;
     }
