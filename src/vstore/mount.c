@@ -243,6 +243,9 @@ int16_t corto_mount_construct(
 
     if (!corto_mount_hasMethod(this, "on_id")) {
         this->policy.mask &= ~CORTO_MOUNT_ID;
+    } else if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
+        corto_warning(
+          "mount configures 'on_id' but mount is not a local source");
     }
 
     /* Set the callback function */
