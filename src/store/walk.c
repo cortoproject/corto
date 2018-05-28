@@ -476,6 +476,7 @@ int16_t corto_walk_elements(
 
     /* Value object for element */
     elementInfo.kind = CORTO_ELEMENT;
+    elementInfo.ref_kind = CORTO_BY_TYPE;
     elementInfo.is.element.ref = corto_value_objectof(info);
     elementInfo.parent = info;
     elementInfo.is.element.type = t->elementType;
