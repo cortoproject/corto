@@ -277,6 +277,7 @@ static int16_t corto_walk_member(
             bool isOptional = modifiers & CORTO_OPTIONAL;
 
             member.kind = CORTO_MEMBER;
+            member.ref_kind = CORTO_BY_TYPE;
             member.parent = info;
             member.is.member.ref = o;
             member.is.member.member = m;
