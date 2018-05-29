@@ -12,15 +12,18 @@ corto_int16 corto_type_bindMetaprocedure(
     corto_int32 d = 0;
 
     /* Check if function is overloaded */
-    if ((f = corto_vtableLookup(&this->metaprocedures, corto_idof(procedure), &d))) {
+    if ((f = corto_vtableLookup(&this->metaprocedures,
+        corto_idof(procedure), &d)))
+    {
         if (d) {
-            corto_function(*f)->overloaded = TRUE; /* Flag found and passed function as overloaded. */
+            /* Flag found and passed function as overloaded. */
             corto_function(procedure)->overloaded = TRUE;
+            corto_function(*f)->overloaded = TRUE;
         } else {
             if (*f != corto_function(procedure)) {
                 /* Overriding metaprocedures is not allowed. */
                 corto_throw(
-                  "definition of metaprocedure '%s' conflicts with existing '%s'",
+                "definition of metaprocedure '%s' conflicts with existing '%s'",
                   corto_fullpath(NULL, *f),
                   corto_fullpath(NULL, procedure));
                 goto error;
@@ -57,14 +60,15 @@ bool corto_type_castable_v(
 {
     corto_bool result = FALSE;
 
-    if (this->kind == CORTO_VOID) { /* A void reference can be casted to any reference type */
+    if (this->kind == CORTO_VOID) {
+        /* A void reference can be casted to any reference type */
         if (this->reference && type->reference) {
             return TRUE;
         }
     }
 
     if (!result) {
-        result = corto_type_compatible_v(this, type);
+        result = corto_type_compatible(this, type);
     }
 
     return result;
@@ -177,16 +181,18 @@ corto_function corto_type_resolveProcedure(
 {
     corto_function result = NULL;
 
-    /* If type is an interface, try first to resolve a method on the interface */
+    /* If type == INTERFACE, try first to resolve a method on the interface */
     if (corto_instanceof((corto_type)corto_interface_o, this)) {
-        result = (corto_function)corto_interface_resolveMethod(corto_interface(this), name);
+        result = (corto_function)corto_interface_resolveMethod(
+            corto_interface(this), name);
     }
 
-    /* If no method is found or type is not an interface, resolve metaprocedure */
+    /* If method isn't found or type != INTERFACE, resolve metaprocedure */
     if (!result) {
         corto_function *f;
         corto_int32 d = 0, prevD = 9999;
         corto_class metaclass = corto_class(corto_typeof(this));
+
         /* Walk inheritance of metaclass to find metaprocedure */
         do {
             if ((f = corto_vtableLookup(
