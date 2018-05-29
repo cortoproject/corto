@@ -686,12 +686,16 @@ bool corto_interface_compatible_v(
          * an implement-relation could make it compatible. */
         if (corto_class_instanceof(corto_class_o, type)) {
             uint32_t i;
-            for (i=0; (i<corto_class(type)->implements.length) && !result; i++)
-            {
-                if (corto_class(type)->implements.buffer[i] == this) {
-                    result = TRUE;
+            corto_interface base = (corto_interface)type;
+            do {
+                corto_class _class = (corto_class)base;
+                for (i = 0; (i < _class->implements.length) && !result; i++)
+                {
+                    if (_class->implements.buffer[i] == this) {
+                        result = TRUE;
+                    }
                 }
-            }
+            } while ((base = base->base));
         }
     }
 

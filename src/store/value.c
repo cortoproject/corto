@@ -905,12 +905,11 @@ int16_t _corto_value_cast(
                 *out = corto_value_pointer(src, dst_type);
             }
         } else {
-            corto_throw("cannot cast type '%s%s' to '%s'",
+            corto_throw("cannot cast from '%s%s' to '%s'",
                 corto_fullpath(NULL, src_type), src_is_ref ? "&" : "",
                 corto_fullpath(NULL, dst_type));
             goto error;
         }
-
     } else {
         if (corto_ptr_cast(src_type, src, dst_type, dst)) {
             goto error;
