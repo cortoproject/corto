@@ -491,9 +491,9 @@ int16_t corto_interface_checkProcedureParameters(
             if (o1->parameters.buffer[i].passByReference !=
                 o2->parameters.buffer[i].passByReference)
             {
-                if ((((p1->kind == void) && (p1->reference)) &&
+                if ((((p1->kind == CORTO_VOID) && (p1->reference)) &&
                       o2->parameters.buffer[i].passByReference) ||
-                    (((p2->kind == void) && (p2->reference)) &&
+                    (((p2->kind == CORTO_VOID) && (p2->reference)) &&
                       o1->parameters.buffer[i].passByReference))
                 {
                 } else {
@@ -522,8 +522,8 @@ bool corto_interface_checkProcedureCompatibility(
 
     result = TRUE;
 
-    returnType1 = o1->returnType ? o1->returnType : (corto_type)void_o;
-    returnType2 = o2->returnType ? o2->returnType : (corto_type)void_o;
+    returnType1 = o1->returnType ? o1->returnType : (corto_type)corto_void_o;
+    returnType2 = o2->returnType ? o2->returnType : (corto_type)corto_void_o;
 
     if (returnType1 != returnType2) {
         if (!corto_type_compatible(returnType1, returnType2)) {
