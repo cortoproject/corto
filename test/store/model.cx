@@ -660,6 +660,11 @@ test/Suite ObjectMgmt:/
     void tc_declareNestedSecondExists()
     void tc_declareNestedLastExists()
 
+    void tc_declareNestedFuncNoArgs()
+    void tc_declareNestedFuncOneArg()
+    void tc_declareNestedFuncOneOutArg()
+    void tc_declareNestedFuncTwoArgs()
+
     void tc_redeclareUnknown()
     void tc_redeclareNestedUnknown()
     void tc_redeclareOutOfOrder()

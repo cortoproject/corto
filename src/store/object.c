@@ -1913,8 +1913,23 @@ corto_object corto_declareChildRecursive_intern(
 
             cur = next;
             if (cur && (next = (char*)strelem(cur))) {
-                *next = '\0';
-                next ++;
+                if (*next == '(') {
+                    for (; *next != ')' && *next; next++);
+                    if (*next == ')') {
+                        if (!next[1]) {
+                            next = NULL;
+                        }
+                    } else {
+                        corto_throw(
+                          "missing ')' in object identifier '%s'", id);
+                        goto error;
+                    }
+                }
+
+                if (next) {
+                    *next = '\0';
+                    next ++;
+                }
             }
         } while (result && cur);
 
@@ -1939,6 +1954,8 @@ corto_object corto_declareChildRecursive_intern(
     }
 
     return result;
+error:
+    return NULL;
 }
 
 /* Declare new named or anonymous object */
