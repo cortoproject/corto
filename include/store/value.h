@@ -211,7 +211,7 @@ corto_object corto_value_objectof(
  * @see corto_value_unaryOp corto_value_binaryOp corto_value_cast
  */
 CORTO_EXPORT
-int16_t corto_value_memberExpr(
+int16_t corto_value_field(
     corto_value *value,
     const char *member,
     corto_value *out);
@@ -226,7 +226,7 @@ int16_t corto_value_memberExpr(
  * @param value A pointer to the operand corto_value.
  * @param result A pointer to the result corto_value.
  * @return 0 if success, nonzero if failed.
- * @see corto_ptr_binaryOp corto_ptr_cast corto_value_memberExpr
+ * @see corto_ptr_binaryOp corto_ptr_cast corto_value_field
  */
 CORTO_EXPORT
 int16_t corto_value_unaryOp(
@@ -245,7 +245,7 @@ int16_t corto_value_unaryOp(
  * @param right A pointer to the right operand corto_value.
  * @param result A pointer to the result corto_value.
  * @return 0 if success, nonzero if failed.
- * @see corto_ptr_unaryOp corto_ptr_cast corto_value_memberExpr
+ * @see corto_ptr_unaryOp corto_ptr_cast corto_value_field
  */
 CORTO_EXPORT
 int16_t corto_value_binaryOp(
@@ -259,7 +259,7 @@ int16_t corto_value_binaryOp(
  * @param resultType The type to cast to.
  * @param result A corto_value pointer to the result of the cast.
  * @return 0 if success, nonzero if failed.
- * @see corto_ptr_unaryOp corto_ptr_binaryOp corto_value_memberExpr
+ * @see corto_ptr_unaryOp corto_ptr_binaryOp corto_value_field
  */
 CORTO_EXPORT
 int16_t _corto_value_cast(
