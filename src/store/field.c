@@ -214,7 +214,7 @@ error:
     return NULL;
 }
 
-int16_t corto_field_lookup(
+int16_t _corto_field_lookup(
     const char *field,
     corto_type type,
     void *ptr,
@@ -242,6 +242,27 @@ int16_t corto_field_lookup(
             goto error;
         }
     }
+
+    return 0;
+error:
+    return -1;
+}
+
+int16_t _corto_field_lookup_index(
+    uint32_t index,
+    corto_collection type,
+    void *ptr,
+    corto_field *field_out)
+{
+    void *ptr_param = ptr;
+    if (corto_get_element_ptr(type, index, &ptr_param)) {
+        goto error;
+    }
+
+    field_out->type = type->elementType;
+    field_out->ptr = ptr_param;
+    field_out->index = index;
+    field_out->member = NULL;
 
     return 0;
 error:

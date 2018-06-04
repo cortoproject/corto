@@ -21,6 +21,21 @@
 
 #include <corto/corto.h>
 
+static
+bool corto_type_is_collection(
+    corto_type type)
+{
+    return !type->reference && type->kind == CORTO_COLLECTION;
+}
+
+static
+bool corto_type_is_complex(
+    corto_type type)
+{
+    return !type->reference &&
+      (type->kind == CORTO_COMPOSITE || type->kind == CORTO_COLLECTION);
+}
+
 corto_initializer _corto_initializer_init(
     corto_type type,
     void *ptr)
@@ -127,6 +142,9 @@ int16_t corto_initializer_index(
         }
 
         this->current->member = this->current->cache[index].member;
+        this->current->ptr = CORTO_OFFSET(
+            this->current->scope_ptr,
+            this->current->member->offset);
     } else {
         if (this->current->index >= corto_collection(type)->max) {
             corto_throw("index %d exceeds maximum collection length", index);
@@ -213,37 +231,39 @@ int16_t corto_initializer_push(
     corto_initializer *this,
     bool as_collection)
 {
+    corto_type cur_type = NULL;
+    void *cur_ptr = NULL;
+    corto_initializer_scope *scope = NULL;
+
     if (!this->current) {
-        this->current = &this->root_scope;
-        this->current->parent = NULL;
-        this->current->scope_type = this->initializer_type;
-        this->current->scope_ptr = this->initializer_ptr;
+        cur_type = this->initializer_type;
     } else {
-        corto_type type = corto_initializer_get_type(this);
-        if (!type) {
-            goto error;
-        }
-
-        if (type->kind == CORTO_COMPOSITE) {
-            if (as_collection) {
-                corto_throw("cannot open collection scope for type '%s'",
-                    corto_fullpath(NULL, type));
-                goto error;
-            }
-        } else if (type->kind != CORTO_COLLECTION) {
-            corto_throw("cannot push scope of non-complex type '%s'",
-                corto_fullpath(NULL, type));
-            goto error;
-        }
-
-        corto_initializer_scope *scope =
-            corto_calloc(sizeof(corto_initializer_scope));
-
-        scope->parent = this->current;
-        scope->scope_type = type;
-        scope->scope_ptr = this->current->ptr;
-        this->current = scope;
+        cur_type = corto_initializer_get_type(this);
     }
+
+    if (!corto_type_is_complex(cur_type)) {
+        corto_throw("cannot push scope for non-complex type '%s'", cur_type);
+        goto error;
+    }
+
+    if (as_collection && !corto_type_is_collection(cur_type)) {
+        corto_throw("cannot push scope of type '%s' as collection",
+            corto_fullpath(NULL, cur_type));
+        goto error;
+    }
+
+    if (!this->current) {
+        scope = &this->root_scope;
+        cur_ptr = this->initializer_ptr;
+    } else {
+        scope = corto_calloc(sizeof(corto_initializer_scope));
+        cur_ptr = this->current->ptr;
+    }
+
+    scope->scope_type = cur_type;
+    scope->scope_ptr = cur_ptr;
+    scope->parent = this->current;
+    this->current = scope;
 
     return 0;
 error:
@@ -358,6 +378,35 @@ void* corto_initializer_get_ptr(
     if (!this->current) {
         return this->initializer_ptr;
     } else {
-        return this->current->ptr;
+        if (this->current->scope_ptr) {
+            if (!this->current->ptr) {
+                if (this->current->member) {
+                    this->current->ptr = CORTO_OFFSET(
+                        this->current->scope_ptr,
+                        this->current->member->offset);
+                } else {
+                    corto_field field = {0};
+
+                    /* If a member was selected, the pointer should have been set
+                     * with it. So if the pointer isn't set yet, this must be a
+                     * collection element. */
+                    corto_try( corto_field_lookup_index(
+                        this->current->index,
+                        corto_collection(this->current->scope_type),
+                        this->current->scope_ptr,
+                        &field), NULL);
+
+                    /* Assign resolved field pointer */
+                    this->current->ptr = field.ptr;
+                }
+            }
+
+            return this->current->ptr;
+        } else {
+            return NULL;
+        }
     }
+
+error:
+    return NULL;
 }

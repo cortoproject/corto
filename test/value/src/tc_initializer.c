@@ -42,6 +42,7 @@ void test_tc_initializer_tc_composite_value(
 {
     corto_type type;
     corto_member member;
+    void *ptr;
 
     test_valtype *obj = corto_declare(root_o, "obj", test_valtype_o);
     corto_initializer init = corto_initializer_init(test_valtype_o, obj);
@@ -50,6 +51,9 @@ void test_tc_initializer_tc_composite_value(
     type = corto_initializer_get_type(&init);
     test_assert(type != NULL);
     test_assert(type == (corto_type)test_valtype_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
 
     test_assert(corto_initializer_push(&init, false) == 0);
 
@@ -60,6 +64,9 @@ void test_tc_initializer_tc_composite_value(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valtype_x_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->x);
 
     test_assert(corto_initializer_has_next(&init) == true);
     test_assert(corto_initializer_next(&init) == 0);
@@ -71,6 +78,9 @@ void test_tc_initializer_tc_composite_value(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valtype_y_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->y);
 
     test_assert(corto_initializer_has_next(&init) == false);
     test_assert(corto_initializer_pop(&init) == 0);
@@ -84,14 +94,18 @@ void test_tc_initializer_tc_composite_value_nested(
 {
     corto_type type;
     corto_member member;
+    void *ptr;
 
-    test_valtype *obj = corto_declare(root_o, "obj", test_valmbr_o);
+    test_valmbr *obj = corto_declare(root_o, "obj", test_valmbr_o);
     corto_initializer init = corto_initializer_init(test_valmbr_o, obj);
     test_assert(corto_initializer_has_next(&init) == false);
 
     type = corto_initializer_get_type(&init);
     test_assert(type != NULL);
     test_assert(type == (corto_type)test_valmbr_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
 
     /* valmbr */
     test_assert(corto_initializer_push(&init, false) == 0);
@@ -103,6 +117,9 @@ void test_tc_initializer_tc_composite_value_nested(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valmbr_x_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->x);
 
     test_assert(corto_initializer_has_next(&init) == true);
     test_assert(corto_initializer_next(&init) == 0);
@@ -114,6 +131,9 @@ void test_tc_initializer_tc_composite_value_nested(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valmbr_y_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->y);
 
     test_assert(corto_initializer_has_next(&init) == true);
     test_assert(corto_initializer_next(&init) == 0);
@@ -125,6 +145,9 @@ void test_tc_initializer_tc_composite_value_nested(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valmbr_m_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m);
 
     /* valtype */
     test_assert(corto_initializer_has_next(&init) == false);
@@ -137,6 +160,9 @@ void test_tc_initializer_tc_composite_value_nested(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valtype_x_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m.x);
 
     test_assert(corto_initializer_has_next(&init) == true);
     test_assert(corto_initializer_next(&init) == 0);
@@ -148,6 +174,9 @@ void test_tc_initializer_tc_composite_value_nested(
     member = corto_initializer_get_member(&init);
     test_assert(member != NULL);
     test_assert(member == test_valtype_y_o);
+    ptr = corto_initializer_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m.y);
 
     /* valtype */
     test_assert(corto_initializer_has_next(&init) == false);
@@ -163,7 +192,7 @@ void test_tc_initializer_tc_composite_value_nested(
 void test_tc_initializer_tc_primitive_bool(
     test_tc_initializer this)
 {
-    /* Insert implementation */
+
 }
 
 

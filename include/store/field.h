@@ -46,11 +46,22 @@ typedef struct corto_field {
 
 /** Lookup a field.
  */
-int16_t corto_field_lookup(
+int16_t _corto_field_lookup(
     const char *field,
     corto_type type,
     void *ptr,
     corto_field *field_out);
+
+/** Lookup a field by index.
+ */
+int16_t _corto_field_lookup_index(
+    uint32_t index,
+    corto_collection type,
+    void *ptr,
+    corto_field *field_out);
+
+#define corto_field_lookup(field, type, ptr, field_out) _corto_field_lookup(field, corto_type(type), ptr, field_out)
+#define corto_field_lookup_index(field, type, ptr, field_out) _corto_field_lookup_index(field, corto_collection(type), ptr, field_out)
 
 #ifdef __cplusplus
 }
