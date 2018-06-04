@@ -43,9 +43,11 @@ typedef struct corto_initializer_scope {
     /* Parent scope  (NULL for root_scope) */
     struct corto_initializer_scope *parent;
 
-    /* Type and offset of scope (static after entering scope) */
-    corto_type type;
-    void *offset;
+    /* Type of scope */
+    corto_type scope_type;
+
+    /* Base pointer of scope */
+    void *scope_ptr;
 
     /* Index of current value (changes when setting or progressing index) */
     int32_t index;
@@ -64,6 +66,8 @@ typedef struct corto_initializer_scope {
 } corto_initializer_scope;
 
 typedef struct corto_initializer {
+    corto_type initializer_type;
+    void *initializer_ptr;
     corto_initializer_scope root_scope;
     corto_initializer_scope *current;
 } corto_initializer;
@@ -71,7 +75,7 @@ typedef struct corto_initializer {
 /** Returns a new initializer.
  */
 CORTO_EXPORT
-corto_initializer corto_initializer_init(
+corto_initializer _corto_initializer_init(
     corto_type type,
     void *ptr);
 
@@ -85,6 +89,12 @@ void corto_initializer_deinit(
  */
 CORTO_EXPORT
 int16_t corto_initializer_next(
+    corto_initializer *_this);
+
+/** Check if scope has next member.
+ */
+CORTO_EXPORT
+bool corto_initializer_has_next(
     corto_initializer *_this);
 
 /** Move to index.
@@ -105,7 +115,8 @@ int16_t corto_initializer_field(
  */
 CORTO_EXPORT
 int16_t corto_initializer_push(
-    corto_initializer *_this);
+    corto_initializer *_this,
+    bool as_collection);
 
 /** Pop scope.
  */
@@ -134,13 +145,13 @@ corto_member corto_initializer_get_member(
 /** Get current index.
  */
 CORTO_EXPORT
-uint32_t corto_initializer_get_index(
+int32_t corto_initializer_get_index(
     corto_initializer *_this);
 
 /** Get current offset.
  */
 CORTO_EXPORT
-uintptr_t corto_initializer_get_offset(
+void* corto_initializer_get_ptr(
     corto_initializer *_this);
 
 /** Set current member.
@@ -149,6 +160,9 @@ CORTO_EXPORT
 uintptr_t corto_initializer_set(
     corto_initializer *_this,
     corto_value value);
+
+
+#define corto_initializer_init(type, ptr) _corto_initializer_init(corto_type(type), ptr)
 
 #ifdef __cplusplus
 }
