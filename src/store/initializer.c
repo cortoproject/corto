@@ -237,13 +237,20 @@ int16_t corto_initializer_push(
 
     if (!this->current) {
         cur_type = this->initializer_type;
+
+        /* Ignore if the type is a reference type for the root scope */
+        if (cur_type->kind != CORTO_COMPOSITE &&
+            cur_type->kind != CORTO_COLLECTION)
+        {
+            corto_throw("cannot push scope for non-complex type '%s'", cur_type);
+            goto error;
+        }
     } else {
         cur_type = corto_initializer_get_type(this);
-    }
-
-    if (!corto_type_is_complex(cur_type)) {
-        corto_throw("cannot push scope for non-complex type '%s'", cur_type);
-        goto error;
+        if (!corto_type_is_complex(cur_type)) {
+            corto_throw("cannot push scope for non-complex type '%s'", cur_type);
+            goto error;
+        }
     }
 
     if (as_collection && !corto_type_is_collection(cur_type)) {
@@ -409,4 +416,72 @@ void* corto_initializer_get_ptr(
 
 error:
     return NULL;
+}
+
+uintptr_t corto_initializer_set(
+    corto_initializer *this,
+    corto_value *value)
+{
+    corto_type type = corto_initializer_get_type(this);
+    void *ptr = corto_initializer_get_ptr(this);
+
+    corto_value field = corto_value_pointer(ptr, type);
+
+    return corto_value_binaryOp(CORTO_ASSIGN, &field, value, NULL);
+}
+
+uintptr_t corto_initializer_set_bool(
+    corto_initializer *this,
+    bool value)
+{
+    corto_value v = corto_value_bool(value);
+    return corto_initializer_set(this, &v);
+}
+
+uintptr_t corto_initializer_set_char(
+    corto_initializer *this,
+    char value)
+{
+    corto_value v = corto_value_char(value);
+    return corto_initializer_set(this, &v);
+}
+
+uintptr_t corto_initializer_set_int(
+    corto_initializer *this,
+    int64_t value)
+{
+    corto_value v = corto_value_int(value);
+    return corto_initializer_set(this, &v);
+}
+
+uintptr_t corto_initializer_set_uint(
+    corto_initializer *this,
+    uint64_t value)
+{
+    corto_value v = corto_value_uint(value);
+    return corto_initializer_set(this, &v);
+}
+
+uintptr_t corto_initializer_set_float(
+    corto_initializer *this,
+    double value)
+{
+    corto_value v = corto_value_float(value);
+    return corto_initializer_set(this, &v);
+}
+
+uintptr_t corto_initializer_set_string(
+    corto_initializer *this,
+    const char *value)
+{
+    corto_value v = corto_value_string((char*)value);
+    return corto_initializer_set(this, &v);
+}
+
+uintptr_t corto_initializer_set_ref(
+    corto_initializer *this,
+    corto_object value)
+{
+    corto_value v = corto_value_object((char*)value, NULL);
+    return corto_initializer_set(this, &v);
 }

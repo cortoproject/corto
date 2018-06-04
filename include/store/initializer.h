@@ -154,13 +154,47 @@ CORTO_EXPORT
 void* corto_initializer_get_ptr(
     corto_initializer *_this);
 
-/** Set current member.
+/** Set current field.
  */
 CORTO_EXPORT
 uintptr_t corto_initializer_set(
     corto_initializer *_this,
-    corto_value value);
+    corto_value *value);
 
+CORTO_EXPORT
+uintptr_t corto_initializer_set_bool(
+    corto_initializer *_this,
+    bool value);
+
+CORTO_EXPORT
+uintptr_t corto_initializer_set_char(
+    corto_initializer *_this,
+    char value);
+
+CORTO_EXPORT
+uintptr_t corto_initializer_set_int(
+    corto_initializer *_this,
+    int64_t value);
+
+CORTO_EXPORT
+uintptr_t corto_initializer_set_uint(
+    corto_initializer *_this,
+    uint64_t value);
+
+CORTO_EXPORT
+uintptr_t corto_initializer_set_float(
+    corto_initializer *_this,
+    double value);
+
+CORTO_EXPORT
+uintptr_t corto_initializer_set_string(
+    corto_initializer *_this,
+    const char *value);
+
+CORTO_EXPORT
+uintptr_t corto_initializer_set_ref(
+    corto_initializer *_this,
+    corto_object value);
 
 #define corto_initializer_init(type, ptr) _corto_initializer_init(corto_type(type), ptr)
 
