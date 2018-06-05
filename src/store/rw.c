@@ -50,8 +50,8 @@ corto_rw _corto_rw_init(
     void *ptr)
 {
     corto_rw result = {
-        .writer_type = type,
-        .writer_ptr = ptr,
+        .rw_type = type,
+        .rw_ptr = ptr,
     };
 
     return result;
@@ -192,7 +192,7 @@ int32_t corto_rw_count(
     corto_rw *this)
 {
     if (!this->current) {
-        if (corto_type_is_complex(this->writer_type)) {
+        if (corto_type_is_complex(this->rw_type)) {
             /* Complex values have no values in the root scope */
             return 0;
         } else {
@@ -410,6 +410,22 @@ int16_t corto_rw_field(
 
     if (field.index != -1) {
         this->current->index = field.index;
+    } else if (this->current->cache) {
+        /* If cache is set, lookup member and set correct index */
+        int i;
+        for (i = 0; i < this->current->max_index; i ++) {
+            if (this->current->cache[i].member == field.member) {
+                this->current->index = i;
+                break;
+            }
+        }
+
+        /* If member wasn't found in cache, the expression must've pointed to a
+         * nested field that doesn't appear in the current scope. Indicate that
+         * the index cannot be interpreted with value -1. */
+        if (i == this->current->max_index) {
+            this->current->index = -1;
+        }
     }
 
     return 0;
@@ -427,7 +443,7 @@ int16_t corto_rw_push(
     bool is_collection = false;
 
     if (!this->current) {
-        cur_type = this->writer_type;
+        cur_type = this->rw_type;
 
         /* Ignore if the type is a reference type for the root scope */
         if (cur_type->kind != CORTO_COMPOSITE &&
@@ -456,7 +472,7 @@ int16_t corto_rw_push(
 
     if (!this->current) {
         scope = &this->root_scope;
-        cur_ptr = this->writer_ptr;
+        cur_ptr = this->rw_ptr;
     } else {
         scope = corto_calloc(sizeof(corto_rw_scope));
         cur_ptr = this->current->ptr;
@@ -509,7 +525,7 @@ corto_type corto_rw_get_type(
     corto_rw *this)
 {
     if (!this->current) {
-        return this->writer_type;
+        return this->rw_type;
     } else if (this->current->member) {
         return this->current->member->type;
     } else if (this->current->scope_type->kind == CORTO_COLLECTION) {
@@ -536,7 +552,7 @@ corto_type corto_rw_get_scope_type(
     corto_rw *this)
 {
     if (!this->current) {
-        return this->writer_type;
+        return this->rw_type;
     } else {
         return this->current->scope_type;
     }
@@ -546,7 +562,6 @@ corto_member corto_rw_get_member(
     corto_rw *this)
 {
     if (!this->current) {
-        corto_throw("cannot obtain member, no scope pushed");
         return NULL;
     } else if (this->current->member) {
         return this->current->member;
@@ -576,9 +591,21 @@ int32_t corto_rw_get_index(
     corto_rw *this)
 {
     if (!this->current) {
-        corto_throw("cannot obtain index, no scope pushed");
-        return -1;
+        if (corto_type_is_complex(this->rw_type)) {
+            /* Indicate that index cannot be interpreted, as root scope doesn't
+             * have any complex values that can be initialized */
+            return -1;
+        } else {
+            /* If readerwriter is not a complex type, it has exactly one value
+             * in the root scope, and will thus always be at index 0 */
+            return 0;
+        }
     } else {
+        if (!this->current->cache &&
+            this->current->scope_type->kind == CORTO_COMPOSITE)
+        {
+            corto_scope_cache_build(this, this->current->scope_type);
+        }
         return this->current->index;
     }
 }
@@ -587,7 +614,7 @@ void* corto_rw_get_ptr(
     corto_rw *this)
 {
     if (!this->current) {
-        return this->writer_ptr;
+        return this->rw_ptr;
     } else {
         if (this->current->scope_ptr) {
             if (!this->current->ptr) {

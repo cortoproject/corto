@@ -68,8 +68,8 @@ typedef struct corto_rw_scope {
 } corto_rw_scope;
 
 typedef struct corto_rw {
-    corto_type writer_type;
-    void *writer_ptr;
+    corto_type rw_type;
+    void *rw_ptr;
     corto_rw_scope root_scope;
     corto_rw_scope *current;
 } corto_rw;

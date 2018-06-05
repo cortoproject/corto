@@ -20,12 +20,25 @@ struct valbase:/
 struct valsub: valbase :/
     z: int32
 
-struct refbase:/
+struct valsub_nested:/
+    m: valsub
+    n: valsub
+
+class refbase:/
     x, y: int32
 
-struct refsub: valbase :/
+class refsub: refbase :/
     z: int32
+
+class refsub_nested :/
     m: refbase
+    n: refbase
+
+struct point:/
+    x, y: int32
+
+struct line:/
+  start, stop: point
 
 enum Color:/
   Red, Yellow, Green, Blue
@@ -388,3 +401,11 @@ test/suite rw_field_expr:/
     void tc_composite_full_reverse()
     void tc_composite_partial()
     void tc_composite_mixed()
+    void tc_nested_expr_full()
+    void tc_nested_expr_full_reverse()
+    void tc_nested_expr_partial()
+    void tc_nested_expr_mixed()
+    void tc_nested_push_full()
+    void tc_nested_push_full_reverse()
+    void tc_nested_push_partial()
+    void tc_nested_push_mixed()

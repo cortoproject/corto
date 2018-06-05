@@ -723,23 +723,340 @@ void test_rw_tc_reference(
 void test_rw_tc_inheritance_ref(
     test_rw this)
 {
-    /* Insert implementation */
+    corto_type type;
+    corto_member member;
+    void *ptr;
+
+    test_refsub obj = corto_declare(root_o, "obj", test_refsub_o);
+    corto_rw init = corto_rw_init(test_refsub_o, obj);
+    test_assert(corto_rw_has_next(&init) == false);
+
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_refsub_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&init, false) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 0);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_refbase_x_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super.x);
+    test_assert(corto_rw_set_int(&init, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 1);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_refbase_y_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super.y);
+    test_assert(corto_rw_set_int(&init, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 2);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_refsub_z_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->z);
+    test_assert(corto_rw_set_int(&init, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&init) == false);
+    test_assert(corto_rw_pop(&init) == 0);
+    corto_rw_deinit(&init);
+
+    test_assert(corto_define(obj) == 0);
 }
 
 void test_rw_tc_inheritance_ref_nested(
     test_rw this)
 {
-    /* Insert implementation */
+    corto_type type;
+    corto_member member;
+    void *ptr;
+
+    corto_object ref_base_obj = corto_create(NULL, NULL, test_refbase_o);
+    test_assert(ref_base_obj != NULL);
+
+    corto_object ref_sub_obj = corto_create(NULL, NULL, test_refsub_o);
+    test_assert(ref_sub_obj != NULL);
+
+    test_refsub_nested obj = corto_declare(root_o, "obj", test_refsub_nested_o);
+    corto_rw init = corto_rw_init(test_refsub_nested_o, obj);
+    test_assert(corto_rw_has_next(&init) == false);
+
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_refsub_nested_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&init, false) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 0);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_refbase_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_refsub_nested_m_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m);
+    test_assert(corto_rw_set_ref(&init, ref_base_obj) == 0);
+    test_assert(obj->m == ref_base_obj);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 1);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_refbase_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_refsub_nested_n_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->n);
+    test_assert(corto_rw_set_ref(&init, ref_sub_obj) == 0);
+    test_assert(obj->n == ref_sub_obj);
+
+    test_assert(corto_rw_has_next(&init) == false);
+    test_assert(corto_rw_pop(&init) == 0);
+    corto_rw_deinit(&init);
+
+    test_assert(corto_define(obj) == 0);
+    test_assert(corto_delete(obj) == 0);
 }
 
 void test_rw_tc_inheritance_value(
     test_rw this)
 {
-    /* Insert implementation */
+    corto_type type;
+    corto_member member;
+    void *ptr;
+
+    test_valsub *obj = corto_declare(root_o, "obj", test_valsub_o);
+    corto_rw init = corto_rw_init(test_valsub_o, obj);
+    test_assert(corto_rw_has_next(&init) == false);
+
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_valsub_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&init, false) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 0);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valbase_x_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super.x);
+    test_assert(corto_rw_set_int(&init, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 1);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valbase_y_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super.y);
+    test_assert(corto_rw_set_int(&init, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 2);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valsub_z_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->z);
+    test_assert(corto_rw_set_int(&init, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&init) == false);
+    test_assert(corto_rw_pop(&init) == 0);
+    corto_rw_deinit(&init);
+
+    test_assert(corto_define(obj) == 0);
 }
 
 void test_rw_tc_inheritance_value_nested(
     test_rw this)
 {
-    /* Insert implementation */
+    corto_type type;
+    corto_member member;
+    void *ptr;
+
+    test_valsub_nested *obj = corto_declare(root_o, "obj", test_valsub_nested_o);
+    corto_rw init = corto_rw_init(test_valsub_nested_o, obj);
+    test_assert(corto_rw_has_next(&init) == false);
+
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_valsub_nested_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    /* root (valsub_nested) */
+    test_assert(corto_rw_push(&init, false) == 0);
+
+    /* m (valsub) */
+    test_assert(corto_rw_push(&init, false) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 0);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valbase_x_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m.super.x);
+    test_assert(corto_rw_set_int(&init, 10) == 0);
+    test_assertint(obj->m.super.x, 10);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 1);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valbase_y_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m.super.y);
+    test_assert(corto_rw_set_int(&init, 20) == 0);
+    test_assertint(obj->m.super.y, 20);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 2);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valsub_z_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->m.z);
+    test_assert(corto_rw_set_int(&init, 30) == 0);
+    test_assertint(obj->m.z, 30);
+
+    test_assert(corto_rw_has_next(&init) == false);
+    test_assert(corto_rw_pop(&init) == 0);
+
+    /* n -> m */
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    /* n (valsub) */
+    test_assert(corto_rw_push(&init, false) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 0);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valbase_x_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->n.super.x);
+    test_assert(corto_rw_set_int(&init, 40) == 0);
+    test_assertint(obj->n.super.x, 40);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 1);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valbase_y_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->n.super.y);
+    test_assert(corto_rw_set_int(&init, 50) == 0);
+    test_assertint(obj->n.super.y, 50);
+
+    test_assert(corto_rw_has_next(&init) == true);
+    test_assert(corto_rw_next(&init) == 0);
+
+    test_assertint(corto_rw_get_index(&init), 2);
+    type = corto_rw_get_type(&init);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)corto_int32_o);
+    member = corto_rw_get_member(&init);
+    test_assert(member != NULL);
+    test_assert(member == test_valsub_z_o);
+    ptr = corto_rw_get_ptr(&init);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->n.z);
+    test_assert(corto_rw_set_int(&init, 60) == 0);
+    test_assertint(obj->n.z, 60);
+
+    test_assert(corto_rw_has_next(&init) == false);
+    test_assert(corto_rw_pop(&init) == 0);
+
+    test_assert(corto_rw_has_next(&init) == false);
+    test_assert(corto_rw_pop(&init) == 0);
+    corto_rw_deinit(&init);
+
+    test_assert(corto_define(obj) == 0);
 }
