@@ -14,8 +14,25 @@ struct valmbr:/
     x, y: int32
     m: valtype
 
+struct valbase:/
+    x, y: int32
+
+struct valsub: valbase :/
+    z: int32
+
+struct refbase:/
+    x, y: int32
+
+struct refsub: valbase :/
+    z: int32
+    m: refbase
+
 enum Color:/
   Red, Yellow, Green, Blue
+
+array int_array: int32, 3
+sequence int_seq: int32
+list int_list: int32
 
 test/Suite assign_reftype_obj:/
     void tc_byref_frommbr_bytype()
@@ -345,7 +362,7 @@ test/Suite assign_bool_to_bool_obj:/
     void tc_byval_fromobj_byval()
     void tc_byval_fromobj_byref()
 
-test/suite tc_initializer:/
+test/suite rw:/
     void tc_primitive_bool()
     void tc_primitive_char()
     void tc_primitive_int()
@@ -358,6 +375,16 @@ test/suite tc_initializer:/
     void tc_composite_value_nested()
     void tc_composite_ref()
     void tc_composite_ref_nested()
+    void tc_inheritance_value()
+    void tc_inheritance_value_nested()
+    void tc_inheritance_ref()
+    void tc_inheritance_ref_nested()
     void tc_collection_array()
     void tc_collection_sequence()
     void tc_collection_list()
+
+test/suite rw_field_expr:/
+    void tc_composite_full()
+    void tc_composite_full_reverse()
+    void tc_composite_partial()
+    void tc_composite_mixed()

@@ -44,7 +44,10 @@ int16_t corto_get_element_ptr(
         uint32_t element_size = corto_type_sizeof(type->elementType);
         if (!max) max = type->max;
         if (index >= max) {
-            corto_throw("index %d is out of bounds", index);
+            corto_throw("index %d is out of bounds (%d) for array of type '%s'",
+                index,
+                max,
+                corto_fullpath(NULL, type));
             goto error;
         }
         result = CORTO_OFFSET(ptr, element_size * index);
@@ -53,7 +56,10 @@ int16_t corto_get_element_ptr(
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)ptr;
         if (index >= corto_ll_count(list)) {
-            corto_throw("index %d is out of bounds", index);
+            corto_throw("index %d is out of bounds (%d) for list of type '%s'",
+              index,
+              corto_ll_count(list),
+              corto_fullpath(NULL, type));
             goto error;
         }
 
@@ -255,9 +261,8 @@ int16_t _corto_field_lookup_index(
     corto_field *field_out)
 {
     void *ptr_param = ptr;
-    if (corto_get_element_ptr(type, index, &ptr_param)) {
-        goto error;
-    }
+
+    corto_try (corto_get_element_ptr(type, index, &ptr_param), NULL);
 
     field_out->type = type->elementType;
     field_out->ptr = ptr_param;

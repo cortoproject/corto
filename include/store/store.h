@@ -120,7 +120,7 @@
 #include <corto/store/time.h>
 #include <corto/store/field.h>
 #include <corto/store/value.h>
-#include <corto/store/initializer.h>
+#include <corto/store/rw.h>
 #include <corto/store/expr.h>
 #include <corto/store/walk.h>
 
