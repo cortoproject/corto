@@ -197,6 +197,7 @@ const char* corto_field_lookup_member(
         field_out->member = NULL;
         field_out->index = -1;
         field_out->ptr = ptr;
+        field_out->is_super = true;
 
     } else {
         /* If not super, lookup member in the type */
@@ -213,6 +214,7 @@ const char* corto_field_lookup_member(
         field_out->member = m;
         field_out->index = -1;
         field_out->ptr = CORTO_OFFSET(ptr, m->offset);
+        field_out->is_super = false;
     }
 
     return field - 1;
@@ -231,6 +233,7 @@ int16_t _corto_field_lookup(
     field_out->type = type;
     field_out->ptr = ptr;
     field_out->index = -1;
+    field_out->is_super = false;
 
     for (; (ch = *field); field ++) {
         if (ch == '[') {

@@ -609,3 +609,405 @@ void test_rw_field_expr_tc_nested_push_partial(
 
     test_assert(corto_define(obj) == 0);
 }
+
+void test_rw_field_expr_tc_inheritance_push_full(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    /* point3d */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super") == 0);
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super);
+
+    /* point */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "y") == 0);
+    test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    /* point3d */
+
+    test_assert(corto_rw_field(&rw, "z") == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_push_full_reverse(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    /* point3d */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "z") == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    test_assert(corto_rw_field(&rw, "super") == 0);
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super);
+
+    /* point */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "y") == 0);
+    test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.y, 10);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    test_assert(corto_rw_field(&rw, "x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.x, 20);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+    test_assert(corto_rw_pop(&rw) == 0);
+    /* point3d */
+
+    test_assert(corto_rw_has_next(&rw) == true);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_push_mixed(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    /* point3d */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super") == 0);
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super);
+
+    /* point */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "y") == 0);
+    test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    /* point3d */
+
+    test_assert(corto_rw_next(&rw) == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_push_partial(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    /* point3d */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super") == 0);
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super);
+
+    /* point */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_pop(&rw) == 0);
+    /* point3d */
+
+    test_assert(corto_rw_field(&rw, "z") == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_expr_full(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super.x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "super.y") == 0);
+    test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_field(&rw, "z") == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_expr_full_reverse(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "z") == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    test_assert(corto_rw_field(&rw, "super.y") == 0);
+    test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "super.x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_expr_mixed(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super.x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "super.y") == 0);
+    test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.y, 20);
+
+    test_assert(corto_rw_next(&rw) == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_expr_partial(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
+    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point3d_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super.x") == 0);
+    test_field(&rw, 0, test_point_x_o, (corto_type)corto_int32_o, &obj->super.x);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "z") == 0);
+    test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}

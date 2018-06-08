@@ -37,6 +37,9 @@ class refsub_nested :/
 struct point:/
     x, y: int32
 
+struct point3d: point:/
+    z: int32
+
 struct line:/
   start, stop: point
 
@@ -46,6 +49,15 @@ enum Color:/
 array int_array: int32, 3
 sequence int_seq: int32
 list int_list: int32
+
+struct s_nested_array:/
+    m: int_array
+
+struct s_nested_sequence:/
+    m: int_seq
+
+struct s_nested_list:/
+    m: int_list
 
 test/Suite assign_reftype_obj:/
     void tc_byref_frommbr_bytype()
@@ -395,6 +407,10 @@ test/suite rw:/
     void tc_collection_array()
     void tc_collection_sequence()
     void tc_collection_list()
+    void tc_nested_collection_array()
+    void tc_nested_collection_sequence()
+    void tc_nested_collection_list()
+    void tc_nested_collection_list_empty()
 
 test/suite rw_field_expr:/
     void tc_composite_full()
@@ -409,3 +425,11 @@ test/suite rw_field_expr:/
     void tc_nested_push_full_reverse()
     void tc_nested_push_partial()
     void tc_nested_push_mixed()
+    void tc_inheritance_push_full()
+    void tc_inheritance_push_full_reverse()
+    void tc_inheritance_push_partial()
+    void tc_inheritance_push_mixed()
+    void tc_inheritance_expr_full()
+    void tc_inheritance_expr_full_reverse()
+    void tc_inheritance_expr_partial()
+    void tc_inheritance_expr_mixed()

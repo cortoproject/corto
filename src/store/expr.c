@@ -300,8 +300,8 @@ int16_t corto_expr_binary_typeof(
     return 0;
 cast_error:
     corto_throw("cannot cast from '%s%s' to '%s%s'",
-        corto_fullpath(NULL, left_type), left_is_ref ? "&" : "",
-        corto_fullpath(NULL, right_type), right_is_ref ? "&" : "");
+      corto_fullpath(NULL, right_type), right_is_ref ? "&" : "",
+        corto_fullpath(NULL, left_type), left_is_ref ? "&" : "");
 error:
     return -1;
 }

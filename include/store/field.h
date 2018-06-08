@@ -42,6 +42,7 @@ typedef struct corto_field {
     corto_type type;
     corto_member member;
     uint32_t index;
+    bool is_super;
 } corto_field;
 
 /** Lookup a field.

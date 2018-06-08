@@ -26,6 +26,26 @@
  *        corto typesystem, and offers a consistent way to refer to individual
  *        fields inside objects. It is therefore the recommended API for writing
  *        (de)serializers and other APIs that interact with object values.
+ *
+ *        The API allows applications to either iterate over fields in a value,
+ *        or to jump to specific locations. The API provides access to any corto
+ *        type.
+ *
+ *        Complex (composite/collection) values need to be pushed before they
+ *        can be accessed. This "opens" the scope of the complex value, which
+ *        allows iteration over the members/elements in that scope. It also will
+ *        make field expressions relative to that scope. Pushing/popping scopes
+ *        is analogous to the `()` and `[]` operators in cortoscript, as can be
+ *        seen in this example:
+ *
+ *        `Line l (start:(x:10, 20), stop.x:30, stop.y:40)`
+ *
+ *        In this example, each `(` corresponds with a push, and each `)`
+ *        corresponds with a pop. The example also illustrates how to set single
+ *        fields in nested scopes without pushing/popping. This can be done in
+ *        the reader/writer API with the `field` function.
+ *
+ *        Note that this is still an UNSTABLE API.
  */
 
 #ifndef CORTO_RW_H
@@ -51,14 +71,8 @@ typedef struct corto_rw_scope {
     /* Base pointer of scope */
     void *scope_ptr;
 
-    /* Index of current value (changes when setting or progressing index) */
-    int32_t index;
-
-    /* Member and pointer of current value (changes when setting field) */
-    corto_member member;
-
-    /* Pointer to current value (changes when setting index or field) */
-    void *ptr;
+    /* Current field */
+    corto_field field;
 
     /* Member cache (only set when using index in composite types) */
     corto_rw_member *cache;
@@ -74,44 +88,102 @@ typedef struct corto_rw {
     corto_rw_scope *current;
 } corto_rw;
 
-/** Initialize a writer.
+/** Initialize a reader/writer.
+ *
+ * @param type The type of the value that is read/written to.
+ * @param ptr The pointer to the value that is read/written to.
+ * @return An initialized reader/writer value.
  */
 CORTO_EXPORT
 corto_rw _corto_rw_init(
     corto_type type,
     void *ptr);
 
-/** Deinitialize an writer.
+/** Deinitialize an reader/writer.
+ *
+ * @param this The reader/writer.
  */
 CORTO_EXPORT
 void corto_rw_deinit(
     corto_rw *_this);
 
-/** Move to next field.
+/** Move the cursor to next field.
+ *
+ * This function will move the cursor to the next field. In the case of a
+ * composite value, this will be the next member. The member order is
+ * established by the order in which members are defined. If modifiers are
+ * specified on members, like READONLY or PRIVATE, such members will be skipped.
+ *
+ * If the current type is a collection type, this will move the reader/writer to
+ * the next element in the collection. If the reader/writer hits the end of the
+ * collection, and the collection is growable (sequences, lists) a new element
+ * will automatically be added to the collection. To use a reader/writer to just
+ * walk over existing elements, use this function with `has_next`.
+ *
+ * When this function is used on composite scopes, it will require a member
+ * cache to be initialized once for the current scope.
+ *
+ * @param this The reader/writer.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_rw_next(
     corto_rw *_this);
 
-/** Check if scope has next field.
+/** Check if scope has a field after the cursor.
+ *
+ * Use this function in combination with `next` to iterate over the existing
+ * fields in a reader/writer.
+ *
+ * When this function is used on composite scopes, it will require a member
+ * cache to be initialized once for the current scope.
+ *
+ * @param this The reader/writer.
+ * @return `true` if there is a next field, `false` if not.
  */
 CORTO_EXPORT
 bool corto_rw_has_next(
     corto_rw *_this);
 
 /** Return number of fields in current scope.
+ *
+ * This returns the number of fields in the current scope, which in the case of
+ * a composite value is the number of accessible members, and in the case of a
+ * collection is the number of existing elements.
+ *
+ * When this function is used on composite scopes, it will require a member
+ * cache to be initialized once for the current scope.
+ *
+ * @param this The reader/writer.
+ * @return The number of fields in the current scope.
  */
 CORTO_EXPORT
 int32_t corto_rw_count(
     corto_rw *_this);
 
 /** Append new element to current scope.
+ *
+ * This function only applies to collection scopes. After appending, the cursor
+ * will be set to the new element.
+ *
+ * @param this The reader/writer.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_rw_append(
     corto_rw *_this);
 
-/** Move to field at specified index.
+/** Move the cursor to the field at specified index.
+ *
+ * This function moves the cursor to either a member or an element, depending on
+ * whether the current scope is of a composite or a collection type.
+ *
+ * When this function is used on composite scopes, it will require a member
+ * cache to be initialized once for the current scope.
+ *
+ * @param this The reader/writer.
+ * @param index The index to which to move the cursor to.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_rw_index(
@@ -119,6 +191,30 @@ int16_t corto_rw_index(
     uint32_t index);
 
 /** Move to field by expression.
+ *
+ * This function will move the reader/writer to the field as identified by the
+ * specified field expression. Field expressions can address both members and
+ * elements, and can refer to nested elements. A few examples:
+ *
+ * - foo
+ * - foo.bar
+ * - [1]
+ * - foo.bar[1]
+ *
+ * This function does not rely on the internal cursor, and does thus not require
+ * a member cache when used in composite scopes. Using this function _will_ move
+ * the cursor when the addressed field is in the same scope as the
+ * reader/writer, such that when `get_index` is called, it will return the index
+ * where the member is located.
+ *
+ * When a field expression addresses a value in a nested scope (not the current
+ * scope) the scope of the reader/writer will not be changed. Instead, the
+ * cursor will be invalidated, so that subsequent usage of the cursor will
+ * require an explicit action to set the cursor to a defined position.
+ *
+ * @param this The reader/writer.
+ * @param field_expr The expression identifying the field to read/write.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_rw_field(
@@ -126,6 +222,23 @@ int16_t corto_rw_field(
     const char *field_expr);
 
 /** Enter scope of composite / collection field.
+ *
+ * This will move the scope to the current field, if the current field is a
+ * complex (composite / collection) type. Pushing a scope enables the
+ * reader/writer to read/write to fields in a complex value.
+ *
+ * Each scope has its own cursor. After pushing, the cursor for this scope is
+ * initialized to 0 (initial position) and all rw API functions will now operte
+ * on/relative to this scope.
+ *
+ * When this function is invoked on a `list` type that is `null`, a new ll
+ * object will be assigned to the field.
+ *
+ * To return to the previous scope, use the `pop` function.
+ *
+ * @param this The reader/writer.
+ * @param as_collection Force the scope to be a collection. Equivalent to [] operator.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_rw_push(
@@ -133,9 +246,22 @@ int16_t corto_rw_push(
     bool as_collection);
 
 /** Leave scope of composite / collection field.
+ *
+ * This will move the scope back to the parent scope. The cursor
+ * of the parent scope does not automatically progress to the next field. To
+ * move to the next field, an explicit call to `corto_rw_next` is needed.
+ *
+ * @param this The reader/writer.
+ * @return 0 if success, non-zero if failed.
  */
 CORTO_EXPORT
 int16_t corto_rw_pop(
+    corto_rw *_this);
+
+/** Check if readerwriter is in a pushed scope.
+ */
+CORTO_EXPORT
+bool corto_rw_in_scope(
     corto_rw *_this);
 
 /** Get type of current scope.
@@ -171,7 +297,7 @@ void* corto_rw_get_ptr(
 /** Set current field to a corto_value.
  */
 CORTO_EXPORT
-uintptr_t corto_rw_set(
+uintptr_t corto_rw_set_value(
     corto_rw *_this,
     corto_value *value);
 

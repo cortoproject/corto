@@ -107,14 +107,14 @@ int16_t corto_scope_cache_build(
     /* Store members in contiguous array so we have O(1) read access */
     uint32_t count = 0;
     corto_iter it = corto_ll_iter(members);
-    corto_member member = this->current->member;
+    corto_member member = this->current->field.member;
     while (corto_iter_hasNext(&it)) {
         this->current->cache[count].member = corto_iter_next(&it);
 
         /* If a member was already set, update index to the current member */
         if (member) {
             if (this->current->cache[count].member == member) {
-                this->current->index = count;
+                this->current->field.index = count;
             }
         }
 
@@ -158,10 +158,12 @@ int16_t corto_rw_index(
         }
     } else {
         if (type->kind == CORTO_COMPOSITE) {
-            this->current->member = this->current->cache[index].member;
-            this->current->ptr = CORTO_OFFSET(
+            this->current->field.member = this->current->cache[index].member;
+            this->current->field.type = this->current->field.member->type;
+            this->current->field.is_super = false;
+            this->current->field.ptr = CORTO_OFFSET(
                 this->current->scope_ptr,
-                this->current->member->offset);
+                this->current->field.member->offset);
         } else {
             corto_field field = {0};
 
@@ -176,12 +178,13 @@ int16_t corto_rw_index(
                 NULL);
 
             /* Assign resolved field pointer */
-            this->current->ptr = field.ptr;
-            this->current->member = NULL;
+            this->current->field.ptr = field.ptr;
+            this->current->field.member = NULL;
+            this->current->field.is_super = false;
         }
     }
 
-    this->current->index = index;
+    this->current->field.index = index;
 
     return 0;
 error:
@@ -223,7 +226,11 @@ int32_t corto_rw_count(
              * elements in the collection. */
             corto_type type = this->current->scope_type;
             void *ptr = this->current->scope_ptr;
-            return corto_ptr_count(ptr, type);
+            if (ptr) {
+                return corto_ptr_count(ptr, type);
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -341,8 +348,8 @@ int16_t corto_rw_append(
         }
     }
 
-    this->current->ptr = elem_ptr;
-    this->current->index = index;
+    this->current->field.ptr = elem_ptr;
+    this->current->field.index = index;
 
     return 0;
 error:
@@ -352,7 +359,35 @@ error:
 int16_t corto_rw_next(
     corto_rw *this)
 {
-    corto_try(corto_rw_index(this, this->current->index + 1), NULL);
+    if (this->current) {
+        uint32_t i;
+
+        if (this->current->field.is_super) {
+            /* If the current field is a 'super' field, we need to skip over the
+             * fields of the base type(s) to get to the first member in the
+             * scope of the current type */
+
+            corto_type scope_type = this->current->scope_type;
+
+            /* To find the next field, we need a member cache */
+            corto_try( corto_scope_cache_build(this, scope_type), NULL);
+
+            for (i = 0; i < this->current->max_index; i ++) {
+                if (corto_parentof(
+                      this->current->cache[i].member) == scope_type) {
+                    /* Found first member of the current type */
+                    break;
+                }
+            }
+        } else {
+            i = this->current->field.index + 1;
+        }
+
+        corto_try(corto_rw_index(this, i), NULL);
+    } else {
+        corto_throw("invalid use of 'next': no scope pushed");
+        goto error;
+    }
     return 0;
 error:
     return -1;
@@ -369,7 +404,7 @@ bool corto_rw_has_next(
             goto error;
         }
 
-        if (this->current->index + 1 >= count) {
+        if (this->current->field.index + 1 >= count) {
             return false;
         } else {
             return true;
@@ -405,17 +440,19 @@ int16_t corto_rw_field(
         &field
     ), NULL);
 
-    this->current->ptr = field.ptr;
-    this->current->member = field.member;
+    this->current->field.ptr = field.ptr;
+    this->current->field.member = field.member;
+    this->current->field.type = field.type;
+    this->current->field.is_super = field.is_super;
 
     if (field.index != -1) {
-        this->current->index = field.index;
+        this->current->field.index = field.index;
     } else if (this->current->cache) {
         /* If cache is set, lookup member and set correct index */
         int i;
         for (i = 0; i < this->current->max_index; i ++) {
             if (this->current->cache[i].member == field.member) {
-                this->current->index = i;
+                this->current->field.index = i;
                 break;
             }
         }
@@ -424,7 +461,7 @@ int16_t corto_rw_field(
          * nested field that doesn't appear in the current scope. Indicate that
          * the index cannot be interpreted with value -1. */
         if (i == this->current->max_index) {
-            this->current->index = -1;
+            this->current->field.index = -1;
         }
     }
 
@@ -475,7 +512,7 @@ int16_t corto_rw_push(
         cur_ptr = this->rw_ptr;
     } else {
         scope = corto_calloc(sizeof(corto_rw_scope));
-        cur_ptr = this->current->ptr;
+        cur_ptr = this->current->field.ptr;
     }
 
     scope->scope_type = cur_type;
@@ -484,12 +521,22 @@ int16_t corto_rw_push(
     this->current = scope;
 
     if (is_collection) {
-        uint32_t max = corto_collection(cur_type)->max;
+        corto_collection col_type = corto_collection(cur_type);
+        uint32_t max = col_type->max;
         if (max) {
             this->current->max_index = max;
         } else {
             /* If collection is unbounded, scope can have unlimited elements */
             this->current->max_index = -1;
+        }
+
+        this->current->field.type = col_type->elementType;
+
+        /* If pushing a list scope, ensure a linked-list object is allocated */
+        if (cur_ptr && col_type->kind == CORTO_LIST) {
+            if (!*(corto_ll*)cur_ptr) {
+                *(corto_ll*)cur_ptr = corto_ll_new();
+            }
         }
     }
 
@@ -526,12 +573,10 @@ corto_type corto_rw_get_type(
 {
     if (!this->current) {
         return this->rw_type;
-    } else if (this->current->member) {
-        return this->current->member->type;
-    } else if (this->current->scope_type->kind == CORTO_COLLECTION) {
-        return corto_collection(this->current->scope_type)->elementType;
-    } else {
-        uint32_t index = this->current->index;
+    } else if (this->current->field.type) {
+        return this->current->field.type;
+    } else if (this->current->scope_type->kind == CORTO_COMPOSITE) {
+        uint32_t index = this->current->field.index;
         if (!this->current->cache) {
             corto_try( corto_rw_index(this, index), NULL);
         }
@@ -546,6 +591,12 @@ corto_type corto_rw_get_type(
 
 error:
     return NULL;
+}
+
+bool corto_rw_in_scope(
+    corto_rw *_this)
+{
+    return _this->current != NULL;
 }
 
 corto_type corto_rw_get_scope_type(
@@ -563,10 +614,10 @@ corto_member corto_rw_get_member(
 {
     if (!this->current) {
         return NULL;
-    } else if (this->current->member) {
-        return this->current->member;
+    } else if (this->current->field.member) {
+        return this->current->field.member;
     } else if (this->current->scope_type->kind == CORTO_COMPOSITE) {
-        uint32_t index = this->current->index;
+        uint32_t index = this->current->field.index;
         if (!this->current->cache) {
             corto_try(
                 corto_rw_index(this, index), NULL);
@@ -606,7 +657,7 @@ int32_t corto_rw_get_index(
         {
             corto_scope_cache_build(this, this->current->scope_type);
         }
-        return this->current->index;
+        return this->current->field.index;
     }
 }
 
@@ -617,11 +668,11 @@ void* corto_rw_get_ptr(
         return this->rw_ptr;
     } else {
         if (this->current->scope_ptr) {
-            if (!this->current->ptr) {
-                corto_try(corto_rw_index(this, this->current->index), NULL);
+            if (!this->current->field.ptr) {
+                corto_try(corto_rw_index(this, this->current->field.index), NULL);
             }
 
-            return this->current->ptr;
+            return this->current->field.ptr;
         } else {
             return NULL;
         }
@@ -631,7 +682,7 @@ error:
     return NULL;
 }
 
-uintptr_t corto_rw_set(
+uintptr_t corto_rw_set_value(
     corto_rw *this,
     corto_value *value)
 {
@@ -640,7 +691,10 @@ uintptr_t corto_rw_set(
 
     corto_value field = corto_value_pointer(ptr, type);
 
-    return corto_value_binaryOp(CORTO_ASSIGN, &field, value, NULL);
+    corto_try( corto_value_binaryOp(CORTO_ASSIGN, &field, value, NULL), NULL);
+    return 0;
+error:
+    return -1;
 }
 
 uintptr_t corto_rw_set_bool(
@@ -648,7 +702,7 @@ uintptr_t corto_rw_set_bool(
     bool value)
 {
     corto_value v = corto_value_bool(value);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
 
 uintptr_t corto_rw_set_char(
@@ -656,7 +710,7 @@ uintptr_t corto_rw_set_char(
     char value)
 {
     corto_value v = corto_value_char(value);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
 
 uintptr_t corto_rw_set_int(
@@ -664,7 +718,7 @@ uintptr_t corto_rw_set_int(
     int64_t value)
 {
     corto_value v = corto_value_int(value);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
 
 uintptr_t corto_rw_set_uint(
@@ -672,7 +726,7 @@ uintptr_t corto_rw_set_uint(
     uint64_t value)
 {
     corto_value v = corto_value_uint(value);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
 
 uintptr_t corto_rw_set_float(
@@ -680,7 +734,7 @@ uintptr_t corto_rw_set_float(
     double value)
 {
     corto_value v = corto_value_float(value);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
 
 uintptr_t corto_rw_set_string(
@@ -688,7 +742,7 @@ uintptr_t corto_rw_set_string(
     const char *value)
 {
     corto_value v = corto_value_string((char*)value);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
 
 uintptr_t corto_rw_set_ref(
@@ -696,5 +750,5 @@ uintptr_t corto_rw_set_ref(
     corto_object value)
 {
     corto_value v = corto_value_object((char*)value, NULL);
-    return corto_rw_set(this, &v);
+    return corto_rw_set_value(this, &v);
 }
