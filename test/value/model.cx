@@ -40,6 +40,13 @@ struct point:/
 struct point3d: point:/
     z: int32
 
+struct three_values:/
+    a, b, c: int32
+
+struct three_values_sub: three_values:/
+    a: int32
+    b: int32
+
 struct line:/
   start, stop: point
 
@@ -429,6 +436,7 @@ test/suite rw_field_expr:/
     void tc_inheritance_push_full_reverse()
     void tc_inheritance_push_partial()
     void tc_inheritance_push_mixed()
+    void tc_inheritance_push_mixed_three_values()
     void tc_inheritance_expr_full()
     void tc_inheritance_expr_full_reverse()
     void tc_inheritance_expr_partial()

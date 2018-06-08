@@ -143,8 +143,8 @@ int16_t corto_rw_index(
         goto error;
     }
 
-    if (index >= count) {
-        /* Try to append a new element if index points to one ahead ofb count */
+    if (index >= count && this->current->scope_ptr) {
+        /* Try to append a new element if index is one ahead of count */
         if ((index != count) || !corto_type_is_growable(type)) {
             /* If unable to append a new element, fail */
             corto_throw("index %d out of bounds (%d) for type '%s'",
@@ -161,21 +161,25 @@ int16_t corto_rw_index(
             this->current->field.member = this->current->cache[index].member;
             this->current->field.type = this->current->field.member->type;
             this->current->field.is_super = false;
-            this->current->field.ptr = CORTO_OFFSET(
-                this->current->scope_ptr,
-                this->current->field.member->offset);
+            if (this->current->scope_ptr) {
+                this->current->field.ptr = CORTO_OFFSET(
+                    this->current->scope_ptr,
+                    this->current->field.member->offset);
+            }
         } else {
             corto_field field = {0};
 
             /* If a member was selected, the pointer should have been set
              * with it. So if the pointer isn't set yet, this must be a
              * collection element. */
-            corto_try( corto_field_lookup_index(
-                index,
-                corto_collection(type),
-                this->current->scope_ptr,
-                &field),
-                NULL);
+            if (this->current->scope_ptr) {
+                corto_try( corto_field_lookup_index(
+                    index,
+                    corto_collection(type),
+                    this->current->scope_ptr,
+                    &field),
+                    NULL);
+            }
 
             /* Assign resolved field pointer */
             this->current->field.ptr = field.ptr;
@@ -380,7 +384,7 @@ int16_t corto_rw_next(
                 }
             }
         } else {
-            i = this->current->field.index + 1;
+            i = corto_rw_get_index(this) + 1;
         }
 
         corto_try(corto_rw_index(this, i), NULL);
@@ -691,7 +695,29 @@ uintptr_t corto_rw_set_value(
 
     corto_value field = corto_value_pointer(ptr, type);
 
-    corto_try( corto_value_binaryOp(CORTO_ASSIGN, &field, value, NULL), NULL);
+    if (corto_value_binaryOp(CORTO_ASSIGN, &field, value, NULL)) {
+        if (this->current) {
+            char *str = NULL;
+            corto_value_to_string(value, &str);
+            if (this->current->field.member) {
+                corto_throw(
+                    "failed to set value of member '%s' to '%s'",
+                    corto_fullpath(NULL, this->current->field.member),
+                    str);
+            } else if (this->current->field.is_super) {
+                corto_throw(
+                    "failed to set value of super member to '%s'", str);
+            } else {
+              corto_throw(
+                  "failed to set value at index %d to '%s'",
+                  this->current->field.index,
+                  str);
+            }
+            free(str);
+        }
+        goto error;
+    }
+
     return 0;
 error:
     return -1;

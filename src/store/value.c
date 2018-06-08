@@ -769,7 +769,15 @@ int16_t _corto_value_cast(
             goto error;
         }
     } else {
-        if (corto_ptr_cast(src_type, src, dst_type, dst)) {
+        void *src_addr;
+        void *src_ptr = src;
+
+        if (in->kind == CORTO_OBJECT && src_is_ref) {
+            src_addr = src;
+            src_ptr = &src_addr;
+        }
+
+        if (corto_ptr_cast(src_type, src_ptr, dst_type, dst)) {
             goto error;
         }
 

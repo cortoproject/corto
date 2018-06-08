@@ -767,8 +767,8 @@ void test_rw_field_expr_tc_inheritance_push_mixed(
     test_assertint(obj->super.x, 10);
 
     test_assert(corto_rw_has_next(&rw) == true);
+    test_assert(corto_rw_next(&rw) == 0);
 
-    test_assert(corto_rw_field(&rw, "y") == 0);
     test_field(&rw, 1, test_point_y_o, (corto_type)corto_int32_o, &obj->super.y);
     test_assert(corto_rw_set_int(&rw, 20) == 0);
     test_assertint(obj->super.y, 20);
@@ -834,6 +834,70 @@ void test_rw_field_expr_tc_inheritance_push_partial(
     test_field(&rw, 2, test_point3d_z_o, (corto_type)corto_int32_o, &obj->z);
     test_assert(corto_rw_set_int(&rw, 30) == 0);
     test_assertint(obj->z, 30);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_field_expr_tc_inheritance_push_mixed_three_values(
+    test_rw_field_expr this)
+{
+    corto_type type;
+    corto_member member;
+    void *ptr;
+
+    test_three_values_sub *obj = corto_declare(root_o, "obj", test_three_values_sub_o);
+    corto_rw rw = corto_rw_init(test_three_values_sub_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_three_values_sub_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    /* three_values_sub */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "super") == 0);
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_three_values_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == &obj->super);
+
+    /* three_values */
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "b") == 0);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->super.b, 10);
+
+    /* This tests whether the index is initialized to 1 instead of 0 */
+    test_assert(corto_rw_next(&rw) == 0);
+
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->super.b, 10);
+    test_assertint(obj->super.c, 20);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+    test_assert(corto_rw_pop(&rw) == 0);
+    /* point3d */
+
+    test_assert(corto_rw_next(&rw) == 0);
+    test_field(&rw, 3, test_three_values_sub_a_o, (corto_type)corto_int32_o, &obj->a);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->a, 30);
+
+    test_assert(corto_rw_next(&rw) == 0);
+    test_field(&rw, 4, test_three_values_sub_b_o, (corto_type)corto_int32_o, &obj->b);
+    test_assert(corto_rw_set_int(&rw, 30) == 0);
+    test_assertint(obj->b, 30);
 
     test_assert(corto_rw_has_next(&rw) == false);
     test_assert(corto_rw_pop(&rw) == 0);

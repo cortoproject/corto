@@ -213,7 +213,11 @@ const char* corto_field_lookup_member(
         field_out->type = m->type;
         field_out->member = m;
         field_out->index = -1;
-        field_out->ptr = CORTO_OFFSET(ptr, m->offset);
+        if (ptr) {
+            field_out->ptr = CORTO_OFFSET(ptr, m->offset);
+        } else {
+            field_out->ptr = NULL;
+        }
         field_out->is_super = false;
     }
 
