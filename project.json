@@ -19,7 +19,7 @@
         "cflags": ["-fvisibility=hidden"],
         "doxygen": [{
             "title": "Corto API Reference",
-            "chapters": [ "store", "vstore" ]
+            "chapters": [ "store", "vstore", "rw", "value", "ptr" ]
         }]
     }
 }
