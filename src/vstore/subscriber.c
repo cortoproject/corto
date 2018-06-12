@@ -787,8 +787,7 @@ int16_t corto_subscriber_construct(
     corto_log_push("subscribe");
 
     if (!this->query.select || !this->query.select[0]) {
-        corto_throw("'null' is not a valid subscriber expression");
-        goto error;
+        corto_set_str(&this->query.select, "*");
     }
 
     if (this->contentType && !this->fmt_handle) {
