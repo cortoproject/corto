@@ -243,7 +243,7 @@ corto_equalityKind corto_compareLookupIntern(
     char ch1, ch2;
 
     ch2 = *ptr2;
-    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{')) {
+    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{') && (ch2 != '.')) {
         if (ch1 == ch2) {
             ptr1++; ptr2++;
             ch2 = *ptr2;
@@ -260,7 +260,7 @@ corto_equalityKind corto_compareLookupIntern(
         ch2 = *ptr2;
     }
 
-    if (!ch1 && (ch2 == '/')) {
+    if (!ch1 && (ch2 == '/' || ch2 == '.')) {
         goto match;
     }
 
@@ -3337,6 +3337,7 @@ corto_object corto_lookup_intern(
     corto_object prev = NULL;
     char ch;
     const char *next, *ptr = id, *lastelem = NULL;
+    bool dot_separator = false;
 
     corto_log_push_dbg(strarg("lookup:%s, %s",
         corto_fullpath(NULL, parent), id));
@@ -3360,7 +3361,7 @@ corto_object corto_lookup_intern(
 
         prev = o;
 
-        if (ptr[0] == '/') {
+        if (ptr[0] == '/' || (ptr[0] == '.' && dot_separator)) {
             ptr ++;
         }
 
@@ -3369,10 +3370,23 @@ corto_object corto_lookup_intern(
         }
 
         bool containsArgs = false;
-        for (next = ptr; (ch = *next) && (ch != '/') && (ch != '{'); next ++) {
+        dot_separator = false; /* reset dot_operator */
+        for (next = ptr; (ch = *next) && ch != '/' && ch != '{'; next ++) {
             if (ch == '(') {
                 containsArgs = true;
                 for (next ++; (ch = *next) && (ch != ')'); next ++);
+            }
+            /* Skip '.', '..', but stop if '.' is used as scope separator */
+            if (ch == '.') {
+                if (next == ptr) {
+                    /* if . is first, it cannot be a scope separator */
+                } else if (next[-1] == '/' || next[-1] == '.') {
+                    /* If prev is '/' or '.', it cannot be a scope operator */
+                } else {
+                    /* It has to be a scope operator */
+                    dot_separator = true;
+                    break;
+                }
             }
         }
 

@@ -659,6 +659,10 @@ test/Suite ObjectMgmt:/
     void tc_declareNestedFirstExists()
     void tc_declareNestedSecondExists()
     void tc_declareNestedLastExists()
+    void tc_declareNestedDot()
+    void tc_declareNestedDots()
+    void tc_createNestedDot()
+    void tc_createNestedDots()
 
     void tc_declareNestedFuncNoArgs()
     void tc_declareNestedFuncOneArg()
@@ -1220,8 +1224,6 @@ test/Suite Lookup:/
     void tc_lookupParentInExpr()
     void tc_lookupParentAfterExpr()
     void tc_lookupEmptyString()
-    void tc_lookupIdStartsWithDot()
-    void tc_lookupIdEndsWithDot()
 
     void tc_lookupParenthesesNoFunction()
     void tc_lookupParenthesesNoFunctionArgs()
@@ -1249,6 +1251,9 @@ test/Suite Lookup:/
     void tc_lookupAll()
     void tc_lookupUnknown()
     void tc_lookupNoResume()
+
+    void tc_lookupDot()
+    void tc_lookupDotNested()
 
 
 //------------------------------------------------------------------------------

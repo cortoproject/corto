@@ -82,22 +82,6 @@ void test_Lookup_tc_lookupFunctionNoArgs(
 
 }
 
-void test_Lookup_tc_lookupIdEndsWithDot(
-    test_Lookup this)
-{
-
-    corto_object o = corto_create(root_o, "dot.", corto_void_o);
-    test_assert(o != NULL);
-
-    corto_object l = corto_lookup(root_o, "dot.");
-    test_assert(l != NULL);
-    test_assert(l == o);
-
-    corto_release(o);
-    corto_release(l);
-
-}
-
 void test_Lookup_tc_lookupIdFromNull(
     test_Lookup this)
 {
@@ -125,22 +109,6 @@ void test_Lookup_tc_lookupIdFromScope(
     corto_object o = corto_lookup(corto_vstore_o, "mount");
     test_assert(o != NULL);
     test_assert(o != corto_word_o);
-
-}
-
-void test_Lookup_tc_lookupIdStartsWithDot(
-    test_Lookup this)
-{
-
-    corto_object o = corto_create(root_o, ".dot", corto_void_o);
-    test_assert(o != NULL);
-
-    corto_object l = corto_lookup(root_o, ".dot");
-    test_assert(l != NULL);
-    test_assert(l == o);
-
-    corto_release(o);
-    corto_release(l);
 
 }
 
@@ -646,4 +614,30 @@ void test_Lookup_tc_lookupAnonymousWithPartialMatch(
     test_assertint(p->y, 20);
 
     corto_release(o);
+}
+
+void test_Lookup_tc_lookupDot(
+    test_Lookup this)
+{
+    corto_create(data_o, "foo", corto_void_o);
+    corto_object obj = corto_lookup(NULL, "data.foo");
+    test_assert(obj != NULL);
+
+    test_assertstr(corto_idof(obj), "foo");
+    test_assertstr(corto_fullpath(NULL, obj), "/data/foo");
+
+    test_assert(corto_release(obj) == 1);
+}
+
+void test_Lookup_tc_lookupDotNested(
+    test_Lookup this)
+{
+    corto_create(data_o, "foo/bar", corto_void_o);
+    corto_object obj = corto_lookup(NULL, "data.foo.bar");
+    test_assert(obj != NULL);
+
+    test_assertstr(corto_idof(obj), "bar");
+    test_assertstr(corto_fullpath(NULL, obj), "/data/foo/bar");
+
+    test_assert(corto_release(obj) == 1);
 }
