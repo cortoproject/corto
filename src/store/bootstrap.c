@@ -1319,8 +1319,6 @@ void corto_atexit(
  * functions after corto_stop has been called causes undefined behavior. */
 int corto_stop(void)
 {
-    CORTO_APP_STATUS = 2; /* Shutting down */
-
     corto_log_push("fini");
 
     corto_trace("shutting down...");
@@ -1348,6 +1346,10 @@ int corto_stop(void)
 
     corto_int32 i;
     corto_object o;
+
+    /* From here things get funky, because we're going to deinitialize builtin
+     * structures. Signal that corto is shutting down */
+    CORTO_APP_STATUS = 2;
 
     /* Destruct objects */
     corto_debug("cleanup builtin objects");

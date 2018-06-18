@@ -113,6 +113,7 @@ void corto_mount_notify(corto_subscriber_event *e) {
     }
 }
 
+static
 int corto_mount_alignSubscriptionsAction(
   corto_object e,
   corto_object instance,
@@ -138,9 +139,16 @@ int corto_mount_alignSubscriptionsAction(
     return 1;
 }
 
-corto_int16 corto_mount_alignSubscriptions(corto_mount this) {
+static
+int16_t corto_mount_alignSubscriptions(corto_mount this) {
 
-    if (!corto_entityAdmin_walk(&corto_subscriber_admin, corto_mount_alignSubscriptionsAction, NULL, false, this)) {
+    if (!corto_entityAdmin_walk(
+        &corto_subscriber_admin,
+        corto_mount_alignSubscriptionsAction,
+        NULL,
+        false,
+        this))
+    {
         goto error;
     }
 
@@ -149,7 +157,8 @@ error:
     return -1;
 }
 
-corto_bool corto_mount_hasMethod(corto_mount this, corto_string id) {
+static
+bool corto_mount_hasMethod(corto_mount this, corto_string id) {
     corto_method m = safe_corto_interface_resolveMethod(corto_typeof(this), id);
     if (m && (corto_parentof(m) != corto_mount_o)) {
         return TRUE;
@@ -289,7 +298,7 @@ int16_t corto_mount_construct(
         }
     }
 
-    corto_int16 ret = safe_corto_subscriber_construct(this);
+    int16_t ret = safe_corto_subscriber_construct(this);
     if (ret) {
         corto_entityAdmin_remove(&corto_mount_admin, s->query.from, this, this, FALSE);
     } else {
@@ -342,9 +351,15 @@ void corto_mount_destruct(
     }
 
     safe_corto_subscriber_destruct(this);
-    corto_assert(
-        corto_entityAdmin_remove(&corto_mount_admin, this->super.query.from, this, this, FALSE) != -1,
-        "trying to remove mount that was never added to mountAdmin");
+
+    if (corto_entityAdmin_remove(
+        &corto_mount_admin, this->super.query.from, this, this, FALSE) == -1)
+    {
+        corto_throw(
+          "mount '%s' was not registered, did you forget to call mount construct?",
+          corto_fullpath(NULL, this));
+        corto_raise();
+    }
 }
 
 corto_string corto_mount_id(
@@ -889,7 +904,7 @@ int16_t corto_mount_resumeResult(
     corto_result *r,
     corto_object *o_out)
 {
-    corto_bool new_object = false;
+    bool new_object = false;
     corto_id fullpath;
     corto_object type_o;
     corto_object result = NULL;
@@ -1393,7 +1408,7 @@ void corto_mount_unsubscribeOrUnmount(
     bool mount)
 {
     corto_mountSubscription *subscription = NULL;
-    corto_bool found = FALSE;
+    bool found = FALSE;
 
     if (subscribe && !(this->policy.mask & CORTO_MOUNT_SUBSCRIBE)) {
         subscribe = false;
