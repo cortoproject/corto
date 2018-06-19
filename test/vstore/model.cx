@@ -422,9 +422,7 @@ test/Suite SelectMount:/
     void tc_selectIteratorPartialReleaseTwoMounts()
     void tc_selectIteratorPartialReleaseTwoMountsNested()
 
-    void tc_selectSingleFromVirtualMount()
     void tc_selectScopeFromVirtualMount()
-    void tc_selectTreeFromVirtualMount()
 
     void tc_selectFromMountWithPartialFrom()
     void tc_selectFromRootNoInitialSlashInFrom()
@@ -527,13 +525,6 @@ test/Suite ResumeSink:/
     void tc_defineNested2()
     void tc_defineFromVirtualMountPoint()
     void tc_defineFromNestedVirtualMountPoint()
-    void tc_defineNested1FromVirtualMountPoint()
-    void tc_defineNested2FromVirtualMountPoint()
-    void tc_defineNested1FromNestedVirtualMountPoint()
-    void tc_defineNested2FromNestedVirtualMountPoint()
-    void tc_defineMismatchingTypeFromVirtualMountPoint()
-    void tc_defineMismatchingTypeNested1FromVirtualMountPoint()
-    void tc_defineMismatchingTypeNested2FromVirtualMountPoint()
     void tc_resumeNestedFromMultiple()
     void tc_cleanupParentFromResumedChild()
     void tc_cleanupResumedParentOfCreatedChild()
@@ -733,7 +724,6 @@ test/Suite SubscribeContentType:/
 // Test events received by replicator
 test/Suite ReplicatorEvent:/
     void tc_event()
-    void tc_eventDefineWithUpdate()
     void tc_eventTree()
     void tc_eventWithTree()
     void tc_eventTreeWithTree()
@@ -761,10 +751,6 @@ test/Suite MountSubscription:/
     void tc_subscribeSingleAlign()
     void tc_subscribeScopeAlign()
     void tc_subscribeTreeAlign()
-    void tc_subscribeTreeDefine()
-    void tc_subscribeTreeDelete()
-    void tc_subscribeTreeDefineNested()
-    void tc_subscribeTreeDeleteNested()
     void tc_subscribeForMountWithTypeFilter()
     void tc_subscribeNestedForMountWithTypeFilter()
     void tc_subscribeOnMountWithFromNull()
@@ -793,18 +779,10 @@ test/Suite MountContentTypeRefs:/
     void tc_selectDataNested1FromMountAtDataNested2()
     void tc_selectDataNested2FromMountAtDataNested2()
 
-    void tc_toMountAtRoot()
-    void tc_toMountAtData()
-    void tc_toMountAtDataNested1()
-    void tc_toMountAtDataNested2()
-
-    void tc_resumeWithRefToSelf()
-    void tc_resumeWithRefCycle()
 
 // Test mount on_mount callback
 test/Suite MountMounts:/
     void tc_mountOnDefine()
-    void tc_mountOnSubscribe()
 
 // Test mount that provides unique id's
 test/Suite MountId:/

@@ -448,21 +448,6 @@ test/Suite Attributes:/
     void tc_isDefaultScopedPersistent()
     void tc_typeOverridesAttributes()
 
-test/Suite Err:/
-    void tc_lastinfo()
-    void tc_callback()
-    void tc_category()
-    void tc_categoryMultiple()
-    void tc_categoryColonNoCategory()
-    void tc_categoryFilter()
-    void tc_categoryFilterMulti()
-    void tc_categoryFilterWildcard()
-    void tc_categoryRecursive()
-
-    level: int32
-    msg: string
-    category: string
-
 struct InitTest:/
     m_list: list{int32}
     m_list_not_null: list{int32}, not_null

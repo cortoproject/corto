@@ -824,14 +824,6 @@ void test_SelectMount_tc_selectSingleFromScopeTree(
 
 }
 
-void test_SelectMount_tc_selectSingleFromVirtualMount(
-    test_SelectMount this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
 void test_SelectMount_tc_selectSingleFromVirtualScope(
     test_SelectMount this)
 {
@@ -1309,14 +1301,6 @@ void test_SelectMount_tc_selectTreeFromScope(
     test_assertstr(result->type, "uint32");
 
     test_assert(!corto_iter_hasNext(&iter));
-
-}
-
-void test_SelectMount_tc_selectTreeFromVirtualMount(
-    test_SelectMount this)
-{
-
-    /* << Insert implementation >> */
 
 }
 

@@ -210,30 +210,6 @@ void test_ResumeSink_tc_defineFromVirtualMountPoint(
 
 }
 
-void test_ResumeSink_tc_defineMismatchingTypeFromVirtualMountPoint(
-    test_ResumeSink this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
-void test_ResumeSink_tc_defineMismatchingTypeNested1FromVirtualMountPoint(
-    test_ResumeSink this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
-void test_ResumeSink_tc_defineMismatchingTypeNested2FromVirtualMountPoint(
-    test_ResumeSink this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
 void test_ResumeSink_tc_defineNested1(
     test_ResumeSink this)
 {
@@ -331,14 +307,6 @@ void test_ResumeSink_tc_defineNested1FromNestedVirtualMountPoint(
     test_assert(corto_delete(vmount) == 0);
 }
 
-void test_ResumeSink_tc_defineNested1FromVirtualMountPoint(
-    test_ResumeSink this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
 void test_ResumeSink_tc_defineNested2(
     test_ResumeSink this)
 {
@@ -404,22 +372,6 @@ void test_ResumeSink_tc_defineNested2(
     test_assertint(*test_destructCalled_o, 3);
 
     corto_release(sinkMount);
-
-}
-
-void test_ResumeSink_tc_defineNested2FromNestedVirtualMountPoint(
-    test_ResumeSink this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
-void test_ResumeSink_tc_defineNested2FromVirtualMountPoint(
-    test_ResumeSink this)
-{
-
-    /* << Insert implementation >> */
 
 }
 

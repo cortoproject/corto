@@ -525,15 +525,3 @@ void test_ReplicatorEvent_tc_rateLimitAlign(
     };
     test_assert(corto_define(mnt) == 0);
 }
-
-void test_ReplicatorEvent_tc_sequenceToSequenceResize(
-    test_ReplicatorEvent this)
-{
-    /* Insert implementation */
-}
-
-void test_ReplicatorEvent_tc_eventDefineWithUpdate(
-    test_ReplicatorEvent this)
-{
-    /* Insert implementation */
-}
