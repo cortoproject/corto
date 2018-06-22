@@ -78,7 +78,7 @@ typedef struct corto_rw_scope {
     corto_rw_member *cache;
 
     /* Maximum index (set when initializing cache or pushing collection type) */
-    uint32_t max_index;
+    int32_t max_index;
 } corto_rw_scope;
 
 typedef struct corto_rw {

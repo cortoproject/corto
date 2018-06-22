@@ -161,8 +161,8 @@ corto_resultIter corto_loader_on_query_v(
 {
     corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
-    const char *targetPath = corto_load_targetPath();
-    const char *homePath = corto_load_homePath();
+    const char *targetPath = corto_load_targetMetaPath();
+    const char *homePath = corto_load_homeMetaPath();
 
     corto_log_push_dbg("vstore-loader");
 

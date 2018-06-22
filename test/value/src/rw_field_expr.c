@@ -846,7 +846,6 @@ void test_rw_field_expr_tc_inheritance_push_mixed_three_values(
     test_rw_field_expr this)
 {
     corto_type type;
-    corto_member member;
     void *ptr;
 
     test_three_values_sub *obj = corto_declare(root_o, "obj", test_three_values_sub_o);

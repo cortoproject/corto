@@ -340,7 +340,7 @@ int16_t corto_rw_append(
 
     void *ptr = this->current->scope_ptr;
     void *elem_ptr = NULL;
-    uint32_t index;
+    uint32_t index = 0;
 
     if (ctype->kind == CORTO_SEQUENCE) {
         if (!(elem_ptr = corto_rw_seq_append(ptr, ctype, &index))) {

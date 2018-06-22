@@ -816,7 +816,7 @@ int16_t corto_value_binaryOp(
     corto_value left_val, right_val;
     bool is_assignment = _operator == CORTO_ASSIGN;
 
-    uintptr_t *result_ptr = NULL;
+    uint64_t *result_ptr = NULL;
     bool use_left_as_result = false;
     bool result_owned = false;
 
