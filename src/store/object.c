@@ -1685,6 +1685,13 @@ int16_t corto_resume(
             strcat(full_id, "/");
         }
         strcat(full_id, expr);
+
+        char *ptr, ch;
+        for (ptr = full_id; (ch = *ptr); ptr++) {
+            if (ch == '.') {
+                *ptr = '/';
+            }
+        }
     }
 
     /* Search mounts at different levels in the hierarchy for the object */
