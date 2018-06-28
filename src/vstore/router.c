@@ -25,7 +25,7 @@ int16_t corto_router_construct(
 
     }
 
-    corto_set_ref(&corto_type(this)->options.defaultProcedureType, corto_method_o);
+    corto_set_ref(&corto_type(this)->scope_procedure_type, corto_method_o);
     return safe_corto_class_construct(this);
 error:
     return -1;

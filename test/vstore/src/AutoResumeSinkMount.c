@@ -4,13 +4,20 @@
 int16_t test_AutoResumeSinkMount_construct(
     test_AutoResumeSinkMount this)
 {
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+
     corto_set_str(&corto_subscriber(this)->query.type, this->type);
-    corto_string type =
-      this->type ? this->type : "int32";
+    corto_string type = this->type ? this->type : "int32";
 
     corto_mount_setContentType(this, "text/corto");
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     // First tier
@@ -238,7 +245,7 @@ uintptr_t test_AutoResumeSinkMount_on_mount(
       this->mounts,
       query
     );
-    
+
     return result;
 }
 
@@ -256,4 +263,3 @@ void test_AutoResumeSinkMount_on_unmount(
       query
     );
 }
-

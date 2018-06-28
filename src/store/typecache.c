@@ -204,7 +204,7 @@ uint8_t corto_typecache_get_subkind(
     } else if (elemHasRes) {
         result = CORTO_TC_SUB_RESOURCE;
     } else if (is_list) {
-        if (corto_collection_requiresAlloc(elementType)) {
+        if (corto_collection_requires_alloc(elementType)) {
             result = CORTO_TC_SUB_ALLOC;
         } else if (elemIsSimple) {
             result = CORTO_TC_SUB_SIMPLE_PTR;

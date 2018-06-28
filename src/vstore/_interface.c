@@ -17,7 +17,7 @@ void _corto_dispatcher_post(
 
     /* Determine methodId once, then cache it for subsequent calls. */
     if (!_methodId) {
-        _methodId = corto_interface_resolveMethodId(corto_dispatcher_o, "post(event e)");
+        _methodId = corto_interface_resolve_method_id(corto_dispatcher_o, "post(event e)");
     }
     corto_assert(_methodId, "method 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 

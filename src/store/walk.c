@@ -510,7 +510,7 @@ int16_t corto_walk_elements(
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)v;
         if (list) {
-            if (corto_collection_requiresAlloc(t->elementType)) {
+            if (corto_collection_requires_alloc(t->elementType)) {
                 result = corto_ll_walk(list, corto_serializeElement, &walkData);
             } else {
                 result =
@@ -522,7 +522,7 @@ int16_t corto_walk_elements(
     case CORTO_MAP: {
         corto_rb tree = *(corto_rb*)v;
         if (tree) {
-            if (corto_collection_requiresAlloc(t->elementType)) {
+            if (corto_collection_requires_alloc(t->elementType)) {
                 result = corto_rb_walk(tree, corto_serializeElement, &walkData);
             } else {
                 result =

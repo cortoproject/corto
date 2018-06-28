@@ -77,7 +77,7 @@ corto_int16 corto_ser_initCollection(
             if (!m || m->modifiers & CORTO_NOT_NULL) {
                 corto_type keyType = corto_map(t)->keyType;
                 if (keyType) {
-                    if (corto_collection_requiresAlloc(keyType)) {
+                    if (corto_collection_requires_alloc(keyType)) {
                         *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
                     } else {
                         *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);

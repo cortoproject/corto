@@ -277,7 +277,7 @@ int16_t _corto_ptr_resize(
             /* Deinitialize redundant samples */
             while (corto_iter_hasNext(&it)) {
                 void *elem;
-                if (corto_collection_requiresAlloc(elementType)) {
+                if (corto_collection_requires_alloc(elementType)) {
                     elem = corto_iter_next(&it);
                     corto_ptr_free(elem, elementType);
                 } else {
@@ -291,7 +291,7 @@ int16_t _corto_ptr_resize(
         int i;
         for (i = corto_ll_count(l); i < size; i++) {
             void *elem;
-            if (corto_collection_requiresAlloc(elementType)) {
+            if (corto_collection_requires_alloc(elementType)) {
                 elem = corto_ptr_new(elementType);
             } else {
                 elem = NULL;

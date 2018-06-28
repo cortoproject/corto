@@ -135,7 +135,7 @@ int16_t corto_ser_composite(
 
 /* Deinit element */
 void corto_collection_deinitElement(corto_collection t, void *ptr) {
-    if (corto_collection_requiresAlloc(t->elementType)) {
+    if (corto_collection_requires_alloc(t->elementType)) {
         corto_ptr_deinit(ptr, t->elementType);
     } else {
         corto_ptr_deinit(&ptr, t->elementType);
@@ -158,7 +158,7 @@ int16_t corto_collection_copyListToArray(
 
     iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
-        if (corto_collection_requiresAlloc(t->elementType)) {
+        if (corto_collection_requires_alloc(t->elementType)) {
             e2 = corto_iter_next(&iter);
         } else {
             e2 = corto_iter_nextPtr(&iter);
@@ -193,12 +193,12 @@ int16_t corto_collection_copyListToList(
     corto_iter dstIter, srcIter;
     void *dstElem, *srcElem;
     corto_type elementType = t->elementType;
-    bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
+    bool requires_alloc = corto_collection_requires_alloc(t->elementType);
 
     dstIter = corto_ll_iter(dst);
     srcIter = corto_ll_iter(src);
     while(corto_iter_hasNext(&dstIter) && corto_iter_hasNext(&srcIter)) {
-        if (requiresAlloc) {
+        if (requires_alloc) {
             dstElem = corto_iter_next(&dstIter);
             srcElem = corto_iter_next(&srcIter);
         } else {
@@ -225,7 +225,7 @@ void corto_collection_resizeList(
 {
     uint32_t ownSize = corto_ll_count(list);
     corto_type elementType = t->elementType;
-    bool requiresAlloc = corto_collection_requiresAlloc(t->elementType);
+    bool requires_alloc = corto_collection_requires_alloc(t->elementType);
 
     /* If there are more elements in the destination, remove superfluous elements */
     if (ownSize > size) {
@@ -240,13 +240,13 @@ void corto_collection_resizeList(
         uint32_t i;
         for(i=ownSize; i<size; i++) {
             void *elem = NULL;
-            if (requiresAlloc) {
+            if (requires_alloc) {
                 elem = corto_ptr_new(elementType);
             }
 
             void *ptr = corto_ll_insert(list, elem);
 
-            if (!requiresAlloc) {
+            if (!requires_alloc) {
                 corto_ptr_init(ptr, elementType);
             }
         }

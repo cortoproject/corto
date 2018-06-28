@@ -107,7 +107,7 @@ int16_t _corto_collection_init(
     corto_collection _this);
 
 CORTO_EXPORT
-bool _corto_collection_requiresAlloc(
+bool _corto_collection_requires_alloc(
     corto_type elementType);
 
 
@@ -249,27 +249,27 @@ int16_t _corto_interface_init(
     corto_interface _this);
 
 CORTO_EXPORT
-corto_member _corto_interface_resolveMember_v(
+corto_member _corto_interface_resolve_member_v(
     corto_interface _this,
     const char *name);
 
 CORTO_EXPORT
-corto_member _corto_interface_resolveMemberByTag(
+corto_member _corto_interface_resolve_member_by_tag(
     corto_interface _this,
     corto_tag tag);
 
 CORTO_EXPORT
-corto_method _corto_interface_resolveMethod(
+corto_method _corto_interface_resolve_method(
     corto_interface _this,
     const char *name);
 
 CORTO_EXPORT
-corto_method _corto_interface_resolveMethodById(
+corto_method _corto_interface_resolve_method_by_id(
     corto_interface _this,
     uint32_t id);
 
 CORTO_EXPORT
-uint32_t _corto_interface_resolveMethodId(
+uint32_t _corto_interface_resolve_method_id(
     corto_interface _this,
     const char *name);
 
@@ -421,7 +421,7 @@ int16_t _corto_struct_init(
     corto_struct _this);
 
 CORTO_EXPORT
-corto_member _corto_struct_resolveMember_v(
+corto_member _corto_struct_resolve_member_v(
     corto_struct _this,
     const char *name);
 
@@ -480,7 +480,7 @@ int16_t _corto_type_init(
     corto_type _this);
 
 CORTO_EXPORT
-corto_function _corto_type_resolveProcedure(
+corto_function _corto_type_resolve_procedure(
     corto_type _this,
     const char *name);
 

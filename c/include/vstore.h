@@ -154,79 +154,64 @@ CORTO_EXPORT corto_loader _corto_loader__assign(corto_loader _this, bool autoLoa
 #define corto_loader__set(_this, autoLoad) _this = _this ? _this : (corto_loader*)corto_ptr_new(corto_loader_o); _corto_loader__assign(_this, autoLoad)
 
 /* /corto/vstore/mount */
-CORTO_EXPORT corto_mount _corto_mount__create(corto_object _parent, const char *_id, corto_query* query, const char * contentType, corto_mountPolicy* policy);
-#define corto_mount__create(_parent, _id, query, contentType, policy) _corto_mount__create(_parent, _id, query, contentType, policy)
-#define corto_mount__create_auto(_parent, _id, query, contentType, policy) corto_mount _id = corto_mount__create(_parent, #_id, query, contentType, policy); (void)_id
+CORTO_EXPORT corto_mount _corto_mount__create(corto_object _parent, const char *_id);
+#define corto_mount__create(_parent, _id) _corto_mount__create(_parent, _id)
+#define corto_mount__create_auto(_parent, _id) corto_mount _id = corto_mount__create(_parent, #_id); (void)_id
 #define corto_mount__declare(parent, id) (corto_mount)corto_declare(parent, id, corto_mount_o)
-CORTO_EXPORT corto_int16 _corto_mount__update(corto_mount _this, corto_query* query, const char * contentType, corto_mountPolicy* policy);
-#define corto_mount__update(_this, query, contentType, policy) _corto_mount__update(corto_mount(_this), query, contentType, policy)
-CORTO_EXPORT corto_mount _corto_mount__assign(corto_mount _this, corto_query* query, const char * contentType, corto_mountPolicy* policy);
+CORTO_EXPORT corto_int16 _corto_mount__update(corto_mount _this);
+#define corto_mount__update(_this) _corto_mount__update(corto_mount(_this))
+CORTO_EXPORT corto_mount _corto_mount__assign(corto_mount _this);
 #define corto_mount__optional_not_set NULL
-#define corto_mount__optional_set(query, contentType, policy) (corto_mount*)corto_mount__assign((corto_mount*)corto_ptr_new(corto_mount_o), query, contentType, policy)
-#define corto_mount__optional_set_cond(__cond, query, contentType, policy) __cond ? (corto_mount*)corto_mount__assign((corto_mount*)corto_ptr_new(corto_mount_o), query, contentType, policy) : NULL
+#define corto_mount__optional_set() (corto_mount*)corto_mount__assign((corto_mount*)corto_ptr_new(corto_mount_o))
+#define corto_mount__optional_set_cond(__cond) __cond ? (corto_mount*)corto_mount__assign((corto_mount*)corto_ptr_new(corto_mount_o)) : NULL
 #define corto_mount__unset(_this) _this ? corto_ptr_free(_this, corto_mount_o), 0 : 0; _this = NULL;
-#define corto_mount__assign(_this, query, contentType, policy) _corto_mount__assign(_this, query, contentType, policy)
-#define corto_mount__set(_this, query, contentType, policy) _this = _this ? _this : (corto_mount*)corto_ptr_new(corto_mount_o); _corto_mount__assign(_this, query, contentType, policy)
+#define corto_mount__assign(_this) _corto_mount__assign(_this)
+#define corto_mount__set(_this) _this = _this ? _this : (corto_mount*)corto_ptr_new(corto_mount_o); _corto_mount__assign(_this)
 
-/* /corto/vstore/mountMask */
-CORTO_EXPORT corto_mountMask* _corto_mountMask__create(corto_object _parent, const char *_id, corto_mountMask value);
-#define corto_mountMask__create(_parent, _id, value) _corto_mountMask__create(_parent, _id, value)
-#define corto_mountMask__create_auto(_parent, _id, value) corto_mountMask* _id = corto_mountMask__create(_parent, #_id, value); (void)_id
-#define corto_mountMask__declare(parent, id) (corto_mountMask*)corto_declare(parent, id, corto_mountMask_o)
-CORTO_EXPORT corto_int16 _corto_mountMask__update(corto_mountMask* _this, corto_mountMask value);
-#define corto_mountMask__update(_this, value) _corto_mountMask__update(corto_mountMask(_this), value)
-CORTO_EXPORT corto_mountMask* _corto_mountMask__assign(corto_mountMask* _this, corto_mountMask value);
-#define corto_mountMask__optional_not_set NULL
-#define corto_mountMask__optional_set(value) (corto_mountMask*)corto_mountMask__assign((corto_mountMask*)corto_ptr_new(corto_mountMask_o), value)
-#define corto_mountMask__optional_set_cond(__cond, value) __cond ? (corto_mountMask*)corto_mountMask__assign((corto_mountMask*)corto_ptr_new(corto_mountMask_o), value) : NULL
-#define corto_mountMask__unset(_this) _this ? corto_ptr_free(_this, corto_mountMask_o), 0 : 0; _this = NULL;
-#define corto_mountMask__assign(_this, value) _corto_mountMask__assign(_this, value)
-#define corto_mountMask__set(_this, value) _this = _this ? _this : (corto_mountMask*)corto_ptr_new(corto_mountMask_o); _corto_mountMask__assign(_this, value)
+/* /corto/vstore/mount_subscription */
+CORTO_EXPORT corto_mount_subscription* _corto_mount_subscription__create(corto_object _parent, const char *_id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mount_subscription__create(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mount_subscription__create(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mount_subscription__create_auto(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mount_subscription* _id = corto_mount_subscription__create(_parent, #_id, query, mountCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
+#define corto_mount_subscription__declare(parent, id) (corto_mount_subscription*)corto_declare(parent, id, corto_mount_subscription_o)
+CORTO_EXPORT corto_int16 _corto_mount_subscription__update(corto_mount_subscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mount_subscription__update(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mount_subscription__update(corto_mount_subscription(_this), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+CORTO_EXPORT corto_mount_subscription* _corto_mount_subscription__assign(corto_mount_subscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
+#define corto_mount_subscription__optional_not_set NULL
+#define corto_mount_subscription__optional_set(query, mountCount, subscriberCount, mountCtx, subscriberCtx) (corto_mount_subscription*)corto_mount_subscription__assign((corto_mount_subscription*)corto_ptr_new(corto_mount_subscription_o), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mount_subscription__optional_set_cond(__cond, query, mountCount, subscriberCount, mountCtx, subscriberCtx) __cond ? (corto_mount_subscription*)corto_mount_subscription__assign((corto_mount_subscription*)corto_ptr_new(corto_mount_subscription_o), query, mountCount, subscriberCount, mountCtx, subscriberCtx) : NULL
+#define corto_mount_subscription__unset(_this) _this ? corto_ptr_free(_this, corto_mount_subscription_o), 0 : 0; _this = NULL;
+#define corto_mount_subscription__assign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mount_subscription__assign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
+#define corto_mount_subscription__set(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _this = _this ? _this : (corto_mount_subscription*)corto_ptr_new(corto_mount_subscription_o); _corto_mount_subscription__assign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
 
-/* /corto/vstore/mountPolicy */
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicy__create(corto_object _parent, const char *_id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
-#define corto_mountPolicy__create(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicy__create(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults)
-#define corto_mountPolicy__create_auto(_parent, _id, ownership, mask, sampleRate, queue, expiryTime, filterResults) corto_mountPolicy* _id = corto_mountPolicy__create(_parent, #_id, ownership, mask, sampleRate, queue, expiryTime, filterResults); (void)_id
-#define corto_mountPolicy__declare(parent, id) (corto_mountPolicy*)corto_declare(parent, id, corto_mountPolicy_o)
-CORTO_EXPORT corto_int16 _corto_mountPolicy__update(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
-#define corto_mountPolicy__update(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicy__update(corto_mountPolicy(_this), ownership, mask, sampleRate, queue, expiryTime, filterResults)
-CORTO_EXPORT corto_mountPolicy* _corto_mountPolicy__assign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults);
-#define corto_mountPolicy__optional_not_set NULL
-#define corto_mountPolicy__optional_set(ownership, mask, sampleRate, queue, expiryTime, filterResults) (corto_mountPolicy*)corto_mountPolicy__assign((corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o), ownership, mask, sampleRate, queue, expiryTime, filterResults)
-#define corto_mountPolicy__optional_set_cond(__cond, ownership, mask, sampleRate, queue, expiryTime, filterResults) __cond ? (corto_mountPolicy*)corto_mountPolicy__assign((corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o), ownership, mask, sampleRate, queue, expiryTime, filterResults) : NULL
-#define corto_mountPolicy__unset(_this) _this ? corto_ptr_free(_this, corto_mountPolicy_o), 0 : 0; _this = NULL;
-#define corto_mountPolicy__assign(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _corto_mountPolicy__assign(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults)
-#define corto_mountPolicy__set(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults) _this = _this ? _this : (corto_mountPolicy*)corto_ptr_new(corto_mountPolicy_o); _corto_mountPolicy__assign(_this, ownership, mask, sampleRate, queue, expiryTime, filterResults)
+/* /corto/vstore/mount_subscriptionList */
+CORTO_EXPORT corto_mount_subscriptionList* _corto_mount_subscriptionList__create(corto_object _parent, const char *_id, corto_uint32 length, corto_mount_subscription* elements);
+#define corto_mount_subscriptionList__create(_parent, _id, length, elements) _corto_mount_subscriptionList__create(_parent, _id, length, elements)
+#define corto_mount_subscriptionList__create_auto(_parent, _id, length, elements) corto_mount_subscriptionList* _id = corto_mount_subscriptionList__create(_parent, #_id, length, elements); (void)_id
+#define corto_mount_subscriptionList__declare(parent, id) (corto_mount_subscriptionList*)corto_declare(parent, id, corto_mount_subscriptionList_o)
+CORTO_EXPORT corto_int16 _corto_mount_subscriptionList__update(corto_mount_subscriptionList* _this, corto_uint32 length, corto_mount_subscription* elements);
+#define corto_mount_subscriptionList__update(_this, length, elements) _corto_mount_subscriptionList__update(corto_mount_subscriptionList(_this), length, elements)
+CORTO_EXPORT corto_mount_subscriptionList* _corto_mount_subscriptionList__assign(corto_mount_subscriptionList* _this, corto_uint32 length, corto_mount_subscription* elements);
+#define corto_mount_subscriptionList__optional_not_set NULL
+#define corto_mount_subscriptionList__optional_set(length, elements) (corto_mount_subscriptionList*)corto_mount_subscriptionList__assign((corto_mount_subscriptionList*)corto_ptr_new(corto_mount_subscriptionList_o), length, elements)
+#define corto_mount_subscriptionList__optional_set_cond(__cond, length, elements) __cond ? (corto_mount_subscriptionList*)corto_mount_subscriptionList__assign((corto_mount_subscriptionList*)corto_ptr_new(corto_mount_subscriptionList_o), length, elements) : NULL
+#define corto_mount_subscriptionList__unset(_this) _this ? corto_ptr_free(_this, corto_mount_subscriptionList_o), 0 : 0; _this = NULL;
+#define corto_mount_subscriptionList__assign(_this, length, elements) _corto_mount_subscriptionList__assign(_this, length, elements)
+#define corto_mount_subscriptionList__set(_this, length, elements) _this = _this ? _this : (corto_mount_subscriptionList*)corto_ptr_new(corto_mount_subscriptionList_o); _corto_mount_subscriptionList__assign(_this, length, elements)
 
-/* /corto/vstore/mountSubscription */
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscription__create(corto_object _parent, const char *_id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscription__create(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscription__create(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscription__create_auto(_parent, _id, query, mountCount, subscriberCount, mountCtx, subscriberCtx) corto_mountSubscription* _id = corto_mountSubscription__create(_parent, #_id, query, mountCount, subscriberCount, mountCtx, subscriberCtx); (void)_id
-#define corto_mountSubscription__declare(parent, id) (corto_mountSubscription*)corto_declare(parent, id, corto_mountSubscription_o)
-CORTO_EXPORT corto_int16 _corto_mountSubscription__update(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscription__update(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscription__update(corto_mountSubscription(_this), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
-CORTO_EXPORT corto_mountSubscription* _corto_mountSubscription__assign(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx);
-#define corto_mountSubscription__optional_not_set NULL
-#define corto_mountSubscription__optional_set(query, mountCount, subscriberCount, mountCtx, subscriberCtx) (corto_mountSubscription*)corto_mountSubscription__assign((corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o), query, mountCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscription__optional_set_cond(__cond, query, mountCount, subscriberCount, mountCtx, subscriberCtx) __cond ? (corto_mountSubscription*)corto_mountSubscription__assign((corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o), query, mountCount, subscriberCount, mountCtx, subscriberCtx) : NULL
-#define corto_mountSubscription__unset(_this) _this ? corto_ptr_free(_this, corto_mountSubscription_o), 0 : 0; _this = NULL;
-#define corto_mountSubscription__assign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _corto_mountSubscription__assign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
-#define corto_mountSubscription__set(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx) _this = _this ? _this : (corto_mountSubscription*)corto_ptr_new(corto_mountSubscription_o); _corto_mountSubscription__assign(_this, query, mountCount, subscriberCount, mountCtx, subscriberCtx)
-
-/* /corto/vstore/mountSubscriptionList */
-CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionList__create(corto_object _parent, const char *_id, corto_uint32 length, corto_mountSubscription* elements);
-#define corto_mountSubscriptionList__create(_parent, _id, length, elements) _corto_mountSubscriptionList__create(_parent, _id, length, elements)
-#define corto_mountSubscriptionList__create_auto(_parent, _id, length, elements) corto_mountSubscriptionList* _id = corto_mountSubscriptionList__create(_parent, #_id, length, elements); (void)_id
-#define corto_mountSubscriptionList__declare(parent, id) (corto_mountSubscriptionList*)corto_declare(parent, id, corto_mountSubscriptionList_o)
-CORTO_EXPORT corto_int16 _corto_mountSubscriptionList__update(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
-#define corto_mountSubscriptionList__update(_this, length, elements) _corto_mountSubscriptionList__update(corto_mountSubscriptionList(_this), length, elements)
-CORTO_EXPORT corto_mountSubscriptionList* _corto_mountSubscriptionList__assign(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements);
-#define corto_mountSubscriptionList__optional_not_set NULL
-#define corto_mountSubscriptionList__optional_set(length, elements) (corto_mountSubscriptionList*)corto_mountSubscriptionList__assign((corto_mountSubscriptionList*)corto_ptr_new(corto_mountSubscriptionList_o), length, elements)
-#define corto_mountSubscriptionList__optional_set_cond(__cond, length, elements) __cond ? (corto_mountSubscriptionList*)corto_mountSubscriptionList__assign((corto_mountSubscriptionList*)corto_ptr_new(corto_mountSubscriptionList_o), length, elements) : NULL
-#define corto_mountSubscriptionList__unset(_this) _this ? corto_ptr_free(_this, corto_mountSubscriptionList_o), 0 : 0; _this = NULL;
-#define corto_mountSubscriptionList__assign(_this, length, elements) _corto_mountSubscriptionList__assign(_this, length, elements)
-#define corto_mountSubscriptionList__set(_this, length, elements) _this = _this ? _this : (corto_mountSubscriptionList*)corto_ptr_new(corto_mountSubscriptionList_o); _corto_mountSubscriptionList__assign(_this, length, elements)
+/* /corto/vstore/mountCallbackMask */
+CORTO_EXPORT corto_mountCallbackMask* _corto_mountCallbackMask__create(corto_object _parent, const char *_id, corto_mountCallbackMask value);
+#define corto_mountCallbackMask__create(_parent, _id, value) _corto_mountCallbackMask__create(_parent, _id, value)
+#define corto_mountCallbackMask__create_auto(_parent, _id, value) corto_mountCallbackMask* _id = corto_mountCallbackMask__create(_parent, #_id, value); (void)_id
+#define corto_mountCallbackMask__declare(parent, id) (corto_mountCallbackMask*)corto_declare(parent, id, corto_mountCallbackMask_o)
+CORTO_EXPORT corto_int16 _corto_mountCallbackMask__update(corto_mountCallbackMask* _this, corto_mountCallbackMask value);
+#define corto_mountCallbackMask__update(_this, value) _corto_mountCallbackMask__update(corto_mountCallbackMask(_this), value)
+CORTO_EXPORT corto_mountCallbackMask* _corto_mountCallbackMask__assign(corto_mountCallbackMask* _this, corto_mountCallbackMask value);
+#define corto_mountCallbackMask__optional_not_set NULL
+#define corto_mountCallbackMask__optional_set(value) (corto_mountCallbackMask*)corto_mountCallbackMask__assign((corto_mountCallbackMask*)corto_ptr_new(corto_mountCallbackMask_o), value)
+#define corto_mountCallbackMask__optional_set_cond(__cond, value) __cond ? (corto_mountCallbackMask*)corto_mountCallbackMask__assign((corto_mountCallbackMask*)corto_ptr_new(corto_mountCallbackMask_o), value) : NULL
+#define corto_mountCallbackMask__unset(_this) _this ? corto_ptr_free(_this, corto_mountCallbackMask_o), 0 : 0; _this = NULL;
+#define corto_mountCallbackMask__assign(_this, value) _corto_mountCallbackMask__assign(_this, value)
+#define corto_mountCallbackMask__set(_this, value) _this = _this ? _this : (corto_mountCallbackMask*)corto_ptr_new(corto_mountCallbackMask_o); _corto_mountCallbackMask__assign(_this, value)
 
 /* /corto/vstore/objectIter */
 CORTO_EXPORT corto_objectIter* _corto_objectIter__create(corto_object _parent, const char *_id);
@@ -317,21 +302,6 @@ CORTO_EXPORT corto_query* _corto_query__assign(corto_query* _this, const char * 
 #define corto_query__unset(_this) _this ? corto_ptr_free(_this, corto_query_o), 0 : 0; _this = NULL;
 #define corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
 #define corto_query__set(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _this = _this ? _this : (corto_query*)corto_ptr_new(corto_query_o); _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
-
-/* /corto/vstore/queuePolicy */
-CORTO_EXPORT corto_queuePolicy* _corto_queuePolicy__create(corto_object _parent, const char *_id, uint32_t max);
-#define corto_queuePolicy__create(_parent, _id, max) _corto_queuePolicy__create(_parent, _id, max)
-#define corto_queuePolicy__create_auto(_parent, _id, max) corto_queuePolicy* _id = corto_queuePolicy__create(_parent, #_id, max); (void)_id
-#define corto_queuePolicy__declare(parent, id) (corto_queuePolicy*)corto_declare(parent, id, corto_queuePolicy_o)
-CORTO_EXPORT corto_int16 _corto_queuePolicy__update(corto_queuePolicy* _this, uint32_t max);
-#define corto_queuePolicy__update(_this, max) _corto_queuePolicy__update(corto_queuePolicy(_this), max)
-CORTO_EXPORT corto_queuePolicy* _corto_queuePolicy__assign(corto_queuePolicy* _this, uint32_t max);
-#define corto_queuePolicy__optional_not_set NULL
-#define corto_queuePolicy__optional_set(max) (corto_queuePolicy*)corto_queuePolicy__assign((corto_queuePolicy*)corto_ptr_new(corto_queuePolicy_o), max)
-#define corto_queuePolicy__optional_set_cond(__cond, max) __cond ? (corto_queuePolicy*)corto_queuePolicy__assign((corto_queuePolicy*)corto_ptr_new(corto_queuePolicy_o), max) : NULL
-#define corto_queuePolicy__unset(_this) _this ? corto_ptr_free(_this, corto_queuePolicy_o), 0 : 0; _this = NULL;
-#define corto_queuePolicy__assign(_this, max) _corto_queuePolicy__assign(_this, max)
-#define corto_queuePolicy__set(_this, max) _this = _this ? _this : (corto_queuePolicy*)corto_ptr_new(corto_queuePolicy_o); _corto_queuePolicy__assign(_this, max)
 
 /* /corto/vstore/remote */
 CORTO_EXPORT corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
@@ -544,15 +514,15 @@ CORTO_EXPORT corto_time* _corto_time__assign(corto_time* _this, int32_t sec, uin
 #define corto_time__set(_this, sec, nanosec) _this = _this ? _this : (corto_time*)corto_ptr_new(corto_time_o); _corto_time__assign(_this, sec, nanosec)
 
 
-/* /corto/vstore/mountSubscriptionList */
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__insert_alloc(corto_mountSubscriptionList list);
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__insert(corto_mountSubscriptionList list, corto_mountSubscription* element);
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__append_alloc(corto_mountSubscriptionList list);
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__append(corto_mountSubscriptionList list, corto_mountSubscription* element);
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__takeFirst(corto_mountSubscriptionList list);
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__last(corto_mountSubscriptionList list);
-CORTO_EXPORT corto_mountSubscription* corto_mountSubscriptionList__get(corto_mountSubscriptionList list, corto_uint32 index);
-CORTO_EXPORT void corto_mountSubscriptionList__clear(corto_mountSubscriptionList list);
+/* /corto/vstore/mount_subscriptionList */
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__insert_alloc(corto_mount_subscriptionList list);
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__insert(corto_mount_subscriptionList list, corto_mount_subscription* element);
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__append_alloc(corto_mount_subscriptionList list);
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__append(corto_mount_subscriptionList list, corto_mount_subscription* element);
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__takeFirst(corto_mount_subscriptionList list);
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__last(corto_mount_subscriptionList list);
+CORTO_EXPORT corto_mount_subscription* corto_mount_subscriptionList__get(corto_mount_subscriptionList list, corto_uint32 index);
+CORTO_EXPORT void corto_mount_subscriptionList__clear(corto_mount_subscriptionList list);
 
 /* /corto/vstore/resultlist */
 CORTO_EXPORT corto_result* corto_resultlist__insert_alloc(corto_resultlist list);

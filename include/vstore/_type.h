@@ -115,8 +115,8 @@ typedef enum corto_ownership {
     CORTO_CACHE_OWNER = 2
 } corto_ownership;
 
-/* bitmask corto/vstore/mountMask */
-typedef uint32_t corto_mountMask;
+/* bitmask corto/vstore/mountCallbackMask */
+typedef uint32_t corto_mountCallbackMask;
     #define CORTO_MOUNT_QUERY (0x1)
     #define CORTO_MOUNT_HISTORY_QUERY (0x2)
     #define CORTO_MOUNT_NOTIFY (0x4)
@@ -128,33 +128,18 @@ typedef uint32_t corto_mountMask;
     #define CORTO_MOUNT_INVOKE (0x100)
     #define CORTO_MOUNT_ID (0x200)
 
-/* struct corto/vstore/queuePolicy */
-typedef struct corto_queuePolicy {
-    uint32_t max;
-} corto_queuePolicy;
-
-/* struct corto/vstore/mountPolicy */
-typedef struct corto_mountPolicy {
-    corto_ownership ownership;
-    corto_mountMask mask;
-    double sampleRate;
-    corto_queuePolicy queue;
-    uint64_t expiryTime;
-    bool filterResults;
-} corto_mountPolicy;
-
-/* struct corto/vstore/mountSubscription */
-typedef struct corto_mountSubscription {
+/* struct corto/vstore/mount_subscription */
+typedef struct corto_mount_subscription {
     corto_query query;
     uint32_t mountCount;
     uint32_t subscriberCount;
     uintptr_t mountCtx;
     uintptr_t subscriberCtx;
-} corto_mountSubscription;
+} corto_mount_subscription;
 
-#ifndef corto_mountSubscriptionList_DEFINED
-#define corto_mountSubscriptionList_DEFINED
-typedef corto_ll corto_mountSubscriptionList;
+#ifndef corto_mount_subscriptionList_DEFINED
+#define corto_mount_subscriptionList_DEFINED
+typedef corto_ll corto_mount_subscriptionList;
 #endif
 
 /* struct corto/vstore/time */
@@ -166,10 +151,14 @@ typedef struct corto_time {
 /* class corto/vstore/mount */
 typedef struct corto_mount_s {
     struct corto_subscriber_s super;
-    corto_mountPolicy policy;
-    corto_object mount;
     corto_attr attr;
-    corto_mountSubscriptionList subscriptions;
+    corto_ownership ownership;
+    corto_mountCallbackMask callbacks;
+    double sample_rate;
+    uint32_t queue_max;
+    uint64_t expiry_time;
+    bool filter_results;
+    corto_mount_subscriptionList subscriptions;
     corto_objectlist events;
     corto_objectlist historicalEvents;
     corto_time lastPoll;

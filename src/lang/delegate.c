@@ -59,7 +59,7 @@ static corto_member corto_delegate_find(corto_function object) {
 
             /* Get function name, lookup delegate, assign function */
             corto_sig_name(corto_idof(object), functionName);
-            if (corto_check_state(corto_type_o, CORTO_VALID) && (m = corto_interface_resolveMember(type, functionName)) &&
+            if (corto_check_state(corto_type_o, CORTO_VALID) && (m = corto_interface_resolve_member(type, functionName)) &&
                 (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE))
             {
                 return m;
@@ -80,7 +80,7 @@ int16_t corto_delegate_bind(
         if (corto_procedure(corto_typeof(object))->hasThis) {
             corto_set_ref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
         }
-        
+
         /* Bind procedure */
         corto_set_ref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
     }

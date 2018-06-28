@@ -196,7 +196,7 @@ corto_equalityKind corto_collection_compareArrayWithList(
 
     iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
-        if (corto_collection_requiresAlloc(elementType)) {
+        if (corto_collection_requires_alloc(elementType)) {
             e1 = corto_iter_next(&iter);
         } else {
             e1 = corto_iter_nextPtr(&iter);
@@ -232,7 +232,7 @@ corto_equalityKind corto_collection_compareListWithList(
     iter1 = corto_ll_iter(list1);
     iter2 = corto_ll_iter(list2);
     while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
-        if (corto_collection_requiresAlloc(elementType)) {
+        if (corto_collection_requires_alloc(elementType)) {
             e1 = corto_iter_next(&iter1);
             e2 = corto_iter_next(&iter2);
         } else {

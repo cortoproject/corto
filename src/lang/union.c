@@ -12,7 +12,7 @@ int16_t corto_union_construct(
     corto_uint8 alignment = 0;
 
     /* Don't allow empty unions */
-    if (!corto_interface(this)->nextMemberId) {
+    if (!corto_interface(this)->next_member_id) {
         corto_throw("invalid empty union");
         goto error;
     }

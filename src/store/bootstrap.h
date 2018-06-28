@@ -206,7 +206,7 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 
 /* type */
 #define CORTO_TYPE_V(parent, name, kind, reference, attr, scopeType, scopeTypeKind, defaultType, defaultProcedureType, DELEGATE) \
-  {kind, reference, attr, {scopeType, scopeTypeKind, defaultType, defaultProcedureType}, 0, 0, 0, {0,NULL}, 0, DELEGATE##_TYPE(parent##_##name)}
+  {kind, reference, attr, scopeType, scopeTypeKind, defaultType, defaultProcedureType, 0, 0, 0, {0,NULL}, 0, DELEGATE##_TYPE(parent##_##name)}
 
 /* primitive */
 #define CORTO_PRIMITIVE_V(parent, name, kind, width, scopeType, scopeStateKind, DELEGATE) \
@@ -476,7 +476,6 @@ CORTO_FWDECL_SECURE(class, lock);
 CORTO_FWDECL(class, map);
 CORTO_FWDECL(class, member);
 CORTO_FWDECL_VSTORE(class, mount);
-CORTO_FWDECL_VSTORE(class, notifyEvent);
 CORTO_FWDECL(class, package);
 CORTO_FWDECL(class, primitive);
 CORTO_FWDECL(class, procedure);
@@ -502,13 +501,10 @@ CORTO_FWDECL_VSTORE(struct, event);
 CORTO_FWDECL(struct, delegatedata);
 CORTO_FWDECL(struct, interfaceVector);
 CORTO_FWDECL(struct, parameter);
-CORTO_FWDECL(struct, typeOptions);
 CORTO_FWDECL_VSTORE(struct, fmt_data);
 CORTO_FWDECL_VSTORE(struct, frame);
 CORTO_FWDECL_VSTORE(struct, query);
-CORTO_FWDECL_VSTORE(struct, queuePolicy);
-CORTO_FWDECL_VSTORE(struct, mountPolicy);
-CORTO_FWDECL_VSTORE(struct, mountSubscription);
+CORTO_FWDECL_VSTORE(struct, mount_subscription);
 CORTO_FWDECL_VSTORE(struct, observer_event);
 CORTO_FWDECL_VSTORE(struct, result);
 CORTO_FWDECL_VSTORE(struct, sample);
@@ -572,7 +568,7 @@ CORTO_FWDECL_SECURE(bitmask, actionKind);
 CORTO_FWDECL(bitmask, attr);
 CORTO_FWDECL_VSTORE(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifier);
-CORTO_FWDECL_VSTORE(bitmask, mountMask);
+CORTO_FWDECL_VSTORE(bitmask, mountCallbackMask);
 CORTO_FWDECL_VSTORE(bitmask, resultMask);
 CORTO_FWDECL(bitmask, state);
 
@@ -590,7 +586,7 @@ CORTO_FWDECL_VSTORE(list, resultlist);
 CORTO_FWDECL(list, objectlist);
 CORTO_FWDECL(list, taglist);
 CORTO_FWDECL(list, stringlist);
-CORTO_FWDECL_VSTORE(list, mountSubscriptionList);
+CORTO_FWDECL_VSTORE(list, mount_subscriptionList);
 
 /* Delegates */
 CORTO_FWDECL(delegate, post_action);
@@ -615,7 +611,7 @@ CORTO_FWDECL_(method, type_castable);
 CORTO_FWDECL_(method, collection_castable);
 CORTO_FWDECL_(method, type_compatible);
 CORTO_FWDECL_(method, struct_compatible);
-CORTO_FWDECL_(method, interface_resolveMember);
+CORTO_FWDECL_(method, interface_resolve_member);
 CORTO_FWDECL__SECURE(method, key_login);
 CORTO_FWDECL__SECURE(method, key_logout);
 CORTO_FWDECL__SECURE(method, lock_authorize);
@@ -802,17 +798,17 @@ CORTO_ENUM_O(vstore, ownership);
     CORTO_CONSTANT_O(vstore_ownership, LOCAL_SOURCE);
     CORTO_CONSTANT_O(vstore_ownership, CACHE_OWNER);
 
-CORTO_BITMASK_O(vstore, mountMask);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_QUERY);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_HISTORY_QUERY);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_NOTIFY);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_BATCH_NOTIFY);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_HISTORY_BATCH_NOTIFY);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_SUBSCRIBE);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_MOUNT);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_RESUME);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_INVOKE);
-    CORTO_CONSTANT_O(vstore_mountMask, MOUNT_ID);
+CORTO_BITMASK_O(vstore, mountCallbackMask);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_QUERY);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_HISTORY_QUERY);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_NOTIFY);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_BATCH_NOTIFY);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_HISTORY_BATCH_NOTIFY);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_SUBSCRIBE);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_MOUNT);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_RESUME);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_INVOKE);
+    CORTO_CONSTANT_O(vstore_mountCallbackMask, MOUNT_ID);
 
 CORTO_ENUM_O(vstore, frameKind);
     CORTO_CONSTANT_O(vstore_frameKind, FRAME_NOW);
@@ -886,7 +882,7 @@ CORTO_LIST_O(lang, stringlist, lang_string, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(lang, taglist, lang_tag, 0);
 CORTO_LIST_O(vstore, resultlist, vstore_result, 0);
-CORTO_LIST_O(vstore, mountSubscriptionList, vstore_mountSubscription, 0);
+CORTO_LIST_O(vstore, mount_subscriptionList, vstore_mount_subscription, 0);
 
 /* Delegate types */
 CORTO_DELEGATE_O(lang, pre_action, lang_int16);
@@ -900,20 +896,16 @@ CORTO_ITERATOR_O(vstore, resultIter, vstore_result);
 CORTO_ITERATOR_O(vstore, subscriber_eventIter, vstore_subscriber_event);
 CORTO_ITERATOR_O(vstore, sampleIter, vstore_sample);
 
-/* /corto/lang/typeOptions */
-CORTO_STRUCT_O(lang, typeOptions, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_REFERENCE_O(lang_typeOptions, parentType, lang_type, CORTO_GLOBAL, CORTO_DECLARED|CORTO_VALID, NULL);
-    CORTO_MEMBER_O(lang_typeOptions, parentState, lang_state, CORTO_GLOBAL);
-    CORTO_REFERENCE_O(lang_typeOptions, defaultType, lang_type, CORTO_GLOBAL, CORTO_VALID, NULL);
-    CORTO_REFERENCE_O(lang_typeOptions, defaultProcedureType, lang_type, CORTO_GLOBAL, CORTO_VALID, NULL);
-
 /* /corto/lang/type */
 CORTO_FW_ICDF(lang, type);
 CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_ICDF);
     CORTO_MEMBER_O(lang_type, kind, lang_typeKind, CORTO_GLOBAL | CORTO_READONLY);
     CORTO_MEMBER_O(lang_type, reference, lang_bool, CORTO_GLOBAL | CORTO_CONST);
-    CORTO_MEMBER_O(lang_type, attr, lang_attr, CORTO_GLOBAL | CORTO_CONST);
-    CORTO_MEMBER_O(lang_type, options, lang_typeOptions, CORTO_HIDDEN | CORTO_CONST);
+    CORTO_MEMBER_O(lang_type, attr, lang_attr, CORTO_GLOBAL | CORTO_CONST | CORTO_HIDDEN);
+    CORTO_REFERENCE_O(lang_type, parent_type, lang_type, CORTO_GLOBAL | CORTO_CONST | CORTO_HIDDEN, CORTO_DECLARED|CORTO_VALID, NULL);
+    CORTO_MEMBER_O(lang_type, parent_state, lang_state, CORTO_GLOBAL | CORTO_CONST | CORTO_HIDDEN);
+    CORTO_REFERENCE_O(lang_type, scope_type, lang_type, CORTO_GLOBAL | CORTO_CONST | CORTO_HIDDEN, CORTO_VALID, NULL);
+    CORTO_REFERENCE_O(lang_type, scope_procedure_type, lang_type, CORTO_GLOBAL | CORTO_CONST | CORTO_HIDDEN, CORTO_VALID, NULL);
     CORTO_MEMBER_O(lang_type, flags, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, size, lang_uint32, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_MEMBER_O(lang_type, alignment, lang_uint16, CORTO_PRIVATE | CORTO_LOCAL);
@@ -926,7 +918,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
     CORTO_METHOD_O(lang_type, alignmentof, "()", lang_uint16, corto_type_alignmentof);
     CORTO_OVERRIDABLE_O(lang_type, castable, "(type type)", lang_bool, corto_type_castable_v);
     CORTO_OVERRIDABLE_O(lang_type, compatible, "(type type)", lang_bool, corto_type_compatible_v);
-    CORTO_METHOD_O(lang_type, resolveProcedure, "(string name)", lang_function, corto_type_resolveProcedure);
+    CORTO_METHOD_O(lang_type, resolve_procedure, "(string name)", lang_function, corto_type_resolve_procedure);
     CORTO_METHOD_O(lang_type, init, "()", lang_int16, corto_type_init);
     CORTO_METHOD_O(lang_type, deinit, "()", lang_void, corto_type_deinit);
     CORTO_METHOD_O(lang_type, construct, "()", lang_int16, corto_type_construct);
@@ -937,7 +929,7 @@ CORTO_FW_IC(lang, primitive);
 CORTO_CLASS_O(lang, primitive, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
     CORTO_MEMBER_O(lang_primitive, kind, lang_primitiveKind, CORTO_LOCAL | CORTO_READONLY);
     CORTO_MEMBER_O(lang_primitive, width, lang_width, CORTO_GLOBAL | CORTO_CONST);
-    CORTO_MEMBER_O(lang_primitive, convertId, lang_uint8, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_primitive, convert_id, lang_uint8, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_OVERRIDABLE_O(lang_primitive, castable, "(type type)", lang_bool, corto_primitive_castable_v);
     CORTO_OVERRIDABLE_O(lang_primitive, compatible, "(type type)", lang_bool, corto_primitive_compatible_v);
     CORTO_METHOD_O(lang_primitive, isInteger, "()", lang_bool, corto_primitive_isInteger);
@@ -949,7 +941,7 @@ CORTO_CLASS_O(lang, primitive, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_AT
 CORTO_FW_ICDF(lang, interface);
 CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_overridable), CORTO_ICDF);
     CORTO_MEMBER_O(lang_interface, kind, lang_compositeKind, CORTO_LOCAL | CORTO_READONLY);
-    CORTO_MEMBER_O(lang_interface, nextMemberId, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
+    CORTO_MEMBER_O(lang_interface, next_member_id, lang_uint32, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_interface, members, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_MEMBER_O(lang_interface, methods, lang_objectseq, CORTO_LOCAL | CORTO_PRIVATE);
     CORTO_REFERENCE_O(lang_interface, base, lang_interface, CORTO_GLOBAL | CORTO_CONST, CORTO_VALID, NULL);
@@ -957,13 +949,12 @@ CORTO_CLASS_O(lang, interface, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL
     CORTO_METHOD_O(lang_interface, construct, "()", lang_int16, corto_interface_construct);
     CORTO_METHOD_O(lang_interface, destruct, "()", lang_void, corto_interface_destruct);
     CORTO_METHOD_O(lang_interface, deinit, "()", lang_void, corto_interface_deinit);
-    CORTO_METHOD_O(lang_interface, resolveMemberByTag, "(tag tag)", lang_member, corto_interface_resolveMemberByTag);
-    CORTO_OVERRIDABLE_O(lang_interface, resolveMember, "(string name)", lang_member, corto_interface_resolveMember_v);
+    CORTO_METHOD_O(lang_interface, resolve_member_by_tag, "(tag tag)", lang_member, corto_interface_resolve_member_by_tag);
+    CORTO_OVERRIDABLE_O(lang_interface, resolve_member, "(string name)", lang_member, corto_interface_resolve_member_v);
     CORTO_OVERRIDABLE_O(lang_interface, compatible, "(type type)", lang_bool, corto_interface_compatible_v);
-    CORTO_METHOD_O(lang_interface, resolveMethod, "(string name)", lang_method, corto_interface_resolveMethod);
-    CORTO_METHOD_O(lang_interface, resolveMethodId, "(string name)", lang_uint32, corto_interface_resolveMethodId);
-    CORTO_METHOD_O(lang_interface, resolveMethodById, "(uint32 id)", lang_method, corto_interface_resolveMethodById);
-    CORTO_METHOD_O(lang_interface, bindMethod, "(method method)", lang_int16, corto_interface_bindMethod);
+    CORTO_METHOD_O(lang_interface, resolve_method, "(string name)", lang_method, corto_interface_resolve_method);
+    CORTO_METHOD_O(lang_interface, resolve_method_id, "(string name)", lang_uint32, corto_interface_resolve_method_id);
+    CORTO_METHOD_O(lang_interface, resolve_method_by_id, "(uint32 id)", lang_method, corto_interface_resolve_method_by_id);
     CORTO_METHOD_O(lang_interface, baseof, "(interface type)", lang_int16, corto_interface_baseof);
 
 /* /corto/lang/collection */
@@ -974,7 +965,7 @@ CORTO_CLASS_O(lang, collection, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_A
     CORTO_MEMBER_O(lang_collection, max, lang_uint32, CORTO_GLOBAL | CORTO_CONST);
     CORTO_OVERRIDABLE_O(lang_collection, castable, "(type type)", lang_bool, corto_collection_castable_v);
     CORTO_OVERRIDABLE_O(lang_collection, compatible, "(type type)", lang_bool, corto_collection_compatible_v);
-    CORTO_FUNCTION_O(lang_collection, requiresAlloc, "(type elementType)", lang_bool, corto_collection_requiresAlloc);
+    CORTO_FUNCTION_O(lang_collection, requires_alloc, "(type elementType)", lang_bool, corto_collection_requires_alloc);
     CORTO_METHOD_O(lang_collection, init, "()", lang_int16, corto_collection_init);
 
 /* /corto/lang/iterator */
@@ -1058,7 +1049,7 @@ CORTO_CLASS_O(lang, struct, lang_interface, CORTO_HIDDEN, CORTO_ATTR_DEFAULT|COR
     CORTO_MEMBER_O(lang_struct, keycache, lang_objectseq, CORTO_PRIVATE | CORTO_LOCAL);
     CORTO_OVERRIDABLE_O(lang_struct, compatible, "(type type)", lang_bool, corto_struct_compatible_v);
     CORTO_OVERRIDABLE_O(lang_struct, castable, "(type type)", lang_bool, corto_struct_castable_v);
-    CORTO_OVERRIDABLE_O(lang_struct, resolveMember, "(string name)", lang_member, corto_struct_resolveMember_v);
+    CORTO_OVERRIDABLE_O(lang_struct, resolve_member, "(string name)", lang_member, corto_struct_resolve_member_v);
     CORTO_METHOD_O(lang_struct, init, "()", lang_int16, corto_struct_init);
     CORTO_METHOD_O(lang_struct, construct, "()", lang_int16, corto_struct_construct);
 
@@ -1400,36 +1391,30 @@ CORTO_PROCEDURE_O(vstore, subscriber, FALSE, NULL, vstore_observer, CORTO_HIDDEN
     CORTO_METHOD_O(vstore_subscriber, subscribe, "(object instance)", lang_int16, corto_subscriber_subscribe);
     CORTO_METHOD_O(vstore_subscriber, unsubscribe, "(object instance)", lang_int16, corto_subscriber_unsubscribe);
 
-/* /corto/vstore/queuePolicy */
-CORTO_STRUCT_O(vstore, queuePolicy, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(vstore_queuePolicy, max, lang_uint32, CORTO_GLOBAL);
-
-/* /corto/vstore/mountPolicy */
-CORTO_STRUCT_O(vstore, mountPolicy, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(vstore_mountPolicy, ownership, vstore_ownership, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountPolicy, mask, vstore_mountMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountPolicy, sampleRate, lang_float64, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountPolicy, queue, vstore_queuePolicy, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountPolicy, expiryTime, lang_uint64, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountPolicy, filterResults, lang_bool, CORTO_GLOBAL);
-
-/* /corto/vstore/mountSubscription */
-CORTO_STRUCT_O(vstore, mountSubscription, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(vstore_mountSubscription, query, vstore_query, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountSubscription, mountCount, lang_uint32, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountSubscription, subscriberCount, lang_uint32, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountSubscription, subscriberCtx, lang_word, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mountSubscription, mountCtx, lang_word, CORTO_GLOBAL);
+/* /corto/vstore/mount_subscription */
+CORTO_STRUCT_O(vstore, mount_subscription, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
+    CORTO_MEMBER_O(vstore_mount_subscription, query, vstore_query, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mount_subscription, mountCount, lang_uint32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mount_subscription, subscriberCount, lang_uint32, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mount_subscription, subscriberCtx, lang_word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_mount_subscription, mountCtx, lang_word, CORTO_GLOBAL);
 
 /* /corto/vstore/mount */
 CORTO_FW_ICD(vstore, mount);
 CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_ICD);
-    CORTO_ALIAS_O(vstore_mount, query, vstore_subscriber_query, CORTO_GLOBAL);
-    CORTO_ALIAS_O(vstore_mount, contentType, vstore_subscriber_contentType, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mount, policy, vstore_mountPolicy, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_mount, mount, lang_object, CORTO_HIDDEN);
-    CORTO_MEMBER_O(vstore_mount, attr, lang_attr, CORTO_HIDDEN);
-    CORTO_MEMBER_O(vstore_mount, subscriptions, vstore_mountSubscriptionList, CORTO_READONLY);
+    /* Public members */
+    CORTO_MEMBER_O(vstore_mount, attr, lang_attr, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, ownership, vstore_ownership, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, callbacks, vstore_mountCallbackMask, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, sample_rate, lang_float64, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, queue_max, lang_uint32, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, expiry_time, lang_uint64, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, filter_results, lang_bool, CORTO_GLOBAL | CORTO_HIDDEN);
+
+    /* Readonly members */
+    CORTO_MEMBER_O(vstore_mount, subscriptions, vstore_mount_subscriptionList, CORTO_READONLY);
+
+    /* Private members */
     CORTO_MEMBER_O(vstore_mount, events, lang_objectlist, CORTO_PRIVATE);
     CORTO_MEMBER_O(vstore_mount, historicalEvents, lang_objectlist, CORTO_PRIVATE);
     CORTO_MEMBER_O(vstore_mount, lastPoll, vstore_time, CORTO_PRIVATE);
@@ -1443,6 +1428,8 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_MEMBER_O(vstore_mount, quit, lang_bool, CORTO_PRIVATE);
     CORTO_MEMBER_O(vstore_mount, contentTypeOut, lang_string, CORTO_READONLY|CORTO_LOCAL);
     CORTO_MEMBER_O(vstore_mount, contentTypeOutHandle, lang_word, CORTO_READONLY|CORTO_LOCAL);
+
+    /* Methods */
     CORTO_METHOD_O(vstore_mount, init, "()", lang_int16, corto_mount_init);
     CORTO_METHOD_O(vstore_mount, construct, "()", lang_int16, corto_mount_construct);
     CORTO_METHOD_O(vstore_mount, destruct, "()", lang_void, corto_mount_destruct);
@@ -1460,6 +1447,8 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_METHOD_O(vstore_mount, resume, "(string parent,string id,inout:object o_out)", lang_int16, corto_mount_resume);
     CORTO_METHOD_O(vstore_mount, subscribe, "(/corto/vstore/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(vstore_mount, unsubscribe, "(/corto/vstore/query query)", lang_void, corto_mount_unsubscribe);
+
+    /* Overridable methods */
     CORTO_OVERRIDABLE_O(vstore_mount, on_invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_on_invoke_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_id, "()", lang_string, corto_mount_on_id_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_query_v);

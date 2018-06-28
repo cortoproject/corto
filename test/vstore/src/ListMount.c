@@ -8,7 +8,15 @@
 int16_t test_ListMount_construct(
     test_ListMount this)
 {
-    corto_mount(this)->policy.ownership = this->kind;
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+    
+    corto_mount(this)->ownership = this->kind;
 
     /* Create top level objects */
     corto_result__assign(
@@ -188,4 +196,3 @@ corto_resultIter test_ListMount_on_query(
     return result;
 
 }
-

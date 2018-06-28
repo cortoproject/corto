@@ -20,8 +20,8 @@
  */
 
 /** @file
- * @section walk Walk API
- * @brief API for dynamic walking of corto values.
+ * @section walk Value Reader
+ * @brief Metadata-based reading of values for serializers.
  *
  * The walk API provides functionality to dynamically walk over a corto value
  * without requiring compile time knowledge of the values' type. The API allows

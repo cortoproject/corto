@@ -162,7 +162,7 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(lang_, ref_kind),\
     BUILTIN_VALUE(vstore_, operatorKind),\
     BUILTIN_VALUE(vstore_, ownership),\
-    BUILTIN_VALUE(vstore_, mountMask),\
+    BUILTIN_VALUE(vstore_, mountCallbackMask),\
     BUILTIN_VALUE(vstore_, frameKind),\
     BUILTIN_VALUE(,secure_accessKind),\
     BUILTIN_VALUE(,secure_actionKind),\
@@ -183,17 +183,14 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(lang_, taglist),\
     BUILTIN_VALUE(lang_, stringlist),\
     BUILTIN_VALUE(vstore_, resultlist),\
-    BUILTIN_VALUE(vstore_, mountSubscriptionList),\
+    BUILTIN_VALUE(vstore_, mount_subscriptionList),\
     BUILTIN_VALUE(lang_, parameter),\
-    BUILTIN_VALUE(lang_, typeOptions),\
     BUILTIN_VALUE(vstore_, time),\
     BUILTIN_VALUE(vstore_, frame),\
     BUILTIN_VALUE(vstore_, sample),\
     BUILTIN_VALUE(vstore_, sampleIter),\
     BUILTIN_VALUE(vstore_, subscriber_eventIter),\
     BUILTIN_VALUE(vstore_, result),\
-    BUILTIN_VALUE(vstore_, queuePolicy),\
-    BUILTIN_VALUE(vstore_, mountPolicy),\
     BUILTIN_VALUE(lang_, delegatedata),\
     BUILTIN_VOID(vstore_, dispatcher),\
     BUILTIN_VALUE(lang_, pre_action),\
@@ -203,7 +200,7 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(vstore_, resultIter),\
     BUILTIN_VALUE(vstore_, objectIter),\
     BUILTIN_VALUE(vstore_, query),\
-    BUILTIN_VALUE(vstore_, mountSubscription),\
+    BUILTIN_VALUE(vstore_, mount_subscription),\
     BUILTIN_CLASS(lang_, function),\
     BUILTIN_CLASS(lang_, method),\
     BUILTIN_CLASS(lang_, overridable),\
@@ -402,16 +399,16 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_ownership_LOCAL_SOURCE),\
     BUILTIN_OBJ(vstore_ownership_CACHE_OWNER),\
     /* readWrite */\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_QUERY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_HISTORY_QUERY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_NOTIFY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_HISTORY_BATCH_NOTIFY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_BATCH_NOTIFY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_SUBSCRIBE),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_MOUNT),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_RESUME),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_INVOKE),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_ID),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_QUERY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_HISTORY_QUERY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_HISTORY_BATCH_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_BATCH_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_SUBSCRIBE),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_MOUNT),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_RESUME),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_INVOKE),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_ID),\
     /* frameKind */\
     BUILTIN_OBJ(vstore_frameKind_FRAME_NOW),\
     BUILTIN_OBJ(vstore_frameKind_FRAME_TIME),\
@@ -500,16 +497,14 @@ corto_object home_o = NULL;
     /* resultMask */\
     BUILTIN_OBJ(vstore_resultMask_RESULT_LEAF),\
     BUILTIN_OBJ(vstore_resultMask_RESULT_HIDDEN),\
-    /* typeOptions */\
-    BUILTIN_OBJ(lang_typeOptions_parentType),\
-    BUILTIN_OBJ(lang_typeOptions_parentState),\
-    BUILTIN_OBJ(lang_typeOptions_defaultType),\
-    BUILTIN_OBJ(lang_typeOptions_defaultProcedureType),\
     /* type */\
     BUILTIN_OBJ(lang_type_kind),\
     BUILTIN_OBJ(lang_type_reference),\
     BUILTIN_OBJ(lang_type_attr),\
-    BUILTIN_OBJ(lang_type_options),\
+    BUILTIN_OBJ(lang_type_parent_type),\
+    BUILTIN_OBJ(lang_type_parent_state),\
+    BUILTIN_OBJ(lang_type_scope_type),\
+    BUILTIN_OBJ(lang_type_scope_procedure_type),\
     BUILTIN_OBJ(lang_type_flags),\
     BUILTIN_OBJ(lang_type_size),\
     BUILTIN_OBJ(lang_type_alignment),\
@@ -521,7 +516,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_type_sizeof_),\
     BUILTIN_OBJ(lang_type_alignmentof_),\
     BUILTIN_OBJ(lang_type_compatible_),\
-    BUILTIN_OBJ(lang_type_resolveProcedure_),\
+    BUILTIN_OBJ(lang_type_resolve_procedure_),\
     BUILTIN_OBJ(lang_type_castable_),\
     BUILTIN_OBJ(lang_type_init_),\
     BUILTIN_OBJ(lang_type_deinit_),\
@@ -530,7 +525,7 @@ corto_object home_o = NULL;
     /* primitive */\
     BUILTIN_OBJ(lang_primitive_kind),\
     BUILTIN_OBJ(lang_primitive_width),\
-    BUILTIN_OBJ(lang_primitive_convertId),\
+    BUILTIN_OBJ(lang_primitive_convert_id),\
     BUILTIN_OBJ(lang_primitive_init_),\
     BUILTIN_OBJ(lang_primitive_construct_),\
     BUILTIN_OBJ(lang_primitive_compatible_),\
@@ -539,7 +534,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_primitive_isNumber_),\
     /* interface */\
     BUILTIN_OBJ(lang_interface_kind),\
-    BUILTIN_OBJ(lang_interface_nextMemberId),\
+    BUILTIN_OBJ(lang_interface_next_member_id),\
     BUILTIN_OBJ(lang_interface_members),\
     BUILTIN_OBJ(lang_interface_methods),\
     BUILTIN_OBJ(lang_interface_base),\
@@ -547,13 +542,12 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_interface_construct_),\
     BUILTIN_OBJ(lang_interface_destruct_),\
     BUILTIN_OBJ(lang_interface_deinit_),\
-    BUILTIN_OBJ(lang_interface_resolveMember_),\
-    BUILTIN_OBJ(lang_interface_resolveMemberByTag_),\
+    BUILTIN_OBJ(lang_interface_resolve_member_),\
+    BUILTIN_OBJ(lang_interface_resolve_member_by_tag_),\
     BUILTIN_OBJ(lang_interface_compatible_),\
-    BUILTIN_OBJ(lang_interface_resolveMethod_),\
-    BUILTIN_OBJ(lang_interface_resolveMethodId_),\
-    BUILTIN_OBJ(lang_interface_resolveMethodById_),\
-    BUILTIN_OBJ(lang_interface_bindMethod_),\
+    BUILTIN_OBJ(lang_interface_resolve_method_),\
+    BUILTIN_OBJ(lang_interface_resolve_method_id_),\
+    BUILTIN_OBJ(lang_interface_resolve_method_by_id_),\
     BUILTIN_OBJ(lang_interface_baseof_),\
     /* collection */\
     BUILTIN_OBJ(lang_collection_kind),\
@@ -561,7 +555,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_collection_max),\
     BUILTIN_OBJ(lang_collection_castable_),\
     BUILTIN_OBJ(lang_collection_compatible_),\
-    BUILTIN_OBJ(lang_collection_requiresAlloc),\
+    BUILTIN_OBJ(lang_collection_requires_alloc),\
     BUILTIN_OBJ(lang_collection_init_),\
     /* iterator */\
     BUILTIN_OBJ(lang_iterator_elementType),\
@@ -611,7 +605,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_struct_construct_),\
     BUILTIN_OBJ(lang_struct_compatible_),\
     BUILTIN_OBJ(lang_struct_castable_),\
-    BUILTIN_OBJ(lang_struct_resolveMember_),\
+    BUILTIN_OBJ(lang_struct_resolve_member_),\
     /* union */\
     BUILTIN_OBJ(lang_union_discriminator),\
     BUILTIN_OBJ(lang_union_init_),\
@@ -647,21 +641,12 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_tableinstance_type),\
     /* table */\
     BUILTIN_OBJ(lang_table_construct_),\
-    /* queuePolicy */\
-    BUILTIN_OBJ(vstore_queuePolicy_max),\
-    /* mountPolicy */\
-    BUILTIN_OBJ(vstore_mountPolicy_ownership),\
-    BUILTIN_OBJ(vstore_mountPolicy_mask),\
-    BUILTIN_OBJ(vstore_mountPolicy_sampleRate),\
-    BUILTIN_OBJ(vstore_mountPolicy_queue),\
-    BUILTIN_OBJ(vstore_mountPolicy_expiryTime),\
-    BUILTIN_OBJ(vstore_mountPolicy_filterResults),\
-    /* mountSubscription */\
-    BUILTIN_OBJ(vstore_mountSubscription_query),\
-    BUILTIN_OBJ(vstore_mountSubscription_mountCount),\
-    BUILTIN_OBJ(vstore_mountSubscription_subscriberCount),\
-    BUILTIN_OBJ(vstore_mountSubscription_mountCtx),\
-    BUILTIN_OBJ(vstore_mountSubscription_subscriberCtx),\
+    /* mount_subscription */\
+    BUILTIN_OBJ(vstore_mount_subscription_query),\
+    BUILTIN_OBJ(vstore_mount_subscription_mountCount),\
+    BUILTIN_OBJ(vstore_mount_subscription_subscriberCount),\
+    BUILTIN_OBJ(vstore_mount_subscription_mountCtx),\
+    BUILTIN_OBJ(vstore_mount_subscription_subscriberCtx),\
     /* query */\
     BUILTIN_OBJ(vstore_query_select),\
     BUILTIN_OBJ(vstore_query_from),\
@@ -715,11 +700,13 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_routerimpl_matchRoute_),\
     BUILTIN_OBJ(vstore_routerimpl_findRoute_),\
     /* mount */\
-    BUILTIN_OBJ(vstore_mount_query),\
-    BUILTIN_OBJ(vstore_mount_contentType),\
-    BUILTIN_OBJ(vstore_mount_policy),\
-    BUILTIN_OBJ(vstore_mount_mount),\
     BUILTIN_OBJ(vstore_mount_attr),\
+    BUILTIN_OBJ(vstore_mount_ownership),\
+    BUILTIN_OBJ(vstore_mount_callbacks),\
+    BUILTIN_OBJ(vstore_mount_sample_rate),\
+    BUILTIN_OBJ(vstore_mount_queue_max),\
+    BUILTIN_OBJ(vstore_mount_expiry_time),\
+    BUILTIN_OBJ(vstore_mount_filter_results),\
     BUILTIN_OBJ(vstore_mount_subscriptions),\
     BUILTIN_OBJ(vstore_mount_events),\
     BUILTIN_OBJ(vstore_mount_historicalEvents),\

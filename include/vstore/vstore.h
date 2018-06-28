@@ -28,7 +28,7 @@
 
 /** @file
  * @section query Virtual Store
- * @brief API for accessing and populating the virtual store.
+ * @brief Access and populate the virtual store.
  *
  * The virtual store is, as the name suggests, not an actual store, but provides
  * uniform access to data from any number of 3rd party stores. Data in the
@@ -364,12 +364,11 @@ typedef struct corto_subscribe__fluent {
     /** Create a mount of the specified type.
      *
      * @param type A mount type.
-     * @param policy A mount policy.
      * @param value A corto string to set additional members of the mount.
      * @return A new mount object
      */
     corto_mount ___ (*mount)(
-        corto_class type, corto_mountPolicy* policy, const char *value);
+        corto_class type, const char *value);
 
     /** Specify callback, create subscriber.
      * Provide a callback function that is invoked when a matching event occurs.

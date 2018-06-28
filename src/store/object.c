@@ -361,14 +361,14 @@ int16_t corto_adopt_checkConstraints(
     corto_type childType = corto_typeof(child);
 
     /* Check if parentType matches scopeType of child type */
-    if (childType->options.parentType) {
+    if (childType->parent_type) {
         corto_type parentType = corto_typeof(parent);
-        if ((childType->options.parentType != parentType) &&
-           !corto_instanceof(childType->options.parentType, parent))
+        if ((childType->parent_type != parentType) &&
+           !corto_instanceof(childType->parent_type, parent))
         {
             corto_throw("type of '%s' is not '%s'",
                     corto_fullpath(NULL, parent),
-                    corto_fullpath(NULL, childType->options.parentType));
+                    corto_fullpath(NULL, childType->parent_type));
             goto error;
         }
     }
@@ -400,10 +400,10 @@ int16_t corto_adopt_checkConstraints(
     }
 
     /* Check if parentState matches scopeState of child type */
-    if (childType->options.parentState &&
-        !corto__checkStateXOR(parent, childType->options.parentState))
+    if (childType->parent_state &&
+        !corto__checkStateXOR(parent, childType->parent_state))
     {
-        uint32_t childState = childType->options.parentState;
+        uint32_t childState = childType->parent_state;
         uint32_t parentState = corto_stateof(parent);
         char *parentStateStr = corto_ptr_str(&parentState, corto_state_o, 0);
         char *childStateStr = corto_ptr_str(&childState, corto_state_o, 0);
@@ -1768,7 +1768,7 @@ int corto_resumeDeclared(
         /* If source of an object is a SINK, object is resumed */
         } else if (_p->source
           && corto_instanceof(corto_mount_o, _p->source)
-          && (corto_mount(_p->source)->policy.ownership == CORTO_LOCAL_SOURCE))
+          && (corto_mount(_p->source)->ownership == CORTO_LOCAL_SOURCE))
         {
             resumed = TRUE;
         }
@@ -3666,7 +3666,7 @@ bool corto_source_match(
         result = TRUE;
     } else if (source && corto_instanceof(corto_mount_o, source)) {
         if (!current) {
-            if (corto_mount(source)->policy.ownership != CORTO_LOCAL_SOURCE) {
+            if (corto_mount(source)->ownership != CORTO_LOCAL_SOURCE) {
                 result = FALSE;
             } else {
                 result = TRUE;
@@ -3676,7 +3676,7 @@ bool corto_source_match(
         }
     } else if (current && corto_instanceof(corto_mount_o, current)) {
         if (!source) {
-            if (corto_mount(current)->policy.ownership != CORTO_LOCAL_SOURCE) {
+            if (corto_mount(current)->ownership != CORTO_LOCAL_SOURCE) {
                 result = FALSE;
             } else {
                 result = TRUE;
@@ -3937,7 +3937,7 @@ int16_t corto_update_end(
         defined = FALSE;
         corto_eventMask mask = 0;
         if (source && corto_instanceof(corto_mount_o, source) &&
-            (corto_mount(source)->policy.ownership == CORTO_LOCAL_SOURCE))
+            (corto_mount(source)->ownership == CORTO_LOCAL_SOURCE))
         {
             /* If not defined, and source is a SINK, object is resumed */
             mask |= CORTO_RESUME;

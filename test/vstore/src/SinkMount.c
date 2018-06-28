@@ -4,9 +4,16 @@
 int16_t test_SinkMount_construct(
     test_SinkMount this)
 {
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+
     corto_set_str(&corto_subscriber(this)->query.type, this->type);
-    corto_string type =
-      this->type ? this->type : "int32";
+    corto_string type = this->type ? this->type : "int32";
 
     // First tier
     corto_result__assign(
@@ -132,7 +139,7 @@ int16_t test_SinkMount_construct(
         FALSE
     );
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
     corto_observer(this)->mask = CORTO_ON_TREE;
 
     return corto_mount_construct(this);
@@ -207,7 +214,7 @@ int16_t test_SinkMount_on_resume(
                 }
 
                 corto_object p = corto_lookup(
-                    corto_mount(this)->mount,
+                    this->mount,
                     e.parent
                 );
                 if (!p) {

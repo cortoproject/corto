@@ -106,7 +106,7 @@ corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* us
     case CORTO_LIST:
         if (*(corto_ll*)o) {
             /* Free memory allocated for listnodes */
-            if (corto_collection_requiresAlloc(corto_collection(t)->elementType)) {
+            if (corto_collection_requires_alloc(corto_collection(t)->elementType)) {
                 corto_ll_walk(*(corto_ll*)o, corto_ser_clear,NULL);
             }
             corto_ll_free(*(corto_ll*)o);
@@ -115,7 +115,7 @@ corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* us
     case CORTO_MAP:
         if (*(corto_rb*)o) {
             /* Free memory allocated for mapnodes */
-            if (corto_collection_requiresAlloc(corto_collection(t)->elementType)) {
+            if (corto_collection_requires_alloc(corto_collection(t)->elementType)) {
                 corto_rb_walk(*(corto_rb*)o, corto_ser_clear,NULL);
             }
             corto_rb_free(*(corto_rb*)o);

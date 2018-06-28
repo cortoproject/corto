@@ -1202,16 +1202,11 @@ void test_SelectSink_tc_selectVirtualSingleNested2(
 void test_SelectSink_tc_selectObjectFromVstore(
     test_SelectSink this)
 {
-    corto_mountPolicy p = {
-        .mask = CORTO_MOUNT_QUERY,
-        .ownership = CORTO_LOCAL_SOURCE
-    };
-
     corto_mount m =
         corto_subscribe("*")
             .from("data")
             .contentType("text/corto")
-            .mount(test_SimpleMount_o, &p, NULL);
+            .mount(test_SimpleMount_o, "{callbacks=mount_query, ownership=local_source}");
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
     test_assert(corto_check_state(m, CORTO_VALID) == true);
@@ -1234,16 +1229,11 @@ void test_SelectSink_tc_selectObjectFromVstore(
 void test_SelectSink_tc_selectObjectFromVstore_w_InvalidObjectInStore(
     test_SelectSink this)
 {
-    corto_mountPolicy p = {
-        .mask = CORTO_MOUNT_QUERY,
-        .ownership = CORTO_LOCAL_SOURCE
-    };
-
     corto_mount m =
         corto_subscribe("*")
             .from("data")
             .contentType("text/corto")
-            .mount(test_SimpleMount_o, &p, NULL);
+            .mount(test_SimpleMount_o, "{callbacks=mount_query, ownership=local_source}");
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
     test_assert(corto_check_state(m, CORTO_VALID) == true);
@@ -1270,16 +1260,11 @@ void test_SelectSink_tc_selectObjectFromVstore_w_InvalidObjectInStore(
 void test_SelectSink_tc_selectObjectFromVstore_w_ValidObjectInStore(
     test_SelectSink this)
 {
-    corto_mountPolicy p = {
-        .mask = CORTO_MOUNT_QUERY,
-        .ownership = CORTO_LOCAL_SOURCE
-    };
-
     corto_mount m =
         corto_subscribe("*")
             .from("data")
             .contentType("text/corto")
-            .mount(test_SimpleMount_o, &p, NULL);
+            .mount(test_SimpleMount_o, "{callbacks=mount_query, ownership=local_source}");
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
     test_assert(corto_check_state(m, CORTO_VALID) == true);

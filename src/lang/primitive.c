@@ -3,7 +3,7 @@
 #include <corto/corto.h>
 
 
-corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width) {
+corto_uint8 corto__primitive_convert_id(corto_primitiveKind kind, corto_width width) {
     corto_uint8 id = 0;
 
     switch(kind) {
@@ -253,8 +253,8 @@ int16_t corto_primitive_construct(
         break;
     }
 
-    /* Assign convertId which enables quick lookups of implicit primitive conversions. */
-    this->convertId = corto__primitive_convertId(this->kind, this->width);
+    /* Assign convert_id which enables quick lookups of implicit primitive conversions. */
+    this->convert_id = corto__primitive_convert_id(this->kind, this->width);
 
     return corto_type_construct(corto_type(this));
 }

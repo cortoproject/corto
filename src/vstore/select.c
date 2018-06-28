@@ -54,7 +54,7 @@ typedef struct corto_selectRequest {
     corto_mountAction mountAction;
     corto_object instance;
     corto_mount mount;
-    corto_mountMask mountMask;
+    corto_mountCallbackMask mountCallbackMask;
     bool isHistoricalQuery;
     bool queryVstore;
     bool queryStore;
@@ -110,7 +110,7 @@ struct corto_select_data {
     corto_select_frame stack[CORTO_MAX_SCOPE_DEPTH]; /* Execution stack */
     uint8_t sp;
     corto_eventMask mask;
-    corto_mountMask mountMask;
+    corto_mountCallbackMask mountCallbackMask;
 
     /* Mounts currently loaded */
     corto_mount mounts[CORTO_MAX_MOUNTS_PER_SELECT];
@@ -417,7 +417,7 @@ bool corto_selectMatch(
 
                 /* If a SINK mount doesn't implement the on_query method, select will
                  * return the contents of the object store */
-                if ((r->policy.ownership == CORTO_LOCAL_SOURCE) && !r->passThrough) {
+                if ((r->ownership == CORTO_LOCAL_SOURCE) && !r->passThrough) {
                     if (rType) {
                         /* If the type matches, the object is managed by the
                          * mount. This prevents returning duplicate results. */
@@ -643,7 +643,7 @@ bool corto_selectIterMount(
     /* Filter data early if mount indicates it doesn't do any filtering, and
      * this is not a tree query */
     if (data->filterProgram &&
-        mount->policy.filterResults &&
+        mount->filter_results &&
         data->mask != CORTO_ON_TREE)
     {
         if (!corto_selectMatch(NULL, result, data)) {
@@ -905,17 +905,17 @@ int corto_selectLoadMountWalk(
     /* If historical data is requested, only load historians and don't request
      * ordinary data from historians. */
     if (data->isHistoricalQuery) {
-        if (!(mount->policy.mask & CORTO_MOUNT_HISTORY_QUERY)) {
+        if (!(mount->callbacks & CORTO_MOUNT_HISTORY_QUERY)) {
             return 1;
         }
-    } else if (data->mountMask) {
-        if (!(mount->policy.mask & data->mountMask)) {
+    } else if (data->mountCallbackMask) {
+        if (!(mount->callbacks & data->mountCallbackMask)) {
             return 1;
         }
     } else {
         /* If it is a normal query but the mask does not specify QUERY, the mount
          * should not be loaded */
-        if (!(mount->policy.mask & CORTO_MOUNT_QUERY)) {
+        if (!(mount->callbacks & CORTO_MOUNT_QUERY)) {
             return 1;
         }
     }
@@ -1589,7 +1589,7 @@ corto_resultIter corto_selectPrepareIterator (
     data->instance = r->instance;
     data->mount = r->mount;
     data->valueAllocated = FALSE;
-    data->mountMask = r->mountMask;
+    data->mountCallbackMask = r->mountCallbackMask;
 
     if (data->contentType) {
         if (!(data->dstSer = corto_fmt_lookup(data->contentType))) {
@@ -1763,7 +1763,7 @@ int corto_mountAction_id(
 {
     CORTO_UNUSED(r);
 
-    if (m->policy.ownership == CORTO_LOCAL_SOURCE) {
+    if (m->ownership == CORTO_LOCAL_SOURCE) {
         corto_select_data *data = ctx;
         corto_string id = _corto_mount_id(m);
         if (id) {
@@ -1787,7 +1787,7 @@ corto_string corto_selectorId(void)
     if (request) {
         bool quit = FALSE;
         corto_debug("ID");
-        request->mountMask = CORTO_MOUNT_ID;
+        request->mountCallbackMask = CORTO_MOUNT_ID;
         request->mountAction = corto_mountAction_id;
         request->queryStore = false;
         corto_tls_set(CORTO_KEY_FLUENT, NULL);

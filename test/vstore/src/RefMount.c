@@ -4,7 +4,7 @@
 
 int16_t test_RefMount_construct(
     test_RefMount this)
-{
+{    
     corto_set_str(&corto_subscriber(this)->query.select, "//");
     corto_set_str(&corto_subscriber(this)->query.from, this->from);
 
@@ -13,10 +13,10 @@ int16_t test_RefMount_construct(
     }
 
     /* Let corto filter results for the mount */
-    corto_mount(this)->policy.filterResults = true;
+    corto_mount(this)->filter_results = true;
 
     /* Enable resuming objects by configuring mount as local source */
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
 
     char *json =
         "{\"sibling\":\"/config\","

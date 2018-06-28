@@ -5,7 +5,14 @@
 int16_t test_StringReplicator_construct(
     test_StringReplicator this)
 {
-
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+    
     corto_mount_setContentType(this, "text/corto");
 
     return corto_mount_construct(this);
@@ -64,4 +71,3 @@ corto_resultIter test_StringReplicator_on_query(
     /* Return persistent iterator to request */
     return result;
 }
-

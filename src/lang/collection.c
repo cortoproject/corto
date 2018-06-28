@@ -54,7 +54,7 @@ int16_t corto_collection_init(
     return corto_type_init(corto_type(this));
 }
 
-bool corto_collection_requiresAlloc(
+bool corto_collection_requires_alloc(
     corto_type elementType)
 {
     corto_bool result = TRUE;

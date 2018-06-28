@@ -20,32 +20,33 @@
  */
 
 /** @file
- * @section rw Reader/writer API
- * @brief API that dynamically reads/writes values without requiring compile
- *        time knowledge of the object type. The API enforces the rules of the
- *        corto typesystem, and offers a consistent way to refer to individual
- *        fields inside objects. It is therefore the recommended API for writing
- *        (de)serializers and other APIs that interact with object values.
+ * @section rw Value Writer
+ * @brief Metadata-based writing of data for deserializers
  *
- *        The API allows applications to either iterate over fields in a value,
- *        or to jump to specific locations. The API provides access to any corto
- *        type.
+ * This API enforces the rules of the
+ * corto typesystem, and offers a consistent way to refer to individual
+ * fields inside objects. It is therefore the recommended API for writing
+ * (de)serializers and other APIs that interact with object values.
  *
- *        Complex (composite/collection) values need to be pushed before they
- *        can be accessed. This "opens" the scope of the complex value, which
- *        allows iteration over the members/elements in that scope. It also will
- *        make field expressions relative to that scope. Pushing/popping scopes
- *        is analogous to the `()` and `[]` operators in cortoscript, as can be
- *        seen in this example:
+ * The API allows applications to either iterate over fields in a value,
+ * or to jump to specific locations. The API provides access to any corto
+ * type.
  *
- *        `Line l (start:(x:10, 20), stop.x:30, stop.y:40)`
+ * Complex (composite/collection) values need to be pushed before they
+ * can be accessed. This "opens" the scope of the complex value, which
+ * allows iteration over the members/elements in that scope. It also will
+ * make field expressions relative to that scope. Pushing/popping scopes
+ * is analogous to the `()` and `[]` operators in cortoscript, as can be
+ * seen in this example:
  *
- *        In this example, each `(` corresponds with a push, and each `)`
- *        corresponds with a pop. The example also illustrates how to set single
- *        fields in nested scopes without pushing/popping. This can be done in
- *        the reader/writer API with the `field` function.
+ * `Line l = {start:{x:10, 20}, stop.x:30, stop.y:40}`
  *
- *        Note that this is still an UNSTABLE API.
+ * In this example, each `{` corresponds with a push, and each `}`
+ * corresponds with a pop. The example also illustrates how to set single
+ * fields in nested scopes without pushing/popping. This can be done in
+ * the reader/writer API with the `field` function.
+ *
+ * Note that this is an UNSTABLE API.
  */
 
 #ifndef CORTO_RW_H

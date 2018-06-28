@@ -284,16 +284,16 @@ CORTO_FLOAT_OPS(float32)
 CORTO_FLOAT_OPS(float64)
 
 #define CORTO_UNARY_OP_INIT(typeKind, typeWidth, operatorKind, type, name)\
-        corto_unaryOps[corto__primitive_convertId(typeKind, typeWidth)][operatorKind] = CORTO_NAME_UNARYOP(type, name);
+        corto_unaryOps[corto__primitive_convert_id(typeKind, typeWidth)][operatorKind] = CORTO_NAME_UNARYOP(type, name);
 
 #define CORTO_BINARY_OP_INIT(typeKind, typeWidth, operatorKind, type, name)\
-    corto_binaryOps[corto__primitive_convertId(typeKind, typeWidth)][operatorKind] = CORTO_NAME_BINARYOP(type, name);
+    corto_binaryOps[corto__primitive_convert_id(typeKind, typeWidth)][operatorKind] = CORTO_NAME_BINARYOP(type, name);
 
 #define CORTO_STRING_OP_INIT(operatorKind, name)\
-    corto_binaryOps[corto__primitive_convertId(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_BINARYOP(string, name);
+    corto_binaryOps[corto__primitive_convert_id(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_BINARYOP(string, name);
 
 #define CORTO_STRING_UNARY_OP_INIT(operatorKind, name)\
-    corto_unaryOps[corto__primitive_convertId(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_UNARYOP(string, name);
+    corto_unaryOps[corto__primitive_convert_id(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_UNARYOP(string, name);
 
 
 #define CORTO_INTEGER_UNARY_OPS_INIT(typeKind, typeWidth, type)\
@@ -427,7 +427,7 @@ int16_t corto_ptr_unaryOp(
     }
 
     if (type->kind == CORTO_PRIMITIVE) {
-        corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convertId][operator];
+        corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convert_id][operator];
         if (impl) {
             impl(operand, result);
         } else {
@@ -469,7 +469,7 @@ int16_t corto_intern_binaryOp(
 
     if (type->kind == CORTO_PRIMITIVE) {
         corto__binaryOperator impl =
-            corto_binaryOps[corto_primitive(type)->convertId][operator];
+            corto_binaryOps[corto_primitive(type)->convert_id][operator];
         if (impl) {
             impl(operand1, operand2, result);
         } else {

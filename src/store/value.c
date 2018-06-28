@@ -230,7 +230,7 @@ int16_t corto_value_field(
 
     if (field.index != -1) {
         *out = corto_value_element(o, field.type, field.index, field.ptr);
-    } else if (!field.member) {
+    } else if (!field.member && !field.is_super) {
         if (o == ptr) {
             *out = corto_value_base(field.ptr, field.type);
         } else {
@@ -238,7 +238,11 @@ int16_t corto_value_field(
             *out = corto_value_pointer(field.ptr, field.type);
         }
     } else {
-        *out = corto_value_member(o, field.member, field.ptr);
+        if (field.is_super) {
+            *out = corto_value_base(field.ptr, field.type);
+        } else {
+            *out = corto_value_member(o, field.member, field.ptr);
+        }
     }
 
     return 0;

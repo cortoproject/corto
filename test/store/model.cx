@@ -243,13 +243,13 @@ union unionTypes: test/TypeKind:/
     m_optionalSequence: {TypeKind/OptionalSequence}, IntSequence, optional
     m_optionalList: {TypeKind/OptionalList}, IntList, optional
 
-struct VoidParent: options={parentType=void}:/
+struct VoidParent: parent_type=void :/
     foo: int32
 
-struct DefinedParent: options={parentState=valid} :/
+struct DefinedParent: parent_state=valid :/
     foo: int32
 
-struct DeclaredParent: options={parentState=declared}:/
+struct DeclaredParent: parent_state=declared :/
     foo: int32
 
 struct TypeAttr: attr=ATTR_OBSERVABLE:/
@@ -373,7 +373,8 @@ container Car:/
 
 // Replicator for ownership testcase
 class FooReplicator : mount, hidden :/
-    alias mount: mount/mount
+    mount: object
+    int16 construct()
     void on_invoke(object instance, function proc, word argptrs)
     invoked: uint32, readonly
 

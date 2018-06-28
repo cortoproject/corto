@@ -17,11 +17,9 @@
 #define corto_query(o) ((corto_query*)corto_assert_type((corto_type)corto_query_o, o))
 #define corto_subscriber(o) ((corto_subscriber)corto_assert_type((corto_type)corto_subscriber_o, o))
 #define corto_ownership(o) ((corto_ownership*)corto_assert_type((corto_type)corto_ownership_o, o))
-#define corto_mountMask(o) ((corto_mountMask*)corto_assert_type((corto_type)corto_mountMask_o, o))
-#define corto_queuePolicy(o) ((corto_queuePolicy*)corto_assert_type((corto_type)corto_queuePolicy_o, o))
-#define corto_mountPolicy(o) ((corto_mountPolicy*)corto_assert_type((corto_type)corto_mountPolicy_o, o))
-#define corto_mountSubscription(o) ((corto_mountSubscription*)corto_assert_type((corto_type)corto_mountSubscription_o, o))
-#define corto_mountSubscriptionList(o) ((corto_mountSubscriptionList*)corto_assert_type((corto_type)corto_mountSubscriptionList_o, o))
+#define corto_mountCallbackMask(o) ((corto_mountCallbackMask*)corto_assert_type((corto_type)corto_mountCallbackMask_o, o))
+#define corto_mount_subscription(o) ((corto_mount_subscription*)corto_assert_type((corto_type)corto_mount_subscription_o, o))
+#define corto_mount_subscriptionList(o) ((corto_mount_subscriptionList*)corto_assert_type((corto_type)corto_mount_subscriptionList_o, o))
 #define corto_time(o) ((corto_time*)corto_assert_type((corto_type)corto_time_o, o))
 #define corto_mount(o) ((corto_mount)corto_assert_type((corto_type)corto_mount_o, o))
 #define corto_invoke_event(o) ((corto_invoke_event*)corto_assert_type((corto_type)corto_invoke_event_o, o))
@@ -54,11 +52,9 @@ typedef corto_observer _type_corto_observer;
 typedef corto_query _type_corto_query;
 typedef corto_subscriber _type_corto_subscriber;
 typedef corto_ownership _type_corto_ownership;
-typedef corto_mountMask _type_corto_mountMask;
-typedef corto_queuePolicy _type_corto_queuePolicy;
-typedef corto_mountPolicy _type_corto_mountPolicy;
-typedef corto_mountSubscription _type_corto_mountSubscription;
-typedef corto_mountSubscriptionList _type_corto_mountSubscriptionList;
+typedef corto_mountCallbackMask _type_corto_mountCallbackMask;
+typedef corto_mount_subscription _type_corto_mount_subscription;
+typedef corto_mount_subscriptionList _type_corto_mount_subscriptionList;
 typedef corto_time _type_corto_time;
 typedef corto_mount _type_corto_mount;
 typedef corto_invoke_event _type_corto_invoke_event;

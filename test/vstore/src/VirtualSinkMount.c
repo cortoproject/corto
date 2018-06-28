@@ -9,7 +9,7 @@ int16_t test_VirtualSinkMount_construct(
 
     corto_set_str(&corto_subscriber(this)->query.select, "//");
     corto_set_str(&corto_subscriber(this)->query.from, this->from);
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
 
     // First tier
     corto_result__assign(
@@ -182,4 +182,3 @@ corto_resultIter test_VirtualSinkMount_on_query(
     /* Return persistent iterator to request */
     return result;
 }
-

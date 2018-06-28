@@ -14,7 +14,7 @@ extern "C" {
 
 #define CORTO_PRIMITIVE_MAX_CONVERTID (24)
 
-corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width);
+corto_uint8 corto__primitive_convert_id(corto_primitiveKind kind, corto_width width);
 
 corto_int16 corto__bitmask_bindConstant(corto_bitmask _this, corto_constant* c);
 

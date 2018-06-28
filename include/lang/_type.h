@@ -47,14 +47,6 @@ typedef uint32_t corto_state;
     #define CORTO_DELETED (0x2)
     #define CORTO_DECLARED (0x4)
 
-/* struct corto/lang/typeOptions */
-typedef struct corto_typeOptions {
-    corto_type parentType;
-    corto_state parentState;
-    corto_type defaultType;
-    corto_type defaultProcedureType;
-} corto_typeOptions;
-
 /* uint corto/lang/uint16 */
 typedef uint16_t corto_uint16;
 
@@ -129,7 +121,10 @@ struct corto_type_s {
     corto_typeKind kind;
     bool reference;
     corto_attr attr;
-    corto_typeOptions options;
+    corto_type parent_type;
+    corto_state parent_state;
+    corto_type scope_type;
+    corto_type scope_procedure_type;
     uint16_t flags;
     uint32_t size;
     uint16_t alignment;
@@ -283,7 +278,7 @@ typedef struct corto_primitive_s {
     struct corto_type_s super;
     corto_primitiveKind kind;
     corto_width width;
-    uint8_t convertId;
+    uint8_t convert_id;
 } *corto_primitive;
 
 /* class corto/lang/binary */
@@ -343,7 +338,7 @@ typedef struct corto_interface_s *corto_interface;
 struct corto_interface_s {
     struct corto_type_s super;
     corto_compositeKind kind;
-    uint32_t nextMemberId;
+    uint32_t next_member_id;
     corto_objectseq members;
     corto_objectseq methods;
     corto_interface base;

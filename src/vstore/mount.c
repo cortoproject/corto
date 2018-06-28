@@ -37,7 +37,7 @@ void* corto_mount_thread(
     void* arg)
 {
     corto_mount this = arg;
-    corto_float64 frequency = this->policy.sampleRate;
+    corto_float64 frequency = this->sample_rate;
     corto_time interval = corto_mount_doubleToTime(1.0 / frequency);
     corto_time next, current, sleep = {0, 0}, lastSleep = {0, 0};
     corto_time_get(&next);
@@ -76,13 +76,13 @@ void corto_mount_notify(corto_subscriber_event *e) {
     corto_result *r = &e->data;
 
     if (!r->object || (!this->attr || corto_check_attr(r->object, this->attr))) {
-        if (this->policy.mask & CORTO_MOUNT_NOTIFY) {
+        if (this->callbacks & CORTO_MOUNT_NOTIFY) {
             corto_mount_on_notify(this, e);
         }
 
         switch(event) {
         case CORTO_DEFINE:
-            if (this->policy.mask & CORTO_MOUNT_MOUNT) {
+            if (this->callbacks & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
                     .from = e->data.parent
@@ -96,7 +96,7 @@ void corto_mount_notify(corto_subscriber_event *e) {
         case CORTO_UPDATE:
             break;
         case CORTO_DELETE:
-            if (this->policy.mask & CORTO_MOUNT_MOUNT) {
+            if (this->callbacks & CORTO_MOUNT_MOUNT) {
                 corto_query q = {
                     .select = e->data.id,
                     .from = e->data.parent
@@ -159,7 +159,7 @@ error:
 
 static
 bool corto_mount_hasMethod(corto_mount this, corto_string id) {
-    corto_method m = safe_corto_interface_resolveMethod(corto_typeof(this), id);
+    corto_method m = safe_corto_interface_resolve_method(corto_typeof(this), id);
     if (m && (corto_parentof(m) != corto_mount_o)) {
         return TRUE;
     } else {
@@ -173,17 +173,6 @@ int16_t corto_mount_construct(
 {
     corto_object dispatcher = NULL;
     corto_subscriber s = corto_subscriber(this);
-
-    /* If mount isn't set, and object is scoped, mount data on itself */
-    if (!this->mount && corto_check_attr(this, CORTO_ATTR_NAMED) && !s->query.from) {
-        corto_set_ref(&this->mount, this);
-    }
-
-    if (this->mount) {
-        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
-    } else if (s->query.from) {
-        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
-    }
 
     corto_eventMask mask = corto_observer(this)->mask;
     /* If parent is set, resolve it and assign mount */
@@ -201,7 +190,7 @@ int16_t corto_mount_construct(
     }
 
     /* Parse policies */
-    if (this->policy.sampleRate) {
+    if (this->sample_rate) {
         dispatcher = this;
         this->thread = (corto_word)corto_thread_new(
             corto_mount_thread,
@@ -223,36 +212,36 @@ int16_t corto_mount_construct(
     /* Disable flags if mount does not implement method. This allows the rest of
      * the code to check for just the flags, instead of looking up the method. */
     if (!corto_mount_hasMethod(this, "on_history_query")) {
-        this->policy.mask &= ~CORTO_MOUNT_HISTORY_QUERY;
+        this->callbacks &= ~CORTO_MOUNT_HISTORY_QUERY;
     }
 
     if (!corto_mount_hasMethod(this, "on_notify")) {
-        this->policy.mask &= ~CORTO_MOUNT_NOTIFY;
+        this->callbacks &= ~CORTO_MOUNT_NOTIFY;
     }
 
     if (!corto_mount_hasMethod(this, "on_batch_notify")) {
-        this->policy.mask &= ~CORTO_MOUNT_BATCH_NOTIFY;
+        this->callbacks &= ~CORTO_MOUNT_BATCH_NOTIFY;
     }
 
     if (!corto_mount_hasMethod(this, "on_history_batch_notify")) {
-        this->policy.mask &= ~CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
+        this->callbacks &= ~CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
     }
 
     if (!corto_mount_hasMethod(this, "on_invoke")) {
-        this->policy.mask &= ~CORTO_MOUNT_INVOKE;
+        this->callbacks &= ~CORTO_MOUNT_INVOKE;
     }
 
     if (!corto_mount_hasMethod(this, "on_subscribe")) {
-        this->policy.mask &= ~CORTO_MOUNT_SUBSCRIBE;
+        this->callbacks &= ~CORTO_MOUNT_SUBSCRIBE;
     }
 
     if (!corto_mount_hasMethod(this, "on_mount")) {
-        this->policy.mask &= ~CORTO_MOUNT_MOUNT;
+        this->callbacks &= ~CORTO_MOUNT_MOUNT;
     }
 
     if (!corto_mount_hasMethod(this, "on_id")) {
-        this->policy.mask &= ~CORTO_MOUNT_ID;
-    } else if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
+        this->callbacks &= ~CORTO_MOUNT_ID;
+    } else if (this->ownership != CORTO_LOCAL_SOURCE) {
         corto_warning(
           "mount configures 'on_id' but mount is not a local source");
     }
@@ -264,10 +253,10 @@ int16_t corto_mount_construct(
     corto_set_ref(&corto_observer(this)->dispatcher, dispatcher);
 
     /* Enable subscriber only when mount implements on_notify */
-    if (this->policy.mask & CORTO_MOUNT_NOTIFY ||
-        this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY ||
-        this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY ||
-        this->policy.mask & CORTO_MOUNT_MOUNT) {
+    if (this->callbacks & CORTO_MOUNT_NOTIFY ||
+        this->callbacks & CORTO_MOUNT_BATCH_NOTIFY ||
+        this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY ||
+        this->callbacks & CORTO_MOUNT_MOUNT) {
         corto_observer(this)->enabled = TRUE;
     }
 
@@ -291,7 +280,7 @@ int16_t corto_mount_construct(
     /* Add mount to mount admin so it can be found by corto_select */
     corto_entityAdmin_add(&corto_mount_admin, s->query.from, this, this);
     /* If mount is interested in subscriptions, align from existing subscribers */
-    if (this->policy.mask & (CORTO_MOUNT_SUBSCRIBE|CORTO_MOUNT_MOUNT))
+    if (this->callbacks & (CORTO_MOUNT_SUBSCRIBE|CORTO_MOUNT_MOUNT))
     {
         if (corto_mount_alignSubscriptions(this)) {
             goto error;
@@ -319,7 +308,7 @@ error:
 void corto_mount_destruct(
     corto_mount this)
 {
-    corto_mountSubscription *s = NULL;
+    corto_mount_subscription *s = NULL;
 
     /* Signal thread ASAP to stop */
     this->quit = TRUE;
@@ -331,7 +320,7 @@ void corto_mount_destruct(
                 this,
                 &s->query,
                 s->subscriberCtx);
-            corto_ptr_deinit(s, corto_mountSubscription_o);
+            corto_ptr_deinit(s, corto_mount_subscription_o);
             corto_dealloc(s);
         }
     }
@@ -371,51 +360,51 @@ corto_string corto_mount_id(
 int16_t corto_mount_init(
     corto_mount this)
 {
-    this->policy.ownership = CORTO_REMOTE_SOURCE;
+    this->ownership = CORTO_REMOTE_SOURCE;
 
     /* Mount doesn't need to implement a resume callback to resume objects */
-    this->policy.mask |= CORTO_MOUNT_RESUME;
+    this->callbacks |= CORTO_MOUNT_RESUME;
 
     /* Enable default flags based on which methods are implemented */
     if (corto_mount_hasMethod(this, "on_query")) {
-        this->policy.mask |= CORTO_MOUNT_QUERY;
+        this->callbacks |= CORTO_MOUNT_QUERY;
     }
 
     if (corto_mount_hasMethod(this, "on_id")) {
-        this->policy.mask |= CORTO_MOUNT_ID;
+        this->callbacks |= CORTO_MOUNT_ID;
     }
 
     if (corto_mount_hasMethod(this, "on_history_query")) {
-        this->policy.mask |= CORTO_MOUNT_HISTORY_QUERY;
+        this->callbacks |= CORTO_MOUNT_HISTORY_QUERY;
     }
 
     if (corto_mount_hasMethod(this, "on_notify")) {
-        this->policy.mask |= CORTO_MOUNT_NOTIFY;
+        this->callbacks |= CORTO_MOUNT_NOTIFY;
     }
 
     if (corto_mount_hasMethod(this, "on_batch_notify")) {
-        this->policy.mask |= CORTO_MOUNT_BATCH_NOTIFY;
+        this->callbacks |= CORTO_MOUNT_BATCH_NOTIFY;
     }
 
     if (corto_mount_hasMethod(this, "on_history_batch_notify")) {
-        this->policy.mask |= CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
+        this->callbacks |= CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
     }
 
     if (corto_mount_hasMethod(this, "on_invoke")) {
-        this->policy.mask |= CORTO_MOUNT_INVOKE;
+        this->callbacks |= CORTO_MOUNT_INVOKE;
     }
 
     if (corto_mount_hasMethod(this, "on_subscribe")) {
-        this->policy.mask |= CORTO_MOUNT_SUBSCRIBE;
+        this->callbacks |= CORTO_MOUNT_SUBSCRIBE;
     }
 
     if (corto_mount_hasMethod(this, "on_mount")) {
-        this->policy.mask |= CORTO_MOUNT_MOUNT;
+        this->callbacks |= CORTO_MOUNT_MOUNT;
     }
 
-    this->policy.sampleRate = 0;
-    this->policy.expiryTime = -1;
-    this->policy.filterResults = true;
+    this->sample_rate = 0;
+    this->expiry_time = -1;
+    this->filter_results = true;
     this->attr = CORTO_ATTR_PERSISTENT;
 
     return safe_corto_subscriber_init(this);
@@ -501,13 +490,13 @@ void corto_mount_onPoll(
     }
 
     /* If batching is enabled, call on_batch_notify */
-    if (events && this->policy.mask & CORTO_MOUNT_BATCH_NOTIFY) {
+    if (events && this->callbacks & CORTO_MOUNT_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(events);
         corto_mount_on_batch_notify(this, it);
     }
 
     /* If batching of historical data is enabled, call on_history_batch_notify */
-    if (historicalEvents && this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
+    if (historicalEvents && this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(historicalEvents);
         corto_mount_on_history_batch_notify(this, it);
         it = corto_ll_iter(historicalEvents);
@@ -554,9 +543,9 @@ void corto_mount_post(
     int lastQueueSize = 0;
     /* If sampleRate != 0, post event to list. Another thread will process it
      * at the specified rate. */
-    if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY | CORTO_MOUNT_HISTORY_BATCH_NOTIFY))
+    if (this->callbacks & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY | CORTO_MOUNT_HISTORY_BATCH_NOTIFY))
     {
-        if (this->policy.sampleRate)
+        if (this->sample_rate)
         {
             /* Keep track of how often an event is added to a queue. If added to
              * only one queue, refcount does not need to be increased. If added
@@ -572,7 +561,7 @@ void corto_mount_post(
             /* Retrieve last poll time within lock */
             lastPoll = this->lastPoll;
             lastQueueSize = this->lastQueueSize;
-            if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
+            if (this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 if (!this->historicalEvents) {
                     this->historicalEvents = corto_ll_new();
                 }
@@ -581,7 +570,7 @@ void corto_mount_post(
                 size = corto_ll_count(this->historicalEvents);
             }
 
-            if (this->policy.mask & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
+            if (this->callbacks & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
                 /* Check if there is already another event in the queue for the same object.
                  * if so, replace event with latest update. */
                 void *ptr = NULL;
@@ -619,7 +608,7 @@ void corto_mount_post(
     }
 
     /* If queue.max is not specified, don't throttle */
-    if (!this->policy.queue.max) {
+    if (!this->queue_max) {
         return;
     }
 
@@ -631,7 +620,7 @@ void corto_mount_post(
      * is kept to a minimum, checking is done more often towards the end of a
      * cycle. If this thread notices time has moved past last poll time + 1 / Sr
      * it should stop until the poll thread has been scheduled in again. */
-    int collectCount = (this->policy.queue.max / 10);
+    int collectCount = (this->queue_max / 10);
     if (collectCount < 2) collectCount = 2;
     if (collectCount > 10) collectCount = 10;
 
@@ -664,12 +653,12 @@ void corto_mount_post(
      * The algorithm parameters are reset at the beginning of each poll cycle,
      * so that it can adapt fast to changing behavior of the application.
      */
-    if (size > collectCount && size < this->policy.queue.max) {
+    if (size > collectCount && size < this->queue_max) {
         /* Retrieve time every collectCount samples */
         if (!lastQueueSize || !(size % collectCount)) {
             corto_time_get(&this->lastPost);
             /* Calculate total available time per period */
-            corto_time totalTime = corto_mount_doubleToTime(1.0 / this->policy.sampleRate);
+            corto_time totalTime = corto_mount_doubleToTime(1.0 / this->sample_rate);
             corto_time spent = lastPoll.sec
                 ? corto_time_sub(this->lastPost, lastPoll)
                 : (corto_time){0, 0}
@@ -680,7 +669,7 @@ void corto_mount_post(
                 double writeFrequency = size / corto_time_toDouble(spent);
                 /* Calculate if number of samples exceeds max if continuing to write at
                  * this frequency */
-                if (lastQueueSize || (writeFrequency * corto_time_toDouble(totalTime) > this->policy.queue.max)) {
+                if (lastQueueSize || (writeFrequency * corto_time_toDouble(totalTime) > this->queue_max)) {
                     /* Need to throttle. Calculate how much publisher needs to slow down */
                     corto_time budget = corto_time_sub(totalTime, spent);
                     /* Calculate time available per remaining sample, which is the time
@@ -688,7 +677,7 @@ void corto_mount_post(
                      * sample for error margin so that in a stable system
                      * each poll cycle receives exactly the max queue size. */
                     double timePerSample =
-                        corto_time_toDouble(budget) / ((double)this->policy.queue.max - (double)size + collectCount);
+                        corto_time_toDouble(budget) / ((double)this->queue_max - (double)size + collectCount);
                     /*printf("sleep: %d.%.9d budget=[%d.%.9d] spent=[%d.%.9d] size=%d timePerSample=%f\n",
                         this->lastSleep.sec, this->lastSleep.nanosec,
                         budget.sec, budget.nanosec,
@@ -729,18 +718,18 @@ void corto_mount_post(
     }
 
     /* If size is equal to max, block until queue is emptied */
-    if (size == this->policy.queue.max) {
+    if (size == this->queue_max) {
         do {
             corto_sleep(0, 1000000); /* fast loop to minimize blocking time */
             corto_lock(this);
-            if (this->policy.mask & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
+            if (this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 size = corto_ll_count(this->historicalEvents);
             } else {
                 size = corto_ll_count(this->events);
             }
 
             corto_unlock(this);
-        } while (size == this->policy.queue.max);
+        } while (size == this->queue_max);
     }
 }
 
@@ -992,7 +981,7 @@ int16_t corto_mount_resume(
     corto_object o = *o_out;
 
     /* If objects from mount are not owned locally they cannot be resumed */
-    if (this->policy.ownership != CORTO_LOCAL_SOURCE) {
+    if (this->ownership != CORTO_LOCAL_SOURCE) {
         *o_out = NULL;
         return 0;
     }
@@ -1033,7 +1022,7 @@ int16_t corto_mount_resume(
 
             /* If mount requests that corto should filter its results, it may
              * return more than one result */
-            if (this->policy.filterResults) {
+            if (this->filter_results) {
                 do {
                     /* If this mount required corto to filter its own results,
                      * test if returned object is requested object */
@@ -1060,7 +1049,7 @@ int16_t corto_mount_resume(
                 result = out;
 
                 if (corto_iter_hasNext(&it)) {
-                    if (!this->policy.filterResults) {
+                    if (!this->filter_results) {
                         /* If mount is doing its own filtering but is returning
                          * more than one result, something is wrong */
                         corto_error(
@@ -1194,16 +1183,16 @@ error:
     return -1;
 }
 
-static corto_mountSubscription* corto_mount_findSubscription(
+static corto_mount_subscription* corto_mount_findSubscription(
     corto_mount this,
     corto_query *q,
     bool *found)
 {
     *found = FALSE;
-    corto_mountSubscription *result = NULL;
+    corto_mount_subscription *result = NULL;
     corto_iter it = corto_ll_iter(this->subscriptions);
     while (corto_iter_hasNext(&it)) {
-        corto_mountSubscription *s = corto_iter_next(&it);
+        corto_mount_subscription *s = corto_iter_next(&it);
         if (!stricmp(s->query.from, q->from)) {
              result = s;
              if (!stricmp(s->query.select, q->select)) {
@@ -1260,14 +1249,14 @@ void corto_mount_subscribeOrMount(
     bool mount)
 {
     corto_word subCtx = 0, mntCtx = 0;
-    corto_mountSubscription *subscription = NULL, *placeHolder = NULL;
+    corto_mount_subscription *subscription = NULL, *placeHolder = NULL;
     bool found = FALSE;
 
-    if (subscribe && !(this->policy.mask & CORTO_MOUNT_SUBSCRIBE)) {
+    if (subscribe && !(this->callbacks & CORTO_MOUNT_SUBSCRIBE)) {
         subscribe = false;
     }
 
-    if (mount && !(this->policy.mask & CORTO_MOUNT_MOUNT)) {
+    if (mount && !(this->callbacks & CORTO_MOUNT_MOUNT)) {
         mount = false;
     }
 
@@ -1289,7 +1278,7 @@ void corto_mount_subscribeOrMount(
 
     } else {
         /* Add placeholder to list, so on_subscribe won't be called recursively */
-        placeHolder = corto_calloc(sizeof(corto_mountSubscription));
+        placeHolder = corto_calloc(sizeof(corto_mount_subscription));
         corto_ptr_copy(&placeHolder->query, corto_query_o, query);
         if (subscribe) {
             placeHolder->subscriberCount = 1;
@@ -1348,7 +1337,7 @@ void corto_mount_subscribeOrMount(
         /* Do lookup again, as list may have changed while mount was unlocked */
         subscription = corto_mount_findSubscription(this, query, &found);
         if (!found) {
-            subscription = corto_calloc(sizeof(corto_mountSubscription));
+            subscription = corto_calloc(sizeof(corto_mount_subscription));
             corto_ptr_copy(&subscription->query, corto_query_o, query);
             if (subscribe) subscription->subscriberCount = 1;
             if (mount) subscription->mountCount = 1;
@@ -1389,7 +1378,7 @@ void corto_mount_subscribeOrMount(
     } else if (placeHolder) {
         if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
         corto_ll_remove(this->subscriptions, placeHolder);
-        corto_ptr_free(placeHolder, corto_mountSubscription_o);
+        corto_ptr_free(placeHolder, corto_mount_subscription_o);
         if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     }
 }
@@ -1407,14 +1396,14 @@ void corto_mount_unsubscribeOrUnmount(
     bool subscribe,
     bool mount)
 {
-    corto_mountSubscription *subscription = NULL;
+    corto_mount_subscription *subscription = NULL;
     bool found = FALSE;
 
-    if (subscribe && !(this->policy.mask & CORTO_MOUNT_SUBSCRIBE)) {
+    if (subscribe && !(this->callbacks & CORTO_MOUNT_SUBSCRIBE)) {
         subscribe = false;
     }
 
-    if (mount && !(this->policy.mask & CORTO_MOUNT_MOUNT)) {
+    if (mount && !(this->callbacks & CORTO_MOUNT_MOUNT)) {
         mount = false;
     }
 
@@ -1453,7 +1442,7 @@ void corto_mount_unsubscribeOrUnmount(
         }
 
         if (!subscription->subscriberCount && !subscription->mountCount) {
-            corto_ptr_deinit(subscription, corto_mountSubscription_o);
+            corto_ptr_deinit(subscription, corto_mount_subscription_o);
             corto_dealloc(subscription);
         }
     }

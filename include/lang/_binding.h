@@ -10,7 +10,6 @@
 #define corto_bool(o) ((bool*)corto_assert_type((corto_type)corto_bool_o, o))
 #define corto_attr(o) ((corto_attr*)corto_assert_type((corto_type)corto_attr_o, o))
 #define corto_state(o) ((corto_state*)corto_assert_type((corto_type)corto_state_o, o))
-#define corto_typeOptions(o) ((corto_typeOptions*)corto_assert_type((corto_type)corto_typeOptions_o, o))
 #define corto_uint16(o) ((uint16_t*)corto_assert_type((corto_type)corto_uint16_o, o))
 #define corto_uint32(o) ((uint32_t*)corto_assert_type((corto_type)corto_uint32_o, o))
 #define corto_object(o) ((corto_object)o)
@@ -104,7 +103,6 @@ typedef corto_typeKind _type_corto_typeKind;
 typedef corto_bool _type_corto_bool;
 typedef corto_attr _type_corto_attr;
 typedef corto_state _type_corto_state;
-typedef corto_typeOptions _type_corto_typeOptions;
 typedef corto_uint16 _type_corto_uint16;
 typedef corto_uint32 _type_corto_uint32;
 typedef corto_object _type_corto_object;
@@ -211,7 +209,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_collection_castable_v(_this, type) _corto_collection_castable_v(corto_collection(_this), corto_type(type))
 #define corto_collection_compatible_v(_this, type) _corto_collection_compatible_v(corto_collection(_this), corto_type(type))
 #define corto_collection_init(_this) _corto_collection_init(corto_collection(_this))
-#define corto_collection_requiresAlloc(elementType) _corto_collection_requiresAlloc(corto_type(elementType))
+#define corto_collection_requires_alloc(elementType) _corto_collection_requires_alloc(corto_type(elementType))
 #define corto_constant_init(_this) _corto_constant_init(_this)
 #define corto_container_construct(_this) _corto_container_construct(corto_container(_this))
 #define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
@@ -238,11 +236,11 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_interface_deinit(_this) _corto_interface_deinit(corto_interface(_this))
 #define corto_interface_destruct(_this) _corto_interface_destruct(corto_interface(_this))
 #define corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
-#define corto_interface_resolveMember_v(_this, name) _corto_interface_resolveMember_v(corto_interface(_this), name)
-#define corto_interface_resolveMemberByTag(_this, tag) _corto_interface_resolveMemberByTag(corto_interface(_this), corto_tag(tag))
-#define corto_interface_resolveMethod(_this, name) _corto_interface_resolveMethod(corto_interface(_this), name)
-#define corto_interface_resolveMethodById(_this, id) _corto_interface_resolveMethodById(corto_interface(_this), id)
-#define corto_interface_resolveMethodId(_this, name) _corto_interface_resolveMethodId(corto_interface(_this), name)
+#define corto_interface_resolve_member_v(_this, name) _corto_interface_resolve_member_v(corto_interface(_this), name)
+#define corto_interface_resolve_member_by_tag(_this, tag) _corto_interface_resolve_member_by_tag(corto_interface(_this), corto_tag(tag))
+#define corto_interface_resolve_method(_this, name) _corto_interface_resolve_method(corto_interface(_this), name)
+#define corto_interface_resolve_method_by_id(_this, id) _corto_interface_resolve_method_by_id(corto_interface(_this), id)
+#define corto_interface_resolve_method_id(_this, name) _corto_interface_resolve_method_id(corto_interface(_this), name)
 #define corto_iterator_castable_v(_this, type) _corto_iterator_castable_v(corto_iterator(_this), corto_type(type))
 #define corto_iterator_compatible_v(_this, type) _corto_iterator_compatible_v(corto_iterator(_this), corto_type(type))
 #define corto_iterator_init(_this) _corto_iterator_init(corto_iterator(_this))
@@ -270,7 +268,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_struct_compatible_v(_this, type) _corto_struct_compatible_v(corto_struct(_this), corto_type(type))
 #define corto_struct_construct(_this) _corto_struct_construct(corto_struct(_this))
 #define corto_struct_init(_this) _corto_struct_init(corto_struct(_this))
-#define corto_struct_resolveMember_v(_this, name) _corto_struct_resolveMember_v(corto_struct(_this), name)
+#define corto_struct_resolve_member_v(_this, name) _corto_struct_resolve_member_v(corto_struct(_this), name)
 #define corto_table_construct(_this) _corto_table_construct(corto_table(_this))
 #define corto_target_construct(_this) _corto_target_construct(corto_target(_this))
 #define corto_text_init(_this) _corto_text_init(corto_text(_this))
@@ -281,7 +279,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_type_deinit(_this) _corto_type_deinit(corto_type(_this))
 #define corto_type_destruct(_this) _corto_type_destruct(corto_type(_this))
 #define corto_type_init(_this) _corto_type_init(corto_type(_this))
-#define corto_type_resolveProcedure(_this, name) _corto_type_resolveProcedure(corto_type(_this), name)
+#define corto_type_resolve_procedure(_this, name) _corto_type_resolve_procedure(corto_type(_this), name)
 #define corto_type_sizeof(_this) _corto_type_sizeof(corto_type(_this))
 #define corto_uint_init(_this) _corto_uint_init(corto_uint(_this))
 #define corto_union_construct(_this) _corto_union_construct(corto_union(_this))
@@ -309,7 +307,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_collection_castable_v _corto_collection_castable_v
 #define corto_collection_compatible_v _corto_collection_compatible_v
 #define corto_collection_init _corto_collection_init
-#define corto_collection_requiresAlloc _corto_collection_requiresAlloc
+#define corto_collection_requires_alloc _corto_collection_requires_alloc
 #define corto_constant_init _corto_constant_init
 #define corto_container_construct _corto_container_construct
 #define corto_delegate_bind _corto_delegate_bind
@@ -336,11 +334,11 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_interface_deinit _corto_interface_deinit
 #define corto_interface_destruct _corto_interface_destruct
 #define corto_interface_init _corto_interface_init
-#define corto_interface_resolveMember_v _corto_interface_resolveMember_v
-#define corto_interface_resolveMemberByTag _corto_interface_resolveMemberByTag
-#define corto_interface_resolveMethod _corto_interface_resolveMethod
-#define corto_interface_resolveMethodById _corto_interface_resolveMethodById
-#define corto_interface_resolveMethodId _corto_interface_resolveMethodId
+#define corto_interface_resolve_member_v _corto_interface_resolve_member_v
+#define corto_interface_resolve_member_by_tag _corto_interface_resolve_member_by_tag
+#define corto_interface_resolve_method _corto_interface_resolve_method
+#define corto_interface_resolve_method_by_id _corto_interface_resolve_method_by_id
+#define corto_interface_resolve_method_id _corto_interface_resolve_method_id
 #define corto_iterator_castable_v _corto_iterator_castable_v
 #define corto_iterator_compatible_v _corto_iterator_compatible_v
 #define corto_iterator_init _corto_iterator_init
@@ -368,7 +366,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_struct_compatible_v _corto_struct_compatible_v
 #define corto_struct_construct _corto_struct_construct
 #define corto_struct_init _corto_struct_init
-#define corto_struct_resolveMember_v _corto_struct_resolveMember_v
+#define corto_struct_resolve_member_v _corto_struct_resolve_member_v
 #define corto_table_construct _corto_table_construct
 #define corto_target_construct _corto_target_construct
 #define corto_text_init _corto_text_init
@@ -379,7 +377,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_type_deinit _corto_type_deinit
 #define corto_type_destruct _corto_type_destruct
 #define corto_type_init _corto_type_init
-#define corto_type_resolveProcedure _corto_type_resolveProcedure
+#define corto_type_resolve_procedure _corto_type_resolve_procedure
 #define corto_type_sizeof _corto_type_sizeof
 #define corto_uint_init _corto_uint_init
 #define corto_union_construct _corto_union_construct
@@ -405,7 +403,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_collection_castable_v(_this, type) _corto_collection_castable_v(corto_collection(_this), corto_type(type))
 #define safe_corto_collection_compatible_v(_this, type) _corto_collection_compatible_v(corto_collection(_this), corto_type(type))
 #define safe_corto_collection_init(_this) _corto_collection_init(corto_collection(_this))
-#define safe_corto_collection_requiresAlloc(elementType) _corto_collection_requiresAlloc(corto_type(elementType))
+#define safe_corto_collection_requires_alloc(elementType) _corto_collection_requires_alloc(corto_type(elementType))
 #define safe_corto_constant_init(_this) _corto_constant_init(_this)
 #define safe_corto_container_construct(_this) _corto_container_construct(corto_container(_this))
 #define safe_corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
@@ -432,11 +430,11 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_interface_deinit(_this) _corto_interface_deinit(corto_interface(_this))
 #define safe_corto_interface_destruct(_this) _corto_interface_destruct(corto_interface(_this))
 #define safe_corto_interface_init(_this) _corto_interface_init(corto_interface(_this))
-#define safe_corto_interface_resolveMember_v(_this, name) _corto_interface_resolveMember_v(corto_interface(_this), name)
-#define safe_corto_interface_resolveMemberByTag(_this, tag) _corto_interface_resolveMemberByTag(corto_interface(_this), corto_tag(tag))
-#define safe_corto_interface_resolveMethod(_this, name) _corto_interface_resolveMethod(corto_interface(_this), name)
-#define safe_corto_interface_resolveMethodById(_this, id) _corto_interface_resolveMethodById(corto_interface(_this), id)
-#define safe_corto_interface_resolveMethodId(_this, name) _corto_interface_resolveMethodId(corto_interface(_this), name)
+#define safe_corto_interface_resolve_member_v(_this, name) _corto_interface_resolve_member_v(corto_interface(_this), name)
+#define safe_corto_interface_resolve_member_by_tag(_this, tag) _corto_interface_resolve_member_by_tag(corto_interface(_this), corto_tag(tag))
+#define safe_corto_interface_resolve_method(_this, name) _corto_interface_resolve_method(corto_interface(_this), name)
+#define safe_corto_interface_resolve_method_by_id(_this, id) _corto_interface_resolve_method_by_id(corto_interface(_this), id)
+#define safe_corto_interface_resolve_method_id(_this, name) _corto_interface_resolve_method_id(corto_interface(_this), name)
 #define safe_corto_iterator_castable_v(_this, type) _corto_iterator_castable_v(corto_iterator(_this), corto_type(type))
 #define safe_corto_iterator_compatible_v(_this, type) _corto_iterator_compatible_v(corto_iterator(_this), corto_type(type))
 #define safe_corto_iterator_init(_this) _corto_iterator_init(corto_iterator(_this))
@@ -464,7 +462,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_struct_compatible_v(_this, type) _corto_struct_compatible_v(corto_struct(_this), corto_type(type))
 #define safe_corto_struct_construct(_this) _corto_struct_construct(corto_struct(_this))
 #define safe_corto_struct_init(_this) _corto_struct_init(corto_struct(_this))
-#define safe_corto_struct_resolveMember_v(_this, name) _corto_struct_resolveMember_v(corto_struct(_this), name)
+#define safe_corto_struct_resolve_member_v(_this, name) _corto_struct_resolve_member_v(corto_struct(_this), name)
 #define safe_corto_table_construct(_this) _corto_table_construct(corto_table(_this))
 #define safe_corto_target_construct(_this) _corto_target_construct(corto_target(_this))
 #define safe_corto_text_init(_this) _corto_text_init(corto_text(_this))
@@ -475,7 +473,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_type_deinit(_this) _corto_type_deinit(corto_type(_this))
 #define safe_corto_type_destruct(_this) _corto_type_destruct(corto_type(_this))
 #define safe_corto_type_init(_this) _corto_type_init(corto_type(_this))
-#define safe_corto_type_resolveProcedure(_this, name) _corto_type_resolveProcedure(corto_type(_this), name)
+#define safe_corto_type_resolve_procedure(_this, name) _corto_type_resolve_procedure(corto_type(_this), name)
 #define safe_corto_type_sizeof(_this) _corto_type_sizeof(corto_type(_this))
 #define safe_corto_uint_init(_this) _corto_uint_init(corto_uint(_this))
 #define safe_corto_union_construct(_this) _corto_union_construct(corto_union(_this))
@@ -512,10 +510,10 @@ typedef corto_wordseq _type_corto_wordseq;
     ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_compatible_o)->index - 1])->fptr)(corto_interface(_this), corto_type(type)) \
     : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_compatible_o)->index - 1], alloca(sizeof(bool)), corto_interface(_this), corto_type(type)) \
     )
-#define corto_interface_resolveMember(_this, name) ( \
-    ((corto_function)corto_interface_resolveMember_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_member (*)(corto_object, const char *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_resolveMember_o)->index - 1])->fptr)(corto_interface(_this), name) \
-    : *(corto_member*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_resolveMember_o)->index - 1], alloca(sizeof(corto_member)), corto_interface(_this), name) \
+#define corto_interface_resolve_member(_this, name) ( \
+    ((corto_function)corto_interface_resolve_member_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_member (*)(corto_object, const char *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_resolve_member_o)->index - 1])->fptr)(corto_interface(_this), name) \
+    : *(corto_member*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_interface_resolve_member_o)->index - 1], alloca(sizeof(corto_member)), corto_interface(_this), name) \
     )
 #define corto_iterator_castable(_this, type) ( \
     ((corto_function)corto_iterator_castable_o)->kind == CORTO_PROCEDURE_CDECL \
@@ -547,10 +545,10 @@ typedef corto_wordseq _type_corto_wordseq;
     ? ((_type_corto_bool (*)(corto_object, corto_type))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_compatible_o)->index - 1])->fptr)(corto_struct(_this), corto_type(type)) \
     : *(bool*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_compatible_o)->index - 1], alloca(sizeof(bool)), corto_struct(_this), corto_type(type)) \
     )
-#define corto_struct_resolveMember(_this, name) ( \
-    ((corto_function)corto_struct_resolveMember_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_member (*)(corto_object, const char *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_resolveMember_o)->index - 1])->fptr)(corto_struct(_this), name) \
-    : *(corto_member*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_resolveMember_o)->index - 1], alloca(sizeof(corto_member)), corto_struct(_this), name) \
+#define corto_struct_resolve_member(_this, name) ( \
+    ((corto_function)corto_struct_resolve_member_o)->kind == CORTO_PROCEDURE_CDECL \
+    ? ((_type_corto_member (*)(corto_object, const char *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_resolve_member_o)->index - 1])->fptr)(corto_struct(_this), name) \
+    : *(corto_member*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_struct_resolve_member_o)->index - 1], alloca(sizeof(corto_member)), corto_struct(_this), name) \
     )
 #define corto_type_castable(_this, type) ( \
     ((corto_function)corto_type_castable_o)->kind == CORTO_PROCEDURE_CDECL \

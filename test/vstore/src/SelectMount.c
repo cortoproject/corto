@@ -4,7 +4,6 @@
 void test_SelectMount_setup(
     test_SelectMount this)
 {
-
     /* Create dummy object */
     corto_attr old = corto_set_attr(CORTO_ATTR_OBSERVABLE);
     corto_object a_o = corto_void__create(root_o, "a");
@@ -1553,7 +1552,7 @@ void test_SelectMount_tc_selectScopeFromInitialSlashInMountResult(
     corto_mount m =
         corto_subscribe("*")
             .from("data")
-            .mount(test_MountInitialSlash_o, NULL, NULL);
+            .mount(test_MountInitialSlash_o, NULL);
 
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_MountInitialSlash_o));
@@ -1578,7 +1577,7 @@ void test_SelectMount_tc_selectTreeFromInitialSlashInMountResult(
     corto_mount m =
         corto_subscribe("*")
             .from("data")
-            .mount(test_MountInitialSlash_o, NULL, NULL);
+            .mount(test_MountInitialSlash_o, NULL);
 
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_MountInitialSlash_o));

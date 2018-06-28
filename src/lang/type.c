@@ -154,8 +154,8 @@ void corto_type_destruct(
 int16_t corto_type_init(
     corto_type this)
 {
-    if (!this->options.parentState) {
-        this->options.parentState = CORTO_DECLARED | CORTO_VALID;
+    if (!this->parent_state) {
+        this->parent_state = CORTO_DECLARED | CORTO_VALID;
     }
 
     if (!this->attr) {
@@ -175,7 +175,7 @@ void corto_type_deinit(
     free ((corto_typecache*)this->typecache);
 }
 
-corto_function corto_type_resolveProcedure(
+corto_function corto_type_resolve_procedure(
     corto_type this,
     const char *name)
 {
@@ -183,7 +183,7 @@ corto_function corto_type_resolveProcedure(
 
     /* If type == INTERFACE, try first to resolve a method on the interface */
     if (corto_instanceof((corto_type)corto_interface_o, this)) {
-        result = (corto_function)corto_interface_resolveMethod(
+        result = (corto_function)corto_interface_resolve_method(
             corto_interface(this), name);
     }
 

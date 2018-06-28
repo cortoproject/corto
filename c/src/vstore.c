@@ -401,19 +401,115 @@ corto_loader _corto_loader__assign(corto_loader _this, bool autoLoad) {
     return _this;
 }
 
-corto_mount _corto_mount__create(corto_object _parent, const char *_id, corto_query* query, const char * contentType, corto_mountPolicy* policy) {
+corto_mount _corto_mount__create(corto_object _parent, const char *_id) {
     corto_mount _this;
     _this = (corto_mount)corto_declare(_parent, _id, corto_mount_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        if (query) {
-            corto_ptr_copy(&((corto_subscriber)_this)->query, corto_query_o, query);
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
         }
-        corto_set_str(&((corto_subscriber)_this)->contentType, contentType);
-        if (policy) {
-            corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+    }
+    return _this;
+}
+
+corto_int16 _corto_mount__update(corto_mount _this) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+        } else {
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mount _corto_mount__assign(corto_mount _this) {
+    CORTO_UNUSED(_this);
+    return _this;
+}
+
+corto_mount_subscription* _corto_mount_subscription__create(corto_object _parent, const char *_id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+    corto_mount_subscription* _this;
+    _this = (corto_mount_subscription*)corto_declare(_parent, _id, corto_mount_subscription_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        if (query) {
+            corto_ptr_copy(&((corto_mount_subscription*)_this)->query, corto_query_o, query);
+        }
+        ((corto_mount_subscription*)_this)->mountCount = mountCount;
+        ((corto_mount_subscription*)_this)->subscriberCount = subscriberCount;
+        ((corto_mount_subscription*)_this)->mountCtx = mountCtx;
+        ((corto_mount_subscription*)_this)->subscriberCtx = subscriberCtx;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_mount_subscription__update(corto_mount_subscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            if (query) {
+                corto_ptr_copy(&((corto_mount_subscription*)((corto_mount_subscription*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscription_o)->size)))->query, corto_query_o, query);
+            }
+            ((corto_mount_subscription*)((corto_mount_subscription*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscription_o)->size)))->mountCount = mountCount;
+            ((corto_mount_subscription*)((corto_mount_subscription*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscription_o)->size)))->subscriberCount = subscriberCount;
+            ((corto_mount_subscription*)((corto_mount_subscription*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscription_o)->size)))->mountCtx = mountCtx;
+            ((corto_mount_subscription*)((corto_mount_subscription*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscription_o)->size)))->subscriberCtx = subscriberCtx;
+        } else {
+            if (query) {
+                corto_ptr_copy(&((corto_mount_subscription*)_this)->query, corto_query_o, query);
+            }
+            ((corto_mount_subscription*)_this)->mountCount = mountCount;
+            ((corto_mount_subscription*)_this)->subscriberCount = subscriberCount;
+            ((corto_mount_subscription*)_this)->mountCtx = mountCtx;
+            ((corto_mount_subscription*)_this)->subscriberCtx = subscriberCtx;
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_mount_subscription* _corto_mount_subscription__assign(corto_mount_subscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
+    CORTO_UNUSED(_this);
+    if (query) {
+        corto_ptr_copy(&((corto_mount_subscription*)_this)->query, corto_query_o, query);
+    }
+    ((corto_mount_subscription*)_this)->mountCount = mountCount;
+    ((corto_mount_subscription*)_this)->subscriberCount = subscriberCount;
+    ((corto_mount_subscription*)_this)->mountCtx = mountCtx;
+    ((corto_mount_subscription*)_this)->subscriberCtx = subscriberCtx;
+    return _this;
+}
+
+corto_mount_subscriptionList* _corto_mount_subscriptionList__create(corto_object _parent, const char *_id, corto_uint32 length, corto_mount_subscription* elements) {
+    corto_mount_subscriptionList* _this;
+    _this = (corto_mount_subscriptionList*)corto_declare(_parent, _id, corto_mount_subscriptionList_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        corto_uint32 i = 0;
+        corto_mount_subscriptionList__clear(*_this);
+        for (i = 0; i < length; i ++) {
+            corto_mount_subscriptionList__append(*_this, &elements[i]);
         }
         if (corto_define(_this)) {
             corto_release(_this);
@@ -423,24 +519,20 @@ corto_mount _corto_mount__create(corto_object _parent, const char *_id, corto_qu
     return _this;
 }
 
-corto_int16 _corto_mount__update(corto_mount _this, corto_query* query, const char * contentType, corto_mountPolicy* policy) {
+corto_int16 _corto_mount_subscriptionList__update(corto_mount_subscriptionList* _this, corto_uint32 length, corto_mount_subscription* elements) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            if (query) {
-                corto_ptr_copy(&((corto_subscriber)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->query, corto_query_o, query);
-            }
-            corto_set_str(&((corto_subscriber)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->contentType, contentType);
-            if (policy) {
-                corto_ptr_copy(&((corto_mount)((corto_mount)CORTO_OFFSET(_this, ((corto_type)corto_mount_o)->size)))->policy, corto_mountPolicy_o, policy);
+            corto_uint32 i = 0;
+            corto_mount_subscriptionList__clear(*((corto_mount_subscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscriptionList_o)->size)));
+            for (i = 0; i < length; i ++) {
+                corto_mount_subscriptionList__append(*((corto_mount_subscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mount_subscriptionList_o)->size)), &elements[i]);
             }
         } else {
-            if (query) {
-                corto_ptr_copy(&((corto_subscriber)_this)->query, corto_query_o, query);
-            }
-            corto_set_str(&((corto_subscriber)_this)->contentType, contentType);
-            if (policy) {
-                corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+            corto_uint32 i = 0;
+            corto_mount_subscriptionList__clear(*_this);
+            for (i = 0; i < length; i ++) {
+                corto_mount_subscriptionList__append(*_this, &elements[i]);
             }
         }
         if (corto_update_end(_this)) {
@@ -452,21 +544,19 @@ corto_int16 _corto_mount__update(corto_mount _this, corto_query* query, const ch
     return 0;
 }
 
-corto_mount _corto_mount__assign(corto_mount _this, corto_query* query, const char * contentType, corto_mountPolicy* policy) {
+corto_mount_subscriptionList* _corto_mount_subscriptionList__assign(corto_mount_subscriptionList* _this, corto_uint32 length, corto_mount_subscription* elements) {
     CORTO_UNUSED(_this);
-    if (query) {
-        corto_ptr_copy(&((corto_subscriber)_this)->query, corto_query_o, query);
-    }
-    corto_set_str(&((corto_subscriber)_this)->contentType, contentType);
-    if (policy) {
-        corto_ptr_copy(&((corto_mount)_this)->policy, corto_mountPolicy_o, policy);
+    corto_uint32 i = 0;
+    corto_mount_subscriptionList__clear(*_this);
+    for (i = 0; i < length; i ++) {
+        corto_mount_subscriptionList__append(*_this, &elements[i]);
     }
     return _this;
 }
 
-corto_mountMask* _corto_mountMask__create(corto_object _parent, const char *_id, corto_mountMask value) {
-    corto_mountMask* _this;
-    _this = (corto_mountMask*)corto_declare(_parent, _id, corto_mountMask_o);
+corto_mountCallbackMask* _corto_mountCallbackMask__create(corto_object _parent, const char *_id, corto_mountCallbackMask value) {
+    corto_mountCallbackMask* _this;
+    _this = (corto_mountCallbackMask*)corto_declare(_parent, _id, corto_mountCallbackMask_o);
     if (!_this) {
         return NULL;
     }
@@ -480,11 +570,11 @@ corto_mountMask* _corto_mountMask__create(corto_object _parent, const char *_id,
     return _this;
 }
 
-corto_int16 _corto_mountMask__update(corto_mountMask* _this, corto_mountMask value) {
+corto_int16 _corto_mountCallbackMask__update(corto_mountCallbackMask* _this, corto_mountCallbackMask value) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            *((corto_mountMask*)CORTO_OFFSET(_this, ((corto_type)corto_mountMask_o)->size)) = value;
+            *((corto_mountCallbackMask*)CORTO_OFFSET(_this, ((corto_type)corto_mountCallbackMask_o)->size)) = value;
         } else {
             *_this = value;
         }
@@ -497,194 +587,9 @@ corto_int16 _corto_mountMask__update(corto_mountMask* _this, corto_mountMask val
     return 0;
 }
 
-corto_mountMask* _corto_mountMask__assign(corto_mountMask* _this, corto_mountMask value) {
+corto_mountCallbackMask* _corto_mountCallbackMask__assign(corto_mountCallbackMask* _this, corto_mountCallbackMask value) {
     CORTO_UNUSED(_this);
     *_this = value;
-    return _this;
-}
-
-corto_mountPolicy* _corto_mountPolicy__create(corto_object _parent, const char *_id, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
-    corto_mountPolicy* _this;
-    _this = (corto_mountPolicy*)corto_declare(_parent, _id, corto_mountPolicy_o);
-    if (!_this) {
-        return NULL;
-    }
-    if (!corto_check_state(_this, CORTO_VALID)) {
-        ((corto_mountPolicy*)_this)->ownership = ownership;
-        ((corto_mountPolicy*)_this)->mask = mask;
-        ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
-        if (queue) {
-            corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
-        }
-        ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
-        ((corto_mountPolicy*)_this)->filterResults = filterResults;
-        if (corto_define(_this)) {
-            corto_release(_this);
-            _this = NULL;
-        }
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountPolicy__update(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
-    CORTO_UNUSED(_this);
-    if (!corto_update_begin(_this)) {
-        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->ownership = ownership;
-            ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->mask = mask;
-            ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->sampleRate = sampleRate;
-            if (queue) {
-                corto_ptr_copy(&((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->queue, corto_queuePolicy_o, queue);
-            }
-            ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->expiryTime = expiryTime;
-            ((corto_mountPolicy*)((corto_mountPolicy*)CORTO_OFFSET(_this, ((corto_type)corto_mountPolicy_o)->size)))->filterResults = filterResults;
-        } else {
-            ((corto_mountPolicy*)_this)->ownership = ownership;
-            ((corto_mountPolicy*)_this)->mask = mask;
-            ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
-            if (queue) {
-                corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
-            }
-            ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
-            ((corto_mountPolicy*)_this)->filterResults = filterResults;
-        }
-        if (corto_update_end(_this)) {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_mountPolicy* _corto_mountPolicy__assign(corto_mountPolicy* _this, corto_ownership ownership, corto_mountMask mask, double sampleRate, corto_queuePolicy* queue, uint64_t expiryTime, bool filterResults) {
-    CORTO_UNUSED(_this);
-    ((corto_mountPolicy*)_this)->ownership = ownership;
-    ((corto_mountPolicy*)_this)->mask = mask;
-    ((corto_mountPolicy*)_this)->sampleRate = sampleRate;
-    if (queue) {
-        corto_ptr_copy(&((corto_mountPolicy*)_this)->queue, corto_queuePolicy_o, queue);
-    }
-    ((corto_mountPolicy*)_this)->expiryTime = expiryTime;
-    ((corto_mountPolicy*)_this)->filterResults = filterResults;
-    return _this;
-}
-
-corto_mountSubscription* _corto_mountSubscription__create(corto_object _parent, const char *_id, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
-    corto_mountSubscription* _this;
-    _this = (corto_mountSubscription*)corto_declare(_parent, _id, corto_mountSubscription_o);
-    if (!_this) {
-        return NULL;
-    }
-    if (!corto_check_state(_this, CORTO_VALID)) {
-        if (query) {
-            corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
-        }
-        ((corto_mountSubscription*)_this)->mountCount = mountCount;
-        ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
-        ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
-        ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
-        if (corto_define(_this)) {
-            corto_release(_this);
-            _this = NULL;
-        }
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountSubscription__update(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
-    CORTO_UNUSED(_this);
-    if (!corto_update_begin(_this)) {
-        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            if (query) {
-                corto_ptr_copy(&((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->query, corto_query_o, query);
-            }
-            ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->mountCount = mountCount;
-            ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->subscriberCount = subscriberCount;
-            ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->mountCtx = mountCtx;
-            ((corto_mountSubscription*)((corto_mountSubscription*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscription_o)->size)))->subscriberCtx = subscriberCtx;
-        } else {
-            if (query) {
-                corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
-            }
-            ((corto_mountSubscription*)_this)->mountCount = mountCount;
-            ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
-            ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
-            ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
-        }
-        if (corto_update_end(_this)) {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_mountSubscription* _corto_mountSubscription__assign(corto_mountSubscription* _this, corto_query* query, uint32_t mountCount, uint32_t subscriberCount, uintptr_t mountCtx, uintptr_t subscriberCtx) {
-    CORTO_UNUSED(_this);
-    if (query) {
-        corto_ptr_copy(&((corto_mountSubscription*)_this)->query, corto_query_o, query);
-    }
-    ((corto_mountSubscription*)_this)->mountCount = mountCount;
-    ((corto_mountSubscription*)_this)->subscriberCount = subscriberCount;
-    ((corto_mountSubscription*)_this)->mountCtx = mountCtx;
-    ((corto_mountSubscription*)_this)->subscriberCtx = subscriberCtx;
-    return _this;
-}
-
-corto_mountSubscriptionList* _corto_mountSubscriptionList__create(corto_object _parent, const char *_id, corto_uint32 length, corto_mountSubscription* elements) {
-    corto_mountSubscriptionList* _this;
-    _this = (corto_mountSubscriptionList*)corto_declare(_parent, _id, corto_mountSubscriptionList_o);
-    if (!_this) {
-        return NULL;
-    }
-    if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_uint32 i = 0;
-        corto_mountSubscriptionList__clear(*_this);
-        for (i = 0; i < length; i ++) {
-            corto_mountSubscriptionList__append(*_this, &elements[i]);
-        }
-        if (corto_define(_this)) {
-            corto_release(_this);
-            _this = NULL;
-        }
-    }
-    return _this;
-}
-
-corto_int16 _corto_mountSubscriptionList__update(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements) {
-    CORTO_UNUSED(_this);
-    if (!corto_update_begin(_this)) {
-        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_uint32 i = 0;
-            corto_mountSubscriptionList__clear(*((corto_mountSubscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscriptionList_o)->size)));
-            for (i = 0; i < length; i ++) {
-                corto_mountSubscriptionList__append(*((corto_mountSubscriptionList*)CORTO_OFFSET(_this, ((corto_type)corto_mountSubscriptionList_o)->size)), &elements[i]);
-            }
-        } else {
-            corto_uint32 i = 0;
-            corto_mountSubscriptionList__clear(*_this);
-            for (i = 0; i < length; i ++) {
-                corto_mountSubscriptionList__append(*_this, &elements[i]);
-            }
-        }
-        if (corto_update_end(_this)) {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_mountSubscriptionList* _corto_mountSubscriptionList__assign(corto_mountSubscriptionList* _this, corto_uint32 length, corto_mountSubscription* elements) {
-    CORTO_UNUSED(_this);
-    corto_uint32 i = 0;
-    corto_mountSubscriptionList__clear(*_this);
-    for (i = 0; i < length; i ++) {
-        corto_mountSubscriptionList__append(*_this, &elements[i]);
-    }
     return _this;
 }
 
@@ -1023,45 +928,6 @@ corto_query* _corto_query__assign(corto_query* _this, const char * select, const
     if (timeEnd) {
         corto_ptr_copy(&((corto_query*)_this)->timeEnd, corto_frame_o, timeEnd);
     }
-    return _this;
-}
-
-corto_queuePolicy* _corto_queuePolicy__create(corto_object _parent, const char *_id, uint32_t max) {
-    corto_queuePolicy* _this;
-    _this = (corto_queuePolicy*)corto_declare(_parent, _id, corto_queuePolicy_o);
-    if (!_this) {
-        return NULL;
-    }
-    if (!corto_check_state(_this, CORTO_VALID)) {
-        ((corto_queuePolicy*)_this)->max = max;
-        if (corto_define(_this)) {
-            corto_release(_this);
-            _this = NULL;
-        }
-    }
-    return _this;
-}
-
-corto_int16 _corto_queuePolicy__update(corto_queuePolicy* _this, uint32_t max) {
-    CORTO_UNUSED(_this);
-    if (!corto_update_begin(_this)) {
-        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            ((corto_queuePolicy*)((corto_queuePolicy*)CORTO_OFFSET(_this, ((corto_type)corto_queuePolicy_o)->size)))->max = max;
-        } else {
-            ((corto_queuePolicy*)_this)->max = max;
-        }
-        if (corto_update_end(_this)) {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_queuePolicy* _corto_queuePolicy__assign(corto_queuePolicy* _this, uint32_t max) {
-    CORTO_UNUSED(_this);
-    ((corto_queuePolicy*)_this)->max = max;
     return _this;
 }
 
@@ -1767,55 +1633,55 @@ corto_time* _corto_time__assign(corto_time* _this, int32_t sec, uint32_t nanosec
     return _this;
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__insert_alloc(corto_mountSubscriptionList list) {
-    corto_mountSubscription* result;
-    result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
+corto_mount_subscription* corto_mount_subscriptionList__insert_alloc(corto_mount_subscriptionList list) {
+    corto_mount_subscription* result;
+    result = (corto_mount_subscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mount_subscription_o)));
     {
-        corto_ptr_init(result, corto_mountSubscription_o);
+        corto_ptr_init(result, corto_mount_subscription_o);
     }
     corto_ll_insert(list, result);
     return result;
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__insert(corto_mountSubscriptionList list, corto_mountSubscription* element) {
-    corto_mountSubscription *result = corto_mountSubscriptionList__insert_alloc(list);
-    corto_ptr_copy(result, corto_mountSubscription_o, element);
+corto_mount_subscription* corto_mount_subscriptionList__insert(corto_mount_subscriptionList list, corto_mount_subscription* element) {
+    corto_mount_subscription *result = corto_mount_subscriptionList__insert_alloc(list);
+    corto_ptr_copy(result, corto_mount_subscription_o, element);
     return result;
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__append_alloc(corto_mountSubscriptionList list) {
-    corto_mountSubscription* result;
-    result = (corto_mountSubscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mountSubscription_o)));
+corto_mount_subscription* corto_mount_subscriptionList__append_alloc(corto_mount_subscriptionList list) {
+    corto_mount_subscription* result;
+    result = (corto_mount_subscription*)corto_calloc(corto_type_sizeof(corto_type(corto_mount_subscription_o)));
     {
-        corto_ptr_init(result, corto_mountSubscription_o);
+        corto_ptr_init(result, corto_mount_subscription_o);
     }
     corto_ll_append(list, result);
     return result;
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__append(corto_mountSubscriptionList list, corto_mountSubscription* element) {
-    corto_mountSubscription *result = corto_mountSubscriptionList__append_alloc(list);
-    corto_ptr_copy(result, corto_mountSubscription_o, element);
+corto_mount_subscription* corto_mount_subscriptionList__append(corto_mount_subscriptionList list, corto_mount_subscription* element) {
+    corto_mount_subscription *result = corto_mount_subscriptionList__append_alloc(list);
+    corto_ptr_copy(result, corto_mount_subscription_o, element);
     return result;
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__takeFirst(corto_mountSubscriptionList list) {
-    return (corto_mountSubscription*)(corto_word)corto_ll_takeFirst(list);
+corto_mount_subscription* corto_mount_subscriptionList__takeFirst(corto_mount_subscriptionList list) {
+    return (corto_mount_subscription*)(corto_word)corto_ll_takeFirst(list);
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__last(corto_mountSubscriptionList list) {
-    return (corto_mountSubscription*)(corto_word)corto_ll_last(list);
+corto_mount_subscription* corto_mount_subscriptionList__last(corto_mount_subscriptionList list) {
+    return (corto_mount_subscription*)(corto_word)corto_ll_last(list);
 }
 
-corto_mountSubscription* corto_mountSubscriptionList__get(corto_mountSubscriptionList list, corto_uint32 index) {
-    return (corto_mountSubscription*)corto_ll_get(list, index);
+corto_mount_subscription* corto_mount_subscriptionList__get(corto_mount_subscriptionList list, corto_uint32 index) {
+    return (corto_mount_subscription*)corto_ll_get(list, index);
 }
 
-void corto_mountSubscriptionList__clear(corto_mountSubscriptionList list) {
+void corto_mount_subscriptionList__clear(corto_mount_subscriptionList list) {
     corto_iter iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
         void *ptr = corto_iter_next(&iter);
-        corto_ptr_deinit(ptr, corto_mountSubscription_o);
+        corto_ptr_deinit(ptr, corto_mount_subscription_o);
         corto_dealloc(ptr);
     }
     corto_ll_clear(list);

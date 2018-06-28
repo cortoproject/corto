@@ -3450,7 +3450,7 @@ corto_tool _corto_tool__assign(corto_tool _this) {
     return _this;
 }
 
-corto_type _corto_type__create(corto_object _parent, const char *_id, bool reference, corto_attr attr) {
+corto_type _corto_type__create(corto_object _parent, const char *_id, bool reference) {
     corto_type _this;
     _this = (corto_type)corto_declare(_parent, _id, corto_type_o);
     if (!_this) {
@@ -3458,7 +3458,6 @@ corto_type _corto_type__create(corto_object _parent, const char *_id, bool refer
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         ((corto_type)_this)->reference = reference;
-        ((corto_type)_this)->attr = attr;
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -3467,15 +3466,13 @@ corto_type _corto_type__create(corto_object _parent, const char *_id, bool refer
     return _this;
 }
 
-corto_int16 _corto_type__update(corto_type _this, bool reference, corto_attr attr) {
+corto_int16 _corto_type__update(corto_type _this, bool reference) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             ((corto_type)((corto_type)CORTO_OFFSET(_this, ((corto_type)corto_type_o)->size)))->reference = reference;
-            ((corto_type)((corto_type)CORTO_OFFSET(_this, ((corto_type)corto_type_o)->size)))->attr = attr;
         } else {
             ((corto_type)_this)->reference = reference;
-            ((corto_type)_this)->attr = attr;
         }
         if (corto_update_end(_this)) {
             return -1;
@@ -3486,10 +3483,9 @@ corto_int16 _corto_type__update(corto_type _this, bool reference, corto_attr att
     return 0;
 }
 
-corto_type _corto_type__assign(corto_type _this, bool reference, corto_attr attr) {
+corto_type _corto_type__assign(corto_type _this, bool reference) {
     CORTO_UNUSED(_this);
     ((corto_type)_this)->reference = reference;
-    ((corto_type)_this)->attr = attr;
     return _this;
 }
 
@@ -3529,57 +3525,6 @@ corto_int16 _corto_typeKind__update(corto_typeKind* _this, corto_typeKind value)
 corto_typeKind* _corto_typeKind__assign(corto_typeKind* _this, corto_typeKind value) {
     CORTO_UNUSED(_this);
     *_this = value;
-    return _this;
-}
-
-corto_typeOptions* _corto_typeOptions__create(corto_object _parent, const char *_id, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
-    corto_typeOptions* _this;
-    _this = (corto_typeOptions*)corto_declare(_parent, _id, corto_typeOptions_o);
-    if (!_this) {
-        return NULL;
-    }
-    if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_typeOptions*)_this)->parentType, parentType);
-        ((corto_typeOptions*)_this)->parentState = parentState;
-        corto_set_ref(&((corto_typeOptions*)_this)->defaultType, defaultType);
-        corto_set_ref(&((corto_typeOptions*)_this)->defaultProcedureType, defaultProcedureType);
-        if (corto_define(_this)) {
-            corto_release(_this);
-            _this = NULL;
-        }
-    }
-    return _this;
-}
-
-corto_int16 _corto_typeOptions__update(corto_typeOptions* _this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
-    CORTO_UNUSED(_this);
-    if (!corto_update_begin(_this)) {
-        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_typeOptions*)((corto_typeOptions*)CORTO_OFFSET(_this, ((corto_type)corto_typeOptions_o)->size)))->parentType, parentType);
-            ((corto_typeOptions*)((corto_typeOptions*)CORTO_OFFSET(_this, ((corto_type)corto_typeOptions_o)->size)))->parentState = parentState;
-            corto_set_ref(&((corto_typeOptions*)((corto_typeOptions*)CORTO_OFFSET(_this, ((corto_type)corto_typeOptions_o)->size)))->defaultType, defaultType);
-            corto_set_ref(&((corto_typeOptions*)((corto_typeOptions*)CORTO_OFFSET(_this, ((corto_type)corto_typeOptions_o)->size)))->defaultProcedureType, defaultProcedureType);
-        } else {
-            corto_set_ref(&((corto_typeOptions*)_this)->parentType, parentType);
-            ((corto_typeOptions*)_this)->parentState = parentState;
-            corto_set_ref(&((corto_typeOptions*)_this)->defaultType, defaultType);
-            corto_set_ref(&((corto_typeOptions*)_this)->defaultProcedureType, defaultProcedureType);
-        }
-        if (corto_update_end(_this)) {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_typeOptions* _corto_typeOptions__assign(corto_typeOptions* _this, corto_type parentType, corto_state parentState, corto_type defaultType, corto_type defaultProcedureType) {
-    CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_typeOptions*)_this)->parentType, parentType);
-    ((corto_typeOptions*)_this)->parentState = parentState;
-    corto_set_ref(&((corto_typeOptions*)_this)->defaultType, defaultType);
-    corto_set_ref(&((corto_typeOptions*)_this)->defaultProcedureType, defaultProcedureType);
     return _this;
 }
 

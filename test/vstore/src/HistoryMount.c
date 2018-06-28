@@ -8,6 +8,17 @@ int16_t test_HistoryMount_construct(
     corto_ll samples;
     corto_result r;
 
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (!this->mount && corto_check_attr(this, CORTO_ATTR_NAMED)) {
+        corto_set_ref(&this->mount, this);
+    }
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+
     corto_mount_setContentType(this, "text/corto");
 
     samples = corto_ll_new();

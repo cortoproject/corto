@@ -63,7 +63,7 @@ int16_t corto_get_element_ptr(
             goto error;
         }
 
-        if (corto_collection_requiresAlloc(type->elementType)) {
+        if (corto_collection_requires_alloc(type->elementType)) {
             result = corto_ll_get(list, index);
         } else {
             result = corto_ll_getPtr(list, index);
@@ -201,7 +201,7 @@ const char* corto_field_lookup_member(
 
     } else {
         /* If not super, lookup member in the type */
-        corto_member m = corto_interface_resolveMember(type, buffer);
+        corto_member m = corto_interface_resolve_member(type, buffer);
         if (!m) {
             corto_throw(
                 "unresolved member '%s' in type '%s'",

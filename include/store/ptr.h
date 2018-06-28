@@ -20,7 +20,7 @@
  */
 
 /** @file
- * @section ptr Ptr API
+ * @section ptr Pointer
  * @brief Low level API for native pointers.
  *
  * This API allows applications to utilize the corto typesystem with values that

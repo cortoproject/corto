@@ -300,7 +300,7 @@ void* corto_rw_list_append(
     corto_type elem_type = type->elementType;
 
     void *elem = NULL;
-    if (corto_collection_requiresAlloc(elem_type)) {
+    if (corto_collection_requires_alloc(elem_type)) {
         elem = corto_ptr_new(elem_type);
         corto_ll_append(list, elem);
     } else {

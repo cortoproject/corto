@@ -405,7 +405,7 @@ CORTO_CONVERT_FROM_STR_FLOAT(float64)
 
 /* Init numeric conversion slot */
 #define CORTO_CONVERT_INIT_NUM(kind, width, toKind, toWidth, fromType, toType)\
-    _conversions[corto__primitive_convertId(kind, width)][corto__primitive_convertId(toKind, toWidth)] = CORTO_NAME_TRANSFORM(fromType, toType)
+    _conversions[corto__primitive_convert_id(kind, width)][corto__primitive_convert_id(toKind, toWidth)] = CORTO_NAME_TRANSFORM(fromType, toType)
 
 /* All numeric conversion slots */
 #define CORTO_CONVERT_INIT_NUM_ALL(kind, width, type)\
@@ -601,7 +601,7 @@ int16_t _corto_ptr_cast(
         }
     } else if (fromType->kind == CORTO_PRIMITIVE) {
         /* Get conversion */
-        c = _conversions[((corto_primitive)fromType)->convertId][corto_primitive(toType)->convertId];
+        c = _conversions[((corto_primitive)fromType)->convert_id][corto_primitive(toType)->convert_id];
         if (c) {
             if (c((corto_primitive)fromType, from, (corto_primitive)toType, to)) {
                 /* Conversion failed */

@@ -20,8 +20,8 @@
  */
 
 /** @file
- * @section value Value API
- * @brief API for dynamic access to corto values.
+ * @section value Value
+ * @brief Supporting API for describing corto values.
  *
  * The corto_value type contains meta-information in addition to a pointer
  * and a type that allows it to describe any possible value in corto. The most

@@ -656,7 +656,6 @@ corto_subscriber corto_subscribeCallback(
 static
 corto_mount corto_subscribeMount(
     corto_class type,
-    corto_mountPolicy *policy,
     const char *value)
 {
     corto_subscribeRequest *r = corto_tls_get(CORTO_KEY_FLUENT);
@@ -676,9 +675,6 @@ corto_mount corto_subscribeMount(
     corto_set_str(&s->contentType, r->contentType);
 
     ((corto_observer)s)->enabled = true;
-    if (policy) {
-        m->policy = *policy;
-    }
 
     corto_tls_set(CORTO_KEY_FLUENT, NULL);
     free(r);

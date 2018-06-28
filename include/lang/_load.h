@@ -68,7 +68,7 @@ CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);
 CORTO_META_OBJECT(struct, parameter);
 CORTO_META_OBJECT(struct, result);
-CORTO_META_OBJECT(struct, typeOptions);
+CORTO_META_OBJECT(struct, type_options);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(binary, octet);
@@ -142,7 +142,7 @@ CORTO_META_OBJECT(method, type_castable);
 CORTO_META_OBJECT(method, collection_castable);
 CORTO_META_OBJECT(method, type_compatible);
 CORTO_META_OBJECT(method, struct_compatible);
-CORTO_META_OBJECT(method, interface_resolveMember);
+CORTO_META_OBJECT(method, interface_resolve_member);
 
 
 #ifdef __cplusplus
