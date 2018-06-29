@@ -6,7 +6,7 @@ void test_BinarySerializer_tc_serializeReferenceType(
 {
     /* Use corto_select to serialize corto package to binary format */
     corto_iter it;
-    test_assert(corto_select("corto").contentType("binary/corto").iter(&it) == 0);
+    test_assert(corto_select("corto").format("binary/corto").iter(&it) == 0);
 
     test_assert(corto_iter_hasNext(&it) != 0);
     corto_result *r = corto_iter_next(&it);
@@ -51,7 +51,7 @@ void test_BinarySerializer_tc_serializeReferenceTypeWithInit(
 {
     /* Use corto_select to serialize corto package to binary format */
     corto_iter it;
-    test_assert(corto_select("corto/lang/class").contentType("binary/corto").iter(&it) == 0);
+    test_assert(corto_select("corto/lang/class").format("binary/corto").iter(&it) == 0);
 
     test_assert(corto_iter_hasNext(&it) != 0);
     corto_result *r = corto_iter_next(&it);

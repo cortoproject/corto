@@ -31,7 +31,7 @@
     }
 
 #define FREE_ARRAY(ptr, element_size, action)\
-    sub_type = field->data.array_type->elementType;\
+    sub_type = field->data.array_type->element_type;\
     array_ptr = ptr;\
     count = field->data.array_type->super.max;\
     size = element_size;\

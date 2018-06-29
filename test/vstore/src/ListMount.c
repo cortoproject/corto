@@ -148,7 +148,7 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_mount_setContentType(this, "text/json");
+    corto_mount_set_format(this, "text/json");
 
     return corto_mount_construct(this);
 }

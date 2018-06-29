@@ -110,7 +110,7 @@ int16_t corto_deserialize_value(
 /** Obtain handle to a serialization format plugin.
  *
  * This function provides a high(er) performance alternative to looking up
- * serialization formats by id, by returning a handle to a contentType that can
+ * serialization formats by id, by returning a handle to a format that can
  * be reused.
  *
  * @param fmtId The serialization format identifier.

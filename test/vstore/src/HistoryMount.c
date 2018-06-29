@@ -19,7 +19,7 @@ int16_t test_HistoryMount_construct(
         this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
 
-    corto_mount_setContentType(this, "text/corto");
+    corto_mount_set_format(this, "text/corto");
 
     samples = corto_ll_new();
     corto_stringList__append(samples, "{10,11}");
@@ -135,8 +135,8 @@ corto_resultIter test_HistoryMount_on_history_query(
 
     iterData *data = corto_alloc(sizeof(iterData));
     data->this = this;
-    data->from = query->timeBegin;
-    data->to = query->timeEnd;
+    data->from = query->frame_begin;
+    data->to = query->frame_end;
     data->soffset = query->soffset;
     data->slimit = query->slimit;
     data->iter = corto_ll_iterAlloc(this->history);

@@ -75,12 +75,12 @@ corto_int16 corto_ser_initCollection(
             break;
         case CORTO_MAP:
             if (!m || m->modifiers & CORTO_NOT_NULL) {
-                corto_type keyType = corto_map(t)->keyType;
-                if (keyType) {
-                    if (corto_collection_requires_alloc(keyType)) {
-                        *(corto_rb*)o = corto_rb_new(corto_compare_key, keyType);
+                corto_type key_type = corto_map(t)->key_type;
+                if (key_type) {
+                    if (corto_collection_requires_alloc(key_type)) {
+                        *(corto_rb*)o = corto_rb_new(corto_compare_key, key_type);
                     } else {
-                        *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, keyType);
+                        *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, key_type);
                     }
                 } else {
                     /* Custom compare function, app is responsible for init */
@@ -156,7 +156,7 @@ error:
 }
 
 corto_walk_opt corto_ser_init(
-    corto_modifier access,
+    corto_modifierMask access,
     corto_operatorKind accessKind,
     corto_walk_traceKind trace)
 {

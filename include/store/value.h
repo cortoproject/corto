@@ -30,7 +30,7 @@
  * The corto_walk API in particular uses corto_value to communicate
  * meta information about the value that is visited. A corto_value instance can
  * itself also be an input for the corto_walk API. The corto_value type also plays
- * a prominent role in the contentType interface. Whenever a value that is potentially
+ * a prominent role in the format interface. Whenever a value that is potentially
  * not an object needs to be shared between components, corto_value is the
  * preferred carrier.
  *
@@ -341,7 +341,7 @@ corto_value _corto_value_ptr(
  * CORTO_OBJECT. Reference types mandate that they are instantiated as objects
  * which is consistent with this design.
  *
- * However, in case of the 'ptr' contentType, values are communicated in a
+ * However, in case of the 'ptr' format, values are communicated in a
  * memory representation consistent with objects, but without the overhead of an
  * actual object. To facilitate this usecase, a copy function is needed that can
  * walk over the value of a non-object pointer of a reference type.

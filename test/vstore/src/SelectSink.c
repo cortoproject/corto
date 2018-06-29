@@ -1205,7 +1205,7 @@ void test_SelectSink_tc_selectObjectFromVstore(
     corto_mount m =
         corto_subscribe("*")
             .from("data")
-            .contentType("text/corto")
+            .format("text/corto")
             .mount(test_SimpleMount_o, "{callbacks=mount_query, ownership=local_source}");
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
@@ -1232,7 +1232,7 @@ void test_SelectSink_tc_selectObjectFromVstore_w_InvalidObjectInStore(
     corto_mount m =
         corto_subscribe("*")
             .from("data")
-            .contentType("text/corto")
+            .format("text/corto")
             .mount(test_SimpleMount_o, "{callbacks=mount_query, ownership=local_source}");
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));
@@ -1263,7 +1263,7 @@ void test_SelectSink_tc_selectObjectFromVstore_w_ValidObjectInStore(
     corto_mount m =
         corto_subscribe("*")
             .from("data")
-            .contentType("text/corto")
+            .format("text/corto")
             .mount(test_SimpleMount_o, "{callbacks=mount_query, ownership=local_source}");
     test_assert(m != NULL);
     test_assert(corto_typeof(m) == corto_type(test_SimpleMount_o));

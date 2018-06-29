@@ -229,9 +229,9 @@ error:
 int16_t corto_struct_init(
     corto_struct this)
 {
-    /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
+    /* If not bootstrapping, set base_modifiers to GLOBAL | PUBLIC */
     if (corto_check_state(corto_type_o, CORTO_VALID)) {
-        this->baseAccess = CORTO_GLOBAL;
+        this->base_modifiers = CORTO_GLOBAL;
     }
 
     if (_corto_interface_init((corto_interface)this)) {

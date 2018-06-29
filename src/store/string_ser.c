@@ -438,7 +438,7 @@ corto_int16 corto_ser_destruct(corto_walk_opt* s, void* userData) {
     return 0;
 }
 
-corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+corto_walk_opt corto_string_ser(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
     corto_walk_opt s;
 
     corto_walk_init(&s);

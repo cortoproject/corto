@@ -266,14 +266,14 @@ int16_t corto_mount_construct(
         corto_set_str(&s->query.select, "//");
     }
 
-    if (s->contentType)
+    if (s->format)
     {
         if (!s->fmt_handle) {
-            corto_mount_setContentTypeIn(this, s->contentType);
+            corto_mount_set_formatIn(this, s->format);
         }
 
-        if (!this->contentTypeOutHandle) {
-            corto_mount_setContentTypeOut(this, s->contentType);
+        if (!this->formatOutHandle) {
+            corto_mount_set_formatOut(this, s->format);
         }
     }
 
@@ -833,7 +833,7 @@ void corto_mount_publish(
         event,
         identifier,
         type,
-        this->contentTypeOut,
+        this->formatOut,
         (void*)value
     );
 }
@@ -936,12 +936,12 @@ int16_t corto_mount_resumeResult(
 
     if (o) {
         corto_value v = corto_value_object(o, NULL);
-        if (this->contentTypeOutHandle && r->value) {
+        if (this->formatOutHandle && r->value) {
             corto_fmt_opt opt = {
                 .from = this->super.query.from
             };
             if (corto_fmt_to_value(
-                (corto_fmt)this->contentTypeOutHandle,
+                (corto_fmt)this->formatOutHandle,
                  &opt,
                  &v,
                  (void*)r->value))
@@ -1118,8 +1118,8 @@ void corto_mount_return(
         return;
     }
 
-    if (!r->value && this->contentTypeOutHandle && !(r->flags & CORTO_RESULT_HIDDEN)) {
-        corto_error("mount: returned result that doesn't set value but mount has contentType");
+    if (!r->value && this->formatOutHandle && !(r->flags & CORTO_RESULT_HIDDEN)) {
+        corto_error("mount: returned result that doesn't set value but mount has format");
         return;
     }
 
@@ -1133,16 +1133,16 @@ void corto_mount_return(
     corto_ll_append(result, elem);
 }
 
-int16_t corto_mount_setContentType(
+int16_t corto_mount_set_format(
     corto_mount this,
     const char *type)
 {
 
-    if (corto_mount_setContentTypeIn(this, type)) {
+    if (corto_mount_set_formatIn(this, type)) {
         goto error;
     }
 
-    if (corto_mount_setContentTypeOut(this, type)) {
+    if (corto_mount_set_formatOut(this, type)) {
         goto error;
     }
 
@@ -1151,12 +1151,12 @@ error:
     return -1;
 }
 
-int16_t corto_mount_setContentTypeIn(
+int16_t corto_mount_set_formatIn(
     corto_mount this,
     const char *type)
 {
 
-    corto_set_str(&corto_subscriber(this)->contentType, type);
+    corto_set_str(&corto_subscriber(this)->format, type);
     corto_subscriber(this)->fmt_handle = (corto_word)corto_fmt_lookup(type);
     if (!corto_subscriber(this)->fmt_handle) {
         goto error;
@@ -1167,14 +1167,14 @@ error:
     return -1;
 }
 
-int16_t corto_mount_setContentTypeOut(
+int16_t corto_mount_set_formatOut(
     corto_mount this,
     const char *type)
 {
 
-    corto_set_str(&this->contentTypeOut, type);
-    this->contentTypeOutHandle = (corto_word)corto_fmt_lookup(type);
-    if (!this->contentTypeOutHandle) {
+    corto_set_str(&this->formatOut, type);
+    this->formatOutHandle = (corto_word)corto_fmt_lookup(type);
+    if (!this->formatOutHandle) {
         goto error;
     }
 

@@ -899,13 +899,13 @@ int32_t corto_sig_paramCount(
     const char* signature);
 
 CORTO_EXPORT
-int32_t corto_sig_paramName(
+int32_t corto_sig_param_name(
     const char* signature,
     uint32_t id,
     corto_id buffer);
 
 CORTO_EXPORT
-int32_t corto_sig_paramType(
+int32_t corto_sig_param_type(
     const char* signature,
     uint32_t id,
     corto_id buffer,

@@ -224,8 +224,8 @@ int16_t _corto_ptr_resize(
     corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)",
         size,
         collectionType->max);
-    corto_type elementType = collectionType->elementType;
-    uint32_t elemSize = corto_type_sizeof(elementType);
+    corto_type element_type = collectionType->element_type;
+    uint32_t elemSize = corto_type_sizeof(element_type);
 
     switch(collectionType->kind) {
     case CORTO_ARRAY:
@@ -235,7 +235,7 @@ int16_t _corto_ptr_resize(
             int i;
             for (i = 0; i < size; i ++) {
                 void *elem = CORTO_OFFSET(array, i * elemSize);
-                if (corto_ptr_init(elem, elementType)) {
+                if (corto_ptr_init(elem, element_type)) {
                     goto error;
                 }
             }
@@ -247,7 +247,7 @@ int16_t _corto_ptr_resize(
             int i;
             for (i = size; i < seq->length; i ++) {
                 void *elem = CORTO_OFFSET(seq->buffer, i * elemSize);
-                corto_ptr_deinit(elem, elementType);
+                corto_ptr_deinit(elem, element_type);
             }
         }
         seq->buffer = corto_realloc(seq->buffer, elemSize * size);
@@ -255,7 +255,7 @@ int16_t _corto_ptr_resize(
             int i;
             for (i = seq->length; i < size; i ++) {
                 void *elem = CORTO_OFFSET(seq->buffer, i * elemSize);
-                if (corto_ptr_init(elem, elementType)) {
+                if (corto_ptr_init(elem, element_type)) {
                     goto error;
                 }
             }
@@ -277,12 +277,12 @@ int16_t _corto_ptr_resize(
             /* Deinitialize redundant samples */
             while (corto_iter_hasNext(&it)) {
                 void *elem;
-                if (corto_collection_requires_alloc(elementType)) {
+                if (corto_collection_requires_alloc(element_type)) {
                     elem = corto_iter_next(&it);
-                    corto_ptr_free(elem, elementType);
+                    corto_ptr_free(elem, element_type);
                 } else {
                     elem = corto_ll_iterNextPtr(&it);
-                    corto_ptr_deinit(elem, elementType);
+                    corto_ptr_deinit(elem, element_type);
                 }
                 corto_ll_iterRemove(&it);
             }
@@ -291,8 +291,8 @@ int16_t _corto_ptr_resize(
         int i;
         for (i = corto_ll_count(l); i < size; i++) {
             void *elem;
-            if (corto_collection_requires_alloc(elementType)) {
-                elem = corto_ptr_new(elementType);
+            if (corto_collection_requires_alloc(element_type)) {
+                elem = corto_ptr_new(element_type);
             } else {
                 elem = NULL;
             }

@@ -160,41 +160,41 @@ int16_t corto_cdeclInit(
     uint32_t argsSize = sizeof(ffi_type*) * (this->parameters.length + 1);
     ffi_cif *cif = corto_alloc(sizeof(ffi_cif) + argsSize);
     ffi_type **args = CORTO_OFFSET(cif, sizeof(ffi_cif));
-    corto_uint8 hasThis = 0;
+    corto_uint8 has_this = 0;
 
     /* Add size of this-pointer */
     corto_procedure procedure = corto_function_getProcedureType(this);
 
     /* Add size of this-pointer */
-    if (procedure->hasThis) {
-        if (procedure->thisType == corto_any_o) {
+    if (procedure->has_this) {
+        if (procedure->this_type == corto_any_o) {
             args[0] = &corto_ffi_type_any;
         } else {
             args[0] = &ffi_type_pointer;
         }
-        hasThis = 1;
+        has_this = 1;
     }
 
     uint32_t i;
     for(i = 0; i < this->parameters.length; i++) {
-        if (this->parameters.buffer[i].passByReference) {
-            args[i + hasThis] = &ffi_type_pointer;
+        if (this->parameters.buffer[i].is_reference) {
+            args[i + has_this] = &ffi_type_pointer;
         } else {
-            corto_type paramType = this->parameters.buffer[i].type;
-            switch(paramType->kind) {
+            corto_type param_type = this->parameters.buffer[i].type;
+            switch(param_type->kind) {
             case CORTO_ANY:
-                args[i + hasThis] = &corto_ffi_type_any;
+                args[i + has_this] = &corto_ffi_type_any;
                 break;
             case CORTO_PRIMITIVE:
-                args[i + hasThis] = corto_ffi_type(paramType);
+                args[i + has_this] = corto_ffi_type(param_type);
                 break;
             case CORTO_COLLECTION:
-                if (corto_collection(paramType)->kind == CORTO_SEQUENCE) {
-                    args[i + hasThis] = &corto_ffi_type_sequence;
+                if (corto_collection(param_type)->kind == CORTO_SEQUENCE) {
+                    args[i + has_this] = &corto_ffi_type_sequence;
                     break;
                 }
             default:
-                args[i + hasThis] = &ffi_type_pointer;
+                args[i + has_this] = &ffi_type_pointer;
                 break;
             }
         }
@@ -204,9 +204,9 @@ int16_t corto_cdeclInit(
     ffi_prep_cif(
         cif,
         FFI_DEFAULT_ABI,
-        this->parameters.length + hasThis,
-        this->returnsReference ?
-            &ffi_type_pointer : corto_ffi_type(this->returnType),
+        this->parameters.length + has_this,
+        this->is_reference ?
+            &ffi_type_pointer : corto_ffi_type(this->return_type),
         args);
 
     this->fdata = (corto_word)cif;

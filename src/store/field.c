@@ -41,7 +41,7 @@ int16_t corto_get_element_ptr(
         ptr = ((corto_objectseq*)ptr)->buffer;
         max = ((corto_objectseq*)ptr)->length;
     case CORTO_ARRAY: {
-        uint32_t element_size = corto_type_sizeof(type->elementType);
+        uint32_t element_size = corto_type_sizeof(type->element_type);
         if (!max) max = type->max;
         if (index >= max) {
             corto_throw("index %d is out of bounds (%d) for array of type '%s'",
@@ -63,7 +63,7 @@ int16_t corto_get_element_ptr(
             goto error;
         }
 
-        if (corto_collection_requires_alloc(type->elementType)) {
+        if (corto_collection_requires_alloc(type->element_type)) {
             result = corto_ll_get(list, index);
         } else {
             result = corto_ll_getPtr(list, index);
@@ -129,7 +129,7 @@ const char* corto_field_lookup_element(
             corto_try( corto_get_element_ptr(
                 collection_type, index, &field_out->ptr), NULL);
 
-            field_out->type = collection_type->elementType;
+            field_out->type = collection_type->element_type;
             field_out->index = index;
             field_out->member = NULL;
         }
@@ -271,7 +271,7 @@ int16_t _corto_field_lookup_index(
 
     corto_try (corto_get_element_ptr(type, index, &ptr_param), NULL);
 
-    field_out->type = type->elementType;
+    field_out->type = type->element_type;
     field_out->ptr = ptr_param;
     field_out->index = index;
     field_out->member = NULL;

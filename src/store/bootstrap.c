@@ -46,9 +46,9 @@ struct corto_exitHandler {
 };
 
 #define VERSION_MAJOR "2"
-#define VERSION_MINOR "0"
+#define VERSION_MINOR "1"
 #define VERSION_PATCH "0"
-#define VERSION_SUFFIX "alpha"
+#define VERSION_SUFFIX "beta"
 
 #ifdef VERSION_SUFFIX
 const char* BAKE_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
@@ -166,7 +166,7 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(vstore_, frameKind),\
     BUILTIN_VALUE(,secure_accessKind),\
     BUILTIN_VALUE(,secure_actionKind),\
-    BUILTIN_VALUE(lang_, modifier),\
+    BUILTIN_VALUE(lang_, modifierMask),\
     BUILTIN_VALUE(vstore_, eventMask),\
     BUILTIN_VALUE(vstore_, resultMask),\
     BUILTIN_VALUE(lang_, state),\
@@ -269,8 +269,8 @@ corto_object home_o = NULL;
     /* constant */\
     BUILTIN_OBJ(lang_constant_init_),\
     /* function */\
-    BUILTIN_OBJ(lang_function_returnType),\
-    BUILTIN_OBJ(lang_function_returnsReference),\
+    BUILTIN_OBJ(lang_function_return_type),\
+    BUILTIN_OBJ(lang_function_is_reference),\
     BUILTIN_OBJ(lang_function_parameters),\
     BUILTIN_OBJ(lang_function_overridable),\
     BUILTIN_OBJ(lang_function_overloaded),\
@@ -483,17 +483,17 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_eventMask_ON_VALUE),\
     BUILTIN_OBJ(vstore_eventMask_ON_METAVALUE),\
     BUILTIN_OBJ(vstore_eventMask_ON_ANY),\
-    /* modifier */\
-    BUILTIN_OBJ(lang_modifier_GLOBAL),\
-    BUILTIN_OBJ(lang_modifier_LOCAL),\
-    BUILTIN_OBJ(lang_modifier_PRIVATE),\
-    BUILTIN_OBJ(lang_modifier_READONLY),\
-    BUILTIN_OBJ(lang_modifier_CONST),\
-    BUILTIN_OBJ(lang_modifier_NOT_NULL),\
-    BUILTIN_OBJ(lang_modifier_HIDDEN),\
-    BUILTIN_OBJ(lang_modifier_OPTIONAL),\
-    BUILTIN_OBJ(lang_modifier_OBSERVABLE),\
-    BUILTIN_OBJ(lang_modifier_KEY),\
+    /* modifierMask */\
+    BUILTIN_OBJ(lang_modifierMask_GLOBAL),\
+    BUILTIN_OBJ(lang_modifierMask_LOCAL),\
+    BUILTIN_OBJ(lang_modifierMask_PRIVATE),\
+    BUILTIN_OBJ(lang_modifierMask_READONLY),\
+    BUILTIN_OBJ(lang_modifierMask_CONST),\
+    BUILTIN_OBJ(lang_modifierMask_NOT_NULL),\
+    BUILTIN_OBJ(lang_modifierMask_HIDDEN),\
+    BUILTIN_OBJ(lang_modifierMask_OPTIONAL),\
+    BUILTIN_OBJ(lang_modifierMask_OBSERVABLE),\
+    BUILTIN_OBJ(lang_modifierMask_KEY),\
     /* resultMask */\
     BUILTIN_OBJ(vstore_resultMask_RESULT_LEAF),\
     BUILTIN_OBJ(vstore_resultMask_RESULT_HIDDEN),\
@@ -551,14 +551,14 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_interface_baseof_),\
     /* collection */\
     BUILTIN_OBJ(lang_collection_kind),\
-    BUILTIN_OBJ(lang_collection_elementType),\
+    BUILTIN_OBJ(lang_collection_element_type),\
     BUILTIN_OBJ(lang_collection_max),\
     BUILTIN_OBJ(lang_collection_castable_),\
     BUILTIN_OBJ(lang_collection_compatible_),\
     BUILTIN_OBJ(lang_collection_requires_alloc),\
     BUILTIN_OBJ(lang_collection_init_),\
     /* iterator */\
-    BUILTIN_OBJ(lang_iterator_elementType),\
+    BUILTIN_OBJ(lang_iterator_element_type),\
     BUILTIN_OBJ(lang_iterator_init_),\
     BUILTIN_OBJ(lang_iterator_castable_),\
     BUILTIN_OBJ(lang_iterator_compatible_),\
@@ -581,11 +581,11 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_float_max),\
     BUILTIN_OBJ(lang_float_init_),\
     /* text */\
-    BUILTIN_OBJ(lang_text_charWidth),\
+    BUILTIN_OBJ(lang_text_char_width),\
     BUILTIN_OBJ(lang_text_length),\
     BUILTIN_OBJ(lang_text_init_),\
     /* verbatim */\
-    BUILTIN_OBJ(lang_verbatim_contentType),\
+    BUILTIN_OBJ(lang_verbatim_format),\
     BUILTIN_OBJ(lang_verbatim_init_),\
     /* enum */\
     BUILTIN_OBJ(lang_enum_constants),\
@@ -598,7 +598,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_bitmask_init_),\
     /* struct */\
     BUILTIN_OBJ(lang_struct_base),\
-    BUILTIN_OBJ(lang_struct_baseAccess),\
+    BUILTIN_OBJ(lang_struct_base_modifiers),\
     BUILTIN_OBJ(lang_struct_keys),\
     BUILTIN_OBJ(lang_struct_keycache),\
     BUILTIN_OBJ(lang_struct_init_),\
@@ -612,8 +612,8 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_union_construct_),\
     BUILTIN_OBJ(lang_union_findCase_),\
     /* procedure */\
-    BUILTIN_OBJ(lang_procedure_hasThis),\
-    BUILTIN_OBJ(lang_procedure_thisType),\
+    BUILTIN_OBJ(lang_procedure_has_this),\
+    BUILTIN_OBJ(lang_procedure_this_type),\
     BUILTIN_OBJ(lang_procedure_init_),\
     BUILTIN_OBJ(lang_procedure_construct_),\
     /* interfaceVector */\
@@ -621,7 +621,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_interfaceVector_vector),\
     /* class */\
     BUILTIN_OBJ(lang_class_base),\
-    BUILTIN_OBJ(lang_class_baseAccess),\
+    BUILTIN_OBJ(lang_class_base_modifiers),\
     BUILTIN_OBJ(lang_class_implements),\
     BUILTIN_OBJ(lang_class_interfaceVector),\
     BUILTIN_OBJ(lang_class_construct),\
@@ -632,7 +632,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_class_delete),\
     BUILTIN_OBJ(lang_class_init_),\
     BUILTIN_OBJ(lang_class_instanceof_),\
-    BUILTIN_OBJ(lang_class_resolveInterfaceMethod_),\
+    BUILTIN_OBJ(lang_class_resolve_interface_method_),\
     /* leaf */\
     BUILTIN_OBJ(lang_container_construct_),\
     BUILTIN_OBJ(lang_container_type),\
@@ -658,15 +658,15 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_query_limit),\
     BUILTIN_OBJ(vstore_query_soffset),\
     BUILTIN_OBJ(vstore_query_slimit),\
-    BUILTIN_OBJ(vstore_query_timeBegin),\
-    BUILTIN_OBJ(vstore_query_timeEnd),\
+    BUILTIN_OBJ(vstore_query_frame_begin),\
+    BUILTIN_OBJ(vstore_query_frame_end),\
     BUILTIN_OBJ(vstore_query_content),\
     BUILTIN_OBJ(vstore_query_yield_unknown),\
     BUILTIN_OBJ(vstore_query_cardinality_),\
     BUILTIN_OBJ(vstore_query_match_),\
     /* subscriber */\
     BUILTIN_OBJ(vstore_subscriber_query),\
-    BUILTIN_OBJ(vstore_subscriber_contentType),\
+    BUILTIN_OBJ(vstore_subscriber_format),\
     BUILTIN_OBJ(vstore_subscriber_instance),\
     BUILTIN_OBJ(vstore_subscriber_dispatcher),\
     BUILTIN_OBJ(vstore_subscriber_enabled),\
@@ -686,19 +686,19 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_router_init_),\
     BUILTIN_OBJ(vstore_router_construct_),\
     BUILTIN_OBJ(vstore_router_match),\
-    BUILTIN_OBJ(vstore_router_returnType),\
-    BUILTIN_OBJ(vstore_router_paramType),\
-    BUILTIN_OBJ(vstore_router_paramName),\
-    BUILTIN_OBJ(vstore_router_routerDataType),\
-    BUILTIN_OBJ(vstore_router_routerDataName),\
-    BUILTIN_OBJ(vstore_router_elementSeparator),\
+    BUILTIN_OBJ(vstore_router_return_type),\
+    BUILTIN_OBJ(vstore_router_param_type),\
+    BUILTIN_OBJ(vstore_router_param_name),\
+    BUILTIN_OBJ(vstore_router_router_data_type),\
+    BUILTIN_OBJ(vstore_router_router_data_name),\
+    BUILTIN_OBJ(vstore_router_element_separator),\
     /* routerimpl */\
     BUILTIN_OBJ(vstore_routerimpl_construct_),\
     BUILTIN_OBJ(vstore_routerimpl_destruct_),\
     BUILTIN_OBJ(vstore_routerimpl_maxArgs),\
     BUILTIN_OBJ(vstore_routerimpl_matched),\
-    BUILTIN_OBJ(vstore_routerimpl_matchRoute_),\
-    BUILTIN_OBJ(vstore_routerimpl_findRoute_),\
+    BUILTIN_OBJ(vstore_routerimpl_match_route_),\
+    BUILTIN_OBJ(vstore_routerimpl_find_route_),\
     /* mount */\
     BUILTIN_OBJ(vstore_mount_attr),\
     BUILTIN_OBJ(vstore_mount_ownership),\
@@ -719,8 +719,8 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_mount_explicitResume),\
     BUILTIN_OBJ(vstore_mount_thread),\
     BUILTIN_OBJ(vstore_mount_quit),\
-    BUILTIN_OBJ(vstore_mount_contentTypeOut),\
-    BUILTIN_OBJ(vstore_mount_contentTypeOutHandle),\
+    BUILTIN_OBJ(vstore_mount_formatOut),\
+    BUILTIN_OBJ(vstore_mount_formatOutHandle),\
     BUILTIN_OBJ(vstore_mount_init_),\
     BUILTIN_OBJ(vstore_mount_construct_),\
     BUILTIN_OBJ(vstore_mount_destruct_),\
@@ -731,9 +731,9 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_mount_resume_),\
     BUILTIN_OBJ(vstore_mount_subscribe_),\
     BUILTIN_OBJ(vstore_mount_unsubscribe_),\
-    BUILTIN_OBJ(vstore_mount_setContentType_),\
-    BUILTIN_OBJ(vstore_mount_setContentTypeIn_),\
-    BUILTIN_OBJ(vstore_mount_setContentTypeOut_),\
+    BUILTIN_OBJ(vstore_mount_set_format_),\
+    BUILTIN_OBJ(vstore_mount_set_formatIn_),\
+    BUILTIN_OBJ(vstore_mount_set_formatOut_),\
     BUILTIN_OBJ(vstore_mount_return_),\
     BUILTIN_OBJ(vstore_mount_publish_),\
     BUILTIN_OBJ(vstore_mount_post_),\
@@ -762,8 +762,8 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_delegatedata_instance),\
     BUILTIN_OBJ(lang_delegatedata_procedure),\
     /* delegate */\
-    BUILTIN_OBJ(lang_delegate_returnType),\
-    BUILTIN_OBJ(lang_delegate_returnsReference),\
+    BUILTIN_OBJ(lang_delegate_return_type),\
+    BUILTIN_OBJ(lang_delegate_is_reference),\
     BUILTIN_OBJ(lang_delegate_parameters),\
     BUILTIN_OBJ(lang_delegate_init_),\
     BUILTIN_OBJ(lang_delegate_compatible_),\
@@ -786,7 +786,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_unit_init_),\
     BUILTIN_OBJ(lang_unit_construct_),\
     /* array */\
-    BUILTIN_OBJ(lang_array_elementType),\
+    BUILTIN_OBJ(lang_array_element_type),\
     BUILTIN_OBJ(lang_array_init_),\
     BUILTIN_OBJ(lang_array_construct_),\
     BUILTIN_OBJ(lang_array_destruct_),\
@@ -797,8 +797,8 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_list_init_),\
     BUILTIN_OBJ(lang_list_construct_),\
     /* map */\
-    BUILTIN_OBJ(lang_map_keyType),\
-    BUILTIN_OBJ(lang_map_elementType),\
+    BUILTIN_OBJ(lang_map_key_type),\
+    BUILTIN_OBJ(lang_map_element_type),\
     BUILTIN_OBJ(lang_map_max),\
     BUILTIN_OBJ(lang_map_init_),\
     BUILTIN_OBJ(lang_map_construct_),\
@@ -827,7 +827,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_parameter_name),\
     BUILTIN_OBJ(lang_parameter_type),\
     BUILTIN_OBJ(lang_parameter_inout),\
-    BUILTIN_OBJ(lang_parameter_passByReference),\
+    BUILTIN_OBJ(lang_parameter_is_reference),\
     /* sample */\
     BUILTIN_OBJ(vstore_sample_timestamp),\
     BUILTIN_OBJ(vstore_sample_value),\
@@ -841,7 +841,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_result_object),\
     BUILTIN_OBJ(vstore_result_history),\
     BUILTIN_OBJ(vstore_result_owner),\
-    BUILTIN_OBJ(vstore_result_getText_),\
+    BUILTIN_OBJ(vstore_result_get_text_),\
     BUILTIN_OBJ(vstore_result_fromcontent_),\
     BUILTIN_OBJ(vstore_result_contentof_),\
     /* package */\

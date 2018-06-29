@@ -372,7 +372,7 @@ corto_value _corto_value_element(
 corto_value _corto_value_mapElement(
     corto_object o,
     corto_type t,
-    corto_type keyType,
+    corto_type key_type,
     void *key,
     void* v)
 {
@@ -382,7 +382,7 @@ corto_value _corto_value_mapElement(
         .parent = NULL,
         .is.map_element.ref = o,
         .is.map_element.type = t,
-        .is.map_element.key_type = keyType,
+        .is.map_element.key_type = key_type,
         .is.map_element.key = key,
         .is.map_element.ptr = v
     };
@@ -479,10 +479,10 @@ int16_t corto_value_unaryOp(
     corto_uint64 *v = &result->is.pointer.storage;
 
     corto_type t = corto_value_typeof(value);
-    corto_type returnType = t;
+    corto_type return_type = t;
 
     if (corto_operator_is_conditional(_operator)) {
-        returnType = corto_type(corto_bool_o);
+        return_type = corto_type(corto_bool_o);
     }
 
     if (corto_ptr_unaryOp(t, _operator, corto_value_ptrof(value), v)) {
@@ -490,7 +490,7 @@ int16_t corto_value_unaryOp(
     }
 
     result->kind = CORTO_POINTER;
-    result->is.pointer.type = returnType;
+    result->is.pointer.type = return_type;
     result->is.pointer.ptr = (void*)v;
 
     return 0;

@@ -28,7 +28,7 @@ struct corto_fmt_s {
     corto_string name;
     bool isBinary;
 
-    /* Translate values to and from a contentType value */
+    /* Translate values to and from a format value */
     void* ___ (*fromValue)(
         corto_fmt_opt *data,
         corto_value *v);
@@ -38,7 +38,7 @@ struct corto_fmt_s {
         corto_value *v,
         const void* content);
 
-    /* Translate results to and from self-contained contentType values */
+    /* Translate results to and from self-contained format values */
     void* ___ (*fromResult)(
         corto_fmt_opt *data,
         corto_result *o);
@@ -48,7 +48,7 @@ struct corto_fmt_s {
         corto_result* o,
         const void* content);
 
-    /* Translate objects to and from self-contained contentType values */
+    /* Translate objects to and from self-contained format values */
     void* ___ (*fromObject)(
         corto_fmt_opt *data,
         corto_object o);
@@ -58,18 +58,18 @@ struct corto_fmt_s {
         corto_object* o,
         const void* content);
 
-    /* Duplicate a contentType value */
+    /* Duplicate a format value */
     void* ___ (*copy)(
         const void* content);
 
-    /* Free a contentType value */
+    /* Free a format value */
     void (*release)(
         void* content);
 };
 
 extern corto_mutex_s corto_adminLock;
 
-static corto_ll contentTypes = NULL;
+static corto_ll formats = NULL;
 
 static
 void* corto_fmt_ptr_fromValue(
@@ -195,23 +195,23 @@ int16_t corto_fmt_str_toObject(
 static
 corto_fmt corto_findContentType(
     bool isBinary,
-    corto_string contentType)
+    corto_string format)
 {
     corto_fmt result = NULL;
-    if (contentTypes) {
-        corto_iter it = corto_ll_iter(contentTypes);
+    if (formats) {
+        corto_iter it = corto_ll_iter(formats);
         while (corto_iter_hasNext(&it)) {
             corto_fmt ct = corto_iter_next(&it);
-            if (!strcmp(ct->name, contentType) && (ct->isBinary == isBinary)) {
+            if (!strcmp(ct->name, format) && (ct->isBinary == isBinary)) {
                 result = ct;
                 break;
             }
         }
     } else {
-        contentTypes = corto_ll_new();
+        formats = corto_ll_new();
     }
 
-    if (!result && !strcmp(contentType, "corto") && !isBinary) {
+    if (!result && !strcmp(format, "corto") && !isBinary) {
         result = corto_calloc(sizeof(struct corto_fmt_s));
         result->name = corto_strdup("corto");
         result->isBinary = isBinary;
@@ -220,9 +220,9 @@ corto_fmt corto_findContentType(
         result->release = (void ___ (*)(void*))corto_dealloc;
         result->copy = (void* ___ (*)(const void*)) corto_strdup;
         result->toObject = corto_fmt_str_toObject;
-        corto_ll_append(contentTypes, result);
+        corto_ll_append(formats, result);
 
-    } else if (!result && !strcmp(contentType, "corto") && isBinary) {
+    } else if (!result && !strcmp(format, "corto") && isBinary) {
         result = corto_calloc(sizeof(struct corto_fmt_s));
         result->name = corto_strdup("corto");
         result->isBinary = isBinary;
@@ -230,7 +230,7 @@ corto_fmt corto_findContentType(
         result->fromValue = corto_fmt_ptr_fromValue;
         result->release = corto_fmt_ptr_release;
         result->copy = corto_fmt_ptr_copy;
-        corto_ll_append(contentTypes, result);
+        corto_ll_append(formats, result);
     }
 
     return result;
@@ -238,19 +238,19 @@ corto_fmt corto_findContentType(
 
 corto_fmt
 corto_fmt_lookup(
-    const char *contentType)
+    const char *format)
 {
     corto_fmt result = NULL;
     bool isBinary = true;
 
     /* Built-in Corto string serializer */
-    char *packagePtr = strchr(contentType, '/');
+    char *packagePtr = strchr(format, '/');
     if (!packagePtr) {
-        corto_throw("invalid content type %s (expected '/')", contentType);
+        corto_throw("invalid content type %s (expected '/')", format);
         goto error;
     }
 
-    if (!memcmp(contentType, "text", packagePtr - contentType)) {
+    if (!memcmp(format, "text", packagePtr - format)) {
         isBinary = false;
     }
 
@@ -261,7 +261,7 @@ corto_fmt_lookup(
     result = corto_findContentType(isBinary, packagePtr);
     corto_mutex_unlock(&corto_adminLock);
 
-    /* Load contentType outside of lock */
+    /* Load format outside of lock */
     if (!result) {
         corto_dl dl = NULL;
         corto_id packageId;
@@ -273,8 +273,8 @@ corto_fmt_lookup(
 
         /* Load package associated with content type */
         if (corto_use(packageId, 0, NULL)) {
-            corto_throw("unresolved package '%s' for contentType '%s'",
-                packageId, contentType);
+            corto_throw("unresolved package '%s' for format '%s'",
+                packageId, format);
             goto error;
         }
 
@@ -284,7 +284,7 @@ corto_fmt_lookup(
         result->fromValue =
             (void* ___ (*)(corto_fmt_opt*, corto_value*))corto_load_proc(packageId, &dl, id);
         if (!result->fromValue) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw("symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -293,7 +293,7 @@ corto_fmt_lookup(
             (int16_t ___ (*)(corto_fmt_opt*, corto_value*, const void*))
                 corto_load_proc(packageId, &dl, id);
         if (!result->toValue) {
-            corto_throw("symbol '%s' missing for contentType '%s'", id, contentType);
+            corto_throw("symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -304,7 +304,7 @@ corto_fmt_lookup(
             corto_load_proc(packageId, &dl, id);
         if (!result->fromResult) {
             corto_throw(
-                "symbol '%s' missing for contentType '%s'", id, contentType);
+                "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -314,7 +314,7 @@ corto_fmt_lookup(
             corto_load_proc(packageId, &dl, id);
         if (!result->toResult) {
             corto_throw(
-                "symbol '%s' missing for contentType '%s'", id, contentType);
+                "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -325,7 +325,7 @@ corto_fmt_lookup(
             corto_load_proc(packageId, &dl, id);
         if (!result->fromObject) {
             corto_throw(
-                "symbol '%s' missing for contentType '%s'", id, contentType);
+                "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -335,7 +335,7 @@ corto_fmt_lookup(
             corto_load_proc(packageId, &dl, id);
         if (!result->toObject) {
             corto_throw(
-                "symbol '%s' missing for contentType '%s'", id, contentType);
+                "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -344,7 +344,7 @@ corto_fmt_lookup(
             (void* ___ (*)(const void*))corto_load_proc(packageId, &dl, id);
         if (!result->copy) {
             corto_throw(
-                "symbol '%s' missing for contentType '%s'", id, contentType);
+                "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -353,7 +353,7 @@ corto_fmt_lookup(
             (void ___ (*)(void*))corto_load_proc(packageId, &dl, id);
         if (!result->release) {
             corto_throw(
-                "symbol '%s' missing for contentType '%s'", id, contentType);
+                "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -362,7 +362,7 @@ corto_fmt_lookup(
          corto_mutex_lock(&corto_adminLock);
          corto_fmt alreadyAdded = corto_findContentType(isBinary, packagePtr);
          if (!alreadyAdded) {
-            corto_ll_append(contentTypes, result);
+            corto_ll_append(formats, result);
          } else {
             corto_dealloc(result->name);
             corto_dealloc(result);
@@ -378,14 +378,14 @@ error:
 
 void corto_fmt_deinit(void)
 {
-    if (contentTypes) {
-        corto_iter it = corto_ll_iter(contentTypes);
+    if (formats) {
+        corto_iter it = corto_ll_iter(formats);
         while (corto_iter_hasNext(&it)) {
             corto_fmt fmt = corto_iter_next(&it);
             if (fmt->name) free(fmt->name);
             free(fmt);
         }
-        corto_ll_free(contentTypes);
+        corto_ll_free(formats);
     }
 }
 

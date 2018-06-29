@@ -25,7 +25,7 @@
 #define corto_post_action(o) ((corto_post_action*)corto_assert_type((corto_type)corto_post_action_o, o))
 #define corto_name_action(o) ((corto_name_action*)corto_assert_type((corto_type)corto_name_action_o, o))
 #define corto_type(o) ((corto_type)corto_assert_type((corto_type)corto_type_o, o))
-#define corto_modifier(o) ((corto_modifier*)corto_assert_type((corto_type)corto_modifier_o, o))
+#define corto_modifierMask(o) ((corto_modifierMask*)corto_assert_type((corto_type)corto_modifierMask_o, o))
 #define corto_quantity(o) ((corto_quantity)corto_assert_type((corto_type)corto_quantity_o, o))
 #define corto_unit(o) ((corto_unit)corto_assert_type((corto_type)corto_unit_o, o))
 #define corto_int8(o) ((int8_t*)corto_assert_type((corto_type)corto_int8_o, o))
@@ -118,7 +118,7 @@ typedef corto_pre_action _type_corto_pre_action;
 typedef corto_post_action _type_corto_post_action;
 typedef corto_name_action _type_corto_name_action;
 typedef corto_type _type_corto_type;
-typedef corto_modifier _type_corto_modifier;
+typedef corto_modifierMask _type_corto_modifierMask;
 typedef corto_quantity _type_corto_quantity;
 typedef corto_unit _type_corto_unit;
 typedef corto_int8 _type_corto_int8;
@@ -205,11 +205,11 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_class_destruct(_this) _corto_class_destruct(corto_class(_this))
 #define corto_class_init(_this) _corto_class_init(corto_class(_this))
 #define corto_class_instanceof(_this, object) _corto_class_instanceof(corto_class(_this), object)
-#define corto_class_resolveInterfaceMethod(_this, interface, method) _corto_class_resolveInterfaceMethod(corto_class(_this), corto_interface(interface), method)
+#define corto_class_resolve_interface_method(_this, interface, method) _corto_class_resolve_interface_method(corto_class(_this), corto_interface(interface), method)
 #define corto_collection_castable_v(_this, type) _corto_collection_castable_v(corto_collection(_this), corto_type(type))
 #define corto_collection_compatible_v(_this, type) _corto_collection_compatible_v(corto_collection(_this), corto_type(type))
 #define corto_collection_init(_this) _corto_collection_init(corto_collection(_this))
-#define corto_collection_requires_alloc(elementType) _corto_collection_requires_alloc(corto_type(elementType))
+#define corto_collection_requires_alloc(element_type) _corto_collection_requires_alloc(corto_type(element_type))
 #define corto_constant_init(_this) _corto_constant_init(_this)
 #define corto_container_construct(_this) _corto_container_construct(corto_container(_this))
 #define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
@@ -230,7 +230,6 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_function_stringToParameterSeq(name, scope) _corto_function_stringToParameterSeq(name, scope)
 #define corto_int_init(_this) _corto_int_init(corto_int(_this))
 #define corto_interface_baseof(_this, type) _corto_interface_baseof(corto_interface(_this), corto_interface(type))
-#define corto_interface_bindMethod(_this, method) _corto_interface_bindMethod(corto_interface(_this), corto_method(method))
 #define corto_interface_compatible_v(_this, type) _corto_interface_compatible_v(corto_interface(_this), corto_type(type))
 #define corto_interface_construct(_this) _corto_interface_construct(corto_interface(_this))
 #define corto_interface_deinit(_this) _corto_interface_deinit(corto_interface(_this))
@@ -303,7 +302,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_class_destruct _corto_class_destruct
 #define corto_class_init _corto_class_init
 #define corto_class_instanceof _corto_class_instanceof
-#define corto_class_resolveInterfaceMethod _corto_class_resolveInterfaceMethod
+#define corto_class_resolve_interface_method _corto_class_resolve_interface_method
 #define corto_collection_castable_v _corto_collection_castable_v
 #define corto_collection_compatible_v _corto_collection_compatible_v
 #define corto_collection_init _corto_collection_init
@@ -328,7 +327,6 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_function_stringToParameterSeq _corto_function_stringToParameterSeq
 #define corto_int_init _corto_int_init
 #define corto_interface_baseof _corto_interface_baseof
-#define corto_interface_bindMethod _corto_interface_bindMethod
 #define corto_interface_compatible_v _corto_interface_compatible_v
 #define corto_interface_construct _corto_interface_construct
 #define corto_interface_deinit _corto_interface_deinit
@@ -399,11 +397,11 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_class_destruct(_this) _corto_class_destruct(corto_class(_this))
 #define safe_corto_class_init(_this) _corto_class_init(corto_class(_this))
 #define safe_corto_class_instanceof(_this, object) _corto_class_instanceof(corto_class(_this), object)
-#define safe_corto_class_resolveInterfaceMethod(_this, interface, method) _corto_class_resolveInterfaceMethod(corto_class(_this), corto_interface(interface), method)
+#define safe_corto_class_resolve_interface_method(_this, interface, method) _corto_class_resolve_interface_method(corto_class(_this), corto_interface(interface), method)
 #define safe_corto_collection_castable_v(_this, type) _corto_collection_castable_v(corto_collection(_this), corto_type(type))
 #define safe_corto_collection_compatible_v(_this, type) _corto_collection_compatible_v(corto_collection(_this), corto_type(type))
 #define safe_corto_collection_init(_this) _corto_collection_init(corto_collection(_this))
-#define safe_corto_collection_requires_alloc(elementType) _corto_collection_requires_alloc(corto_type(elementType))
+#define safe_corto_collection_requires_alloc(element_type) _corto_collection_requires_alloc(corto_type(element_type))
 #define safe_corto_constant_init(_this) _corto_constant_init(_this)
 #define safe_corto_container_construct(_this) _corto_container_construct(corto_container(_this))
 #define safe_corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
@@ -424,7 +422,6 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_function_stringToParameterSeq(name, scope) _corto_function_stringToParameterSeq(name, scope)
 #define safe_corto_int_init(_this) _corto_int_init(corto_int(_this))
 #define safe_corto_interface_baseof(_this, type) _corto_interface_baseof(corto_interface(_this), corto_interface(type))
-#define safe_corto_interface_bindMethod(_this, method) _corto_interface_bindMethod(corto_interface(_this), corto_method(method))
 #define safe_corto_interface_compatible_v(_this, type) _corto_interface_compatible_v(corto_interface(_this), corto_type(type))
 #define safe_corto_interface_construct(_this) _corto_interface_construct(corto_interface(_this))
 #define safe_corto_interface_deinit(_this) _corto_interface_deinit(corto_interface(_this))

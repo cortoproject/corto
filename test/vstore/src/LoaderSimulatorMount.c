@@ -8,7 +8,7 @@ int16_t test_LoaderSimulatorMount_construct(
     corto_set_str(&corto_subscriber(this)->query.select, "//*");
     corto_set_str(&corto_subscriber(this)->query.from, "/");
     corto_set_str(&corto_subscriber(this)->query.type, "package");
-    corto_set_str(&corto_subscriber(this)->contentType, "text/json");
+    corto_set_str(&corto_subscriber(this)->format, "text/json");
 
     corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
     corto_mount(this)->filter_results = false;

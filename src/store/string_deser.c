@@ -226,7 +226,7 @@ void* corto_string_deserAllocElem(
     corto_string_deser_t *data)
 {
     corto_collection t = corto_collection(data->allocUdata);
-    corto_int32 size = corto_type_sizeof(t->elementType);
+    corto_int32 size = corto_type_sizeof(t->element_type);
     void *result = NULL;
 
     if (ptr) {
@@ -243,7 +243,7 @@ void* corto_string_deserAllocElem(
             break;
         case CORTO_LIST: {
             corto_ll list = *(corto_ll*)ptr;
-            if (corto_collection_requires_alloc(t->elementType)) {
+            if (corto_collection_requires_alloc(t->element_type)) {
                 result = corto_calloc(size);
                 corto_ll_append(list, result);
             } else {
@@ -362,7 +362,7 @@ const char* corto_string_deserParseScope(
         elementNode = corto_alloc(sizeof(struct corto_string_deserIndexInfo));
         elementNode->m = NULL;
         elementNode->parsed = FALSE;
-        elementNode->type = corto_collection(info->type)->elementType;
+        elementNode->type = corto_collection(info->type)->element_type;
         corto_string_deserIndexInsert(&privateData, elementNode);
 
         /* Create iterator for index */

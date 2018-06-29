@@ -13,7 +13,7 @@ int16_t test_JsonReplicator_construct(
         this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
     
-    corto_mount_setContentType(this, "text/json");
+    corto_mount_set_format(this, "text/json");
     corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
     corto_mount(this)->filter_results = true;
     return corto_mount_construct(this);

@@ -5,11 +5,11 @@
 
 corto_string corto_result_contentof(
     corto_result* this,
-    const char *contentType)
+    const char *format)
 {
     corto_string result = NULL;
 
-    corto_fmt type = corto_fmt_lookup(contentType);
+    corto_fmt type = corto_fmt_lookup(format);
     if (!type) {
         goto error;
     }
@@ -25,10 +25,10 @@ error:
 
 int16_t corto_result_fromcontent(
     corto_result* this,
-    const char *contentType,
+    const char *format,
     const char *content)
 {
-    corto_fmt type = corto_fmt_lookup(contentType);
+    corto_fmt type = corto_fmt_lookup(format);
     if (!type) {
         goto error;
     }
@@ -42,7 +42,7 @@ error:
     return -1;
 }
 
-corto_string corto_result_getText(
+corto_string corto_result_get_text(
     corto_result* this)
 {
     return (corto_string)this->value;

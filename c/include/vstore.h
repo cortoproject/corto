@@ -289,34 +289,34 @@ CORTO_EXPORT corto_ownership* _corto_ownership__assign(corto_ownership* _this, c
 #define corto_ownership__set(_this, value) _this = _this ? _this : (corto_ownership*)corto_ptr_new(corto_ownership_o); _corto_ownership__assign(_this, value)
 
 /* /corto/vstore/query */
-CORTO_EXPORT corto_query* _corto_query__create(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
-#define corto_query__create(_parent, _id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_query__create(_parent, _id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
-#define corto_query__create_auto(_parent, _id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) corto_query* _id = corto_query__create(_parent, #_id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd); (void)_id
+CORTO_EXPORT corto_query* _corto_query__create(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* frame_begin, corto_frame* frame_end);
+#define corto_query__create(_parent, _id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) _corto_query__create(_parent, _id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
+#define corto_query__create_auto(_parent, _id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) corto_query* _id = corto_query__create(_parent, #_id, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end); (void)_id
 #define corto_query__declare(parent, id) (corto_query*)corto_declare(parent, id, corto_query_o)
-CORTO_EXPORT corto_int16 _corto_query__update(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
-#define corto_query__update(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_query__update(corto_query(_this), select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
-CORTO_EXPORT corto_query* _corto_query__assign(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd);
+CORTO_EXPORT corto_int16 _corto_query__update(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* frame_begin, corto_frame* frame_end);
+#define corto_query__update(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) _corto_query__update(corto_query(_this), select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
+CORTO_EXPORT corto_query* _corto_query__assign(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* frame_begin, corto_frame* frame_end);
 #define corto_query__optional_not_set NULL
-#define corto_query__optional_set(select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) (corto_query*)corto_query__assign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
-#define corto_query__optional_set_cond(__cond, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) __cond ? (corto_query*)corto_query__assign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) : NULL
+#define corto_query__optional_set(select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) (corto_query*)corto_query__assign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
+#define corto_query__optional_set_cond(__cond, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) __cond ? (corto_query*)corto_query__assign((corto_query*)corto_ptr_new(corto_query_o), select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) : NULL
 #define corto_query__unset(_this) _this ? corto_ptr_free(_this, corto_query_o), 0 : 0; _this = NULL;
-#define corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
-#define corto_query__set(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd) _this = _this ? _this : (corto_query*)corto_ptr_new(corto_query_o); _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, timeBegin, timeEnd)
+#define corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
+#define corto_query__set(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) _this = _this ? _this : (corto_query*)corto_ptr_new(corto_query_o); _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
 
 /* /corto/vstore/remote */
-CORTO_EXPORT corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_remote__create(_parent, _id, returnType, returnsReference, _impl) _corto_remote__create(_parent, _id, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_remote__create_auto(_parent, _id, returnType, returnsReference, _impl) corto_remote _id = corto_remote__create(_parent, #_id, returnType, returnsReference, _impl); (void)_id
+CORTO_EXPORT corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_remote__create(_parent, _id, return_type, is_reference, _impl) _corto_remote__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_remote__create_auto(_parent, _id, return_type, is_reference, _impl) corto_remote _id = corto_remote__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
 #define corto_remote__declare(parent, id) (corto_remote)corto_declare(parent, id, corto_remote_o)
-CORTO_EXPORT corto_int16 _corto_remote__update(corto_remote _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_remote__update(_this, returnType, returnsReference, _impl) _corto_remote__update(corto_remote(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
-CORTO_EXPORT corto_remote _corto_remote__assign(corto_remote _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_remote__update(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_remote__update(_this, return_type, is_reference, _impl) _corto_remote__update(corto_remote(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
+CORTO_EXPORT corto_remote _corto_remote__assign(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void));
 #define corto_remote__optional_not_set NULL
-#define corto_remote__optional_set(returnType, returnsReference, _impl) (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), returnType, returnsReference, _impl)
-#define corto_remote__optional_set_cond(__cond, returnType, returnsReference, _impl) __cond ? (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), returnType, returnsReference, _impl) : NULL
+#define corto_remote__optional_set(return_type, is_reference, _impl) (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), return_type, is_reference, _impl)
+#define corto_remote__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), return_type, is_reference, _impl) : NULL
 #define corto_remote__unset(_this) _this ? corto_ptr_free(_this, corto_remote_o), 0 : 0; _this = NULL;
-#define corto_remote__assign(_this, returnType, returnsReference, _impl) _corto_remote__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_remote__set(_this, returnType, returnsReference, _impl) _this = _this ? _this : (corto_remote*)corto_ptr_new(corto_remote_o); _corto_remote__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
+#define corto_remote__assign(_this, return_type, is_reference, _impl) _corto_remote__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_remote__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_remote*)corto_ptr_new(corto_remote_o); _corto_remote__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
 
 /* /corto/vstore/result */
 CORTO_EXPORT corto_result* _corto_result__create(corto_object _parent, const char *_id, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_resultMask flags);
@@ -394,34 +394,34 @@ CORTO_EXPORT corto_route _corto_route__assign(corto_route _this, const char * pa
 #define corto_route__set(_this, pattern, _impl) _this = _this ? _this : (corto_route*)corto_ptr_new(corto_route_o); _corto_route__assign(_this, pattern, (void(*)(void))_impl)
 
 /* /corto/vstore/router */
-CORTO_EXPORT corto_router _corto_router__create(corto_object _parent, const char *_id, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
-#define corto_router__create(_parent, _id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) _corto_router__create(_parent, _id, corto_type(returnType), corto_type(paramType), paramName, corto_type(routerDataType), routerDataName, elementSeparator)
-#define corto_router__create_auto(_parent, _id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) corto_router _id = corto_router__create(_parent, #_id, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator); (void)_id
+CORTO_EXPORT corto_router _corto_router__create(corto_object _parent, const char *_id, corto_type return_type, corto_type param_type, const char * param_name, corto_type router_data_type, const char * router_data_name, const char * element_separator);
+#define corto_router__create(_parent, _id, return_type, param_type, param_name, router_data_type, router_data_name, element_separator) _corto_router__create(_parent, _id, corto_type(return_type), corto_type(param_type), param_name, corto_type(router_data_type), router_data_name, element_separator)
+#define corto_router__create_auto(_parent, _id, return_type, param_type, param_name, router_data_type, router_data_name, element_separator) corto_router _id = corto_router__create(_parent, #_id, return_type, param_type, param_name, router_data_type, router_data_name, element_separator); (void)_id
 #define corto_router__declare(parent, id) (corto_router)corto_declare(parent, id, corto_router_o)
-CORTO_EXPORT corto_int16 _corto_router__update(corto_router _this, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
-#define corto_router__update(_this, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) _corto_router__update(corto_router(_this), corto_type(returnType), corto_type(paramType), paramName, corto_type(routerDataType), routerDataName, elementSeparator)
-CORTO_EXPORT corto_router _corto_router__assign(corto_router _this, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator);
+CORTO_EXPORT corto_int16 _corto_router__update(corto_router _this, corto_type return_type, corto_type param_type, const char * param_name, corto_type router_data_type, const char * router_data_name, const char * element_separator);
+#define corto_router__update(_this, return_type, param_type, param_name, router_data_type, router_data_name, element_separator) _corto_router__update(corto_router(_this), corto_type(return_type), corto_type(param_type), param_name, corto_type(router_data_type), router_data_name, element_separator)
+CORTO_EXPORT corto_router _corto_router__assign(corto_router _this, corto_type return_type, corto_type param_type, const char * param_name, corto_type router_data_type, const char * router_data_name, const char * element_separator);
 #define corto_router__optional_not_set NULL
-#define corto_router__optional_set(returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) (corto_router*)corto_router__assign((corto_router*)corto_ptr_new(corto_router_o), returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator)
-#define corto_router__optional_set_cond(__cond, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) __cond ? (corto_router*)corto_router__assign((corto_router*)corto_ptr_new(corto_router_o), returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) : NULL
+#define corto_router__optional_set(return_type, param_type, param_name, router_data_type, router_data_name, element_separator) (corto_router*)corto_router__assign((corto_router*)corto_ptr_new(corto_router_o), return_type, param_type, param_name, router_data_type, router_data_name, element_separator)
+#define corto_router__optional_set_cond(__cond, return_type, param_type, param_name, router_data_type, router_data_name, element_separator) __cond ? (corto_router*)corto_router__assign((corto_router*)corto_ptr_new(corto_router_o), return_type, param_type, param_name, router_data_type, router_data_name, element_separator) : NULL
 #define corto_router__unset(_this) _this ? corto_ptr_free(_this, corto_router_o), 0 : 0; _this = NULL;
-#define corto_router__assign(_this, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) _corto_router__assign(_this, corto_type(returnType), corto_type(paramType), paramName, corto_type(routerDataType), routerDataName, elementSeparator)
-#define corto_router__set(_this, returnType, paramType, paramName, routerDataType, routerDataName, elementSeparator) _this = _this ? _this : (corto_router*)corto_ptr_new(corto_router_o); _corto_router__assign(_this, corto_type(returnType), corto_type(paramType), paramName, corto_type(routerDataType), routerDataName, elementSeparator)
+#define corto_router__assign(_this, return_type, param_type, param_name, router_data_type, router_data_name, element_separator) _corto_router__assign(_this, corto_type(return_type), corto_type(param_type), param_name, corto_type(router_data_type), router_data_name, element_separator)
+#define corto_router__set(_this, return_type, param_type, param_name, router_data_type, router_data_name, element_separator) _this = _this ? _this : (corto_router*)corto_ptr_new(corto_router_o); _corto_router__assign(_this, corto_type(return_type), corto_type(param_type), param_name, corto_type(router_data_type), router_data_name, element_separator)
 
 /* /corto/vstore/routerimpl */
-CORTO_EXPORT corto_routerimpl _corto_routerimpl__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
-#define corto_routerimpl__create(_parent, _id, base, baseAccess, implements) _corto_routerimpl__create(_parent, _id, corto_interface(base), baseAccess, implements)
-#define corto_routerimpl__create_auto(_parent, _id, base, baseAccess, implements) corto_routerimpl _id = corto_routerimpl__create(_parent, #_id, base, baseAccess, implements); (void)_id
+CORTO_EXPORT corto_routerimpl _corto_routerimpl__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements);
+#define corto_routerimpl__create(_parent, _id, base, base_modifiers, implements) _corto_routerimpl__create(_parent, _id, corto_interface(base), base_modifiers, implements)
+#define corto_routerimpl__create_auto(_parent, _id, base, base_modifiers, implements) corto_routerimpl _id = corto_routerimpl__create(_parent, #_id, base, base_modifiers, implements); (void)_id
 #define corto_routerimpl__declare(parent, id) (corto_routerimpl)corto_declare(parent, id, corto_routerimpl_o)
-CORTO_EXPORT corto_int16 _corto_routerimpl__update(corto_routerimpl _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
-#define corto_routerimpl__update(_this, base, baseAccess, implements) _corto_routerimpl__update(corto_routerimpl(_this), corto_interface(base), baseAccess, implements)
-CORTO_EXPORT corto_routerimpl _corto_routerimpl__assign(corto_routerimpl _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
+CORTO_EXPORT corto_int16 _corto_routerimpl__update(corto_routerimpl _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements);
+#define corto_routerimpl__update(_this, base, base_modifiers, implements) _corto_routerimpl__update(corto_routerimpl(_this), corto_interface(base), base_modifiers, implements)
+CORTO_EXPORT corto_routerimpl _corto_routerimpl__assign(corto_routerimpl _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements);
 #define corto_routerimpl__optional_not_set NULL
-#define corto_routerimpl__optional_set(base, baseAccess, implements) (corto_routerimpl*)corto_routerimpl__assign((corto_routerimpl*)corto_ptr_new(corto_routerimpl_o), base, baseAccess, implements)
-#define corto_routerimpl__optional_set_cond(__cond, base, baseAccess, implements) __cond ? (corto_routerimpl*)corto_routerimpl__assign((corto_routerimpl*)corto_ptr_new(corto_routerimpl_o), base, baseAccess, implements) : NULL
+#define corto_routerimpl__optional_set(base, base_modifiers, implements) (corto_routerimpl*)corto_routerimpl__assign((corto_routerimpl*)corto_ptr_new(corto_routerimpl_o), base, base_modifiers, implements)
+#define corto_routerimpl__optional_set_cond(__cond, base, base_modifiers, implements) __cond ? (corto_routerimpl*)corto_routerimpl__assign((corto_routerimpl*)corto_ptr_new(corto_routerimpl_o), base, base_modifiers, implements) : NULL
 #define corto_routerimpl__unset(_this) _this ? corto_ptr_free(_this, corto_routerimpl_o), 0 : 0; _this = NULL;
-#define corto_routerimpl__assign(_this, base, baseAccess, implements) _corto_routerimpl__assign(_this, corto_interface(base), baseAccess, implements)
-#define corto_routerimpl__set(_this, base, baseAccess, implements) _this = _this ? _this : (corto_routerimpl*)corto_ptr_new(corto_routerimpl_o); _corto_routerimpl__assign(_this, corto_interface(base), baseAccess, implements)
+#define corto_routerimpl__assign(_this, base, base_modifiers, implements) _corto_routerimpl__assign(_this, corto_interface(base), base_modifiers, implements)
+#define corto_routerimpl__set(_this, base, base_modifiers, implements) _this = _this ? _this : (corto_routerimpl*)corto_ptr_new(corto_routerimpl_o); _corto_routerimpl__assign(_this, corto_interface(base), base_modifiers, implements)
 
 /* /corto/vstore/sample */
 CORTO_EXPORT corto_sample* _corto_sample__create(corto_object _parent, const char *_id, corto_time* timestamp, uintptr_t value);
@@ -454,19 +454,19 @@ CORTO_EXPORT corto_sampleIter* _corto_sampleIter__assign(corto_sampleIter* _this
 #define corto_sampleIter__set(_this) _this = _this ? _this : (corto_sampleIter*)corto_ptr_new(corto_sampleIter_o); _corto_sampleIter__assign(_this)
 
 /* /corto/vstore/subscriber */
-CORTO_EXPORT corto_subscriber _corto_subscriber__create(corto_object _parent, const char *_id, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
-#define corto_subscriber__create(_parent, _id, query, contentType, instance, dispatcher, enabled, _impl) _corto_subscriber__create(_parent, _id, query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
-#define corto_subscriber__create_auto(_parent, _id, query, contentType, instance, dispatcher, enabled, _impl) corto_subscriber _id = corto_subscriber__create(_parent, #_id, query, contentType, instance, dispatcher, enabled, _impl); (void)_id
+CORTO_EXPORT corto_subscriber _corto_subscriber__create(corto_object _parent, const char *_id, corto_query* query, const char * format, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
+#define corto_subscriber__create(_parent, _id, query, format, instance, dispatcher, enabled, _impl) _corto_subscriber__create(_parent, _id, query, format, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
+#define corto_subscriber__create_auto(_parent, _id, query, format, instance, dispatcher, enabled, _impl) corto_subscriber _id = corto_subscriber__create(_parent, #_id, query, format, instance, dispatcher, enabled, _impl); (void)_id
 #define corto_subscriber__declare(parent, id) (corto_subscriber)corto_declare(parent, id, corto_subscriber_o)
-CORTO_EXPORT corto_int16 _corto_subscriber__update(corto_subscriber _this, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
-#define corto_subscriber__update(_this, query, contentType, instance, dispatcher, enabled, _impl) _corto_subscriber__update(corto_subscriber(_this), query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
-CORTO_EXPORT corto_subscriber _corto_subscriber__assign(corto_subscriber _this, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_subscriber__update(corto_subscriber _this, corto_query* query, const char * format, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
+#define corto_subscriber__update(_this, query, format, instance, dispatcher, enabled, _impl) _corto_subscriber__update(corto_subscriber(_this), query, format, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
+CORTO_EXPORT corto_subscriber _corto_subscriber__assign(corto_subscriber _this, corto_query* query, const char * format, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void));
 #define corto_subscriber__optional_not_set NULL
-#define corto_subscriber__optional_set(query, contentType, instance, dispatcher, enabled, _impl) (corto_subscriber*)corto_subscriber__assign((corto_subscriber*)corto_ptr_new(corto_subscriber_o), query, contentType, instance, dispatcher, enabled, _impl)
-#define corto_subscriber__optional_set_cond(__cond, query, contentType, instance, dispatcher, enabled, _impl) __cond ? (corto_subscriber*)corto_subscriber__assign((corto_subscriber*)corto_ptr_new(corto_subscriber_o), query, contentType, instance, dispatcher, enabled, _impl) : NULL
+#define corto_subscriber__optional_set(query, format, instance, dispatcher, enabled, _impl) (corto_subscriber*)corto_subscriber__assign((corto_subscriber*)corto_ptr_new(corto_subscriber_o), query, format, instance, dispatcher, enabled, _impl)
+#define corto_subscriber__optional_set_cond(__cond, query, format, instance, dispatcher, enabled, _impl) __cond ? (corto_subscriber*)corto_subscriber__assign((corto_subscriber*)corto_ptr_new(corto_subscriber_o), query, format, instance, dispatcher, enabled, _impl) : NULL
 #define corto_subscriber__unset(_this) _this ? corto_ptr_free(_this, corto_subscriber_o), 0 : 0; _this = NULL;
-#define corto_subscriber__assign(_this, query, contentType, instance, dispatcher, enabled, _impl) _corto_subscriber__assign(_this, query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
-#define corto_subscriber__set(_this, query, contentType, instance, dispatcher, enabled, _impl) _this = _this ? _this : (corto_subscriber*)corto_ptr_new(corto_subscriber_o); _corto_subscriber__assign(_this, query, contentType, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
+#define corto_subscriber__assign(_this, query, format, instance, dispatcher, enabled, _impl) _corto_subscriber__assign(_this, query, format, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
+#define corto_subscriber__set(_this, query, format, instance, dispatcher, enabled, _impl) _this = _this ? _this : (corto_subscriber*)corto_ptr_new(corto_subscriber_o); _corto_subscriber__assign(_this, query, format, instance, corto_dispatcher(dispatcher), enabled, (void(*)(void))_impl)
 
 /* /corto/vstore/subscriber_event */
 CORTO_EXPORT corto_subscriber_event* _corto_subscriber_event__create(corto_object _parent, const char *_id, corto_subscriber subscriber, corto_object instance, corto_object source, corto_eventMask event, corto_result* data, corto_fmt_data* fmt);

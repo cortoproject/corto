@@ -216,17 +216,17 @@ void _corto_mount_return(
     corto_result *r);
 
 CORTO_EXPORT
-int16_t _corto_mount_setContentType(
+int16_t _corto_mount_set_format(
     corto_mount _this,
     const char *type);
 
 CORTO_EXPORT
-int16_t _corto_mount_setContentTypeIn(
+int16_t _corto_mount_set_formatIn(
     corto_mount _this,
     const char *type);
 
 CORTO_EXPORT
-int16_t _corto_mount_setContentTypeOut(
+int16_t _corto_mount_set_formatOut(
     corto_mount _this,
     const char *type);
 
@@ -306,16 +306,16 @@ bool _corto_query_match(
 CORTO_EXPORT
 corto_string _corto_result_contentof(
     corto_result* _this,
-    const char *contentType);
+    const char *format);
 
 CORTO_EXPORT
 int16_t _corto_result_fromcontent(
     corto_result* _this,
-    const char *contentType,
+    const char *format,
     const char *content);
 
 CORTO_EXPORT
-corto_string _corto_result_getText(
+corto_string _corto_result_get_text(
     corto_result* _this);
 
 
@@ -360,7 +360,7 @@ void _corto_routerimpl_destruct(
     corto_routerimpl _this);
 
 CORTO_EXPORT
-corto_route _corto_routerimpl_findRoute_v(
+corto_route _corto_routerimpl_find_route_v(
     corto_routerimpl _this,
     corto_object instance,
     corto_stringseq pattern,
@@ -368,7 +368,7 @@ corto_route _corto_routerimpl_findRoute_v(
     corto_any *routerData);
 
 CORTO_EXPORT
-int32_t _corto_routerimpl_matchRoute_v(
+int32_t _corto_routerimpl_match_route_v(
     corto_routerimpl _this,
     corto_route route,
     corto_stringseq pattern,

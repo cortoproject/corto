@@ -422,28 +422,28 @@ void test_SelectMount_tc_selectScopeFromVirtualMount(
     test_assert(m != NULL);
 
     corto_iter it;
-    test_assert(!corto_select("data/*").contentType("text/corto").iter(&it));
+    test_assert(!corto_select("data/*").format("text/corto").iter(&it));
 
     test_assert(corto_iter_hasNext(&it));
     corto_result *r = corto_iter_next(&it);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "/data");
     test_assertstr(r->type, "int32");
-    test_assertstr(corto_result_getText(r), "10");
+    test_assertstr(corto_result_get_text(r), "10");
 
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assertstr(r->id, "b");
     test_assertstr(r->parent, "/data");
     test_assertstr(r->type, "string");
-    test_assertstr(corto_result_getText(r), "Hello World");
+    test_assertstr(corto_result_get_text(r), "Hello World");
 
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assertstr(r->id, "c");
     test_assertstr(r->parent, "/data");
     test_assertstr(r->type, "float64");
-    test_assertstr(corto_result_getText(r), "10.5");
+    test_assertstr(corto_result_get_text(r), "10.5");
 
     test_assert(!corto_iter_hasNext(&it));
 

@@ -27,7 +27,7 @@ void corto_routerimpl_destruct(
 
 }
 
-corto_route corto_routerimpl_findRoute_v(
+corto_route corto_routerimpl_find_route_v(
     corto_routerimpl this,
     corto_object instance,
     corto_stringseq pattern,
@@ -46,14 +46,14 @@ corto_route corto_routerimpl_findRoute_v(
     for (i = 0; i < interfaceType->methods.length; i++) {
         corto_object o = interfaceType->methods.buffer[i];
         if (corto_instanceof(corto_route_o, o)) {
-            corto_int32 matched = corto_routerimpl_matchRoute(
+            corto_int32 matched = corto_routerimpl_match_route(
                 this, corto_route(o), pattern, param, routerData);
             if (matched > maxMatched) {
                 result = corto_route(o);
 
                 /* If request is not split up in multiple elements, there will
                  * be only one matching route. */
-                if (!routerBase->elementSeparator) {
+                if (!routerBase->element_separator) {
                     break;
                 }
             }
@@ -64,7 +64,7 @@ corto_route corto_routerimpl_findRoute_v(
 
 }
 
-int32_t corto_routerimpl_matchRoute_v(
+int32_t corto_routerimpl_match_route_v(
     corto_routerimpl this,
     corto_route route,
     corto_stringseq pattern,

@@ -18,7 +18,7 @@ typedef struct corto_subscribeRequest {
     const char *scope;
     char *expr;
     const char *type;
-    const char *contentType;
+    const char *format;
     corto_dispatcher dispatcher;
     bool enabled;
     bool yield_unknown;
@@ -537,7 +537,7 @@ corto_subscriber corto_subscribeSubscribe(
     s->query.yield_unknown = r->yield_unknown;
 
     corto_set_str(&s->query.select, r->expr);
-    corto_set_str(&s->contentType, r->contentType);
+    corto_set_str(&s->format, r->format);
     corto_set_ref(&((corto_observer)s)->instance, r->instance);
     corto_set_ref(&((corto_observer)s)->dispatcher, r->dispatcher);
     corto_set_str(&s->query.type, r->type);
@@ -560,11 +560,11 @@ corto_subscribe__fluent corto_subscribe__fluentGet(void);
 
 static
 corto_subscribe__fluent corto_subscribeContentType(
-    const char *contentType)
+    const char *format)
 {
     corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->contentType = contentType;
+        request->format = format;
     }
     return corto_subscribe__fluentGet();
 }
@@ -672,7 +672,7 @@ corto_mount corto_subscribeMount(
     corto_set_str(&q->from, r->scope);
     corto_set_str(&q->select, r->expr);
     corto_set_str(&q->type, r->type);
-    corto_set_str(&s->contentType, r->contentType);
+    corto_set_str(&s->format, r->format);
 
     ((corto_observer)s)->enabled = true;
 
@@ -688,7 +688,7 @@ corto_subscribe__fluent corto_subscribe__fluentGet(void)
 {
     corto_subscribe__fluent result;
     result.from = corto_subscribeFrom;
-    result.contentType = corto_subscribeContentType;
+    result.format = corto_subscribeContentType;
     result.callback = corto_subscribeCallback;
     result.instance = corto_subscribeInstance;
     result.disabled = corto_subscribeDisabled;
@@ -786,8 +786,8 @@ int16_t corto_subscriber_construct(
         corto_set_str(&this->query.select, "*");
     }
 
-    if (this->contentType && !this->fmt_handle) {
-        this->fmt_handle = (corto_word)corto_fmt_lookup(this->contentType);
+    if (this->format && !this->fmt_handle) {
+        this->fmt_handle = (corto_word)corto_fmt_lookup(this->format);
         if (!this->fmt_handle) {
             goto error;
         }
@@ -853,7 +853,7 @@ int16_t corto_subscriber_init(
     /* Parameter event */
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("e");
-    p->passByReference = FALSE;
+    p->is_reference = FALSE;
     corto_set_ref(&p->type, corto_subscriber_event_o);
 
     this->alignMutex = (uintptr_t)corto_alloc(sizeof(corto_mutex_s));
@@ -903,8 +903,8 @@ int16_t corto_subscriber_subscribe(
     if (this->query.yield_unknown) {
         fl.yield_unknown();
     }
-    if (this->contentType) {
-        fl.contentType(this->contentType);
+    if (this->format) {
+        fl.format(this->format);
     }
     ret = fl.subscribe(&it);
 

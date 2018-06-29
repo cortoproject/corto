@@ -260,7 +260,7 @@ void* corto_rw_seq_append(
         goto error;
     }
 
-    corto_type elem_type = type->elementType;
+    corto_type elem_type = type->element_type;
     uint32_t elem_size = corto_type_sizeof(elem_type);
 
     /* Allocate space for new element */
@@ -297,7 +297,7 @@ void* corto_rw_list_append(
         goto error;
     }
 
-    corto_type elem_type = type->elementType;
+    corto_type elem_type = type->element_type;
 
     void *elem = NULL;
     if (corto_collection_requires_alloc(elem_type)) {
@@ -534,7 +534,7 @@ int16_t corto_rw_push(
             this->current->max_index = -1;
         }
 
-        this->current->field.type = col_type->elementType;
+        this->current->field.type = col_type->element_type;
 
         /* If pushing a list scope, ensure a linked-list object is allocated */
         if (cur_ptr && col_type->kind == CORTO_LIST) {

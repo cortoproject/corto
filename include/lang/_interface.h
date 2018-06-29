@@ -84,7 +84,7 @@ bool _corto_class_instanceof(
     corto_object object);
 
 CORTO_EXPORT
-corto_method _corto_class_resolveInterfaceMethod(
+corto_method _corto_class_resolve_interface_method(
     corto_class _this,
     corto_interface interface,
     uint32_t method);
@@ -108,7 +108,7 @@ int16_t _corto_collection_init(
 
 CORTO_EXPORT
 bool _corto_collection_requires_alloc(
-    corto_type elementType);
+    corto_type element_type);
 
 
 /* int corto/lang/constant */
@@ -221,11 +221,6 @@ CORTO_EXPORT
 int16_t _corto_interface_baseof(
     corto_interface _this,
     corto_interface type);
-
-CORTO_EXPORT
-int16_t _corto_interface_bindMethod(
-    corto_interface _this,
-    corto_method method);
 
 CORTO_EXPORT
 bool _corto_interface_compatible_v(

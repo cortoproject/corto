@@ -2676,7 +2676,7 @@ void test_ObjectMgmt_tc_declareNestedFuncOneArg(
     test_assert(f->parameters.buffer != NULL);
     test_assertstr(f->parameters.buffer[0].name, "arg");
     test_assert(f->parameters.buffer[0].type == (corto_type)corto_int32_o);
-    test_assert(f->parameters.buffer[0].passByReference == false);
+    test_assert(f->parameters.buffer[0].is_reference == false);
     test_assert(f->parameters.buffer[0].inout == CORTO_IN);
 
     test_assert(corto_delete(func) == 0);
@@ -2701,7 +2701,7 @@ void test_ObjectMgmt_tc_declareNestedFuncOneOutArg(
     test_assert(f->parameters.buffer != NULL);
     test_assertstr(f->parameters.buffer[0].name, "arg");
     test_assert(f->parameters.buffer[0].type == (corto_type)corto_int32_o);
-    test_assert(f->parameters.buffer[0].passByReference == false);
+    test_assert(f->parameters.buffer[0].is_reference == false);
     test_assert(f->parameters.buffer[0].inout == CORTO_OUT);
 
     test_assert(corto_delete(func) == 0);
@@ -2727,12 +2727,12 @@ void test_ObjectMgmt_tc_declareNestedFuncTwoArgs(
 
     test_assertstr(f->parameters.buffer[0].name, "arg1");
     test_assert(f->parameters.buffer[0].type == (corto_type)corto_int32_o);
-    test_assert(f->parameters.buffer[0].passByReference == false);
+    test_assert(f->parameters.buffer[0].is_reference == false);
     test_assert(f->parameters.buffer[0].inout == CORTO_IN);
 
     test_assertstr(f->parameters.buffer[1].name, "arg2");
     test_assert(f->parameters.buffer[1].type == (corto_type)corto_string_o);
-    test_assert(f->parameters.buffer[1].passByReference == false);
+    test_assert(f->parameters.buffer[1].is_reference == false);
     test_assert(f->parameters.buffer[1].inout == CORTO_IN);
 
 

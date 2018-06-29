@@ -135,10 +135,10 @@ int16_t corto_ser_composite(
 
 /* Deinit element */
 void corto_collection_deinitElement(corto_collection t, void *ptr) {
-    if (corto_collection_requires_alloc(t->elementType)) {
-        corto_ptr_deinit(ptr, t->elementType);
+    if (corto_collection_requires_alloc(t->element_type)) {
+        corto_ptr_deinit(ptr, t->element_type);
     } else {
-        corto_ptr_deinit(&ptr, t->elementType);
+        corto_ptr_deinit(&ptr, t->element_type);
     }
 }
 
@@ -154,11 +154,11 @@ int16_t corto_collection_copyListToArray(
     uint32_t i=0;
     corto_iter iter;
     void *e1, *e2;
-    corto_type elementType = t->elementType;
+    corto_type element_type = t->element_type;
 
     iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
-        if (corto_collection_requires_alloc(t->elementType)) {
+        if (corto_collection_requires_alloc(t->element_type)) {
             e2 = corto_iter_next(&iter);
         } else {
             e2 = corto_iter_nextPtr(&iter);
@@ -170,10 +170,10 @@ int16_t corto_collection_copyListToArray(
             e2 = tmp;
         }
 
-        if (elementType->reference) {
+        if (element_type->reference) {
             corto_set_ref(e1, *(corto_object*)e2);
         } else {
-            result = corto_ptr_copy(e1, elementType, e2);
+            result = corto_ptr_copy(e1, element_type, e2);
         }
 
         i++;
@@ -192,8 +192,8 @@ int16_t corto_collection_copyListToList(
     corto_equalityKind result = 0;
     corto_iter dstIter, srcIter;
     void *dstElem, *srcElem;
-    corto_type elementType = t->elementType;
-    bool requires_alloc = corto_collection_requires_alloc(t->elementType);
+    corto_type element_type = t->element_type;
+    bool requires_alloc = corto_collection_requires_alloc(t->element_type);
 
     dstIter = corto_ll_iter(dst);
     srcIter = corto_ll_iter(src);
@@ -206,10 +206,10 @@ int16_t corto_collection_copyListToList(
             srcElem = corto_iter_nextPtr(&srcIter);
         }
 
-        if (elementType->reference) {
+        if (element_type->reference) {
             corto_set_ref((corto_object*)dstElem, *(corto_object*)srcElem);
         } else {
-            result = corto_ptr_copy(dstElem, elementType, srcElem);
+            result = corto_ptr_copy(dstElem, element_type, srcElem);
         }
     }
 
@@ -224,8 +224,8 @@ void corto_collection_resizeList(
     uint32_t size)
 {
     uint32_t ownSize = corto_ll_count(list);
-    corto_type elementType = t->elementType;
-    bool requires_alloc = corto_collection_requires_alloc(t->elementType);
+    corto_type element_type = t->element_type;
+    bool requires_alloc = corto_collection_requires_alloc(t->element_type);
 
     /* If there are more elements in the destination, remove superfluous elements */
     if (ownSize > size) {
@@ -241,13 +241,13 @@ void corto_collection_resizeList(
         for(i=ownSize; i<size; i++) {
             void *elem = NULL;
             if (requires_alloc) {
-                elem = corto_ptr_new(elementType);
+                elem = corto_ptr_new(element_type);
             }
 
             void *ptr = corto_ll_insert(list, elem);
 
             if (!requires_alloc) {
-                corto_ptr_init(ptr, elementType);
+                corto_ptr_init(ptr, element_type);
             }
         }
     }
@@ -265,27 +265,27 @@ void* corto_collection_resizeArray(
     /* Only sequences can be resized */
     if (t->kind == CORTO_SEQUENCE) {
         uint32_t ownSize = ((corto_objectseq*)sequence)->length;
-        corto_type elementType = t->elementType;
+        corto_type element_type = t->element_type;
         result = ((corto_objectseq*)sequence)->buffer;
 
         /* If there are more elements in the destination, remove superfluous elements */
         if (ownSize > size) {
             uint32_t i;
             for(i = size; i < ownSize; i++) {
-                corto_ptr_deinit(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * i), elementType);
+                corto_ptr_deinit(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, element_type->size * i), element_type);
             }
             /* Reallocate buffer */
             result = ((corto_objectseq*)sequence)->buffer =
-              corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
+              corto_realloc(((corto_objectseq*)sequence)->buffer, element_type->size * size);
 
             /* If there are less elements in the destination, add new elements */
         } else if (ownSize < size) {
             /* Reallocate buffer */
             result = ((corto_objectseq*)sequence)->buffer =
-              corto_realloc(((corto_objectseq*)sequence)->buffer, elementType->size * size);
+              corto_realloc(((corto_objectseq*)sequence)->buffer, element_type->size * size);
 
             /* Memset new memory */
-            memset(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, elementType->size * ownSize), 0, (size - ownSize) * elementType->size);
+            memset(CORTO_OFFSET(((corto_objectseq*)sequence)->buffer, element_type->size * ownSize), 0, (size - ownSize) * element_type->size);
         }
         ((corto_objectseq*)sequence)->length = size;
     }
@@ -331,18 +331,18 @@ int16_t corto_ser_collection(
         corto_ll srcList = NULL, dstList = NULL;
         uint32_t elementSize = 0;
 
-        elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
+        elementSize = corto_type_sizeof(corto_collection(t1)->element_type);
 
         switch(corto_collection(t1)->kind) {
             case CORTO_ARRAY:
                 array1 = src;
-                elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
+                elementSize = corto_type_sizeof(corto_collection(t1)->element_type);
                 size1 = corto_collection(t1)->max;
                 v1IsArray = TRUE;
                 break;
             case CORTO_SEQUENCE:
                 array1 = ((corto_objectseq*)src)->buffer;
-                elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
+                elementSize = corto_type_sizeof(corto_collection(t1)->element_type);
                 size1 = ((corto_objectseq*)src)->length;
                 v1IsArray = TRUE;
                 break;
@@ -508,7 +508,7 @@ int16_t corto_ser_observable(
 }
 
 corto_walk_opt corto_copy_ser(
-    corto_modifier access,
+    corto_modifierMask access,
     corto_operatorKind accessKind,
     corto_walk_traceKind trace)
 {

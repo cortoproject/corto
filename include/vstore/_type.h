@@ -90,8 +90,8 @@ typedef struct corto_query {
     uint64_t limit;
     uint64_t soffset;
     uint64_t slimit;
-    corto_frame timeBegin;
-    corto_frame timeEnd;
+    corto_frame frame_begin;
+    corto_frame frame_end;
     bool content;
     bool yield_unknown;
 } corto_query;
@@ -100,7 +100,7 @@ typedef struct corto_query {
 typedef struct corto_subscriber_s {
     struct corto_observer_s super;
     corto_query query;
-    corto_string contentType;
+    corto_string format;
     uintptr_t fmt_handle;
     uintptr_t idmatch;
     bool isAligning;
@@ -170,8 +170,8 @@ typedef struct corto_mount_s {
     bool explicitResume;
     uintptr_t thread;
     bool quit;
-    corto_string contentTypeOut;
-    uintptr_t contentTypeOutHandle;
+    corto_string formatOut;
+    uintptr_t formatOutHandle;
 } *corto_mount;
 
 /* struct corto/vstore/invoke_event */
@@ -289,12 +289,12 @@ typedef struct corto_route_s {
 /* class corto/vstore/router */
 typedef struct corto_router_s {
     struct corto_class_s super;
-    corto_type returnType;
-    corto_type paramType;
-    corto_string paramName;
-    corto_type routerDataType;
-    corto_string routerDataName;
-    corto_string elementSeparator;
+    corto_type return_type;
+    corto_type param_type;
+    corto_string param_name;
+    corto_type router_data_type;
+    corto_string router_data_name;
+    corto_string element_separator;
 } *corto_router;
 
 /* class corto/vstore/routerimpl */

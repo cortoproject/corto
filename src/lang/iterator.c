@@ -15,11 +15,11 @@ bool corto_iterator_compatible_v(
 {
     corto_bool result = FALSE;
     if (type->kind == CORTO_COLLECTION) {
-        if (corto_collection(type)->elementType == this->elementType) {
+        if (corto_collection(type)->element_type == this->element_type) {
             result = TRUE;
         }
     } else if (type->kind == CORTO_ITERATOR) {
-        if (this->elementType == corto_iterator(type)->elementType) {
+        if (this->element_type == corto_iterator(type)->element_type) {
             result = TRUE;
         }
     }

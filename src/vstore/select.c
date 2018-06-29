@@ -48,7 +48,7 @@ typedef struct corto_selectRequest {
     uint64_t limit;
     uint64_t soffset;
     uint64_t slimit;
-    const char *contentType;
+    const char *format;
     corto_frame from;
     corto_frame to;
     corto_mountAction mountAction;
@@ -91,7 +91,7 @@ struct corto_select_data {
     corto_string scope;                      /* Scope passed to select */
     corto_string expr;                       /* Current expression */
     corto_string exprStart;                  /* Points to start of full expr */
-    const char *contentType;
+    const char *format;
 
     /* Object filter */
     corto_string filter;
@@ -189,7 +189,7 @@ corto_fmt corto_selectSrcContentType(
     corto_select_data *data)
 {
     return (corto_fmt)
-      data->mounts[data->stack[data->sp].currentMount - 1]->contentTypeOutHandle;
+      data->mounts[data->stack[data->sp].currentMount - 1]->formatOutHandle;
 }
 
 static
@@ -206,7 +206,7 @@ int16_t corto_selectConvert(
     bool should_convert = false;
 
     if (!srcType && dst_value) {
-        corto_debug("mount '%s' provides value but no contentType",
+        corto_debug("mount '%s' provides value but no format",
             corto_fullpath(NULL,
                 data->mounts[data->stack[data->sp].currentMount - 1]));
     }
@@ -256,7 +256,7 @@ int16_t corto_selectConvert(
                     data->dstSer, &dst_opt, &v)))
                 {
                     corto_throw(
-                        "failed to convert value to '%s'", data->contentType);
+                        "failed to convert value to '%s'", data->format);
                     goto error;
                 }
 
@@ -333,7 +333,7 @@ void corto_setItemData(
         corto_walk(&s, corto_typeof(o), &serData);
     }
 
-    if (data->contentType) {
+    if (data->format) {
         corto_fmt_opt dst_opt = {
             .from = data->scope
         };
@@ -536,9 +536,9 @@ corto_resultIter corto_selectRequestMount(
           .limit = (data->offset > data->count || !data->limit) ? data->limit : data->limit - (data->offset - data->count),
           .soffset = data->soffset,
           .slimit = data->slimit,
-          .content = data->contentType ? TRUE : FALSE,
-          .timeBegin = data->from,
-          .timeEnd = data->to};
+          .content = data->format ? TRUE : FALSE,
+          .frame_begin = data->from,
+          .frame_end = data->to};
 
         if (data->mountAction) {
             /* If mount-action returns non-zero, quit the walk asap */
@@ -710,7 +710,7 @@ bool corto_selectIterMount(
         goto error;
     }
 
-    /* Wrap history iterator in other iterator that converts contentType */
+    /* Wrap history iterator in other iterator that converts format */
     if (data->valueAllocated && result->history.hasNext) {
         data->item.history.hasNext = corto_selectHistoryHasNext;
         data->item.history.next = corto_selectHistoryNext;
@@ -755,7 +755,7 @@ bool corto_selectIterMount(
             goto error;
         }
 
-        corto_fmt fmt_handle = (corto_fmt)mount->contentTypeOutHandle;
+        corto_fmt fmt_handle = (corto_fmt)mount->formatOutHandle;
         corto_object prev = corto_set_source(mount);
         corto_object ref = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE|CORTO_UNSECURED, {
             .parent = parent,
@@ -1556,7 +1556,7 @@ corto_resultIter corto_selectPrepareIterator (
     }
     data->exprStart = data->expr;
 
-    data->contentType = r->contentType;
+    data->format = r->format;
     data->mountsLoaded = -1;
     data->offset = r->offset;
     data->limit = r->limit;
@@ -1591,8 +1591,8 @@ corto_resultIter corto_selectPrepareIterator (
     data->valueAllocated = FALSE;
     data->mountCallbackMask = r->mountCallbackMask;
 
-    if (data->contentType) {
-        if (!(data->dstSer = corto_fmt_lookup(data->contentType))) {
+    if (data->format) {
+        if (!(data->dstSer = corto_fmt_lookup(data->format))) {
             goto error;
         }
     }
@@ -1643,13 +1643,13 @@ corto_select__fluent corto_select__fluentGet(void);
 
 static
 corto_select__fluent corto_selectorContentType(
-    const char *contentType)
+    const char *format)
 {
     corto_selectRequest *request =
       corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        corto_debug("CONTENTTYPE '%s'", contentType);
-        request->contentType = contentType;
+        corto_debug("CONTENTTYPE '%s'", format);
+        request->format = format;
     }
     return corto_select__fluentGet();
 }
@@ -2135,7 +2135,7 @@ static corto_select__fluent corto_select__fluentGet(void)
 {
     corto_select__fluent result;
     result.from = corto_selectorFrom;
-    result.contentType = corto_selectorContentType;
+    result.format = corto_selectorContentType;
     result.offset = corto_selectorOffset;
     result.limit = corto_selectorLimit;
     result.soffset = corto_selectorSoffset;

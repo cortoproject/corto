@@ -22,7 +22,7 @@ void _corto_dispatcher_post(
     corto_assert(_methodId, "method 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
 
     /* Lookup method-object. */
-    _method = corto_class_resolveInterfaceMethod((corto_class)_abstract, corto_dispatcher_o, _methodId);
+    _method = corto_class_resolve_interface_method((corto_class)_abstract, corto_dispatcher_o, _methodId);
     corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {

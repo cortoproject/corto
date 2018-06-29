@@ -12,9 +12,9 @@ bool corto_collection_castable_v(
 
         /* Arrays are only castable when they match exactly in size */
         if (!(this->kind == CORTO_ARRAY) || ((t->kind == CORTO_ARRAY) && (this->max == t->max))) {
-            if (this->elementType != t->elementType) {
-                if (this->elementType->kind == CORTO_COLLECTION) {
-                    result = corto_collection_castable(corto_collection(this->elementType), t->elementType);
+            if (this->element_type != t->element_type) {
+                if (this->element_type->kind == CORTO_COLLECTION) {
+                    result = corto_collection_castable(corto_collection(this->element_type), t->element_type);
                 }
             } else {
                 result = TRUE;
@@ -33,11 +33,11 @@ bool corto_collection_compatible_v(
 
     if (type->kind == CORTO_COLLECTION) {
         if (corto_collection(this)->kind == corto_collection(type)->kind) {
-            if(corto_collection(this)->elementType == corto_collection(type)->elementType) {
+            if(corto_collection(this)->element_type == corto_collection(type)->element_type) {
                 result = TRUE;
             }
             if(corto_collection(this)->kind == CORTO_MAP) {
-                if(corto_map(this)->keyType != corto_map(type)->keyType) {
+                if(corto_map(this)->key_type != corto_map(type)->key_type) {
                     result = FALSE;
                 }
             }
@@ -55,14 +55,14 @@ int16_t corto_collection_init(
 }
 
 bool corto_collection_requires_alloc(
-    corto_type elementType)
+    corto_type element_type)
 {
     corto_bool result = TRUE;
 
-    if (elementType->reference) {
+    if (element_type->reference) {
         result = FALSE;
     } else {
-        switch(elementType->kind) {
+        switch(element_type->kind) {
         case CORTO_VOID:
             corto_assert(0, "non reference void type cannot be an elementtype");
             break;
@@ -70,7 +70,7 @@ bool corto_collection_requires_alloc(
             /* Any values don't fit in an address */
             break;
         case CORTO_PRIMITIVE:
-            switch(corto_primitive(elementType)->width) {
+            switch(corto_primitive(element_type)->width) {
             case CORTO_WIDTH_8:
             case CORTO_WIDTH_16:
             case CORTO_WIDTH_32:
@@ -85,7 +85,7 @@ bool corto_collection_requires_alloc(
             }
             break;
         case CORTO_COLLECTION:
-            switch(corto_collection(elementType)->kind) {
+            switch(corto_collection(element_type)->kind) {
             case CORTO_ARRAY:
             case CORTO_SEQUENCE:
                 /* Arrays and sequences (typically) don't fit in a collection */

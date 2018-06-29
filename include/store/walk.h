@@ -193,7 +193,7 @@ struct corto_walk_opt {
     bool initialized;
     bool constructed;
 
-    corto_modifier access;
+    corto_modifierMask access;
     corto_operatorKind accessKind;
 
     corto_aliasActionKind aliasAction;

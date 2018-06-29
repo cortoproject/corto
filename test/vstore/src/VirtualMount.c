@@ -9,7 +9,7 @@ int16_t test_VirtualMount_construct(
     corto_set_str(&corto_subscriber(this)->query.from, this->mount);
 
     /* Data served up by the mount is in the corto string format */
-    corto_mount_setContentType(this, "text/corto");
+    corto_mount_set_format(this, "text/corto");
 
     /* Populate the mount with some demo data */
     corto_result__assign(

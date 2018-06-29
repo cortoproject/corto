@@ -154,10 +154,10 @@ void main() {
 ### Content types
 In addition to predicates that describe what kind of data to match, a query
 can also contain information about how the data should be formatted. This can
-be specified with the `contentType` function, like this:
+be specified with the `format` function, like this:
 
 ```c
-corto_select("*").from("/foo").contentType("text/json").iter(it);
+corto_select("*").from("/foo").format("text/json").iter(it);
 ```
 All results returned by this query will be formatted as JSON. This allows an
 application to inspect the value of an object (one object at a time) in 
@@ -166,19 +166,19 @@ benefit comes when the serialized format is the same as that from the data
 source, in which case corto is intelligent enough to just pass through the
 serialized data.
 
-Specifiying a contentType also works for subscribers:
+Specifiying a format also works for subscribers:
 ```c
-corto_subscribe("*").from("/foo").contentType("text/json").callback(cb);
+corto_subscribe("*").from("/foo").format("text/json").callback(cb);
 ```
 
 The serialized value can be obtained like this (assuming `r` is the `corto_result`):
 ```c
-printf("value = %s\n", corto_result_getText(r));
+printf("value = %s\n", corto_result_get_text(r));
 ```
 
 or for subscribers:
 ```c
-printf("value = %s\n", corto_result_getText(&e->data));
+printf("value = %s\n", corto_result_get_text(&e->data));
 ```
 
 ### Implement a mount
@@ -245,8 +245,8 @@ serializes the object data to JSON?
 
 ##### A dirty little secret about mounts
 The answer is: not much. Mounts *inherit from subscribers*. Because they
-inherit from subscribers, they also inherit the capability to specify a contentType.
-Lets instantiate our mount, and specify a contentType using a configuration file.
+inherit from subscribers, they also inherit the capability to specify a format.
+Lets instantiate our mount, and specify a format using a configuration file.
 Create a file called `config.json`:
 ```
 touch MyMount/config.json
@@ -257,7 +257,7 @@ In this file, add the following JSON:
     "id": "config/MyCustomMount",
     "type": "MyMount/CustomMount",
     "value": {
-        "contentType": "text/json",
+        "format": "text/json",
         "query": {
             "from": "/foo"
         }
@@ -278,7 +278,7 @@ And change the implementation of `on_notify` to this (using our fictional writeD
         e->data.id,
         e->data.parent,
         e->data.type,
-        corto_result_getText(&e->data) // Returns JSON!
+        corto_result_get_text(&e->data) // Returns JSON!
     );
 ```
 

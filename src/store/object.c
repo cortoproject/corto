@@ -2424,13 +2424,13 @@ corto_attr corto_attrof(
 /* Serialize object value to content type */
 char* corto_serialize_value(
     corto_object o,
-    const char *contentType)
+    const char *format)
 {
     corto_fmt type;
 
     corto_assert_object(o);
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2444,14 +2444,14 @@ error:
 /* Deserialize object value from content type */
 int16_t corto_deserialize_value(
     corto_object o,
-    const char *contentType,
+    const char *format,
     const char *data)
 {
     corto_fmt type;
 
     corto_assert_object(o);
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2465,13 +2465,13 @@ error:
 /* Serialize object to content type (includes id, type) */
 char* corto_serialize(
     corto_object o,
-    const char *contentType)
+    const char *format)
 {
     corto_fmt type;
 
     corto_assert_object(o);
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2483,12 +2483,12 @@ error:
 /* Deserialize object from content type (includes id, type) */
 int16_t corto_deserialize(
     void *o,
-    const char *contentType,
+    const char *format,
     const char *data)
 {
     corto_fmt type = NULL;
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -3734,7 +3734,7 @@ int16_t corto_publish(
     corto_eventMask event,
     const char *id,
     const char *type,
-    const char *contentType,
+    const char *format,
     void *content)
 {
     corto_assert(id != NULL, "NULL passed to 'id' parameter of corto_publish");
@@ -3751,7 +3751,7 @@ int16_t corto_publish(
         case CORTO_UPDATE:
             if (corto_typeof(o)->kind != CORTO_VOID) {
                 if (!(result = corto_update_begin(o))) {
-                    if ((result = corto_deserialize_value(o, contentType, content))) {
+                    if ((result = corto_deserialize_value(o, format, content))) {
                         corto_update_cancel(o);
                     } else {
                         corto_update_end(o);
@@ -3768,7 +3768,7 @@ int16_t corto_publish(
         corto_release(o);
     } else {
         if (corto_notify_subscribersById(
-          event, id, type, contentType, (corto_word)content))
+          event, id, type, format, (corto_word)content))
         {
             result = -1;
         }
@@ -4162,7 +4162,7 @@ error:
 }
 
 /* Obtain function parameter types from signature */
-int32_t corto_sig_paramType(
+int32_t corto_sig_param_type(
     const char *signature,
     uint32_t id,
     corto_id buffer,
@@ -4273,7 +4273,7 @@ error:
 }
 
 /* Obtain function parameter names from signature */
-int32_t corto_sig_paramName(
+int32_t corto_sig_param_name(
     const char *signature,
     uint32_t id,
     corto_id buffer)
@@ -4380,7 +4380,7 @@ corto_type corto_overloadParamType(corto_object object, int32_t i, bool *referen
         goto error;
     }
 
-    if (corto_sig_paramType(signature, i, buffer, &flags)) {
+    if (corto_sig_param_type(signature, i, buffer, &flags)) {
         corto_throw("cannot get parameter %d from signature %s", i, signature);
         goto error;
     }
@@ -4538,7 +4538,7 @@ void corto_sig_fromDelegate(
     char *signature = corto_sig_open(corto_idof(o));
     for (i = 0; i < type->parameters.length; i++) {
         corto_parameter *p = &type->parameters.buffer[i];
-        signature = corto_sig_add(signature, p->type, p->passByReference ? CORTO_PARAMETER_FORCEREFERENCE : 0);
+        signature = corto_sig_add(signature, p->type, p->is_reference ? CORTO_PARAMETER_FORCEREFERENCE : 0);
     }
     signature = corto_sig_close(signature);
 
@@ -4726,10 +4726,10 @@ int16_t corto_overload(
                 goto error;
             }
 
-            if (corto_sig_paramType(requested, i, r_typeName, &flags)) {
+            if (corto_sig_param_type(requested, i, r_typeName, &flags)) {
                 goto error;
             }
-            if (corto_sig_paramType(corto_idof(object), i, o_typeName, &o_flags)) {
+            if (corto_sig_param_type(corto_idof(object), i, o_typeName, &o_flags)) {
                 goto error;
             }
 
@@ -5284,7 +5284,7 @@ corto_object _corto(
             if (params.fmt) {
                 corto_assert(
                     params.value != NULL,
-                    "contentType specified but no value provided");
+                    "format specified but no value provided");
 
                 corto_value v = corto_value_object(result, params.type);
                 if (corto_fmt_to_value(params.fmt, NULL, &v, params.value)) {

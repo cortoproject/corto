@@ -847,7 +847,7 @@ int16_t corto_observer_construct(
             /* Parameter event */
             p = &corto_function(this)->parameters.buffer[0];
             p->name = corto_strdup("e");
-            p->passByReference = FALSE;
+            p->is_reference = FALSE;
             corto_set_ref(&p->type, corto_observer_event_o);
         }
     }
@@ -894,7 +894,7 @@ void corto_observer_destruct(
 int16_t corto_observer_init(
     corto_observer this)
 {
-    corto_set_ref(&corto_function(this)->returnType, corto_void_o);
+    corto_set_ref(&corto_function(this)->return_type, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
     if (corto_check_attr(this, CORTO_ATTR_NAMED) &&

@@ -373,7 +373,7 @@ static
 int corto_interface_validateAlias(
     corto_alias this)
 {
-    corto_modifier m = 0;
+    corto_modifierMask m = 0;
     corto_member super = ((corto_member)this);
     /* Find the member we're aliassing and verify access */
     if (!this->member) {
@@ -412,7 +412,7 @@ int corto_interface_validateAlias(
 
         corto_interface base = corto_parentof(this);
         while (base && (base != corto_parentof(this->member))) {
-            m |= corto_struct(base)->baseAccess;
+            m |= corto_struct(base)->base_modifiers;
             base = base->base;
         }
 
@@ -597,13 +597,13 @@ int16_t corto_interface_checkProcedureParameters(
             }
 
             /* Check if both parameters have equal reference semantics */
-            if (o1->parameters.buffer[i].passByReference !=
-                o2->parameters.buffer[i].passByReference)
+            if (o1->parameters.buffer[i].is_reference !=
+                o2->parameters.buffer[i].is_reference)
             {
                 if ((((p1->kind == CORTO_VOID) && (p1->reference)) &&
-                      o2->parameters.buffer[i].passByReference) ||
+                      o2->parameters.buffer[i].is_reference) ||
                     (((p2->kind == CORTO_VOID) && (p2->reference)) &&
-                      o1->parameters.buffer[i].passByReference))
+                      o1->parameters.buffer[i].is_reference))
                 {
                 } else {
                     corto_throw(
@@ -627,21 +627,21 @@ bool corto_interface_checkProcedureCompatibility(
     corto_function o2)
 {
     bool result;
-    corto_type returnType1, returnType2;
+    corto_type return_type1, return_type2;
 
     result = TRUE;
 
-    returnType1 = o1->returnType ? o1->returnType : (corto_type)corto_void_o;
-    returnType2 = o2->returnType ? o2->returnType : (corto_type)corto_void_o;
+    return_type1 = o1->return_type ? o1->return_type : (corto_type)corto_void_o;
+    return_type2 = o2->return_type ? o2->return_type : (corto_type)corto_void_o;
 
-    if (returnType1 != returnType2) {
-        if (!corto_type_compatible(returnType1, returnType2)) {
+    if (return_type1 != return_type2) {
+        if (!corto_type_compatible(return_type1, return_type2)) {
             corto_throw(
           "function '%s' and '%s' have conflicting returntypes ('%s' vs '%s').",
                 corto_fullpath(NULL, o1),
                 corto_fullpath(NULL, o2),
-                corto_fullpath(NULL, returnType1),
-                corto_fullpath(NULL, returnType2));
+                corto_fullpath(NULL, return_type1),
+                corto_fullpath(NULL, return_type2));
 
             /* Returntypes must match exactly */
             result = FALSE;

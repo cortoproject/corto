@@ -13,7 +13,7 @@ int16_t test_StringReplicator_construct(
         this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
     
-    corto_mount_setContentType(this, "text/corto");
+    corto_mount_set_format(this, "text/corto");
 
     return corto_mount_construct(this);
 }

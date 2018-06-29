@@ -292,7 +292,7 @@ corto_int16 corto_handleAction__init_c(corto_handleAction *d, corto_void ___ (*c
     d->super.instance = NULL;
     d->super.procedure = corto_declare(NULL, NULL, corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
-    corto_set_ref(&d->super.procedure->returnType, corto_void_o);
+    corto_set_ref(&d->super.procedure->return_type, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "(/corto/vstore/event event)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -304,7 +304,7 @@ corto_int16 corto_handleAction_init_c_instance(corto_handleAction *d, corto_obje
     corto_claim(instance);
     d->super.procedure = corto_declare(NULL, NULL, corto_function_o);
     d->super.procedure->kind = CORTO_PROCEDURE_CDECL;
-    corto_set_ref(&d->super.procedure->returnType, corto_void_o);
+    corto_set_ref(&d->super.procedure->return_type, corto_void_o);
     corto_function_parseParamString(d->super.procedure, "(object instance, /corto/vstore/event event)");
     d->super.procedure->fptr = (corto_word)callback;
     corto_define(d->super.procedure);
@@ -832,7 +832,7 @@ corto_ownership* _corto_ownership__assign(corto_ownership* _this, corto_ownershi
     return _this;
 }
 
-corto_query* _corto_query__create(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_query__create(corto_object _parent, const char *_id, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* frame_begin, corto_frame* frame_end) {
     corto_query* _this;
     _this = (corto_query*)corto_declare(_parent, _id, corto_query_o);
     if (!_this) {
@@ -849,11 +849,11 @@ corto_query* _corto_query__create(corto_object _parent, const char *_id, const c
         ((corto_query*)_this)->limit = limit;
         ((corto_query*)_this)->soffset = soffset;
         ((corto_query*)_this)->slimit = slimit;
-        if (timeBegin) {
-            corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
+        if (frame_begin) {
+            corto_ptr_copy(&((corto_query*)_this)->frame_begin, corto_frame_o, frame_begin);
         }
-        if (timeEnd) {
-            corto_ptr_copy(&((corto_query*)_this)->timeEnd, corto_frame_o, timeEnd);
+        if (frame_end) {
+            corto_ptr_copy(&((corto_query*)_this)->frame_end, corto_frame_o, frame_end);
         }
         if (corto_define(_this)) {
             corto_release(_this);
@@ -863,7 +863,7 @@ corto_query* _corto_query__create(corto_object _parent, const char *_id, const c
     return _this;
 }
 
-corto_int16 _corto_query__update(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_int16 _corto_query__update(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* frame_begin, corto_frame* frame_end) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
@@ -877,11 +877,11 @@ corto_int16 _corto_query__update(corto_query* _this, const char * select, const 
             ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->limit = limit;
             ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->soffset = soffset;
             ((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->slimit = slimit;
-            if (timeBegin) {
-                corto_ptr_copy(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->timeBegin, corto_frame_o, timeBegin);
+            if (frame_begin) {
+                corto_ptr_copy(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->frame_begin, corto_frame_o, frame_begin);
             }
-            if (timeEnd) {
-                corto_ptr_copy(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->timeEnd, corto_frame_o, timeEnd);
+            if (frame_end) {
+                corto_ptr_copy(&((corto_query*)((corto_query*)CORTO_OFFSET(_this, ((corto_type)corto_query_o)->size)))->frame_end, corto_frame_o, frame_end);
             }
         } else {
             corto_set_str(&((corto_query*)_this)->select, select);
@@ -894,11 +894,11 @@ corto_int16 _corto_query__update(corto_query* _this, const char * select, const 
             ((corto_query*)_this)->limit = limit;
             ((corto_query*)_this)->soffset = soffset;
             ((corto_query*)_this)->slimit = slimit;
-            if (timeBegin) {
-                corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
+            if (frame_begin) {
+                corto_ptr_copy(&((corto_query*)_this)->frame_begin, corto_frame_o, frame_begin);
             }
-            if (timeEnd) {
-                corto_ptr_copy(&((corto_query*)_this)->timeEnd, corto_frame_o, timeEnd);
+            if (frame_end) {
+                corto_ptr_copy(&((corto_query*)_this)->frame_end, corto_frame_o, frame_end);
             }
         }
         if (corto_update_end(_this)) {
@@ -910,7 +910,7 @@ corto_int16 _corto_query__update(corto_query* _this, const char * select, const 
     return 0;
 }
 
-corto_query* _corto_query__assign(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* timeBegin, corto_frame* timeEnd) {
+corto_query* _corto_query__assign(corto_query* _this, const char * select, const char * from, const char * type, const char * instanceof, const char * member, const char * where, uint64_t offset, uint64_t limit, uint64_t soffset, uint64_t slimit, corto_frame* frame_begin, corto_frame* frame_end) {
     CORTO_UNUSED(_this);
     corto_set_str(&((corto_query*)_this)->select, select);
     corto_set_str(&((corto_query*)_this)->from, from);
@@ -922,24 +922,24 @@ corto_query* _corto_query__assign(corto_query* _this, const char * select, const
     ((corto_query*)_this)->limit = limit;
     ((corto_query*)_this)->soffset = soffset;
     ((corto_query*)_this)->slimit = slimit;
-    if (timeBegin) {
-        corto_ptr_copy(&((corto_query*)_this)->timeBegin, corto_frame_o, timeBegin);
+    if (frame_begin) {
+        corto_ptr_copy(&((corto_query*)_this)->frame_begin, corto_frame_o, frame_begin);
     }
-    if (timeEnd) {
-        corto_ptr_copy(&((corto_query*)_this)->timeEnd, corto_frame_o, timeEnd);
+    if (frame_end) {
+        corto_ptr_copy(&((corto_query*)_this)->frame_end, corto_frame_o, frame_end);
     }
     return _this;
 }
 
-corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void)) {
+corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void)) {
     corto_remote _this;
     _this = (corto_remote)corto_declare(_parent, _id, corto_remote_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_function)_this)->returnType, returnType);
-        ((corto_function)_this)->returnsReference = returnsReference;
+        corto_set_ref(&((corto_function)_this)->return_type, return_type);
+        ((corto_function)_this)->is_reference = is_reference;
         corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
         corto_function(_this)->fptr = (corto_word)_impl;
         if (corto_define(_this)) {
@@ -950,17 +950,17 @@ corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_
     return _this;
 }
 
-corto_int16 _corto_remote__update(corto_remote _this, corto_type returnType, bool returnsReference, void(*_impl)(void)) {
+corto_int16 _corto_remote__update(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->returnType, returnType);
-            ((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->returnsReference = returnsReference;
+            corto_set_ref(&((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->return_type, return_type);
+            ((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->is_reference = is_reference;
             corto_function(((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->kind = CORTO_PROCEDURE_CDECL;
             corto_function(((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->fptr = (corto_word)_impl;
         } else {
-            corto_set_ref(&((corto_function)_this)->returnType, returnType);
-            ((corto_function)_this)->returnsReference = returnsReference;
+            corto_set_ref(&((corto_function)_this)->return_type, return_type);
+            ((corto_function)_this)->is_reference = is_reference;
             corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
             corto_function(_this)->fptr = (corto_word)_impl;
         }
@@ -973,10 +973,10 @@ corto_int16 _corto_remote__update(corto_remote _this, corto_type returnType, boo
     return 0;
 }
 
-corto_remote _corto_remote__assign(corto_remote _this, corto_type returnType, bool returnsReference, void(*_impl)(void)) {
+corto_remote _corto_remote__assign(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_function)_this)->returnType, returnType);
-    ((corto_function)_this)->returnsReference = returnsReference;
+    corto_set_ref(&((corto_function)_this)->return_type, return_type);
+    ((corto_function)_this)->is_reference = is_reference;
     corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
     corto_function(_this)->fptr = (corto_word)_impl;
     return _this;
@@ -1217,19 +1217,19 @@ corto_route _corto_route__assign(corto_route _this, const char * pattern, void(*
     return _this;
 }
 
-corto_router _corto_router__create(corto_object _parent, const char *_id, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator) {
+corto_router _corto_router__create(corto_object _parent, const char *_id, corto_type return_type, corto_type param_type, const char * param_name, corto_type router_data_type, const char * router_data_name, const char * element_separator) {
     corto_router _this;
     _this = (corto_router)corto_declare(_parent, _id, corto_router_o);
     if (!_this) {
         return NULL;
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_router)_this)->returnType, returnType);
-        corto_set_ref(&((corto_router)_this)->paramType, paramType);
-        corto_set_str(&((corto_router)_this)->paramName, paramName);
-        corto_set_ref(&((corto_router)_this)->routerDataType, routerDataType);
-        corto_set_str(&((corto_router)_this)->routerDataName, routerDataName);
-        corto_set_str(&((corto_router)_this)->elementSeparator, elementSeparator);
+        corto_set_ref(&((corto_router)_this)->return_type, return_type);
+        corto_set_ref(&((corto_router)_this)->param_type, param_type);
+        corto_set_str(&((corto_router)_this)->param_name, param_name);
+        corto_set_ref(&((corto_router)_this)->router_data_type, router_data_type);
+        corto_set_str(&((corto_router)_this)->router_data_name, router_data_name);
+        corto_set_str(&((corto_router)_this)->element_separator, element_separator);
         if (corto_define(_this)) {
             corto_release(_this);
             _this = NULL;
@@ -1238,23 +1238,23 @@ corto_router _corto_router__create(corto_object _parent, const char *_id, corto_
     return _this;
 }
 
-corto_int16 _corto_router__update(corto_router _this, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator) {
+corto_int16 _corto_router__update(corto_router _this, corto_type return_type, corto_type param_type, const char * param_name, corto_type router_data_type, const char * router_data_name, const char * element_separator) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->returnType, returnType);
-            corto_set_ref(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->paramType, paramType);
-            corto_set_str(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->paramName, paramName);
-            corto_set_ref(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->routerDataType, routerDataType);
-            corto_set_str(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->routerDataName, routerDataName);
-            corto_set_str(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->elementSeparator, elementSeparator);
+            corto_set_ref(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->return_type, return_type);
+            corto_set_ref(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->param_type, param_type);
+            corto_set_str(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->param_name, param_name);
+            corto_set_ref(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->router_data_type, router_data_type);
+            corto_set_str(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->router_data_name, router_data_name);
+            corto_set_str(&((corto_router)((corto_router)CORTO_OFFSET(_this, ((corto_type)corto_router_o)->size)))->element_separator, element_separator);
         } else {
-            corto_set_ref(&((corto_router)_this)->returnType, returnType);
-            corto_set_ref(&((corto_router)_this)->paramType, paramType);
-            corto_set_str(&((corto_router)_this)->paramName, paramName);
-            corto_set_ref(&((corto_router)_this)->routerDataType, routerDataType);
-            corto_set_str(&((corto_router)_this)->routerDataName, routerDataName);
-            corto_set_str(&((corto_router)_this)->elementSeparator, elementSeparator);
+            corto_set_ref(&((corto_router)_this)->return_type, return_type);
+            corto_set_ref(&((corto_router)_this)->param_type, param_type);
+            corto_set_str(&((corto_router)_this)->param_name, param_name);
+            corto_set_ref(&((corto_router)_this)->router_data_type, router_data_type);
+            corto_set_str(&((corto_router)_this)->router_data_name, router_data_name);
+            corto_set_str(&((corto_router)_this)->element_separator, element_separator);
         }
         if (corto_update_end(_this)) {
             return -1;
@@ -1265,18 +1265,18 @@ corto_int16 _corto_router__update(corto_router _this, corto_type returnType, cor
     return 0;
 }
 
-corto_router _corto_router__assign(corto_router _this, corto_type returnType, corto_type paramType, const char * paramName, corto_type routerDataType, const char * routerDataName, const char * elementSeparator) {
+corto_router _corto_router__assign(corto_router _this, corto_type return_type, corto_type param_type, const char * param_name, corto_type router_data_type, const char * router_data_name, const char * element_separator) {
     CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_router)_this)->returnType, returnType);
-    corto_set_ref(&((corto_router)_this)->paramType, paramType);
-    corto_set_str(&((corto_router)_this)->paramName, paramName);
-    corto_set_ref(&((corto_router)_this)->routerDataType, routerDataType);
-    corto_set_str(&((corto_router)_this)->routerDataName, routerDataName);
-    corto_set_str(&((corto_router)_this)->elementSeparator, elementSeparator);
+    corto_set_ref(&((corto_router)_this)->return_type, return_type);
+    corto_set_ref(&((corto_router)_this)->param_type, param_type);
+    corto_set_str(&((corto_router)_this)->param_name, param_name);
+    corto_set_ref(&((corto_router)_this)->router_data_type, router_data_type);
+    corto_set_str(&((corto_router)_this)->router_data_name, router_data_name);
+    corto_set_str(&((corto_router)_this)->element_separator, element_separator);
     return _this;
 }
 
-corto_routerimpl _corto_routerimpl__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements) {
+corto_routerimpl _corto_routerimpl__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements) {
     corto_routerimpl _this;
     _this = (corto_routerimpl)corto_declare(_parent, _id, corto_routerimpl_o);
     if (!_this) {
@@ -1284,7 +1284,7 @@ corto_routerimpl _corto_routerimpl__create(corto_object _parent, const char *_id
     }
     if (!corto_check_state(_this, CORTO_VALID)) {
         corto_set_ref(&((corto_interface)_this)->base, base);
-        ((corto_struct)_this)->baseAccess = baseAccess;
+        ((corto_struct)_this)->base_modifiers = base_modifiers;
         corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         if (corto_define(_this)) {
             corto_release(_this);
@@ -1294,16 +1294,16 @@ corto_routerimpl _corto_routerimpl__create(corto_object _parent, const char *_id
     return _this;
 }
 
-corto_int16 _corto_routerimpl__update(corto_routerimpl _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements) {
+corto_int16 _corto_routerimpl__update(corto_routerimpl _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             corto_set_ref(&((corto_interface)((corto_routerimpl)CORTO_OFFSET(_this, ((corto_type)corto_routerimpl_o)->size)))->base, base);
-            ((corto_struct)((corto_routerimpl)CORTO_OFFSET(_this, ((corto_type)corto_routerimpl_o)->size)))->baseAccess = baseAccess;
+            ((corto_struct)((corto_routerimpl)CORTO_OFFSET(_this, ((corto_type)corto_routerimpl_o)->size)))->base_modifiers = base_modifiers;
             corto_ptr_copy(&((corto_class)((corto_routerimpl)CORTO_OFFSET(_this, ((corto_type)corto_routerimpl_o)->size)))->implements, corto_interfaceseq_o, &implements);
         } else {
             corto_set_ref(&((corto_interface)_this)->base, base);
-            ((corto_struct)_this)->baseAccess = baseAccess;
+            ((corto_struct)_this)->base_modifiers = base_modifiers;
             corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
         }
         if (corto_update_end(_this)) {
@@ -1315,10 +1315,10 @@ corto_int16 _corto_routerimpl__update(corto_routerimpl _this, corto_interface ba
     return 0;
 }
 
-corto_routerimpl _corto_routerimpl__assign(corto_routerimpl _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements) {
+corto_routerimpl _corto_routerimpl__assign(corto_routerimpl _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements) {
     CORTO_UNUSED(_this);
     corto_set_ref(&((corto_interface)_this)->base, base);
-    ((corto_struct)_this)->baseAccess = baseAccess;
+    ((corto_struct)_this)->base_modifiers = base_modifiers;
     corto_ptr_copy(&((corto_class)_this)->implements, corto_interfaceseq_o, &implements);
     return _this;
 }
@@ -1409,7 +1409,7 @@ corto_sampleIter* _corto_sampleIter__assign(corto_sampleIter* _this) {
     return _this;
 }
 
-corto_subscriber _corto_subscriber__create(corto_object _parent, const char *_id, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void)) {
+corto_subscriber _corto_subscriber__create(corto_object _parent, const char *_id, corto_query* query, const char * format, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void)) {
     corto_subscriber _this;
     _this = (corto_subscriber)corto_declare(_parent, _id, corto_subscriber_o);
     if (!_this) {
@@ -1419,7 +1419,7 @@ corto_subscriber _corto_subscriber__create(corto_object _parent, const char *_id
         if (query) {
             corto_ptr_copy(&((corto_subscriber)_this)->query, corto_query_o, query);
         }
-        corto_set_str(&((corto_subscriber)_this)->contentType, contentType);
+        corto_set_str(&((corto_subscriber)_this)->format, format);
         corto_set_ref(&((corto_observer)_this)->instance, instance);
         corto_set_ref(&((corto_observer)_this)->dispatcher, dispatcher);
         ((corto_observer)_this)->enabled = enabled;
@@ -1433,14 +1433,14 @@ corto_subscriber _corto_subscriber__create(corto_object _parent, const char *_id
     return _this;
 }
 
-corto_int16 _corto_subscriber__update(corto_subscriber _this, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void)) {
+corto_int16 _corto_subscriber__update(corto_subscriber _this, corto_query* query, const char * format, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (!corto_update_begin(_this)) {
         if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
             if (query) {
                 corto_ptr_copy(&((corto_subscriber)((corto_subscriber)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_o)->size)))->query, corto_query_o, query);
             }
-            corto_set_str(&((corto_subscriber)((corto_subscriber)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_o)->size)))->contentType, contentType);
+            corto_set_str(&((corto_subscriber)((corto_subscriber)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_o)->size)))->format, format);
             corto_set_ref(&((corto_observer)((corto_subscriber)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_o)->size)))->instance, instance);
             corto_set_ref(&((corto_observer)((corto_subscriber)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_o)->size)))->dispatcher, dispatcher);
             ((corto_observer)((corto_subscriber)CORTO_OFFSET(_this, ((corto_type)corto_subscriber_o)->size)))->enabled = enabled;
@@ -1450,7 +1450,7 @@ corto_int16 _corto_subscriber__update(corto_subscriber _this, corto_query* query
             if (query) {
                 corto_ptr_copy(&((corto_subscriber)_this)->query, corto_query_o, query);
             }
-            corto_set_str(&((corto_subscriber)_this)->contentType, contentType);
+            corto_set_str(&((corto_subscriber)_this)->format, format);
             corto_set_ref(&((corto_observer)_this)->instance, instance);
             corto_set_ref(&((corto_observer)_this)->dispatcher, dispatcher);
             ((corto_observer)_this)->enabled = enabled;
@@ -1466,12 +1466,12 @@ corto_int16 _corto_subscriber__update(corto_subscriber _this, corto_query* query
     return 0;
 }
 
-corto_subscriber _corto_subscriber__assign(corto_subscriber _this, corto_query* query, const char * contentType, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void)) {
+corto_subscriber _corto_subscriber__assign(corto_subscriber _this, corto_query* query, const char * format, corto_object instance, corto_dispatcher dispatcher, bool enabled, void(*_impl)(void)) {
     CORTO_UNUSED(_this);
     if (query) {
         corto_ptr_copy(&((corto_subscriber)_this)->query, corto_query_o, query);
     }
-    corto_set_str(&((corto_subscriber)_this)->contentType, contentType);
+    corto_set_str(&((corto_subscriber)_this)->format, format);
     corto_set_ref(&((corto_observer)_this)->instance, instance);
     corto_set_ref(&((corto_observer)_this)->dispatcher, dispatcher);
     ((corto_observer)_this)->enabled = enabled;

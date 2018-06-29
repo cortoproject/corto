@@ -72,8 +72,8 @@ CORTO_META_OBJECT(iterator, subscriber_eventIter);
 CORTO_META_OBJECT(function, observer_event_handle);
 CORTO_META_OBJECT(function, subscriber_event_handle);
 
-CORTO_META_OBJECT(method, routerimpl_findRoute);
-CORTO_META_OBJECT(method, routerimpl_matchRoute);
+CORTO_META_OBJECT(method, routerimpl_find_route);
+CORTO_META_OBJECT(method, routerimpl_match_route);
 CORTO_META_OBJECT(method, mount_on_invoke);
 CORTO_META_OBJECT(method, mount_on_invoke);
 CORTO_META_OBJECT(method, mount_on_id);

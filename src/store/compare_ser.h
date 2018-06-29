@@ -38,7 +38,7 @@ typedef struct corto_compare_ser_t {
     void *base;
 }corto_compare_ser_t;
 
-corto_walk_opt corto_compare_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
+corto_walk_opt corto_compare_ser(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

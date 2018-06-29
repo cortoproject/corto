@@ -8,7 +8,7 @@ int16_t test_RefMount_construct(
     corto_set_str(&corto_subscriber(this)->query.select, "//");
     corto_set_str(&corto_subscriber(this)->query.from, this->from);
 
-    if (corto_mount_setContentType(this, "text/json")) {
+    if (corto_mount_set_format(this, "text/json")) {
         goto error;
     }
 

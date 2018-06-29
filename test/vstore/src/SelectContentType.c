@@ -35,7 +35,7 @@ void test_SelectContentType_tc_selectBinaryFromJson(
     test_Point *p;
 
     corto_int16 ret =
-        corto_select("json/*").contentType("binary/corto").iter( &iter );
+        corto_select("json/*").format("binary/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -84,7 +84,7 @@ void test_SelectContentType_tc_selectBinaryFromObjects(
     corto_result *result;
     test_Point *p;
 
-    corto_int16 ret = corto_select("obj/*").contentType("binary/corto").iter( &iter );
+    corto_int16 ret = corto_select("obj/*").format("binary/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -133,7 +133,7 @@ void test_SelectContentType_tc_selectBinaryFromString(
     corto_iter iter;
     test_Point *p;
 
-    corto_int16 ret = corto_select("str/*").contentType("binary/corto").iter( &iter );
+    corto_int16 ret = corto_select("str/*").format("binary/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -182,7 +182,7 @@ void test_SelectContentType_tc_selectJsonFromJson(
     corto_result *result;
     corto_string json;
 
-    corto_int16 ret = corto_select("json/*").contentType("text/json").iter( &iter );
+    corto_int16 ret = corto_select("json/*").format("text/json").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -192,7 +192,7 @@ void test_SelectContentType_tc_selectJsonFromJson(
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "/json"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":10,\"y\":20}"));
 
@@ -203,7 +203,7 @@ void test_SelectContentType_tc_selectJsonFromJson(
     test_assert(!strcmp(result->id, "b"));
     test_assert(!strcmp(result->parent, "/json"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":30,\"y\":40}"));
 
@@ -214,7 +214,7 @@ void test_SelectContentType_tc_selectJsonFromJson(
     test_assert(!strcmp(result->id, "c"));
     test_assert(!strcmp(result->parent, "/json"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
@@ -228,7 +228,7 @@ void test_SelectContentType_tc_selectJsonFromObjects(
     corto_result *result;
     corto_string json;
 
-    corto_int16 ret = corto_select("obj/*").contentType("text/json").iter( &iter );
+    corto_int16 ret = corto_select("obj/*").format("text/json").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -238,7 +238,7 @@ void test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "/obj"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":10,\"y\":20}"));
 
@@ -249,7 +249,7 @@ void test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(!strcmp(result->id, "b"));
     test_assert(!strcmp(result->parent, "/obj"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":30,\"y\":40}"));
 
@@ -260,7 +260,7 @@ void test_SelectContentType_tc_selectJsonFromObjects(
     test_assert(!strcmp(result->id, "c"));
     test_assert(!strcmp(result->parent, "/obj"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
@@ -274,7 +274,7 @@ void test_SelectContentType_tc_selectJsonFromString(
     corto_string json;
     corto_iter iter;
 
-    corto_int16 ret = corto_select("str/*").contentType("text/json").iter( &iter );
+    corto_int16 ret = corto_select("str/*").format("text/json").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -284,7 +284,7 @@ void test_SelectContentType_tc_selectJsonFromString(
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "/str"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":10,\"y\":20}"));
 
@@ -295,7 +295,7 @@ void test_SelectContentType_tc_selectJsonFromString(
     test_assert(!strcmp(result->id, "b"));
     test_assert(!strcmp(result->parent, "/str"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":30,\"y\":40}"));
 
@@ -306,7 +306,7 @@ void test_SelectContentType_tc_selectJsonFromString(
     test_assert(!strcmp(result->id, "c"));
     test_assert(!strcmp(result->parent, "/str"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    json = corto_result_getText(result);
+    json = corto_result_get_text(result);
     test_assert(json != NULL);
     test_assert(!strcmp(json, "{\"x\":50,\"y\":60}"));
 
@@ -320,7 +320,7 @@ void test_SelectContentType_tc_selectStringFromJson(
     corto_result *result;
     corto_string str;
 
-    corto_int16 ret = corto_select("json/*").contentType("text/corto").iter( &iter );
+    corto_int16 ret = corto_select("json/*").format("text/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -330,7 +330,7 @@ void test_SelectContentType_tc_selectStringFromJson(
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "/json"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{10,20}"));
 
@@ -341,7 +341,7 @@ void test_SelectContentType_tc_selectStringFromJson(
     test_assert(!strcmp(result->id, "b"));
     test_assert(!strcmp(result->parent, "/json"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{30,40}"));
 
@@ -352,7 +352,7 @@ void test_SelectContentType_tc_selectStringFromJson(
     test_assert(!strcmp(result->id, "c"));
     test_assert(!strcmp(result->parent, "/json"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
@@ -366,7 +366,7 @@ void test_SelectContentType_tc_selectStringFromObjects(
     corto_result *result;
     corto_string str;
 
-    corto_int16 ret = corto_select("obj/*").contentType("text/corto").iter( &iter );
+    corto_int16 ret = corto_select("obj/*").format("text/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -376,7 +376,7 @@ void test_SelectContentType_tc_selectStringFromObjects(
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "/obj"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{10,20}"));
 
@@ -387,7 +387,7 @@ void test_SelectContentType_tc_selectStringFromObjects(
     test_assert(!strcmp(result->id, "b"));
     test_assert(!strcmp(result->parent, "/obj"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{30,40}"));
 
@@ -398,7 +398,7 @@ void test_SelectContentType_tc_selectStringFromObjects(
     test_assert(!strcmp(result->id, "c"));
     test_assert(!strcmp(result->parent, "/obj"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
@@ -412,7 +412,7 @@ void test_SelectContentType_tc_selectStringFromString(
     corto_result *result;
     corto_string str;
 
-    corto_int16 ret = corto_select("str/*").contentType("text/corto").iter( &iter );
+    corto_int16 ret = corto_select("str/*").format("text/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -422,7 +422,7 @@ void test_SelectContentType_tc_selectStringFromString(
     test_assert(!strcmp(result->id, "a"));
     test_assert(!strcmp(result->parent, "/str"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{10,20}"));
 
@@ -433,7 +433,7 @@ void test_SelectContentType_tc_selectStringFromString(
     test_assert(!strcmp(result->id, "b"));
     test_assert(!strcmp(result->parent, "/str"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{30,40}"));
 
@@ -444,7 +444,7 @@ void test_SelectContentType_tc_selectStringFromString(
     test_assert(!strcmp(result->id, "c"));
     test_assert(!strcmp(result->parent, "/str"));
     test_assert(!strcmp(result->type, "/test/Point"));
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assert(!strcmp(str, "{50,60}"));
 
@@ -465,7 +465,7 @@ void test_SelectContentType_tc_selectTypeWithConstruct(
     corto_iter iter;
     corto_result *result;
     corto_string str;
-    corto_int16 ret = corto_select("data/*").contentType("text/corto").iter( &iter );
+    corto_int16 ret = corto_select("data/*").format("text/corto").iter( &iter );
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&iter));
@@ -475,7 +475,7 @@ void test_SelectContentType_tc_selectTypeWithConstruct(
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "/data");
     test_assertstr(result->type, "/test/ContentTypeTest");
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assertstr(str, "{10,20}");
 
@@ -486,7 +486,7 @@ void test_SelectContentType_tc_selectTypeWithConstruct(
     test_assertstr(result->id, "b");
     test_assertstr(result->parent, "/data");
     test_assertstr(result->type, "/test/ContentTypeTest");
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assertstr(str, "{30,40}");
 
@@ -497,7 +497,7 @@ void test_SelectContentType_tc_selectTypeWithConstruct(
     test_assertstr(result->id, "c");
     test_assertstr(result->parent, "/data");
     test_assertstr(result->type, "/test/ContentTypeTest");
-    str = corto_result_getText(result);
+    str = corto_result_get_text(result);
     test_assert(str != NULL);
     test_assertstr(str, "{50,60}");
 

@@ -104,7 +104,7 @@ CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(enum, inout);
 CORTO_META_OBJECT(enum, ref_kind);
 CORTO_META_OBJECT(bitmask, eventMask);
-CORTO_META_OBJECT(bitmask, modifier);
+CORTO_META_OBJECT(bitmask, modifierMask);
 CORTO_META_OBJECT(bitmask, state);
 CORTO_META_OBJECT(bitmask, attr);
 

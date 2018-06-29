@@ -59,19 +59,19 @@ CORTO_EXPORT corto_application _corto_application__assign(corto_application _thi
 #define corto_application__set(_this) _this = _this ? _this : (corto_application*)corto_ptr_new(corto_application_o); _corto_application__assign(_this)
 
 /* array */
-CORTO_EXPORT corto_array _corto_array__create(corto_object _parent, const char *_id, corto_type elementType, uint32_t max);
-#define corto_array__create(_parent, _id, elementType, max) _corto_array__create(_parent, _id, corto_type(elementType), max)
-#define corto_array__create_auto(_parent, _id, elementType, max) corto_array _id = corto_array__create(_parent, #_id, elementType, max); (void)_id
+CORTO_EXPORT corto_array _corto_array__create(corto_object _parent, const char *_id, corto_type element_type, uint32_t max);
+#define corto_array__create(_parent, _id, element_type, max) _corto_array__create(_parent, _id, corto_type(element_type), max)
+#define corto_array__create_auto(_parent, _id, element_type, max) corto_array _id = corto_array__create(_parent, #_id, element_type, max); (void)_id
 #define corto_array__declare(parent, id) (corto_array)corto_declare(parent, id, corto_array_o)
-CORTO_EXPORT corto_int16 _corto_array__update(corto_array _this, corto_type elementType, uint32_t max);
-#define corto_array__update(_this, elementType, max) _corto_array__update(corto_array(_this), corto_type(elementType), max)
-CORTO_EXPORT corto_array _corto_array__assign(corto_array _this, corto_type elementType, uint32_t max);
+CORTO_EXPORT corto_int16 _corto_array__update(corto_array _this, corto_type element_type, uint32_t max);
+#define corto_array__update(_this, element_type, max) _corto_array__update(corto_array(_this), corto_type(element_type), max)
+CORTO_EXPORT corto_array _corto_array__assign(corto_array _this, corto_type element_type, uint32_t max);
 #define corto_array__optional_not_set NULL
-#define corto_array__optional_set(elementType, max) (corto_array*)corto_array__assign((corto_array*)corto_ptr_new(corto_array_o), elementType, max)
-#define corto_array__optional_set_cond(__cond, elementType, max) __cond ? (corto_array*)corto_array__assign((corto_array*)corto_ptr_new(corto_array_o), elementType, max) : NULL
+#define corto_array__optional_set(element_type, max) (corto_array*)corto_array__assign((corto_array*)corto_ptr_new(corto_array_o), element_type, max)
+#define corto_array__optional_set_cond(__cond, element_type, max) __cond ? (corto_array*)corto_array__assign((corto_array*)corto_ptr_new(corto_array_o), element_type, max) : NULL
 #define corto_array__unset(_this) _this ? corto_ptr_free(_this, corto_array_o), 0 : 0; _this = NULL;
-#define corto_array__assign(_this, elementType, max) _corto_array__assign(_this, corto_type(elementType), max)
-#define corto_array__set(_this, elementType, max) _this = _this ? _this : (corto_array*)corto_ptr_new(corto_array_o); _corto_array__assign(_this, corto_type(elementType), max)
+#define corto_array__assign(_this, element_type, max) _corto_array__assign(_this, corto_type(element_type), max)
+#define corto_array__set(_this, element_type, max) _this = _this ? _this : (corto_array*)corto_ptr_new(corto_array_o); _corto_array__assign(_this, corto_type(element_type), max)
 
 /* attr */
 CORTO_EXPORT corto_attr* _corto_attr__create(corto_object _parent, const char *_id, corto_attr value);
@@ -149,13 +149,13 @@ CORTO_EXPORT corto_boolean _corto_boolean__assign(corto_boolean _this);
 #define corto_boolean__set(_this) _this = _this ? _this : (corto_boolean*)corto_ptr_new(corto_boolean_o); _corto_boolean__assign(_this)
 
 /* case */
-CORTO_EXPORT corto_case _corto_case__create(corto_object _parent, const char *_id, corto_int32seq discriminator, corto_type type, corto_modifier modifiers);
+CORTO_EXPORT corto_case _corto_case__create(corto_object _parent, const char *_id, corto_int32seq discriminator, corto_type type, corto_modifierMask modifiers);
 #define corto_case__create(_parent, _id, discriminator, type, modifiers) _corto_case__create(_parent, _id, discriminator, corto_type(type), modifiers)
 #define corto_case__create_auto(_parent, _id, discriminator, type, modifiers) corto_case _id = corto_case__create(_parent, #_id, discriminator, type, modifiers); (void)_id
 #define corto_case__declare(parent, id) (corto_case)corto_declare(parent, id, corto_case_o)
-CORTO_EXPORT corto_int16 _corto_case__update(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifier modifiers);
+CORTO_EXPORT corto_int16 _corto_case__update(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifierMask modifiers);
 #define corto_case__update(_this, discriminator, type, modifiers) _corto_case__update(corto_case(_this), discriminator, corto_type(type), modifiers)
-CORTO_EXPORT corto_case _corto_case__assign(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifier modifiers);
+CORTO_EXPORT corto_case _corto_case__assign(corto_case _this, corto_int32seq discriminator, corto_type type, corto_modifierMask modifiers);
 #define corto_case__optional_not_set NULL
 #define corto_case__optional_set(discriminator, type, modifiers) (corto_case*)corto_case__assign((corto_case*)corto_ptr_new(corto_case_o), discriminator, type, modifiers)
 #define corto_case__optional_set_cond(__cond, discriminator, type, modifiers) __cond ? (corto_case*)corto_case__assign((corto_case*)corto_ptr_new(corto_case_o), discriminator, type, modifiers) : NULL
@@ -194,34 +194,34 @@ CORTO_EXPORT corto_character _corto_character__assign(corto_character _this, cor
 #define corto_character__set(_this, width) _this = _this ? _this : (corto_character*)corto_ptr_new(corto_character_o); _corto_character__assign(_this, width)
 
 /* class */
-CORTO_EXPORT corto_class _corto_class__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
-#define corto_class__create(_parent, _id, base, baseAccess, implements) _corto_class__create(_parent, _id, corto_interface(base), baseAccess, implements)
-#define corto_class__create_auto(_parent, _id, base, baseAccess, implements) corto_class _id = corto_class__create(_parent, #_id, base, baseAccess, implements); (void)_id
+CORTO_EXPORT corto_class _corto_class__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements);
+#define corto_class__create(_parent, _id, base, base_modifiers, implements) _corto_class__create(_parent, _id, corto_interface(base), base_modifiers, implements)
+#define corto_class__create_auto(_parent, _id, base, base_modifiers, implements) corto_class _id = corto_class__create(_parent, #_id, base, base_modifiers, implements); (void)_id
 #define corto_class__declare(parent, id) (corto_class)corto_declare(parent, id, corto_class_o)
-CORTO_EXPORT corto_int16 _corto_class__update(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
-#define corto_class__update(_this, base, baseAccess, implements) _corto_class__update(corto_class(_this), corto_interface(base), baseAccess, implements)
-CORTO_EXPORT corto_class _corto_class__assign(corto_class _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements);
+CORTO_EXPORT corto_int16 _corto_class__update(corto_class _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements);
+#define corto_class__update(_this, base, base_modifiers, implements) _corto_class__update(corto_class(_this), corto_interface(base), base_modifiers, implements)
+CORTO_EXPORT corto_class _corto_class__assign(corto_class _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements);
 #define corto_class__optional_not_set NULL
-#define corto_class__optional_set(base, baseAccess, implements) (corto_class*)corto_class__assign((corto_class*)corto_ptr_new(corto_class_o), base, baseAccess, implements)
-#define corto_class__optional_set_cond(__cond, base, baseAccess, implements) __cond ? (corto_class*)corto_class__assign((corto_class*)corto_ptr_new(corto_class_o), base, baseAccess, implements) : NULL
+#define corto_class__optional_set(base, base_modifiers, implements) (corto_class*)corto_class__assign((corto_class*)corto_ptr_new(corto_class_o), base, base_modifiers, implements)
+#define corto_class__optional_set_cond(__cond, base, base_modifiers, implements) __cond ? (corto_class*)corto_class__assign((corto_class*)corto_ptr_new(corto_class_o), base, base_modifiers, implements) : NULL
 #define corto_class__unset(_this) _this ? corto_ptr_free(_this, corto_class_o), 0 : 0; _this = NULL;
-#define corto_class__assign(_this, base, baseAccess, implements) _corto_class__assign(_this, corto_interface(base), baseAccess, implements)
-#define corto_class__set(_this, base, baseAccess, implements) _this = _this ? _this : (corto_class*)corto_ptr_new(corto_class_o); _corto_class__assign(_this, corto_interface(base), baseAccess, implements)
+#define corto_class__assign(_this, base, base_modifiers, implements) _corto_class__assign(_this, corto_interface(base), base_modifiers, implements)
+#define corto_class__set(_this, base, base_modifiers, implements) _this = _this ? _this : (corto_class*)corto_ptr_new(corto_class_o); _corto_class__assign(_this, corto_interface(base), base_modifiers, implements)
 
 /* collection */
-CORTO_EXPORT corto_collection _corto_collection__create(corto_object _parent, const char *_id, corto_type elementType, uint32_t max);
-#define corto_collection__create(_parent, _id, elementType, max) _corto_collection__create(_parent, _id, corto_type(elementType), max)
-#define corto_collection__create_auto(_parent, _id, elementType, max) corto_collection _id = corto_collection__create(_parent, #_id, elementType, max); (void)_id
+CORTO_EXPORT corto_collection _corto_collection__create(corto_object _parent, const char *_id, corto_type element_type, uint32_t max);
+#define corto_collection__create(_parent, _id, element_type, max) _corto_collection__create(_parent, _id, corto_type(element_type), max)
+#define corto_collection__create_auto(_parent, _id, element_type, max) corto_collection _id = corto_collection__create(_parent, #_id, element_type, max); (void)_id
 #define corto_collection__declare(parent, id) (corto_collection)corto_declare(parent, id, corto_collection_o)
-CORTO_EXPORT corto_int16 _corto_collection__update(corto_collection _this, corto_type elementType, uint32_t max);
-#define corto_collection__update(_this, elementType, max) _corto_collection__update(corto_collection(_this), corto_type(elementType), max)
-CORTO_EXPORT corto_collection _corto_collection__assign(corto_collection _this, corto_type elementType, uint32_t max);
+CORTO_EXPORT corto_int16 _corto_collection__update(corto_collection _this, corto_type element_type, uint32_t max);
+#define corto_collection__update(_this, element_type, max) _corto_collection__update(corto_collection(_this), corto_type(element_type), max)
+CORTO_EXPORT corto_collection _corto_collection__assign(corto_collection _this, corto_type element_type, uint32_t max);
 #define corto_collection__optional_not_set NULL
-#define corto_collection__optional_set(elementType, max) (corto_collection*)corto_collection__assign((corto_collection*)corto_ptr_new(corto_collection_o), elementType, max)
-#define corto_collection__optional_set_cond(__cond, elementType, max) __cond ? (corto_collection*)corto_collection__assign((corto_collection*)corto_ptr_new(corto_collection_o), elementType, max) : NULL
+#define corto_collection__optional_set(element_type, max) (corto_collection*)corto_collection__assign((corto_collection*)corto_ptr_new(corto_collection_o), element_type, max)
+#define corto_collection__optional_set_cond(__cond, element_type, max) __cond ? (corto_collection*)corto_collection__assign((corto_collection*)corto_ptr_new(corto_collection_o), element_type, max) : NULL
 #define corto_collection__unset(_this) _this ? corto_ptr_free(_this, corto_collection_o), 0 : 0; _this = NULL;
-#define corto_collection__assign(_this, elementType, max) _corto_collection__assign(_this, corto_type(elementType), max)
-#define corto_collection__set(_this, elementType, max) _this = _this ? _this : (corto_collection*)corto_ptr_new(corto_collection_o); _corto_collection__assign(_this, corto_type(elementType), max)
+#define corto_collection__assign(_this, element_type, max) _corto_collection__assign(_this, corto_type(element_type), max)
+#define corto_collection__set(_this, element_type, max) _this = _this ? _this : (corto_collection*)corto_ptr_new(corto_collection_o); _corto_collection__assign(_this, corto_type(element_type), max)
 
 /* collectionKind */
 CORTO_EXPORT corto_collectionKind* _corto_collectionKind__create(corto_object _parent, const char *_id, corto_collectionKind value);
@@ -269,19 +269,19 @@ CORTO_EXPORT int32_t* _corto_constant__assign(int32_t* _this, int32_t value);
 #define corto_constant__set(_this, value) _this = _this ? _this : (corto_constant*)corto_ptr_new(corto_constant_o); _corto_constant__assign(_this, value)
 
 /* container */
-CORTO_EXPORT corto_container _corto_container__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
-#define corto_container__create(_parent, _id, base, baseAccess, implements, type, value) _corto_container__create(_parent, _id, corto_interface(base), baseAccess, implements, corto_type(type), value)
-#define corto_container__create_auto(_parent, _id, base, baseAccess, implements, type, value) corto_container _id = corto_container__create(_parent, #_id, base, baseAccess, implements, type, value); (void)_id
+CORTO_EXPORT corto_container _corto_container__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
+#define corto_container__create(_parent, _id, base, base_modifiers, implements, type, value) _corto_container__create(_parent, _id, corto_interface(base), base_modifiers, implements, corto_type(type), value)
+#define corto_container__create_auto(_parent, _id, base, base_modifiers, implements, type, value) corto_container _id = corto_container__create(_parent, #_id, base, base_modifiers, implements, type, value); (void)_id
 #define corto_container__declare(parent, id) (corto_container)corto_declare(parent, id, corto_container_o)
-CORTO_EXPORT corto_int16 _corto_container__update(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
-#define corto_container__update(_this, base, baseAccess, implements, type, value) _corto_container__update(corto_container(_this), corto_interface(base), baseAccess, implements, corto_type(type), value)
-CORTO_EXPORT corto_container _corto_container__assign(corto_container _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
+CORTO_EXPORT corto_int16 _corto_container__update(corto_container _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
+#define corto_container__update(_this, base, base_modifiers, implements, type, value) _corto_container__update(corto_container(_this), corto_interface(base), base_modifiers, implements, corto_type(type), value)
+CORTO_EXPORT corto_container _corto_container__assign(corto_container _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
 #define corto_container__optional_not_set NULL
-#define corto_container__optional_set(base, baseAccess, implements, type, value) (corto_container*)corto_container__assign((corto_container*)corto_ptr_new(corto_container_o), base, baseAccess, implements, type, value)
-#define corto_container__optional_set_cond(__cond, base, baseAccess, implements, type, value) __cond ? (corto_container*)corto_container__assign((corto_container*)corto_ptr_new(corto_container_o), base, baseAccess, implements, type, value) : NULL
+#define corto_container__optional_set(base, base_modifiers, implements, type, value) (corto_container*)corto_container__assign((corto_container*)corto_ptr_new(corto_container_o), base, base_modifiers, implements, type, value)
+#define corto_container__optional_set_cond(__cond, base, base_modifiers, implements, type, value) __cond ? (corto_container*)corto_container__assign((corto_container*)corto_ptr_new(corto_container_o), base, base_modifiers, implements, type, value) : NULL
 #define corto_container__unset(_this) _this ? corto_ptr_free(_this, corto_container_o), 0 : 0; _this = NULL;
-#define corto_container__assign(_this, base, baseAccess, implements, type, value) _corto_container__assign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
-#define corto_container__set(_this, base, baseAccess, implements, type, value) _this = _this ? _this : (corto_container*)corto_ptr_new(corto_container_o); _corto_container__assign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
+#define corto_container__assign(_this, base, base_modifiers, implements, type, value) _corto_container__assign(_this, corto_interface(base), base_modifiers, implements, corto_type(type), value)
+#define corto_container__set(_this, base, base_modifiers, implements, type, value) _this = _this ? _this : (corto_container*)corto_ptr_new(corto_container_o); _corto_container__assign(_this, corto_interface(base), base_modifiers, implements, corto_type(type), value)
 
 /* default */
 CORTO_EXPORT corto_default _corto_default__create(corto_object _parent, const char *_id, corto_type type);
@@ -299,19 +299,19 @@ CORTO_EXPORT corto_default _corto_default__assign(corto_default _this, corto_typ
 #define corto_default__set(_this, type) _this = _this ? _this : (corto_default*)corto_ptr_new(corto_default_o); _corto_default__assign(_this, corto_type(type))
 
 /* delegate */
-CORTO_EXPORT corto_delegate _corto_delegate__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, corto_parameterseq parameters);
-#define corto_delegate__create(_parent, _id, returnType, returnsReference, parameters) _corto_delegate__create(_parent, _id, corto_type(returnType), returnsReference, parameters)
-#define corto_delegate__create_auto(_parent, _id, returnType, returnsReference, parameters) corto_delegate _id = corto_delegate__create(_parent, #_id, returnType, returnsReference, parameters); (void)_id
+CORTO_EXPORT corto_delegate _corto_delegate__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, corto_parameterseq parameters);
+#define corto_delegate__create(_parent, _id, return_type, is_reference, parameters) _corto_delegate__create(_parent, _id, corto_type(return_type), is_reference, parameters)
+#define corto_delegate__create_auto(_parent, _id, return_type, is_reference, parameters) corto_delegate _id = corto_delegate__create(_parent, #_id, return_type, is_reference, parameters); (void)_id
 #define corto_delegate__declare(parent, id) (corto_delegate)corto_declare(parent, id, corto_delegate_o)
-CORTO_EXPORT corto_int16 _corto_delegate__update(corto_delegate _this, corto_type returnType, bool returnsReference, corto_parameterseq parameters);
-#define corto_delegate__update(_this, returnType, returnsReference, parameters) _corto_delegate__update(corto_delegate(_this), corto_type(returnType), returnsReference, parameters)
-CORTO_EXPORT corto_delegate _corto_delegate__assign(corto_delegate _this, corto_type returnType, bool returnsReference, corto_parameterseq parameters);
+CORTO_EXPORT corto_int16 _corto_delegate__update(corto_delegate _this, corto_type return_type, bool is_reference, corto_parameterseq parameters);
+#define corto_delegate__update(_this, return_type, is_reference, parameters) _corto_delegate__update(corto_delegate(_this), corto_type(return_type), is_reference, parameters)
+CORTO_EXPORT corto_delegate _corto_delegate__assign(corto_delegate _this, corto_type return_type, bool is_reference, corto_parameterseq parameters);
 #define corto_delegate__optional_not_set NULL
-#define corto_delegate__optional_set(returnType, returnsReference, parameters) (corto_delegate*)corto_delegate__assign((corto_delegate*)corto_ptr_new(corto_delegate_o), returnType, returnsReference, parameters)
-#define corto_delegate__optional_set_cond(__cond, returnType, returnsReference, parameters) __cond ? (corto_delegate*)corto_delegate__assign((corto_delegate*)corto_ptr_new(corto_delegate_o), returnType, returnsReference, parameters) : NULL
+#define corto_delegate__optional_set(return_type, is_reference, parameters) (corto_delegate*)corto_delegate__assign((corto_delegate*)corto_ptr_new(corto_delegate_o), return_type, is_reference, parameters)
+#define corto_delegate__optional_set_cond(__cond, return_type, is_reference, parameters) __cond ? (corto_delegate*)corto_delegate__assign((corto_delegate*)corto_ptr_new(corto_delegate_o), return_type, is_reference, parameters) : NULL
 #define corto_delegate__unset(_this) _this ? corto_ptr_free(_this, corto_delegate_o), 0 : 0; _this = NULL;
-#define corto_delegate__assign(_this, returnType, returnsReference, parameters) _corto_delegate__assign(_this, corto_type(returnType), returnsReference, parameters)
-#define corto_delegate__set(_this, returnType, returnsReference, parameters) _this = _this ? _this : (corto_delegate*)corto_ptr_new(corto_delegate_o); _corto_delegate__assign(_this, corto_type(returnType), returnsReference, parameters)
+#define corto_delegate__assign(_this, return_type, is_reference, parameters) _corto_delegate__assign(_this, corto_type(return_type), is_reference, parameters)
+#define corto_delegate__set(_this, return_type, is_reference, parameters) _this = _this ? _this : (corto_delegate*)corto_ptr_new(corto_delegate_o); _corto_delegate__assign(_this, corto_type(return_type), is_reference, parameters)
 
 /* delegatedata */
 CORTO_EXPORT corto_delegatedata* _corto_delegatedata__create(corto_object _parent, const char *_id, corto_object instance, corto_function procedure);
@@ -404,19 +404,19 @@ CORTO_EXPORT double* _corto_float64__assign(double* _this, double value);
 #define corto_float64__set(_this, value) _this = _this ? _this : (corto_float64*)corto_ptr_new(corto_float64_o); _corto_float64__assign(_this, value)
 
 /* function */
-CORTO_EXPORT corto_function _corto_function__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_function__create(_parent, _id, returnType, returnsReference, _impl) _corto_function__create(_parent, _id, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_function__create_auto(_parent, _id, returnType, returnsReference, _impl) corto_function _id = corto_function__create(_parent, #_id, returnType, returnsReference, _impl); (void)_id
+CORTO_EXPORT corto_function _corto_function__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_function__create(_parent, _id, return_type, is_reference, _impl) _corto_function__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_function__create_auto(_parent, _id, return_type, is_reference, _impl) corto_function _id = corto_function__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
 #define corto_function__declare(parent, id) (corto_function)corto_declare(parent, id, corto_function_o)
-CORTO_EXPORT corto_int16 _corto_function__update(corto_function _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_function__update(_this, returnType, returnsReference, _impl) _corto_function__update(corto_function(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
-CORTO_EXPORT corto_function _corto_function__assign(corto_function _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_function__update(corto_function _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_function__update(_this, return_type, is_reference, _impl) _corto_function__update(corto_function(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
+CORTO_EXPORT corto_function _corto_function__assign(corto_function _this, corto_type return_type, bool is_reference, void(*_impl)(void));
 #define corto_function__optional_not_set NULL
-#define corto_function__optional_set(returnType, returnsReference, _impl) (corto_function*)corto_function__assign((corto_function*)corto_ptr_new(corto_function_o), returnType, returnsReference, _impl)
-#define corto_function__optional_set_cond(__cond, returnType, returnsReference, _impl) __cond ? (corto_function*)corto_function__assign((corto_function*)corto_ptr_new(corto_function_o), returnType, returnsReference, _impl) : NULL
+#define corto_function__optional_set(return_type, is_reference, _impl) (corto_function*)corto_function__assign((corto_function*)corto_ptr_new(corto_function_o), return_type, is_reference, _impl)
+#define corto_function__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_function*)corto_function__assign((corto_function*)corto_ptr_new(corto_function_o), return_type, is_reference, _impl) : NULL
 #define corto_function__unset(_this) _this ? corto_ptr_free(_this, corto_function_o), 0 : 0; _this = NULL;
-#define corto_function__assign(_this, returnType, returnsReference, _impl) _corto_function__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_function__set(_this, returnType, returnsReference, _impl) _this = _this ? _this : (corto_function*)corto_ptr_new(corto_function_o); _corto_function__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
+#define corto_function__assign(_this, return_type, is_reference, _impl) _corto_function__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_function__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_function*)corto_ptr_new(corto_function_o); _corto_function__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
 
 /* inout */
 CORTO_EXPORT corto_inout* _corto_inout__create(corto_object _parent, const char *_id, corto_inout value);
@@ -584,73 +584,73 @@ CORTO_EXPORT corto_interfaceVectorseq* _corto_interfaceVectorseq__assign(corto_i
 #define corto_interfaceVectorseq__set(_this, length, elements) _this = _this ? _this : (corto_interfaceVectorseq*)corto_ptr_new(corto_interfaceVectorseq_o); _corto_interfaceVectorseq__assign(_this, length, elements)
 
 /* iterator */
-CORTO_EXPORT corto_iterator _corto_iterator__create(corto_object _parent, const char *_id, corto_type elementType);
-#define corto_iterator__create(_parent, _id, elementType) _corto_iterator__create(_parent, _id, corto_type(elementType))
-#define corto_iterator__create_auto(_parent, _id, elementType) corto_iterator _id = corto_iterator__create(_parent, #_id, elementType); (void)_id
+CORTO_EXPORT corto_iterator _corto_iterator__create(corto_object _parent, const char *_id, corto_type element_type);
+#define corto_iterator__create(_parent, _id, element_type) _corto_iterator__create(_parent, _id, corto_type(element_type))
+#define corto_iterator__create_auto(_parent, _id, element_type) corto_iterator _id = corto_iterator__create(_parent, #_id, element_type); (void)_id
 #define corto_iterator__declare(parent, id) (corto_iterator)corto_declare(parent, id, corto_iterator_o)
-CORTO_EXPORT corto_int16 _corto_iterator__update(corto_iterator _this, corto_type elementType);
-#define corto_iterator__update(_this, elementType) _corto_iterator__update(corto_iterator(_this), corto_type(elementType))
-CORTO_EXPORT corto_iterator _corto_iterator__assign(corto_iterator _this, corto_type elementType);
+CORTO_EXPORT corto_int16 _corto_iterator__update(corto_iterator _this, corto_type element_type);
+#define corto_iterator__update(_this, element_type) _corto_iterator__update(corto_iterator(_this), corto_type(element_type))
+CORTO_EXPORT corto_iterator _corto_iterator__assign(corto_iterator _this, corto_type element_type);
 #define corto_iterator__optional_not_set NULL
-#define corto_iterator__optional_set(elementType) (corto_iterator*)corto_iterator__assign((corto_iterator*)corto_ptr_new(corto_iterator_o), elementType)
-#define corto_iterator__optional_set_cond(__cond, elementType) __cond ? (corto_iterator*)corto_iterator__assign((corto_iterator*)corto_ptr_new(corto_iterator_o), elementType) : NULL
+#define corto_iterator__optional_set(element_type) (corto_iterator*)corto_iterator__assign((corto_iterator*)corto_ptr_new(corto_iterator_o), element_type)
+#define corto_iterator__optional_set_cond(__cond, element_type) __cond ? (corto_iterator*)corto_iterator__assign((corto_iterator*)corto_ptr_new(corto_iterator_o), element_type) : NULL
 #define corto_iterator__unset(_this) _this ? corto_ptr_free(_this, corto_iterator_o), 0 : 0; _this = NULL;
-#define corto_iterator__assign(_this, elementType) _corto_iterator__assign(_this, corto_type(elementType))
-#define corto_iterator__set(_this, elementType) _this = _this ? _this : (corto_iterator*)corto_ptr_new(corto_iterator_o); _corto_iterator__assign(_this, corto_type(elementType))
+#define corto_iterator__assign(_this, element_type) _corto_iterator__assign(_this, corto_type(element_type))
+#define corto_iterator__set(_this, element_type) _this = _this ? _this : (corto_iterator*)corto_ptr_new(corto_iterator_o); _corto_iterator__assign(_this, corto_type(element_type))
 
 /* leaf */
-CORTO_EXPORT corto_leaf _corto_leaf__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
-#define corto_leaf__create(_parent, _id, base, baseAccess, implements, type, value) _corto_leaf__create(_parent, _id, corto_interface(base), baseAccess, implements, corto_type(type), value)
-#define corto_leaf__create_auto(_parent, _id, base, baseAccess, implements, type, value) corto_leaf _id = corto_leaf__create(_parent, #_id, base, baseAccess, implements, type, value); (void)_id
+CORTO_EXPORT corto_leaf _corto_leaf__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
+#define corto_leaf__create(_parent, _id, base, base_modifiers, implements, type, value) _corto_leaf__create(_parent, _id, corto_interface(base), base_modifiers, implements, corto_type(type), value)
+#define corto_leaf__create_auto(_parent, _id, base, base_modifiers, implements, type, value) corto_leaf _id = corto_leaf__create(_parent, #_id, base, base_modifiers, implements, type, value); (void)_id
 #define corto_leaf__declare(parent, id) (corto_leaf)corto_declare(parent, id, corto_leaf_o)
-CORTO_EXPORT corto_int16 _corto_leaf__update(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
-#define corto_leaf__update(_this, base, baseAccess, implements, type, value) _corto_leaf__update(corto_leaf(_this), corto_interface(base), baseAccess, implements, corto_type(type), value)
-CORTO_EXPORT corto_leaf _corto_leaf__assign(corto_leaf _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
+CORTO_EXPORT corto_int16 _corto_leaf__update(corto_leaf _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
+#define corto_leaf__update(_this, base, base_modifiers, implements, type, value) _corto_leaf__update(corto_leaf(_this), corto_interface(base), base_modifiers, implements, corto_type(type), value)
+CORTO_EXPORT corto_leaf _corto_leaf__assign(corto_leaf _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
 #define corto_leaf__optional_not_set NULL
-#define corto_leaf__optional_set(base, baseAccess, implements, type, value) (corto_leaf*)corto_leaf__assign((corto_leaf*)corto_ptr_new(corto_leaf_o), base, baseAccess, implements, type, value)
-#define corto_leaf__optional_set_cond(__cond, base, baseAccess, implements, type, value) __cond ? (corto_leaf*)corto_leaf__assign((corto_leaf*)corto_ptr_new(corto_leaf_o), base, baseAccess, implements, type, value) : NULL
+#define corto_leaf__optional_set(base, base_modifiers, implements, type, value) (corto_leaf*)corto_leaf__assign((corto_leaf*)corto_ptr_new(corto_leaf_o), base, base_modifiers, implements, type, value)
+#define corto_leaf__optional_set_cond(__cond, base, base_modifiers, implements, type, value) __cond ? (corto_leaf*)corto_leaf__assign((corto_leaf*)corto_ptr_new(corto_leaf_o), base, base_modifiers, implements, type, value) : NULL
 #define corto_leaf__unset(_this) _this ? corto_ptr_free(_this, corto_leaf_o), 0 : 0; _this = NULL;
-#define corto_leaf__assign(_this, base, baseAccess, implements, type, value) _corto_leaf__assign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
-#define corto_leaf__set(_this, base, baseAccess, implements, type, value) _this = _this ? _this : (corto_leaf*)corto_ptr_new(corto_leaf_o); _corto_leaf__assign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
+#define corto_leaf__assign(_this, base, base_modifiers, implements, type, value) _corto_leaf__assign(_this, corto_interface(base), base_modifiers, implements, corto_type(type), value)
+#define corto_leaf__set(_this, base, base_modifiers, implements, type, value) _this = _this ? _this : (corto_leaf*)corto_ptr_new(corto_leaf_o); _corto_leaf__assign(_this, corto_interface(base), base_modifiers, implements, corto_type(type), value)
 
 /* list */
-CORTO_EXPORT corto_list _corto_list__create(corto_object _parent, const char *_id, corto_type elementType, uint32_t max);
-#define corto_list__create(_parent, _id, elementType, max) _corto_list__create(_parent, _id, corto_type(elementType), max)
-#define corto_list__create_auto(_parent, _id, elementType, max) corto_list _id = corto_list__create(_parent, #_id, elementType, max); (void)_id
+CORTO_EXPORT corto_list _corto_list__create(corto_object _parent, const char *_id, corto_type element_type, uint32_t max);
+#define corto_list__create(_parent, _id, element_type, max) _corto_list__create(_parent, _id, corto_type(element_type), max)
+#define corto_list__create_auto(_parent, _id, element_type, max) corto_list _id = corto_list__create(_parent, #_id, element_type, max); (void)_id
 #define corto_list__declare(parent, id) (corto_list)corto_declare(parent, id, corto_list_o)
-CORTO_EXPORT corto_int16 _corto_list__update(corto_list _this, corto_type elementType, uint32_t max);
-#define corto_list__update(_this, elementType, max) _corto_list__update(corto_list(_this), corto_type(elementType), max)
-CORTO_EXPORT corto_list _corto_list__assign(corto_list _this, corto_type elementType, uint32_t max);
+CORTO_EXPORT corto_int16 _corto_list__update(corto_list _this, corto_type element_type, uint32_t max);
+#define corto_list__update(_this, element_type, max) _corto_list__update(corto_list(_this), corto_type(element_type), max)
+CORTO_EXPORT corto_list _corto_list__assign(corto_list _this, corto_type element_type, uint32_t max);
 #define corto_list__optional_not_set NULL
-#define corto_list__optional_set(elementType, max) (corto_list*)corto_list__assign((corto_list*)corto_ptr_new(corto_list_o), elementType, max)
-#define corto_list__optional_set_cond(__cond, elementType, max) __cond ? (corto_list*)corto_list__assign((corto_list*)corto_ptr_new(corto_list_o), elementType, max) : NULL
+#define corto_list__optional_set(element_type, max) (corto_list*)corto_list__assign((corto_list*)corto_ptr_new(corto_list_o), element_type, max)
+#define corto_list__optional_set_cond(__cond, element_type, max) __cond ? (corto_list*)corto_list__assign((corto_list*)corto_ptr_new(corto_list_o), element_type, max) : NULL
 #define corto_list__unset(_this) _this ? corto_ptr_free(_this, corto_list_o), 0 : 0; _this = NULL;
-#define corto_list__assign(_this, elementType, max) _corto_list__assign(_this, corto_type(elementType), max)
-#define corto_list__set(_this, elementType, max) _this = _this ? _this : (corto_list*)corto_ptr_new(corto_list_o); _corto_list__assign(_this, corto_type(elementType), max)
+#define corto_list__assign(_this, element_type, max) _corto_list__assign(_this, corto_type(element_type), max)
+#define corto_list__set(_this, element_type, max) _this = _this ? _this : (corto_list*)corto_ptr_new(corto_list_o); _corto_list__assign(_this, corto_type(element_type), max)
 
 /* map */
-CORTO_EXPORT corto_map _corto_map__create(corto_object _parent, const char *_id, corto_type keyType, corto_type elementType, uint32_t max);
-#define corto_map__create(_parent, _id, keyType, elementType, max) _corto_map__create(_parent, _id, corto_type(keyType), corto_type(elementType), max)
-#define corto_map__create_auto(_parent, _id, keyType, elementType, max) corto_map _id = corto_map__create(_parent, #_id, keyType, elementType, max); (void)_id
+CORTO_EXPORT corto_map _corto_map__create(corto_object _parent, const char *_id, corto_type key_type, corto_type element_type, uint32_t max);
+#define corto_map__create(_parent, _id, key_type, element_type, max) _corto_map__create(_parent, _id, corto_type(key_type), corto_type(element_type), max)
+#define corto_map__create_auto(_parent, _id, key_type, element_type, max) corto_map _id = corto_map__create(_parent, #_id, key_type, element_type, max); (void)_id
 #define corto_map__declare(parent, id) (corto_map)corto_declare(parent, id, corto_map_o)
-CORTO_EXPORT corto_int16 _corto_map__update(corto_map _this, corto_type keyType, corto_type elementType, uint32_t max);
-#define corto_map__update(_this, keyType, elementType, max) _corto_map__update(corto_map(_this), corto_type(keyType), corto_type(elementType), max)
-CORTO_EXPORT corto_map _corto_map__assign(corto_map _this, corto_type keyType, corto_type elementType, uint32_t max);
+CORTO_EXPORT corto_int16 _corto_map__update(corto_map _this, corto_type key_type, corto_type element_type, uint32_t max);
+#define corto_map__update(_this, key_type, element_type, max) _corto_map__update(corto_map(_this), corto_type(key_type), corto_type(element_type), max)
+CORTO_EXPORT corto_map _corto_map__assign(corto_map _this, corto_type key_type, corto_type element_type, uint32_t max);
 #define corto_map__optional_not_set NULL
-#define corto_map__optional_set(keyType, elementType, max) (corto_map*)corto_map__assign((corto_map*)corto_ptr_new(corto_map_o), keyType, elementType, max)
-#define corto_map__optional_set_cond(__cond, keyType, elementType, max) __cond ? (corto_map*)corto_map__assign((corto_map*)corto_ptr_new(corto_map_o), keyType, elementType, max) : NULL
+#define corto_map__optional_set(key_type, element_type, max) (corto_map*)corto_map__assign((corto_map*)corto_ptr_new(corto_map_o), key_type, element_type, max)
+#define corto_map__optional_set_cond(__cond, key_type, element_type, max) __cond ? (corto_map*)corto_map__assign((corto_map*)corto_ptr_new(corto_map_o), key_type, element_type, max) : NULL
 #define corto_map__unset(_this) _this ? corto_ptr_free(_this, corto_map_o), 0 : 0; _this = NULL;
-#define corto_map__assign(_this, keyType, elementType, max) _corto_map__assign(_this, corto_type(keyType), corto_type(elementType), max)
-#define corto_map__set(_this, keyType, elementType, max) _this = _this ? _this : (corto_map*)corto_ptr_new(corto_map_o); _corto_map__assign(_this, corto_type(keyType), corto_type(elementType), max)
+#define corto_map__assign(_this, key_type, element_type, max) _corto_map__assign(_this, corto_type(key_type), corto_type(element_type), max)
+#define corto_map__set(_this, key_type, element_type, max) _this = _this ? _this : (corto_map*)corto_ptr_new(corto_map_o); _corto_map__assign(_this, corto_type(key_type), corto_type(element_type), max)
 
 /* member */
-CORTO_EXPORT corto_member _corto_member__create(corto_object _parent, const char *_id, corto_type type, corto_modifier modifiers);
+CORTO_EXPORT corto_member _corto_member__create(corto_object _parent, const char *_id, corto_type type, corto_modifierMask modifiers);
 #define corto_member__create(_parent, _id, type, modifiers) _corto_member__create(_parent, _id, corto_type(type), modifiers)
 #define corto_member__create_auto(_parent, _id, type, modifiers) corto_member _id = corto_member__create(_parent, #_id, type, modifiers); (void)_id
 #define corto_member__declare(parent, id) (corto_member)corto_declare(parent, id, corto_member_o)
-CORTO_EXPORT corto_int16 _corto_member__update(corto_member _this, corto_type type, corto_modifier modifiers);
+CORTO_EXPORT corto_int16 _corto_member__update(corto_member _this, corto_type type, corto_modifierMask modifiers);
 #define corto_member__update(_this, type, modifiers) _corto_member__update(corto_member(_this), corto_type(type), modifiers)
-CORTO_EXPORT corto_member _corto_member__assign(corto_member _this, corto_type type, corto_modifier modifiers);
+CORTO_EXPORT corto_member _corto_member__assign(corto_member _this, corto_type type, corto_modifierMask modifiers);
 #define corto_member__optional_not_set NULL
 #define corto_member__optional_set(type, modifiers) (corto_member*)corto_member__assign((corto_member*)corto_ptr_new(corto_member_o), type, modifiers)
 #define corto_member__optional_set_cond(__cond, type, modifiers) __cond ? (corto_member*)corto_member__assign((corto_member*)corto_ptr_new(corto_member_o), type, modifiers) : NULL
@@ -659,49 +659,49 @@ CORTO_EXPORT corto_member _corto_member__assign(corto_member _this, corto_type t
 #define corto_member__set(_this, type, modifiers) _this = _this ? _this : (corto_member*)corto_ptr_new(corto_member_o); _corto_member__assign(_this, corto_type(type), modifiers)
 
 /* metaprocedure */
-CORTO_EXPORT corto_metaprocedure _corto_metaprocedure__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, bool referenceOnly, void(*_impl)(void));
-#define corto_metaprocedure__create(_parent, _id, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedure__create(_parent, _id, corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
-#define corto_metaprocedure__create_auto(_parent, _id, returnType, returnsReference, referenceOnly, _impl) corto_metaprocedure _id = corto_metaprocedure__create(_parent, #_id, returnType, returnsReference, referenceOnly, _impl); (void)_id
+CORTO_EXPORT corto_metaprocedure _corto_metaprocedure__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedure__create(_parent, _id, return_type, is_reference, referenceOnly, _impl) _corto_metaprocedure__create(_parent, _id, corto_type(return_type), is_reference, referenceOnly, (void(*)(void))_impl)
+#define corto_metaprocedure__create_auto(_parent, _id, return_type, is_reference, referenceOnly, _impl) corto_metaprocedure _id = corto_metaprocedure__create(_parent, #_id, return_type, is_reference, referenceOnly, _impl); (void)_id
 #define corto_metaprocedure__declare(parent, id) (corto_metaprocedure)corto_declare(parent, id, corto_metaprocedure_o)
-CORTO_EXPORT corto_int16 _corto_metaprocedure__update(corto_metaprocedure _this, corto_type returnType, bool returnsReference, bool referenceOnly, void(*_impl)(void));
-#define corto_metaprocedure__update(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedure__update(corto_metaprocedure(_this), corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
-CORTO_EXPORT corto_metaprocedure _corto_metaprocedure__assign(corto_metaprocedure _this, corto_type returnType, bool returnsReference, bool referenceOnly, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_metaprocedure__update(corto_metaprocedure _this, corto_type return_type, bool is_reference, bool referenceOnly, void(*_impl)(void));
+#define corto_metaprocedure__update(_this, return_type, is_reference, referenceOnly, _impl) _corto_metaprocedure__update(corto_metaprocedure(_this), corto_type(return_type), is_reference, referenceOnly, (void(*)(void))_impl)
+CORTO_EXPORT corto_metaprocedure _corto_metaprocedure__assign(corto_metaprocedure _this, corto_type return_type, bool is_reference, bool referenceOnly, void(*_impl)(void));
 #define corto_metaprocedure__optional_not_set NULL
-#define corto_metaprocedure__optional_set(returnType, returnsReference, referenceOnly, _impl) (corto_metaprocedure*)corto_metaprocedure__assign((corto_metaprocedure*)corto_ptr_new(corto_metaprocedure_o), returnType, returnsReference, referenceOnly, _impl)
-#define corto_metaprocedure__optional_set_cond(__cond, returnType, returnsReference, referenceOnly, _impl) __cond ? (corto_metaprocedure*)corto_metaprocedure__assign((corto_metaprocedure*)corto_ptr_new(corto_metaprocedure_o), returnType, returnsReference, referenceOnly, _impl) : NULL
+#define corto_metaprocedure__optional_set(return_type, is_reference, referenceOnly, _impl) (corto_metaprocedure*)corto_metaprocedure__assign((corto_metaprocedure*)corto_ptr_new(corto_metaprocedure_o), return_type, is_reference, referenceOnly, _impl)
+#define corto_metaprocedure__optional_set_cond(__cond, return_type, is_reference, referenceOnly, _impl) __cond ? (corto_metaprocedure*)corto_metaprocedure__assign((corto_metaprocedure*)corto_ptr_new(corto_metaprocedure_o), return_type, is_reference, referenceOnly, _impl) : NULL
 #define corto_metaprocedure__unset(_this) _this ? corto_ptr_free(_this, corto_metaprocedure_o), 0 : 0; _this = NULL;
-#define corto_metaprocedure__assign(_this, returnType, returnsReference, referenceOnly, _impl) _corto_metaprocedure__assign(_this, corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
-#define corto_metaprocedure__set(_this, returnType, returnsReference, referenceOnly, _impl) _this = _this ? _this : (corto_metaprocedure*)corto_ptr_new(corto_metaprocedure_o); _corto_metaprocedure__assign(_this, corto_type(returnType), returnsReference, referenceOnly, (void(*)(void))_impl)
+#define corto_metaprocedure__assign(_this, return_type, is_reference, referenceOnly, _impl) _corto_metaprocedure__assign(_this, corto_type(return_type), is_reference, referenceOnly, (void(*)(void))_impl)
+#define corto_metaprocedure__set(_this, return_type, is_reference, referenceOnly, _impl) _this = _this ? _this : (corto_metaprocedure*)corto_ptr_new(corto_metaprocedure_o); _corto_metaprocedure__assign(_this, corto_type(return_type), is_reference, referenceOnly, (void(*)(void))_impl)
 
 /* method */
-CORTO_EXPORT corto_method _corto_method__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_method__create(_parent, _id, returnType, returnsReference, _impl) _corto_method__create(_parent, _id, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_method__create_auto(_parent, _id, returnType, returnsReference, _impl) corto_method _id = corto_method__create(_parent, #_id, returnType, returnsReference, _impl); (void)_id
+CORTO_EXPORT corto_method _corto_method__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_method__create(_parent, _id, return_type, is_reference, _impl) _corto_method__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_method__create_auto(_parent, _id, return_type, is_reference, _impl) corto_method _id = corto_method__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
 #define corto_method__declare(parent, id) (corto_method)corto_declare(parent, id, corto_method_o)
-CORTO_EXPORT corto_int16 _corto_method__update(corto_method _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_method__update(_this, returnType, returnsReference, _impl) _corto_method__update(corto_method(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
-CORTO_EXPORT corto_method _corto_method__assign(corto_method _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_method__update(corto_method _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_method__update(_this, return_type, is_reference, _impl) _corto_method__update(corto_method(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
+CORTO_EXPORT corto_method _corto_method__assign(corto_method _this, corto_type return_type, bool is_reference, void(*_impl)(void));
 #define corto_method__optional_not_set NULL
-#define corto_method__optional_set(returnType, returnsReference, _impl) (corto_method*)corto_method__assign((corto_method*)corto_ptr_new(corto_method_o), returnType, returnsReference, _impl)
-#define corto_method__optional_set_cond(__cond, returnType, returnsReference, _impl) __cond ? (corto_method*)corto_method__assign((corto_method*)corto_ptr_new(corto_method_o), returnType, returnsReference, _impl) : NULL
+#define corto_method__optional_set(return_type, is_reference, _impl) (corto_method*)corto_method__assign((corto_method*)corto_ptr_new(corto_method_o), return_type, is_reference, _impl)
+#define corto_method__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_method*)corto_method__assign((corto_method*)corto_ptr_new(corto_method_o), return_type, is_reference, _impl) : NULL
 #define corto_method__unset(_this) _this ? corto_ptr_free(_this, corto_method_o), 0 : 0; _this = NULL;
-#define corto_method__assign(_this, returnType, returnsReference, _impl) _corto_method__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_method__set(_this, returnType, returnsReference, _impl) _this = _this ? _this : (corto_method*)corto_ptr_new(corto_method_o); _corto_method__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
+#define corto_method__assign(_this, return_type, is_reference, _impl) _corto_method__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_method__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_method*)corto_ptr_new(corto_method_o); _corto_method__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
 
-/* modifier */
-CORTO_EXPORT corto_modifier* _corto_modifier__create(corto_object _parent, const char *_id, corto_modifier value);
-#define corto_modifier__create(_parent, _id, value) _corto_modifier__create(_parent, _id, value)
-#define corto_modifier__create_auto(_parent, _id, value) corto_modifier* _id = corto_modifier__create(_parent, #_id, value); (void)_id
-#define corto_modifier__declare(parent, id) (corto_modifier*)corto_declare(parent, id, corto_modifier_o)
-CORTO_EXPORT corto_int16 _corto_modifier__update(corto_modifier* _this, corto_modifier value);
-#define corto_modifier__update(_this, value) _corto_modifier__update(corto_modifier(_this), value)
-CORTO_EXPORT corto_modifier* _corto_modifier__assign(corto_modifier* _this, corto_modifier value);
-#define corto_modifier__optional_not_set NULL
-#define corto_modifier__optional_set(value) (corto_modifier*)corto_modifier__assign((corto_modifier*)corto_ptr_new(corto_modifier_o), value)
-#define corto_modifier__optional_set_cond(__cond, value) __cond ? (corto_modifier*)corto_modifier__assign((corto_modifier*)corto_ptr_new(corto_modifier_o), value) : NULL
-#define corto_modifier__unset(_this) _this ? corto_ptr_free(_this, corto_modifier_o), 0 : 0; _this = NULL;
-#define corto_modifier__assign(_this, value) _corto_modifier__assign(_this, value)
-#define corto_modifier__set(_this, value) _this = _this ? _this : (corto_modifier*)corto_ptr_new(corto_modifier_o); _corto_modifier__assign(_this, value)
+/* modifierMask */
+CORTO_EXPORT corto_modifierMask* _corto_modifierMask__create(corto_object _parent, const char *_id, corto_modifierMask value);
+#define corto_modifierMask__create(_parent, _id, value) _corto_modifierMask__create(_parent, _id, value)
+#define corto_modifierMask__create_auto(_parent, _id, value) corto_modifierMask* _id = corto_modifierMask__create(_parent, #_id, value); (void)_id
+#define corto_modifierMask__declare(parent, id) (corto_modifierMask*)corto_declare(parent, id, corto_modifierMask_o)
+CORTO_EXPORT corto_int16 _corto_modifierMask__update(corto_modifierMask* _this, corto_modifierMask value);
+#define corto_modifierMask__update(_this, value) _corto_modifierMask__update(corto_modifierMask(_this), value)
+CORTO_EXPORT corto_modifierMask* _corto_modifierMask__assign(corto_modifierMask* _this, corto_modifierMask value);
+#define corto_modifierMask__optional_not_set NULL
+#define corto_modifierMask__optional_set(value) (corto_modifierMask*)corto_modifierMask__assign((corto_modifierMask*)corto_ptr_new(corto_modifierMask_o), value)
+#define corto_modifierMask__optional_set_cond(__cond, value) __cond ? (corto_modifierMask*)corto_modifierMask__assign((corto_modifierMask*)corto_ptr_new(corto_modifierMask_o), value) : NULL
+#define corto_modifierMask__unset(_this) _this ? corto_ptr_free(_this, corto_modifierMask_o), 0 : 0; _this = NULL;
+#define corto_modifierMask__assign(_this, value) _corto_modifierMask__assign(_this, value)
+#define corto_modifierMask__set(_this, value) _this = _this ? _this : (corto_modifierMask*)corto_ptr_new(corto_modifierMask_o); _corto_modifierMask__assign(_this, value)
 
 /* name_action */
 CORTO_EXPORT corto_name_action* _corto_name_action__create(corto_object _parent, const char *_id, corto_object instance, corto_function procedure);
@@ -784,34 +784,34 @@ CORTO_EXPORT uint8_t* _corto_octet__assign(uint8_t* _this, uint8_t value);
 #define corto_octet__set(_this, value) _this = _this ? _this : (corto_octet*)corto_ptr_new(corto_octet_o); _corto_octet__assign(_this, value)
 
 /* overridable */
-CORTO_EXPORT corto_overridable _corto_overridable__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_overridable__create(_parent, _id, returnType, returnsReference, _impl) _corto_overridable__create(_parent, _id, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_overridable__create_auto(_parent, _id, returnType, returnsReference, _impl) corto_overridable _id = corto_overridable__create(_parent, #_id, returnType, returnsReference, _impl); (void)_id
+CORTO_EXPORT corto_overridable _corto_overridable__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_overridable__create(_parent, _id, return_type, is_reference, _impl) _corto_overridable__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_overridable__create_auto(_parent, _id, return_type, is_reference, _impl) corto_overridable _id = corto_overridable__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
 #define corto_overridable__declare(parent, id) (corto_overridable)corto_declare(parent, id, corto_overridable_o)
-CORTO_EXPORT corto_int16 _corto_overridable__update(corto_overridable _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_overridable__update(_this, returnType, returnsReference, _impl) _corto_overridable__update(corto_overridable(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
-CORTO_EXPORT corto_overridable _corto_overridable__assign(corto_overridable _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_overridable__update(corto_overridable _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_overridable__update(_this, return_type, is_reference, _impl) _corto_overridable__update(corto_overridable(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
+CORTO_EXPORT corto_overridable _corto_overridable__assign(corto_overridable _this, corto_type return_type, bool is_reference, void(*_impl)(void));
 #define corto_overridable__optional_not_set NULL
-#define corto_overridable__optional_set(returnType, returnsReference, _impl) (corto_overridable*)corto_overridable__assign((corto_overridable*)corto_ptr_new(corto_overridable_o), returnType, returnsReference, _impl)
-#define corto_overridable__optional_set_cond(__cond, returnType, returnsReference, _impl) __cond ? (corto_overridable*)corto_overridable__assign((corto_overridable*)corto_ptr_new(corto_overridable_o), returnType, returnsReference, _impl) : NULL
+#define corto_overridable__optional_set(return_type, is_reference, _impl) (corto_overridable*)corto_overridable__assign((corto_overridable*)corto_ptr_new(corto_overridable_o), return_type, is_reference, _impl)
+#define corto_overridable__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_overridable*)corto_overridable__assign((corto_overridable*)corto_ptr_new(corto_overridable_o), return_type, is_reference, _impl) : NULL
 #define corto_overridable__unset(_this) _this ? corto_ptr_free(_this, corto_overridable_o), 0 : 0; _this = NULL;
-#define corto_overridable__assign(_this, returnType, returnsReference, _impl) _corto_overridable__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_overridable__set(_this, returnType, returnsReference, _impl) _this = _this ? _this : (corto_overridable*)corto_ptr_new(corto_overridable_o); _corto_overridable__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
+#define corto_overridable__assign(_this, return_type, is_reference, _impl) _corto_overridable__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_overridable__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_overridable*)corto_ptr_new(corto_overridable_o); _corto_overridable__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
 
 /* override */
-CORTO_EXPORT corto_override _corto_override__create(corto_object _parent, const char *_id, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_override__create(_parent, _id, returnType, returnsReference, _impl) _corto_override__create(_parent, _id, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_override__create_auto(_parent, _id, returnType, returnsReference, _impl) corto_override _id = corto_override__create(_parent, #_id, returnType, returnsReference, _impl); (void)_id
+CORTO_EXPORT corto_override _corto_override__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_override__create(_parent, _id, return_type, is_reference, _impl) _corto_override__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_override__create_auto(_parent, _id, return_type, is_reference, _impl) corto_override _id = corto_override__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
 #define corto_override__declare(parent, id) (corto_override)corto_declare(parent, id, corto_override_o)
-CORTO_EXPORT corto_int16 _corto_override__update(corto_override _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
-#define corto_override__update(_this, returnType, returnsReference, _impl) _corto_override__update(corto_override(_this), corto_type(returnType), returnsReference, (void(*)(void))_impl)
-CORTO_EXPORT corto_override _corto_override__assign(corto_override _this, corto_type returnType, bool returnsReference, void(*_impl)(void));
+CORTO_EXPORT corto_int16 _corto_override__update(corto_override _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_override__update(_this, return_type, is_reference, _impl) _corto_override__update(corto_override(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
+CORTO_EXPORT corto_override _corto_override__assign(corto_override _this, corto_type return_type, bool is_reference, void(*_impl)(void));
 #define corto_override__optional_not_set NULL
-#define corto_override__optional_set(returnType, returnsReference, _impl) (corto_override*)corto_override__assign((corto_override*)corto_ptr_new(corto_override_o), returnType, returnsReference, _impl)
-#define corto_override__optional_set_cond(__cond, returnType, returnsReference, _impl) __cond ? (corto_override*)corto_override__assign((corto_override*)corto_ptr_new(corto_override_o), returnType, returnsReference, _impl) : NULL
+#define corto_override__optional_set(return_type, is_reference, _impl) (corto_override*)corto_override__assign((corto_override*)corto_ptr_new(corto_override_o), return_type, is_reference, _impl)
+#define corto_override__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_override*)corto_override__assign((corto_override*)corto_ptr_new(corto_override_o), return_type, is_reference, _impl) : NULL
 #define corto_override__unset(_this) _this ? corto_ptr_free(_this, corto_override_o), 0 : 0; _this = NULL;
-#define corto_override__assign(_this, returnType, returnsReference, _impl) _corto_override__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
-#define corto_override__set(_this, returnType, returnsReference, _impl) _this = _this ? _this : (corto_override*)corto_ptr_new(corto_override_o); _corto_override__assign(_this, corto_type(returnType), returnsReference, (void(*)(void))_impl)
+#define corto_override__assign(_this, return_type, is_reference, _impl) _corto_override__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_override__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_override*)corto_ptr_new(corto_override_o); _corto_override__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
 
 /* package */
 CORTO_EXPORT corto_package _corto_package__create(corto_object _parent, const char *_id);
@@ -829,19 +829,19 @@ CORTO_EXPORT corto_package _corto_package__assign(corto_package _this);
 #define corto_package__set(_this) _this = _this ? _this : (corto_package*)corto_ptr_new(corto_package_o); _corto_package__assign(_this)
 
 /* parameter */
-CORTO_EXPORT corto_parameter* _corto_parameter__create(corto_object _parent, const char *_id, const char * name, corto_type type, corto_inout inout, bool passByReference);
-#define corto_parameter__create(_parent, _id, name, type, inout, passByReference) _corto_parameter__create(_parent, _id, name, corto_type(type), inout, passByReference)
-#define corto_parameter__create_auto(_parent, _id, name, type, inout, passByReference) corto_parameter* _id = corto_parameter__create(_parent, #_id, name, type, inout, passByReference); (void)_id
+CORTO_EXPORT corto_parameter* _corto_parameter__create(corto_object _parent, const char *_id, const char * name, corto_type type, corto_inout inout, bool is_reference);
+#define corto_parameter__create(_parent, _id, name, type, inout, is_reference) _corto_parameter__create(_parent, _id, name, corto_type(type), inout, is_reference)
+#define corto_parameter__create_auto(_parent, _id, name, type, inout, is_reference) corto_parameter* _id = corto_parameter__create(_parent, #_id, name, type, inout, is_reference); (void)_id
 #define corto_parameter__declare(parent, id) (corto_parameter*)corto_declare(parent, id, corto_parameter_o)
-CORTO_EXPORT corto_int16 _corto_parameter__update(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool passByReference);
-#define corto_parameter__update(_this, name, type, inout, passByReference) _corto_parameter__update(corto_parameter(_this), name, corto_type(type), inout, passByReference)
-CORTO_EXPORT corto_parameter* _corto_parameter__assign(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool passByReference);
+CORTO_EXPORT corto_int16 _corto_parameter__update(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool is_reference);
+#define corto_parameter__update(_this, name, type, inout, is_reference) _corto_parameter__update(corto_parameter(_this), name, corto_type(type), inout, is_reference)
+CORTO_EXPORT corto_parameter* _corto_parameter__assign(corto_parameter* _this, const char * name, corto_type type, corto_inout inout, bool is_reference);
 #define corto_parameter__optional_not_set NULL
-#define corto_parameter__optional_set(name, type, inout, passByReference) (corto_parameter*)corto_parameter__assign((corto_parameter*)corto_ptr_new(corto_parameter_o), name, type, inout, passByReference)
-#define corto_parameter__optional_set_cond(__cond, name, type, inout, passByReference) __cond ? (corto_parameter*)corto_parameter__assign((corto_parameter*)corto_ptr_new(corto_parameter_o), name, type, inout, passByReference) : NULL
+#define corto_parameter__optional_set(name, type, inout, is_reference) (corto_parameter*)corto_parameter__assign((corto_parameter*)corto_ptr_new(corto_parameter_o), name, type, inout, is_reference)
+#define corto_parameter__optional_set_cond(__cond, name, type, inout, is_reference) __cond ? (corto_parameter*)corto_parameter__assign((corto_parameter*)corto_ptr_new(corto_parameter_o), name, type, inout, is_reference) : NULL
 #define corto_parameter__unset(_this) _this ? corto_ptr_free(_this, corto_parameter_o), 0 : 0; _this = NULL;
-#define corto_parameter__assign(_this, name, type, inout, passByReference) _corto_parameter__assign(_this, name, corto_type(type), inout, passByReference)
-#define corto_parameter__set(_this, name, type, inout, passByReference) _this = _this ? _this : (corto_parameter*)corto_ptr_new(corto_parameter_o); _corto_parameter__assign(_this, name, corto_type(type), inout, passByReference)
+#define corto_parameter__assign(_this, name, type, inout, is_reference) _corto_parameter__assign(_this, name, corto_type(type), inout, is_reference)
+#define corto_parameter__set(_this, name, type, inout, is_reference) _this = _this ? _this : (corto_parameter*)corto_ptr_new(corto_parameter_o); _corto_parameter__assign(_this, name, corto_type(type), inout, is_reference)
 
 /* parameterseq */
 CORTO_EXPORT corto_parameterseq* _corto_parameterseq__create(corto_object _parent, const char *_id, corto_uint32 length, corto_parameter* elements);
@@ -929,19 +929,19 @@ CORTO_EXPORT corto_primitiveKind* _corto_primitiveKind__assign(corto_primitiveKi
 #define corto_primitiveKind__set(_this, value) _this = _this ? _this : (corto_primitiveKind*)corto_ptr_new(corto_primitiveKind_o); _corto_primitiveKind__assign(_this, value)
 
 /* procedure */
-CORTO_EXPORT corto_procedure _corto_procedure__create(corto_object _parent, const char *_id, bool hasThis, corto_type thisType);
-#define corto_procedure__create(_parent, _id, hasThis, thisType) _corto_procedure__create(_parent, _id, hasThis, corto_type(thisType))
-#define corto_procedure__create_auto(_parent, _id, hasThis, thisType) corto_procedure _id = corto_procedure__create(_parent, #_id, hasThis, thisType); (void)_id
+CORTO_EXPORT corto_procedure _corto_procedure__create(corto_object _parent, const char *_id, bool has_this, corto_type this_type);
+#define corto_procedure__create(_parent, _id, has_this, this_type) _corto_procedure__create(_parent, _id, has_this, corto_type(this_type))
+#define corto_procedure__create_auto(_parent, _id, has_this, this_type) corto_procedure _id = corto_procedure__create(_parent, #_id, has_this, this_type); (void)_id
 #define corto_procedure__declare(parent, id) (corto_procedure)corto_declare(parent, id, corto_procedure_o)
-CORTO_EXPORT corto_int16 _corto_procedure__update(corto_procedure _this, bool hasThis, corto_type thisType);
-#define corto_procedure__update(_this, hasThis, thisType) _corto_procedure__update(corto_procedure(_this), hasThis, corto_type(thisType))
-CORTO_EXPORT corto_procedure _corto_procedure__assign(corto_procedure _this, bool hasThis, corto_type thisType);
+CORTO_EXPORT corto_int16 _corto_procedure__update(corto_procedure _this, bool has_this, corto_type this_type);
+#define corto_procedure__update(_this, has_this, this_type) _corto_procedure__update(corto_procedure(_this), has_this, corto_type(this_type))
+CORTO_EXPORT corto_procedure _corto_procedure__assign(corto_procedure _this, bool has_this, corto_type this_type);
 #define corto_procedure__optional_not_set NULL
-#define corto_procedure__optional_set(hasThis, thisType) (corto_procedure*)corto_procedure__assign((corto_procedure*)corto_ptr_new(corto_procedure_o), hasThis, thisType)
-#define corto_procedure__optional_set_cond(__cond, hasThis, thisType) __cond ? (corto_procedure*)corto_procedure__assign((corto_procedure*)corto_ptr_new(corto_procedure_o), hasThis, thisType) : NULL
+#define corto_procedure__optional_set(has_this, this_type) (corto_procedure*)corto_procedure__assign((corto_procedure*)corto_ptr_new(corto_procedure_o), has_this, this_type)
+#define corto_procedure__optional_set_cond(__cond, has_this, this_type) __cond ? (corto_procedure*)corto_procedure__assign((corto_procedure*)corto_ptr_new(corto_procedure_o), has_this, this_type) : NULL
 #define corto_procedure__unset(_this) _this ? corto_ptr_free(_this, corto_procedure_o), 0 : 0; _this = NULL;
-#define corto_procedure__assign(_this, hasThis, thisType) _corto_procedure__assign(_this, hasThis, corto_type(thisType))
-#define corto_procedure__set(_this, hasThis, thisType) _this = _this ? _this : (corto_procedure*)corto_ptr_new(corto_procedure_o); _corto_procedure__assign(_this, hasThis, corto_type(thisType))
+#define corto_procedure__assign(_this, has_this, this_type) _corto_procedure__assign(_this, has_this, corto_type(this_type))
+#define corto_procedure__set(_this, has_this, this_type) _this = _this ? _this : (corto_procedure*)corto_ptr_new(corto_procedure_o); _corto_procedure__assign(_this, has_this, corto_type(this_type))
 
 /* quantity */
 CORTO_EXPORT corto_quantity _corto_quantity__create(corto_object _parent, const char *_id, corto_unit base_unit);
@@ -974,19 +974,19 @@ CORTO_EXPORT corto_ref_kind* _corto_ref_kind__assign(corto_ref_kind* _this, cort
 #define corto_ref_kind__set(_this, value) _this = _this ? _this : (corto_ref_kind*)corto_ptr_new(corto_ref_kind_o); _corto_ref_kind__assign(_this, value)
 
 /* sequence */
-CORTO_EXPORT corto_sequence _corto_sequence__create(corto_object _parent, const char *_id, corto_type elementType, uint32_t max);
-#define corto_sequence__create(_parent, _id, elementType, max) _corto_sequence__create(_parent, _id, corto_type(elementType), max)
-#define corto_sequence__create_auto(_parent, _id, elementType, max) corto_sequence _id = corto_sequence__create(_parent, #_id, elementType, max); (void)_id
+CORTO_EXPORT corto_sequence _corto_sequence__create(corto_object _parent, const char *_id, corto_type element_type, uint32_t max);
+#define corto_sequence__create(_parent, _id, element_type, max) _corto_sequence__create(_parent, _id, corto_type(element_type), max)
+#define corto_sequence__create_auto(_parent, _id, element_type, max) corto_sequence _id = corto_sequence__create(_parent, #_id, element_type, max); (void)_id
 #define corto_sequence__declare(parent, id) (corto_sequence)corto_declare(parent, id, corto_sequence_o)
-CORTO_EXPORT corto_int16 _corto_sequence__update(corto_sequence _this, corto_type elementType, uint32_t max);
-#define corto_sequence__update(_this, elementType, max) _corto_sequence__update(corto_sequence(_this), corto_type(elementType), max)
-CORTO_EXPORT corto_sequence _corto_sequence__assign(corto_sequence _this, corto_type elementType, uint32_t max);
+CORTO_EXPORT corto_int16 _corto_sequence__update(corto_sequence _this, corto_type element_type, uint32_t max);
+#define corto_sequence__update(_this, element_type, max) _corto_sequence__update(corto_sequence(_this), corto_type(element_type), max)
+CORTO_EXPORT corto_sequence _corto_sequence__assign(corto_sequence _this, corto_type element_type, uint32_t max);
 #define corto_sequence__optional_not_set NULL
-#define corto_sequence__optional_set(elementType, max) (corto_sequence*)corto_sequence__assign((corto_sequence*)corto_ptr_new(corto_sequence_o), elementType, max)
-#define corto_sequence__optional_set_cond(__cond, elementType, max) __cond ? (corto_sequence*)corto_sequence__assign((corto_sequence*)corto_ptr_new(corto_sequence_o), elementType, max) : NULL
+#define corto_sequence__optional_set(element_type, max) (corto_sequence*)corto_sequence__assign((corto_sequence*)corto_ptr_new(corto_sequence_o), element_type, max)
+#define corto_sequence__optional_set_cond(__cond, element_type, max) __cond ? (corto_sequence*)corto_sequence__assign((corto_sequence*)corto_ptr_new(corto_sequence_o), element_type, max) : NULL
 #define corto_sequence__unset(_this) _this ? corto_ptr_free(_this, corto_sequence_o), 0 : 0; _this = NULL;
-#define corto_sequence__assign(_this, elementType, max) _corto_sequence__assign(_this, corto_type(elementType), max)
-#define corto_sequence__set(_this, elementType, max) _this = _this ? _this : (corto_sequence*)corto_ptr_new(corto_sequence_o); _corto_sequence__assign(_this, corto_type(elementType), max)
+#define corto_sequence__assign(_this, element_type, max) _corto_sequence__assign(_this, corto_type(element_type), max)
+#define corto_sequence__set(_this, element_type, max) _this = _this ? _this : (corto_sequence*)corto_ptr_new(corto_sequence_o); _corto_sequence__assign(_this, corto_type(element_type), max)
 
 /* state */
 CORTO_EXPORT corto_state* _corto_state__create(corto_object _parent, const char *_id, corto_state value);
@@ -1049,34 +1049,34 @@ CORTO_EXPORT corto_stringseq* _corto_stringseq__assign(corto_stringseq* _this, c
 #define corto_stringseq__set(_this, length, elements) _this = _this ? _this : (corto_stringseq*)corto_ptr_new(corto_stringseq_o); _corto_stringseq__assign(_this, length, elements)
 
 /* struct */
-CORTO_EXPORT corto_struct _corto_struct__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess);
-#define corto_struct__create(_parent, _id, base, baseAccess) _corto_struct__create(_parent, _id, corto_interface(base), baseAccess)
-#define corto_struct__create_auto(_parent, _id, base, baseAccess) corto_struct _id = corto_struct__create(_parent, #_id, base, baseAccess); (void)_id
+CORTO_EXPORT corto_struct _corto_struct__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers);
+#define corto_struct__create(_parent, _id, base, base_modifiers) _corto_struct__create(_parent, _id, corto_interface(base), base_modifiers)
+#define corto_struct__create_auto(_parent, _id, base, base_modifiers) corto_struct _id = corto_struct__create(_parent, #_id, base, base_modifiers); (void)_id
 #define corto_struct__declare(parent, id) (corto_struct)corto_declare(parent, id, corto_struct_o)
-CORTO_EXPORT corto_int16 _corto_struct__update(corto_struct _this, corto_interface base, corto_modifier baseAccess);
-#define corto_struct__update(_this, base, baseAccess) _corto_struct__update(corto_struct(_this), corto_interface(base), baseAccess)
-CORTO_EXPORT corto_struct _corto_struct__assign(corto_struct _this, corto_interface base, corto_modifier baseAccess);
+CORTO_EXPORT corto_int16 _corto_struct__update(corto_struct _this, corto_interface base, corto_modifierMask base_modifiers);
+#define corto_struct__update(_this, base, base_modifiers) _corto_struct__update(corto_struct(_this), corto_interface(base), base_modifiers)
+CORTO_EXPORT corto_struct _corto_struct__assign(corto_struct _this, corto_interface base, corto_modifierMask base_modifiers);
 #define corto_struct__optional_not_set NULL
-#define corto_struct__optional_set(base, baseAccess) (corto_struct*)corto_struct__assign((corto_struct*)corto_ptr_new(corto_struct_o), base, baseAccess)
-#define corto_struct__optional_set_cond(__cond, base, baseAccess) __cond ? (corto_struct*)corto_struct__assign((corto_struct*)corto_ptr_new(corto_struct_o), base, baseAccess) : NULL
+#define corto_struct__optional_set(base, base_modifiers) (corto_struct*)corto_struct__assign((corto_struct*)corto_ptr_new(corto_struct_o), base, base_modifiers)
+#define corto_struct__optional_set_cond(__cond, base, base_modifiers) __cond ? (corto_struct*)corto_struct__assign((corto_struct*)corto_ptr_new(corto_struct_o), base, base_modifiers) : NULL
 #define corto_struct__unset(_this) _this ? corto_ptr_free(_this, corto_struct_o), 0 : 0; _this = NULL;
-#define corto_struct__assign(_this, base, baseAccess) _corto_struct__assign(_this, corto_interface(base), baseAccess)
-#define corto_struct__set(_this, base, baseAccess) _this = _this ? _this : (corto_struct*)corto_ptr_new(corto_struct_o); _corto_struct__assign(_this, corto_interface(base), baseAccess)
+#define corto_struct__assign(_this, base, base_modifiers) _corto_struct__assign(_this, corto_interface(base), base_modifiers)
+#define corto_struct__set(_this, base, base_modifiers) _this = _this ? _this : (corto_struct*)corto_ptr_new(corto_struct_o); _corto_struct__assign(_this, corto_interface(base), base_modifiers)
 
 /* table */
-CORTO_EXPORT corto_table _corto_table__create(corto_object _parent, const char *_id, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
-#define corto_table__create(_parent, _id, base, baseAccess, implements, type, value) _corto_table__create(_parent, _id, corto_interface(base), baseAccess, implements, corto_type(type), value)
-#define corto_table__create_auto(_parent, _id, base, baseAccess, implements, type, value) corto_table _id = corto_table__create(_parent, #_id, base, baseAccess, implements, type, value); (void)_id
+CORTO_EXPORT corto_table _corto_table__create(corto_object _parent, const char *_id, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
+#define corto_table__create(_parent, _id, base, base_modifiers, implements, type, value) _corto_table__create(_parent, _id, corto_interface(base), base_modifiers, implements, corto_type(type), value)
+#define corto_table__create_auto(_parent, _id, base, base_modifiers, implements, type, value) corto_table _id = corto_table__create(_parent, #_id, base, base_modifiers, implements, type, value); (void)_id
 #define corto_table__declare(parent, id) (corto_table)corto_declare(parent, id, corto_table_o)
-CORTO_EXPORT corto_int16 _corto_table__update(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
-#define corto_table__update(_this, base, baseAccess, implements, type, value) _corto_table__update(corto_table(_this), corto_interface(base), baseAccess, implements, corto_type(type), value)
-CORTO_EXPORT corto_table _corto_table__assign(corto_table _this, corto_interface base, corto_modifier baseAccess, corto_interfaceseq implements, corto_type type, const char * value);
+CORTO_EXPORT corto_int16 _corto_table__update(corto_table _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
+#define corto_table__update(_this, base, base_modifiers, implements, type, value) _corto_table__update(corto_table(_this), corto_interface(base), base_modifiers, implements, corto_type(type), value)
+CORTO_EXPORT corto_table _corto_table__assign(corto_table _this, corto_interface base, corto_modifierMask base_modifiers, corto_interfaceseq implements, corto_type type, const char * value);
 #define corto_table__optional_not_set NULL
-#define corto_table__optional_set(base, baseAccess, implements, type, value) (corto_table*)corto_table__assign((corto_table*)corto_ptr_new(corto_table_o), base, baseAccess, implements, type, value)
-#define corto_table__optional_set_cond(__cond, base, baseAccess, implements, type, value) __cond ? (corto_table*)corto_table__assign((corto_table*)corto_ptr_new(corto_table_o), base, baseAccess, implements, type, value) : NULL
+#define corto_table__optional_set(base, base_modifiers, implements, type, value) (corto_table*)corto_table__assign((corto_table*)corto_ptr_new(corto_table_o), base, base_modifiers, implements, type, value)
+#define corto_table__optional_set_cond(__cond, base, base_modifiers, implements, type, value) __cond ? (corto_table*)corto_table__assign((corto_table*)corto_ptr_new(corto_table_o), base, base_modifiers, implements, type, value) : NULL
 #define corto_table__unset(_this) _this ? corto_ptr_free(_this, corto_table_o), 0 : 0; _this = NULL;
-#define corto_table__assign(_this, base, baseAccess, implements, type, value) _corto_table__assign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
-#define corto_table__set(_this, base, baseAccess, implements, type, value) _this = _this ? _this : (corto_table*)corto_ptr_new(corto_table_o); _corto_table__assign(_this, corto_interface(base), baseAccess, implements, corto_type(type), value)
+#define corto_table__assign(_this, base, base_modifiers, implements, type, value) _corto_table__assign(_this, corto_interface(base), base_modifiers, implements, corto_type(type), value)
+#define corto_table__set(_this, base, base_modifiers, implements, type, value) _this = _this ? _this : (corto_table*)corto_ptr_new(corto_table_o); _corto_table__assign(_this, corto_interface(base), base_modifiers, implements, corto_type(type), value)
 
 /* tableinstance */
 CORTO_EXPORT corto_tableinstance _corto_tableinstance__create(corto_object _parent, const char *_id, corto_type type);
@@ -1139,19 +1139,19 @@ CORTO_EXPORT corto_target _corto_target__assign(corto_target _this, corto_type t
 #define corto_target__set(_this, type) _this = _this ? _this : (corto_target*)corto_ptr_new(corto_target_o); _corto_target__assign(_this, corto_type(type))
 
 /* text */
-CORTO_EXPORT corto_text _corto_text__create(corto_object _parent, const char *_id, corto_width charWidth, uint64_t length);
-#define corto_text__create(_parent, _id, charWidth, length) _corto_text__create(_parent, _id, charWidth, length)
-#define corto_text__create_auto(_parent, _id, charWidth, length) corto_text _id = corto_text__create(_parent, #_id, charWidth, length); (void)_id
+CORTO_EXPORT corto_text _corto_text__create(corto_object _parent, const char *_id, corto_width char_width, uint64_t length);
+#define corto_text__create(_parent, _id, char_width, length) _corto_text__create(_parent, _id, char_width, length)
+#define corto_text__create_auto(_parent, _id, char_width, length) corto_text _id = corto_text__create(_parent, #_id, char_width, length); (void)_id
 #define corto_text__declare(parent, id) (corto_text)corto_declare(parent, id, corto_text_o)
-CORTO_EXPORT corto_int16 _corto_text__update(corto_text _this, corto_width charWidth, uint64_t length);
-#define corto_text__update(_this, charWidth, length) _corto_text__update(corto_text(_this), charWidth, length)
-CORTO_EXPORT corto_text _corto_text__assign(corto_text _this, corto_width charWidth, uint64_t length);
+CORTO_EXPORT corto_int16 _corto_text__update(corto_text _this, corto_width char_width, uint64_t length);
+#define corto_text__update(_this, char_width, length) _corto_text__update(corto_text(_this), char_width, length)
+CORTO_EXPORT corto_text _corto_text__assign(corto_text _this, corto_width char_width, uint64_t length);
 #define corto_text__optional_not_set NULL
-#define corto_text__optional_set(charWidth, length) (corto_text*)corto_text__assign((corto_text*)corto_ptr_new(corto_text_o), charWidth, length)
-#define corto_text__optional_set_cond(__cond, charWidth, length) __cond ? (corto_text*)corto_text__assign((corto_text*)corto_ptr_new(corto_text_o), charWidth, length) : NULL
+#define corto_text__optional_set(char_width, length) (corto_text*)corto_text__assign((corto_text*)corto_ptr_new(corto_text_o), char_width, length)
+#define corto_text__optional_set_cond(__cond, char_width, length) __cond ? (corto_text*)corto_text__assign((corto_text*)corto_ptr_new(corto_text_o), char_width, length) : NULL
 #define corto_text__unset(_this) _this ? corto_ptr_free(_this, corto_text_o), 0 : 0; _this = NULL;
-#define corto_text__assign(_this, charWidth, length) _corto_text__assign(_this, charWidth, length)
-#define corto_text__set(_this, charWidth, length) _this = _this ? _this : (corto_text*)corto_ptr_new(corto_text_o); _corto_text__assign(_this, charWidth, length)
+#define corto_text__assign(_this, char_width, length) _corto_text__assign(_this, char_width, length)
+#define corto_text__set(_this, char_width, length) _this = _this ? _this : (corto_text*)corto_ptr_new(corto_text_o); _corto_text__assign(_this, char_width, length)
 
 /* tool */
 CORTO_EXPORT corto_tool _corto_tool__create(corto_object _parent, const char *_id);
@@ -1312,19 +1312,19 @@ CORTO_EXPORT corto_int16 _corto_unknown__update(void* _this);
 #define corto_unknown__update(_this) _corto_unknown__update(corto_unknown(_this))
 
 /* verbatim */
-CORTO_EXPORT corto_verbatim _corto_verbatim__create(corto_object _parent, const char *_id, const char * contentType);
-#define corto_verbatim__create(_parent, _id, contentType) _corto_verbatim__create(_parent, _id, contentType)
-#define corto_verbatim__create_auto(_parent, _id, contentType) corto_verbatim _id = corto_verbatim__create(_parent, #_id, contentType); (void)_id
+CORTO_EXPORT corto_verbatim _corto_verbatim__create(corto_object _parent, const char *_id, const char * format);
+#define corto_verbatim__create(_parent, _id, format) _corto_verbatim__create(_parent, _id, format)
+#define corto_verbatim__create_auto(_parent, _id, format) corto_verbatim _id = corto_verbatim__create(_parent, #_id, format); (void)_id
 #define corto_verbatim__declare(parent, id) (corto_verbatim)corto_declare(parent, id, corto_verbatim_o)
-CORTO_EXPORT corto_int16 _corto_verbatim__update(corto_verbatim _this, const char * contentType);
-#define corto_verbatim__update(_this, contentType) _corto_verbatim__update(corto_verbatim(_this), contentType)
-CORTO_EXPORT corto_verbatim _corto_verbatim__assign(corto_verbatim _this, const char * contentType);
+CORTO_EXPORT corto_int16 _corto_verbatim__update(corto_verbatim _this, const char * format);
+#define corto_verbatim__update(_this, format) _corto_verbatim__update(corto_verbatim(_this), format)
+CORTO_EXPORT corto_verbatim _corto_verbatim__assign(corto_verbatim _this, const char * format);
 #define corto_verbatim__optional_not_set NULL
-#define corto_verbatim__optional_set(contentType) (corto_verbatim*)corto_verbatim__assign((corto_verbatim*)corto_ptr_new(corto_verbatim_o), contentType)
-#define corto_verbatim__optional_set_cond(__cond, contentType) __cond ? (corto_verbatim*)corto_verbatim__assign((corto_verbatim*)corto_ptr_new(corto_verbatim_o), contentType) : NULL
+#define corto_verbatim__optional_set(format) (corto_verbatim*)corto_verbatim__assign((corto_verbatim*)corto_ptr_new(corto_verbatim_o), format)
+#define corto_verbatim__optional_set_cond(__cond, format) __cond ? (corto_verbatim*)corto_verbatim__assign((corto_verbatim*)corto_ptr_new(corto_verbatim_o), format) : NULL
 #define corto_verbatim__unset(_this) _this ? corto_ptr_free(_this, corto_verbatim_o), 0 : 0; _this = NULL;
-#define corto_verbatim__assign(_this, contentType) _corto_verbatim__assign(_this, contentType)
-#define corto_verbatim__set(_this, contentType) _this = _this ? _this : (corto_verbatim*)corto_ptr_new(corto_verbatim_o); _corto_verbatim__assign(_this, contentType)
+#define corto_verbatim__assign(_this, format) _corto_verbatim__assign(_this, format)
+#define corto_verbatim__set(_this, format) _this = _this ? _this : (corto_verbatim*)corto_ptr_new(corto_verbatim_o); _corto_verbatim__assign(_this, format)
 
 /* void */
 CORTO_EXPORT void* _corto_void__create(corto_object _parent, const char *_id);

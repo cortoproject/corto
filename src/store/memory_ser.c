@@ -106,7 +106,7 @@ corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* us
     case CORTO_LIST:
         if (*(corto_ll*)o) {
             /* Free memory allocated for listnodes */
-            if (corto_collection_requires_alloc(corto_collection(t)->elementType)) {
+            if (corto_collection_requires_alloc(corto_collection(t)->element_type)) {
                 corto_ll_walk(*(corto_ll*)o, corto_ser_clear,NULL);
             }
             corto_ll_free(*(corto_ll*)o);
@@ -115,7 +115,7 @@ corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* us
     case CORTO_MAP:
         if (*(corto_rb*)o) {
             /* Free memory allocated for mapnodes */
-            if (corto_collection_requires_alloc(corto_collection(t)->elementType)) {
+            if (corto_collection_requires_alloc(corto_collection(t)->element_type)) {
                 corto_rb_walk(*(corto_rb*)o, corto_ser_clear,NULL);
             }
             corto_rb_free(*(corto_rb*)o);
@@ -162,7 +162,7 @@ corto_int16 corto_ser_freeMember(corto_walk_opt* s, corto_value* v, void* userDa
 }
 
 
-corto_walk_opt corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+corto_walk_opt corto_ser_keep(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
     corto_walk_opt s;
 
     corto_walk_init(&s);
@@ -177,7 +177,7 @@ corto_walk_opt corto_ser_keep(corto_modifier access, corto_operatorKind accessKi
     return s;
 }
 
-corto_walk_opt corto_ser_free(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+corto_walk_opt corto_ser_free(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
     corto_walk_opt s;
 
     corto_walk_init(&s);
@@ -193,7 +193,7 @@ corto_walk_opt corto_ser_free(corto_modifier access, corto_operatorKind accessKi
     return s;
 }
 
-corto_walk_opt corto_ser_freeResources(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+corto_walk_opt corto_ser_freeResources(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
     corto_walk_opt s;
 
     corto_walk_init(&s);
