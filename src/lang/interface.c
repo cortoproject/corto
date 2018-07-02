@@ -147,9 +147,9 @@ int16_t corto_interface_bind_method(
         } else if (*found && (*found !=
             (corto_function)method) && !(*found)->overridable)
         {
-            corto_throw("method '%s' is not overridable by '%s'",
-                corto_fullpath(NULL, *found),
-                corto_fullpath(NULL, method));
+            corto_throw("illegal override of '%s', method '%s' is not overridable ",
+                corto_fullpath(NULL, method),
+                corto_fullpath(NULL, *found));
             goto error;
         }
     }

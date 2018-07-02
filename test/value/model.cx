@@ -407,6 +407,8 @@ test/suite rw:/
     void tc_composite_value_nested()
     void tc_composite_ref()
     void tc_composite_ref_nested()
+    void tc_composite_out_of_bounds_by_one()
+    void tc_composite_out_of_bounds()
     void tc_inheritance_value()
     void tc_inheritance_value_nested()
     void tc_inheritance_ref()

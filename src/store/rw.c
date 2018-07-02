@@ -158,6 +158,12 @@ int16_t corto_rw_index(
         }
     } else {
         if (type->kind == CORTO_COMPOSITE) {
+            if (count == index) {
+                corto_throw("index %d exceeds max for composite type '%s' (%d)",
+                    index, corto_fullpath(NULL, type), count);
+                goto error;
+            }
+
             this->current->field.member = this->current->cache[index].member;
             this->current->field.type = this->current->field.member->type;
             this->current->field.is_super = false;
@@ -392,6 +398,7 @@ int16_t corto_rw_next(
         corto_throw("invalid use of 'next': no scope pushed");
         goto error;
     }
+
     return 0;
 error:
     return -1;

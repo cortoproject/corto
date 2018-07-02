@@ -1161,3 +1161,85 @@ void test_rw_tc_nested_collection_list_empty(
     test_assert(corto_define(obj) == 0);
     test_assert(corto_delete(obj) == 0);
 }
+
+void test_rw_tc_composite_out_of_bounds_by_one(
+    test_rw this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point *obj = corto_declare(root_o, "obj", test_point_o);
+    corto_rw rw = corto_rw_init(test_point_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "x") == 0);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "y") == 0);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->y, 20);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    /* Invalid index */
+    test_assert(corto_rw_index(&rw, 2) != 0);
+    test_assert(corto_catch() != 0);
+
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
+
+void test_rw_tc_composite_out_of_bounds(
+    test_rw this)
+{
+    corto_type type;
+    void *ptr;
+
+    test_point *obj = corto_declare(root_o, "obj", test_point_o);
+    corto_rw rw = corto_rw_init(test_point_o, obj);
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    type = corto_rw_get_type(&rw);
+    test_assert(type != NULL);
+    test_assert(type == (corto_type)test_point_o);
+    ptr = corto_rw_get_ptr(&rw);
+    test_assert(ptr != NULL);
+    test_assert(ptr == obj);
+
+    test_assert(corto_rw_push(&rw, false) == 0);
+
+    test_assert(corto_rw_field(&rw, "x") == 0);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(obj->x, 10);
+
+    test_assert(corto_rw_has_next(&rw) == true);
+
+    test_assert(corto_rw_field(&rw, "y") == 0);
+    test_assert(corto_rw_set_int(&rw, 20) == 0);
+    test_assertint(obj->y, 20);
+
+    test_assert(corto_rw_has_next(&rw) == false);
+
+    /* Invalid index */
+    test_assert(corto_rw_index(&rw, 3) != 0);
+    test_assert(corto_catch() != 0);
+
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_define(obj) == 0);
+}
