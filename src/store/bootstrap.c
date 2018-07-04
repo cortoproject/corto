@@ -766,6 +766,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_delegate_is_reference),\
     BUILTIN_OBJ(lang_delegate_parameters),\
     BUILTIN_OBJ(lang_delegate_init_),\
+    BUILTIN_OBJ(lang_delegate_construct_),\
     BUILTIN_OBJ(lang_delegate_compatible_),\
     BUILTIN_OBJ(lang_delegate_castable_),\
     BUILTIN_OBJ(lang_delegate_instanceof_),\

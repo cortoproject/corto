@@ -130,6 +130,15 @@ error:
     return -1;
 }
 
+int16_t corto_delegate_construct(
+    corto_delegate this)
+{
+    if (!this->return_type) {
+        corto_set_ref(&this->return_type, corto_void_o);
+    }
+
+    return safe_corto_struct_construct(this);
+}
 
 corto_bool corto_delegate_matchParameter(
     corto_type t1,

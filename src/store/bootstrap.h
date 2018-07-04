@@ -1091,9 +1091,10 @@ CORTO_STRUCT_O(lang, delegatedata, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NUL
     CORTO_MEMBER_O(lang_delegatedata, procedure, lang_function, CORTO_GLOBAL);
 
 /* /corto/lang/delegate */
-CORTO_FW_I(lang, delegate);
-CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_I);
+CORTO_FW_IC(lang, delegate);
+CORTO_CLASS_O(lang, delegate, lang_struct, CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, CORTO_TYPE_ID(lang_member), CORTO_TYPE_ID(lang_method), CORTO_IC);
     CORTO_METHOD_O(lang_delegate, init, "()", lang_int16, corto_delegate_init);
+    CORTO_METHOD_O(lang_delegate, construct, "()", lang_int16, corto_delegate_construct);
     CORTO_REFERENCE_O(lang_delegate, return_type, lang_type, CORTO_GLOBAL | CORTO_CONST, CORTO_VALID | CORTO_DECLARED, NULL);
     CORTO_MEMBER_O(lang_delegate, is_reference, lang_bool, CORTO_GLOBAL | CORTO_CONST);
     CORTO_MEMBER_O(lang_delegate, parameters, lang_parameterseq, CORTO_GLOBAL | CORTO_CONST);

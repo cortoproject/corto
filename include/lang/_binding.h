@@ -215,6 +215,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
 #define corto_delegate_castable_v(_this, type) _corto_delegate_castable_v(corto_delegate(_this), corto_type(type))
 #define corto_delegate_compatible_v(_this, type) _corto_delegate_compatible_v(corto_delegate(_this), corto_type(type))
+#define corto_delegate_construct(_this) _corto_delegate_construct(corto_delegate(_this))
 #define corto_delegate_init(_this) _corto_delegate_init(corto_delegate(_this))
 #define corto_delegate_instanceof(_this, object) _corto_delegate_instanceof(corto_delegate(_this), object)
 #define corto_enum_constant_from_id(_this, id) _corto_enum_constant_from_id(corto_enum(_this), id)
@@ -312,6 +313,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define corto_delegate_bind _corto_delegate_bind
 #define corto_delegate_castable_v _corto_delegate_castable_v
 #define corto_delegate_compatible_v _corto_delegate_compatible_v
+#define corto_delegate_construct _corto_delegate_construct
 #define corto_delegate_init _corto_delegate_init
 #define corto_delegate_instanceof _corto_delegate_instanceof
 #define corto_enum_constant_from_id _corto_enum_constant_from_id
@@ -407,6 +409,7 @@ typedef corto_wordseq _type_corto_wordseq;
 #define safe_corto_delegate_bind(object) _corto_delegate_bind(corto_function(object))
 #define safe_corto_delegate_castable_v(_this, type) _corto_delegate_castable_v(corto_delegate(_this), corto_type(type))
 #define safe_corto_delegate_compatible_v(_this, type) _corto_delegate_compatible_v(corto_delegate(_this), corto_type(type))
+#define safe_corto_delegate_construct(_this) _corto_delegate_construct(corto_delegate(_this))
 #define safe_corto_delegate_init(_this) _corto_delegate_init(corto_delegate(_this))
 #define safe_corto_delegate_instanceof(_this, object) _corto_delegate_instanceof(corto_delegate(_this), object)
 #define safe_corto_enum_constant_from_id(_this, id) _corto_enum_constant_from_id(corto_enum(_this), id)

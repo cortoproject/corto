@@ -142,6 +142,10 @@ bool _corto_delegate_compatible_v(
     corto_type type);
 
 CORTO_EXPORT
+int16_t _corto_delegate_construct(
+    corto_delegate _this);
+
+CORTO_EXPORT
 int16_t _corto_delegate_init(
     corto_delegate _this);
 
