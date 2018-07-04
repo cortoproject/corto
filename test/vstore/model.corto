@@ -1,0 +1,910 @@
+in test
+
+int8 initCalled: 0
+int8 constructCalled: 0
+int8 destructCalled: 0
+
+//------------------------------------------------------------------------------
+// SUPPORT TYPES
+//------------------------------------------------------------------------------
+
+class Foo {
+    fail: bool, local
+    x, y: int32
+    init() int16
+    construct() int16
+    destruct() void
+}
+
+class ContentTypeTest {
+    x, y: int32
+    construct() int16
+    function get_construct_called_count() int32
+}
+
+struct Point {
+    x, y: int32
+    nameof() string
+}
+
+struct InvalidPoint {
+    x, y: Point // This will throw an error when trying to deserialize a number
+}
+
+class FooDispatcher: implements:[dispatcher] {
+    post(vstore.event e) void
+}
+
+class SubscriberTest {
+    lastParent: string, readonly
+    lastId: string, readonly
+    lastMask: eventMask, readonly
+    triggered: list[subscriber], readonly|not_null
+
+    countDeclare: uint32, readonly
+    countDeclareSelf: uint32, readonly
+    countDeclareScope: uint32, readonly
+    countDeclareTree: uint32, readonly
+
+    countDefine: uint32, readonly
+    countDefineSelf: uint32, readonly
+    countDefineScope: uint32, readonly
+    countDefineTree: uint32, readonly
+
+    countUpdate: uint32, readonly
+    countUpdateSelf: uint32, readonly
+    countUpdateScope: uint32, readonly
+    countUpdateTree: uint32, readonly
+
+    construct() int16
+    destruct() void
+    clear() void
+
+subscriber
+    onAll:   query:{select:".,//", from:"/testScope"}
+    onSelf:  query:{select:".",    from:"/testScope"}
+    onScope: query:{select:"/",    from:"/testScope"}
+    onTree:  query:{select:"//",   from:"/testScope"}
+}
+
+struct Refs {
+    sibling: object
+    nested_sibling: object
+    at_from: object
+    inside_from: object
+    inside_from_nested1: object
+    inside_from_nested2: object
+    parent_from: object
+    at_root: object
+    from: object
+    root: object
+    null_ref: object
+}
+
+//------------------------------------------------------------------------------
+// MOUNT SUPPORT TYPES
+//------------------------------------------------------------------------------
+
+// Mount that serves up data in JSON
+class JsonReplicator : mount, hidden {
+    mount: object
+    type: string
+
+    construct() int16
+
+override
+    on_query(vstore.query query) iterator[vstore.result]
+}
+
+// Mount that serves up data as corto strings
+class StringReplicator : mount, hidden {
+    mount: object
+    construct() int16
+
+override
+    on_query(vstore.query query) iterator[vstore.result]
+}
+
+// Mount that provides id service
+class IdMount : mount, hidden {
+    mount: object
+    alias type: observer/type
+
+    construct() int16
+
+override
+    on_id() string
+}
+
+// Mount that provides objects specified in list
+class ListMount : mount, hidden {
+    member mount: object
+    alias mask: observer/mask
+    member kind: ownership
+    member items: resultList, private|not_null
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount that uses iterator
+class MountWIterData: mount, hidden {
+    mount: object
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount that counts iterator calls
+class MountIterCount: mount, hidden {
+    mount: object
+    nextCount: int32, readonly
+    hasNextCount: int32, readonly
+    releaseCount: int32, readonly
+    result: vstore/result, readonly
+    id: string, readonly
+
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount with nested objects
+class VirtualMount: mount, hidden {
+    mount: string
+    data: resultList, private|not_null
+
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount that returns data with an initial slash in the parent
+class MountInitialSlash: mount {
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount that serves up historical data
+class HistoryMount : vstore/mount, hidden {
+    mount: object
+    construct() int16
+
+override
+    on_history_query(vstore/query query) iterator[vstore.result]
+
+    struct data {
+        result: vstore/result
+        history: list[string], not_null
+    }
+
+    member history: list[data], private|not_null
+}
+
+// LOCAL mount
+class SinkMount: vstore/mount, hidden {
+    mount: object
+    type: string
+    value: string
+    items: resultList, private|not_null
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+    on_resume(string parent, string id, inout object object) int16
+}
+
+// Mount used for various purposes
+class AutoResumeSinkMount : vstore/mount, hidden {
+    mount: object
+    type: string
+    value: string
+    subscribes: list[vstore/query], readonly|not_null
+    unsubscribes: list[vstore/query], readonly|not_null
+    mounts: list[vstore/query], readonly|not_null
+    unmounts: list[vstore/query], readonly|not_null
+    items: resultList, private|not_null
+
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+    on_subscribe(vstore/query query, word ctx) word
+    on_unsubscribe(vstore/query query, word ctx) void
+    on_mount(vstore/query query, word ctx) word
+    on_unmount(vstore/query query, word ctx) void
+}
+
+// LOCAL mount that serves up nested data
+class VirtualSinkMount : vstore/mount, hidden {
+    from: string
+    items: resultList, private|not_null
+    count: int32, readonly
+
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount that returns specified item using iterator
+class ObjectMount : vstore/mount, hidden {
+    select: string
+    from: string
+    item: result
+
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// The loader is a complex mount that filters on type, hides store packages and
+// has to take into account that builtin packages do not have the persistent
+// attribute. This class simulates the loader so the combination of these usecases
+// can be verified.
+class LoaderSimulatorMount : vstore/mount, hidden {
+    queryCount: int32, private
+    items: resultList, private|not_null
+
+    construct() int16
+
+override
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// Mount that serves up a single object
+class SimpleMount: vstore/mount {
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+// LOCAL mount with no data
+class EmptySinkMount : vstore/mount, hidden {
+    mount: object
+    construct() int16
+}
+
+struct mount_policy {
+    sampleRate: float64
+    mask: corto/vstore/mountCallbackMask
+}
+
+// Mount that counts received events
+class EventReplicator: mount, hidden {
+    alias query: subscriber/query
+    member policy: mount_policy
+
+    declareCount: int32, readonly
+    updateCount: int32, readonly
+    deleteCount: int32, readonly
+
+    construct() int16
+
+override
+    on_notify(vstore/subscriber_event event) void
+}
+
+// Mount that counts received events
+class RefMount: mount, hidden {
+    from: string
+    last_json: string, readonly
+    items: list[vstore/result], readonly | not_null
+
+    construct() int16
+
+override
+    on_notify(vstore/subscriber_event event) void
+    on_query(vstore/query query) iterator[vstore.result]
+}
+
+//------------------------------------------------------------------------------
+// DISPATCHER SUITES
+//------------------------------------------------------------------------------
+
+test/Suite Dispatcher {
+    observerPosted: bool
+    subscriberPosted: bool
+
+    tc_subscriberDispatcher()
+    tc_subscriberDispatcherMulti()
+    tc_observerDispatcher()
+    tc_observerDispatcherMulti()
+    tc_observerSubscriberDispatcher()
+}
+
+//------------------------------------------------------------------------------
+// SELECT SUITES
+//------------------------------------------------------------------------------
+
+// Test select query engine
+test/Suite Select {
+    tc_selectFromNull()
+    tc_selectFromRoot()
+    tc_selectFromCorto()
+
+    tc_selectThis()
+    tc_selectParent()
+    tc_selectIdentifier()
+    tc_selectIdentifierCaps()
+    tc_selectNumeric()
+    tc_selectUnderscore()
+    tc_selectScopedThis()
+    tc_selectScopedParent()
+    tc_selectScopedIdentifier()
+
+    tc_selectScope()
+    tc_selectScopeWithWildcard()
+    tc_selectScopeWithAsterisk()
+    tc_selectScopeWithWildcardFilter()
+    tc_selectScopeWithAsteriskFilter()
+
+    tc_selectTree()
+    tc_selectTreeWithWildcard()
+    tc_selectTreeWithWildcardFilter()
+    tc_selectTreeWithAsteriskFilter()
+    tc_selectTreeFromScope()
+
+    tc_selectFilterAsterisk()
+    tc_selectFilterWildcard()
+
+    tc_selectOrder()
+
+    tc_selectDeleteFirst()
+    tc_selectDeletePrevious()
+    tc_selectDeleteCurrent()
+    tc_selectDeleteNext()
+    tc_selectDeleteParent()
+
+    tc_selectTreeDeleteFirst()
+    tc_selectTreeDeletePrevious()
+    tc_selectTreeDeleteCurrent()
+    tc_selectTreeDeleteNext()
+    tc_selectTreeDeleteParent()
+    tc_selectTreeDeleteGrandparent()
+
+    tc_selectObject()
+    tc_selectObjectScope()
+    tc_selectObjectTree()
+    tc_selectObjectParentScope()
+    tc_selectObjectParentTree()
+    tc_selectObjectTrailingScope()
+    tc_selectObjectPrefixScope()
+    tc_selectObjectPrefixTrailingScope()
+    tc_selectObjectTrailingTree()
+
+    tc_selectEmptyParentString()
+    tc_selectEmptyParentAst()
+    tc_selectEmptyQueryString()
+    tc_selectEmptyStrings()
+    tc_selectFromRootThis()
+    tc_selectFromRootNull()
+    tc_selectFromRootEmpty()
+    tc_selectFromLangParent()
+    tc_selectFromPartialMatchedElement()
+
+    tc_selectParentNoSlash()
+
+    tc_selectOffsetScope()
+    tc_selectOffsetTree()
+    tc_selectOffsetLimitOvershootScope()
+    tc_selectOffsetLimitOvershootTree()
+    tc_selectOffsetLimit()
+    tc_selectOffsetLargerThanLimit()
+    tc_selectLimitScope()
+    tc_selectLimitTree()
+    tc_selectLimitOvershootScope()
+    tc_selectLimitOvershootTree()
+    tc_selectOffsetLimitFilter()
+
+    tc_selectParentWithSink()
+    tc_selectSeparator()
+
+    tc_selectInvertCase()
+    tc_selectInvertCaseFilter()
+    tc_selectInvertCaseScope()
+
+    tc_selectIdUnknown()
+    tc_selectThisUnknown()
+    tc_selectScopeUnknown()
+    tc_selectTreeUnknown()
+
+    tc_selectIdYieldUnknown()
+    tc_selectThisYieldUnknown()
+    tc_selectScopeYieldUnknown()
+    tc_selectTreeYieldUnknown()
+
+method
+    setup()
+    teardown()
+
+function
+    collect(string scope, string expr, uint64 offset, uint64 limit) list[result]
+    hasObject(resultList items, string parent, string name, string type) bool
+}
+
+// Request data with content type
+test/Suite SelectContentType {
+    tc_selectTypeWithConstruct()
+
+    tc_selectStringFromObjects()
+    tc_selectStringFromString()
+    tc_selectStringFromJson()
+
+    tc_selectJsonFromObjects()
+    tc_selectJsonFromString()
+    tc_selectJsonFromJson()
+
+    tc_selectBinaryFromObjects()
+    tc_selectBinaryFromString()
+    tc_selectBinaryFromJson()
+
+method
+    setup()
+}
+
+// Request data from REMOTE mounts
+test/Suite SelectMount {
+    mount: ListMount
+
+    tc_selectSingle()
+    tc_selectSingleNested()
+    tc_selectSingleTree()
+    tc_selectSingleTree2()
+    tc_selectSingleTree3()
+    tc_selectScope()
+    tc_selectScopeNested()
+    tc_selectScopeNestedDirty()
+    tc_selectScopeMixed()
+    tc_selectScopeFilter()
+
+    tc_selectSingleFromScope()
+    tc_selectSingleNestedFromScope()
+    tc_selectSingleFromScopeTree()
+    tc_selectSingleNestedFromScopeTree()
+    tc_selectScopeFromScope()
+    tc_selectScopeNestedFromScope()
+    tc_selectScopeNestedDirtyFromScope()
+    tc_selectScopeFilterFromScope()
+    tc_selectParentFromScope()
+
+    tc_selectSingleFromVirtualScope()
+    tc_selectSingleNestedFromVirtualScope()
+    tc_selectScopeFromVirtualScope()
+    tc_selectScopeNestedFromVirtualScope()
+    tc_selectScopeNestedDirtyFromVirtualScope()
+    tc_selectScopeFilterFromVirtualScope()
+    tc_selectParentFromVirtualScope()
+    tc_selectGrandparentFromVirtualScope()
+    tc_selectVirtualParentFromVirtualScope()
+    tc_selectVirtualGrandparentFromVirtualScope()
+    tc_selectFromPartialMatchedElement()
+
+    tc_selectTree()
+    tc_selectTreeFromScope()
+    tc_selectTreeFromNestedScope()
+    tc_selectTreeFromVirtualScope()
+    tc_selectTreeFromVirtualNestedScope()
+    tc_selectTreeEmptyScope()
+    tc_selectTreeEmptyNestedScope()
+
+    tc_selectInvertCase()
+    tc_selectInvertCaseFilter()
+    tc_selectInvertCaseScope()
+
+    tc_selectIteratorRelease()
+    tc_selectIteratorPartialRelease()
+    tc_selectIteratorPartialReleaseTwoMounts()
+    tc_selectIteratorPartialReleaseTwoMountsNested()
+
+    tc_selectScopeFromVirtualMount()
+
+    tc_selectFromMountWithPartialFrom()
+    tc_selectFromRootNoInitialSlashInFrom()
+    tc_selectTreeFromInitialSlashInMountResult()
+    tc_selectScopeFromInitialSlashInMountResult()
+
+method
+    setup()
+    teardown()
+}
+
+// Request data from HISTORY mounts
+test/Suite SelectHistory {
+    tc_selectNowToDepth()
+    tc_selectSampleToDepth()
+    tc_selectAll()
+    tc_selectJson()
+
+method
+    setup()
+}
+
+// Request data from a LOCAL mount
+test/Suite SelectSink {
+    tc_selectSingle()
+    tc_selectSingleVirtualNested1()
+    tc_selectSingleVirtualNested2()
+    tc_selectVirtualSingleNested1()
+    tc_selectVirtualSingleNested2()
+    tc_selectScope()
+    tc_selectVirtualScopeNested1()
+    tc_selectVirtualScopeNested2()
+    tc_selectVirtualScopeVirtualNested1()
+    tc_selectVirtualScopeVirtualNested2()
+    tc_selectMixedScope()
+    tc_selectMixedScopeNested1()
+    tc_selectMixedScopeNested2()
+
+    tc_selectSingleTypeFilter()
+    tc_selectMountInResult()
+    tc_selectSingleWithType()
+    tc_selectScopeWithType()
+    tc_selectTreeWithType()
+    tc_selectSingleWithTypeFromTreeMount()
+    tc_selectScopeWithTypeFromTreeMount()
+    tc_selectTreeWithTypeFromTreeMount()
+
+    tc_selectLoaderRootSingle()
+    tc_selectLoaderCortoSingle()
+    tc_selectLoaderNestedSingle()
+    tc_selectLoaderNestedSingleVirtual()
+    tc_selectLoaderRootScope()
+    tc_selectLoaderCortoScope()
+    tc_selectLoaderNestedScope()
+    tc_selectLoaderRootTree()
+    tc_selectLoaderCortoTree()
+    tc_selectLoaderNestedTree()
+    tc_selectLoaderLookupNestedInitialSlash()
+    tc_selectLoaderLookupFromUnknown()
+
+    tc_selectObjectFromVstore()
+    tc_selectObjectFromVstore_w_InvalidObjectInStore()
+    tc_selectObjectFromVstore_w_ValidObjectInStore()
+
+method
+    setup()
+    teardown()
+}
+
+// Resume data from LOCAL mount
+test/Suite ResumeSink {
+    declared, defined, updated, deleted, resumed, suspended: int8
+
+observer
+    onDeclare: declare | on_tree
+    onDefine: define | on_tree
+    onUpdate: update | on_tree
+    onDelete: delete | on_tree
+    on_resume: resume | on_tree
+    onSuspend: suspend | on_tree
+
+    tc_resolve()
+    tc_resolveNested1()
+    tc_resolveNested2()
+    tc_resolveFromMount()
+    tc_resolveNested1FromMount()
+    tc_resolveNested2FromMount()
+    tc_resolveNested1FromObjectFromMount()
+    tc_resolveNested2FromObjectFromMount()
+    tc_resolveNotExist()
+    tc_resolveNested1NotExist()
+    tc_resolveNested2NotExist()
+    tc_resolveFromVirtualMountPoint()
+    tc_resolveFromNestedVirtualMountPoint()
+    tc_resolveNested1FromVirtualMountPoint()
+    tc_resolveNested2FromVirtualMountPoint()
+    tc_resolveNested1FromNestedVirtualMountPoint()
+    tc_resolveNested2FromNestedVirtualMountPoint()
+    tc_lookup()
+    tc_lookupNested1()
+    tc_lookupNested2()
+    tc_lookupFromMount()
+    tc_lookupNested1FromMount()
+    tc_lookupNested2FromMount()
+    tc_lookupNested1FromObjectFromMount()
+    tc_lookupNested2FromObjectFromMount()
+    tc_lookupNotExist()
+    tc_lookupNested1NotExist()
+    tc_lookupNested2NotExist()
+    tc_lookupFromVirtualMountPoint()
+    tc_lookupFromNestedVirtualMountPoint()
+    tc_lookupNested1FromVirtualMountPoint()
+    tc_lookupNested2FromVirtualMountPoint()
+    tc_lookupNested1FromNestedVirtualMountPoint()
+    tc_lookupNested2FromNestedVirtualMountPoint()
+    tc_define()
+    tc_defineNested1()
+    tc_defineNested2()
+    tc_defineFromVirtualMountPoint()
+    tc_defineFromNestedVirtualMountPoint()
+    tc_resumeNestedFromMultiple()
+    tc_cleanupParentFromResumedChild()
+    tc_cleanupResumedParentOfCreatedChild()
+    tc_resolveContentTypeFail()
+    tc_lookupContentTypeFail()
+    tc_defineContentTypeFail()
+    tc_createContentTypeFail()
+    tc_resumeWithAutoFilter()
+    tc_declareAndResume()
+    tc_lookupAndResumeUnknown()
+
+method
+    setup()
+    teardown()
+}
+
+// Resume data from SINK mount without resume function
+test/Suite AutoResumeSink {
+    declared, defined, updated, deleted, resumed, suspended: int8
+
+observer
+    onDeclare: declare | on_tree
+    onDefine: define | on_tree
+    onUpdate: update | on_tree
+    onDelete: delete | on_tree
+    on_resume: resume | on_tree
+    onSuspend: suspend | on_tree
+
+    tc_resolve()
+    tc_resolveNested1()
+    tc_resolveNested2()
+    tc_resolveFromMount()
+    tc_resolveNested1FromMount()
+    tc_resolveNested2FromMount()
+    tc_resolveNested1FromObjectFromMount()
+    tc_resolveNested2FromObjectFromMount()
+    tc_define()
+    tc_defineNested1()
+    tc_defineNested2()
+    tc_resolveNotExist()
+    tc_resolveNested1NotExist()
+    tc_resolveNested2NotExist()
+
+method
+    setup()
+    teardown()
+}
+
+// Request data from a SINK mount with a type
+test/Suite SelectSinkWithType {
+    tc_selectMount()
+    tc_selectMountFromParent()
+    tc_selectMountFromVirtualParent()
+    tc_selectSingleMatch()
+    tc_selectSingleNoMatch()
+    tc_selectMixedScope()
+    tc_selectMixedScopeNested1()
+    tc_selectMixedScopeNested2()
+
+method
+    setup()
+    teardown()
+}
+
+// Test pass-through behavior for SINK mounts that don't override on_query
+test/Suite SelectSinkNoOnRequest {
+    tc_selectSingle()
+    tc_selectScope()
+
+method
+    setup()
+    teardown()
+}
+
+// Request serialized objects with references (requires relative object ids)
+test/Suite SelectContentTypeRefs {
+    nest0: object
+    nest1: object
+    nest2: object
+    nest3: object
+    nest4: object
+    nest5: object
+    sibling: object
+    nested_sibling: object
+
+    tc_selectIdWithRefsFromRoot()
+    tc_selectIdWithRefsFromNested1()
+    tc_selectIdWithRefsFromNested2()
+
+    tc_selectThisWithRefsFromRoot()
+    tc_selectThisWithRefsFromNested1()
+    tc_selectThisWithRefsFromNested2()
+
+    tc_selectScopeWithRefsFromRoot()
+    tc_selectScopeWithRefsFromNested1()
+    tc_selectScopeWithRefsFromNested2()
+
+    tc_selectScopeNestedWithRefsFromRoot()
+    tc_selectScopeNestedWithRefsFromNested1()
+    tc_selectScopeNestedWithRefsFromNested2()
+
+    tc_selectTreeWithRefsFromRoot()
+    tc_selectTreeWithRefsFromNested1()
+    tc_selectTreeWithRefsFromNested2()
+
+    tc_selectTreeNestedWithRefsFromRoot()
+    tc_selectTreeNestedWithRefsFromNested1()
+    tc_selectTreeNestedWithRefsFromNested2()
+
+    method setup()
+}
+
+//------------------------------------------------------------------------------
+// SUBSCRIBER SUITES
+//------------------------------------------------------------------------------
+
+test/Suite SubscriberEvent {
+    prevAttr: lang/attr
+    st: SubscriberTest
+
+    tc_onDeclare()
+    tc_onDeclareSelf()
+    tc_onDeclareScope()
+    tc_onDeclareTree()
+
+    tc_onDefine()
+    tc_onDefineSelf()
+    tc_onDefineScope()
+    tc_onDefineTree()
+
+    tc_onUpdate()
+    tc_onUpdateSelf()
+    tc_onUpdateScope()
+    tc_onUpdateTree()
+
+method
+    setup()
+    teardown()
+}
+
+test/Suite Subscribe {
+    triggered: uint8
+    owner: object
+    result: vstore/result
+    
+    subscriber noInitialSep: query:{select:"*", from:"testScope"}
+
+    tc_noInitialSep()
+    tc_subscribeInvertCase()
+    tc_subscribeInvertCaseFilter()
+    tc_subscribeInvertCaseParent()
+    tc_subscribeInvertCaseFromPublish()
+    tc_subscribeInvertCaseFilterFromPublish()
+    tc_subscribeInvertCaseParentFromPublish()
+    tc_subscribeNestedIdFromRoot()
+    tc_subscribeNestedScopeFromRoot()
+    tc_subscribeFromImplicit()
+    tc_subscribeFromNull()
+    tc_subscribeFromEmpty()
+    tc_subscribeFromRoot()
+    tc_subscribeFromScope()
+    tc_subscribeFromScopeNoInitialSlash()
+    tc_subscribeFromNested()
+    tc_subscribeFromNestedNoInitialSlash()
+    tc_subscribePartialMatchingParent()
+    tc_subscribePartialMatchingParentObject()
+    tc_subscribeOwnerSet()
+    tc_subscribeAlignSelf()
+    tc_subscribeAlignType()
+    tc_subscribeMultiDifferentParent()
+    tc_subscribeMultiDifferentParentVirtual()
+}
+
+// Test content types with subscribers
+test/Suite SubscribeContentType {
+    eventsReceived: int32
+
+    tc_subscribeTypeWithConstruct()
+
+    tc_subscribeStringFromObjects()
+    tc_subscribeStringFromString()
+    tc_subscribeStringFromJson()
+    tc_subscribeStringFromObjectsDispatch()
+    tc_subscribeStringFromStringDispatch()
+    tc_subscribeStringFromJsonDispatch()
+
+    tc_subscribeJsonFromObjects()
+    tc_subscribeJsonFromString()
+    tc_subscribeJsonFromJson()
+    tc_subscribeJsonFromObjectsDispatch()
+    tc_subscribeJsonFromStringDispatch()
+    tc_subscribeJsonFromJsonDispatch()
+
+    tc_subscribeBinaryFromObjects()
+    tc_subscribeBinaryFromString()
+    tc_subscribeBinaryFromJson()
+    tc_subscribeBinaryFromObjectsDispatch()
+    tc_subscribeBinaryFromStringDispatch()
+    tc_subscribeBinaryFromJsonDispatch()
+
+method
+    setup() void
+}
+
+//------------------------------------------------------------------------------
+// MOUNT SUITES
+//------------------------------------------------------------------------------
+
+// Test events received by replicator
+test/Suite ReplicatorEvent {
+    tc_event()
+    tc_eventTree()
+    tc_eventWithTree()
+    tc_eventTreeWithTree()
+    tc_matchingType()
+    tc_nonPersistent()
+    tc_ownedByMount()
+    tc_rateLimitOneObject()
+    tc_rateLimitThreeObjects()
+    tc_rateLimitAlign()
+}
+
+// Test mount subscription callbacks
+test/Suite MountSubscription {
+    tc_subscribeSingle()
+    tc_subscribeScope()
+    tc_subscribeTree()
+    tc_subscribeSingleTwice()
+    tc_subscribeScopeTwice()
+    tc_subscribeTreeTwice()
+    tc_subscribeTwoSingleSameCtx()
+    tc_subscribeTwoSingleOtherCtx()
+    tc_subscribeSameIdDifferentCase()
+    tc_subscribeSingleTwiceSameSubscriber()
+    tc_subscribeScopeTwiceSameSubscriber()
+    tc_subscribeTreeTwiceSameSubscriber()
+    tc_subscribeSingleAlign()
+    tc_subscribeScopeAlign()
+    tc_subscribeTreeAlign()
+    tc_subscribeForMountWithTypeFilter()
+    tc_subscribeNestedForMountWithTypeFilter()
+    tc_subscribeOnMountWithFromNull()
+}
+
+// Test reference identifier translation
+test/Suite MountContentTypeRefs {
+    tc_selectRootFromMountAtRoot()
+    tc_selectDataFromMountAtRoot()
+    tc_selectDataNested1FromMountAtRoot()
+    tc_selectDataNested2FromMountAtRoot()
+
+    tc_selectRootFromMountAtData()
+    tc_selectDataFromMountAtData()
+    tc_selectDataNested1FromMountAtData()
+    tc_selectDataNested2FromMountAtData()
+
+    tc_selectRootFromMountAtDataNested1()
+    tc_selectDataFromMountAtDataNested1()
+    tc_selectDataNested1FromMountAtDataNested1()
+    tc_selectDataNested2FromMountAtDataNested1()
+
+    tc_selectRootFromMountAtDataNested2()
+    tc_selectDataFromMountAtDataNested2()
+    tc_selectDataNested1FromMountAtDataNested2()
+    tc_selectDataNested2FromMountAtDataNested2()
+
+method
+    setup()
+}
+
+// Test mount on_mount callback
+test/Suite MountMounts {
+    tc_mountOnDefine()
+}
+
+// Test mount that provides unique id's
+test/Suite MountId {
+    tc_id()
+    tc_noIdAvailable()
+    tc_idForNested()
+    tc_idTypeFilter()
+}
+
+// Test loader
+test/Suite Loader {
+    tc_loadNonExistent()
+}

@@ -1,0 +1,129 @@
+in test
+
+test/Suite Util {
+    tc_ulltoa()
+}
+
+// Test environment variable parsing functions
+test/Suite Env {
+    tc_envparseSimpleFormat()
+    tc_envparseSimpleReplace()
+    tc_envparseReplaceMultiple()
+    tc_envparseReplaceWithSameVariable()
+    tc_envparseFormatAndReplace()
+    tc_envparseVariableNotFound()
+
+    tc_setenvSimple()
+    tc_setenvSimpleFormat()
+    tc_setenvSimpleReplace()
+    tc_setenvReplaceMultiple()
+    tc_setenvReplaceWithSameVariable()
+    tc_setenvFormatAndReplace()
+    tc_setenvVariableNotFound()
+    tc_setenvNull()
+}
+
+// Test buffer implementation
+test/Suite Buffer {
+    tc_append()
+    tc_appendToExisting()
+    tc_appendEmpty()
+    tc_appendEmptyToExisting()
+    tc_appendNull()
+    tc_appendNullToExisting()
+    tc_appendLarge()
+    tc_appendLargeMulti()
+    tc_appendLargeOverflow()
+    tc_appendOverflow()
+}
+
+// Test matcher
+test/Suite Matcher {
+    tc_emptyString()              // '' => *
+    tc_null()                     // null => *
+    tc_scopeEmptyString()         // '' => *
+    tc_scopeNull()                // null => *
+    tc_treeEmptyString()          // '' => *
+    tc_treeNull()                 // null => *
+    tc_id()                       // a => a
+    tc_idFail()                   // a => b
+    tc_idOr()                     // a => a|b
+    tc_idOrFail()                 // c => a|b
+    tc_idOrMulti()                // a => a|b|c|d|e|f
+    tc_idOrMultiFail()            // g => a|b|c|d|e|f
+    tc_idAnd()                    // a => a&a
+    tc_idAndFail()                // a => a&b
+    tc_idNot()                    // a => ^b
+    tc_idNotFail()                // b => ^b
+    tc_idNotOr()                  // a => ^b|c
+    tc_idNotOrFail()              // a => ^a|b
+    tc_idNotAnd()                 // a => ^a&b
+    tc_idNotAndFail()             // a => ^a&a
+    tc_filterIdA()                // ax => a*
+    tc_filterIdAFail()            // bx => a*
+    tc_filterIdQ()                // ax => a?
+    tc_filterIdQFail()            // bx => a?
+    tc_filterA()                  // ax => *
+    tc_filterQQ()                 // ax => ??
+    tc_filterQFail()              // ax => ?
+    tc_filterQQFail()             // a => ??
+    tc_filterQA()                 // ax => ?*
+    tc_filterAQ()                 // ax => *?
+    tc_filterFail()               // ax => b*
+    tc_filterOr()                 // ax => a*|b*
+    tc_filterOrFail()             // cx => a*|b*
+    tc_filterAnd()                // ax => a*&*x
+    tc_filterAndFail()            // ax => a*&*y
+    tc_filterNot()                // ax => ^b*
+    tc_filterNotFail()            // bx => ^b*
+    tc_filterNotOr()              // ax => ^b*|c*
+    tc_filterNotOrFail()          // ax => ^a*|b*
+    tc_filterNotAnd()             // ax => ^a*&*y
+    tc_filterNotAndFail()         // ax => ^a*&*x
+    tc_filterNotFilter()          // ax => *x^b*
+    tc_filterNotFilterFail()      // ax => *x^a*
+    tc_separatorId()              // [a,b] => a,b
+    tc_separatorIdFail()          // c => a,b
+    tc_separatorFilter()          // ax => b*,*x
+    tc_separatorFilterFail()      // ax => b*,*y
+    tc_separatorNotFilter()       // ax => ^b*,*y
+    tc_separatorNotFilterFail()   // ax => ^a*,*y
+    tc_scopeId()                  // /a => /a
+    tc_scopeFilter()              // /a => /*
+    tc_scopeImplicit()            // /a => /
+    tc_scopeIdFail()              // /a => /b
+    tc_scopeIdMulti()             // /a/b => /a/b
+    tc_scopeIdMultiFail()         // /a/b => /a/c
+    tc_scopeFilter()              // /ax => /a*
+    tc_scopeFilterFail()          // /ax => /b*
+    tc_scopeImplicitFail()        // a => /
+    tc_scopeOr()                  // /a => /a|b
+    tc_scopeOrFail()              // /a/c => /a/b|c
+    tc_scopeOrMulti()             // /a/b => /a/b|c
+    tc_scopeOrMultiFail()         // /a/d => /a/b|c
+    tc_scopeFilterMulti()         // /ax/b => /*x/b
+    tc_scopeFilterMultiFail1()    // /ax/b => /*y/b
+    tc_scopeFilterMultiFail2()    // /ax/b => /*x/c
+    tc_scopeIdMultiSingleFail()   // /a/b => /a
+    tc_scopeIdSingleMultiFail()   // /a => /a/b
+    tc_scopeFilterSingleMultiFail() // /a => /a/*
+    tc_scopeFilterMultiSingleFail() // /a/b => /*
+    tc_treeId()                   // /a => //a
+    tc_treeImplicit()             // /a => //
+    tc_treeFilter()               // /a => //*
+    tc_treeIdFail()               // /a => //b
+    tc_treeImplicitFail()         // a => //
+    tc_treeFilterFail()           // /a* => //b
+    tc_treeNested()               // /a/b => //b
+    tc_treeNestedFail()           // /a/b => //a
+    tc_treeNestedScope()          // /a/b/c => //b/c
+    tc_treeNestedScopeFail()      // /a/b/d => //b/c
+    tc_treeOffset()               // /a/b/c => a//c
+    tc_treeOffsetFail()           // /a => a//
+    tc_treeOffsetNested()         // /a/b/c/d => /a/b//d
+    tc_treeOffsetNestedFail()     // /b/c/d => /a/b//d
+    tc_treeOffsetAny()            // /a/b/c => /a//
+    tc_treeOffsetAnyFail()        // /a => /a//
+    tc_treeOffsetOr()             // /b/c/d => /a|b//d
+    tc_treeOffsetOrFail()         // /c/c/d => /a|b//d
+}

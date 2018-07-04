@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-corto_resultlist test_Select_collect(
+corto_resultList test_Select_collect(
     const char *scope,
     const char *expr,
     uint64_t offset,

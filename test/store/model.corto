@@ -1,0 +1,1841 @@
+in test
+
+int8 initCalled: 0
+int8 constructCalled: 0
+int8 destructCalled: 0
+
+//------------------------------------------------------------------------------
+// SUPPORT TYPES
+//------------------------------------------------------------------------------
+
+uint uintw: WIDTH_WORD
+int intw: WIDTH_WORD
+
+class Foo {
+    fail: bool, local
+    x, y: int32
+    init() int16
+    deinit() void
+    construct() int16
+    destruct() void
+}
+
+class Bar {
+    init() int16
+}
+
+class PointClass {
+    x, y: int32
+}
+
+struct Point {
+    x, y: int32
+    nameof() string
+}
+
+struct Point3D: Point {
+    z: int32
+}
+
+class DefaultValues {
+    a: int32, default: "10"
+    b: Point, default: "{20, 30}"
+    c: string, default: "Hello World"
+}
+
+struct Line {
+    start, stop: Point
+}
+
+struct CompositeWithReferenceTypeWithInit {
+    m: list[Foo], not_null
+}
+
+struct CompositeWithReferenceTypeDefaults {
+    m: list[DefaultValues], not_null
+}
+
+struct CompositeWithString {
+    a: int32
+    b: string
+    c: string
+    d: int32
+}
+
+target TargetActual: int32
+
+struct TargetActualMember {
+    m: TargetActual
+    n: int32
+}
+
+struct ReferenceMember {
+    m: object
+    n: int32
+}
+
+struct ReferenceTargetMember {
+    m: target[object]
+    n: int32
+}
+
+class NestedInitFail {
+    init() int16
+}
+
+class NestedConstructFail {
+    construct() int16
+}
+
+struct EventCount {
+    declareCount: int32
+    defineCount: int32
+    updateCount: int32
+    deleteCount: int32
+    resumeCount: int32
+    suspendCount: int32
+}
+
+array IntArray: int32, 4
+array StringArray: string, 4
+array CompositeArray: Point, 4
+array ObjectArray: object, 4
+array AllocArray: int64, 4
+array ReferenceArray: object, 4
+
+sequence IntSequence: int32
+sequence StringSequence: string
+sequence CompositeSequence: Point
+sequence ObjectSequence: object
+sequence AllocSequence: int64
+sequence ReferenceSequence: object
+
+list IntList: int32
+list LongIntList: int64
+list StringList: string
+list CompositeList: Point
+list ObjectList: object
+list AllocList: int64
+list ReferenceList: object
+list CollectionList: list[int32]
+
+struct struct_string {
+    m: string
+}
+
+struct struct_base {
+    x, y: int32
+}
+
+struct struct_inherit: struct_base {
+    x, z: int32
+}
+
+struct struct_arrayInt {
+    m: array[int32, 3]
+}
+
+struct struct_arrayReference {
+    m: array[object, 3]
+}
+
+struct struct_arrayString {
+    m: array[string, 3]
+}
+
+struct struct_arrayStruct {
+    m: array[Point, 3]
+}
+
+struct struct_sequenceInt {
+    m: sequence[int32]
+}
+
+struct struct_sequenceReference {
+    m: sequence[object]
+}
+
+struct struct_sequenceString {
+    m: sequence[string]
+}
+
+struct struct_sequenceStruct {
+    m: sequence[Point]
+}
+
+struct struct_listInt {
+    m: list[int32], not_null
+}
+
+struct struct_listReference {
+    m: list[object], not_null
+}
+
+struct struct_listString {
+    m: list[string], not_null
+}
+
+struct struct_listStruct {
+    m: list[Point], not_null
+}
+
+struct struct_observableInt {
+    m: int32, observable
+}
+
+struct struct_observableString {
+    m: string, observable
+}
+
+struct struct_observableReference {
+    m: object, observable
+}
+
+struct struct_observableStruct {
+    m: Point, observable
+}
+
+struct struct_observableArray {
+    m: IntArray, observable
+}
+
+struct struct_observableSequence {
+    m: intSequence, observable
+}
+
+struct struct_observableList {
+    m: intList, observable
+}
+
+struct struct_optionalInt {
+    m: int32, optional
+}
+
+struct struct_optionalString {
+    m: string, optional
+}
+
+struct struct_optionalReference {
+    m: object, optional
+}
+
+struct struct_optionalStruct {
+    m: Point, optional
+}
+
+struct struct_optionalArray {
+    m: IntArray, optional
+}
+
+struct struct_optionalSequence {
+    m: IntSequence, optional
+}
+
+struct struct_optionalList {
+    m: IntList, optional
+}
+
+struct struct_targetInt {
+    m: target[int32]
+}
+
+struct struct_targetString {
+    m: target[string]
+}
+
+struct struct_targetReference {
+    m: target[object]
+}
+
+struct struct_targetStruct {
+    m: target[Point]
+}
+
+struct struct_targetArray {
+    m: target[IntArray]
+}
+
+struct struct_targetSequence {
+    m: target[IntSequence]
+}
+
+struct struct_targetList {
+    m: target[IntList], not_null
+}
+
+enum TypeKind {
+    Int,
+    String,
+    Composite,
+    Reference
+    Array,
+    Sequence,
+    List
+    OptionalInt,
+    OptionalString,
+    OptionalComposite,
+    OptionalReference
+    OptionalArray,
+    OptionalSequence,
+    OptionalList
+}
+
+union unionTypes: test/TypeKind {
+    m_int: [TypeKind/Int], int32
+    m_string: [TypeKind/String], string
+    m_composite: [test/TypeKind/Composite], Point
+    m_reference: [TypeKind/Reference], object
+    m_array: [TypeKind/Array], IntArray
+    m_sequence: [TypeKind/Sequence], IntSequence
+    m_list: [TypeKind/List], IntList
+    m_optionalInt: [TypeKind/OptionalInt], int32, optional
+    m_optionalString: [TypeKind/OptionalString], string, optional
+    m_optionalComposite: [TypeKind/OptionalComposite], Point, optional
+    m_optionalReference: [TypeKind/OptionalReference], object, optional
+    m_optionalArray: [TypeKind/OptionalArray], IntArray, optional
+    m_optionalSequence: [TypeKind/OptionalSequence], IntSequence, optional
+    m_optionalList: [TypeKind/OptionalList], IntList, optional
+}
+
+struct VoidParent = {parent_type: void} {
+    foo: int32
+}
+
+struct DefinedParent = {parent_state: valid} {
+    foo: int32
+}
+
+struct DeclaredParent = {parent_state: declared} {
+    foo: int32
+}
+
+struct TypeAttr = {attr:ATTR_OBSERVABLE} {
+    foo: int32
+}
+
+ReferenceMember anonymousString = {
+    CompositeWithString[10, "Hello", "World", 20]
+}
+
+ReferenceMember anonymousStringEsc = {
+    CompositeWithString[10, "\"Hello\"", "\"World\"", 20]
+}
+
+// Support types for container testcases
+table TableSingleKey {
+    id: int32, key
+    value: string
+}
+
+table TableMultiKey {
+    id1: int32, key
+    id2: int32, key
+    value: string
+}
+
+table TableStringKey {
+    id: string, key
+    value: string
+}
+
+table TableMultiStringKey {
+    id1: string, key
+    id2: string, key
+    value: string
+}
+
+table TableMultiMixedKey {
+    id1: int32, key
+    id2: string, key
+    value: string
+}
+
+table TableNested {
+    id: int32, key
+    value: string
+
+    table ChildTable {
+        id: int32, key
+        value: string
+    }
+}
+
+table TableNestedContainer {
+    id: int32, key
+    value: string
+
+    container ChildContainer {
+        id: int32
+        value: string
+
+        leaf ChildLeaf {
+            id: int32
+            value: string
+        }
+    }
+}
+
+table TableNestedLeafs {
+    id: int32, key
+    value: string
+
+    leaf ChildLeaf1 {
+        id: int32
+        value: string
+    }
+
+    leaf ChildLeaf2 {
+        id: int32
+        value: string
+    }
+}
+
+container ContainerEmpty {
+    id: int32
+    value: string
+}
+
+container ContainerNestedTable {
+    id: int32
+    value: string
+
+    table ChildTable {
+        id: int32, key
+        value: string
+    }
+}
+
+container ContainerNestedLeaf {
+    id: int32
+    value: string
+
+    leaf ChildLeaf {
+        id: int32
+        value: string
+    }
+}
+
+container ContainerNestedContainer {
+    id: int32
+    value: string
+
+    container ChildContainer {
+        id: int32
+        value: string
+
+        leaf ChildLeaf {
+            id: int32
+            value: string
+        }
+    }
+}
+
+leaf LeafRoot {
+    id: int32
+    value: string
+}
+
+container Car {
+    license_plate: string
+    speed: uint16
+
+    enum WheelLocation { FrontLeft, FrontRight, BackLeft, BackRight }
+
+    table Wheel {
+        location: WheelLocation, key
+        position: uint16
+
+        leaf Tire {
+            brand: string
+        }
+    }
+
+    leaf Engine {
+        rpm: uint16
+        temperature: uint16
+    }
+}
+
+// Replicator for ownership testcase
+class FooReplicator : mount, hidden {
+    mount: object
+    invoked: uint32, readonly
+    construct() int16
+    on_invoke(object instance, function proc, word argptrs) void
+}
+
+// Class with method for testing ownership on_invoke
+class MethodForwardTest {
+    invoked: int32, readonly
+    remote func() void
+}
+
+// Type with inheritance and alias member
+struct AliasBase {
+    a: int32
+    b: object
+}
+
+struct AliasSub: AliasBase, hidden {
+    alias b: AliasBase/b
+    member c: int32
+}
+
+bitmask Hooks {
+    INIT_CALLED,
+    CONSTRUCT_CALLED,
+    DEFINE_CALLED,
+    VALIDATE_CALLED,
+    UPDATE_CALLED,
+    DESTRUCT_CALLED,
+    DELETE_CALLED,
+    DEINIT_CALLED
+}
+
+// Split administration of called hooks from object so it is possible to track
+// if deinit was called
+class LifecycleAdmin {
+    hooksCalled: Hooks
+}
+
+class LifecycleTest {
+    admin: LifecycleAdmin
+    constructFail,validateFail: bool
+    init() int16
+    construct() int16
+    define() void
+    validate() int16
+    update() void
+    destruct() void
+    delete() void
+    deinit() void
+}
+
+// Types to test invoking interface methods
+interface Vehicle {
+    move(float64 x, float64 y) float64
+}
+
+class Boat: implements:[Vehicle] {
+    cur_x, cur_y: float64
+    move(float64 x, float64 y) float64
+}
+
+class Plane: implements:[Vehicle] {
+    cur_x, cur_y: float64
+    move(float64 x, float64 y) float64
+}
+
+// Test tags
+tag foo_tag = {}
+tag bar_tag = {}
+tag hello_tag = {}
+tag world_tag = {}
+
+struct TagTest {
+    foo: int32, tags: [foo_tag, hello_tag]
+    bar: int32, tags: [bar_tag]
+}
+
+test/Suite Attributes {
+    tc_testDefaultSet()
+    tc_testTargetAttr()
+    tc_testTargetOrphanAttr()
+    tc_isDefaultPersistent()
+    tc_isDefaultScopedPersistent()
+    tc_typeOverridesAttributes()
+}
+
+struct InitTest {
+    m_list: list[int32]
+    m_list_not_null: list[int32], not_null
+    m_map: map[string, int32]
+    m_map_not_null: map[string, int32], not_null
+    m_default_num: int32, default:"10"
+    m_default_string: string, default:"Hello World"
+    m_default_composite: Point, default:"{10, 20}"
+    m_default_nested: Line, default:"{{10,20},{30,40}}"
+    m_default_list: list[int32], default:"{10,20,30}"
+    m_default_null_list: list[int32], default:"null"
+    m_observable: int32, observable
+    m_observable_default: int32, observable, default:"10"
+    m_observable_list: list[int32], observable
+    m_observable_list_not_null: list[int32], observable|not_null
+    m_target: target[int32]
+}
+
+struct NestedInitTest {
+    m_nested: InitTest
+}
+
+class AttrConstructorTest {
+    construct() int16
+}
+
+class AnonymousTest {
+    objects: list[object], not_null
+}
+
+// Function overloading support types and procedures
+ol_null(object a) void
+ol_null(string a) void
+ol_null(bool a) void
+ol_object(object a) void
+ol_string(string a) void
+ol_bool(bool a) void
+ol_wildcard(int32 a, string b) void
+ol_wildcard(float32 a, string b) void
+ol_int(int32 a) void
+ol_uint(int32 a) void
+ol_num(int32 a) void
+ol_num(float64 a) void
+
+enum Color { Red, Orange, Yellow, Green, Blue }
+ol_any(bool a) void
+ol_any(char a) void
+ol_any(int32 a) void
+ol_any(float32 a) void
+ol_any(string a) void
+ol_any(object a) void
+ol_any(Color a) void
+
+class Animal {
+    a: bool
+}
+
+class Dog : Animal {
+    b: bool
+}
+
+class GoldenRetriever : Dog {
+    c: bool
+}
+
+class Cat : Animal {
+    b: bool
+}
+
+ol_inherit(Animal a) void
+ol_inherit(Dog a) void
+
+// Key and lock for security tests
+class TestKey: secure/key {
+    override login(string user, string password) string
+}
+
+struct AccessRule {
+    user: string
+    action: secure/actionKind
+    access: secure/accessKind
+}
+
+class TestLock: secure/lock, hidden {
+    mount: string
+    expr: string
+    priority: int32
+    rules: list[AccessRule], not_null
+    construct() int16
+    override authorize(string token, secure/actionKind action) secure/accessKind
+}
+
+//------------------------------------------------------------------------------
+// OBJECT MANAGEMENT SUITES
+//------------------------------------------------------------------------------
+
+// Test initializer serializer
+test/Suite Init {
+    tc_list()
+    tc_list_not_null()
+    tc_map()
+    tc_map_not_null()
+    tc_default_num()
+    tc_default_string()
+    tc_default_composite()
+    tc_default_nested()
+    tc_default_list()
+    tc_observable()
+    tc_observable_default()
+    tc_observable_list()
+    tc_observable_list_not_null()
+    tc_target()
+    tc_nestedInit()
+}
+
+// Test object management
+test/Suite ObjectMgmt {
+    prevAttr: lang/attr, local|private
+
+    tc_invalidate()
+
+    tc_declareVoid()
+    tc_declareInt()
+    tc_declareFoo()
+    tc_declareVoidAttr0()
+    tc_declareIntAttr0()
+    tc_declareFooAttr0()
+    tc_declareInitFail()
+    tc_declareNullType()
+    tc_declareInvalidType()
+
+    tc_declareOrphan()
+    tc_declareScoped()
+
+    tc_createVoid()
+    tc_createInt()
+    tc_createFoo()
+    tc_createVoidAttr0()
+    tc_createIntAttr0()
+    tc_createFooAttr0()
+    tc_createInitFail()
+    tc_createNullType()
+    tc_createInvalidType()
+
+    tc_defineVoid()
+    tc_defineInt()
+    tc_defineFoo()
+    tc_defineVoidAttr0()
+    tc_defineIntAttr0()
+    tc_defineFooAttr0()
+    tc_defineFooFail()
+
+    tc_declareChildVoid()
+    tc_declareChildInt()
+    tc_declareChildFoo()
+    tc_declareChildVoidAttr0()
+    tc_declareChildIntAttr0()
+    tc_declareChildFooAttr0()
+    tc_declareChildInitFail()
+    tc_declareChildParentStateErr()
+    tc_declareChildParentTypeErr()
+    tc_declareExistingWithParentState()
+    tc_declareChildNullType()
+    tc_declareChildInvalidType()
+    tc_redeclareWithDifferentType()
+
+    tc_createChildVoid()
+    tc_createChildInt()
+    tc_createChildFoo()
+    tc_createChildVoidAttr0()
+    tc_createChildIntAttr0()
+    tc_createChildFooAttr0()
+    tc_createChildInitFail()
+    tc_createChildParentStateErr()
+    tc_createChildParentTypeErr()
+    tc_createChildNullType()
+    tc_createChildInvalidType()
+    tc_createChildNested()
+
+    tc_deleteSingle()
+    tc_deleteTreeImplicit()
+    tc_deleteTreeExplicit()
+    tc_deleteWithReference()
+    tc_deleteRedeclaration()
+
+    tc_findOrDeclare()
+    tc_findOrDeclareExisting()
+    tc_findOrDeclareExistingOtherType()
+    tc_findOrCreate()
+    tc_findOrCreateExisting()
+    tc_findOrCreateExistingOtherType()
+
+    tc_declareNested()
+    tc_declareNestedFirstFail()
+    tc_declareNestedSecondFail()
+    tc_declareNestedLastFail()
+    tc_createNested()
+    tc_createNestedLastFail()
+    tc_declareNestedFirstExists()
+    tc_declareNestedSecondExists()
+    tc_declareNestedLastExists()
+    tc_declareNestedDot()
+    tc_declareNestedDots()
+    tc_createNestedDot()
+    tc_createNestedDots()
+
+    tc_declareNestedFuncNoArgs()
+    tc_declareNestedFuncOneArg()
+    tc_declareNestedFuncOneOutArg()
+    tc_declareNestedFuncTwoArgs()
+
+    tc_redeclareUnknown()
+    tc_redeclareNestedUnknown()
+    tc_redeclareOutOfOrder()
+    tc_redeclareUnknownDontForceType()
+    tc_redeclareRecursiveUnknownDontForceType()
+    tc_recreateUnknown()
+    tc_recreateNestedUnknown()
+    tc_recreatedOutOfOrder()
+    tc_defineUnknown()
+    tc_defineRedeclaredUnknown()
+    tc_redeclareNestedUnknownOtherThread()
+
+    tc_lifecycle()
+    tc_lifecycleInitFail()
+    tc_lifecycleConstructFail()
+    tc_lifecycleValidateFail()
+    tc_lifecycleValidateFail_w_updateBegin()
+
+    tc_nameof()
+    tc_nameofOverride()
+
+    tc_defaultValues()
+
+method
+    setup()
+    teardown()
+}
+
+// Test whether attributes are set correctly in different contexts
+test/Suite AttrCheck {
+    tc_packageMainAttr() void
+    tc_packageObjectAttr() void
+    tc_constructorAttr() void
+}
+
+//------------------------------------------------------------------------------
+// OBJECT OWNERSHIP SUITES
+//------------------------------------------------------------------------------
+
+// Test ownership scenarios
+test/Suite Ownership {
+    observable: word
+
+    tc_checkOwnerNull()
+    tc_checkOwnerReplicator()
+
+    tc_declareOwned()
+    tc_createOwned()
+    tc_updateOwned()
+    tc_deleteOwned()
+    tc_releaseOwned()
+
+    tc_updateNotOwned()
+    tc_updateNotOwnedTarget()
+    tc_deleteNotOwned()
+    tc_releaseNotOwned()
+
+    tc_invokeOwned()
+    tc_invokeNotOwned()
+
+    tc_ownedSelfSelf()
+    tc_ownedSelfObj()
+    tc_ownedObjSelf()
+    tc_ownedObjObj()
+    tc_ownedObjObjSame()
+    tc_ownedSelfMount()
+    tc_ownedMountSelf()
+    tc_ownedObjMount()
+    tc_ownedMountObj()
+    tc_ownedMountMount()
+    tc_ownedMountMountSame()
+
+    method setup()
+    observer onDelete: DELETE
+}
+
+//------------------------------------------------------------------------------
+// SERIALIZER SUITES
+//------------------------------------------------------------------------------
+
+// Test corto string serializer
+test/Suite StringSerializer {
+    tc_serBoolTrue()
+    tc_serBoolFalse()
+
+    tc_serChar()
+    tc_serCharNull()
+    tc_serCharEscape()
+
+    tc_serInt8()
+    tc_serInt8Minus()
+
+    tc_serInt16()
+    tc_serInt16Minus()
+
+    tc_serInt32()
+    tc_serInt32Minus()
+
+    tc_serInt64()
+    tc_serInt64Minus()
+
+    tc_serUint8()
+    tc_serUint16()
+    tc_serUint32()
+    tc_serUint64()
+
+    tc_serString()
+    tc_serStringEscape()
+    tc_serStringWhitespace()
+    tc_serStringNull()
+
+    tc_serComposite()
+    tc_serInheritance()
+    tc_serCompositeNested()
+
+    tc_serArray()
+    tc_serArrayComplex()
+    tc_serSequence()
+    tc_serSequenceComplex()
+    tc_serList()
+    tc_serListComplex()
+
+    tc_serAnonymous()
+    tc_serTwoAnonymous()
+    tc_serSameAnonymous()
+    tc_serLongAnonymous()
+    tc_serCycle()
+    tc_serAnonymousComplex()
+    tc_serAnonymousComplexString()
+    tc_serAnonymousComplexStringEsc()
+
+    tc_serStructPrimitive()
+    tc_serStructString()
+    tc_serStructObservableInt()
+    tc_serStructObservableString()
+    tc_serStructObservableReference()
+    tc_serStructObservableStruct()
+    tc_serStructObservableArray()
+    tc_serStructObservableSequence()
+    tc_serStructObservableList()
+    tc_serStructOptionalInt()
+    tc_serStructOptionalString()
+    tc_serStructOptionalReference()
+    tc_serStructOptionalStruct()
+    tc_serStructOptionalArray()
+    tc_serStructOptionalSequence()
+    tc_serStructOptionalList()
+    tc_serStructTargetInt()
+    tc_serStructTargetString()
+    tc_serStructTargetReference()
+    tc_serStructTargetStruct()
+    tc_serStructTargetArray()
+    tc_serStructTargetSequence()
+    tc_serStructTargetList()
+    tc_serStructArrayInt()
+    tc_serStructArrayString()
+    tc_serStructArrayReference()
+    tc_serStructArrayStruct()
+    tc_serStructSequenceInt()
+    tc_serStructSequenceString()
+    tc_serStructSequenceReference()
+    tc_serStructSequenceStruct()
+    tc_serStructListInt()
+    tc_serStructListString()
+    tc_serStructListReference()
+    tc_serStructListStruct()
+    tc_serStructInherit()
+}
+
+// Test corto string deserializer
+test/Suite StringDeserializer {
+    tc_errMissingType()
+    tc_errExcessElements()
+    tc_errUnresolvedType()
+    tc_errUnresolvedMember()
+    tc_errNotAType()
+    tc_errTypeMismatch()
+
+    tc_deserExisting()
+    tc_deserExisting_w_type()
+    tc_deserExisting_w_scopedType()
+
+    tc_deserBoolTrue()
+    tc_deserBoolFalse()
+    tc_deserBoolInvalid()
+
+    tc_deserChar()
+    tc_deserCharQuoted()
+    tc_deserCharNull()
+    tc_deserCharNullQuoted()
+    tc_deserCharEscape()
+    tc_deserCharEscapeQuoted()
+
+    tc_deserInt8()
+    tc_deserInt8Minus()
+    tc_deserInt8Overflow()
+
+    tc_deserInt16()
+    tc_deserInt16Minus()
+    tc_deserInt16Overflow()
+
+    tc_deserInt32()
+    tc_deserInt32Minus()
+    tc_deserInt32Overflow()
+
+    tc_deserInt64()
+    tc_deserInt64Minus()
+
+    tc_deserUint8()
+    tc_deserUint8Overflow()
+
+    tc_deserUint16()
+    tc_deserUint16Overflow()
+
+    tc_deserUint32()
+    tc_deserUint32Overflow()
+
+    tc_deserUint64()
+
+    tc_deserString()
+    tc_deserStringQuotes()
+    tc_deserStringQuotesWhitespaces()
+    tc_deserStringEscape()
+    tc_deserStringEscapeQuotes()
+    tc_deserStringWhitespace()
+    tc_deserStringWhitespaceTrailing()
+    tc_deserStringWhitespaceTrailingNoType()
+    tc_deserStringMember()
+    tc_deserStringMemberNoQuotes()
+
+    tc_deserStringMemberEscape()
+    tc_deserStringMemberEscapeNoQuotes()
+
+    tc_deserComposite()
+    tc_deserCompositeNoType()
+    tc_deserCompositeWhitespace()
+    tc_deserCompositeMembers()
+    tc_deserCompositeMixed()
+
+    tc_deserArray()
+    tc_deserArrayComplex()
+    tc_deserArrayReference()
+
+    tc_deserSequence()
+    tc_deserSequenceComplex()
+    tc_deserSequenceReference()
+
+    tc_deserList()
+    tc_deserListComplex()
+    tc_deserListReference()
+
+    tc_deserInheritance()
+    tc_deserInheritanceMembers()
+    tc_deserInheritanceMixed()
+
+    tc_deserCompositeNested()
+    tc_deserCompositeNestedMembers()
+    tc_deserCompositeNestedMixed()
+
+    tc_deserAlias()
+
+    tc_deserAnonymousSimple()
+    tc_deserAnonymousNested()
+    tc_deserAnonymousMultiple()
+    tc_deserAnonymousReuse()
+    tc_deserAnonymousReuseNested()
+    tc_deserAnonymousCycle()
+    tc_deserAnonymousTwice()
+    tc_deserAnonymousComplex()
+    tc_deserAnonymousComplexString()
+    tc_deserAnonymousComplexStringEsc()
+
+    tc_deserTargetOwned()
+    tc_deserTargetOwnedObj()
+    tc_deserTargetOwnedMount()
+    tc_deserTargetNotOwned()
+    tc_deserTargetNotOwnedObj()
+    tc_deserTargetNotOwnedMount()
+    tc_deserTargetMemberOwned()
+    tc_deserTargetMemberNotOwned()
+    tc_deserTargetRefMemberOwned()
+    tc_deserTargetRefMemberNotOwned()
+    tc_deserTargetAnonymousOwned()
+    tc_deserTargetAnonymousNotOwned()
+    tc_deserTargetRefAnonymousMemberOwned()
+    tc_deserTargetRefAnonymousMemberNotOwned()
+
+method
+    setup()
+    teardown()
+}
+
+// Test compare serializer
+test/Suite Compare {
+    tc_uint8()
+    tc_uint16()
+    tc_uint32()
+    tc_uint64()
+    tc_uintw()
+    tc_int8()
+    tc_int16()
+    tc_int32()
+    tc_int64()
+    tc_intw()
+    tc_float32()
+    tc_float64()
+    tc_bool()
+    tc_char()
+    tc_string()
+    tc_stringNull()
+    tc_any()
+    tc_reference()
+    tc_array()
+    tc_sequence()
+    tc_list()
+    tc_listWithNullList()
+    tc_nullListWithNullList()
+    tc_nullListWithList()
+    tc_arrayWithSequence()
+    tc_arrayWithList()
+    tc_listWithArray()
+    tc_sequenceWithList()
+    tc_arrayWithSequenceAlloc()
+    tc_arrayWithListAlloc()
+    tc_sequenceWithListAlloc()
+    tc_listWithListAlloc()
+    tc_sequenceSizeMismatch()
+    tc_listSizeMismatch()
+}
+
+// Test copy serializer
+test/Suite Copy {
+    tc_any()
+    tc_int()
+    tc_string()
+    tc_reference()
+    tc_struct()
+    tc_structWithObservableInt()
+    tc_structWithObservableString()
+    tc_structWithObservableReference()
+    tc_structWithObservableStruct()
+    tc_structWithObservableArray()
+    tc_structWithObservableSequence()
+    tc_structWithObservableList()
+    tc_structWithOptionalInt()
+    tc_structWithOptionalString()
+    tc_structWithOptionalReference()
+    tc_structWithOptionalStruct()
+    tc_structWithOptionalArray()
+    tc_structWithOptionalSequence()
+    tc_structWithOptionalList()
+    tc_structWithTargetInt()
+    tc_structWithTargetString()
+    tc_structWithTargetReference()
+    tc_structWithTargetStruct()
+    tc_structWithTargetArray()
+    tc_structWithTargetSequence()
+    tc_structWithTargetList()
+    tc_unionWithInt()
+    tc_unionWithString()
+    tc_unionWithReference()
+    tc_unionWithStruct()
+    tc_unionWithArray()
+    tc_unionWithSequence()
+    tc_unionWithList()
+    tc_unionWithOptionalInt()
+    tc_unionWithOptionalString()
+    tc_unionWithOptionalReference()
+    tc_unionWithOptionalStruct()
+    tc_unionWithOptionalArray()
+    tc_unionWithOptionalSequence()
+    tc_unionWithOptionalList()
+    tc_arrayWithInt()
+    tc_arrayWithString()
+    tc_arrayWithReference()
+    tc_arrayWithStruct()
+    tc_sequenceWithInt()
+    tc_sequenceWithString()
+    tc_sequenceWithReference()
+    tc_sequenceWithStruct()
+    tc_listWithInt()
+    tc_listWithString()
+    tc_listWithReference()
+    tc_listWithStruct()
+    tc_listWithList()
+    tc_arrayToArray()
+    tc_arrayToList()
+    tc_arrayToExistingList()
+    tc_sequenceToSequence()
+    tc_sequenceToExistingSequence()
+    tc_sequenceToSequenceResize()
+    tc_listToArray()
+    tc_listToSequence()
+    tc_listToExistingSequence()
+    tc_listToList()
+    tc_listToExistingList()
+    tc_listToListResize()
+    tc_listToNullList()
+    tc_nullListToList()
+    tc_nullListToNullList()
+    tc_arrayToArrayAlloc()
+    tc_arrayToListAlloc()
+    tc_sequenceToSequenceAlloc()
+    tc_sequenceToSequenceResizeAlloc()
+    tc_listToArrayAlloc()
+    tc_listToSequenceAlloc()
+    tc_listToListAlloc()
+    tc_listToListResizeAlloc()
+    tc_sequenceToSequenceComposite()
+    tc_sequenceToSequenceValueComposite()
+    tc_arrayToArrayString()
+    tc_arrayToExistingArrayString()
+    tc_arrayToListString()
+    tc_arrayToExistingListString()
+    tc_sequenceToSequenceString()
+    tc_sequenceToExistingSequenceString()
+    tc_sequenceToSequenceStringStack()
+    tc_sequenceToExistingSequenceStringStack()
+    tc_sequenceToExistingSequenceStringStackSmaller()
+    tc_sequenceToExistingSequenceStringStackLarger()
+    tc_listToArrayString()
+    tc_listToSequenceString()
+    tc_listToExistingSequenceString()
+    tc_listToListString()
+    tc_listToExistingListString()
+}
+
+// Test binary serializer
+test/Suite BinarySerializer {
+    tc_serializeReferenceType()
+    tc_serializeReferenceTypeWithInit()
+    tc_copyReferenceType()
+    tc_copyListWithReferenceType()
+    tc_copyListWithReferenceWithInitType()
+    tc_copyListWithReferenceWithDefaults()
+}
+
+//------------------------------------------------------------------------------
+// OBJECT IDENTIFIER SUITES
+//------------------------------------------------------------------------------
+
+// Generate fully scoped names
+test/Suite Fullname {
+    tc_root()
+    tc_onelevel()
+    tc_twolevels()
+    tc_null()
+    tc_nullBuffer()
+    tc_fromLang()
+    tc_anonymousPrimitive()
+    tc_anonymousComposite()
+    tc_anonymousCollection()
+    tc_anonymousAnonymous()
+}
+
+// Generate names relative to an object
+test/Suite RelativeName {
+    tier1: object
+    tier2: object
+    tier3: object
+    obj: object
+    disjunct: object
+    child: object
+
+    tc_fromNull()
+    tc_fromRoot()
+    tc_rootFromNull()
+    tc_rootFromNullColon()
+    tc_fromParent()
+    tc_fromOneUp()
+    tc_fromTwoUp()
+    tc_fromThreeUp()
+    tc_fromChild()
+    tc_fromGrandchild()
+    tc_fromDisjunct()
+    tc_fromSelf()
+    tc_rootFromObj()
+
+method
+    setup()
+    teardown()
+}
+
+//------------------------------------------------------------------------------
+// OBJECT LOOKUP SUITES
+//------------------------------------------------------------------------------
+
+functionToResolve(int32 a, int32 b)
+
+// Test corto_resolve
+test/Suite Resolver {
+    tc_resolveIdFromNull()
+    tc_resolveIdFromRoot()
+    tc_resolveIdFromScope()
+    tc_resolveNestedFromNull()
+    tc_resolveNestedFromRoot()
+    tc_resolveNestedFromScope()
+    tc_resolveNested2FromNull()
+    tc_resolveNested2FromRoot()
+    tc_resolveNested2FromScope()
+
+    tc_resolveNull()
+    tc_resolveRoot()
+    tc_resolveThis()
+    tc_resolveThisBeforeExpr()
+    tc_resolveThisInExpr()
+    tc_resolveThisAfterExpr()
+    tc_resolveParent()
+    tc_resolveParentBeforeExpr()
+    tc_resolveParentInExpr()
+    tc_resolveParentAfterExpr()
+    tc_resolveCorto()
+    tc_resolveLang()
+    tc_resolveString()
+    tc_resolveG()
+    tc_resolveAnonymous()
+    tc_resolveAnonymousNested()
+    tc_resolveAnonymousAnonymousType()
+    tc_resolveAnonymousNestedWithKeys()
+    tc_resolveAnonymousNestedWithRefCorto()
+    tc_resolveAnonymousNestedWithRefLang()
+    tc_resolveAnonymousNestedWithRefRoot()
+    tc_resolveAnonymousNestedWithRefNested()
+    tc_resolveAnonymousNestedWithRefRelativeToParent()
+    tc_resolveAnonymousWithPartialMatch()
+    tc_resolveEmptyString()
+
+    tc_resolveParenthesesNoFunction()
+    tc_resolveParenthesesNoFunctionArgs()
+    tc_resolveParenthesesNoFunctionMatchingArgs()
+
+    tc_resolveParenthesesNoFunctionScoped()
+    tc_resolveParenthesesNoFunctionArgsScoped()
+    tc_resolveParenthesesNoFunctionMatchingArgsScoped()
+
+    tc_resolveFunctionNoArgs()
+    tc_resolveFunctionArgs()
+    tc_caseInsensitive()
+    tc_resolveObjectAFromScopeWithFunctionA()
+    tc_resolveAll()
+
+method
+    setup()
+    teardown()
+}
+
+// Test corto_lookup
+test/Suite Lookup {
+    tc_lookupIdFromNull()
+    tc_lookupIdFromRoot()
+    tc_lookupIdFromScope()
+    tc_lookupNestedFromNull()
+    tc_lookupNestedFromRoot()
+    tc_lookupNestedFromScope()
+    tc_lookupNested2FromNull()
+    tc_lookupNested2FromRoot()
+    tc_lookupNested2FromScope()
+
+    tc_lookupNull()
+    tc_lookupRoot()
+    tc_lookupThis()
+    tc_lookupThisBeforeExpr()
+    tc_lookupThisInExpr()
+    tc_lookupThisAfterExpr()
+    tc_lookupParent()
+    tc_lookupParentBeforeExpr()
+    tc_lookupParentInExpr()
+    tc_lookupParentAfterExpr()
+    tc_lookupEmptyString()
+
+    tc_lookupParenthesesNoFunction()
+    tc_lookupParenthesesNoFunctionArgs()
+    tc_lookupParenthesesNoFunctionMatchingArgs()
+
+    tc_lookupParenthesesNoFunctionScoped()
+    tc_lookupParenthesesNoFunctionArgsScoped()
+    tc_lookupParenthesesNoFunctionMatchingArgsScoped()
+
+    tc_lookupFunctionNoArgs()
+    tc_lookupFunctionArgs()
+    tc_lookupCaseInsensitive()
+
+    tc_lookupAnonymous()
+    tc_lookupAnonymousNested()
+    tc_lookupAnonymousNestedWithKeys()
+    tc_lookupAnonymousNestedWithRefCorto()
+    tc_lookupAnonymousNestedWithRefLang()
+    tc_lookupAnonymousNestedWithRefRoot()
+    tc_lookupAnonymousNestedWithRefNested()
+    tc_lookupAnonymousNestedWithRefRelativeToParent()
+    tc_lookupAnonymousWithPartialMatch()
+    tc_lookupAnonymousAnonymousType()
+
+    tc_lookupAll()
+    tc_lookupUnknown()
+    tc_lookupNoResume()
+
+    tc_lookupDot()
+    tc_lookupDotNested()
+}
+
+//------------------------------------------------------------------------------
+// OBSERVER SUITES
+//------------------------------------------------------------------------------
+
+// Event test support type
+class EventTest {
+    scope: object
+    lastThis: object, readonly
+    lastObservable: object, readonly
+
+    countDeclare: uint32, readonly
+    countDeclareSelf: uint32, readonly
+    countDeclareScope: uint32, readonly
+    countDeclareTree: uint32, readonly
+
+    countDefine: uint32, readonly
+    countDefineSelf: uint32, readonly
+    countDefineScope: uint32, readonly
+    countDefineTree: uint32, readonly
+
+    countUpdate: uint32, readonly
+    countUpdateSelf: uint32, readonly
+    countUpdateScope: uint32, readonly
+    countUpdateTree: uint32, readonly
+
+    countDelete: uint32, readonly
+    countDeleteSelf: uint32, readonly
+    countDeleteScope: uint32, readonly
+    countDeleteTree: uint32, readonly
+
+    countUpdateDefine: uint32, readonly
+    countUpdateDefineSelf: uint32, readonly
+    countUpdateDefineScope: uint32, readonly
+    countUpdateDefineTree: uint32, readonly
+
+    construct() int16
+    destruct() void
+
+observer
+    onDeclare:      DECLARE|ON_SELF|ON_TREE
+    onDeclareSelf:  DECLARE
+    onDeclareScope: DECLARE|ON_SCOPE
+    onDeclareTree:  DECLARE|ON_TREE
+
+    onDefine:       DEFINE|ON_SELF|ON_TREE
+    onDefineSelf:   DEFINE
+    onDefineScope:  DEFINE|ON_SCOPE
+    onDefineTree:   DEFINE|ON_TREE
+
+    onUpdate:       UPDATE|ON_SELF|ON_TREE
+    onUpdateSelf:   UPDATE
+    onUpdateScope:  UPDATE|ON_SCOPE
+    onUpdateTree:   UPDATE|ON_TREE
+
+    onDelete:       DELETE|ON_SELF|ON_TREE
+    onDeleteSelf:   DELETE
+    onDeleteScope:  DELETE|ON_SCOPE
+    onDeleteTree:   DELETE|ON_TREE
+
+    onUpdateDefine:       UPDATE|DEFINE|ON_SELF|ON_TREE
+    onUpdateDefineSelf:   UPDATE|DEFINE
+    onUpdateDefineScope:  UPDATE|DEFINE|ON_SCOPE
+    onUpdateDefineTree:   UPDATE|DEFINE|ON_TREE
+}
+
+// Test notifications
+test/Suite Event {
+    et: EventTest
+    prevAttr: lang/attr
+
+    tc_onDeclare()
+    tc_onDeclareSelf()
+    tc_onDeclareScope()
+    tc_onDeclareTree()
+    tc_onDeclareScopeNotObservable()
+    tc_onDeclareTreeNotObservable()
+    tc_onDeclareOrphan()
+    tc_onDeclareSelfOrphan()
+    tc_onDeclareScopeOrphan()
+    tc_onDeclareTreeOrphan()
+
+    tc_onDefine()
+    tc_onDefineSelf()
+    tc_onDefineScope()
+    tc_onDefineTree()
+    tc_onDefineScopeNotObservable()
+    tc_onDefineTreeNotObservable()
+    tc_onDefineOrphan()
+    tc_onDefineSelfOrphan()
+    tc_onDefineScopeOrphan()
+    tc_onDefineTreeOrphan()
+
+    tc_onUpdate()
+    tc_onUpdateSelf()
+    tc_onUpdateScope()
+    tc_onUpdateTree()
+    tc_onUpdateScopeNotObservable()
+    tc_onUpdateTreeNotObservable()
+    tc_onUpdateOrphan()
+    tc_onUpdateSelfOrphan()
+    tc_onUpdateScopeOrphan()
+    tc_onUpdateTreeOrphan()
+
+    tc_onDelete()
+    tc_onDeleteSelf()
+    tc_onDeleteScope()
+    tc_onDeleteTree()
+    tc_onDeleteScopeNotObservable()
+    tc_onDeleteTreeNotObservable()
+    tc_onDeleteOrphan()
+    tc_onDeleteSelfOrphan()
+    tc_onDeleteScopeOrphan()
+    tc_onDeleteTreeOrphan()
+
+    tc_onUpdateDefine()
+    tc_onUpdateDefineSelf()
+    tc_onUpdateDefineScope()
+    tc_onUpdateDefineTree()
+    tc_onUpdateDefineScopeNotObservable()
+    tc_onUpdateDefineTreeNotObservable()
+    tc_onUpdateDefineOrphan()
+    tc_onUpdateDefineSelfOrphan()
+    tc_onUpdateDefineScopeOrphan()
+    tc_onUpdateDefineTreeOrphan()
+
+    tc_updateVoid()
+    tc_updateUndefined()
+
+    tc_postponeListenForUndefined()
+    tc_postponeListenSilence()
+
+method
+    setup()
+    teardown()
+
+}
+
+// Dispatcher class
+class ObserverDispatcher: implements:[dispatcher] {
+    post(vstore/event e)
+    called: bool
+}
+
+// Observer tests
+test/Suite Observers {
+    mask: vstore/eventMask, private
+    observable: object, private
+    observer: vstore/observer, private
+    count: int32
+
+    tc_dispatchObserver()
+    tc_notifyReadDenied()
+    tc_notifyUpdateDenied()
+    tc_observeTypeFilter()
+    tc_observeTypeFilterUnresolved()
+    tc_observeTypeFilterNotAType()
+    tc_observeWithMultipleInstances()
+    tc_observerMissingObservable()
+    tc_observeNonScopedObjectWithScopeMaskErr()
+    tc_observing()
+    tc_observingScope()
+    tc_observingTree()
+    tc_observingDisabled()
+    tc_notObserving()
+    tc_observingSingleInstance()
+    tc_observingMultipleInstances()
+    tc_observeAlignSelf()
+    tc_observeAlignType()
+
+method
+    setup()
+}
+
+//------------------------------------------------------------------------------
+// PROCEDURE SUITES
+//------------------------------------------------------------------------------
+
+// Function overloading test suite
+test/Suite Overload {
+    tc_ambiguous()
+    tc_ambiguousWildcard()
+    tc_ambiguousNull()
+
+    tc_wildcard()
+
+    tc_nullObject()
+    tc_nullString()
+    tc_nullBool()
+
+    tc_anyChar()
+    tc_anyInt8()
+    tc_anyInt16()
+    tc_anyInt32()
+    tc_anyInt64()
+    tc_anyUint8()
+    tc_anyUint16()
+    tc_anyUint32()
+    tc_anyUint64()
+    tc_anyFloat32()
+    tc_anyFloat64()
+    tc_anyOctet()
+    tc_anyWord()
+    tc_anyString()
+    tc_anyColor()
+
+    tc_numChar()
+    tc_numInt8()
+    tc_numInt16()
+    tc_numInt32()
+    tc_numInt64()
+    tc_numUint8()
+    tc_numUint16()
+    tc_numUint32()
+    tc_numUint64()
+    tc_numFloat32()
+    tc_numFloat64()
+    tc_numOctet()
+    tc_numWord()
+    tc_numString()
+    tc_numColor()
+
+    tc_inheritanceBase()
+    tc_inheritanceSub()
+    tc_inheritanceMatchSub()
+    tc_inheritSibling()
+}
+
+class MethodTester {
+    simple()
+    onearg(int32 a)
+    twoargs(int32 a, int32 b)
+    overload(int32 a)
+    overload(string a)
+    overload(int32 a, int32 b)
+    overload(MethodTester m)
+    virtualOverload(int32 a)
+
+overridable
+    virtualSimple()
+    virtualOverload()
+}
+
+class MethodTesterInherit: MethodTester {
+    simple()
+    overload(string a, string b)
+    overload(MethodTesterInherit m)
+    virtualOverload(int32 a)
+}
+
+// Test resolving methods
+test/Suite MethodResolver {
+    tc_simple()
+    tc_simpleNoArgs()
+    tc_simpleErr()
+    tc_simpleErrType()
+    tc_onearg()
+    tc_oneargNoArgs()
+    tc_oneargErr()
+    tc_oneargErrType()
+    tc_twoargs()
+    tc_twoargsNoArgs()
+    tc_twoargsSpaces()
+    tc_overloadInt()
+    tc_overloadString()
+    tc_overloadTwoArgs()
+    tc_overloadClass()
+    tc_overloadAmbiguous()
+    tc_virtualSimple()
+    tc_virtualSimpleNoArgs()
+    tc_virtualOverload()
+    tc_virtualOverloadNoArgs()
+    tc_virtualOverloadArg()
+    tc_inheritSimple()
+    tc_inheritSimpleNoArgs()
+    tc_inheritOverload()
+    tc_inheritOverloadBaseInt()
+    tc_inheritOverloadBaseString()
+    tc_inheritOverloadBaseTwoArgs()
+    tc_inheritOverloadBaseClass()
+    tc_inheritOverloadNoArgs()
+    tc_inheritOverloadClass()
+    tc_inheritVirtualOverload()
+    tc_inheritVirtualOverloadNoArgs()
+    tc_nonexisting()
+    tc_redeclare()
+}
+
+// Test invoking methods
+test/Suite MethodInvoking {
+    tc_interfaceMethod()
+}
+
+//------------------------------------------------------------------------------
+// SECURITY SUITES
+//------------------------------------------------------------------------------
+
+// Test security
+test/Suite Security {
+    tc_login()
+    tc_loginFail()
+    tc_authorizeCreate()
+    tc_authorizeSelect()
+    tc_authorizeLookup()
+    tc_authorizeResolve()
+    tc_authorizeResolveParentDenied()
+    tc_authorizeUpdate()
+    tc_authorizeUpdateVoid()
+    tc_authorizeDelete()
+    tc_authorizeDeniedCreate()
+    tc_authorizeDeniedSelect()
+    tc_authorizeDeniedLookup()
+    tc_authorizeDeniedResolve()
+    tc_authorizeDeniedScopeClaim()
+    tc_authorizeDeniedScopeWalk()
+    tc_authorizeDeniedUpdate()
+    tc_authorizeDeniedUpdateVoid()
+    tc_authorizeDeniedDelete()
+    tc_lockDenyGrantSameDepthSamePrio()
+    tc_lockDenyGrantSameDepthLowerPrio()
+    tc_lockDenyGrantSameDepthHigherPrio()
+    tc_lockDenyGrantLowerDepthSamePrio()
+    tc_lockDenyGrantLowerDepthHigherPrio()
+    tc_lockDenyGrantLowerDepthLowerPrio()
+    tc_lockGrantDenySameDepthSamePrio()
+    tc_lockGrantDenySameDepthLowerPrio()
+    tc_lockGrantDenySameDepthHigherPrio()
+    tc_lockGrantDenyLowerDepthSamePrio()
+    tc_lockGrantDenyLowerDepthHigherPrio()
+    tc_lockGrantDenyLowerDepthLowerPrio()
+    tc_lockUndefinedDenySameDepthSamePrio()
+    tc_lockUndefinedDenySameDepthLowerPrio()
+    tc_lockUndefinedDenySameDepthHigherPrio()
+    tc_lockUndefinedDenyLowerDepthSamePrio()
+    tc_lockUndefinedDenyLowerDepthHigherPrio()
+    tc_lockUndefinedDenyLowerDepthLowerPrio()
+    tc_lockDenyUndefinedSameDepthSamePrio()
+    tc_lockDenyUndefinedSameDepthLowerPrio()
+    tc_lockDenyUndefinedSameDepthHigherPrio()
+    tc_lockDenyUndefinedLowerDepthSamePrio()
+    tc_lockDenyUndefinedLowerDepthHigherPrio()
+    tc_lockDenyUndefinedLowerDepthLowerPrio()
+    tc_lockDenyTreeGrantSelectScope()
+    tc_lockDenyTreeGrantScopeSelectThis()
+    tc_lockDenyTreeSelectMount()
+    tc_lockSwitchUser()
+
+method
+    setup()
+    teardown()
+
+}
+
+//------------------------------------------------------------------------------
+// PTR AND VALUE SUITES
+//------------------------------------------------------------------------------
+
+// Test value casting
+test/Suite ValueCast {
+    tc_castBoolBinary()
+    tc_castBoolInt()
+    tc_castBoolUint()
+    tc_castBoolString()
+    tc_castBinaryBool()
+    tc_castBinaryChar()
+    tc_castBinaryInt()
+    tc_castBinaryUint()
+    tc_castBinaryFloat()
+    tc_castBinaryString()
+    tc_castIntBinary()
+    tc_castIntBool()
+    tc_castIntChar()
+    tc_castIntUint()
+    tc_castIntFloat()
+    tc_castIntString()
+    tc_castFloatBool()
+    tc_castFloatInt()
+    tc_castFloatUint()
+    tc_castFloatString()
+    tc_castEnumInt()
+    tc_castEnumUint()
+    tc_castEnumString()
+    tc_castBitmaskInt()
+    tc_castBitmaskUint()
+    tc_castBitmaskString()
+    tc_castStringBool()
+    tc_castStringBinary()
+    tc_castStringInt()
+    tc_castStringUint()
+    tc_castStringFloat()
+    tc_castStringEnum()
+}
+
+// Test value casting
+test/Suite BinaryOperators {
+    tc_compareStringEqual()
+    tc_compareStringNotEqual()
+}
+
+// Test value expressions
+test/Suite ValueExpr {
+    tc_add()
+    tc_sub()
+    tc_mul()
+    tc_div()
+    tc_mod()
+    tc_and()
+    tc_or()
+    tc_condAnd()
+    tc_condOr()
+    tc_condNot()
+    tc_exprAddIntFlt()
+    tc_exprAddFltInt()
+    tc_exprAddIntStr()
+    tc_exprAddStrInt()
+    tc_exprAddStrStr()
+    tc_exprAssignIntInt()
+    tc_exprAssignIntFlt()
+    tc_exprAssignFltInt()
+    tc_exprAssignIntStr()
+    tc_exprAssignStrInt()
+    tc_exprAssignStrStr()
+    tc_exprAssignBoolRef()
+    tc_member()
+    tc_memberNested()
+    tc_exprMemNullOut()
+    tc_exprMemNullOutAssignMember()
+    tc_exprMemSameInOut()
+    tc_exprMemLiteralOut()
+    tc_exprMemValueOut()
+    tc_exprMemPtrOut()
+    tc_exprMemMemberOut()
+    tc_exprMemMemberInOut()
+}
+
+// Test ptr API
+test/Suite Ptr {
+    tc_ptr_initDeinitReferenceType()
+    tc_ptr_newFreeReferenceType()
+}
+
+//------------------------------------------------------------------------------
+// MISC SUITES
+//------------------------------------------------------------------------------
+
+// Test containers, leafs and tables
+test/Suite Container {
+    tc_tableSingleKey()
+    tc_tableMultiKey()
+    tc_tableStringKey()
+    tc_tableMultiStringKey()
+    tc_tableMultiMixedKey()
+    tc_tableNested()
+    tc_tableNestedContainer()
+    tc_tableNestedLeafs()
+    tc_containerNestedTable()
+    tc_containerNestedLeaf()
+    tc_containerNestedContainer()
+    tc_containerEmpty()
+    tc_leafRoot()
+    tc_complexContainer()
+    tc_anonymousContainer()
+}
+
+// Test tags
+test/Suite Tags {
+    tc_findTag()
+    tc_tagNotFound()
+}
+
+// Test package loader
+test/Suite Loader {
+    tc_loadNonExistent()
+    tc_loadDepOnChild()
+    tc_loadDepOnParent()
+    tc_loadDepOnSibling()
+    tc_loadChildNoDep()
+    tc_loadSelf()
+    tc_createSelfPackage()
+    tc_locateSelf()
+    tc_autoloadPackageNoLib()
+}
