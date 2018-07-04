@@ -521,7 +521,8 @@ int16_t corto_rw_push(
     is_collection = corto_type_is_collection(cur_type);
 
     if (as_collection && !is_collection) {
-        corto_throw("cannot open scope of non-collection type '%s' as collection",
+        corto_throw(
+            "cannot open scope of non-collection type '%s' as collection",
             corto_fullpath(NULL, cur_type));
         goto error;
     }
@@ -537,10 +538,15 @@ int16_t corto_rw_push(
     /* If this is the first element to be pushed of a type that requires an
      * allocation, create it. Subsequent elements will be created when the
      * application calls corto_rw_next or equivalent. */
-    if (cur_scope_type && corto_type_is_collection(cur_scope_type)) {
+    if (cur_scope_type &&
+        corto_type_is_collection(cur_scope_type) &&
+        this->current->scope_ptr) /* Don't append when this is a dry run */
+    {
         corto_collection col_type = corto_collection(cur_scope_type);
         if (col_type->kind !=  CORTO_ARRAY) {
-            if (!corto_rw_count(this) && corto_collection_requires_alloc(cur_type)) {
+            if (!corto_rw_count(this) &&
+                corto_collection_requires_alloc(cur_type))
+            {
                 corto_rw_append(this);
                 cur_ptr = corto_rw_get_ptr(this);
             }
