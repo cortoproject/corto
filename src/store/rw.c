@@ -29,10 +29,18 @@ bool corto_type_is_collection(
 }
 
 static
-bool corto_type_is_complex(
+bool corto_type_is_complex_nonref(
     corto_type type)
 {
     return !type->reference &&
+      (type->kind == CORTO_COMPOSITE || type->kind == CORTO_COLLECTION);
+}
+
+static
+bool corto_type_is_complex(
+    corto_type type)
+{
+    return
       (type->kind == CORTO_COMPOSITE || type->kind == CORTO_COLLECTION);
 }
 
@@ -205,7 +213,7 @@ int32_t corto_rw_count(
     corto_rw *this)
 {
     if (!this->current) {
-        if (corto_type_is_complex(this->rw_type)) {
+        if (corto_type_is_complex_nonref(this->rw_type)) {
             /* Complex values have no values in the root scope */
             return 0;
         } else {
@@ -485,27 +493,27 @@ int16_t corto_rw_push(
     corto_rw *this,
     bool as_collection)
 {
-    corto_type cur_type = NULL;
+    corto_type cur_type = NULL, cur_scope_type = NULL;
     void *cur_ptr = NULL;
     corto_rw_scope *scope = NULL;
     bool is_collection = false;
+    cur_type = corto_rw_get_type(this);
+    bool is_complex = corto_type_is_complex(cur_type);
 
-    if (!this->current) {
-        cur_type = this->rw_type;
+    if (this->current) {
+        cur_scope_type = this->current->scope_type;
+    }
 
-        /* Ignore if the type is a reference type for the root scope */
-        if (cur_type->kind != CORTO_COMPOSITE &&
-            cur_type->kind != CORTO_COLLECTION)
-        {
+    if (!is_complex) {
+        corto_throw(
+          "cannot open scope for non-complex type '%s'",
+          corto_fullpath(NULL, cur_type));
+        goto error;
+    } else if (is_complex && cur_type->reference) {
+        if (this->current) {
             corto_throw(
-              "cannot push scope for non-complex type '%s'", cur_type);
-            goto error;
-        }
-    } else {
-        cur_type = corto_rw_get_type(this);
-        if (!corto_type_is_complex(cur_type)) {
-            corto_throw(
-              "cannot push scope for non-complex type '%s'", cur_type);
+              "cannot open scope for reference type '%s'",
+              corto_fullpath(NULL, cur_type));
             goto error;
         }
     }
@@ -513,7 +521,7 @@ int16_t corto_rw_push(
     is_collection = corto_type_is_collection(cur_type);
 
     if (as_collection && !is_collection) {
-        corto_throw("cannot push scope of type '%s' as collection",
+        corto_throw("cannot open scope of non-collection type '%s' as collection",
             corto_fullpath(NULL, cur_type));
         goto error;
     }
@@ -524,6 +532,23 @@ int16_t corto_rw_push(
     } else {
         scope = corto_calloc(sizeof(corto_rw_scope));
         cur_ptr = this->current->field.ptr;
+    }
+
+    /* If this is the first element to be pushed of a type that requires an
+     * allocation, create it. Subsequent elements will be created when the
+     * application calls corto_rw_next or equivalent. */
+    if (cur_scope_type && corto_type_is_collection(cur_scope_type)) {
+        corto_collection col_type = corto_collection(cur_scope_type);
+        if (col_type->kind !=  CORTO_ARRAY) {
+            if (!corto_rw_count(this) && corto_collection_requires_alloc(cur_type)) {
+                corto_rw_append(this);
+                cur_ptr = corto_rw_get_ptr(this);
+            }
+        } else if (!cur_ptr) {
+            /* If collection type is array, the pointer of the first element is
+             * equal to the pointer of the array */
+            cur_ptr = this->current->scope_ptr;
+        }
     }
 
     scope->scope_type = cur_type;
@@ -653,7 +678,7 @@ int32_t corto_rw_get_index(
     corto_rw *this)
 {
     if (!this->current) {
-        if (corto_type_is_complex(this->rw_type)) {
+        if (corto_type_is_complex_nonref(this->rw_type)) {
             /* Indicate that index cannot be interpreted, as root scope doesn't
              * have any complex values that can be initialized */
             return -1;
@@ -699,6 +724,11 @@ uintptr_t corto_rw_set_value(
 {
     corto_type type = corto_rw_get_type(this);
     void *ptr = corto_rw_get_ptr(this);
+
+    if (!ptr) {
+        corto_throw("no value to assign");
+        goto error;
+    }
 
     corto_value field = corto_value_pointer(ptr, type);
 

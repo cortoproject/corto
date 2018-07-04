@@ -36,15 +36,31 @@
  * can be accessed. This "opens" the scope of the complex value, which
  * allows iteration over the members/elements in that scope. It also will
  * make field expressions relative to that scope. Pushing/popping scopes
- * is analogous to the `()` and `[]` operators in cortoscript, as can be
+ * is analogous to the `{}` and `[]` operators in cortoscript, as can be
  * seen in this example:
  *
  * `Line l = {start:{x:10, 20}, stop.x:30, stop.y:40}`
  *
- * In this example, each `{` corresponds with a push, and each `}`
- * corresponds with a pop. The example also illustrates how to set single
- * fields in nested scopes without pushing/popping. This can be done in
- * the reader/writer API with the `field` function.
+ * This cortoscript example is equivalent to the following code:
+ * 
+ ```
+ corto_rw rw = corto_rw_init(Line_o, l_o);
+ corto_rw_push(&rw);
+ corto_rw_field(&rw, "start");
+ corto_rw_push(&rw);
+ corto_rw_field(&rw, "x");
+ corto_rw_set_int(&rw, 10);
+ corto_rw_next(&rw);
+ corto_rw_set_int(&rw, 20);
+ corto_rw_pop(&rw);
+ corto_rw_next(&rw);
+ corto_rw_field(&rw, "stop.x");
+ corto_rw_set_int(&rw, 30);
+ corto_rw_next(&rw); // not strictly necessary because the next call is rw_field
+ corto_rw_field(&rw, "stop.y");
+ corto_rw_set_int(&rw, 40);
+ corto_rw_pop(&rw);
+ ```
  *
  * Note that this is an UNSTABLE API.
  */
