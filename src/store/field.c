@@ -53,7 +53,12 @@ void* corto_field_get_value_ptr(
         }
     } else if (member) {
         if (member->modifiers & CORTO_OPTIONAL) {
-            ptr = *(void**)ptr;
+            void *deref = *(void**)ptr;
+            if (!deref) {
+                deref = corto_ptr_new(type);
+                *(void**)ptr = deref;
+            }
+            ptr = deref;
         }
         if (member->modifiers & CORTO_OBSERVABLE) {
             ptr = *(corto_object*)ptr;

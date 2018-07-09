@@ -370,6 +370,18 @@ uintptr_t corto_rw_set_ref(
     corto_rw *_this,
     corto_object value);
 
+/** Assign null to the current field.
+ */
+CORTO_EXPORT
+uintptr_t corto_rw_set_null(
+    corto_rw *_this);
+
+/** Unset a value (when optional).
+ */
+CORTO_EXPORT
+uintptr_t corto_rw_unset(
+    corto_rw *_this);
+
 #define corto_rw_init(type, ptr) _corto_rw_init(corto_type(type), ptr)
 
 #ifdef __cplusplus

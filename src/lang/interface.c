@@ -308,7 +308,6 @@ uint16_t corto__interface_calculateAlignment(
                 corto_fullpath(NULL, member->type));
             goto error;
         }
-
     }
 
     return alignment;
@@ -335,10 +334,13 @@ uint32_t corto__interface_calculateSize(
         if (!corto_instanceof(corto_alias_o, m)) {
             if (m->modifiers & CORTO_OPTIONAL) {
                 memberSize = sizeof(void*);
+                alignment = CORTO_ALIGNMENT(void*);
             } else if (m->modifiers & CORTO_OBSERVABLE) {
                 memberSize = sizeof(void*);
+                alignment = CORTO_ALIGNMENT(void*);
             } else {
                 memberSize = corto_type_sizeof(memberType);
+                alignment = corto_type_alignmentof(memberType);
             }
 
             if (!memberSize) {
@@ -349,7 +351,6 @@ uint32_t corto__interface_calculateSize(
                 goto error;
             }
 
-            alignment = corto_type_alignmentof(memberType);
             if (!alignment) {
                 goto error;
             }
@@ -361,7 +362,6 @@ uint32_t corto__interface_calculateSize(
         } else {
             m->offset = corto_alias(m)->member->offset;
         }
-
     }
 
     return interfaceAlignment ? CORTO_ALIGN(size, interfaceAlignment) : 0;

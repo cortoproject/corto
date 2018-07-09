@@ -110,6 +110,31 @@ struct s_target_collection {
     m: target[list[int32]]
 }
 
+struct s_optional_primitive {
+    foo: int32
+    m: int32, optional
+}
+
+struct s_optional_reference {
+    foo: int32
+    m: object, optional
+}
+
+struct s_optional_string {
+    foo: int32
+    m: string, optional
+}
+
+struct s_optional_composite {
+    foo: int32
+    m: point, optional
+}
+
+struct s_optional_collection {
+    foo: int32
+    m: list[int32], optional
+}
+
 test/Suite assign_reftype_obj {
     tc_byref_frommbr_bytype()
     tc_byref_frommbr_byval()
@@ -554,4 +579,19 @@ test/suite rw_target {
     tc_objective_remote_from_app()
     tc_objective_remote_from_local()
     tc_objective_remote_from_remote()
+}
+
+test.suite rw_optional {
+    tc_primitive()
+    tc_primitive_notset()
+    tc_reference()
+    tc_reference_null()
+    tc_reference_notset()
+    tc_string()
+    tc_string_null()
+    tc_string_notset()
+    tc_composite()
+    tc_composite_notset()
+    tc_collection()
+    tc_collection_notset()
 }

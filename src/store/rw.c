@@ -509,10 +509,18 @@ int16_t corto_rw_push(
     cur_type = corto_rw_get_type(this);
     bool is_complex = corto_type_is_complex(cur_type);
     bool is_target = corto_typeof(cur_type) == (corto_type)corto_target_o;
+    bool is_optional = false;
+    bool is_observable = false;
 
     if (this->current) {
         cur_scope_type = this->current->scope_type;
         cur_modifiers = this->current->field.modifiers;
+
+        corto_member member = this->current->field.member;
+        if (member) {
+            is_optional = member->modifiers & CORTO_OPTIONAL;
+            is_observable = member->modifiers & CORTO_OBSERVABLE;
+        }
     }
 
     /* Target types are the only complex reference types that may be pushed */
@@ -549,8 +557,12 @@ int16_t corto_rw_push(
         cur_ptr = this->current->field.ptr;
     }
 
-    if (is_target) {
-        cur_ptr = *(corto_object*)cur_ptr;
+    if (is_optional) {
+        cur_ptr = corto_field_get_value_ptr(&this->current->field, NULL);
+    }
+
+    if (is_observable) {
+        cur_ptr = *(void**)cur_ptr;
     }
 
     /* If this is the first element to be pushed of a type that requires an
@@ -817,6 +829,44 @@ error:
     return -1;
 }
 
+uintptr_t corto_rw_unset(
+    corto_rw *this)
+{
+    corto_type type = corto_rw_get_type(this);
+    void *ptr = corto_rw_get_ptr(this);
+
+    if (!ptr) {
+        corto_throw("no value to unset");
+        goto error;
+    }
+
+    void *deref = *(void**)ptr;
+
+    if (!this->current || !this->current->field.member) {
+        corto_throw("cannot unset: unable to determine whether field is optional");
+        goto error;
+    }
+
+    if (!(this->current->field.member->modifiers & CORTO_OPTIONAL)) {
+        corto_throw("cannot unset: member '%s' is not optional",
+            corto_fullpath(NULL, this->current->field.member));
+        goto error;
+    }
+
+    if (deref) {
+        corto_ptr_free(deref, type);
+
+        /* Reset to NULL */
+        *(void**)ptr = NULL;
+    } else {
+        /* If optional value is already unset, postcondition is satisfied */
+    }
+
+    return 0;
+error:
+    return -1;
+}
+
 uintptr_t corto_rw_set_bool(
     corto_rw *this,
     bool value)
@@ -870,5 +920,12 @@ uintptr_t corto_rw_set_ref(
     corto_object value)
 {
     corto_value v = corto_value_object((char*)value, NULL);
+    return corto_rw_set_value(this, &v);
+}
+
+uintptr_t corto_rw_set_null(
+    corto_rw *this)
+{
+    corto_value v = corto_value_null();
     return corto_rw_set_value(this, &v);
 }
