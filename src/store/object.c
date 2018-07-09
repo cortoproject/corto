@@ -392,9 +392,9 @@ int16_t corto_adopt_checkConstraints(
         }
     }
 
-    /* If parentType is a leaf, no childs are allowed */
+    /* If parentType is a leaf, no children are allowed */
     if (corto_instanceof(corto_leaf_o, corto_typeof(parent))) {
-        corto_throw("cannot add children to leaf node '%s'",
+        corto_throw("cannot add child to leaf '%s', use 'container' instead",
             corto_fullpath(NULL, parent));
         goto error;
     }
@@ -2969,8 +2969,10 @@ char* corto_fullpath_intern(
     }
 
     if (!o) {
-        buffer[0] = '\0';
-    } else if (!corto_check_attr(o, CORTO_ATTR_NAMED)) {
+        strcpy(buffer, "null");
+    } else if (o == root_o) {
+        strcpy(buffer, "/");
+    } else if (!corto_check_attr(o, CORTO_ATTR_NAMED) || !corto_childof(root_o, o)) {
         corto_walk_opt stringSer;
         corto_string_ser_t data;
 
@@ -2984,6 +2986,7 @@ char* corto_fullpath_intern(
         data.buffer.max = sizeof(corto_id) - 1;
         data.prefixType = TRUE;
         data.enableColors = FALSE;
+
         if (corto_walk(&stringSer, o, &data)) {
             goto error;
         }

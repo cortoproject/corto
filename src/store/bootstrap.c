@@ -1085,6 +1085,12 @@ int corto_start(
     /* Initialize operating system environment */
     corto_environment_init();
 
+#ifndef NDEBUG
+    corto_ok("using corto #[yellow]debug#[normal] runtime, use a release build for better performance");
+#else
+    corto_ok("using corto #[green]release#[normal] runtime, use a debug build to enable runtime sanity checks");
+#endif
+
     /* Push init component for logging */
     corto_log_push("init");
 
