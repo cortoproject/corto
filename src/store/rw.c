@@ -515,21 +515,20 @@ int16_t corto_rw_push(
         cur_modifiers = this->current->field.modifiers;
     }
 
-    if (is_target) {
-        cur_type = ((corto_target)cur_type)->type;
-    }
-
-    if (!is_complex) {
-        corto_throw(
-          "cannot open scope for non-complex type '%s'",
-          corto_fullpath(NULL, cur_type));
-        goto error;
-    } else if (is_complex && cur_type->reference) {
-        if (this->current) {
+    /* Target types are the only complex reference types that may be pushed */
+    if (!is_target) {
+        if (!is_complex) {
             corto_throw(
-              "cannot open scope for reference type '%s'",
+              "cannot open scope for non-complex type '%s'",
               corto_fullpath(NULL, cur_type));
             goto error;
+        } else if (is_complex && cur_type->reference) {
+            if (this->current) {
+                corto_throw(
+                  "cannot open scope for reference type '%s'",
+                  corto_fullpath(NULL, cur_type));
+                goto error;
+            }
         }
     }
 

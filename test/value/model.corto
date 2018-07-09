@@ -91,18 +91,22 @@ struct s_nested_list {
 }
 
 struct s_target_primitive {
+    foo: int32
     m: target[int32]
 }
 
 struct s_target_reference {
+    foo: int32
     m: target[object]
 }
 
 struct s_target_composite {
+    foo: int32
     m: target[point]
 }
 
 struct s_target_collection {
+    foo: int32
     m: target[list[int32]]
 }
 
@@ -509,18 +513,17 @@ test/suite rw_target {
     tc_composite()
     tc_collection()
 
-    tc_explicit_composite_owned()
-    tc_explicit_composite_not_owned()
+    tc_target_after_push()
+    tc_actual_after_push()
+    tc_objective_after_push()
 
-    tc_implicit_app_from_app()
-    tc_implicit_app_from_local()
-    tc_implicit_app_from_remote()
-    tc_implicit_local_from_app()
-    tc_implicit_local_from_local()
-    tc_implicit_local_from_remote()
-    tc_implicit_remote_from_app()
-    tc_implicit_remote_from_local()
-    tc_implicit_remote_from_remote()
+    tc_target_nested()
+    tc_actual_nested()
+    tc_objective_nested()
+
+    tc_actual_no_field_expr()
+    tc_set_actual_and_objective()
+    tc_set_actual_no_field_expr_and_objective()
 
     tc_target_app_from_app()
     tc_target_app_from_local()

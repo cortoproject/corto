@@ -2972,7 +2972,7 @@ char* corto_fullpath_intern(
         strcpy(buffer, "null");
     } else if (o == root_o) {
         strcpy(buffer, "/");
-    } else if (!corto_check_attr(o, CORTO_ATTR_NAMED) || !corto_childof(root_o, o)) {
+    } else if (!corto_idof(o)) {
         corto_walk_opt stringSer;
         corto_string_ser_t data;
 

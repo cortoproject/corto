@@ -195,6 +195,7 @@ const char* corto_field_lookup_member(
     corto_type type,
     const char *field,
     void *ptr,
+    bool nested_field,
     corto_field *field_out)
 {
     corto_id buffer;
@@ -230,6 +231,7 @@ const char* corto_field_lookup_member(
     *buffer_ptr = '\0';
 
     bool is_target = corto_typeof(type) == (corto_type)corto_target_o;
+    corto_member prev_member = field_out->member;
 
     if (!strcmp(buffer, "super")) {
         /* Super can be used to refer to members of a base-interface */
@@ -252,27 +254,14 @@ const char* corto_field_lookup_member(
         }
 
     } else {
-        bool nested_target_member = false;
-        corto_type target_type = NULL;
-
-        if (is_target) {
-            target_type = corto_target(type)->type;
-        }
-
         /* If not super, lookup member in the type */
         corto_member m = corto_interface_resolve_member(type, buffer);
         if (!m) {
-            if (!is_target ||
-                !(m = corto_interface_resolve_member(target_type, buffer)))
-            {
-                corto_throw(
-                    "unresolved member '%s' in type '%s'",
-                    buffer,
-                    corto_fullpath(NULL, type));
-                goto error;
-            } else if (is_target) {
-                nested_target_member = true;
-            }
+            corto_throw(
+                "unresolved member '%s' in type '%s'",
+                buffer,
+                corto_fullpath(NULL, type));
+            goto error;
         }
 
         field_out->type = m->type;
@@ -280,31 +269,25 @@ const char* corto_field_lookup_member(
         field_out->index = -1;
 
         if (ptr) {
-            if (is_target) {
-                bool owned = corto_owned(ptr);
-                bool remote_field = false;
-
-                if (!nested_target_member) {
-                    remote_field = !strcmp(buffer, "target");
-
-                    if ((owned && remote_field) || (!owned && !remote_field)) {
-                        /* If this is a remote field but the object is owned,
-                         * the field should not be assigned */
-                        field_out->modifiers |= CORTO_READONLY;
-                    }
+            /* If the expression passed to field_lookup is nested, and this
+             * is a nested field, automatically dereference. Otherwise,
+             * assume that the callee already dereferenced pointer. */
+            if (prev_member && nested_field) {
+                if (prev_member->modifiers & CORTO_OBSERVABLE) {
+                    ptr = *(corto_object*)ptr;
                 }
-                
-                ptr = *(corto_object*)ptr;
+            }
 
-                if (nested_target_member) {
-                    if (!owned) {
-                        /* Set target, which is 2nd field */
-                        ptr = CORTO_OFFSET(ptr, corto_type_sizeof(target_type));
-                    } else {
-                        /* Set actual, which is first field. Ptr is ok */
-                    }
+            if (is_target) {
+                bool remote_field = false;
+                bool owned = corto_owned(ptr);
 
-                    /* Next statement adds offset of member of target_type */
+                remote_field = !strcmp(buffer, "target");
+
+                if ((owned && remote_field) || (!owned && !remote_field)) {
+                    /* If this is a remote field but the object is owned,
+                     * the field should not be assigned */
+                    field_out->modifiers |= CORTO_READONLY;
                 }
             }
 
@@ -330,6 +313,7 @@ int16_t _corto_field_lookup(
     corto_field *field_out)
 {
     char ch;
+    int count = 0;
 
     field_out->type = type;
     field_out->ptr = ptr;
@@ -345,8 +329,10 @@ int16_t _corto_field_lookup(
                 field ++;
             }
             field = corto_field_lookup_member(
-                field_out->type, field, field_out->ptr, field_out);
+                field_out->type, field, field_out->ptr, count != 0, field_out);
         }
+
+        count ++;
 
         if (!field) {
             goto error;
