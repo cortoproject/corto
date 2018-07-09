@@ -90,6 +90,22 @@ struct s_nested_list {
     m: int_list
 }
 
+struct s_target_primitive {
+    m: target[int32]
+}
+
+struct s_target_reference {
+    m: target[object]
+}
+
+struct s_target_composite {
+    m: target[point]
+}
+
+struct s_target_collection {
+    m: target[list[int32]]
+}
+
 test/Suite assign_reftype_obj {
     tc_byref_frommbr_bytype()
     tc_byref_frommbr_byval()
@@ -485,4 +501,54 @@ test/suite rw_field_expr {
     tc_inheritance_expr_full_reverse()
     tc_inheritance_expr_partial()
     tc_inheritance_expr_mixed()
+}
+
+test/suite rw_target {
+    tc_primitive()
+    tc_reference()
+    tc_composite()
+    tc_collection()
+
+    tc_explicit_composite_owned()
+    tc_explicit_composite_not_owned()
+
+    tc_implicit_app_from_app()
+    tc_implicit_app_from_local()
+    tc_implicit_app_from_remote()
+    tc_implicit_local_from_app()
+    tc_implicit_local_from_local()
+    tc_implicit_local_from_remote()
+    tc_implicit_remote_from_app()
+    tc_implicit_remote_from_local()
+    tc_implicit_remote_from_remote()
+
+    tc_target_app_from_app()
+    tc_target_app_from_local()
+    tc_target_app_from_remote()
+    tc_target_local_from_app()
+    tc_target_local_from_local()
+    tc_target_local_from_remote()
+    tc_target_remote_from_app()
+    tc_target_remote_from_local()
+    tc_target_remote_from_remote()
+
+    tc_actual_app_from_app()
+    tc_actual_app_from_local()
+    tc_actual_app_from_remote()
+    tc_actual_local_from_app()
+    tc_actual_local_from_local()
+    tc_actual_local_from_remote()
+    tc_actual_remote_from_app()
+    tc_actual_remote_from_local()
+    tc_actual_remote_from_remote()
+
+    tc_objective_app_from_app()
+    tc_objective_app_from_local()
+    tc_objective_app_from_remote()
+    tc_objective_local_from_app()
+    tc_objective_local_from_local()
+    tc_objective_local_from_remote()
+    tc_objective_remote_from_app()
+    tc_objective_remote_from_local()
+    tc_objective_remote_from_remote()
 }

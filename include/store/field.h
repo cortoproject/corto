@@ -43,7 +43,20 @@ typedef struct corto_field {
     corto_member member;
     uint32_t index;
     bool is_super;
+    corto_modifierMask modifiers;
 } corto_field;
+
+/** Combine modifiers from nested fields
+ */
+corto_modifierMask corto_field_combine_modifiers(
+    corto_modifierMask parent_modifiers,
+    corto_modifierMask modifiers);
+
+/** Return pointer to value of field
+ */
+void* corto_field_get_value_ptr(
+    corto_field *field,
+    corto_type *type_out);
 
 /** Lookup a field.
  */

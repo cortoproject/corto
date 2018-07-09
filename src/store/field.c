@@ -21,6 +21,52 @@
 
 #include <corto/corto.h>
 
+corto_modifierMask corto_field_combine_modifiers(
+    corto_modifierMask parent_modifiers,
+    corto_modifierMask modifiers)
+{
+    modifiers |=
+      (CORTO_READONLY|CORTO_CONST|CORTO_PRIVATE|CORTO_LOCAL) & parent_modifiers;
+    return modifiers;
+}
+
+void* corto_field_get_value_ptr(
+    corto_field *field,
+    corto_type *type_out)
+{
+    corto_type type = field->type;
+    void *ptr = field->ptr;
+    corto_member member = field->member;
+
+    if (corto_typeof(type) == (corto_type)corto_target_o) {
+        corto_target target_type = (corto_target)type;
+        bool owned = corto_owned(ptr);
+
+        type = target_type->type;
+        ptr = *(corto_object*)ptr;
+
+        if (owned) {
+            /* If target is owned, set 'actual', which is the first member */
+        } else {
+            /* If not owned, set 'target', which is the second member */
+            ptr = CORTO_OFFSET(ptr, corto_type_sizeof(type));
+        }
+    } else if (member) {
+        if (member->modifiers & CORTO_OPTIONAL) {
+            ptr = *(void**)ptr;
+        }
+        if (member->modifiers & CORTO_OBSERVABLE) {
+            ptr = *(corto_object*)ptr;
+        }
+    }
+
+    if (type_out) {
+        *type_out = type;
+    }
+
+    return ptr;
+}
+
 static
 int16_t corto_get_element_ptr(
     corto_collection type,
@@ -183,6 +229,8 @@ const char* corto_field_lookup_member(
 
     *buffer_ptr = '\0';
 
+    bool is_target = corto_typeof(type) == (corto_type)corto_target_o;
+
     if (!strcmp(buffer, "super")) {
         /* Super can be used to refer to members of a base-interface */
         corto_interface base = corto_interface(type)->base;
@@ -198,27 +246,76 @@ const char* corto_field_lookup_member(
         field_out->index = -1;
         field_out->ptr = ptr;
         field_out->is_super = true;
+        if (corto_instanceof(corto_struct_o, type)) {
+            field_out->modifiers = corto_field_combine_modifiers(
+                field_out->modifiers, corto_struct(type)->base_modifiers);
+        }
 
     } else {
+        bool nested_target_member = false;
+        corto_type target_type = NULL;
+
+        if (is_target) {
+            target_type = corto_target(type)->type;
+        }
+
         /* If not super, lookup member in the type */
         corto_member m = corto_interface_resolve_member(type, buffer);
         if (!m) {
-            corto_throw(
-                "unresolved member '%s' in type '%s'",
-                buffer,
-                corto_fullpath(NULL, type));
-            goto error;
+            if (!is_target ||
+                !(m = corto_interface_resolve_member(target_type, buffer)))
+            {
+                corto_throw(
+                    "unresolved member '%s' in type '%s'",
+                    buffer,
+                    corto_fullpath(NULL, type));
+                goto error;
+            } else if (is_target) {
+                nested_target_member = true;
+            }
         }
 
         field_out->type = m->type;
         field_out->member = m;
         field_out->index = -1;
+
         if (ptr) {
+            if (is_target) {
+                bool owned = corto_owned(ptr);
+                bool remote_field = false;
+
+                if (!nested_target_member) {
+                    remote_field = !strcmp(buffer, "target");
+
+                    if ((owned && remote_field) || (!owned && !remote_field)) {
+                        /* If this is a remote field but the object is owned,
+                         * the field should not be assigned */
+                        field_out->modifiers |= CORTO_READONLY;
+                    }
+                }
+                
+                ptr = *(corto_object*)ptr;
+
+                if (nested_target_member) {
+                    if (!owned) {
+                        /* Set target, which is 2nd field */
+                        ptr = CORTO_OFFSET(ptr, corto_type_sizeof(target_type));
+                    } else {
+                        /* Set actual, which is first field. Ptr is ok */
+                    }
+
+                    /* Next statement adds offset of member of target_type */
+                }
+            }
+
             field_out->ptr = CORTO_OFFSET(ptr, m->offset);
         } else {
             field_out->ptr = NULL;
         }
+
         field_out->is_super = false;
+        field_out->modifiers = corto_field_combine_modifiers(
+            field_out->modifiers, m->modifiers);
     }
 
     return field - 1;

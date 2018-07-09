@@ -160,7 +160,7 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
     /* Obtain fully scoped name */
     corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        if (corto_check_attr(object, CORTO_ATTR_NAMED)) {
+        if (corto_check_attr(object, CORTO_ATTR_NAMED) && corto_childof(root_o, object)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_idof(object));
                 str = id;

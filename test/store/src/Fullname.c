@@ -82,7 +82,7 @@ void test_Fullname_tc_null(
     id[0] = 'a';
     corto_string result = corto_fullpath(id, NULL);
     test_assert(result == id);
-    test_assert(!strcmp(result, ""));
+    test_assertstr(result, "null");
 }
 
 void test_Fullname_tc_nullBuffer(
@@ -91,7 +91,7 @@ void test_Fullname_tc_nullBuffer(
 
     corto_string result = corto_fullpath(NULL, NULL);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, ""));
+    test_assertstr(result, "null");
 }
 
 void test_Fullname_tc_onelevel(

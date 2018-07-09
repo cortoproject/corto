@@ -175,6 +175,10 @@ int16_t corto_rw_index(
             this->current->field.member = this->current->cache[index].member;
             this->current->field.type = this->current->field.member->type;
             this->current->field.is_super = false;
+            this->current->field.modifiers = corto_field_combine_modifiers(
+                this->current->scope_modifiers,
+                this->current->field.member->modifiers);
+
             if (this->current->scope_ptr) {
                 this->current->field.ptr = CORTO_OFFSET(
                     this->current->scope_ptr,
@@ -199,6 +203,7 @@ int16_t corto_rw_index(
             this->current->field.ptr = field.ptr;
             this->current->field.member = NULL;
             this->current->field.is_super = false;
+            this->current->field.modifiers = this->current->scope_modifiers;
         }
     }
 
@@ -450,7 +455,9 @@ int16_t corto_rw_field(
 
     void *ptr = this->current->scope_ptr;
 
-    corto_field field = {0};
+    corto_field field = {
+        .modifiers = this->current->scope_modifiers
+    };
 
     corto_try(corto_field_lookup(
         field_expr,
@@ -463,6 +470,7 @@ int16_t corto_rw_field(
     this->current->field.member = field.member;
     this->current->field.type = field.type;
     this->current->field.is_super = field.is_super;
+    this->current->field.modifiers = field.modifiers;
 
     if (field.index != -1) {
         this->current->field.index = field.index;
@@ -496,12 +504,19 @@ int16_t corto_rw_push(
     corto_type cur_type = NULL, cur_scope_type = NULL;
     void *cur_ptr = NULL;
     corto_rw_scope *scope = NULL;
+    corto_modifierMask cur_modifiers = 0;
     bool is_collection = false;
     cur_type = corto_rw_get_type(this);
     bool is_complex = corto_type_is_complex(cur_type);
+    bool is_target = corto_typeof(cur_type) == (corto_type)corto_target_o;
 
     if (this->current) {
         cur_scope_type = this->current->scope_type;
+        cur_modifiers = this->current->field.modifiers;
+    }
+
+    if (is_target) {
+        cur_type = ((corto_target)cur_type)->type;
     }
 
     if (!is_complex) {
@@ -535,6 +550,10 @@ int16_t corto_rw_push(
         cur_ptr = this->current->field.ptr;
     }
 
+    if (is_target) {
+        cur_ptr = *(corto_object*)cur_ptr;
+    }
+
     /* If this is the first element to be pushed of a type that requires an
      * allocation, create it. Subsequent elements will be created when the
      * application calls corto_rw_next or equivalent. */
@@ -559,6 +578,7 @@ int16_t corto_rw_push(
 
     scope->scope_type = cur_type;
     scope->scope_ptr = cur_ptr;
+    scope->scope_modifiers = cur_modifiers;
     scope->parent = this->current;
     this->current = scope;
 
@@ -711,7 +731,8 @@ void* corto_rw_get_ptr(
     } else {
         if (this->current->scope_ptr) {
             if (!this->current->field.ptr) {
-                corto_try(corto_rw_index(this, this->current->field.index), NULL);
+                corto_try(
+                    corto_rw_index(this, this->current->field.index), NULL);
             }
 
             return this->current->field.ptr;
@@ -730,6 +751,37 @@ uintptr_t corto_rw_set_value(
 {
     corto_type type = corto_rw_get_type(this);
     void *ptr = corto_rw_get_ptr(this);
+
+    if (this->current) {
+        char *field_kind = NULL;
+
+        /* Check if not assigning a readonly or private field */
+        if (this->current->field.modifiers & (CORTO_READONLY)) {
+            field_kind = "readonly";
+        } else if (this->current->field.modifiers & (CORTO_PRIVATE)) {
+            field_kind = "private";
+        }
+
+        if (field_kind) {
+            if (this->current->field.member) {
+                corto_throw("cannot set %s field '%s' of type '%s'",
+                    field_kind,
+                    corto_idof(this->current->field.member),
+                    corto_fullpath(NULL, type));
+            } else if (this->current->field.is_super) {
+                corto_throw("cannot set %s field 'super' of type '%s'",
+                    field_kind,
+                    corto_fullpath(NULL, type));
+            } else {
+                corto_throw("cannot set %s field of type '%s'",
+                    field_kind,
+                    corto_fullpath(NULL, type));
+            }
+            goto error;
+        }
+
+        ptr = corto_field_get_value_ptr(&this->current->field, &type);
+    }
 
     if (!ptr) {
         corto_throw("no value to assign");

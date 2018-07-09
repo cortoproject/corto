@@ -42,7 +42,7 @@
  * `Line l = {start:{x:10, 20}, stop.x:30, stop.y:40}`
  *
  * This cortoscript example is equivalent to the following code:
- * 
+ *
  ```
  corto_rw rw = corto_rw_init(Line_o, l_o);
  corto_rw_push(&rw);
@@ -87,6 +87,9 @@ typedef struct corto_rw_scope {
 
     /* Base pointer of scope */
     void *scope_ptr;
+
+    /* Base modifiers of scope */
+    corto_modifierMask scope_modifiers;
 
     /* Current field */
     corto_field field;
