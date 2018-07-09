@@ -438,3 +438,37 @@ void test_Observers_tc_observingTree(
     test_assert(corto_delete(observer) == 0);
 
 }
+
+void observer_shutdown_callback(corto_observer_event *event) {
+    return;
+}
+
+void test_Observers_tc_observerShutdown(
+    test_Observers this)
+{
+    /* Create dummy data to observe */
+    corto_object scope = corto_create(data_o, "foo", corto_int32_o);
+    corto_create(scope, "bar", corto_int32_o);
+
+    corto_observer observer = corto_observe(CORTO_ON_ANY, scope)
+      .callback(observer_shutdown_callback);
+    test_assert(observer != NULL);
+
+    /* Do not delete observer */
+}
+
+void test_Observers_tc_observerDeleteObserverBeforeObject(
+    test_Observers this)
+{
+    /* Create dummy data to observe */
+    corto_object scope = corto_create(data_o, "foo", corto_int32_o);
+    corto_object nested = corto_create(scope, "bar", corto_int32_o);
+
+    corto_observer observer = corto_observe(CORTO_ON_ANY, scope)
+      .callback(observer_shutdown_callback);
+    test_assert(observer != NULL);
+
+    corto_delete(observer);
+
+    corto_update(nested);
+}

@@ -794,7 +794,10 @@ void corto__deinitObservable(
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     observable = corto_hdr_observable(_o);
-    corto_assert(observable != NULL, "corto__deinitObservable: called on non-observable object <%p>.", o);
+    corto_assert(
+        observable != NULL,
+        "corto__deinitObservable: called on non-observable object <%p>.",
+        o);
 
     /* Delete observer objects in onSelf and onChild */
     if (observable->onSelf) {
@@ -2146,13 +2149,6 @@ bool corto_destruct(
             }
         }
 
-        /* Deinit observable */
-        if (corto_check_attr(o, CORTO_ATTR_OBSERVABLE)) {
-            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_OBSERVABLE");
-            corto__deinitObservable(o);
-            if (CORTO_TRACE_MEM) corto_log_pop();
-        }
-
         /* Deinit scope */
         if (named && !corto_isorphan(o)) {
             if (CORTO_TRACE_MEM) corto_log_push("ORPHAN");
@@ -2176,6 +2172,13 @@ bool corto_destruct(
         if (corto_check_attr(o, CORTO_ATTR_WRITABLE)) {
             if (CORTO_TRACE_MEM) corto_log_push("DEINIT_WRITABLE");
             corto__deinitWritable(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
+        }
+
+        /* Deinit observable */
+        if (corto_check_attr(o, CORTO_ATTR_OBSERVABLE)) {
+            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_OBSERVABLE");
+            corto__deinitObservable(o);
             if (CORTO_TRACE_MEM) corto_log_pop();
         }
 
