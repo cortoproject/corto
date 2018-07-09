@@ -1225,12 +1225,6 @@ int16_t corto_observer_unobserve(
         goto ignore;
     }
 
-    /* Observers don't necessarily take a refcount on their observables, and if
-     * the observable has already been destructed, it has already been silenced. */
-    if (corto_check_state(observable, CORTO_DELETED)) {
-        goto ignore;
-    }
-
     if (corto_check_attr(observable, CORTO_ATTR_OBSERVABLE)) {
         _o = corto_hdr_observable(CORTO_OFFSET(observable, -sizeof(corto__object)));
         observerData = NULL;
