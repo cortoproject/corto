@@ -373,8 +373,8 @@ static
 int corto_interface_validateAlias(
     corto_alias this)
 {
-    corto_modifierMask m = 0;
     corto_member super = ((corto_member)this);
+
     /* Find the member we're aliassing and verify access */
     if (!this->member) {
         corto_throw("alias '%s' does not point to a member",
@@ -387,22 +387,18 @@ int corto_interface_validateAlias(
             goto error;
         }
 
-        if (this->member->modifiers & CORTO_PRIVATE) {
-            corto_throw("cannot alias private member in alias '%s'",
-                corto_fullpath(NULL, this));
-        }
-
         if (super->modifiers & CORTO_HIDDEN) {
             corto_throw("invalid hidden modifier for alias '%s'",
                 corto_fullpath(NULL, this));
+            goto error;
         }
 
         if (!super->modifiers) {
             super->modifiers = this->member->modifiers;
-
-            /* When copying modifiers, don't copy hidden */
-            super->modifiers &= ~CORTO_HIDDEN;
         }
+
+        /* Never hide an alias */
+        super->modifiers &= ~CORTO_HIDDEN;
 
         if ((this->member->modifiers & ~CORTO_HIDDEN) != super->modifiers) {
             corto_throw("alias '%s' modifiers differ from member '%s'",
@@ -411,6 +407,7 @@ int corto_interface_validateAlias(
         }
 
         corto_interface base = corto_parentof(this);
+        corto_modifierMask m = this->member->modifiers;
         while (base && (base != corto_parentof(this->member))) {
             m |= corto_struct(base)->base_modifiers;
             base = base->base;
@@ -422,7 +419,13 @@ int corto_interface_validateAlias(
             goto error;
         }
 
-        if (m && m != CORTO_HIDDEN) {
+        if (!(m & CORTO_HIDDEN)) {
+            corto_throw("cannot alias non-hidden member '%s'",
+                corto_fullpath(NULL, this->member));
+            goto error;
+        }
+
+        if (m & (CORTO_PRIVATE)) {
             corto_throw("alias '%s' doesn't have write-access to member '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, this->member));
             goto error;

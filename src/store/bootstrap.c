@@ -1394,23 +1394,23 @@ int corto_stop(void)
 
     /* Call exithandlers. Do after corto_platform_deinit as this will unload any
      * loaded libraries, which may have routines to cleanup TLS data. */
-     struct corto_exitHandler* h;
+    struct corto_exitHandler* h;
 
-     if (corto_exitHandlers) {
-         while((h = corto_ll_takeFirst(corto_exitHandlers))) {
-             h->handler(h->userData);
-             corto_dealloc(h);
-         }
-         corto_ll_free(corto_exitHandlers);
-         corto_exitHandlers = NULL;
-     }
+    if (corto_exitHandlers) {
+        while((h = corto_ll_takeFirst(corto_exitHandlers))) {
+            h->handler(h->userData);
+            corto_dealloc(h);
+        }
+        corto_ll_free(corto_exitHandlers);
+        corto_exitHandlers = NULL;
+    }
 
     /* Corto is now shut down */
     CORTO_APP_STATUS = 3;
 
     /* Cleanup any TLS data in the mainthread not created through corto. Don't
      * enable this by default as it will exit the process with exit status 0,
-     * which prevents the application from specifying a custom code. */
+     * which prevents the application from specifying a custom exit code. */
     if (CORTO_COLLECT_TLS) {
         pthread_exit(0);
     }

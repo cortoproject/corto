@@ -234,7 +234,7 @@ int16_t corto_loader_on_resume(
         do {
             next_ptr = corto_path_tok(&obj_id, &package_id, full_id);
             if (package_id[0] != '/' || package_id[1]) {
-                pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
+                 pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
             } else {
                 pkg = NULL;
             }
@@ -250,7 +250,7 @@ int16_t corto_loader_on_resume(
     /* Step 2: load package if found */
     bool proceed = false;
     if (package_id) {
-        corto_debug("package '%s' located while looking for '%s/%s'",
+        corto_debug("package '%s' located while looking for object '%s/%s'",
             package_id, package_id, obj_id);
 
         /* Test if package is already loaded. If it is, but the object could not
@@ -270,6 +270,9 @@ int16_t corto_loader_on_resume(
                 if (corto_use(package_id, 0, NULL)) {
                     goto error;
                 }
+            } else {
+                corto_trace("package '%s' is not a library, cannot load",
+                    package_id);
             }
             proceed = true;
         }
@@ -332,6 +335,7 @@ int16_t corto_loader_on_resume(
                     *object = o;
                     corto_debug("object created for package '%s'", full_id);
                 } else {
+                    obj_id[-1] = '\0';
                     corto_debug("object '%s' not found in package '%s'",
                         obj_id, package_id);
                 }

@@ -1804,6 +1804,15 @@ test/Suite Ptr {
 // MISC SUITES
 //------------------------------------------------------------------------------
 
+// Test alias members
+test/Suite Alias {
+    tc_aliasNonHidden()
+    tc_aliasPrivate()
+    tc_aliasPrivateBase()
+    tc_aliasHiddenMember()
+    tc_aliasHiddenBase()
+}
+
 // Test containers, leafs and tables
 test/Suite Container {
     tc_tableSingleKey()
