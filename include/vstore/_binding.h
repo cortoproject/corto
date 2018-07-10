@@ -92,8 +92,8 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define corto_mount_id(_this) _corto_mount_id(corto_mount(_this))
 #define corto_mount_init(_this) _corto_mount_init(corto_mount(_this))
 #define corto_mount_invoke(_this, instance, proc, argptrs) _corto_mount_invoke(corto_mount(_this), instance, corto_function(proc), argptrs)
-#define corto_mount_on_batch_notify_v(_this, events) _corto_mount_on_batch_notify_v(corto_mount(_this), events)
-#define corto_mount_on_history_batch_notify_v(_this, events) _corto_mount_on_history_batch_notify_v(corto_mount(_this), events)
+#define corto_mount_on_batch_notify_v(_this, event_count, events) _corto_mount_on_batch_notify_v(corto_mount(_this), event_count, events)
+#define corto_mount_on_history_batch_notify_v(_this, event_count, events) _corto_mount_on_history_batch_notify_v(corto_mount(_this), event_count, events)
 #define corto_mount_on_history_query_v(_this, query) _corto_mount_on_history_query_v(corto_mount(_this), query)
 #define corto_mount_on_id_v(_this) _corto_mount_on_id_v(corto_mount(_this))
 #define corto_mount_on_invoke_v(_this, instance, proc, argptrs) _corto_mount_on_invoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
@@ -242,8 +242,8 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define safe_corto_mount_id(_this) _corto_mount_id(corto_mount(_this))
 #define safe_corto_mount_init(_this) _corto_mount_init(corto_mount(_this))
 #define safe_corto_mount_invoke(_this, instance, proc, argptrs) _corto_mount_invoke(corto_mount(_this), instance, corto_function(proc), argptrs)
-#define safe_corto_mount_on_batch_notify_v(_this, events) _corto_mount_on_batch_notify_v(corto_mount(_this), events)
-#define safe_corto_mount_on_history_batch_notify_v(_this, events) _corto_mount_on_history_batch_notify_v(corto_mount(_this), events)
+#define safe_corto_mount_on_batch_notify_v(_this, event_count, events) _corto_mount_on_batch_notify_v(corto_mount(_this), event_count, events)
+#define safe_corto_mount_on_history_batch_notify_v(_this, event_count, events) _corto_mount_on_history_batch_notify_v(corto_mount(_this), event_count, events)
 #define safe_corto_mount_on_history_query_v(_this, query) _corto_mount_on_history_query_v(corto_mount(_this), query)
 #define safe_corto_mount_on_id_v(_this) _corto_mount_on_id_v(corto_mount(_this))
 #define safe_corto_mount_on_invoke_v(_this, instance, proc, argptrs) _corto_mount_on_invoke_v(corto_mount(_this), instance, corto_function(proc), argptrs)
@@ -314,15 +314,15 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
     ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1])->fptr)(corto_loader(_this), query) \
     : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_loader(_this), query) \
     )
-#define corto_mount_on_batch_notify(_this, events) ( \
+#define corto_mount_on_batch_notify(_this, event_count, events) ( \
     ((corto_function)corto_mount_on_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriber_eventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1], NULL, corto_mount(_this), events) \
+    ? ((_type_corto_void (*)(corto_object, uint32_t, corto_subscriber_eventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), event_count, events) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_batch_notify_o)->index - 1], NULL, corto_mount(_this), event_count, events) \
     )
-#define corto_mount_on_history_batch_notify(_this, events) ( \
+#define corto_mount_on_history_batch_notify(_this, event_count, events) ( \
     ((corto_function)corto_mount_on_history_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_void (*)(corto_object, corto_subscriber_eventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), events) \
-    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1], NULL, corto_mount(_this), events) \
+    ? ((_type_corto_void (*)(corto_object, uint32_t, corto_subscriber_eventIter))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1])->fptr)(corto_mount(_this), event_count, events) \
+    : (void)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_batch_notify_o)->index - 1], NULL, corto_mount(_this), event_count, events) \
     )
 #define corto_mount_on_history_query(_this, query) ( \
     ((corto_function)corto_mount_on_history_query_o)->kind == CORTO_PROCEDURE_CDECL \

@@ -106,11 +106,13 @@ void _corto_mount_invoke(
 CORTO_EXPORT
 void _corto_mount_on_batch_notify_v(
     corto_mount _this,
+    uint32_t event_count,
     corto_subscriber_eventIter events);
 
 CORTO_EXPORT
 void _corto_mount_on_history_batch_notify_v(
     corto_mount _this,
+    uint32_t event_count,
     corto_subscriber_eventIter events);
 
 CORTO_EXPORT

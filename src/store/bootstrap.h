@@ -1456,8 +1456,8 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_OVERRIDABLE_O(vstore_mount, on_history_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_history_query_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_resume, "(string parent,string id,inout:object object)", lang_int16, corto_mount_on_resume_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_notify, "(vstore/subscriber_event event)", lang_void, corto_mount_on_notify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_history_batch_notify, "(vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(uint32 event_count,vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_history_batch_notify, "(uint32 event_count,vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_subscribe, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_on_subscribe_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_unsubscribe, "(vstore/query query,lang/word ctx)", lang_void, corto_mount_on_unsubscribe_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_mount, "(vstore/query query,lang/word ctx)", lang_word, corto_mount_on_mount_v);

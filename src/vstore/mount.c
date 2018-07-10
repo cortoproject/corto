@@ -492,13 +492,13 @@ void corto_mount_onPoll(
     /* If batching is enabled, call on_batch_notify */
     if (events && this->callbacks & CORTO_MOUNT_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(events);
-        corto_mount_on_batch_notify(this, it);
+        corto_mount_on_batch_notify(this, corto_ll_count(events), it);
     }
 
     /* If batching of historical data is enabled, call on_history_batch_notify */
     if (historicalEvents && this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
         corto_iter it = corto_ll_iter(historicalEvents);
-        corto_mount_on_history_batch_notify(this, it);
+        corto_mount_on_history_batch_notify(this, corto_ll_count(historicalEvents), it);
         it = corto_ll_iter(historicalEvents);
         while (corto_iter_hasNext(&it)) {
             corto_event *e = corto_iter_next(&it);
@@ -1478,9 +1478,11 @@ void corto_mount_on_unmount_v(
 
 void corto_mount_on_batch_notify_v(
     corto_mount this,
+    uint32_t event_count,
     corto_subscriber_eventIter events)
 {
     CORTO_UNUSED(this);
+    CORTO_UNUSED(event_count);
     CORTO_UNUSED(events);
 }
 
@@ -1495,6 +1497,7 @@ corto_resultIter corto_mount_on_history_query_v(
 
 void corto_mount_on_history_batch_notify_v(
     corto_mount this,
+    uint32_t event_count,
     corto_subscriber_eventIter events)
 {
     CORTO_UNUSED(this);
