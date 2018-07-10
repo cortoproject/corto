@@ -506,7 +506,7 @@ CORTO_FWDECL_VSTORE(struct, frame);
 CORTO_FWDECL_VSTORE(struct, query);
 CORTO_FWDECL_VSTORE(struct, mount_subscription);
 CORTO_FWDECL_VSTORE(struct, observer_event);
-CORTO_FWDECL_VSTORE(struct, result);
+CORTO_FWDECL_VSTORE(struct, record);
 CORTO_FWDECL_VSTORE(struct, sample);
 CORTO_FWDECL_VSTORE(struct, subscriber_event);
 
@@ -569,7 +569,7 @@ CORTO_FWDECL(bitmask, attr);
 CORTO_FWDECL_VSTORE(bitmask, eventMask);
 CORTO_FWDECL(bitmask, modifierMask);
 CORTO_FWDECL_VSTORE(bitmask, mountCallbackMask);
-CORTO_FWDECL_VSTORE(bitmask, resultMask);
+CORTO_FWDECL_VSTORE(bitmask, recordMask);
 CORTO_FWDECL(bitmask, state);
 
 /* Sequences */
@@ -582,7 +582,7 @@ CORTO_FWDECL(sequence, stringseq);
 CORTO_FWDECL(sequence, wordseq);
 
 /* Lists */
-CORTO_FWDECL_VSTORE(list, resultlist);
+CORTO_FWDECL_VSTORE(list, recordlist);
 CORTO_FWDECL(list, objectlist);
 CORTO_FWDECL(list, taglist);
 CORTO_FWDECL(list, stringlist);
@@ -595,7 +595,7 @@ CORTO_FWDECL(delegate, name_action);
 CORTO_FWDECL_VSTORE(delegate, handleAction);
 
 /* Iterators */
-CORTO_FWDECL_VSTORE(iterator, resultIter);
+CORTO_FWDECL_VSTORE(iterator, recordIter);
 CORTO_FWDECL_VSTORE(iterator, subscriber_eventIter);
 CORTO_FWDECL_VSTORE(iterator, objectIter);
 CORTO_FWDECL_VSTORE(iterator, sampleIter);
@@ -866,9 +866,9 @@ CORTO_BITMASK_O(lang, modifierMask);
     CORTO_CONSTANT_O(lang_modifierMask, OBSERVABLE);
     CORTO_CONSTANT_O(lang_modifierMask, KEY);
 
-CORTO_BITMASK_O(vstore, resultMask);
-    CORTO_CONSTANT_O(vstore_resultMask, RESULT_LEAF);
-    CORTO_CONSTANT_O(vstore_resultMask, RESULT_HIDDEN);
+CORTO_BITMASK_O(vstore, recordMask);
+    CORTO_CONSTANT_O(vstore_recordMask, RESULT_LEAF);
+    CORTO_CONSTANT_O(vstore_recordMask, RESULT_HIDDEN);
 
 /* Collections */
 CORTO_SEQUENCE_O(lang, interfaceseq, lang_interface, 0);
@@ -881,7 +881,7 @@ CORTO_SEQUENCE_O(lang, wordseq, lang_word, 0);
 CORTO_LIST_O(lang, stringlist, lang_string, 0);
 CORTO_LIST_O(lang, objectlist, lang_object, 0);
 CORTO_LIST_O(lang, taglist, lang_tag, 0);
-CORTO_LIST_O(vstore, resultlist, vstore_result, 0);
+CORTO_LIST_O(vstore, recordlist, vstore_record, 0);
 CORTO_LIST_O(vstore, mount_subscriptionList, vstore_mount_subscription, 0);
 
 /* Delegate types */
@@ -892,7 +892,7 @@ CORTO_DELEGATE_O(vstore, handleAction, lang_void);
 
 /* Iterator types */
 CORTO_ITERATOR_O(vstore, objectIter, lang_object);
-CORTO_ITERATOR_O(vstore, resultIter, vstore_result);
+CORTO_ITERATOR_O(vstore, recordIter, vstore_record);
 CORTO_ITERATOR_O(vstore, subscriber_eventIter, vstore_subscriber_event);
 CORTO_ITERATOR_O(vstore, sampleIter, vstore_sample);
 
@@ -1266,20 +1266,20 @@ CORTO_STRUCT_O(vstore, sample, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, C
     CORTO_MEMBER_O(vstore_sample, timestamp, vstore_time, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_sample, value, lang_word, CORTO_GLOBAL);
 
-/* /corto/vstore/result */
-CORTO_STRUCT_O(vstore, result, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
-    CORTO_MEMBER_O(vstore_result, id, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_result, name, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_result, parent, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_result, type, lang_string, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_result, value, lang_word, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_result, flags, vstore_resultMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_result, object, lang_object, CORTO_HIDDEN);
-    CORTO_MEMBER_O(vstore_result, history, vstore_sampleIter, CORTO_HIDDEN);
-    CORTO_MEMBER_O(vstore_result, owner, lang_object, CORTO_HIDDEN);
-    CORTO_METHOD_O(vstore_result, get_text, "()", lang_string, corto_result_get_text);
-    CORTO_METHOD_O(vstore_result, fromcontent, "(string format,string content)", lang_int16, corto_result_fromcontent);
-    CORTO_METHOD_O(vstore_result, contentof, "(string format)", lang_string, corto_result_contentof);
+/* /corto/vstore/record */
+CORTO_STRUCT_O(vstore, record, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_NODELEGATE);
+    CORTO_MEMBER_O(vstore_record, id, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_record, name, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_record, parent, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_record, type, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_record, value, lang_word, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_record, flags, vstore_recordMask, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_record, object, lang_object, CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_record, history, vstore_sampleIter, CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_record, owner, lang_object, CORTO_HIDDEN);
+    CORTO_METHOD_O(vstore_record, get_text, "()", lang_string, corto_record_get_text);
+    CORTO_METHOD_O(vstore_record, fromcontent, "(string format,string content)", lang_int16, corto_record_fromcontent);
+    CORTO_METHOD_O(vstore_record, contentof, "(string format)", lang_string, corto_record_contentof);
 
 /* /corto/vstore/dispatcher */
 CORTO_INTERFACE_O(vstore, dispatcher);
@@ -1318,7 +1318,7 @@ CORTO_STRUCT_BASE_O(vstore, subscriber_event, vstore_event, 0, NULL, CORTO_DECLA
     CORTO_REFERENCE_O(vstore_subscriber_event, instance, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
     CORTO_REFERENCE_O(vstore_subscriber_event, source, lang_object, CORTO_GLOBAL, CORTO_VALID | CORTO_DECLARED, NULL);
     CORTO_MEMBER_O(vstore_subscriber_event, event, vstore_eventMask, CORTO_GLOBAL);
-    CORTO_MEMBER_O(vstore_subscriber_event, data, vstore_result, CORTO_GLOBAL);
+    CORTO_MEMBER_O(vstore_subscriber_event, data, vstore_record, CORTO_GLOBAL);
     CORTO_MEMBER_O(vstore_subscriber_event, fmt, vstore_fmt_data, CORTO_GLOBAL);
     CORTO_FUNCTION_O(vstore_subscriber_event, handle, "(vstore/event e)", lang_void, corto_subscriber_event_handle);
     CORTO_METHOD_O(vstore_subscriber_event, init, "()", lang_int16, corto_subscriber_event_init);
@@ -1369,7 +1369,7 @@ CORTO_STRUCT_O(vstore, query, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CO
     CORTO_MEMBER_O(vstore_query, content, lang_bool, CORTO_GLOBAL|CORTO_HIDDEN);
     CORTO_MEMBER_O(vstore_query, yield_unknown, lang_bool, CORTO_GLOBAL|CORTO_HIDDEN);
     CORTO_METHOD_O(vstore_query, cardinality, "()", lang_uint32, corto_query_cardinality);
-    CORTO_METHOD_O(vstore_query, match, "(vstore/result result)", lang_bool, corto_query_cardinality);
+    CORTO_METHOD_O(vstore_query, match, "(vstore/record record)", lang_bool, corto_query_cardinality);
 
 /* /corto/vstore/subscriber */
 CORTO_FW_IFCDE(vstore, subscriber);
@@ -1410,7 +1410,7 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_MEMBER_O(vstore_mount, sample_rate, lang_float64, CORTO_GLOBAL | CORTO_HIDDEN);
     CORTO_MEMBER_O(vstore_mount, queue_max, lang_uint32, CORTO_GLOBAL | CORTO_HIDDEN);
     CORTO_MEMBER_O(vstore_mount, expiry_time, lang_uint64, CORTO_GLOBAL | CORTO_HIDDEN);
-    CORTO_MEMBER_O(vstore_mount, filter_results, lang_bool, CORTO_GLOBAL | CORTO_HIDDEN);
+    CORTO_MEMBER_O(vstore_mount, filter_records, lang_bool, CORTO_GLOBAL | CORTO_HIDDEN);
 
     /* Readonly members */
     CORTO_MEMBER_O(vstore_mount, subscriptions, vstore_mount_subscriptionList, CORTO_READONLY);
@@ -1439,12 +1439,12 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     CORTO_METHOD_O(vstore_mount, set_format, "(string type)", lang_int16, corto_mount_set_format);
     CORTO_METHOD_O(vstore_mount, set_formatIn, "(string type)", lang_int16, corto_mount_set_formatIn);
     CORTO_METHOD_O(vstore_mount, set_formatOut, "(string type)", lang_int16, corto_mount_set_formatOut);
-    CORTO_METHOD_O(vstore_mount, return, "(vstore/result r)", lang_void, corto_mount_return);
+    CORTO_METHOD_O(vstore_mount, return, "(vstore/record r)", lang_void, corto_mount_return);
     CORTO_METHOD_O(vstore_mount, publish, "(vstore/eventMask event,string from,string id,string type,word value)", lang_void, corto_mount_unsubscribe);
     CORTO_METHOD_O(vstore_mount, invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_invoke);
     CORTO_METHOD_O(vstore_mount, id, "()", lang_string, corto_mount_id);
-    CORTO_METHOD_O(vstore_mount, query, "(vstore/query query)", vstore_resultIter, corto_mount_query);
-    CORTO_METHOD_O(vstore_mount, historyQuery, "(vstore/query query)", vstore_resultIter, corto_mount_query);
+    CORTO_METHOD_O(vstore_mount, query, "(vstore/query query)", vstore_recordIter, corto_mount_query);
+    CORTO_METHOD_O(vstore_mount, historyQuery, "(vstore/query query)", vstore_recordIter, corto_mount_query);
     CORTO_METHOD_O(vstore_mount, resume, "(string parent,string id,inout:object o_out)", lang_int16, corto_mount_resume);
     CORTO_METHOD_O(vstore_mount, subscribe, "(/corto/vstore/query query)", lang_void, corto_mount_subscribe);
     CORTO_METHOD_O(vstore_mount, unsubscribe, "(/corto/vstore/query query)", lang_void, corto_mount_unsubscribe);
@@ -1452,8 +1452,8 @@ CORTO_CLASS_O(vstore, mount, vstore_subscriber, CORTO_HIDDEN, CORTO_ATTR_DEFAULT
     /* Overridable methods */
     CORTO_OVERRIDABLE_O(vstore_mount, on_invoke, "(object instance,function proc,word argptrs)", lang_void, corto_mount_on_invoke_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_id, "()", lang_string, corto_mount_on_id_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_query_v);
-    CORTO_OVERRIDABLE_O(vstore_mount, on_history_query, "(/corto/vstore/query query)", vstore_resultIter, corto_mount_on_history_query_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_query, "(/corto/vstore/query query)", vstore_recordIter, corto_mount_on_query_v);
+    CORTO_OVERRIDABLE_O(vstore_mount, on_history_query, "(/corto/vstore/query query)", vstore_recordIter, corto_mount_on_history_query_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_resume, "(string parent,string id,inout:object object)", lang_int16, corto_mount_on_resume_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_notify, "(vstore/subscriber_event event)", lang_void, corto_mount_on_notify_v);
     CORTO_OVERRIDABLE_O(vstore_mount, on_batch_notify, "(uint32 event_count,vstore/subscriber_eventIter events)", lang_void, corto_mount_on_batch_notify_v);
@@ -1538,7 +1538,7 @@ CORTO_CLASS_O(vstore, loader, vstore_mount, CORTO_READONLY, CORTO_ATTR_DEFAULT, 
     CORTO_MEMBER_O(vstore_loader, autoLoad, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(vstore_loader, construct, "()", lang_int16, corto_loader_construct);
     CORTO_METHOD_O(vstore_loader, destruct, "()", lang_void, corto_loader_destruct);
-    CORTO_OVERRIDABLE_O(vstore_loader, on_query, "(/corto/vstore/query query)", vstore_resultIter, corto_loader_on_query_v);
+    CORTO_OVERRIDABLE_O(vstore_loader, on_query, "(/corto/vstore/query query)", vstore_recordIter, corto_loader_on_query_v);
     CORTO_OVERRIDE_O(vstore_loader, on_resume, "(string parent,string id,inout:object object)", lang_int16, corto_loader_on_resume);
 
 

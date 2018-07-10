@@ -73,7 +73,7 @@ void* corto_mount_thread(
 void corto_mount_notify(corto_subscriber_event *e) {
     corto_mount this = (corto_mount)e->subscriber;
     corto_eventMask event = e->event;
-    corto_result *r = &e->data;
+    corto_record *r = &e->data;
 
     if (!r->object || (!this->attr || corto_check_attr(r->object, this->attr))) {
         if (this->callbacks & CORTO_MOUNT_NOTIFY) {
@@ -404,7 +404,7 @@ int16_t corto_mount_init(
 
     this->sample_rate = 0;
     this->expiry_time = -1;
-    this->filter_results = true;
+    this->filter_records = true;
     this->attr = CORTO_ATTR_PERSISTENT;
 
     return safe_corto_subscriber_init(this);
@@ -733,18 +733,18 @@ void corto_mount_post(
     }
 }
 
-corto_resultIter corto_mount_on_query_v(
+corto_recordIter corto_mount_on_query_v(
     corto_mount this,
     corto_query *query)
 {
-    corto_resultIter result;
+    corto_recordIter result;
 
     CORTO_UNUSED(this);
     memset(&result, 0, sizeof(corto_iter));
 
     if (corto_instanceof(corto_routerimpl_o, corto_typeof(this))) {
         corto_id routerRequest;
-        corto_any routerResult = {corto_type(corto_resultIter_o), &result};
+        corto_any routerResult = {corto_type(corto_recordIter_o), &result};
         corto_any routerParam = {corto_type(corto_query_o), query};
         if (!strcmp(query->from, ".")) {
             sprintf(routerRequest, "/");
@@ -840,11 +840,11 @@ void corto_mount_publish(
 
 void corto_mount_queryRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_ptr_deinit(&data->list, corto_resultlist_o);
+    corto_ptr_deinit(&data->list, corto_recordlist_o);
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter corto_mount_query(
+corto_recordIter corto_mount_query(
     corto_mount this,
     corto_query *query)
 {
@@ -865,7 +865,7 @@ corto_resultIter corto_mount_query(
     return result;
 }
 
-corto_resultIter corto_mount_historyQuery(
+corto_recordIter corto_mount_historyQuery(
     corto_mount this,
     corto_query *query)
 {
@@ -890,7 +890,7 @@ int16_t corto_mount_resumeResult(
     corto_mount this,
     const char *parent,
     const char *id,
-    corto_result *r,
+    corto_record *r,
     corto_object *o_out)
 {
     bool new_object = false;
@@ -1015,14 +1015,14 @@ int16_t corto_mount_resume(
         q.content = TRUE;
 
         /* Query the mount */
-        corto_resultIter it = corto_mount_query(this, &q);
+        corto_recordIter it = corto_mount_query(this, &q);
 
         if (corto_iter_hasNext(&it)) {
-            corto_result *r = corto_iter_next(&it);
+            corto_record *r = corto_iter_next(&it);
 
             /* If mount requests that corto should filter its results, it may
              * return more than one result */
-            if (this->filter_results) {
+            if (this->filter_records) {
                 do {
                     /* If this mount required corto to filter its own results,
                      * test if returned object is requested object */
@@ -1049,7 +1049,7 @@ int16_t corto_mount_resume(
                 result = out;
 
                 if (corto_iter_hasNext(&it)) {
-                    if (!this->filter_results) {
+                    if (!this->filter_records) {
                         /* If mount is doing its own filtering but is returning
                          * more than one result, something is wrong */
                         corto_error(
@@ -1094,7 +1094,7 @@ error:
 
 void corto_mount_return(
     corto_mount this,
-    corto_result *r)
+    corto_record *r)
 {
     corto_ll result = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
 
@@ -1123,7 +1123,7 @@ void corto_mount_return(
         return;
     }
 
-    corto_result *elem = corto_calloc(sizeof(corto_result));
+    corto_record *elem = corto_calloc(sizeof(corto_record));
     elem->id = corto_strdup(r->id);
     elem->name = r->name ? corto_strdup(r->name) : NULL;
     elem->parent = corto_strdup(r->parent);
@@ -1486,7 +1486,7 @@ void corto_mount_on_batch_notify_v(
     CORTO_UNUSED(events);
 }
 
-corto_resultIter corto_mount_on_history_query_v(
+corto_recordIter corto_mount_on_history_query_v(
     corto_mount this,
     corto_query *query)
 {

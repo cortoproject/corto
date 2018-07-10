@@ -15,27 +15,27 @@ int16_t test_JsonReplicator_construct(
     
     corto_mount_set_format(this, "text/json");
     corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
-    corto_mount(this)->filter_results = true;
+    corto_mount(this)->filter_records = true;
     return corto_mount_construct(this);
 }
 
 /* Custom release function */
 void test_JsonReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultList__clear(data->list);
+    corto_recordList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_JsonReplicator_on_query(
+corto_recordIter test_JsonReplicator_on_query(
     test_JsonReplicator this,
     corto_query *query)
 {
     corto_ll data = corto_ll_new();
 
     /* Create top level objects */
-    corto_result__assign(
-        corto_resultList__append_alloc(data),
+    corto_record__assign(
+        corto_recordList__append_alloc(data),
         "a",
         NULL,
         ".",
@@ -43,8 +43,8 @@ corto_resultIter test_JsonReplicator_on_query(
         (corto_word)corto_strdup("{\"x\":10,\"y\":20}"),
         CORTO_RESULT_LEAF
     );
-    corto_result__assign(
-        corto_resultList__append_alloc(data),
+    corto_record__assign(
+        corto_recordList__append_alloc(data),
         "b",
         0,
         ".",
@@ -52,8 +52,8 @@ corto_resultIter test_JsonReplicator_on_query(
         (corto_word)corto_strdup("{\"x\":30,\"y\":40}"),
         CORTO_RESULT_LEAF
     );
-    corto_result__assign(
-        corto_resultList__append_alloc(data),
+    corto_record__assign(
+        corto_recordList__append_alloc(data),
         "c",
         NULL,
         ".",

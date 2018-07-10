@@ -192,22 +192,22 @@ void json(corto_subscriber_event *e) {
     switch(this->eventsReceived) {
     case 1:
         test_assertstr(e->data.id, "a");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":10,\"y\":20}");
         break;
     case 2:
         test_assertstr(e->data.id, "b");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":30,\"y\":40}");
         break;
     case 3:
         test_assertstr(e->data.id, "c");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":50,\"y\":60}");
         break;
     case 4:
         test_assertstr(e->data.id, "c");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":70,\"y\":80}");
         break;
     }
@@ -340,22 +340,22 @@ void string(corto_subscriber_event *e) {
     switch(this->eventsReceived) {
     case 1:
         test_assertstr(e->data.id, "a");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{10,20}");
         break;
     case 2:
         test_assertstr(e->data.id, "b");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{30,40}");
         break;
     case 3:
         test_assertstr(e->data.id, "c");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{50,60}");
         break;
     case 4:
         test_assertstr(e->data.id, "c");
-        json = corto_result_get_text(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{70,80}");
         break;
     }

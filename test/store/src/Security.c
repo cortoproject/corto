@@ -248,7 +248,7 @@ void test_Security_tc_authorizeDeniedSelect(
     ret = corto_select("*")
         .from("/A").iter(&iter);
     test_assert(ret == 0);
-    corto_resultIter__foreach(iter, result) {
+    corto_recordIter__foreach(iter, result) {
         test_assert(strcmp(result.id, "b"));
     }
 
@@ -359,7 +359,7 @@ void test_Security_tc_authorizeSelect(
         .from("/A").iter(&iter);
     test_assert(ret == 0);
     corto_int32 count = 0;
-    corto_resultIter__foreach(iter, result) {
+    corto_recordIter__foreach(iter, result) {
         if (!strcmp(result.id, "b")) {
             count ++;
         }
@@ -945,7 +945,7 @@ void test_Security_tc_lockDenyTreeGrantSelectScope(
     test_assert(corto_select("*").from("/a/b").iter(&it) == 0);
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "c");
     test_assertstr(r->type, "void");

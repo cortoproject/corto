@@ -25,7 +25,7 @@ void test_MounterIterCount_release(corto_iter *it) {
     this->releaseCount ++;
 }
 
-corto_resultIter test_MountIterCount_on_query(
+corto_recordIter test_MountIterCount_on_query(
     test_MountIterCount this,
     corto_query *query)
 {
@@ -60,7 +60,7 @@ int16_t test_MountIterCount_construct(
         this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
     }
 
-    corto_mount(this)->filter_results = false;
+    corto_mount(this)->filter_records = false;
 
     return corto_super_construct(this);
 }

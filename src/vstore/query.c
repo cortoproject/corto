@@ -14,7 +14,7 @@ uint32_t corto_query_cardinality(
 
 bool corto_query_match(
     corto_query* this,
-    corto_result *result)
+    corto_record *result)
 {
     corto_assert(result->id != NULL, "no id specified in result");
     corto_assert(result->parent != NULL, "no parent specified in result");

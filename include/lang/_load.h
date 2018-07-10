@@ -116,7 +116,7 @@ CORTO_META_OBJECT(sequence, interfaceseq);
 CORTO_META_OBJECT(sequence, stringseq);
 CORTO_META_OBJECT(sequence, int32seq);
 CORTO_META_OBJECT(sequence, wordseq);
-CORTO_META_OBJECT(list, resultList);
+CORTO_META_OBJECT(list, recordList);
 CORTO_META_OBJECT(list, objectlist);
 CORTO_META_OBJECT(list, taglist);
 CORTO_META_OBJECT(list, stringlist);

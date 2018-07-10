@@ -28,12 +28,12 @@
 #define corto_observer_event(o) ((corto_observer_event*)corto_assert_type((corto_type)corto_observer_event_o, o))
 #define corto_operatorKind(o) ((corto_operatorKind*)corto_assert_type((corto_type)corto_operatorKind_o, o))
 #define corto_remote(o) ((corto_remote)corto_assert_type((corto_type)corto_remote_o, o))
-#define corto_resultMask(o) ((corto_resultMask*)corto_assert_type((corto_type)corto_resultMask_o, o))
+#define corto_recordMask(o) ((corto_recordMask*)corto_assert_type((corto_type)corto_recordMask_o, o))
 #define corto_sample(o) ((corto_sample*)corto_assert_type((corto_type)corto_sample_o, o))
 #define corto_sampleIter(o) ((corto_sampleIter*)corto_assert_type((corto_type)corto_sampleIter_o, o))
-#define corto_result(o) ((corto_result*)corto_assert_type((corto_type)corto_result_o, o))
-#define corto_resultIter(o) ((corto_resultIter*)corto_assert_type((corto_type)corto_resultIter_o, o))
-#define corto_resultlist(o) ((corto_resultlist*)corto_assert_type((corto_type)corto_resultlist_o, o))
+#define corto_record(o) ((corto_record*)corto_assert_type((corto_type)corto_record_o, o))
+#define corto_recordIter(o) ((corto_recordIter*)corto_assert_type((corto_type)corto_recordIter_o, o))
+#define corto_recordlist(o) ((corto_recordlist*)corto_assert_type((corto_type)corto_recordlist_o, o))
 #define corto_route(o) ((corto_route)corto_assert_type((corto_type)corto_route_o, o))
 #define corto_router(o) ((corto_router)corto_assert_type((corto_type)corto_router_o, o))
 #define corto_routerimpl(o) ((corto_routerimpl)corto_assert_type((corto_type)corto_routerimpl_o, o))
@@ -63,12 +63,12 @@ typedef corto_objectIter _type_corto_objectIter;
 typedef corto_observer_event _type_corto_observer_event;
 typedef corto_operatorKind _type_corto_operatorKind;
 typedef corto_remote _type_corto_remote;
-typedef corto_resultMask _type_corto_resultMask;
+typedef corto_recordMask _type_corto_recordMask;
 typedef corto_sample _type_corto_sample;
 typedef corto_sampleIter _type_corto_sampleIter;
-typedef corto_result _type_corto_result;
-typedef corto_resultIter _type_corto_resultIter;
-typedef corto_resultlist _type_corto_resultlist;
+typedef corto_record _type_corto_record;
+typedef corto_recordIter _type_corto_recordIter;
+typedef corto_recordlist _type_corto_recordlist;
 typedef corto_route _type_corto_route;
 typedef corto_router _type_corto_router;
 typedef corto_routerimpl _type_corto_routerimpl;
@@ -128,9 +128,9 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define corto_observer_event_init(_this) _corto_observer_event_init(_this)
 #define corto_query_cardinality(_this) _corto_query_cardinality(_this)
 #define corto_query_match(_this, result) _corto_query_match(_this, result)
-#define corto_result_contentof(_this, format) _corto_result_contentof(_this, format)
-#define corto_result_fromcontent(_this, format, content) _corto_result_fromcontent(_this, format, content)
-#define corto_result_get_text(_this) _corto_result_get_text(_this)
+#define corto_record_contentof(_this, format) _corto_record_contentof(_this, format)
+#define corto_record_fromcontent(_this, format, content) _corto_record_fromcontent(_this, format, content)
+#define corto_record_get_text(_this) _corto_record_get_text(_this)
 #define corto_route_construct(_this) _corto_route_construct(corto_route(_this))
 #define corto_route_init(_this) _corto_route_init(corto_route(_this))
 #define corto_router_construct(_this) _corto_router_construct(corto_router(_this))
@@ -204,9 +204,9 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define corto_observer_event_init _corto_observer_event_init
 #define corto_query_cardinality _corto_query_cardinality
 #define corto_query_match _corto_query_match
-#define corto_result_contentof _corto_result_contentof
-#define corto_result_fromcontent _corto_result_fromcontent
-#define corto_result_get_text _corto_result_get_text
+#define corto_record_contentof _corto_record_contentof
+#define corto_record_fromcontent _corto_record_fromcontent
+#define corto_record_get_text _corto_record_get_text
 #define corto_route_construct _corto_route_construct
 #define corto_route_init _corto_route_init
 #define corto_router_construct _corto_router_construct
@@ -278,9 +278,9 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
 #define safe_corto_observer_event_init(_this) _corto_observer_event_init(_this)
 #define safe_corto_query_cardinality(_this) _corto_query_cardinality(_this)
 #define safe_corto_query_match(_this, result) _corto_query_match(_this, result)
-#define safe_corto_result_contentof(_this, format) _corto_result_contentof(_this, format)
-#define safe_corto_result_fromcontent(_this, format, content) _corto_result_fromcontent(_this, format, content)
-#define safe_corto_result_get_text(_this) _corto_result_get_text(_this)
+#define safe_corto_record_contentof(_this, format) _corto_record_contentof(_this, format)
+#define safe_corto_record_fromcontent(_this, format, content) _corto_record_fromcontent(_this, format, content)
+#define safe_corto_record_get_text(_this) _corto_record_get_text(_this)
 #define safe_corto_route_construct(_this) _corto_route_construct(corto_route(_this))
 #define safe_corto_route_init(_this) _corto_route_init(corto_route(_this))
 #define safe_corto_router_construct(_this) _corto_router_construct(corto_router(_this))
@@ -311,8 +311,8 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
     )
 #define corto_loader_on_query(_this, query) ( \
     ((corto_function)corto_loader_on_query_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1])->fptr)(corto_loader(_this), query) \
-    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_loader(_this), query) \
+    ? ((_type_corto_recordIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1])->fptr)(corto_loader(_this), query) \
+    : *(corto_recordIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_loader_on_query_o)->index - 1], alloca(sizeof(corto_recordIter)), corto_loader(_this), query) \
     )
 #define corto_mount_on_batch_notify(_this, event_count, events) ( \
     ((corto_function)corto_mount_on_batch_notify_o)->kind == CORTO_PROCEDURE_CDECL \
@@ -326,8 +326,8 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
     )
 #define corto_mount_on_history_query(_this, query) ( \
     ((corto_function)corto_mount_on_history_query_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_query_o)->index - 1])->fptr)(corto_mount(_this), query) \
-    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_mount(_this), query) \
+    ? ((_type_corto_recordIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_query_o)->index - 1])->fptr)(corto_mount(_this), query) \
+    : *(corto_recordIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_history_query_o)->index - 1], alloca(sizeof(corto_recordIter)), corto_mount(_this), query) \
     )
 #define corto_mount_on_id(_this) ( \
     ((corto_function)corto_mount_on_id_o)->kind == CORTO_PROCEDURE_CDECL \
@@ -351,8 +351,8 @@ typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
     )
 #define corto_mount_on_query(_this, query) ( \
     ((corto_function)corto_mount_on_query_o)->kind == CORTO_PROCEDURE_CDECL \
-    ? ((_type_corto_resultIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_query_o)->index - 1])->fptr)(corto_mount(_this), query) \
-    : *(corto_resultIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_query_o)->index - 1], alloca(sizeof(corto_resultIter)), corto_mount(_this), query) \
+    ? ((_type_corto_recordIter (*)(corto_object, corto_query *))((corto_function)((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_query_o)->index - 1])->fptr)(corto_mount(_this), query) \
+    : *(corto_recordIter*)corto_invoke(((corto_interface)corto_typeof(_this))->methods.buffer[((corto_method)corto_mount_on_query_o)->index - 1], alloca(sizeof(corto_recordIter)), corto_mount(_this), query) \
     )
 #define corto_mount_on_resume(_this, parent, id, object) ( \
     ((corto_function)corto_mount_on_resume_o)->kind == CORTO_PROCEDURE_CDECL \

@@ -344,7 +344,7 @@ void corto_updateSubscriptionById(
 
     corto_select(id).subscribe(&it);
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
+        corto_record *r = corto_iter_next(&it);
 
         /* Reuse id buffer. Because this function is recursive, using a
          * large buffer allocated on stack is 'dangerous'. */

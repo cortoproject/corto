@@ -12,7 +12,7 @@ void test_SelectHistory_tc_selectAll(
     test_SelectHistory this)
 {
     corto_iter it;
-    corto_result *r;
+    corto_record *r;
     corto_sample *s;
 
     corto_int16 ret = corto_select("*")
@@ -110,7 +110,7 @@ void test_SelectHistory_tc_selectJson(
     test_SelectHistory this)
 {
     corto_iter it;
-    corto_result *r;
+    corto_record *r;
     corto_sample *s;
 
     corto_int16 ret = corto_select("*")
@@ -192,7 +192,7 @@ void test_SelectHistory_tc_selectNowToDepth(
     test_SelectHistory this)
 {
     corto_iter it;
-    corto_result *r;
+    corto_record *r;
     corto_sample *s;
 
     corto_int16 ret = corto_select("*")
@@ -274,7 +274,7 @@ void test_SelectHistory_tc_selectSampleToDepth(
     test_SelectHistory this)
 {
     corto_iter it;
-    corto_result *r;
+    corto_record *r;
     corto_sample *s;
 
     corto_int16 ret = corto_select("*")

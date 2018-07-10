@@ -29,7 +29,7 @@ CORTO_META_OBJECT(class, mount);
 CORTO_META_OBJECT(struct, mount_policy);
 CORTO_META_OBJECT(struct, mount_subscription);
 CORTO_META_OBJECT(class, loader);
-CORTO_META_OBJECT(struct, result);
+CORTO_META_OBJECT(struct, record);
 CORTO_META_OBJECT(struct, request);
 CORTO_META_OBJECT(struct, frame);
 CORTO_META_OBJECT(struct, query);
@@ -38,12 +38,12 @@ CORTO_META_OBJECT(interface, dispatcher);
 CORTO_META_OBJECT(enum, equalityKind);
 CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(bitmask, eventMask);
-CORTO_META_OBJECT(bitmask, resultMask);
+CORTO_META_OBJECT(bitmask, recordMask);
 CORTO_META_OBJECT(enum, ownership);
 CORTO_META_OBJECT(bitmask, mountCallbackMask);
 CORTO_META_OBJECT(enum, frameKind);
 
-CORTO_META_OBJECT(list, resultlist);
+CORTO_META_OBJECT(list, recordlist);
 CORTO_META_OBJECT(list, mount_subscriptionList);
 CORTO_META_OBJECT(sequence, augmentseq);
 
@@ -65,7 +65,7 @@ CORTO_META_OBJECT(struct, subscriber_event);
 CORTO_META_OBJECT(struct, invoke_event);
 CORTO_META_OBJECT(struct, time);
 
-CORTO_META_OBJECT(iterator, resultIter);
+CORTO_META_OBJECT(iterator, recordIter);
 CORTO_META_OBJECT(iterator, sampleIter);
 CORTO_META_OBJECT(iterator, subscriber_eventIter);
 

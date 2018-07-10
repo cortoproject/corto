@@ -168,7 +168,7 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(,secure_actionKind),\
     BUILTIN_VALUE(lang_, modifierMask),\
     BUILTIN_VALUE(vstore_, eventMask),\
-    BUILTIN_VALUE(vstore_, resultMask),\
+    BUILTIN_VALUE(vstore_, recordMask),\
     BUILTIN_VALUE(lang_, state),\
     BUILTIN_VALUE(lang_, attr),\
     BUILTIN_VALUE(lang_, int32seq),\
@@ -182,7 +182,7 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(lang_, objectlist),\
     BUILTIN_VALUE(lang_, taglist),\
     BUILTIN_VALUE(lang_, stringlist),\
-    BUILTIN_VALUE(vstore_, resultlist),\
+    BUILTIN_VALUE(vstore_, recordlist),\
     BUILTIN_VALUE(vstore_, mount_subscriptionList),\
     BUILTIN_VALUE(lang_, parameter),\
     BUILTIN_VALUE(vstore_, time),\
@@ -190,14 +190,14 @@ corto_object home_o = NULL;
     BUILTIN_VALUE(vstore_, sample),\
     BUILTIN_VALUE(vstore_, sampleIter),\
     BUILTIN_VALUE(vstore_, subscriber_eventIter),\
-    BUILTIN_VALUE(vstore_, result),\
+    BUILTIN_VALUE(vstore_, record),\
     BUILTIN_VALUE(lang_, delegatedata),\
     BUILTIN_VOID(vstore_, dispatcher),\
     BUILTIN_VALUE(lang_, pre_action),\
     BUILTIN_VALUE(lang_, name_action),\
     BUILTIN_VALUE(lang_, post_action),\
     BUILTIN_VALUE(vstore_, handleAction),\
-    BUILTIN_VALUE(vstore_, resultIter),\
+    BUILTIN_VALUE(vstore_, recordIter),\
     BUILTIN_VALUE(vstore_, objectIter),\
     BUILTIN_VALUE(vstore_, query),\
     BUILTIN_VALUE(vstore_, mount_subscription),\
@@ -494,9 +494,9 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_modifierMask_OPTIONAL),\
     BUILTIN_OBJ(lang_modifierMask_OBSERVABLE),\
     BUILTIN_OBJ(lang_modifierMask_KEY),\
-    /* resultMask */\
-    BUILTIN_OBJ(vstore_resultMask_RESULT_LEAF),\
-    BUILTIN_OBJ(vstore_resultMask_RESULT_HIDDEN),\
+    /* recordMask */\
+    BUILTIN_OBJ(vstore_recordMask_RESULT_LEAF),\
+    BUILTIN_OBJ(vstore_recordMask_RESULT_HIDDEN),\
     /* type */\
     BUILTIN_OBJ(lang_type_kind),\
     BUILTIN_OBJ(lang_type_reference),\
@@ -706,7 +706,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_mount_sample_rate),\
     BUILTIN_OBJ(vstore_mount_queue_max),\
     BUILTIN_OBJ(vstore_mount_expiry_time),\
-    BUILTIN_OBJ(vstore_mount_filter_results),\
+    BUILTIN_OBJ(vstore_mount_filter_records),\
     BUILTIN_OBJ(vstore_mount_subscriptions),\
     BUILTIN_OBJ(vstore_mount_events),\
     BUILTIN_OBJ(vstore_mount_historicalEvents),\
@@ -832,19 +832,19 @@ corto_object home_o = NULL;
     /* sample */\
     BUILTIN_OBJ(vstore_sample_timestamp),\
     BUILTIN_OBJ(vstore_sample_value),\
-    /* result */\
-    BUILTIN_OBJ(vstore_result_id),\
-    BUILTIN_OBJ(vstore_result_name),\
-    BUILTIN_OBJ(vstore_result_parent),\
-    BUILTIN_OBJ(vstore_result_type),\
-    BUILTIN_OBJ(vstore_result_value),\
-    BUILTIN_OBJ(vstore_result_flags),\
-    BUILTIN_OBJ(vstore_result_object),\
-    BUILTIN_OBJ(vstore_result_history),\
-    BUILTIN_OBJ(vstore_result_owner),\
-    BUILTIN_OBJ(vstore_result_get_text_),\
-    BUILTIN_OBJ(vstore_result_fromcontent_),\
-    BUILTIN_OBJ(vstore_result_contentof_),\
+    /* record */\
+    BUILTIN_OBJ(vstore_record_id),\
+    BUILTIN_OBJ(vstore_record_name),\
+    BUILTIN_OBJ(vstore_record_parent),\
+    BUILTIN_OBJ(vstore_record_type),\
+    BUILTIN_OBJ(vstore_record_value),\
+    BUILTIN_OBJ(vstore_record_flags),\
+    BUILTIN_OBJ(vstore_record_object),\
+    BUILTIN_OBJ(vstore_record_history),\
+    BUILTIN_OBJ(vstore_record_owner),\
+    BUILTIN_OBJ(vstore_record_get_text_),\
+    BUILTIN_OBJ(vstore_record_fromcontent_),\
+    BUILTIN_OBJ(vstore_record_contentof_),\
     /* package */\
     BUILTIN_OBJ(lang_package_description),\
     BUILTIN_OBJ(lang_package_version),\

@@ -25,7 +25,7 @@ void test_SelectSink_tc_selectLoaderCortoScope(
     corto_iter it;
     test_assert(corto_select("/").from("corto").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -73,7 +73,7 @@ void test_SelectSink_tc_selectLoaderCortoSingle(
     corto_iter it;
     test_assert(corto_select("r").from("corto").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -97,7 +97,7 @@ void test_SelectSink_tc_selectLoaderCortoTree(
     corto_iter it;
     test_assert(corto_select("//").from("corto").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -152,7 +152,7 @@ void test_SelectSink_tc_selectLoaderNestedScope(
     corto_iter it;
     test_assert(corto_select("corto/").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -200,7 +200,7 @@ void test_SelectSink_tc_selectLoaderNestedSingle(
     corto_iter it;
     test_assert(corto_select("corto/native").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -224,7 +224,7 @@ void test_SelectSink_tc_selectLoaderNestedSingleVirtual(
     corto_iter it;
     test_assert(corto_select("corto/r").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -248,7 +248,7 @@ void test_SelectSink_tc_selectLoaderNestedTree(
     corto_iter it;
     test_assert(corto_select("corto//").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -302,7 +302,7 @@ void test_SelectSink_tc_selectLoaderRootScope(
     corto_iter it;
     test_assert(corto_select("/").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -336,7 +336,7 @@ void test_SelectSink_tc_selectLoaderRootSingle(
     corto_iter it;
     test_assert(corto_select("p").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -360,7 +360,7 @@ void test_SelectSink_tc_selectLoaderRootTree(
     corto_iter it;
     test_assert(corto_select("//").type("package").iter(&it) == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it));
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -482,7 +482,7 @@ void test_SelectSink_tc_selectMixedScope(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -533,7 +533,7 @@ void test_SelectSink_tc_selectMixedScopeNested1(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -585,7 +585,7 @@ void test_SelectSink_tc_selectMixedScopeNested2(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -638,7 +638,7 @@ void test_SelectSink_tc_selectMountInResult(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
     test_assert(ret == 0);
 
@@ -663,7 +663,7 @@ void test_SelectSink_tc_selectScope(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
@@ -699,13 +699,13 @@ void test_SelectSink_tc_selectScope(
 void test_SelectSink_tc_selectScopeWithType(
     test_SelectSink this)
 {
-    corto_result r1 = {
+    corto_record r1 = {
         .id = "root",
         .parent = ".",
         .type = "int32",
         .flags = 0
     };
-    corto_result r2 = {
+    corto_record r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
@@ -716,7 +716,7 @@ void test_SelectSink_tc_selectScopeWithType(
     corto_iter it;
     corto_select("root/obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
@@ -729,13 +729,13 @@ void test_SelectSink_tc_selectScopeWithType(
 void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
     test_SelectSink this)
 {
-    corto_result r1 = {
+    corto_record r1 = {
         .id = "root",
         .parent = ".",
         .type = "int32",
         .flags = 0
     };
-    corto_result r2 = {
+    corto_record r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
@@ -746,7 +746,7 @@ void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
     corto_iter it;
     corto_select("root/obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
@@ -760,7 +760,7 @@ void test_SelectSink_tc_selectSingle(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
@@ -781,7 +781,7 @@ void test_SelectSink_tc_selectSingleTypeFilter(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     // Select single object of the package type
     corto_int16 ret = corto_select("//native*").iter( &iter );
@@ -803,7 +803,7 @@ void test_SelectSink_tc_selectSingleVirtualNested1(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("x/a").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
@@ -830,7 +830,7 @@ void test_SelectSink_tc_selectSingleVirtualNested2(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("x/a/k").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
@@ -850,7 +850,7 @@ void test_SelectSink_tc_selectSingleVirtualNested2(
 void test_SelectSink_tc_selectSingleWithType(
     test_SelectSink this)
 {
-    corto_result r1 = {
+    corto_record r1 = {
         .id = "a",
         .parent = ".",
         .type = "int32",
@@ -862,7 +862,7 @@ void test_SelectSink_tc_selectSingleWithType(
     corto_iter it;
     corto_select("a").type("int32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "");
@@ -874,7 +874,7 @@ void test_SelectSink_tc_selectSingleWithType(
 void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
     test_SelectSink this)
 {
-    corto_result r1 = {
+    corto_record r1 = {
         .id = "a",
         .parent = ".",
         .type = "int32",
@@ -886,7 +886,7 @@ void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
     corto_iter it;
     corto_select("a").type("int32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, "");
@@ -898,19 +898,19 @@ void test_SelectSink_tc_selectSingleWithTypeFromTreeMount(
 void test_SelectSink_tc_selectTreeWithType(
     test_SelectSink this)
 {
-    corto_result r1 = {
+    corto_record r1 = {
         .id = "root",
         .parent = ".",
         .type = "int32",
         .flags = 0
     };
-    corto_result r2 = {
+    corto_record r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
         .flags = CORTO_RESULT_LEAF
     };
-    corto_result r3 = {
+    corto_record r3 = {
         .id = "nested",
         .parent = ".",
         .type = "float32",
@@ -923,7 +923,7 @@ void test_SelectSink_tc_selectTreeWithType(
     corto_iter it;
     corto_select("//obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
@@ -944,19 +944,19 @@ void test_SelectSink_tc_selectTreeWithType(
 void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
     test_SelectSink this)
 {
-    corto_result r1 = {
+    corto_record r1 = {
         .id = "root",
         .parent = ".",
         .type = "int32",
         .flags = 0
     };
-    corto_result r2 = {
+    corto_record r2 = {
         .id = "obj",
         .parent = ".",
         .type = "float32",
         .flags = CORTO_RESULT_LEAF
     };
-    corto_result r3 = {
+    corto_record r3 = {
         .id = "nested",
         .parent = ".",
         .type = "float32",
@@ -969,7 +969,7 @@ void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
     corto_iter it;
     corto_select("//obj").type("float32").iter(&it);
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "obj");
     test_assertstr(r->parent, "/root");
@@ -991,7 +991,7 @@ void test_SelectSink_tc_selectVirtualScopeNested1(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create an actual scope */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -1034,7 +1034,7 @@ void test_SelectSink_tc_selectVirtualScopeNested2(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create an actual scope */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -1078,7 +1078,7 @@ void test_SelectSink_tc_selectVirtualScopeVirtualNested1(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("x/a/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
@@ -1115,7 +1115,7 @@ void test_SelectSink_tc_selectVirtualScopeVirtualNested2(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("x/a/k/*").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
@@ -1152,7 +1152,7 @@ void test_SelectSink_tc_selectVirtualSingleNested1(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
     corto_int32__create_auto(mount, x, 0);
@@ -1178,7 +1178,7 @@ void test_SelectSink_tc_selectVirtualSingleNested2(
     test_SelectSink this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
     corto_int32__create_auto(mount, x, 0);

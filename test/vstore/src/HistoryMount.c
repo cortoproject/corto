@@ -6,7 +6,7 @@ int16_t test_HistoryMount_construct(
     test_HistoryMount this)
 {
     corto_ll samples;
-    corto_result r;
+    corto_record r;
 
     /* Backwards compatibility patch for mount member */
     corto_subscriber s = corto_subscriber(this);
@@ -25,7 +25,7 @@ int16_t test_HistoryMount_construct(
     corto_stringList__append(samples, "{10,11}");
     corto_stringList__append(samples, "{20,22}");
 
-    r = (corto_result){"a", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
+    r = (corto_record){"a", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
     test_HistoryMount_data__assign(
         test_HistoryMount_dataList__append_alloc(this->history),
         &r,
@@ -35,7 +35,7 @@ int16_t test_HistoryMount_construct(
     corto_stringList__append(samples, "{30,33}");
     corto_stringList__append(samples, "{40,44}");
     corto_stringList__append(samples, "{50,55}");
-    r = (corto_result){"b", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
+    r = (corto_record){"b", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
     test_HistoryMount_data__assign(
         test_HistoryMount_dataList__append_alloc(this->history),
         &r,
@@ -46,7 +46,7 @@ int16_t test_HistoryMount_construct(
     corto_stringList__append(samples, "{70,77}");
     corto_stringList__append(samples, "{80,88}");
     corto_stringList__append(samples, "{90,99}");
-    r = (corto_result){"c", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
+    r = (corto_record){"c", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
     test_HistoryMount_data__assign(
         test_HistoryMount_dataList__append_alloc(this->history),
         &r,
@@ -78,7 +78,7 @@ void* next(
     int start = 0, stop = 0, i;
     iterData *ctx = it->ctx;
     test_HistoryMount_data *data = corto_iter_next(&ctx->iter);
-    corto_result *result = &data->result;
+    corto_record *result = &data->result;
     /* Clear previous history */
     corto_sample *s;
     while ((s = corto_ll_takeFirst(ctx->history))) {
@@ -127,11 +127,11 @@ void release(
     corto_dealloc(ctx);
 }
 
-corto_resultIter test_HistoryMount_on_history_query(
+corto_recordIter test_HistoryMount_on_history_query(
     test_HistoryMount this,
     corto_query *query)
 {
-    corto_resultIter it;
+    corto_recordIter it;
 
     iterData *data = corto_alloc(sizeof(iterData));
     data->this = this;

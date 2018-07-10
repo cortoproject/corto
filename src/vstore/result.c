@@ -3,8 +3,8 @@
 #include <corto/corto.h>
 #include "src/store/object.h"
 
-corto_string corto_result_contentof(
-    corto_result* this,
+corto_string corto_record_contentof(
+    corto_record* this,
     const char *format)
 {
     corto_string result = NULL;
@@ -23,8 +23,8 @@ error:
     return NULL;
 }
 
-int16_t corto_result_fromcontent(
-    corto_result* this,
+int16_t corto_record_fromcontent(
+    corto_record* this,
     const char *format,
     const char *content)
 {
@@ -42,8 +42,8 @@ error:
     return -1;
 }
 
-corto_string corto_result_get_text(
-    corto_result* this)
+corto_string corto_record_get_text(
+    corto_record* this)
 {
     return (corto_string)this->value;
 }

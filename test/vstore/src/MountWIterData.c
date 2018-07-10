@@ -16,11 +16,11 @@ bool iterHasNext(
     return 0;
 }
 
-corto_resultIter test_MountWIterData_on_query(
+corto_recordIter test_MountWIterData_on_query(
     test_MountWIterData this,
     corto_query *query)
 {
-    corto_resultIter result;
+    corto_recordIter result;
 
     result.ctx = corto_calloc(sizeof(char));
     result.hasNext = iterHasNext;

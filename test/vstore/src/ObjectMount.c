@@ -14,7 +14,7 @@ int16_t test_ObjectMount_construct(
 
 
 struct iterCtx {
-    corto_result *result;
+    corto_record *result;
     int count;
 };
 
@@ -42,7 +42,7 @@ void release(
     corto_dealloc(it->ctx);
 }
 
-corto_resultIter test_ObjectMount_on_query(
+corto_recordIter test_ObjectMount_on_query(
     test_ObjectMount this,
     corto_query *query)
 {

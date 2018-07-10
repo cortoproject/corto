@@ -40,7 +40,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -79,7 +79,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -118,7 +118,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "grandparent/parent");
@@ -157,7 +157,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -196,7 +196,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -235,7 +235,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -274,7 +274,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -313,7 +313,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../..");
@@ -352,7 +352,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../..");
@@ -391,7 +391,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -430,7 +430,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -469,7 +469,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../../..");
@@ -508,7 +508,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data");
@@ -547,7 +547,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data/parent");
@@ -586,7 +586,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data/grandparent/parent");
@@ -631,7 +631,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");

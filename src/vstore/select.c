@@ -171,10 +171,10 @@ struct corto_select_data {
     corto_id name;
     corto_id parent;
     corto_id type;
-    corto_result item;
+    corto_record item;
     bool valueAllocated;
     corto_selectHistoryIter_t historyIterData;
-    corto_result *next;
+    corto_record *next;
 };
 
 static
@@ -284,7 +284,7 @@ error:
 static
 void corto_setItemData(
     corto_object o,
-    corto_result *item,
+    corto_record *item,
     corto_select_data *data)
 {
     corto_id to, from;
@@ -362,7 +362,7 @@ void corto_setItemData(
 static
 bool corto_selectMatch(
     corto_object o,
-    corto_result *item,
+    corto_record *item,
     corto_select_data *data)
 {
     bool result = TRUE;
@@ -513,7 +513,7 @@ char* corto_selectRelativeParent(
 }
 
 static
-corto_resultIter corto_selectRequestMount(
+corto_recordIter corto_selectRequestMount(
     corto_select_data *data,
     corto_mount mount)
 {
@@ -616,7 +616,7 @@ bool corto_selectIterMount(
     corto_id rpath;
     corto_mount mount = data->mounts[frame->currentMount - 1];
 
-    corto_result *result = corto_iter_next(&frame->iter);
+    corto_record *result = corto_iter_next(&frame->iter);
     if (!result) {
         corto_critical("mount iterator returned NULL");
     }
@@ -643,7 +643,7 @@ bool corto_selectIterMount(
     /* Filter data early if mount indicates it doesn't do any filtering, and
      * this is not a tree query */
     if (data->filterProgram &&
-        mount->filter_results &&
+        mount->filter_records &&
         data->mask != CORTO_ON_TREE)
     {
         if (!corto_selectMatch(NULL, result, data)) {
@@ -1024,7 +1024,7 @@ int16_t corto_selectTree(
             data->sp, frame->cur->scope, frame->cur->expr, data->location);
 
     do {
-        corto_resultMask flags = CORTO_RESULT_LEAF, hasData = FALSE;
+        corto_recordMask flags = CORTO_RESULT_LEAF, hasData = FALSE;
 
         /* Unwind stack for depleted iterators */
         while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) &&
@@ -1221,7 +1221,7 @@ void corto_selectFilterMounts(
 
 static
 void* corto_selectNext(
-    corto_resultIter *iter)
+    corto_recordIter *iter)
 {
     corto_select_data *data = iter->ctx;
 
@@ -1478,7 +1478,7 @@ error:
 }
 
 static
-bool corto_selectHasNext(corto_resultIter *iter) {
+bool corto_selectHasNext(corto_recordIter *iter) {
     corto_select_data *data = iter->ctx;
     if (data->quit) {
         return 0;
@@ -1525,13 +1525,13 @@ stop:
 }
 
 static
-corto_resultIter corto_selectPrepareIterator (
+corto_recordIter corto_selectPrepareIterator (
     struct corto_selectRequest *r)
 {
     corto_select_data *data = corto_calloc(sizeof(corto_select_data));
 
-    corto_resultIter result;
-    memset(&result, 0, sizeof(corto_resultIter));
+    corto_recordIter result;
+    memset(&result, 0, sizeof(corto_recordIter));
 
     const char *scope = r->scope;
 
@@ -1734,7 +1734,7 @@ corto_select__fluent corto_selectorInstanceof(
 
 static
 int16_t corto_selectorIter(
-    corto_resultIter *ret)
+    corto_recordIter *ret)
 {
     corto_assert(ret != NULL, "no iterator provided to .iter()");
 
@@ -1830,7 +1830,7 @@ int corto_mountAction_subscribe(
 
 static
 int16_t corto_selectorSubscribe(
-    corto_resultIter *ret)
+    corto_recordIter *ret)
 {
     corto_assert(ret != NULL, "no iterator provided to .subscribe()");
 
@@ -1942,7 +1942,7 @@ int16_t corto_selectorResume(void)
 
         /* Iterate over objects to resume them in the store */
         while (corto_iter_hasNext(&it)) {
-            corto_result *r = corto_iter_next(&it);
+            corto_record *r = corto_iter_next(&it);
             if (r->object) {
                 corto_claim(r->object);
             }
@@ -1957,7 +1957,7 @@ error:
 static
 int64_t corto_selectorCount()
 {
-    corto_resultIter it;
+    corto_recordIter it;
     uint64_t count = 0;
 
     corto_selectRequest *request =

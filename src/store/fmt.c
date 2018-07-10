@@ -41,11 +41,11 @@ struct corto_fmt_s {
     /* Translate results to and from self-contained format values */
     void* ___ (*fromResult)(
         corto_fmt_opt *data,
-        corto_result *o);
+        corto_record *o);
 
     int16_t ___ (*toResult)(
         corto_fmt_opt *data,
-        corto_result* o,
+        corto_record* o,
         const void* content);
 
     /* Translate objects to and from self-contained format values */
@@ -300,7 +300,7 @@ corto_fmt_lookup(
 
         sprintf(id, "%s_fromResult", packagePtr);
         result->fromResult =
-          (void* ___ (*)(corto_fmt_opt*, corto_result*))
+          (void* ___ (*)(corto_fmt_opt*, corto_record*))
             corto_load_proc(packageId, &dl, id);
         if (!result->fromResult) {
             corto_throw(
@@ -310,7 +310,7 @@ corto_fmt_lookup(
 
         sprintf(id, "%s_toResult", packagePtr);
         result->toResult =
-          (int16_t ___ (*)(corto_fmt_opt*, corto_result*, const void*))
+          (int16_t ___ (*)(corto_fmt_opt*, corto_record*, const void*))
             corto_load_proc(packageId, &dl, id);
         if (!result->toResult) {
             corto_throw(
@@ -409,7 +409,7 @@ int16_t corto_fmt_to_value(
 void* corto_fmt_from_result(
     corto_fmt fmt,
     corto_fmt_opt *opt,
-    corto_result *result)
+    corto_record *result)
 {
     return fmt->fromResult(opt, result);
 }
@@ -417,7 +417,7 @@ void* corto_fmt_from_result(
 int16_t corto_fmt_to_result(
     corto_fmt fmt,
     corto_fmt_opt *opt,
-    corto_result *result,
+    corto_record *result,
     const void *data)
 {
     return fmt->toResult(opt, result, data);

@@ -2,14 +2,14 @@
 
 #include <include/test.h>
 
-corto_resultIter test_MountInitialSlash_on_query(
+corto_recordIter test_MountInitialSlash_on_query(
     test_MountInitialSlash this,
     corto_query *query)
 {
-    corto_result r;
+    corto_record r;
 
     if (!strcmp(query->from, ".")) {
-        r = (corto_result){
+        r = (corto_record){
             .id = "foo",
             .parent = "/",
             .type = "void"
@@ -17,7 +17,7 @@ corto_resultIter test_MountInitialSlash_on_query(
         corto_mount_return(this, &r);
 
     } else if (!strcmp(query->from, "foo")) {
-        r = (corto_result){
+        r = (corto_record){
             .id = "bar",
             .parent = "/foo",
             .type = "void"

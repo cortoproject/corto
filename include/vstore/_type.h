@@ -157,7 +157,7 @@ typedef struct corto_mount_s {
     double sample_rate;
     uint32_t queue_max;
     uint64_t expiry_time;
-    bool filter_results;
+    bool filter_records;
     corto_mount_subscriptionList subscriptions;
     corto_objectlist events;
     corto_objectlist historicalEvents;
@@ -246,8 +246,8 @@ typedef struct corto_remote_s {
     struct corto_method_s super;
 } *corto_remote;
 
-/* bitmask corto/vstore/resultMask */
-typedef uint32_t corto_resultMask;
+/* bitmask corto/vstore/recordMask */
+typedef uint32_t corto_recordMask;
     #define CORTO_RESULT_LEAF (0x1)
     #define CORTO_RESULT_HIDDEN (0x2)
 
@@ -259,24 +259,24 @@ typedef struct corto_sample {
 
 typedef corto_iter corto_sampleIter;
 
-/* struct corto/vstore/result */
-typedef struct corto_result {
+/* struct corto/vstore/record */
+typedef struct corto_record {
     corto_string id;
     corto_string name;
     corto_string parent;
     corto_string type;
     uintptr_t value;
-    corto_resultMask flags;
+    corto_recordMask flags;
     corto_object object;
     corto_sampleIter history;
     corto_object owner;
-} corto_result;
+} corto_record;
 
-typedef corto_iter corto_resultIter;
+typedef corto_iter corto_recordIter;
 
-#ifndef corto_resultlist_DEFINED
-#define corto_resultlist_DEFINED
-typedef corto_ll corto_resultlist;
+#ifndef corto_recordlist_DEFINED
+#define corto_recordlist_DEFINED
+typedef corto_ll corto_recordlist;
 #endif
 
 /* procedure corto/vstore/route */
@@ -311,7 +311,7 @@ typedef struct corto_subscriber_event {
     corto_object instance;
     corto_object source;
     corto_eventMask event;
-    corto_result data;
+    corto_record data;
     corto_fmt_data fmt;
 } corto_subscriber_event;
 

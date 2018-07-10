@@ -219,7 +219,7 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*yield_unknown)();
 
     /** Return an iterator to the requested results.
-     * Results are returned as corto_result instances. A corto_result contains
+     * Results are returned as corto_record instances. A corto_record contains
      * metadata and when a content type is specified, a serialized value of an
      * object. When using this function, no objects are created.
      *
@@ -227,7 +227,7 @@ typedef struct corto_select__fluent {
      * @return 0 if success, -1 if failed.
      */
     int16_t (*iter)(
-        corto_resultIter *iter_out);
+        corto_recordIter *iter_out);
 
     /** Resume objects into the object store.
      * This function will resume objects in the object store.
@@ -258,7 +258,7 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*vstore)(
         bool enable); /* Unstable API */
 
-    int16_t (*subscribe)(corto_resultIter *ret); /* Unstable API */
+    int16_t (*subscribe)(corto_recordIter *ret); /* Unstable API */
     int16_t (*unsubscribe)(void); /* Unstable API */
     char* (*id)(void); /* Unstable API */
 } corto_select__fluent;
@@ -386,7 +386,7 @@ typedef struct corto_subscribe__fluent {
  * data events (`DEFINE`, `UPDATE`, `DELETE`).
  *
  * The difference between subscribers and observers is that while observers
- * provide a reference to an object, a subscriber returns a `corto_result`, which
+ * provide a reference to an object, a subscriber returns a `corto_record`, which
  * contains metadata about the object, and when requested, a serialized value.
  *
  * This means that a subscriber does not require objects to be stored in the

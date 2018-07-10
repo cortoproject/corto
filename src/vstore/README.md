@@ -111,7 +111,7 @@ select foo/* from /
 the result would have been `foo/obj`.
 
 ### Query results
-Queries, both realtime and single shot, format query results as a `vstore/result`
+Queries, both realtime and single shot, format query results as a `vstore/record`
 type. The members of this type describe the metadata and serialized value of an
 object. That way, a user can evaluate data without having to insert objects from
 the virtual store into the object store.
@@ -122,7 +122,7 @@ corto_iter it;
 corto_select("*").from("/foo").iter(&it);
 
 while (corto_iter_hasNext(&it)) {
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     printf("id = %s, parent = %s, type = %s",
         r->id,
         r->parent,
@@ -130,7 +130,7 @@ while (corto_iter_hasNext(&it)) {
 }
 ```
 The corto architecture is built such that an application never has to occupy more
-memory than is required for a single `corto_result` while iterating over the 
+memory than is required for a single `corto_record` while iterating over the 
 results of a query. Allthough it is ultimately up to a mount to take advantage
 of the capabilities of the API, the corto architecture in theory allows for 
 processing infinite datasets on devices of any size.
@@ -138,7 +138,7 @@ processing infinite datasets on devices of any size.
 This is the same example, but for a realtime query (using a subscriber):
 ```c
 void callback(corto_subscriber_event *e) {
-    // e->data is of type corto_result*
+    // e->data is of type corto_record*
     printf("id = %s, parent = %s, type = %s",
         e->data.id,
         e->data.parent,
@@ -171,14 +171,14 @@ Specifiying a format also works for subscribers:
 corto_subscribe("*").from("/foo").format("text/json").callback(cb);
 ```
 
-The serialized value can be obtained like this (assuming `r` is the `corto_result`):
+The serialized value can be obtained like this (assuming `r` is the `corto_record`):
 ```c
-printf("value = %s\n", corto_result_get_text(r));
+printf("value = %s\n", corto_record_get_text(r));
 ```
 
 or for subscribers:
 ```c
-printf("value = %s\n", corto_result_get_text(&e->data));
+printf("value = %s\n", corto_record_get_text(&e->data));
 ```
 
 ### Implement a mount
@@ -278,7 +278,7 @@ And change the implementation of `on_notify` to this (using our fictional writeD
         e->data.id,
         e->data.parent,
         e->data.type,
-        corto_result_get_text(&e->data) // Returns JSON!
+        corto_record_get_text(&e->data) // Returns JSON!
     );
 ```
 

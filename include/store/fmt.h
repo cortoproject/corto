@@ -138,13 +138,13 @@ CORTO_EXPORT
 void* corto_fmt_from_result(
     corto_fmt fmt,
     corto_fmt_opt *opt,
-    corto_result *result);
+    corto_record *result);
 
 CORTO_EXPORT
 int16_t corto_fmt_to_result(
     corto_fmt fmt,
     corto_fmt_opt *opt,
-    corto_result *result,
+    corto_record *result,
     const void *data);
 
 CORTO_EXPORT

@@ -61,7 +61,7 @@ void _corto_loader_destruct(
     corto_loader _this);
 
 CORTO_EXPORT
-corto_resultIter _corto_loader_on_query_v(
+corto_recordIter _corto_loader_on_query_v(
     corto_loader _this,
     corto_query *query);
 
@@ -84,7 +84,7 @@ void _corto_mount_destruct(
     corto_mount _this);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_historyQuery(
+corto_recordIter _corto_mount_historyQuery(
     corto_mount _this,
     corto_query *query);
 
@@ -116,7 +116,7 @@ void _corto_mount_on_history_batch_notify_v(
     corto_subscriber_eventIter events);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_on_history_query_v(
+corto_recordIter _corto_mount_on_history_query_v(
     corto_mount _this,
     corto_query *query);
 
@@ -143,7 +143,7 @@ void _corto_mount_on_notify_v(
     corto_subscriber_event *event);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_on_query_v(
+corto_recordIter _corto_mount_on_query_v(
     corto_mount _this,
     corto_query *query);
 
@@ -201,7 +201,7 @@ void _corto_mount_publish(
     uintptr_t value);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_query(
+corto_recordIter _corto_mount_query(
     corto_mount _this,
     corto_query *query);
 
@@ -215,7 +215,7 @@ int16_t _corto_mount_resume(
 CORTO_EXPORT
 void _corto_mount_return(
     corto_mount _this,
-    corto_result *r);
+    corto_record *r);
 
 CORTO_EXPORT
 int16_t _corto_mount_set_format(
@@ -300,25 +300,25 @@ uint32_t _corto_query_cardinality(
 CORTO_EXPORT
 bool _corto_query_match(
     corto_query* _this,
-    corto_result *result);
+    corto_record *result);
 
 
-/* struct corto/vstore/result */
+/* struct corto/vstore/record */
 
 CORTO_EXPORT
-corto_string _corto_result_contentof(
-    corto_result* _this,
+corto_string _corto_record_contentof(
+    corto_record* _this,
     const char *format);
 
 CORTO_EXPORT
-int16_t _corto_result_fromcontent(
-    corto_result* _this,
+int16_t _corto_record_fromcontent(
+    corto_record* _this,
     const char *format,
     const char *content);
 
 CORTO_EXPORT
-corto_string _corto_result_get_text(
-    corto_result* _this);
+corto_string _corto_record_get_text(
+    corto_record* _this);
 
 
 /* procedure corto/vstore/route */

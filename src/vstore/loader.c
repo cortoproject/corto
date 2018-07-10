@@ -16,7 +16,7 @@ int16_t corto_loader_construct(
         if (safe_corto_mount_set_format(this, "text/json")) {
             return -1;
         }
-        corto_mount(this)->filter_results = false;
+        corto_mount(this)->filter_records = false;
 
         return safe_corto_mount_construct(this);
     } else {
@@ -42,8 +42,8 @@ void corto_loader_iterRelease(
     /* Delete data from request */
     corto_iter it = corto_ll_iter(data->list);
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
-        corto_ptr_deinit(r, corto_result_o);
+        corto_record *r = corto_iter_next(&it);
+        corto_ptr_deinit(r, corto_record_o);
         corto_dealloc(r);
     }
     corto_ll_free(data->list);
@@ -59,7 +59,7 @@ bool corto_loader_checkIfAdded(
 {
     corto_iter it = corto_ll_iter(list);
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
+        corto_record *r = corto_iter_next(&it);
         if (!stricmp(r->id, name)) {
             return TRUE;
         }
@@ -114,13 +114,13 @@ void corto_loader_addDir(
                 sprintf(package, "%s/%s", q->from, f);
                 corto_path_clean(package, package);
 
-                corto_result *result = corto_calloc(sizeof(corto_result));
+                corto_record *result = corto_calloc(sizeof(corto_record));
 
                 corto_id packageFile;
                 sprintf(packageFile, "%s/project.json", fpath);
                 if (corto_file_test(packageFile)) {
                     char *json = corto_file_load(packageFile);
-                    corto_result_fromcontent(result, "text/json", json);
+                    corto_record_fromcontent(result, "text/json", json);
                 } else {
                     result->id = corto_strdup(f);
                     result->type = corto_strdup("package");
@@ -155,7 +155,7 @@ void corto_loader_addDir(
     }
 }
 
-corto_resultIter corto_loader_on_query_v(
+corto_recordIter corto_loader_on_query_v(
     corto_loader this,
     corto_query *query)
 {

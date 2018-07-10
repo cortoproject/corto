@@ -93,7 +93,7 @@ class JsonReplicator : mount, hidden {
     construct() int16
 
 override
-    on_query(vstore.query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that serves up data as corto strings
@@ -102,7 +102,7 @@ class StringReplicator : mount, hidden {
     construct() int16
 
 override
-    on_query(vstore.query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that provides id service
@@ -121,11 +121,11 @@ class ListMount : mount, hidden {
     member mount: object
     alias mask: observer/mask
     member kind: ownership
-    member items: resultList, private|not_null
+    member items: recordList, private|not_null
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that uses iterator
@@ -133,7 +133,7 @@ class MountWIterData: mount, hidden {
     mount: object
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that counts iterator calls
@@ -142,31 +142,31 @@ class MountIterCount: mount, hidden {
     nextCount: int32, readonly
     hasNextCount: int32, readonly
     releaseCount: int32, readonly
-    result: vstore/result, readonly
+    result: vstore.record, readonly
     id: string, readonly
 
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount with nested objects
 class VirtualMount: mount, hidden {
     mount: string
-    data: resultList, private|not_null
+    data: recordList, private|not_null
 
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that returns data with an initial slash in the parent
 class MountInitialSlash: mount {
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that serves up historical data
@@ -175,10 +175,10 @@ class HistoryMount : vstore/mount, hidden {
     construct() int16
 
 override
-    on_history_query(vstore/query query) iterator[vstore.result]
+    on_history_query(vstore.query query) iterator[vstore.record]
 
     struct data {
-        result: vstore/result
+        result: vstore/record
         history: list[string], not_null
     }
 
@@ -190,11 +190,11 @@ class SinkMount: vstore/mount, hidden {
     mount: object
     type: string
     value: string
-    items: resultList, private|not_null
+    items: recordList, private|not_null
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
     on_resume(string parent, string id, inout object object) int16
 }
 
@@ -203,44 +203,44 @@ class AutoResumeSinkMount : vstore/mount, hidden {
     mount: object
     type: string
     value: string
-    subscribes: list[vstore/query], readonly|not_null
-    unsubscribes: list[vstore/query], readonly|not_null
-    mounts: list[vstore/query], readonly|not_null
-    unmounts: list[vstore/query], readonly|not_null
-    items: resultList, private|not_null
+    subscribes: list[vstore.query], readonly|not_null
+    unsubscribes: list[vstore.query], readonly|not_null
+    mounts: list[vstore.query], readonly|not_null
+    unmounts: list[vstore.query], readonly|not_null
+    items: recordList, private|not_null
 
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
-    on_subscribe(vstore/query query, word ctx) word
-    on_unsubscribe(vstore/query query, word ctx) void
-    on_mount(vstore/query query, word ctx) word
-    on_unmount(vstore/query query, word ctx) void
+    on_query(vstore.query query) iterator[vstore.record]
+    on_subscribe(vstore.query query, word ctx) word
+    on_unsubscribe(vstore.query query, word ctx) void
+    on_mount(vstore.query query, word ctx) word
+    on_unmount(vstore.query query, word ctx) void
 }
 
 // LOCAL mount that serves up nested data
 class VirtualSinkMount : vstore/mount, hidden {
     from: string
-    items: resultList, private|not_null
+    items: recordList, private|not_null
     count: int32, readonly
 
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that returns specified item using iterator
 class ObjectMount : vstore/mount, hidden {
     select: string
     from: string
-    item: result
+    item: vstore.record
 
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // The loader is a complex mount that filters on type, hides store packages and
@@ -249,17 +249,17 @@ override
 // can be verified.
 class LoaderSimulatorMount : vstore/mount, hidden {
     queryCount: int32, private
-    items: resultList, private|not_null
+    items: recordList, private|not_null
 
     construct() int16
 
 override
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // Mount that serves up a single object
 class SimpleMount: vstore/mount {
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 // LOCAL mount with no data
@@ -292,13 +292,13 @@ override
 class RefMount: mount, hidden {
     from: string
     last_json: string, readonly
-    items: list[vstore/result], readonly | not_null
+    items: list[vstore/record], readonly | not_null
 
     construct() int16
 
 override
     on_notify(vstore/subscriber_event event) void
-    on_query(vstore/query query) iterator[vstore.result]
+    on_query(vstore.query query) iterator[vstore.record]
 }
 
 //------------------------------------------------------------------------------
@@ -422,8 +422,8 @@ method
     teardown()
 
 function
-    collect(string scope, string expr, uint64 offset, uint64 limit) list[result]
-    hasObject(resultList items, string parent, string name, string type) bool
+    collect(string scope, string expr, uint64 offset, uint64 limit) list[record]
+    hasObject(recordList items, string parent, string name, string type) bool
 }
 
 // Request data with content type
@@ -764,8 +764,8 @@ method
 test/Suite Subscribe {
     triggered: uint8
     owner: object
-    result: vstore/result
-    
+    result: vstore.record
+
     subscriber noInitialSep: query:{select:"*", from:"testScope"}
 
     tc_noInitialSep()

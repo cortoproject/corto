@@ -2,7 +2,7 @@
 
 #include <include/test.h>
 
-corto_resultList test_Select_collect(
+corto_recordList test_Select_collect(
     const char *scope,
     const char *expr,
     uint64_t offset,
@@ -20,8 +20,8 @@ corto_resultList test_Select_collect(
     if (ret) goto error;
     corto_ll result = corto_ll_new();
     while (corto_iter_hasNext(&iter)) {
-        corto_result *item = corto_iter_next(&iter);
-        corto_result *listItem = corto_alloc(sizeof(corto_result));
+        corto_record *item = corto_iter_next(&iter);
+        corto_record *listItem = corto_alloc(sizeof(corto_record));
         listItem->parent = corto_strdup(item->parent);
         listItem->name = corto_strdup(item->name);
         listItem->type = corto_strdup(item->type);
@@ -34,7 +34,7 @@ error:
 }
 
 bool test_Select_hasObject(
-    corto_resultlist items,
+    corto_recordlist items,
     const char *parent,
     const char *name,
     const char *type)
@@ -42,7 +42,7 @@ bool test_Select_hasObject(
 
     corto_iter iter = corto_ll_iter(items);
     while (corto_iter_hasNext(&iter)) {
-        corto_result *item = corto_iter_next(&iter);
+        corto_record *item = corto_iter_next(&iter);
         if (!strcmp(item->parent, parent)) {
             if (!strcmp(item->name, name)) {
                 if (!strcmp(item->type, type)) {
@@ -112,7 +112,7 @@ void test_Select_tc_selectDeleteCurrent(
 {
     corto_int16 ret = 0;
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     ret = corto_select("a/*").iter( &iter );
@@ -145,7 +145,7 @@ void test_Select_tc_selectDeleteFirst(
 {
     corto_int16 ret = 0;
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     ret = corto_select("a/*").iter( &iter );
@@ -174,7 +174,7 @@ void test_Select_tc_selectDeleteNext(
 {
     corto_int16 ret = 0;
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     ret = corto_select("a/*").iter( &iter );
@@ -203,7 +203,7 @@ void test_Select_tc_selectDeleteParent(
 {
     corto_int16 ret = 0;
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a");
 
     ret = corto_select("a/*").iter( &iter );
@@ -227,7 +227,7 @@ void test_Select_tc_selectDeletePrevious(
 {
     corto_int16 ret = 0;
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     ret = corto_select("a/*").iter( &iter );
@@ -259,7 +259,7 @@ void test_Select_tc_selectEmptyParentAst(
     test_Select this)
 {
     corto_iter it;
-    corto_result *r;
+    corto_record *r;
     corto_int16 ret = corto_select("*").from("").iter(&it);
     test_assert(ret == 0);
 
@@ -478,7 +478,7 @@ void test_Select_tc_selectIdentifier(
     test_Select this)
 {
     corto_ll results = NULL;
-    corto_result *item;
+    corto_record *item;
 
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
@@ -518,7 +518,7 @@ void test_Select_tc_selectInvertCase(
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "abc");
     test_assertstr(r->parent, ".");
@@ -537,7 +537,7 @@ void test_Select_tc_selectInvertCaseFilter(
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "Abab");
     test_assertstr(r->parent, ".");
@@ -555,7 +555,7 @@ void test_Select_tc_selectInvertCaseScope(
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "abc");
     test_assertstr(r->parent, ".");
@@ -1009,7 +1009,7 @@ void test_Select_tc_selectOffsetTree(
 void test_Select_tc_selectOrder(
     test_Select this)
 {
-    corto_result *item;
+    corto_record *item;
     corto_iter iter;
 
     corto_int16 ret = corto_select("a//*").iter( &iter );
@@ -1143,7 +1143,7 @@ void test_Select_tc_selectParent(
     test_Select this)
 {
     corto_ll results = NULL;
-    corto_result *item;
+    corto_record *item;
 
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
@@ -1183,7 +1183,7 @@ void test_Select_tc_selectParentWithSink(
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "");
     test_assertstr(r->parent, "..");
@@ -1215,7 +1215,7 @@ void test_Select_tc_selectScopedIdentifier(
     test_Select this)
 {
     corto_ll results = NULL;
-    corto_result *item;
+    corto_record *item;
 
     results = test_Select_collect(NULL, "a/b", 0, 0);
     test_assert(results != NULL);
@@ -1233,7 +1233,7 @@ void test_Select_tc_selectScopedParent(
     test_Select this)
 {
     corto_ll results = NULL;
-    corto_result *item;
+    corto_record *item;
 
     results = test_Select_collect(NULL, "a/..", 0, 0);
     test_assert(results != NULL);
@@ -1251,7 +1251,7 @@ void test_Select_tc_selectScopedThis(
     test_Select this)
 {
     corto_ll results = NULL;
-    corto_result *item;
+    corto_record *item;
 
     results = test_Select_collect(NULL, "a/.", 0, 0);
     test_assert(results != NULL);
@@ -1350,7 +1350,7 @@ void test_Select_tc_selectThis(
     test_Select this)
 {
     corto_ll results = NULL;
-    corto_result *item;
+    corto_record *item;
 
     corto_object a = corto_resolve(NULL, "a");
     test_assert(a != NULL);
@@ -1412,7 +1412,7 @@ void test_Select_tc_selectTreeDeleteCurrent(
     test_Select this)
 {
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     corto_int16 ret = corto_select("a//*").iter( &iter );
@@ -1443,7 +1443,7 @@ void test_Select_tc_selectTreeDeleteCurrent(
 void test_Select_tc_selectTreeDeleteFirst(
     test_Select this)
 {
-    corto_result *item;
+    corto_record *item;
     corto_iter iter;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
@@ -1472,7 +1472,7 @@ void test_Select_tc_selectTreeDeleteGrandparent(
     test_Select this)
 {
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a");
 
     corto_int16 ret = corto_select("a//*").iter( &iter );
@@ -1542,7 +1542,7 @@ void test_Select_tc_selectTreeDeleteNext(
     test_Select this)
 {
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab_ab");
 
     corto_int16 ret = corto_select("a/*").iter( &iter );
@@ -1570,7 +1570,7 @@ void test_Select_tc_selectTreeDeleteParent(
     test_Select this)
 {
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a");
 
     corto_int16 ret = corto_select("a/*").iter( &iter );
@@ -1594,7 +1594,7 @@ void test_Select_tc_selectTreeDeletePrevious(
     test_Select this)
 {
     corto_iter iter;
-    corto_result *item;
+    corto_record *item;
     corto_object o = corto_resolve(NULL, "a/ab01234567890");
 
     corto_int16 ret = corto_select("a/*").iter( &iter );
@@ -1754,7 +1754,7 @@ void test_Select_tc_selectFromPartialMatchedElement(
     test_assert(corto_select("*").from("data/hello").iter(&it) == 0);
 
     test_assert(corto_iter_hasNext(&it));
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assertstr(r->id, "a");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "void");
@@ -1844,7 +1844,7 @@ void test_Select_tc_selectTreeUnknown(
     test_assert(ret == 0);
 
     test_assert(corto_iter_hasNext(&it) == 1);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assertstr(r->id, "world");
     test_assertstr(r->parent, "bar/hello");
     test_assertstr(r->type, "void");
@@ -1869,7 +1869,7 @@ void test_Select_tc_selectIdYieldUnknown(
     int16_t ret = corto_select("bar").from("foo").yield_unknown().iter(&it);
     test_assert(ret == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it) != 0);
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -1897,7 +1897,7 @@ void test_Select_tc_selectScopeYieldUnknown(
     int16_t ret = corto_select("/").from("data").yield_unknown().iter(&it);
     test_assert(ret == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it) != 0);
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -1925,7 +1925,7 @@ void test_Select_tc_selectThisYieldUnknown(
     int16_t ret = corto_select(".").from("foo").yield_unknown().iter(&it);
     test_assert(ret == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it) != 0);
     r = corto_iter_next(&it);
     test_assert(r != NULL);
@@ -1958,7 +1958,7 @@ void test_Select_tc_selectTreeYieldUnknown(
     int16_t ret = corto_select("//").from("data").yield_unknown().iter(&it);
     test_assert(ret == 0);
 
-    corto_result *r;
+    corto_record *r;
     test_assert(corto_iter_hasNext(&it) != 0);
     r = corto_iter_next(&it);
     test_assert(r != NULL);

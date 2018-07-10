@@ -205,7 +205,7 @@ static
 int16_t corto_subscriber_invoke(
     corto_object instance,
     corto_eventMask mask,
-    corto_result *r,
+    corto_record *r,
     corto_subscriber s,
     corto_subscriber_event *existing_event,
     corto_fmtcache *cache)
@@ -469,7 +469,7 @@ int16_t corto_notify_subscribersById(
                     }
                 }
 
-                corto_result r = {
+                corto_record r = {
                   .id = (char*)id,
                   .name = NULL,
                   .parent = parentPtr,
@@ -930,7 +930,7 @@ int16_t corto_subscriber_subscribe(
     /* Populate alignment queue. Any message delivered to the subscriber will
      * end up in the queue */
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
+        corto_record *r = corto_iter_next(&it);
         corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL, NULL);
 
         /* Nifty trick to take ownership of the serialized value- that way there
