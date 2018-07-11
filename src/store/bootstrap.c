@@ -996,6 +996,12 @@ void corto_environment_init(void)
         corto_setenv("BAKE_TARGET", ".");
     }
 
+    if (!corto_getenv("HOSTNAME")) {
+        corto_id hostname;
+        gethostname(hostname, sizeof(hostname));
+        corto_setenv("HOSTNAME", hostname);
+    }
+
     corto_string enableBacktrace = corto_getenv("CORTO_LOG_BACKTRACE");
     if (enableBacktrace) {
         CORTO_LOG_BACKTRACE = !strcmp(enableBacktrace, "true");
