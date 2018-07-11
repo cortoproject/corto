@@ -42,7 +42,6 @@ matrix:
     sudo: required
     compiler: clang
 
-
 addons:
   coverity_scan:
     project:
