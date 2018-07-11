@@ -243,7 +243,7 @@ corto_equalityKind corto_compareLookupIntern(
     char ch1, ch2;
 
     ch2 = *ptr2;
-    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{') && (ch2 != '.')) {
+    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{') && (ch2 != '[') && (ch2 != '.')) {
         if (ch1 == ch2) {
             ptr1++; ptr2++;
             ch2 = *ptr2;
@@ -271,7 +271,7 @@ corto_equalityKind corto_compareLookupIntern(
         }
     }
 
-    if (ch2 == '{') {
+    if (ch2 == '{' || ch2 == '[') {
         if (!ch1) {
             goto match;
         } else {
@@ -3378,13 +3378,13 @@ corto_object corto_lookup_intern(
             ptr ++;
         }
 
-        if (!ptr[0] || ptr[0] == '{') {
+        if (!ptr[0] || ptr[0] == '{' || ptr[0] == '[') {
             break;
         }
 
         bool containsArgs = false;
         dot_separator = false; /* reset dot_operator */
-        for (next = ptr; (ch = *next) && ch != '/' && ch != '{'; next ++) {
+        for (next = ptr; (ch = *next) && ch != '/' && ch != '{' && ch != '['; next ++) {
             if (ch == '(') {
                 containsArgs = true;
                 for (next ++; (ch = *next) && (ch != ')'); next ++);
@@ -3512,10 +3512,15 @@ corto_object corto_lookup_intern(
     }
 
     if (!o && resume && parent != corto_lang_o) {
-        /* Make sure that id passed to resume doesn't contain {} */
+        /* Make sure that id passed to resume doesn't contain {} or [] */
         corto_id buffer;
         const char *id = ptr, *value_start;
         if ((value_start = strchr(id, '{'))) {
+            strcpy(buffer, id);
+            buffer[value_start - id] = '\0';
+            id = buffer;
+        } else
+        if ((value_start = strchr(id, '['))) {
             strcpy(buffer, id);
             buffer[value_start - id] = '\0';
             id = buffer;
@@ -3529,7 +3534,7 @@ corto_object corto_lookup_intern(
 
     /* If object was found and search string ends in '{', create an
      * anonymous object */
-    if (o && ptr[0] == '{') {
+    if (o && (ptr[0] == '{' || ptr[0] == '[')) {
         corto_object out = NULL;
         do {
             ptr = corto_create_anonymous(orig_parent, o, ptr, &out);
@@ -3908,10 +3913,6 @@ int16_t corto_update_begin_intern(
                 corto_throw(NULL);
                 goto error;
             }
-        } else {
-            corto_warning(
-                "updateBegin: calling updateBegin for non-writable '%s' is useless",
-                corto_fullpath(NULL, o));
         }
     }
     corto_log_pop_dbg();
@@ -4145,14 +4146,16 @@ int32_t corto_sig_paramCount(
             }
             ptr++;
 
-            if (ch == '{') {
+            if (ch == '{' || ch == '[') {
                 uint32_t nesting = 1;
                 while((ch = *ptr) && nesting) {
                    ptr++;
                    switch(ch) {
+                   case '[':
                    case '{':
                        nesting++;
                        break;
+                   case ']':
                    case '}':
                        nesting--;
                        break;
@@ -4238,7 +4241,7 @@ int32_t corto_sig_param_type(
             }
 
             srcptr++;
-            if (ch == '{') {
+            if (ch == '{' || ch == '[') {
                 uint32_t count=1;
                 while((ch = *srcptr) && count) {
                     if (i == id) {
@@ -4247,9 +4250,11 @@ int32_t corto_sig_param_type(
                     }
                     srcptr++;
                     switch(ch) {
+                    case '[':
                     case '{':
                         count++;
                         break;
+                    case ']':
                     case '}':
                         count--;
                         break;
@@ -4335,14 +4340,16 @@ int32_t corto_sig_param_name(
             }
 
             srcptr++;
-            if (ch == '{') {
+            if (ch == '{' || ch == '[') {
                 uint32_t count=1;
                 while((ch = *srcptr) && count) {
                     srcptr++;
                     switch(ch) {
+                    case '[':
                     case '{':
                         count++;
                         break;
+                    case ']':
                     case '}':
                         count--;
                         break;

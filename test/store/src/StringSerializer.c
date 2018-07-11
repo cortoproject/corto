@@ -13,7 +13,7 @@ void test_StringSerializer_tc_serAnonymous(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>int32{10}}}");
+    test_assertstr(str, "{[<1>int32[10]]}");
 
     corto_delete(o);
     corto_dealloc(str);
@@ -35,7 +35,7 @@ void test_StringSerializer_tc_serAnonymousComplex(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>/test/Point{10,20}}}");
+    test_assertstr(str, "{[<1>/test/Point[10,20]]}");
 
     corto_delete(o);
     corto_dealloc(str);
@@ -59,7 +59,7 @@ void test_StringSerializer_tc_serAnonymousComplexString(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>/test/CompositeWithString{10,\"Hello\",\"World\",20}}}");
+    test_assertstr(str, "{[<1>/test/CompositeWithString[10,\"Hello\",\"World\",20]]}");
 
     corto_delete(o);
     corto_dealloc(str);
@@ -83,7 +83,7 @@ void test_StringSerializer_tc_serAnonymousComplexStringEsc(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>/test/CompositeWithString{10,\"\\\"Hello\\\"\",\"\\\"World\\\"\",20}}}");
+    test_assertstr(str, "{[<1>/test/CompositeWithString[10,\"\\\"Hello\\\"\",\"\\\"World\\\"\",20]]}");
 
     corto_delete(o);
     corto_dealloc(str);
@@ -102,7 +102,7 @@ void test_StringSerializer_tc_serArray(
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{10,20,30}"));
+    test_assert(!strcmp(result, "[10,20,30]"));
 
     corto_dealloc(result);
     corto_delete(t);
@@ -120,7 +120,7 @@ void test_StringSerializer_tc_serArrayComplex(
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
+    test_assertstr(result, "[{10,20},{30,40},{50,60}]");
 
     corto_dealloc(result);
     corto_delete(t);
@@ -382,7 +382,7 @@ void test_StringSerializer_tc_serList(
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{10,20,30}"));
+    test_assert(!strcmp(result, "[10,20,30]"));
 
     corto_dealloc(result);
     corto_ll_free(v);
@@ -404,7 +404,7 @@ void test_StringSerializer_tc_serListComplex(
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
+    test_assert(!strcmp(result, "[{10,20},{30,40},{50,60}]"));
 
     corto_dealloc(result);
     corto_ll_free(v);
@@ -426,7 +426,7 @@ void test_StringSerializer_tc_serLongAnonymous(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>int32{10},<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>}}");
+    test_assertstr(str, "{[<1>int32[10],<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>,<1>]}");
 
     corto_delete(o);
     corto_dealloc(str);
@@ -445,7 +445,7 @@ void test_StringSerializer_tc_serSameAnonymous(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>int32{10},<1>}}");
+    test_assertstr(str, "{[<1>int32[10],<1>]}");
 
     corto_delete(o);
     corto_dealloc(str);
@@ -464,7 +464,7 @@ void test_StringSerializer_tc_serSequence(
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{10,20,30}"));
+    test_assert(!strcmp(result, "[10,20,30]"));
 
     corto_dealloc(result);
     corto_release(t);
@@ -482,7 +482,7 @@ void test_StringSerializer_tc_serSequenceComplex(
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
-    test_assert(!strcmp(result, "{{10,20},{30,40},{50,60}}"));
+    test_assert(!strcmp(result, "[{10,20},{30,40},{50,60}]"));
 
     corto_dealloc(result);
     corto_release(t);
@@ -552,7 +552,7 @@ void test_StringSerializer_tc_serStructArrayInt(
 
     char *str = corto_ptr_str(&v, test_struct_arrayInt_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30}}");
+    test_assertstr(str, "{[10,20,30]}");
     corto_dealloc(str);
 
 }
@@ -564,7 +564,7 @@ void test_StringSerializer_tc_serStructArrayReference(
 
     char *str = corto_ptr_str(&v, test_struct_arrayReference_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{/corto,/corto/lang,class}}");
+    test_assertstr(str, "{[/corto,/corto/lang,class]}");
     corto_dealloc(str);
 
 }
@@ -576,7 +576,7 @@ void test_StringSerializer_tc_serStructArrayString(
 
     char *str = corto_ptr_str(&v, test_struct_arrayString_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{\"Hello\",\"World\",\"Foo\"}}");
+    test_assertstr(str, "{[\"Hello\",\"World\",\"Foo\"]}");
     corto_dealloc(str);
 
 }
@@ -588,7 +588,7 @@ void test_StringSerializer_tc_serStructArrayStruct(
 
     char *str = corto_ptr_str(&v, test_struct_arrayStruct_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{{10,20},{30,40},{50,60}}}");
+    test_assertstr(str, "{[{10,20},{30,40},{50,60}]}");
     corto_dealloc(str);
 
 }
@@ -617,7 +617,7 @@ void test_StringSerializer_tc_serStructListInt(
 
     char *str = corto_ptr_str(&v, test_struct_listInt_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30}}");
+    test_assertstr(str, "{[10,20,30]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_listInt_o);
@@ -636,7 +636,7 @@ void test_StringSerializer_tc_serStructListReference(
 
     char *str = corto_ptr_str(&v, test_struct_listReference_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{/corto,/corto/lang,class}}");
+    test_assertstr(str, "{[/corto,/corto/lang,class]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_listReference_o);
@@ -655,7 +655,7 @@ void test_StringSerializer_tc_serStructListString(
 
     char *str = corto_ptr_str(&v, test_struct_listString_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{\"Hello\",\"World\",\"Foo\"}}");
+    test_assertstr(str, "{[\"Hello\",\"World\",\"Foo\"]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_listString_o);
@@ -678,7 +678,7 @@ void test_StringSerializer_tc_serStructListStruct(
 
     char *str = corto_ptr_str(&v, test_struct_listStruct_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{{10,20},{30,40},{50,60}}}");
+    test_assertstr(str, "{[{10,20},{30,40},{50,60}]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_listStruct_o);
@@ -698,7 +698,7 @@ void test_StringSerializer_tc_serStructObservableArray(
 
     char *str = corto_ptr_str(&v, test_struct_observableArray_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30,40}}");
+    test_assertstr(str, "{[10,20,30,40]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_observableArray_o);
@@ -733,7 +733,7 @@ void test_StringSerializer_tc_serStructObservableList(
 
     char *str = corto_ptr_str(&v, test_struct_observableList_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30}}");
+    test_assertstr(str, "{[10,20,30]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_observableList_o);
@@ -770,7 +770,7 @@ void test_StringSerializer_tc_serStructObservableSequence(
 
     char *str = corto_ptr_str(&v, test_struct_observableSequence_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30}}");
+    test_assertstr(str, "{[10,20,30]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_observableSequence_o);
@@ -824,7 +824,7 @@ void test_StringSerializer_tc_serStructOptionalArray(
 
     char *str = corto_ptr_str(&v, test_struct_optionalArray_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30,40}}");
+    test_assertstr(str, "{[10,20,30,40]}");
     corto_dealloc(str);
 
     test_IntArray__unset(v.m);
@@ -875,7 +875,7 @@ void test_StringSerializer_tc_serStructOptionalList(
 
     char *str = corto_ptr_str(&v, test_struct_optionalList_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30,40}}");
+    test_assertstr(str, "{[10,20,30,40]}");
     corto_dealloc(str);
 
     test_IntArray__unset(v.m);
@@ -928,7 +928,7 @@ void test_StringSerializer_tc_serStructOptionalSequence(
 
     char *str = corto_ptr_str(&v, test_struct_optionalSequence_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30,40}}");
+    test_assertstr(str, "{[10,20,30,40]}");
     corto_dealloc(str);
 
     test_IntArray__unset(v.m);
@@ -1025,7 +1025,7 @@ void test_StringSerializer_tc_serStructSequenceInt(
 
     char *str = corto_ptr_str(&v, test_struct_sequenceInt_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{10,20,30}}");
+    test_assertstr(str, "{[10,20,30]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_sequenceInt_o);
@@ -1046,7 +1046,7 @@ void test_StringSerializer_tc_serStructSequenceReference(
 
     char *str = corto_ptr_str(&v, test_struct_sequenceReference_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{/corto,/corto/lang,class}}");
+    test_assertstr(str, "{[/corto,/corto/lang,class]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_sequenceReference_o);
@@ -1067,7 +1067,7 @@ void test_StringSerializer_tc_serStructSequenceString(
 
     char *str = corto_ptr_str(&v, test_struct_sequenceString_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{\"Hello\",\"World\",\"Foo\"}}");
+    test_assertstr(str, "{[\"Hello\",\"World\",\"Foo\"]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_sequenceString_o);
@@ -1088,7 +1088,7 @@ void test_StringSerializer_tc_serStructSequenceStruct(
 
     char *str = corto_ptr_str(&v, test_struct_sequenceStruct_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{{10,20},{30,40},{50,60}}}");
+    test_assertstr(str, "{[{10,20},{30,40},{50,60}]}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_sequenceStruct_o);
@@ -1135,7 +1135,7 @@ void test_StringSerializer_tc_serStructTargetArray(
 
     char *str = corto_ptr_str(&v, test_struct_targetArray_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{{10,20,30,40},{50,60,70,80},{90,100,110,120}}}");
+    test_assertstr(str, "{{[10,20,30,40],[50,60,70,80],[90,100,110,120]}}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_targetArray_o);
@@ -1184,7 +1184,7 @@ void test_StringSerializer_tc_serStructTargetList(
 
     char *str = corto_ptr_str(&v, test_struct_targetList_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{{10,20,30,40},{50,60,70,80},{90,100,110,120}}}");
+    test_assertstr(str, "{{[10,20,30,40],[50,60,70,80],[90,100,110,120]}}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_targetList_o);
@@ -1238,7 +1238,7 @@ void test_StringSerializer_tc_serStructTargetSequence(
 
     char *str = corto_ptr_str(&v, test_struct_targetSequence_o, 0);
     test_assert(str != NULL);
-    test_assertstr(str, "{{{10,20,30,40},{50,60,70,80},{90,100,110,120}}}");
+    test_assertstr(str, "{{[10,20,30,40],[50,60,70,80],[90,100,110,120]}}");
     corto_dealloc(str);
 
     corto_ptr_deinit(&v, test_struct_targetSequence_o);
@@ -1298,7 +1298,7 @@ void test_StringSerializer_tc_serTwoAnonymous(
 
     corto_string str = corto_serialize_value(o, "text/corto");
     test_assert(str != NULL);
-    test_assertstr(str, "{{<1>int32{10},<2>int32{20}}}");
+    test_assertstr(str, "{[<1>int32[10],<2>int32[20]]}");
 
     corto_delete(o);
     corto_dealloc(str);

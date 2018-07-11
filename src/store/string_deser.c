@@ -791,6 +791,7 @@ const char* corto_string_deserParse(
      * has finished processing the current value. */
     while(ptr && (ch = *ptr) && proceed) {
         switch(ch) {
+        case ':':
         case '=': /* Explicit member assignment */
             excess = FALSE;
             if (buffer == bptr) {
@@ -808,6 +809,7 @@ const char* corto_string_deserParse(
                 break;
             }
 
+        case '[':
         case '{': /* Scope open */
             if (bptr == buffer) {
                 if (!(ptr = corto_string_deserParseScope(
@@ -829,6 +831,7 @@ const char* corto_string_deserParse(
             }
             break;
 
+        case ']':
         case '}': /* Scope close and end of value */
             if (buffer != bptr) {
                 *nonWs = '\0';
@@ -964,7 +967,7 @@ const char* corto_string_deser(
         /* Parse typename that potentially precedes string */
         bptr = buffer;
         ptr = str;
-        while((ch = *ptr) && (ch != '{')) {
+        while((ch = *ptr) && (ch != '{') && (ch != '[')) {
             if (!((ch == ' ') || (ch == '\n') || (ch == '\t'))) {
                 *bptr = ch;
                 bptr++;
@@ -974,7 +977,7 @@ const char* corto_string_deser(
         *bptr = '\0';
 
         /* If no type is found, reset ptr */
-        if ((ch != '{') || (ptr == str)) {
+        if (((ch != '{') && (ch != '[')) || (ptr == str)) {
             ptr = str;
         } else {
             corto_object type;
