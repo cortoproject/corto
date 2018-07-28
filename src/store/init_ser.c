@@ -103,15 +103,28 @@ corto_int16 corto_ser_initObservable(
     void* userData)
 {
     corto_member m = v->is.member.member;
+    int create_mask = CORTO_DECLARE|CORTO_FORCE_TYPE|CORTO_DEFINE;
 
     /* Initialize member to a new object of member type */
     corto_type t = corto_value_typeof(v);
     corto_object p = corto_value_objectof(v);
     void* ptr = corto_value_ptrof(v);
 
+    if (m->modifiers & CORTO_SINGLETON) {
+        /* If member is a singleton, create observable member in the scope of
+         * the composite type */
+        p = corto_parentof(t);
+    } else {
+        /* If this is a regular observable member, create object as orphan */
+        create_mask |= CORTO_ORPHAN|CORTO_DEFINE;
+    }
+
     /* Create observable that is not added to the scope of its parent */
-    corto_object o = corto(CORTO_DECLARE|CORTO_FORCE_TYPE|CORTO_ORPHAN|CORTO_DEFINE,
-        {.parent = p, .id = corto_idof(m), .type = t});
+    corto_object o = corto(create_mask, {
+        .parent = p,
+        .id = corto_idof(m),
+        .type = t
+    });
     if (!o) {
         goto error;
     }

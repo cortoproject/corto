@@ -931,57 +931,6 @@ corto_query* _corto_query__assign(corto_query* _this, const char * select, const
     return _this;
 }
 
-corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void)) {
-    corto_remote _this;
-    _this = (corto_remote)corto_declare(_parent, _id, corto_remote_o);
-    if (!_this) {
-        return NULL;
-    }
-    if (!corto_check_state(_this, CORTO_VALID)) {
-        corto_set_ref(&((corto_function)_this)->return_type, return_type);
-        ((corto_function)_this)->is_reference = is_reference;
-        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-        corto_function(_this)->fptr = (corto_word)_impl;
-        if (corto_define(_this)) {
-            corto_release(_this);
-            _this = NULL;
-        }
-    }
-    return _this;
-}
-
-corto_int16 _corto_remote__update(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void)) {
-    CORTO_UNUSED(_this);
-    if (!corto_update_begin(_this)) {
-        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
-            corto_set_ref(&((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->return_type, return_type);
-            ((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->is_reference = is_reference;
-            corto_function(((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->kind = CORTO_PROCEDURE_CDECL;
-            corto_function(((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->fptr = (corto_word)_impl;
-        } else {
-            corto_set_ref(&((corto_function)_this)->return_type, return_type);
-            ((corto_function)_this)->is_reference = is_reference;
-            corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-            corto_function(_this)->fptr = (corto_word)_impl;
-        }
-        if (corto_update_end(_this)) {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-    return 0;
-}
-
-corto_remote _corto_remote__assign(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void)) {
-    CORTO_UNUSED(_this);
-    corto_set_ref(&((corto_function)_this)->return_type, return_type);
-    ((corto_function)_this)->is_reference = is_reference;
-    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
-    corto_function(_this)->fptr = (corto_word)_impl;
-    return _this;
-}
-
 corto_record* _corto_record__create(corto_object _parent, const char *_id, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_recordMask flags) {
     corto_record* _this;
     _this = (corto_record*)corto_declare(_parent, _id, corto_record_o);
@@ -1167,6 +1116,57 @@ corto_int16 _corto_recordMask__update(corto_recordMask* _this, corto_recordMask 
 corto_recordMask* _corto_recordMask__assign(corto_recordMask* _this, corto_recordMask value) {
     CORTO_UNUSED(_this);
     *_this = value;
+    return _this;
+}
+
+corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void)) {
+    corto_remote _this;
+    _this = (corto_remote)corto_declare(_parent, _id, corto_remote_o);
+    if (!_this) {
+        return NULL;
+    }
+    if (!corto_check_state(_this, CORTO_VALID)) {
+        corto_set_ref(&((corto_function)_this)->return_type, return_type);
+        ((corto_function)_this)->is_reference = is_reference;
+        corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+        corto_function(_this)->fptr = (corto_word)_impl;
+        if (corto_define(_this)) {
+            corto_release(_this);
+            _this = NULL;
+        }
+    }
+    return _this;
+}
+
+corto_int16 _corto_remote__update(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void)) {
+    CORTO_UNUSED(_this);
+    if (!corto_update_begin(_this)) {
+        if ((corto_typeof(corto_typeof(_this)) == (corto_type)corto_target_o) && !corto_owned(_this)) {
+            corto_set_ref(&((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->return_type, return_type);
+            ((corto_function)((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->is_reference = is_reference;
+            corto_function(((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->kind = CORTO_PROCEDURE_CDECL;
+            corto_function(((corto_remote)CORTO_OFFSET(_this, ((corto_type)corto_remote_o)->size)))->fptr = (corto_word)_impl;
+        } else {
+            corto_set_ref(&((corto_function)_this)->return_type, return_type);
+            ((corto_function)_this)->is_reference = is_reference;
+            corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+            corto_function(_this)->fptr = (corto_word)_impl;
+        }
+        if (corto_update_end(_this)) {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+corto_remote _corto_remote__assign(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void)) {
+    CORTO_UNUSED(_this);
+    corto_set_ref(&((corto_function)_this)->return_type, return_type);
+    ((corto_function)_this)->is_reference = is_reference;
+    corto_function(_this)->kind = CORTO_PROCEDURE_CDECL;
+    corto_function(_this)->fptr = (corto_word)_impl;
     return _this;
 }
 

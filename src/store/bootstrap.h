@@ -865,6 +865,7 @@ CORTO_BITMASK_O(lang, modifierMask);
     CORTO_CONSTANT_O(lang_modifierMask, OPTIONAL);
     CORTO_CONSTANT_O(lang_modifierMask, OBSERVABLE);
     CORTO_CONSTANT_O(lang_modifierMask, KEY);
+    CORTO_CONSTANT_O(lang_modifierMask, SINGLETON);
 
 CORTO_BITMASK_O(vstore, recordMask);
     CORTO_CONSTANT_O(vstore_recordMask, RESULT_LEAF);
@@ -1512,6 +1513,7 @@ CORTO_STRUCT_O(vstore, frame, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CO
 CORTO_FW_I(native, type);
 CORTO_CLASS_O(native, type, lang_binary, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_I);
     CORTO_MEMBER_O(native_type, name, lang_string, CORTO_GLOBAL);
+    CORTO_MEMBER_O(native_type, is_ptr, lang_bool, CORTO_GLOBAL);
     CORTO_METHOD_O(native_type, init, "()", lang_int16, corto_native_type_init);
 
 /* /corto/secure/key */
