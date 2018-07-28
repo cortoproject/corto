@@ -110,7 +110,7 @@ corto_int16 corto_ser_initObservable(
     corto_object p = corto_value_objectof(v);
     void* ptr = corto_value_ptrof(v);
 
-    if (m->modifiers & CORTO_SINGLETON) {
+    if ((m->modifiers & CORTO_SINGLETON) == CORTO_SINGLETON) {
         /* If member is a singleton, create observable member in the scope of
          * the composite type */
         p = corto_parentof(t);
