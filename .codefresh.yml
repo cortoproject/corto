@@ -1,0 +1,11 @@
+version: '1.0'
+
+steps:
+  hadolint:
+    description: Test shell with Shellcheck
+    image: koalaman/shellcheck:latest
+    commands: shellcheck *.sh
+    fail_fast: true
+    when:
+    branch:
+      only: [TryOutCodeFresh]
