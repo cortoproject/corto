@@ -207,6 +207,10 @@ struct struct_observableList {
     m: intList, observable
 }
 
+struct struct_singleton {
+    m: int32, singleton
+}
+
 struct struct_optionalInt {
     m: int32, optional
 }
@@ -657,6 +661,7 @@ test/Suite Init {
     tc_observable_default()
     tc_observable_list()
     tc_observable_list_not_null()
+    tc_singleton()
     tc_target()
     tc_nestedInit()
 }

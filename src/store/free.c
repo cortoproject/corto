@@ -100,7 +100,10 @@ void corto_free(
 
         /* For these field kinds res_kind is always 0 */
         case CORTO_TC_STRING: FREE_STRING(ptr); break;
-        case CORTO_TC_REFERENCE: FREE_REFERENCE(ptr); break;
+        case CORTO_TC_INLINE_REFERENCE:
+        case CORTO_TC_REFERENCE:
+            FREE_REFERENCE(ptr);
+            break;
         case CORTO_TC_UNION: FREE_UNION(ptr); break;
         case CORTO_TC_STRUCT: /* Ignore; nesting is not relevant */ break;
 

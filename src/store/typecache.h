@@ -121,4 +121,8 @@ int corto_typecache_walk(
     corto_typecache_action elem_action,
     void *ctx);
 
+CORTO_EXPORT
+void corto_typecache_print(
+    corto_type type);
+
 #endif

@@ -116,7 +116,7 @@ corto_int16 corto_ser_initObservable(
         p = corto_parentof(t);
     } else {
         /* If this is a regular observable member, create object as orphan */
-        create_mask |= CORTO_ORPHAN|CORTO_DEFINE;
+        create_mask |= CORTO_ORPHAN;
     }
 
     /* Create observable that is not added to the scope of its parent */
