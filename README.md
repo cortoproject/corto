@@ -7,6 +7,7 @@ If any of these is not green, somebody is not sleeping well.
 
 Linux/OSX | Windows | Coverity
 ----------|---------|---------
+
 [![Build Status](https://travis-ci.org/cortoproject/corto.svg?branch=master)](https://travis-ci.org/cortoproject/corto) | not yet available | [![Coverity](https://scan.coverity.com/projects/3807/badge.svg)](https://scan.coverity.com/projects/3807)
 
 ## Getting Started
