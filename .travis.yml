@@ -13,14 +13,6 @@ matrix:
   include:
   - os: linux
     sudo: required
-    dist: precise
-    compiler: gcc
-  - os: linux
-    sudo: required
-    dist: precise
-    compiler: clang
-  - os: linux
-    sudo: required
     dist: trusty
     compiler: gcc
   - os: linux
