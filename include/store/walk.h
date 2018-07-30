@@ -213,6 +213,21 @@ struct corto_walk_opt {
     corto_walk_cb observable;
 };
 
+#define CORTO_WALK_INIT {\
+    .program[CORTO_ANY] = corto_walk_any,\
+    .program[CORTO_COMPOSITE] = corto_walk_members,\
+    .program[CORTO_COLLECTION] = corto_walk_elements,\
+    .program[CORTO_BASE] = corto_walk_value,\
+    .observable = corto_walk_observable,\
+    .initialized = TRUE,\
+    .constructed = FALSE,\
+    .access = CORTO_GLOBAL,\
+    .accessKind = CORTO_XOR,\
+    .aliasAction = CORTO_WALK_ALIAS_FOLLOW,\
+    .optionalAction = CORTO_WALK_OPTIONAL_IF_SET,\
+    .visitAllCases = FALSE\
+}
+
 /** Walk over a corto object.
  * @param opt Pointer to an initialized corto_walk_opt instance.
  * @param object The object to be visited.
@@ -283,6 +298,13 @@ CORTO_EXPORT
 int16_t corto_walk_elements(
     corto_walk_opt* opt,
     corto_value* value,
+    void* userData);
+
+/** Walk any value */
+CORTO_EXPORT
+int16_t corto_walk_any(
+    corto_walk_opt* opt,
+    corto_value* info,
     void* userData);
 
 /** Walk an observable member.

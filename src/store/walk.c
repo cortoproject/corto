@@ -22,11 +22,6 @@
 #include <corto/corto.h>
 #include "object.h"
 
-int16_t corto_any_walk(
-    corto_walk_opt* this,
-    corto_value* info,
-    void* userData);
-
 int16_t corto_walk_ptr(
     corto_walk_opt* this,
     void *ptr,
@@ -119,7 +114,7 @@ void corto_walk_init(
     corto_walk_opt* this)
 {
     memset(this, 0, sizeof(corto_walk_opt));
-    this->program[CORTO_ANY] = corto_any_walk;
+    this->program[CORTO_ANY] = corto_walk_any;
     this->program[CORTO_COMPOSITE] = corto_walk_members;
     this->program[CORTO_COLLECTION] = corto_walk_elements;
     this->metaprogram[CORTO_BASE] = corto_walk_value;
@@ -213,7 +208,7 @@ bool corto_serializeMatchAccess(
 }
 
 /* Serialize any-value */
-int16_t corto_any_walk(
+int16_t corto_walk_any(
     corto_walk_opt* this,
     corto_value* info,
     void* userData)
