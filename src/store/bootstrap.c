@@ -1489,7 +1489,7 @@ corto_object _corto_assert_type(
 
 /* Assert object is valid. Only enabled in debug builds */
 #ifndef NDEBUG
-void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
+corto_object _corto_assert_object(char const *file, unsigned int line, corto_object o) {
     if (o) {
         corto__object *_o = corto_hdr(o);
         if (_o->magic != CORTO_MAGIC) {
@@ -1507,5 +1507,7 @@ void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
             }
         }
     }
+
+    return o;
 }
 #endif
