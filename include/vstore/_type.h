@@ -10,11 +10,6 @@
 extern "C" {
 #endif
 
-/* -- Native types -- */
-#ifndef CORTO_VSTORE_H
-#endif
-
-
 /* -- Type definitions -- */
 
 /* interface corto/vstore/dispatcher */
@@ -189,7 +184,10 @@ typedef struct corto_loader_s {
     bool autoLoad;
 } *corto_loader;
 
+#ifndef corto_objectIter_DEFINED
+#define corto_objectIter_DEFINED
 typedef corto_iter corto_objectIter;
+#endif
 
 /* struct corto/vstore/observer_event */
 typedef struct corto_observer_event {
@@ -241,11 +239,6 @@ typedef enum corto_operatorKind {
     CORTO_REF = 34
 } corto_operatorKind;
 
-/* procedure corto/vstore/remote */
-typedef struct corto_remote_s {
-    struct corto_method_s super;
-} *corto_remote;
-
 /* bitmask corto/vstore/recordMask */
 typedef uint32_t corto_recordMask;
     #define CORTO_RESULT_LEAF (0x1)
@@ -257,7 +250,10 @@ typedef struct corto_sample {
     uintptr_t value;
 } corto_sample;
 
+#ifndef corto_sampleIter_DEFINED
+#define corto_sampleIter_DEFINED
 typedef corto_iter corto_sampleIter;
+#endif
 
 /* struct corto/vstore/record */
 typedef struct corto_record {
@@ -272,12 +268,20 @@ typedef struct corto_record {
     corto_object owner;
 } corto_record;
 
+#ifndef corto_recordIter_DEFINED
+#define corto_recordIter_DEFINED
 typedef corto_iter corto_recordIter;
+#endif
 
 #ifndef corto_recordlist_DEFINED
 #define corto_recordlist_DEFINED
 typedef corto_ll corto_recordlist;
 #endif
+
+/* procedure corto/vstore/remote */
+typedef struct corto_remote_s {
+    struct corto_method_s super;
+} *corto_remote;
 
 /* procedure corto/vstore/route */
 typedef struct corto_route_s {
@@ -315,7 +319,10 @@ typedef struct corto_subscriber_event {
     corto_fmt_data fmt;
 } corto_subscriber_event;
 
+#ifndef corto_subscriber_eventIter_DEFINED
+#define corto_subscriber_eventIter_DEFINED
 typedef corto_iter corto_subscriber_eventIter;
+#endif
 
 
 #ifdef __cplusplus

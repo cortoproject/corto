@@ -494,6 +494,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_modifierMask_OPTIONAL),\
     BUILTIN_OBJ(lang_modifierMask_OBSERVABLE),\
     BUILTIN_OBJ(lang_modifierMask_KEY),\
+    BUILTIN_OBJ(lang_modifierMask_SINGLETON),\
     /* recordMask */\
     BUILTIN_OBJ(vstore_recordMask_RESULT_LEAF),\
     BUILTIN_OBJ(vstore_recordMask_RESULT_HIDDEN),\
@@ -868,6 +869,7 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(vstore_frame_getTime_),\
     /* native/type */\
     BUILTIN_OBJ(native_type_name),\
+    BUILTIN_OBJ(native_type_is_ptr),\
     BUILTIN_OBJ(native_type_init_),\
     /* secure/key */\
     BUILTIN_OBJ(secure_key_enabled),\

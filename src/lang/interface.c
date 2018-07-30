@@ -488,6 +488,7 @@ int corto_interface_insertMemberAction(
 
         if (m->modifiers & CORTO_OBSERVABLE) {
             corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
+            corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
         }
 
         if (!m->type->reference && m->type->flags & CORTO_TYPE_HAS_INIT) {

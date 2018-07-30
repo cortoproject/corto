@@ -1027,18 +1027,17 @@ int16_t corto_declareContainer(
         int32_t i;
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
-            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o)))
-            {
-                if (!corto_declare(parent, corto_idof(c), corto_containerType(c))) {
-                    goto error;
-                }
-            } else if (corto_typeof(c) == corto_type(corto_table_o)) {
+            if (corto_typeof(c) == corto_type(corto_table_o)) {
                 corto_tableinstance ts = corto_declare(parent, corto_idof(c), corto_tableinstance_o);
                 if (!ts) {
                     goto error;
                 }
                 corto_set_ref(&ts->type, corto_containerType(c));
+            } else if (corto_type_instanceof(corto_container_o, corto_typeof(c)))
+            {
+                if (!corto_declare(parent, corto_idof(c), corto_containerType(c))) {
+                    goto error;
+                }
             }
         }
         corto_scope_release(seq);
@@ -1062,10 +1061,8 @@ int16_t corto_defineContainer(
         int32_t i;
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
-            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o)) ||
-                (corto_typeof(c) == corto_type(corto_table_o)))
-            {
+
+            if (corto_type_instanceof(corto_container_o, corto_typeof(c))) {
                 corto_object o = corto_lookup(parent, corto_idof(c));
                 if (!o) {
                     corto_throw("could not find '%s' in container '%s'",
@@ -1081,6 +1078,7 @@ int16_t corto_defineContainer(
             }
         }
         corto_scope_release(seq);
+
     } else if (type == corto_type(corto_tableinstance_o)) {
         corto_objectseq seq = corto_scope_claim(parent);
         int32_t i;
@@ -1095,6 +1093,7 @@ int16_t corto_defineContainer(
             }
         }
         corto_scope_release(seq);
+
     } else if (corto_parentof(parent) == corto_type(corto_tableinstance_o)) {
         corto_objectseq seq = corto_scope_claim(parent);
         int32_t i, error = 0;

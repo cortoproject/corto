@@ -303,21 +303,6 @@ CORTO_EXPORT corto_query* _corto_query__assign(corto_query* _this, const char * 
 #define corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
 #define corto_query__set(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end) _this = _this ? _this : (corto_query*)corto_ptr_new(corto_query_o); _corto_query__assign(_this, select, from, type, instanceof, member, where, offset, limit, soffset, slimit, frame_begin, frame_end)
 
-/* /corto/vstore/remote */
-CORTO_EXPORT corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
-#define corto_remote__create(_parent, _id, return_type, is_reference, _impl) _corto_remote__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
-#define corto_remote__create_auto(_parent, _id, return_type, is_reference, _impl) corto_remote _id = corto_remote__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
-#define corto_remote__declare(parent, id) (corto_remote)corto_declare(parent, id, corto_remote_o)
-CORTO_EXPORT corto_int16 _corto_remote__update(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void));
-#define corto_remote__update(_this, return_type, is_reference, _impl) _corto_remote__update(corto_remote(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
-CORTO_EXPORT corto_remote _corto_remote__assign(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void));
-#define corto_remote__optional_not_set NULL
-#define corto_remote__optional_set(return_type, is_reference, _impl) (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), return_type, is_reference, _impl)
-#define corto_remote__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), return_type, is_reference, _impl) : NULL
-#define corto_remote__unset(_this) _this ? corto_ptr_free(_this, corto_remote_o), 0 : 0; _this = NULL;
-#define corto_remote__assign(_this, return_type, is_reference, _impl) _corto_remote__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
-#define corto_remote__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_remote*)corto_ptr_new(corto_remote_o); _corto_remote__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
-
 /* /corto/vstore/record */
 CORTO_EXPORT corto_record* _corto_record__create(corto_object _parent, const char *_id, const char * id, const char * name, const char * parent, const char * type, uintptr_t value, corto_recordMask flags);
 #define corto_record__create(_parent, _id, id, name, parent, type, value, flags) _corto_record__create(_parent, _id, id, name, parent, type, value, flags)
@@ -377,6 +362,21 @@ CORTO_EXPORT corto_recordMask* _corto_recordMask__assign(corto_recordMask* _this
 #define corto_recordMask__unset(_this) _this ? corto_ptr_free(_this, corto_recordMask_o), 0 : 0; _this = NULL;
 #define corto_recordMask__assign(_this, value) _corto_recordMask__assign(_this, value)
 #define corto_recordMask__set(_this, value) _this = _this ? _this : (corto_recordMask*)corto_ptr_new(corto_recordMask_o); _corto_recordMask__assign(_this, value)
+
+/* /corto/vstore/remote */
+CORTO_EXPORT corto_remote _corto_remote__create(corto_object _parent, const char *_id, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_remote__create(_parent, _id, return_type, is_reference, _impl) _corto_remote__create(_parent, _id, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_remote__create_auto(_parent, _id, return_type, is_reference, _impl) corto_remote _id = corto_remote__create(_parent, #_id, return_type, is_reference, _impl); (void)_id
+#define corto_remote__declare(parent, id) (corto_remote)corto_declare(parent, id, corto_remote_o)
+CORTO_EXPORT corto_int16 _corto_remote__update(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_remote__update(_this, return_type, is_reference, _impl) _corto_remote__update(corto_remote(_this), corto_type(return_type), is_reference, (void(*)(void))_impl)
+CORTO_EXPORT corto_remote _corto_remote__assign(corto_remote _this, corto_type return_type, bool is_reference, void(*_impl)(void));
+#define corto_remote__optional_not_set NULL
+#define corto_remote__optional_set(return_type, is_reference, _impl) (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), return_type, is_reference, _impl)
+#define corto_remote__optional_set_cond(__cond, return_type, is_reference, _impl) __cond ? (corto_remote*)corto_remote__assign((corto_remote*)corto_ptr_new(corto_remote_o), return_type, is_reference, _impl) : NULL
+#define corto_remote__unset(_this) _this ? corto_ptr_free(_this, corto_remote_o), 0 : 0; _this = NULL;
+#define corto_remote__assign(_this, return_type, is_reference, _impl) _corto_remote__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
+#define corto_remote__set(_this, return_type, is_reference, _impl) _this = _this ? _this : (corto_remote*)corto_ptr_new(corto_remote_o); _corto_remote__assign(_this, corto_type(return_type), is_reference, (void(*)(void))_impl)
 
 /* /corto/vstore/route */
 CORTO_EXPORT corto_route _corto_route__create(corto_object _parent, const char *_id, const char * pattern, void(*_impl)(void));

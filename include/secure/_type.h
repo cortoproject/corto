@@ -10,11 +10,6 @@
 extern "C" {
 #endif
 
-/* -- Native types -- */
-#ifndef CORTO_SECURE_H
-#endif
-
-
 /* -- Type definitions -- */
 
 /* enum corto/secure/accessKind */

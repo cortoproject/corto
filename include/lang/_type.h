@@ -10,11 +10,6 @@
 extern "C" {
 #endif
 
-/* -- Native types -- */
-#ifndef CORTO_LANG_H
-#endif
-
-
 /* -- Type definitions -- */
 
 /* enum corto/lang/typeKind */
@@ -147,6 +142,7 @@ typedef uint32_t corto_modifierMask;
     #define CORTO_OPTIONAL (0x40)
     #define CORTO_OBSERVABLE (0x80)
     #define CORTO_KEY (0x104)
+    #define CORTO_SINGLETON (0x280)
 
 /* class corto/lang/unit */
 typedef struct corto_unit_s *corto_unit;
@@ -570,4 +566,3 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
-

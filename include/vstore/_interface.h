@@ -300,7 +300,7 @@ uint32_t _corto_query_cardinality(
 CORTO_EXPORT
 bool _corto_query_match(
     corto_query* _this,
-    corto_record *result);
+    corto_record *record);
 
 
 /* struct corto/vstore/record */
