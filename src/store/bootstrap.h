@@ -926,7 +926,7 @@ CORTO_CLASS_NOBASE_O(lang, type, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORT
 
 /* /corto/lang/primitive */
 CORTO_FW_IC(lang, primitive);
-CORTO_CLASS_O(lang, primitive, lang_type, CORTO_LOCAL | CORTO_READONLY, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
+CORTO_CLASS_O(lang, primitive, lang_type, CORTO_HIDDEN, CORTO_ATTR_DEFAULT, NULL, CORTO_DECLARED | CORTO_VALID, NULL, NULL, CORTO_IC);
     CORTO_MEMBER_O(lang_primitive, kind, lang_primitiveKind, CORTO_LOCAL | CORTO_READONLY);
     CORTO_MEMBER_O(lang_primitive, width, lang_width, CORTO_GLOBAL | CORTO_CONST);
     CORTO_MEMBER_O(lang_primitive, convert_id, lang_uint8, CORTO_LOCAL | CORTO_PRIVATE);
