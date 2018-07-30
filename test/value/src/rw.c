@@ -42,7 +42,7 @@ void test_rw_tc_collection_array(
     void *ptr;
 
     int32_t *obj = corto_declare(root_o, "obj", test_int_array_o);
-    corto_rw init = corto_rw_init(test_int_array_o, obj);
+    corto_rw init = corto_rw_init(obj, test_int_array_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -77,7 +77,7 @@ void test_rw_tc_collection_list(
     corto_type type;
 
     test_int_list *obj = corto_declare(root_o, "obj", test_int_list_o);
-    corto_rw init = corto_rw_init(test_int_list_o, obj);
+    corto_rw init = corto_rw_init(obj, test_int_list_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -112,7 +112,7 @@ void test_rw_tc_collection_sequence(
     corto_type type;
 
     test_int_seq *obj = corto_declare(root_o, "obj", test_int_seq_o);
-    corto_rw init = corto_rw_init(test_int_seq_o, obj);
+    corto_rw init = corto_rw_init(obj, test_int_seq_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -156,7 +156,7 @@ void test_rw_tc_composite_ref(
     void *ptr;
 
     test_reftype obj = corto_declare(root_o, "obj", test_reftype_o);
-    corto_rw init = corto_rw_init(test_reftype_o, obj);
+    corto_rw init = corto_rw_init(obj, test_reftype_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -216,7 +216,7 @@ void test_rw_tc_composite_ref_nested(
     test_assert(ref_obj != NULL);
 
     test_refmbr obj = corto_declare(root_o, "obj", test_refmbr_o);
-    corto_rw init = corto_rw_init(test_refmbr_o, obj);
+    corto_rw init = corto_rw_init(obj, test_refmbr_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -290,7 +290,7 @@ void test_rw_tc_composite_value(
     void *ptr;
 
     test_valtype *obj = corto_declare(root_o, "obj", test_valtype_o);
-    corto_rw init = corto_rw_init(test_valtype_o, obj);
+    corto_rw init = corto_rw_init(obj, test_valtype_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -347,7 +347,7 @@ void test_rw_tc_composite_value_nested(
     void *ptr;
 
     test_valmbr *obj = corto_declare(root_o, "obj", test_valmbr_o);
-    corto_rw init = corto_rw_init(test_valmbr_o, obj);
+    corto_rw init = corto_rw_init(obj, test_valmbr_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -455,7 +455,7 @@ void test_rw_tc_primitive_bool(
     void *ptr;
 
     bool *obj = corto_declare(root_o, "obj", corto_bool_o);
-    corto_rw init = corto_rw_init(corto_bool_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_bool_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -478,7 +478,7 @@ void test_rw_tc_primitive_char(
     void *ptr;
 
     char *obj = corto_declare(root_o, "obj", corto_char_o);
-    corto_rw init = corto_rw_init(corto_char_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_char_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -501,7 +501,7 @@ void test_rw_tc_primitive_constant(
     void *ptr;
 
     int32_t *obj = corto_declare(root_o, "obj", test_Color_o);
-    corto_rw init = corto_rw_init(test_Color_o, obj);
+    corto_rw init = corto_rw_init(obj, test_Color_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -524,7 +524,7 @@ void test_rw_tc_primitive_float(
     void *ptr;
 
     float *obj = corto_declare(root_o, "obj", corto_float32_o);
-    corto_rw init = corto_rw_init(corto_float32_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_float32_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -547,7 +547,7 @@ void test_rw_tc_primitive_int(
     void *ptr;
 
     int32_t *obj = corto_declare(root_o, "obj", corto_int32_o);
-    corto_rw init = corto_rw_init(corto_int32_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_int32_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -570,7 +570,7 @@ void test_rw_tc_primitive_string(
     void *ptr;
 
     char **obj = corto_declare(root_o, "obj", corto_string_o);
-    corto_rw init = corto_rw_init(corto_string_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_string_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -593,7 +593,7 @@ void test_rw_tc_primitive_uint(
     void *ptr;
 
     uint32_t *obj = corto_declare(root_o, "obj", corto_int32_o);
-    corto_rw init = corto_rw_init(corto_int32_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_int32_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -616,7 +616,7 @@ void test_rw_tc_reference(
     void *ptr;
 
     corto_object *obj = corto_declare(root_o, "obj", corto_object_o);
-    corto_rw init = corto_rw_init(corto_object_o, obj);
+    corto_rw init = corto_rw_init(obj, corto_object_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -639,7 +639,7 @@ void test_rw_tc_inheritance_ref(
     void *ptr;
 
     test_refsub obj = corto_declare(root_o, "obj", test_refsub_o);
-    corto_rw init = corto_rw_init(test_refsub_o, obj);
+    corto_rw init = corto_rw_init(obj, test_refsub_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -717,7 +717,7 @@ void test_rw_tc_inheritance_ref_nested(
     test_assert(ref_sub_obj != NULL);
 
     test_refsub_nested obj = corto_declare(root_o, "obj", test_refsub_nested_o);
-    corto_rw init = corto_rw_init(test_refsub_nested_o, obj);
+    corto_rw init = corto_rw_init(obj, test_refsub_nested_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -774,7 +774,7 @@ void test_rw_tc_inheritance_value(
     void *ptr;
 
     test_valsub *obj = corto_declare(root_o, "obj", test_valsub_o);
-    corto_rw init = corto_rw_init(test_valsub_o, obj);
+    corto_rw init = corto_rw_init(obj, test_valsub_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -846,7 +846,7 @@ void test_rw_tc_inheritance_value_nested(
     void *ptr;
 
     test_valsub_nested *obj = corto_declare(root_o, "obj", test_valsub_nested_o);
-    corto_rw init = corto_rw_init(test_valsub_nested_o, obj);
+    corto_rw init = corto_rw_init(obj, test_valsub_nested_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -980,7 +980,7 @@ void test_rw_tc_nested_collection_array(
     void *ptr;
 
     test_s_nested_array *obj = corto_declare(root_o, "obj", test_s_nested_array_o);
-    corto_rw init = corto_rw_init(test_s_nested_array_o, obj);
+    corto_rw init = corto_rw_init(obj, test_s_nested_array_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1025,7 +1025,7 @@ void test_rw_tc_nested_collection_list(
     corto_member member;
 
     test_s_nested_list *obj = corto_declare(root_o, "obj", test_s_nested_list_o);
-    corto_rw init = corto_rw_init(test_s_nested_list_o, obj);
+    corto_rw init = corto_rw_init(obj, test_s_nested_list_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1076,7 +1076,7 @@ void test_rw_tc_nested_collection_sequence(
     void *ptr;
 
     test_s_nested_sequence *obj = corto_declare(root_o, "obj", test_s_nested_sequence_o);
-    corto_rw init = corto_rw_init(test_s_nested_sequence_o, obj);
+    corto_rw init = corto_rw_init(obj, test_s_nested_sequence_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1128,7 +1128,7 @@ void test_rw_tc_nested_collection_list_empty(
     corto_member member;
 
     test_s_nested_list *obj = corto_declare(root_o, "obj", test_s_nested_list_o);
-    corto_rw init = corto_rw_init(test_s_nested_list_o, obj);
+    corto_rw init = corto_rw_init(obj, test_s_nested_list_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1169,7 +1169,7 @@ void test_rw_tc_composite_out_of_bounds_by_one(
     void *ptr;
 
     test_point *obj = corto_declare(root_o, "obj", test_point_o);
-    corto_rw rw = corto_rw_init(test_point_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -1210,7 +1210,7 @@ void test_rw_tc_composite_out_of_bounds(
     void *ptr;
 
     test_point *obj = corto_declare(root_o, "obj", test_point_o);
-    corto_rw rw = corto_rw_init(test_point_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -1250,7 +1250,7 @@ void test_rw_tc_collection_array_composite(
     corto_type type;
     corto_member member;
     test_point* obj = corto_declare(root_o, "obj", test_point_array_o);
-    corto_rw init = corto_rw_init(test_point_array_o, obj);
+    corto_rw init = corto_rw_init(obj, test_point_array_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1321,7 +1321,7 @@ void test_rw_tc_collection_list_composite(
     corto_member member;
     test_point *point;
     test_point_list *obj = corto_declare(root_o, "obj", test_point_list_o);
-    corto_rw init = corto_rw_init(test_point_list_o, obj);
+    corto_rw init = corto_rw_init(obj, test_point_list_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1402,7 +1402,7 @@ void test_rw_tc_collection_sequence_composite(
     corto_member member;
 
     test_point_seq *obj = corto_declare(root_o, "obj", test_point_seq_o);
-    corto_rw init = corto_rw_init(test_point_seq_o, obj);
+    corto_rw init = corto_rw_init(obj, test_point_seq_o);
     test_assert(corto_rw_has_next(&init) == false);
 
     type = corto_rw_get_type(&init);
@@ -1480,7 +1480,7 @@ void test_rw_tc_collection_sequence_composite(
 void test_rw_tc_collection_sequence_composite_dryrun(
     test_rw this)
 {
-    corto_rw init = corto_rw_init(test_point_seq_o, NULL);
+    corto_rw init = corto_rw_init(NULL, test_point_seq_o);
     test_assert(corto_rw_get_type(&init) == (corto_type)test_point_seq_o);
     test_assert(corto_rw_push(&init, true) == 0);
     test_assert(corto_rw_get_type(&init) == (corto_type)test_point_o);
@@ -1502,4 +1502,48 @@ void test_rw_tc_collection_sequence_composite_dryrun(
     test_assert(corto_rw_pop(&init) == 0);
     test_assert(corto_rw_get_type(&init) == (corto_type)test_point_seq_o);
     corto_rw_deinit(&init);
+}
+
+void test_rw_tc_collection_ref_int(
+    test_rw this)
+{
+    /* Insert implementation */
+}
+
+void test_rw_tc_composite_ref_int(
+    test_rw this)
+{
+    test_ref_i32 a = corto_create(NULL, NULL, test_ref_i32_o);
+    test_ref_i32 b = corto_create(NULL, NULL, test_ref_i32_o);
+    test_s_ref_i32 *s = corto_create(NULL, NULL, test_s_ref_i32_o);
+    test_assert(s != NULL);
+
+    corto_rw rw = corto_rw_init(s, test_s_ref_i32_o);
+    test_assert(corto_rw_push(&rw, false) == 0);
+    test_assert(corto_rw_set_ref(&rw, a) == 0);
+    test_assert(corto_rw_next(&rw) == 0);
+    test_assert(corto_rw_set_ref(&rw, b) == 0);
+    test_assert(corto_rw_pop(&rw) == 0);
+    corto_rw_deinit(&rw);
+
+    test_assertref(s->a, a);
+    test_assertref(s->b, b);
+
+    test_assert(corto_delete(s) == 0);
+    test_assert(corto_delete(a) == 0);
+    test_assert(corto_delete(b) == 0);
+}
+
+void test_rw_tc_primitive_ref_int(
+    test_rw this)
+{
+    test_ref_i32 i = corto_create(NULL, NULL, test_ref_i32_o);
+    test_assert(i != NULL);
+
+    corto_rw rw = corto_rw_object(i);
+    test_assert(corto_rw_set_int(&rw, 10) == 0);
+    test_assertint(*i, 10);
+    corto_rw_deinit(&rw);
+
+    test_assert(corto_delete(i) == 0);
 }

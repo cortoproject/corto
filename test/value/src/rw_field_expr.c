@@ -22,7 +22,7 @@ void test_rw_field_expr_tc_composite_full(
     void *ptr;
 
     test_point *obj = corto_declare(root_o, "obj", test_point_o);
-    corto_rw rw = corto_rw_init(test_point_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -61,7 +61,7 @@ void test_rw_field_expr_tc_composite_full_reverse(
     void *ptr;
 
     test_point *obj = corto_declare(root_o, "obj", test_point_o);
-    corto_rw rw = corto_rw_init(test_point_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -100,7 +100,7 @@ void test_rw_field_expr_tc_composite_mixed(
     void *ptr;
 
     test_point *obj = corto_declare(root_o, "obj", test_point_o);
-    corto_rw rw = corto_rw_init(test_point_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -139,7 +139,7 @@ void test_rw_field_expr_tc_composite_partial(
     void *ptr;
 
     test_point *obj = corto_declare(root_o, "obj", test_point_o);
-    corto_rw rw = corto_rw_init(test_point_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -170,7 +170,7 @@ void test_rw_field_expr_tc_nested_expr_full(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -220,7 +220,7 @@ void test_rw_field_expr_tc_nested_expr_full_reverse(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -270,7 +270,7 @@ void test_rw_field_expr_tc_nested_expr_mixed(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -327,7 +327,7 @@ void test_rw_field_expr_tc_nested_expr_partial(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -367,7 +367,7 @@ void test_rw_field_expr_tc_nested_push_full(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -433,7 +433,7 @@ void test_rw_field_expr_tc_nested_push_full_reverse(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -499,7 +499,7 @@ void test_rw_field_expr_tc_nested_push_mixed(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -565,7 +565,7 @@ void test_rw_field_expr_tc_nested_push_partial(
     void *ptr;
 
     test_line *obj = corto_declare(root_o, "obj", test_line_o);
-    corto_rw rw = corto_rw_init(test_line_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_line_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -617,7 +617,7 @@ void test_rw_field_expr_tc_inheritance_push_full(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -676,7 +676,7 @@ void test_rw_field_expr_tc_inheritance_push_full_reverse(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -737,7 +737,7 @@ void test_rw_field_expr_tc_inheritance_push_mixed(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -796,7 +796,7 @@ void test_rw_field_expr_tc_inheritance_push_partial(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -849,7 +849,7 @@ void test_rw_field_expr_tc_inheritance_push_mixed_three_values(
     void *ptr;
 
     test_three_values_sub *obj = corto_declare(root_o, "obj", test_three_values_sub_o);
-    corto_rw rw = corto_rw_init(test_three_values_sub_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_three_values_sub_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -912,7 +912,7 @@ void test_rw_field_expr_tc_inheritance_expr_full(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -955,7 +955,7 @@ void test_rw_field_expr_tc_inheritance_expr_full_reverse(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -1001,7 +1001,7 @@ void test_rw_field_expr_tc_inheritance_expr_mixed(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);
@@ -1044,7 +1044,7 @@ void test_rw_field_expr_tc_inheritance_expr_partial(
     void *ptr;
 
     test_point3d *obj = corto_declare(root_o, "obj", test_point3d_o);
-    corto_rw rw = corto_rw_init(test_point3d_o, obj);
+    corto_rw rw = corto_rw_init(obj, test_point3d_o);
     test_assert(corto_rw_has_next(&rw) == false);
 
     type = corto_rw_get_type(&rw);

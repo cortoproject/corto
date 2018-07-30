@@ -104,20 +104,30 @@ typedef struct corto_rw_scope {
 typedef struct corto_rw {
     corto_type rw_type;
     void *rw_ptr;
+    bool is_object;
     corto_rw_scope root_scope;
     corto_rw_scope *current;
 } corto_rw;
 
 /** Initialize a reader/writer.
  *
- * @param type The type of the value that is read/written to.
  * @param ptr The pointer to the value that is read/written to.
+ * @param type The type of the value that is read/written to.
  * @return An initialized reader/writer value.
  */
 CORTO_EXPORT
 corto_rw _corto_rw_init(
-    corto_type type,
-    void *ptr);
+    void *ptr,
+    corto_type type);
+
+/** Initialize a reader/writer with an object.
+ *
+ * @param object The object to initialize.
+ * @return An initialized reader/writer value.
+ */
+CORTO_EXPORT
+corto_rw _corto_rw_object(
+    corto_object object);
 
 /** Deinitialize an reader/writer.
  *
@@ -382,7 +392,8 @@ CORTO_EXPORT
 uintptr_t corto_rw_unset(
     corto_rw *_this);
 
-#define corto_rw_init(type, ptr) _corto_rw_init(corto_type(type), ptr)
+#define corto_rw_init(ptr, type) _corto_rw_init(ptr, corto_type(type))
+#define corto_rw_object(object) _corto_rw_object(corto_assert_object(object))
 
 #ifdef __cplusplus
 }

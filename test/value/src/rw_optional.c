@@ -10,7 +10,7 @@ void test_rw_optional_tc_primitive(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(o->m == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -35,7 +35,7 @@ void test_rw_optional_tc_primitive_notset(
     o->m = corto_ptr_new(corto_int32_o);
     test_assert(o->m != NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_unset(&rw) == 0);
@@ -55,7 +55,7 @@ void test_rw_optional_tc_collection(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(o->m == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_collection_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_collection_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, true) == 0);
@@ -88,7 +88,7 @@ void test_rw_optional_tc_collection_notset(
     test_assert(o->m != NULL);
     test_assert(*o->m != NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_collection_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_collection_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_unset(&rw) == 0);
@@ -109,7 +109,7 @@ void test_rw_optional_tc_composite(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(o->m == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_composite_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_composite_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -139,7 +139,7 @@ void test_rw_optional_tc_composite_notset(
     o->m = corto_ptr_new(test_point_o);
     test_assert(o->m != NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_composite_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_composite_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_unset(&rw) == 0);
@@ -168,7 +168,7 @@ void test_rw_optional_tc_reference(
     test_assert(o->m != NULL);
     test_assert(*o->m == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_reference_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_reference_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_set_ref(&rw, dummy) == 0);
@@ -203,7 +203,7 @@ void test_rw_optional_tc_reference_notset(
     corto_set_ref(o->m, dummy);
     test_assertint(corto_countof(dummy), 2);
 
-    corto_rw rw = corto_rw_init(test_s_optional_reference_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_reference_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_unset(&rw) == 0);
@@ -236,7 +236,7 @@ void test_rw_optional_tc_reference_null(
     corto_set_ref(o->m, dummy);
     test_assertint(corto_countof(dummy), 2);
 
-    corto_rw rw = corto_rw_init(test_s_optional_reference_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_reference_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_set_null(&rw) == 0);
@@ -264,7 +264,7 @@ void test_rw_optional_tc_string(
     test_assert(o->m != NULL);
     test_assert(*o->m == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_optional_string_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_string_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_set_string(&rw, "Hello World") == 0);
@@ -291,7 +291,7 @@ void test_rw_optional_tc_string_notset(
     test_assert(*o->m == NULL);
     corto_set_str(o->m, "Hello World");
 
-    corto_rw rw = corto_rw_init(test_s_optional_string_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_string_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_unset(&rw) == 0);
@@ -317,7 +317,7 @@ void test_rw_optional_tc_string_null(
     test_assert(*o->m == NULL);
     corto_set_str(o->m, "Hello World");
 
-    corto_rw rw = corto_rw_init(test_s_optional_string_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_optional_string_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_set_null(&rw) == 0);

@@ -54,12 +54,28 @@ bool corto_type_is_growable(
 }
 
 corto_rw _corto_rw_init(
-    corto_type type,
-    void *ptr)
+    void *ptr,
+    corto_type type)
 {
     corto_rw result = {
         .rw_type = type,
         .rw_ptr = ptr,
+    };
+
+    if (!type) {
+        corto_critical("corto_rw_init called with NULL for type");
+    }
+
+    return result;
+}
+
+corto_rw _corto_rw_object(
+    corto_object object)
+{
+    corto_rw result = {
+        .rw_type = corto_typeof(object),
+        .rw_ptr = object,
+        .is_object = true
     };
 
     return result;
@@ -799,7 +815,12 @@ uintptr_t corto_rw_set_value(
         goto error;
     }
 
-    corto_value field = corto_value_pointer(ptr, type);
+    corto_value field;
+    if (this->current || !this->is_object) {
+        field = corto_value_pointer(ptr, type);
+    } else {
+        field = corto_value_object(ptr, NULL);
+    }
 
     if (corto_value_binaryOp(CORTO_ASSIGN, &field, value, NULL)) {
         if (this->current) {

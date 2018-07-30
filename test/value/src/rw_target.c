@@ -10,7 +10,7 @@ void test_rw_target_tc_primitive(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -35,7 +35,7 @@ void test_rw_target_tc_reference(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_reference_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_reference_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -60,7 +60,7 @@ void test_rw_target_tc_collection(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_collection_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_collection_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -97,7 +97,7 @@ void test_rw_target_tc_composite(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_composite_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_composite_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -133,7 +133,7 @@ void test_rw_target_tc_objective_app_from_app(
 
     /* Set objective from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -165,7 +165,7 @@ void test_rw_target_tc_objective_app_from_local(
 
     /* Set objective from local */
     corto_set_source(local);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -201,7 +201,7 @@ void test_rw_target_tc_objective_app_from_remote(
 
     /* Set objective from remote (will fail) */
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -238,7 +238,7 @@ void test_rw_target_tc_objective_local_from_app(
 
     /* Set objective from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -272,7 +272,7 @@ void test_rw_target_tc_objective_local_from_local(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == local);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -314,7 +314,7 @@ void test_rw_target_tc_objective_local_from_remote(
 
     /* Set objective from remote */
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -352,7 +352,7 @@ void test_rw_target_tc_objective_remote_from_app(
 
     /* Set objective from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -396,7 +396,7 @@ void test_rw_target_tc_objective_remote_from_local(
 
     /* Set objective from app */
     corto_set_source(local);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -433,7 +433,7 @@ void test_rw_target_tc_objective_remote_from_remote(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == remote);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -463,7 +463,7 @@ void test_rw_target_tc_actual_app_from_app(
 
     /* Set actual from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -495,7 +495,7 @@ void test_rw_target_tc_actual_app_from_local(
 
     /* Set actual from local */
     corto_set_source(local);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -531,7 +531,7 @@ void test_rw_target_tc_actual_app_from_remote(
 
     /* Set actual from remote (will fail) */
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -568,7 +568,7 @@ void test_rw_target_tc_actual_local_from_app(
 
     /* Set actual from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -602,7 +602,7 @@ void test_rw_target_tc_actual_local_from_local(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == local);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -644,7 +644,7 @@ void test_rw_target_tc_actual_local_from_remote(
 
     /* Set actual from remote */
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -682,7 +682,7 @@ void test_rw_target_tc_actual_remote_from_app(
 
     /* Set actual from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -726,7 +726,7 @@ void test_rw_target_tc_actual_remote_from_local(
 
     /* Set actual from app */
     corto_set_source(local);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -763,7 +763,7 @@ void test_rw_target_tc_actual_remote_from_remote(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == remote);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -793,7 +793,7 @@ void test_rw_target_tc_target_app_from_app(
 
     /* Set target from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -826,7 +826,7 @@ void test_rw_target_tc_target_app_from_local(
 
     /* Set target from local */
     corto_set_source(local);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -863,7 +863,7 @@ void test_rw_target_tc_target_app_from_remote(
 
     /* Set target from remote (will fail) */
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -899,7 +899,7 @@ void test_rw_target_tc_target_local_from_app(
 
     /* Set target from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -934,7 +934,7 @@ void test_rw_target_tc_target_local_from_local(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == local);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -977,7 +977,7 @@ void test_rw_target_tc_target_local_from_remote(
 
     /* Set target from remote */
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -1014,7 +1014,7 @@ void test_rw_target_tc_target_remote_from_app(
 
     /* Set target from app */
     corto_set_source(NULL);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -1057,7 +1057,7 @@ void test_rw_target_tc_target_remote_from_local(
 
     /* Set target from app */
     corto_set_source(local);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -1093,7 +1093,7 @@ void test_rw_target_tc_target_remote_from_remote(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == remote);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
@@ -1120,7 +1120,7 @@ void test_rw_target_tc_actual_after_push(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -1145,7 +1145,7 @@ void test_rw_target_tc_objective_after_push(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -1177,7 +1177,7 @@ void test_rw_target_tc_target_after_push(
     test_assert(corto_define(remote) == 0);
 
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -1203,7 +1203,7 @@ void test_rw_target_tc_actual_nested(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_composite_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_composite_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual.x") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -1230,7 +1230,7 @@ void test_rw_target_tc_objective_nested(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_composite_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_composite_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective.x") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -1264,7 +1264,7 @@ void test_rw_target_tc_target_nested(
     test_assert(corto_define(remote) == 0);
 
     corto_set_source(remote);
-    corto_rw rw = corto_rw_init(test_s_target_composite_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_composite_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target.x") == 0);
     test_assert(corto_rw_set_int(&rw, 10) == 0);
@@ -1292,7 +1292,7 @@ void test_rw_target_tc_actual_no_field_expr(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -1316,7 +1316,7 @@ void test_rw_target_tc_set_actual_and_objective(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
@@ -1343,7 +1343,7 @@ void test_rw_target_tc_set_actual_no_field_expr_and_objective(
     test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
     test_assert(corto_sourceof(o) == NULL);
 
-    corto_rw rw = corto_rw_init(test_s_target_primitive_o, o);
+    corto_rw rw = corto_rw_init(o, test_s_target_primitive_o);
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_next(&rw) == 0);
     test_assert(corto_rw_push(&rw, false) == 0);
