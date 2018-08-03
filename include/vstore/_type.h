@@ -273,10 +273,7 @@ typedef struct corto_record {
 typedef corto_iter corto_recordIter;
 #endif
 
-#ifndef corto_recordlist_DEFINED
-#define corto_recordlist_DEFINED
 typedef corto_ll corto_recordlist;
-#endif
 
 /* procedure corto/vstore/remote */
 typedef struct corto_remote_s {

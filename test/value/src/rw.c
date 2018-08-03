@@ -535,7 +535,7 @@ void test_rw_tc_primitive_float(
     test_assert(ptr == obj);
 
     corto_rw_set_float(&init, 10.5);
-    test_assertint(*obj, 10.5);
+    test_assertflt(*obj, 10.5);
     test_assert(corto_define(obj) == 0);
 }
 

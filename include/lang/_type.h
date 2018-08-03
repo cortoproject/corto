@@ -170,10 +170,7 @@ typedef struct corto_tag_s {
     int8_t __dummy;
 } *corto_tag;
 
-#ifndef corto_taglist_DEFINED
-#define corto_taglist_DEFINED
 typedef corto_ll corto_taglist;
-#endif
 
 /* class corto/lang/member */
 typedef struct corto_member_s {
@@ -197,10 +194,7 @@ typedef struct corto_alias_s {
 /* any */
 typedef struct corto_any {corto_type type; void *value; uint8_t owner;} corto_any;
 
-#ifndef corto_stringlist_DEFINED
-#define corto_stringlist_DEFINED
 typedef corto_ll corto_stringlist;
-#endif
 
 /* class corto/lang/package */
 typedef struct corto_package_s {
@@ -466,10 +460,7 @@ typedef struct corto_method_s {
     uint32_t index;
 } *corto_method;
 
-#ifndef corto_objectlist_DEFINED
-#define corto_objectlist_DEFINED
 typedef corto_ll corto_objectlist;
-#endif
 
 /* binary corto/lang/octet */
 typedef uint8_t corto_octet;
@@ -566,3 +557,4 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
+

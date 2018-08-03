@@ -54,26 +54,41 @@ typedef corto_subscriber _type_corto_subscriber;
 typedef corto_ownership _type_corto_ownership;
 typedef corto_mountCallbackMask _type_corto_mountCallbackMask;
 typedef corto_mount_subscription _type_corto_mount_subscription;
+#ifndef _type_corto_mount_subscriptionList_DEFINED
+#define _type_corto_mount_subscriptionList_DEFINED
 typedef corto_mount_subscriptionList _type_corto_mount_subscriptionList;
+#endif
 typedef corto_time _type_corto_time;
 typedef corto_mount _type_corto_mount;
 typedef corto_invoke_event _type_corto_invoke_event;
 typedef corto_loader _type_corto_loader;
+#ifndef _type_corto_objectIter_DEFINED
+#define _type_corto_objectIter_DEFINED
 typedef corto_objectIter _type_corto_objectIter;
+#endif
 typedef corto_observer_event _type_corto_observer_event;
 typedef corto_operatorKind _type_corto_operatorKind;
 typedef corto_recordMask _type_corto_recordMask;
 typedef corto_sample _type_corto_sample;
+#ifndef _type_corto_sampleIter_DEFINED
+#define _type_corto_sampleIter_DEFINED
 typedef corto_sampleIter _type_corto_sampleIter;
+#endif
 typedef corto_record _type_corto_record;
+#ifndef _type_corto_recordIter_DEFINED
+#define _type_corto_recordIter_DEFINED
 typedef corto_recordIter _type_corto_recordIter;
+#endif
 typedef corto_recordlist _type_corto_recordlist;
 typedef corto_remote _type_corto_remote;
 typedef corto_route _type_corto_route;
 typedef corto_router _type_corto_router;
 typedef corto_routerimpl _type_corto_routerimpl;
 typedef corto_subscriber_event _type_corto_subscriber_event;
+#ifndef _type_corto_subscriber_eventIter_DEFINED
+#define _type_corto_subscriber_eventIter_DEFINED
 typedef corto_subscriber_eventIter _type_corto_subscriber_eventIter;
+#endif
 
 /* -- Argument type casting -- */
 #ifndef CORTO_IMPL
