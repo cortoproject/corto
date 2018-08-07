@@ -1026,18 +1026,23 @@ int corto_load_config(void)
     char *cfg = corto_getenv("CORTO_CONFIG");
     if (cfg) {
         if (corto_isdir(cfg)) {
+            corto_time start, stop;
             corto_trace("loading configuration");
             corto_ll cfgfiles = corto_opendir(cfg);
             corto_iter it = corto_ll_iter(cfgfiles);
             while (corto_iter_hasNext(&it)) {
                 char *file = corto_iter_next(&it);
                 char *full_path = corto_asprintf("%s/%s", cfg, file);
+                corto_time_get(&start);
                 if (corto_use(full_path, 0, NULL)) {
                     corto_raise();
                     result = -1;
                     /* Don't break, report all errors */
                 } else {
-                    corto_ok("successfuly loaded '%s'", file);
+                    corto_time_get(&stop);
+                    stop = corto_time_sub(stop, start);
+                    corto_ok("loaded '%s' in %d.%.3d seconds", file,
+                        stop.sec, stop.nanosec / 1000000);
                 }
                 free(full_path);
             }
