@@ -1026,8 +1026,8 @@ int corto_load_config(void)
     corto_log_push("config");
     char *cfg = corto_getenv("CORTO_CONFIG");
     if (cfg) {
+        corto_time start, stop;
         if (corto_isdir(cfg)) {
-            corto_time start, stop;
             corto_trace("loading configuration");
             corto_ll cfgfiles = corto_opendir(cfg);
             corto_iter it = corto_ll_iter(cfgfiles);
@@ -1049,9 +1049,14 @@ int corto_load_config(void)
             }
             corto_closedir(cfgfiles);
         } else if (corto_file_test(cfg)) {
+            corto_time_get(&start);
             if (corto_use(cfg, 0, NULL)) {
                 result = -1;
             }
+            corto_time_get(&stop);
+            stop = corto_time_sub(stop, start);
+            corto_ok("loaded '%s' in %d.%.3d seconds", cfg,
+                stop.sec, stop.nanosec / 1000000);
         } else {
             corto_trace(
                 "$CORTO_CONFIG ('%s') does not point to an accessible "
