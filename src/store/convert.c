@@ -131,7 +131,7 @@ CORTO_DECL_TRANSFORM(boolean, string) {
     CORTO_UNUSED(toType);
     CORTO_UNUSED(fromType);
 
-    if (*(corto_bool*)from) {
+    if (*(bool*)from) {
         *(corto_string*)to = corto_strdup("true");
     } else {
         *(corto_string*)to = corto_strdup("false");
@@ -161,13 +161,10 @@ CORTO_DECL_TRANSFORM(string, boolean) {
     CORTO_UNUSED(toType);
     CORTO_UNUSED(fromType);
     str = *(corto_string*)from;
-    if (!stricmp(str, "true")) {
-        *(corto_bool*)to = TRUE;
-    } else if (!stricmp(str, "false")) {
-        *(corto_bool*)to = FALSE;
+    if (str) {
+        *(bool*)to = TRUE;
     } else {
-        corto_throw("'%s' is not a valid boolean value", str);
-        return -1;
+        *(bool*)to = FALSE;
     }
     return 0;
 }
@@ -408,7 +405,7 @@ CORTO_CONVERT_FROM_STR_FLOAT(float64)
 
 /* Init numeric conversion slot */
 #define CORTO_CONVERT_INIT_NUM(kind, width, toKind, toWidth, fromType, toType)\
-    _conversions[corto__primitive_convertId(kind, width)][corto__primitive_convertId(toKind, toWidth)] = CORTO_NAME_TRANSFORM(fromType, toType)
+    _conversions[corto__primitive_convert_id(kind, width)][corto__primitive_convert_id(toKind, toWidth)] = CORTO_NAME_TRANSFORM(fromType, toType)
 
 /* All numeric conversion slots */
 #define CORTO_CONVERT_INIT_NUM_ALL(kind, width, type)\
@@ -513,6 +510,10 @@ void corto_ptr_castInit(void) {
     CORTO_CONVERT_INIT_NUM(CORTO_UINTEGER, CORTO_WIDTH_64, CORTO_BITMASK, CORTO_WIDTH_32, int64, enum);
     CORTO_CONVERT_INIT_NUM(CORTO_BITMASK, CORTO_WIDTH_32, CORTO_BOOLEAN, CORTO_WIDTH_8, int32, bool);
 
+    /* enum / bitmask to boolean */
+    CORTO_CONVERT_INIT_NUM(CORTO_ENUM, CORTO_WIDTH_32, CORTO_BOOLEAN, CORTO_WIDTH_8, int32, bool);
+    CORTO_CONVERT_INIT_NUM(CORTO_BITMASK, CORTO_WIDTH_32, CORTO_BOOLEAN, CORTO_WIDTH_8, uint32, bool);
+
     /* string to binary */
     CORTO_CONVERT_INIT_NUM(CORTO_TEXT, CORTO_WIDTH_WORD, CORTO_BINARY, CORTO_WIDTH_8, string, octet);
     CORTO_CONVERT_INIT_NUM(CORTO_TEXT, CORTO_WIDTH_WORD, CORTO_BINARY, CORTO_WIDTH_WORD, string, word);
@@ -539,8 +540,29 @@ void corto_ptr_castInit(void) {
 }
 
 /* Convert a value from one primitive type to another */
-corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, void *to) {
+int16_t _corto_ptr_cast(
+    corto_type fromType,
+    void *from,
+    corto_type toType,
+    void *to)
+{
     corto_conversion c;
+
+    if (fromType && !from) {
+        corto_throw("cannot cast NULL pointer of type '%s'",
+            corto_fullpath(NULL, fromType));
+        goto error;
+    }
+
+    if (!fromType) {
+        corto_throw("cannot cast to NULL type");
+        goto error;
+    }
+
+    if (!to) {
+        corto_throw("destination pointer is NULL");
+        goto error;
+    }
 
     if (fromType->reference) {
         if (toType->reference) {
@@ -554,7 +576,11 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
             }
         } else if (toType->kind == CORTO_PRIMITIVE) {
             if (corto_primitive(toType)->kind == CORTO_BOOLEAN) {
-                *(corto_bool*)to = *(corto_object*)from ? TRUE : FALSE;
+                if (from) {
+                    *(bool*)to = *(corto_object*)from ? TRUE : FALSE;
+                } else {
+                    *(bool*)to = FALSE;
+                }
             } else if (corto_primitive(toType)->kind == CORTO_TEXT) {
                 corto_id id;
                 corto_set_str((corto_string*)to,
@@ -575,7 +601,7 @@ corto_int16 _corto_ptr_cast(corto_type fromType, void *from, corto_type toType, 
         }
     } else if (fromType->kind == CORTO_PRIMITIVE) {
         /* Get conversion */
-        c = _conversions[((corto_primitive)fromType)->convertId][corto_primitive(toType)->convertId];
+        c = _conversions[((corto_primitive)fromType)->convert_id][corto_primitive(toType)->convert_id];
         if (c) {
             if (c((corto_primitive)fromType, from, (corto_primitive)toType, to)) {
                 /* Conversion failed */

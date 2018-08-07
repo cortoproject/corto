@@ -9,14 +9,14 @@ int16_t corto_list_construct(
     corto_type(this)->flags |= CORTO_TYPE_NEEDS_INIT;
     corto_type(this)->size = sizeof(corto_ll);
     corto_type(this)->alignment = CORTO_ALIGNMENT(corto_ll);
-    corto_type elementType = corto_collection(this)->elementType;
-    if (!elementType) {
+    corto_type element_type = corto_collection(this)->element_type;
+    if (!element_type) {
         corto_error("no elementtype provided for list");
         goto error;
     }
 
-    if (elementType->flags & CORTO_TYPE_HAS_REFERENCES ||
-        elementType->reference)
+    if (element_type->flags & CORTO_TYPE_HAS_REFERENCES ||
+        element_type->reference)
     {
         corto_type(this)->flags |= CORTO_TYPE_HAS_REFERENCES;
     }

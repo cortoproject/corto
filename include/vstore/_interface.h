@@ -61,7 +61,7 @@ void _corto_loader_destruct(
     corto_loader _this);
 
 CORTO_EXPORT
-corto_resultIter _corto_loader_on_query_v(
+corto_recordIter _corto_loader_on_query_v(
     corto_loader _this,
     corto_query *query);
 
@@ -84,7 +84,7 @@ void _corto_mount_destruct(
     corto_mount _this);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_historyQuery(
+corto_recordIter _corto_mount_historyQuery(
     corto_mount _this,
     corto_query *query);
 
@@ -106,15 +106,17 @@ void _corto_mount_invoke(
 CORTO_EXPORT
 void _corto_mount_on_batch_notify_v(
     corto_mount _this,
+    uint32_t event_count,
     corto_subscriber_eventIter events);
 
 CORTO_EXPORT
 void _corto_mount_on_history_batch_notify_v(
     corto_mount _this,
+    uint32_t event_count,
     corto_subscriber_eventIter events);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_on_history_query_v(
+corto_recordIter _corto_mount_on_history_query_v(
     corto_mount _this,
     corto_query *query);
 
@@ -141,7 +143,7 @@ void _corto_mount_on_notify_v(
     corto_subscriber_event *event);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_on_query_v(
+corto_recordIter _corto_mount_on_query_v(
     corto_mount _this,
     corto_query *query);
 
@@ -199,7 +201,7 @@ void _corto_mount_publish(
     uintptr_t value);
 
 CORTO_EXPORT
-corto_resultIter _corto_mount_query(
+corto_recordIter _corto_mount_query(
     corto_mount _this,
     corto_query *query);
 
@@ -213,20 +215,20 @@ int16_t _corto_mount_resume(
 CORTO_EXPORT
 void _corto_mount_return(
     corto_mount _this,
-    corto_result *r);
+    corto_record *r);
 
 CORTO_EXPORT
-int16_t _corto_mount_setContentType(
+int16_t _corto_mount_set_format(
     corto_mount _this,
     const char *type);
 
 CORTO_EXPORT
-int16_t _corto_mount_setContentTypeIn(
+int16_t _corto_mount_set_formatIn(
     corto_mount _this,
     const char *type);
 
 CORTO_EXPORT
-int16_t _corto_mount_setContentTypeOut(
+int16_t _corto_mount_set_formatOut(
     corto_mount _this,
     const char *type);
 
@@ -298,25 +300,25 @@ uint32_t _corto_query_cardinality(
 CORTO_EXPORT
 bool _corto_query_match(
     corto_query* _this,
-    corto_result *result);
+    corto_record *record);
 
 
-/* struct corto/vstore/result */
-
-CORTO_EXPORT
-corto_string _corto_result_contentof(
-    corto_result* _this,
-    const char *contentType);
+/* struct corto/vstore/record */
 
 CORTO_EXPORT
-int16_t _corto_result_fromcontent(
-    corto_result* _this,
-    const char *contentType,
+corto_string _corto_record_contentof(
+    corto_record* _this,
+    const char *format);
+
+CORTO_EXPORT
+int16_t _corto_record_fromcontent(
+    corto_record* _this,
+    const char *format,
     const char *content);
 
 CORTO_EXPORT
-corto_string _corto_result_getText(
-    corto_result* _this);
+corto_string _corto_record_get_text(
+    corto_record* _this);
 
 
 /* procedure corto/vstore/route */
@@ -360,7 +362,7 @@ void _corto_routerimpl_destruct(
     corto_routerimpl _this);
 
 CORTO_EXPORT
-corto_route _corto_routerimpl_findRoute_v(
+corto_route _corto_routerimpl_find_route_v(
     corto_routerimpl _this,
     corto_object instance,
     corto_stringseq pattern,
@@ -368,7 +370,7 @@ corto_route _corto_routerimpl_findRoute_v(
     corto_any *routerData);
 
 CORTO_EXPORT
-int32_t _corto_routerimpl_matchRoute_v(
+int32_t _corto_routerimpl_match_route_v(
     corto_routerimpl _this,
     corto_route route,
     corto_stringseq pattern,

@@ -3,7 +3,7 @@
 #include <corto/corto.h>
 
 
-corto_uint8 corto__primitive_convertId(corto_primitiveKind kind, corto_width width) {
+corto_uint8 corto__primitive_convert_id(corto_primitiveKind kind, corto_width width) {
     corto_uint8 id = 0;
 
     switch(kind) {
@@ -229,32 +229,36 @@ bool corto_primitive_compatible_v(
 int16_t corto_primitive_construct(
     corto_primitive this)
 {
-
-    switch(this->width) {
-    case CORTO_WIDTH_8:
-        corto_type(this)->size = 1;
-        corto_type(this)->alignment = CORTO_ALIGNMENT(corto_char);
-        break;
-    case CORTO_WIDTH_16:
-        corto_type(this)->size = 2;
-        corto_type(this)->alignment = CORTO_ALIGNMENT(corto_int16);
-        break;
-    case CORTO_WIDTH_32:
-        corto_type(this)->size = 4;
-        corto_type(this)->alignment = CORTO_ALIGNMENT(corto_int32);
-        break;
-    case CORTO_WIDTH_64:
-        corto_type(this)->size = 8;
-        corto_type(this)->alignment = CORTO_ALIGNMENT(corto_int64);
-        break;
-    case CORTO_WIDTH_WORD:
-        corto_type(this)->size = sizeof(void*);
-        corto_type(this)->alignment = CORTO_ALIGNMENT(corto_word);
-        break;
+    if (!corto_type(this)->reference) {
+        switch(this->width) {
+        case CORTO_WIDTH_8:
+            corto_type(this)->size = 1;
+            corto_type(this)->alignment = CORTO_ALIGNMENT(corto_char);
+            break;
+        case CORTO_WIDTH_16:
+            corto_type(this)->size = 2;
+            corto_type(this)->alignment = CORTO_ALIGNMENT(corto_int16);
+            break;
+        case CORTO_WIDTH_32:
+            corto_type(this)->size = 4;
+            corto_type(this)->alignment = CORTO_ALIGNMENT(corto_int32);
+            break;
+        case CORTO_WIDTH_64:
+            corto_type(this)->size = 8;
+            corto_type(this)->alignment = CORTO_ALIGNMENT(corto_int64);
+            break;
+        case CORTO_WIDTH_WORD:
+            corto_type(this)->size = sizeof(void*);
+            corto_type(this)->alignment = CORTO_ALIGNMENT(corto_word);
+            break;
+        }
+    } else {
+        corto_type(this)->size = sizeof(corto_object);
+        corto_type(this)->alignment = CORTO_ALIGNMENT(corto_object);
     }
 
-    /* Assign convertId which enables quick lookups of implicit primitive conversions. */
-    this->convertId = corto__primitive_convertId(this->kind, this->width);
+    /* Assign convert_id which enables quick lookups of implicit primitive conversions. */
+    this->convert_id = corto__primitive_convert_id(this->kind, this->width);
 
     return corto_type_construct(corto_type(this));
 }
@@ -298,4 +302,3 @@ bool corto_primitive_isNumber(
     }
 
 }
-

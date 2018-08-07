@@ -12,11 +12,11 @@ int16_t corto_loader_construct(
         corto_set_str(&q->select, "//*");
         corto_set_str(&q->from, "/");
         corto_set_str(&q->type, "package");
-        corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
-        if (safe_corto_mount_setContentType(this, "text/json")) {
+        corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
+        if (safe_corto_mount_set_format(this, "text/json")) {
             return -1;
         }
-        corto_mount(this)->policy.filterResults = false;
+        corto_mount(this)->filter_records = false;
 
         return safe_corto_mount_construct(this);
     } else {
@@ -42,8 +42,8 @@ void corto_loader_iterRelease(
     /* Delete data from request */
     corto_iter it = corto_ll_iter(data->list);
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
-        corto_ptr_deinit(r, corto_result_o);
+        corto_record *r = corto_iter_next(&it);
+        corto_ptr_deinit(r, corto_record_o);
         corto_dealloc(r);
     }
     corto_ll_free(data->list);
@@ -59,7 +59,7 @@ bool corto_loader_checkIfAdded(
 {
     corto_iter it = corto_ll_iter(list);
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
+        corto_record *r = corto_iter_next(&it);
         if (!stricmp(r->id, name)) {
             return TRUE;
         }
@@ -114,13 +114,13 @@ void corto_loader_addDir(
                 sprintf(package, "%s/%s", q->from, f);
                 corto_path_clean(package, package);
 
-                corto_result *result = corto_calloc(sizeof(corto_result));
+                corto_record *result = corto_calloc(sizeof(corto_record));
 
                 corto_id packageFile;
                 sprintf(packageFile, "%s/project.json", fpath);
                 if (corto_file_test(packageFile)) {
                     char *json = corto_file_load(packageFile);
-                    corto_result_fromcontent(result, "text/json", json);
+                    corto_record_fromcontent(result, "text/json", json);
                 } else {
                     result->id = corto_strdup(f);
                     result->type = corto_strdup("package");
@@ -155,14 +155,14 @@ void corto_loader_addDir(
     }
 }
 
-corto_resultIter corto_loader_on_query_v(
+corto_recordIter corto_loader_on_query_v(
     corto_loader this,
     corto_query *query)
 {
     corto_ll data = corto_ll_new(); /* Will contain result of request */
     corto_iter result;
-    const char *targetPath = corto_load_targetPath();
-    const char *homePath = corto_load_homePath();
+    const char *targetPath = corto_load_targetMetaPath();
+    const char *homePath = corto_load_homeMetaPath();
 
     corto_log_push_dbg("vstore-loader");
 
@@ -234,7 +234,7 @@ int16_t corto_loader_on_resume(
         do {
             next_ptr = corto_path_tok(&obj_id, &package_id, full_id);
             if (package_id[0] != '/' || package_id[1]) {
-                pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
+                 pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
             } else {
                 pkg = NULL;
             }
@@ -250,7 +250,7 @@ int16_t corto_loader_on_resume(
     /* Step 2: load package if found */
     bool proceed = false;
     if (package_id) {
-        corto_debug("package '%s' located while looking for '%s/%s'",
+        corto_debug("package '%s' located while looking for object '%s/%s'",
             package_id, package_id, obj_id);
 
         /* Test if package is already loaded. If it is, but the object could not
@@ -270,6 +270,9 @@ int16_t corto_loader_on_resume(
                 if (corto_use(package_id, 0, NULL)) {
                     goto error;
                 }
+            } else {
+                corto_trace("package '%s' is not a library, cannot load",
+                    package_id);
             }
             proceed = true;
         }
@@ -332,6 +335,7 @@ int16_t corto_loader_on_resume(
                     *object = o;
                     corto_debug("object created for package '%s'", full_id);
                 } else {
+                    obj_id[-1] = '\0';
                     corto_debug("object '%s' not found in package '%s'",
                         obj_id, package_id);
                 }

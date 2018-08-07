@@ -68,7 +68,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromJson(
 {
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("binary/corto")
+        .format("binary/corto")
         .callback(binary);
 
     test_assert(s != 0);
@@ -89,7 +89,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromJsonDispatch(
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("binary/corto")
+        .format("binary/corto")
         .dispatcher(dispatcher)
         .callback(binary);
 
@@ -109,7 +109,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjects(
 {
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
-        .contentType("binary/corto")
+        .format("binary/corto")
         .callback(binary);
 
     test_assert(s != 0);
@@ -130,7 +130,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromObjectsDispatch(
 
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
-        .contentType("binary/corto")
+        .format("binary/corto")
         .dispatcher(dispatcher)
         .callback(binary);
 
@@ -150,7 +150,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromString(
 {
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
-        .contentType("binary/corto")
+        .format("binary/corto")
         .callback(binary);
 
     test_assert(s != 0);
@@ -170,7 +170,7 @@ void test_SubscribeContentType_tc_subscribeBinaryFromStringDispatch(
 
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
-        .contentType("binary/corto")
+        .format("binary/corto")
         .dispatcher(dispatcher)
         .callback(binary);
 
@@ -192,22 +192,22 @@ void json(corto_subscriber_event *e) {
     switch(this->eventsReceived) {
     case 1:
         test_assertstr(e->data.id, "a");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":10,\"y\":20}");
         break;
     case 2:
         test_assertstr(e->data.id, "b");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":30,\"y\":40}");
         break;
     case 3:
         test_assertstr(e->data.id, "c");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":50,\"y\":60}");
         break;
     case 4:
         test_assertstr(e->data.id, "c");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{\"x\":70,\"y\":80}");
         break;
     }
@@ -218,7 +218,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromJson(
 {
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("text/json")
+        .format("text/json")
         .callback(json);
 
     test_assert(s != 0);
@@ -238,7 +238,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromJsonDispatch(
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("text/json")
+        .format("text/json")
         .dispatcher(dispatcher)
         .callback(json);
 
@@ -257,7 +257,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjects(
 {
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
-        .contentType("text/json")
+        .format("text/json")
         .callback(json);
 
     test_assert(s != 0);
@@ -278,7 +278,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromObjectsDispatch(
 
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
-        .contentType("text/json")
+        .format("text/json")
         .dispatcher(dispatcher)
         .callback(json);
 
@@ -298,7 +298,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromString(
 {
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
-        .contentType("text/json")
+        .format("text/json")
         .callback(json);
 
     test_assert(s != 0);
@@ -318,7 +318,7 @@ void test_SubscribeContentType_tc_subscribeJsonFromStringDispatch(
 
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
-        .contentType("text/json")
+        .format("text/json")
         .dispatcher(dispatcher)
         .callback(json);
 
@@ -340,22 +340,22 @@ void string(corto_subscriber_event *e) {
     switch(this->eventsReceived) {
     case 1:
         test_assertstr(e->data.id, "a");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{10,20}");
         break;
     case 2:
         test_assertstr(e->data.id, "b");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{30,40}");
         break;
     case 3:
         test_assertstr(e->data.id, "c");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{50,60}");
         break;
     case 4:
         test_assertstr(e->data.id, "c");
-        json = corto_result_getText(&e->data);
+        json = corto_record_get_text(&e->data);
         test_assertstr(json, "{70,80}");
         break;
     }
@@ -366,7 +366,7 @@ void test_SubscribeContentType_tc_subscribeStringFromJson(
 {
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .callback(string);
 
     test_assert(s != 0);
@@ -386,7 +386,7 @@ void test_SubscribeContentType_tc_subscribeStringFromJsonDispatch(
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .dispatcher(dispatcher)
         .callback(string);
 
@@ -405,7 +405,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjects(
 {
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .callback(string);
 
     test_assert(s != 0);
@@ -426,7 +426,7 @@ void test_SubscribeContentType_tc_subscribeStringFromObjectsDispatch(
 
     corto_subscriber s = corto_subscribe("obj/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .dispatcher(dispatcher)
         .callback(string);
 
@@ -446,7 +446,7 @@ void test_SubscribeContentType_tc_subscribeStringFromString(
 {
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .callback(string);
 
     test_assert(s != 0);
@@ -466,7 +466,7 @@ void test_SubscribeContentType_tc_subscribeStringFromStringDispatch(
 
     corto_subscriber s = corto_subscribe("str/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .dispatcher(dispatcher)
         .callback(string);
 
@@ -490,7 +490,7 @@ void test_SubscribeContentType_tc_subscribeTypeWithConstruct(
 
     corto_subscriber s = corto_subscribe("json/*")
         .instance(this)
-        .contentType("text/corto")
+        .format("text/corto")
         .callback(string);
 
     test_assert(s != 0);

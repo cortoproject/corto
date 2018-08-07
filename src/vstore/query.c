@@ -14,14 +14,14 @@ uint32_t corto_query_cardinality(
 
 bool corto_query_match(
     corto_query* this,
-    corto_result *result)
+    corto_record *record)
 {
-    corto_assert(result->id != NULL, "no id specified in result");
-    corto_assert(result->parent != NULL, "no parent specified in result");
-    corto_assert(result->type != NULL, "no type specified in result");
+    corto_assert(record->id != NULL, "no id specified in result");
+    corto_assert(record->parent != NULL, "no parent specified in result");
+    corto_assert(record->type != NULL, "no type specified in result");
 
-    const char *result_type = result->type;
-    const char *query_type = this->type;
+    const char *result_type = record->type;
+    const char *query_type = record->type;
     if (result_type[0] == '/') result_type ++;
     if (query_type[0] == '/') query_type ++;
 
@@ -29,11 +29,11 @@ bool corto_query_match(
         return false;
     }
 
-    if (this->from && this->from[0] && strcmp(this->from, result->parent)) {
+    if (this->from && this->from[0] && strcmp(this->from, record->parent)) {
         return false;
     }
 
-    if (this->select && !corto_idmatch(this->select, result->id)) {
+    if (this->select && !corto_idmatch(this->select, record->id)) {
         return false;
     }
 

@@ -20,8 +20,8 @@
  */
 
 /** @file
- * @section walk Walk API
- * @brief API for dynamic walking of corto values.
+ * @section walk Value Reader
+ * @brief Metadata-based reading of values for serializers.
  *
  * The walk API provides functionality to dynamically walk over a corto value
  * without requiring compile time knowledge of the values' type. The API allows
@@ -36,7 +36,7 @@
  *
  * The second array is called `metaprogram` and contains callbacks that are
  * invoked when walking over a certain kind of meta-structure, expressed by
- * corto_valueKind (OBJECT, MEMBER, ELEMENT, etc).
+ * corto_value_kind (OBJECT, MEMBER, ELEMENT, etc).
  *
  * The walk API is recursively implemented, which means that to visit deeper
  * levels of nesting, a walk method has to be invoked recursively. Scalar values
@@ -193,7 +193,7 @@ struct corto_walk_opt {
     bool initialized;
     bool constructed;
 
-    corto_modifier access;
+    corto_modifierMask access;
     corto_operatorKind accessKind;
 
     corto_aliasActionKind aliasAction;
@@ -212,6 +212,21 @@ struct corto_walk_opt {
     corto_walk_cb reference;
     corto_walk_cb observable;
 };
+
+#define CORTO_WALK_INIT {\
+    .program[CORTO_ANY] = corto_walk_any,\
+    .program[CORTO_COMPOSITE] = corto_walk_members,\
+    .program[CORTO_COLLECTION] = corto_walk_elements,\
+    .program[CORTO_BASE] = corto_walk_value,\
+    .observable = corto_walk_observable,\
+    .initialized = TRUE,\
+    .constructed = FALSE,\
+    .access = CORTO_GLOBAL,\
+    .accessKind = CORTO_XOR,\
+    .aliasAction = CORTO_WALK_ALIAS_FOLLOW,\
+    .optionalAction = CORTO_WALK_OPTIONAL_IF_SET,\
+    .visitAllCases = FALSE\
+}
 
 /** Walk over a corto object.
  * @param opt Pointer to an initialized corto_walk_opt instance.
@@ -283,6 +298,13 @@ CORTO_EXPORT
 int16_t corto_walk_elements(
     corto_walk_opt* opt,
     corto_value* value,
+    void* userData);
+
+/** Walk any value */
+CORTO_EXPORT
+int16_t corto_walk_any(
+    corto_walk_opt* opt,
+    corto_value* info,
     void* userData);
 
 /** Walk an observable member.

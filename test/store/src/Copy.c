@@ -902,10 +902,10 @@ void test_Copy_tc_sequenceToSequenceComposite(
     test_assert(v2->buffer != NULL);
     test_assertstr(v2->buffer[0].name, "foo");
     test_assert(v2->buffer[0].type == corto_type(corto_int32_o));
-    test_assert(v2->buffer[0].passByReference == TRUE);
+    test_assert(v2->buffer[0].is_reference == TRUE);
     test_assertstr(v2->buffer[1].name, "bar");
     test_assert(v2->buffer[1].type == corto_type(corto_float32_o));
-    test_assert(v2->buffer[1].passByReference == FALSE);
+    test_assert(v2->buffer[1].is_reference == FALSE);
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -1010,10 +1010,10 @@ void test_Copy_tc_sequenceToSequenceValueComposite(
     test_assert(v2.buffer != NULL);
     test_assertstr(v2.buffer[0].name, "foo");
     test_assert(v2.buffer[0].type == corto_type(corto_int32_o));
-    test_assert(v2.buffer[0].passByReference == TRUE);
+    test_assert(v2.buffer[0].is_reference == TRUE);
     test_assertstr(v2.buffer[1].name, "bar");
     test_assert(v2.buffer[1].type == corto_type(corto_float32_o));
-    test_assert(v2.buffer[1].passByReference == FALSE);
+    test_assert(v2.buffer[1].is_reference == FALSE);
 }
 
 void test_Copy_tc_sequenceWithInt(

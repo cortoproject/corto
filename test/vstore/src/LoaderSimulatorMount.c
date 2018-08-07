@@ -8,13 +8,13 @@ int16_t test_LoaderSimulatorMount_construct(
     corto_set_str(&corto_subscriber(this)->query.select, "//*");
     corto_set_str(&corto_subscriber(this)->query.from, "/");
     corto_set_str(&corto_subscriber(this)->query.type, "package");
-    corto_set_str(&corto_subscriber(this)->contentType, "text/json");
+    corto_set_str(&corto_subscriber(this)->format, "text/json");
 
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
-    corto_mount(this)->policy.filterResults = false;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->filter_records = false;
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "corto",
         NULL,
         ".",
@@ -23,8 +23,8 @@ int16_t test_LoaderSimulatorMount_construct(
         CORTO_RESULT_HIDDEN
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "p",
         NULL,
         ".",
@@ -33,8 +33,8 @@ int16_t test_LoaderSimulatorMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "q",
         NULL,
         "p",
@@ -43,8 +43,8 @@ int16_t test_LoaderSimulatorMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "s",
         NULL,
         "p/q",
@@ -53,8 +53,8 @@ int16_t test_LoaderSimulatorMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "r",
         NULL,
         "corto",
@@ -63,8 +63,8 @@ int16_t test_LoaderSimulatorMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "u",
         NULL,
         "corto/r",
@@ -73,8 +73,8 @@ int16_t test_LoaderSimulatorMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "v",
         NULL,
         ".",
@@ -89,12 +89,12 @@ int16_t test_LoaderSimulatorMount_construct(
 /* Custom release function */
 static void test_LoaderSimulatorMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultList__clear(data->list);
+    corto_recordList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_LoaderSimulatorMount_on_query(
+corto_recordIter test_LoaderSimulatorMount_on_query(
     test_LoaderSimulatorMount this,
     corto_query *query)
 {
@@ -102,11 +102,11 @@ corto_resultIter test_LoaderSimulatorMount_on_query(
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
-    corto_resultIter__foreach(iter, e) {
+    corto_recordIter__foreach(iter, e) {
         if (!fnmatch(query->from, e.parent, 0)) {
             if (!fnmatch(query->select, e.id, 0)) {
-                corto_result__assign(
-                    corto_resultList__append_alloc(data),
+                corto_record__assign(
+                    corto_recordList__append_alloc(data),
                     e.id,
                     e.id,
                     e.parent,

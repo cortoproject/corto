@@ -243,7 +243,7 @@ corto_equalityKind corto_compareLookupIntern(
     char ch1, ch2;
 
     ch2 = *ptr2;
-    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{')) {
+    while((ch1 = *ptr1) && ch2 && (ch2 != '/') && (ch2 != '{') && (ch2 != '[') && (ch2 != '.')) {
         if (ch1 == ch2) {
             ptr1++; ptr2++;
             ch2 = *ptr2;
@@ -260,7 +260,7 @@ corto_equalityKind corto_compareLookupIntern(
         ch2 = *ptr2;
     }
 
-    if (!ch1 && (ch2 == '/')) {
+    if (!ch1 && (ch2 == '/' || ch2 == '.')) {
         goto match;
     }
 
@@ -271,7 +271,7 @@ corto_equalityKind corto_compareLookupIntern(
         }
     }
 
-    if (ch2 == '{') {
+    if (ch2 == '{' || ch2 == '[') {
         if (!ch1) {
             goto match;
         } else {
@@ -361,14 +361,14 @@ int16_t corto_adopt_checkConstraints(
     corto_type childType = corto_typeof(child);
 
     /* Check if parentType matches scopeType of child type */
-    if (childType->options.parentType) {
+    if (childType->parent_type) {
         corto_type parentType = corto_typeof(parent);
-        if ((childType->options.parentType != parentType) &&
-           !corto_instanceof(childType->options.parentType, parent))
+        if ((childType->parent_type != parentType) &&
+           !corto_instanceof(childType->parent_type, parent))
         {
             corto_throw("type of '%s' is not '%s'",
                     corto_fullpath(NULL, parent),
-                    corto_fullpath(NULL, childType->options.parentType));
+                    corto_fullpath(NULL, childType->parent_type));
             goto error;
         }
     }
@@ -392,18 +392,18 @@ int16_t corto_adopt_checkConstraints(
         }
     }
 
-    /* If parentType is a leaf, no childs are allowed */
+    /* If parentType is a leaf, no children are allowed */
     if (corto_instanceof(corto_leaf_o, corto_typeof(parent))) {
-        corto_throw("cannot add children to leaf node '%s'",
+        corto_throw("cannot add child to leaf '%s', use 'container' instead",
             corto_fullpath(NULL, parent));
         goto error;
     }
 
     /* Check if parentState matches scopeState of child type */
-    if (childType->options.parentState &&
-        !corto__checkStateXOR(parent, childType->options.parentState))
+    if (childType->parent_state &&
+        !corto__checkStateXOR(parent, childType->parent_state))
     {
-        uint32_t childState = childType->options.parentState;
+        uint32_t childState = childType->parent_state;
         uint32_t parentState = corto_stateof(parent);
         char *parentStateStr = corto_ptr_str(&parentState, corto_state_o, 0);
         char *childStateStr = corto_ptr_str(&childState, corto_state_o, 0);
@@ -794,7 +794,10 @@ void corto__deinitObservable(
 
     _o = CORTO_OFFSET(o, -sizeof(corto__object));
     observable = corto_hdr_observable(_o);
-    corto_assert(observable != NULL, "corto__deinitObservable: called on non-observable object <%p>.", o);
+    corto_assert(
+        observable != NULL,
+        "corto__deinitObservable: called on non-observable object <%p>.",
+        o);
 
     /* Delete observer objects in onSelf and onChild */
     if (observable->onSelf) {
@@ -1024,18 +1027,17 @@ int16_t corto_declareContainer(
         int32_t i;
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
-            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o)))
-            {
-                if (!corto_declare(parent, corto_idof(c), corto_containerType(c))) {
-                    goto error;
-                }
-            } else if (corto_typeof(c) == corto_type(corto_table_o)) {
+            if (corto_typeof(c) == corto_type(corto_table_o)) {
                 corto_tableinstance ts = corto_declare(parent, corto_idof(c), corto_tableinstance_o);
                 if (!ts) {
                     goto error;
                 }
                 corto_set_ref(&ts->type, corto_containerType(c));
+            } else if (corto_type_instanceof(corto_container_o, corto_typeof(c)))
+            {
+                if (!corto_declare(parent, corto_idof(c), corto_containerType(c))) {
+                    goto error;
+                }
             }
         }
         corto_scope_release(seq);
@@ -1059,10 +1061,8 @@ int16_t corto_defineContainer(
         int32_t i;
         for (i = 0; i < seq.length; i++) {
             corto_object c = seq.buffer[i];
-            if ((corto_typeof(c) == corto_type(corto_container_o)) ||
-                (corto_typeof(c) == corto_type(corto_leaf_o)) ||
-                (corto_typeof(c) == corto_type(corto_table_o)))
-            {
+
+            if (corto_type_instanceof(corto_container_o, corto_typeof(c))) {
                 corto_object o = corto_lookup(parent, corto_idof(c));
                 if (!o) {
                     corto_throw("could not find '%s' in container '%s'",
@@ -1078,6 +1078,7 @@ int16_t corto_defineContainer(
             }
         }
         corto_scope_release(seq);
+
     } else if (type == corto_type(corto_tableinstance_o)) {
         corto_objectseq seq = corto_scope_claim(parent);
         int32_t i;
@@ -1092,6 +1093,7 @@ int16_t corto_defineContainer(
             }
         }
         corto_scope_release(seq);
+
     } else if (corto_parentof(parent) == corto_type(corto_tableinstance_o)) {
         corto_objectseq seq = corto_scope_claim(parent);
         int32_t i, error = 0;
@@ -1685,6 +1687,13 @@ int16_t corto_resume(
             strcat(full_id, "/");
         }
         strcat(full_id, expr);
+
+        char *ptr, ch;
+        for (ptr = full_id; (ch = *ptr); ptr++) {
+            if (ch == '.') {
+                *ptr = '/';
+            }
+        }
     }
 
     /* Search mounts at different levels in the hierarchy for the object */
@@ -1761,7 +1770,7 @@ int corto_resumeDeclared(
         /* If source of an object is a SINK, object is resumed */
         } else if (_p->source
           && corto_instanceof(corto_mount_o, _p->source)
-          && (corto_mount(_p->source)->policy.ownership == CORTO_LOCAL_SOURCE))
+          && (corto_mount(_p->source)->ownership == CORTO_LOCAL_SOURCE))
         {
             resumed = TRUE;
         }
@@ -1913,8 +1922,23 @@ corto_object corto_declareChildRecursive_intern(
 
             cur = next;
             if (cur && (next = (char*)strelem(cur))) {
-                *next = '\0';
-                next ++;
+                if (*next == '(') {
+                    for (; *next != ')' && *next; next++);
+                    if (*next == ')') {
+                        if (!next[1]) {
+                            next = NULL;
+                        }
+                    } else {
+                        corto_throw(
+                          "missing ')' in object identifier '%s'", id);
+                        goto error;
+                    }
+                }
+
+                if (next) {
+                    *next = '\0';
+                    next ++;
+                }
             }
         } while (result && cur);
 
@@ -1939,6 +1963,8 @@ corto_object corto_declareChildRecursive_intern(
     }
 
     return result;
+error:
+    return NULL;
 }
 
 /* Declare new named or anonymous object */
@@ -2122,13 +2148,6 @@ bool corto_destruct(
             }
         }
 
-        /* Deinit observable */
-        if (corto_check_attr(o, CORTO_ATTR_OBSERVABLE)) {
-            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_OBSERVABLE");
-            corto__deinitObservable(o);
-            if (CORTO_TRACE_MEM) corto_log_pop();
-        }
-
         /* Deinit scope */
         if (named && !corto_isorphan(o)) {
             if (CORTO_TRACE_MEM) corto_log_push("ORPHAN");
@@ -2152,6 +2171,13 @@ bool corto_destruct(
         if (corto_check_attr(o, CORTO_ATTR_WRITABLE)) {
             if (CORTO_TRACE_MEM) corto_log_push("DEINIT_WRITABLE");
             corto__deinitWritable(o);
+            if (CORTO_TRACE_MEM) corto_log_pop();
+        }
+
+        /* Deinit observable */
+        if (corto_check_attr(o, CORTO_ATTR_OBSERVABLE)) {
+            if (CORTO_TRACE_MEM) corto_log_push("DEINIT_OBSERVABLE");
+            corto__deinitObservable(o);
             if (CORTO_TRACE_MEM) corto_log_pop();
         }
 
@@ -2400,13 +2426,13 @@ corto_attr corto_attrof(
 /* Serialize object value to content type */
 char* corto_serialize_value(
     corto_object o,
-    const char *contentType)
+    const char *format)
 {
     corto_fmt type;
 
     corto_assert_object(o);
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2420,14 +2446,14 @@ error:
 /* Deserialize object value from content type */
 int16_t corto_deserialize_value(
     corto_object o,
-    const char *contentType,
+    const char *format,
     const char *data)
 {
     corto_fmt type;
 
     corto_assert_object(o);
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2441,13 +2467,13 @@ error:
 /* Serialize object to content type (includes id, type) */
 char* corto_serialize(
     corto_object o,
-    const char *contentType)
+    const char *format)
 {
     corto_fmt type;
 
     corto_assert_object(o);
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2459,12 +2485,12 @@ error:
 /* Deserialize object from content type (includes id, type) */
 int16_t corto_deserialize(
     void *o,
-    const char *contentType,
+    const char *format,
     const char *data)
 {
     corto_fmt type = NULL;
 
-    if (!(type = corto_fmt_lookup(contentType))) {
+    if (!(type = corto_fmt_lookup(format))) {
         goto error;
     }
 
@@ -2945,8 +2971,10 @@ char* corto_fullpath_intern(
     }
 
     if (!o) {
-        buffer[0] = '\0';
-    } else if (!corto_check_attr(o, CORTO_ATTR_NAMED)) {
+        strcpy(buffer, "null");
+    } else if (o == root_o) {
+        strcpy(buffer, "/");
+    } else if (!corto_idof(o)) {
         corto_walk_opt stringSer;
         corto_string_ser_t data;
 
@@ -2960,6 +2988,7 @@ char* corto_fullpath_intern(
         data.buffer.max = sizeof(corto_id) - 1;
         data.prefixType = TRUE;
         data.enableColors = FALSE;
+
         if (corto_walk(&stringSer, o, &data)) {
             goto error;
         }
@@ -3320,6 +3349,7 @@ corto_object corto_lookup_intern(
     corto_object prev = NULL;
     char ch;
     const char *next, *ptr = id, *lastelem = NULL;
+    bool dot_separator = false;
 
     corto_log_push_dbg(strarg("lookup:%s, %s",
         corto_fullpath(NULL, parent), id));
@@ -3343,19 +3373,32 @@ corto_object corto_lookup_intern(
 
         prev = o;
 
-        if (ptr[0] == '/') {
+        if (ptr[0] == '/' || (ptr[0] == '.' && dot_separator)) {
             ptr ++;
         }
 
-        if (!ptr[0] || ptr[0] == '{') {
+        if (!ptr[0] || ptr[0] == '{' || ptr[0] == '[') {
             break;
         }
 
         bool containsArgs = false;
-        for (next = ptr; (ch = *next) && (ch != '/') && (ch != '{'); next ++) {
+        dot_separator = false; /* reset dot_operator */
+        for (next = ptr; (ch = *next) && ch != '/' && ch != '{' && ch != '['; next ++) {
             if (ch == '(') {
                 containsArgs = true;
                 for (next ++; (ch = *next) && (ch != ')'); next ++);
+            }
+            /* Skip '.', '..', but stop if '.' is used as scope separator */
+            if (ch == '.') {
+                if (next == ptr) {
+                    /* if . is first, it cannot be a scope separator */
+                } else if (next[-1] == '/' || next[-1] == '.') {
+                    /* If prev is '/' or '.', it cannot be a scope operator */
+                } else {
+                    /* It has to be a scope operator */
+                    dot_separator = true;
+                    break;
+                }
             }
         }
 
@@ -3468,10 +3511,15 @@ corto_object corto_lookup_intern(
     }
 
     if (!o && resume && parent != corto_lang_o) {
-        /* Make sure that id passed to resume doesn't contain {} */
+        /* Make sure that id passed to resume doesn't contain {} or [] */
         corto_id buffer;
         const char *id = ptr, *value_start;
         if ((value_start = strchr(id, '{'))) {
+            strcpy(buffer, id);
+            buffer[value_start - id] = '\0';
+            id = buffer;
+        } else
+        if ((value_start = strchr(id, '['))) {
             strcpy(buffer, id);
             buffer[value_start - id] = '\0';
             id = buffer;
@@ -3485,7 +3533,7 @@ corto_object corto_lookup_intern(
 
     /* If object was found and search string ends in '{', create an
      * anonymous object */
-    if (o && ptr[0] == '{') {
+    if (o && (ptr[0] == '{' || ptr[0] == '[')) {
         corto_object out = NULL;
         do {
             ptr = corto_create_anonymous(orig_parent, o, ptr, &out);
@@ -3628,7 +3676,7 @@ bool corto_source_match(
         result = TRUE;
     } else if (source && corto_instanceof(corto_mount_o, source)) {
         if (!current) {
-            if (corto_mount(source)->policy.ownership != CORTO_LOCAL_SOURCE) {
+            if (corto_mount(source)->ownership != CORTO_LOCAL_SOURCE) {
                 result = FALSE;
             } else {
                 result = TRUE;
@@ -3638,7 +3686,7 @@ bool corto_source_match(
         }
     } else if (current && corto_instanceof(corto_mount_o, current)) {
         if (!source) {
-            if (corto_mount(current)->policy.ownership != CORTO_LOCAL_SOURCE) {
+            if (corto_mount(current)->ownership != CORTO_LOCAL_SOURCE) {
                 result = FALSE;
             } else {
                 result = TRUE;
@@ -3697,7 +3745,7 @@ int16_t corto_publish(
     const char *from,
     const char *id,
     const char *type,
-    const char *contentType,
+    const char *format,
     void *content)
 {
     corto_assert(id != NULL, "NULL passed to 'id' parameter of corto_publish");
@@ -3719,8 +3767,8 @@ int16_t corto_publish(
         case CORTO_DEFINE:
         case CORTO_UPDATE:
             if (corto_typeof(o)->kind != CORTO_VOID) {
-                if (contentType) {
-                    corto_fmt fmt = corto_fmt_lookup(contentType);
+                if (format) {
+                    corto_fmt fmt = corto_fmt_lookup(format);
                     if (!(result = corto_update_begin(o))) {
                         corto_fmt_opt opt = {
                             .from = from
@@ -3746,7 +3794,7 @@ int16_t corto_publish(
         corto_release(o);
     } else {
         if (corto_notify_subscribersById(
-          event, from, id, type, contentType, (corto_word)content))
+          event, from, id, type, format, (corto_word)content))
         {
             result = -1;
         }
@@ -3880,10 +3928,6 @@ int16_t corto_update_begin_intern(
                 corto_throw(NULL);
                 goto error;
             }
-        } else {
-            corto_warning(
-                "updateBegin: calling updateBegin for non-writable '%s' is useless",
-                corto_fullpath(NULL, o));
         }
     }
     corto_log_pop_dbg();
@@ -3915,7 +3959,7 @@ int16_t corto_update_end(
         defined = FALSE;
         corto_eventMask mask = 0;
         if (source && corto_instanceof(corto_mount_o, source) &&
-            (corto_mount(source)->policy.ownership == CORTO_LOCAL_SOURCE))
+            (corto_mount(source)->ownership == CORTO_LOCAL_SOURCE))
         {
             /* If not defined, and source is a SINK, object is resumed */
             mask |= CORTO_RESUME;
@@ -4117,14 +4161,16 @@ int32_t corto_sig_paramCount(
             }
             ptr++;
 
-            if (ch == '{') {
+            if (ch == '{' || ch == '[') {
                 uint32_t nesting = 1;
                 while((ch = *ptr) && nesting) {
                    ptr++;
                    switch(ch) {
+                   case '[':
                    case '{':
                        nesting++;
                        break;
+                   case ']':
                    case '}':
                        nesting--;
                        break;
@@ -4140,7 +4186,7 @@ error:
 }
 
 /* Obtain function parameter types from signature */
-int32_t corto_sig_paramType(
+int32_t corto_sig_param_type(
     const char *signature,
     uint32_t id,
     corto_id buffer,
@@ -4210,7 +4256,7 @@ int32_t corto_sig_paramType(
             }
 
             srcptr++;
-            if (ch == '{') {
+            if (ch == '{' || ch == '[') {
                 uint32_t count=1;
                 while((ch = *srcptr) && count) {
                     if (i == id) {
@@ -4219,9 +4265,11 @@ int32_t corto_sig_paramType(
                     }
                     srcptr++;
                     switch(ch) {
+                    case '[':
                     case '{':
                         count++;
                         break;
+                    case ']':
                     case '}':
                         count--;
                         break;
@@ -4251,7 +4299,7 @@ error:
 }
 
 /* Obtain function parameter names from signature */
-int32_t corto_sig_paramName(
+int32_t corto_sig_param_name(
     const char *signature,
     uint32_t id,
     corto_id buffer)
@@ -4307,14 +4355,16 @@ int32_t corto_sig_paramName(
             }
 
             srcptr++;
-            if (ch == '{') {
+            if (ch == '{' || ch == '[') {
                 uint32_t count=1;
                 while((ch = *srcptr) && count) {
                     srcptr++;
                     switch(ch) {
+                    case '[':
                     case '{':
                         count++;
                         break;
+                    case ']':
                     case '}':
                         count--;
                         break;
@@ -4358,7 +4408,7 @@ corto_type corto_overloadParamType(corto_object object, int32_t i, bool *referen
         goto error;
     }
 
-    if (corto_sig_paramType(signature, i, buffer, &flags)) {
+    if (corto_sig_param_type(signature, i, buffer, &flags)) {
         corto_throw("cannot get parameter %d from signature %s", i, signature);
         goto error;
     }
@@ -4516,7 +4566,7 @@ void corto_sig_fromDelegate(
     char *signature = corto_sig_open(corto_idof(o));
     for (i = 0; i < type->parameters.length; i++) {
         corto_parameter *p = &type->parameters.buffer[i];
-        signature = corto_sig_add(signature, p->type, p->passByReference ? CORTO_PARAMETER_FORCEREFERENCE : 0);
+        signature = corto_sig_add(signature, p->type, p->is_reference ? CORTO_PARAMETER_FORCEREFERENCE : 0);
     }
     signature = corto_sig_close(signature);
 
@@ -4704,10 +4754,10 @@ int16_t corto_overload(
                 goto error;
             }
 
-            if (corto_sig_paramType(requested, i, r_typeName, &flags)) {
+            if (corto_sig_param_type(requested, i, r_typeName, &flags)) {
                 goto error;
             }
-            if (corto_sig_paramType(corto_idof(object), i, o_typeName, &o_flags)) {
+            if (corto_sig_param_type(corto_idof(object), i, o_typeName, &o_flags)) {
                 goto error;
             }
 
@@ -4979,7 +5029,7 @@ int corto_compare(
     corto_compare_ser_t data;
     corto_walk_opt s;
 
-    data.value = corto_value_value(o2, corto_typeof(o2));
+    data.value = corto_value_ptr(o2, corto_typeof(o2));
 
     s = corto_compare_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
@@ -5060,12 +5110,14 @@ int16_t corto_deinit(corto_object o) {
         goto error;\
     }\
     corto_type base = (corto_type)cur->base;\
-    if (base && base->flags & flag) {\
-        ret corto_invoke_##prepost##Delegate(\
-            &action, (corto_type)base, o);\
+    if (base) {\
+        if (base->flags & flag) {\
+            ret corto_invoke_##prepost##Delegate(\
+                &action, (corto_type)base, o);\
+        }\
     } else {\
         corto_throw("interface '%s' does not have a baseclass",\
-            corto_fullpath(NULL, cur));\
+            corto_fullpath(NULL, cur), cur);\
     }\
 
 #define SUPER_PRE(o, flag, action, name)\
@@ -5260,7 +5312,7 @@ corto_object _corto(
             if (params.fmt) {
                 corto_assert(
                     params.value != NULL,
-                    "contentType specified but no value provided");
+                    "format specified but no value provided");
 
                 corto_value v = corto_value_object(result, params.type);
                 if (corto_fmt_to_value(params.fmt, NULL, &v, params.value)) {

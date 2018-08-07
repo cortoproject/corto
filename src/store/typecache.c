@@ -188,13 +188,13 @@ void corto_typecache_set_meta_flags(
 
 static
 uint8_t corto_typecache_get_subkind(
-    corto_type elementType,
+    corto_type element_type,
     bool is_list)
 {
-    bool elemIsStr = corto_type_is_string(elementType);
-    bool elemIsRef = elementType->reference;
-    bool elemHasRes = elementType->flags & CORTO_TYPE_HAS_RESOURCES;
-    bool elemIsSimple = elementType->kind == CORTO_PRIMITIVE;
+    bool elemIsStr = corto_type_is_string(element_type);
+    bool elemIsRef = element_type->reference;
+    bool elemHasRes = element_type->flags & CORTO_TYPE_HAS_RESOURCES;
+    bool elemIsSimple = element_type->kind == CORTO_PRIMITIVE;
     uint8_t result = 0;
 
     if (elemIsStr) {
@@ -204,7 +204,7 @@ uint8_t corto_typecache_get_subkind(
     } else if (elemHasRes) {
         result = CORTO_TC_SUB_RESOURCE;
     } else if (is_list) {
-        if (corto_collection_requiresAlloc(elementType)) {
+        if (corto_collection_requires_alloc(element_type)) {
             result = CORTO_TC_SUB_ALLOC;
         } else if (elemIsSimple) {
             result = CORTO_TC_SUB_SIMPLE_PTR;
@@ -228,7 +228,7 @@ int16_t corto_typecache_collection(
     corto_typecache_blocks *blocks)
 {
     corto_collection type = (corto_collection)corto_value_typeof(info);
-    corto_type elementType = type->elementType;
+    corto_type element_type = type->element_type;
 
     switch(type->kind) {
     case CORTO_ARRAY:
@@ -237,15 +237,15 @@ int16_t corto_typecache_collection(
         break;
     case CORTO_SEQUENCE:
         field->kind = CORTO_TC_SEQUENCE;
-        field->data.sub_type = elementType;
+        field->data.sub_type = element_type;
         break;
     case CORTO_LIST:
         field->kind = CORTO_TC_LIST;
-        field->data.sub_type = elementType;
+        field->data.sub_type = element_type;
         break;
     case CORTO_MAP:
         field->kind = CORTO_TC_MAP;
-        field->data.sub_type = elementType;
+        field->data.sub_type = element_type;
         break;
     default:
         corto_assert(0, "invalid primitive kind (%d)", type->kind);
@@ -253,7 +253,7 @@ int16_t corto_typecache_collection(
     }
 
     field->kind +=
-        corto_typecache_get_subkind(elementType, type->kind == CORTO_LIST);
+        corto_typecache_get_subkind(element_type, type->kind == CORTO_LIST);
 
     return 0;
 }
@@ -347,7 +347,7 @@ int16_t corto_typecache_member(
     corto_typecache_blocks *blocks = userData;
 
     corto_type type = corto_value_typeof(info);
-    corto_member m = info->is.member.t;
+    corto_member m = info->is.member.member;
 
     if (type->kind == CORTO_ITERATOR) {
         /* Don't add iterator fields */

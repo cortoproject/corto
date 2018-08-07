@@ -10,17 +10,13 @@
 extern "C" {
 #endif
 
-/* -- Native types -- */
-#ifndef CORTO_NATIVE_H
-#endif
-
-
 /* -- Type definitions -- */
 
 /* class corto/native/type */
 typedef struct corto_native_type_s {
     struct corto_binary_s super;
     corto_string name;
+    bool is_ptr;
 } *corto_native_type;
 
 

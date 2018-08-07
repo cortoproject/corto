@@ -18,7 +18,7 @@ typedef struct corto_subscribeRequest {
     const char *scope;
     char *expr;
     const char *type;
-    const char *contentType;
+    const char *format;
     corto_dispatcher dispatcher;
     bool enabled;
     bool yield_unknown;
@@ -232,7 +232,7 @@ void corto_fmtcache_deinit(
 
     /* If src_handle is provided, the object is an intermediate object */
     if (this->o && this->src_handle) {
-        if (this->v.kind == CORTO_MEM) {
+        if (this->v.ref_kind == CORTO_BY_VALUE) {
             corto_mem_free(this->o);
         } else if (this->v.kind == CORTO_OBJECT) {
             corto_release(this->o);
@@ -249,7 +249,7 @@ static
 int16_t corto_subscriber_invoke(
     corto_object instance,
     corto_eventMask mask,
-    corto_result *r,
+    corto_record *r,
     corto_subscriber s,
     corto_subscriber_event *existing_event,
     corto_fmtcache *cache)
@@ -526,7 +526,7 @@ int16_t corto_notify_subscribersById(
                     }
                 }
 
-                corto_result r = {
+                corto_record r = {
                   .id = (char*)id,
                   .name = NULL,
                   .parent = parentPtr,
@@ -600,7 +600,7 @@ void corto_subscriberInitializeWithRequest(
     s->query.yield_unknown = r->yield_unknown;
 
     corto_set_str(&s->query.select, r->expr);
-    corto_set_str(&s->contentType, r->contentType);
+    corto_set_str(&s->format, r->format);
     corto_set_ref(&((corto_observer)s)->instance, r->instance);
     corto_set_ref(&((corto_observer)s)->dispatcher, r->dispatcher);
     corto_set_str(&s->query.type, r->type);
@@ -630,11 +630,11 @@ corto_subscriber corto_subscribeSubscribe(
 
 static
 corto_subscribe__fluent corto_subscribeContentType(
-    const char *contentType)
+    const char *format)
 {
     corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
     if (request) {
-        request->contentType = contentType;
+        request->format = format;
     }
     return corto_subscribe__fluentGet();
 }
@@ -751,7 +751,6 @@ corto_subscriber corto_subscribeCallback(
 static
 corto_mount corto_subscribeMount(
     corto_class type,
-    corto_mountPolicy *policy,
     const char *value)
 {
     corto_subscribeRequest *r = corto_tls_get(CORTO_KEY_FLUENT);
@@ -767,9 +766,7 @@ corto_mount corto_subscribeMount(
 
     corto_subscriberInitializeWithRequest(corto_subscriber(m), r);
 
-    if (policy) {
-        m->policy = *policy;
-    }
+    ((corto_observer)m)->enabled = true;
 
     corto_tls_set(CORTO_KEY_FLUENT, NULL);
     free(r);
@@ -783,7 +780,7 @@ corto_subscribe__fluent corto_subscribe__fluentGet(void)
 {
     corto_subscribe__fluent result;
     result.from = corto_subscribeFrom;
-    result.contentType = corto_subscribeContentType;
+    result.format = corto_subscribeContentType;
     result.callback = corto_subscribeCallback;
     result.instance = corto_subscribeInstance;
     result.disabled = corto_subscribeDisabled;
@@ -880,12 +877,11 @@ int16_t corto_subscriber_construct(
     corto_log_push("subscribe");
 
     if (!this->query.select || !this->query.select[0]) {
-        corto_throw("'null' is not a valid subscriber expression");
-        goto error;
+        corto_set_str(&this->query.select, "*");
     }
 
-    if (this->contentType && !this->fmt_handle) {
-        this->fmt_handle = (corto_word)corto_fmt_lookup(this->contentType);
+    if (this->format && !this->fmt_handle) {
+        this->fmt_handle = (corto_word)corto_fmt_lookup(this->format);
         if (!this->fmt_handle) {
             goto error;
         }
@@ -951,7 +947,7 @@ int16_t corto_subscriber_init(
     /* Parameter event */
     p = &corto_function(this)->parameters.buffer[0];
     p->name = corto_strdup("e");
-    p->passByReference = FALSE;
+    p->is_reference = FALSE;
     corto_set_ref(&p->type, corto_subscriber_event_o);
 
     this->alignMutex = (uintptr_t)corto_alloc(sizeof(corto_mutex_s));
@@ -1005,8 +1001,8 @@ int16_t corto_subscriber_subscribe(
     if (this->query.yield_unknown) {
         fl.yield_unknown();
     }
-    if (this->contentType) {
-        fl.contentType(this->contentType);
+    if (this->format) {
+        fl.format(this->format);
     }
     ret = fl.subscribe(&it);
 
@@ -1033,7 +1029,7 @@ int16_t corto_subscriber_subscribe(
         /* Populate alignment queue. Any message delivered to the subscriber will
          * end up in the queue */
         while (corto_iter_hasNext(&it)) {
-            corto_result *r = corto_iter_next(&it);
+            corto_record *r = corto_iter_next(&it);
             corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL, NULL);
 
             /* Nifty trick to take ownership of the serialized value- that way there

@@ -154,7 +154,7 @@ corto_int16 corto_string_deserBuildIndexPrimitive(
     data = userData;
 
     /* Lookup member */
-    m = v->is.member.t;
+    m = v->is.member.member;
 
     /* Create new info-object */
     newInfo = corto_alloc(sizeof(struct corto_string_deserIndexInfo));
@@ -226,7 +226,7 @@ void* corto_string_deserAllocElem(
     corto_string_deser_t *data)
 {
     corto_collection t = corto_collection(data->allocUdata);
-    corto_int32 size = corto_type_sizeof(t->elementType);
+    corto_int32 size = corto_type_sizeof(t->element_type);
     void *result = NULL;
 
     if (ptr) {
@@ -243,7 +243,7 @@ void* corto_string_deserAllocElem(
             break;
         case CORTO_LIST: {
             corto_ll list = *(corto_ll*)ptr;
-            if (corto_collection_requiresAlloc(t->elementType)) {
+            if (corto_collection_requires_alloc(t->element_type)) {
                 result = corto_calloc(size);
                 corto_ll_append(list, result);
             } else {
@@ -362,7 +362,7 @@ const char* corto_string_deserParseScope(
         elementNode = corto_alloc(sizeof(struct corto_string_deserIndexInfo));
         elementNode->m = NULL;
         elementNode->parsed = FALSE;
-        elementNode->type = corto_collection(info->type)->elementType;
+        elementNode->type = corto_collection(info->type)->element_type;
         corto_string_deserIndexInsert(&privateData, elementNode);
 
         /* Create iterator for index */
@@ -486,7 +486,7 @@ static corto_int16 corto_string_deserParseValue(
         goto error;
     }
 
-    /* No more elements where available in the index, meaning an excess element */
+    /* No more elements available in the index, thus an excess element */
     if (!info) {
         corto_throw("excess elements in scope @ '%s'", value);
         goto error;
@@ -536,25 +536,33 @@ static corto_int16 corto_string_deserParseValue(
 
     /* Convert string to primitive value */
     if (offset && (info->type->kind == CORTO_PRIMITIVE)) {
-        if (corto_primitive(info->type)->kind != CORTO_TEXT) {
-            if (corto_ptr_cast(corto_primitive(corto_string_o), &value, corto_primitive(info->type), offset)) {
+        corto_primitiveKind kind = corto_primitive(info->type)->kind;
+        if (kind == CORTO_TEXT) {
+            if (strcmp(value, "null")) {
+                corto_set_str(offset, value);
+            } else {
+                corto_set_str(offset, NULL);
+            }
+        } else if (kind == CORTO_BOOLEAN) {
+            if (!stricmp(value, "true")) {
+                *(bool*)offset = true;
+            } else if (!stricmp(value, "false")) {
+                *(bool*)offset = false;
+            } else {
+                corto_throw("invalid boolean value '%s'", value);
                 goto error;
             }
         } else {
-            corto_uint32 length;
-            corto_string deserialized;
-
-            if (strcmp(value, "null")) {
-                length = strlen(value);
-                deserialized = corto_alloc(length+1);
-                memcpy(deserialized, value, length);
-                deserialized[length] = '\0';
-            } else {
-                deserialized = NULL;
+            if (corto_ptr_cast(
+                corto_primitive(corto_string_o),
+                &value,
+                corto_primitive(info->type),
+                offset))
+            {
+                goto error;
             }
-
-            corto_set_str(offset, deserialized);
         }
+
     }
 
     /* Members are only parsed once */
@@ -783,6 +791,7 @@ const char* corto_string_deserParse(
      * has finished processing the current value. */
     while(ptr && (ch = *ptr) && proceed) {
         switch(ch) {
+        case ':':
         case '=': /* Explicit member assignment */
             excess = FALSE;
             if (buffer == bptr) {
@@ -800,6 +809,7 @@ const char* corto_string_deserParse(
                 break;
             }
 
+        case '[':
         case '{': /* Scope open */
             if (bptr == buffer) {
                 if (!(ptr = corto_string_deserParseScope(
@@ -821,6 +831,7 @@ const char* corto_string_deserParse(
             }
             break;
 
+        case ']':
         case '}': /* Scope close and end of value */
             if (buffer != bptr) {
                 *nonWs = '\0';
@@ -956,7 +967,7 @@ const char* corto_string_deser(
         /* Parse typename that potentially precedes string */
         bptr = buffer;
         ptr = str;
-        while((ch = *ptr) && (ch != '{')) {
+        while((ch = *ptr) && (ch != '{') && (ch != '[')) {
             if (!((ch == ' ') || (ch == '\n') || (ch == '\t'))) {
                 *bptr = ch;
                 bptr++;
@@ -966,7 +977,7 @@ const char* corto_string_deser(
         *bptr = '\0';
 
         /* If no type is found, reset ptr */
-        if ((ch != '{') || (ptr == str)) {
+        if (((ch != '{') && (ch != '[')) || (ptr == str)) {
             ptr = str;
         } else {
             corto_object type;

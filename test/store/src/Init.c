@@ -169,3 +169,20 @@ void test_Init_tc_target(
     test_assert(o->m_target != NULL);
     test_assert(corto_delete(o) == 0);
 }
+
+void test_Init_tc_singleton(
+    test_Init this)
+{
+    test_struct_singleton *foo = corto_create(root_o, "foo", test_struct_singleton_o);
+    test_struct_singleton *bar = corto_create(root_o, "bar", test_struct_singleton_o);
+    test_assert(foo != NULL);
+    test_assert(bar != NULL);
+
+    test_assert(foo->m == bar->m);
+    test_assertref(corto_typeof(foo->m), corto_int32_o);
+    test_assertint(corto_countof(foo->m), 2);
+
+    test_assert(corto_delete(bar) == 0);
+    test_assertint(corto_countof(foo->m), 1);
+    test_assert(corto_delete(foo) == 0);
+}

@@ -21,6 +21,7 @@
 
 #include <corto/corto.h>
 #include "src/lang/primitive.h"
+#include "object.h"
 
 typedef void (*corto__unaryOperator)(void* operand, void* result);
 typedef void (*corto__binaryOperator)(void* operand1, void* operand2, void* result);
@@ -37,21 +38,40 @@ void CORTO_NAME_UNARYOP(type,name)(void* op, void* result) {\
 }
 
 #define CORTO_NUMERIC_BINARY_OP(type, op, name)\
-static void CORTO_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
+static \
+void CORTO_NAME_BINARYOP(type,name)(\
+    void* op1,\
+    void* op2,\
+    void* result)\
+{\
     *(corto_##type*)result = *(corto_##type*)op1 op *(corto_##type*)op2;\
 }
 
 #define CORTO_NUMERIC_COND_UNARY_OP(type, op, name)\
-static void CORTO_NAME_UNARYOP(type,name)(void* op, void* result) {\
+static \
+void CORTO_NAME_UNARYOP(type,name)(\
+    void* op,\
+    void* result)\
+{\
     *(corto_bool*)result = op *(corto_##type*)op;\
 }
 
 #define CORTO_NUMERIC_COND_BINARY_OP(type, op, name)\
-static void CORTO_NAME_BINARYOP(type,name)(void* op1, void* op2, void* result) {\
+static \
+void CORTO_NAME_BINARYOP(type,name)(\
+    void* op1,\
+    void* op2,\
+    void* result)\
+{\
     *(corto_bool*)result = *(corto_##type*)op1 op *(corto_##type*)op2;\
 }
 
-static void CORTO_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* result) {
+static
+void CORTO_NAME_BINARYOP(string, cond_eq)(
+    void* op1,
+    void* op2,
+    void* result)
+{
     char *str1 = *(char**)op1, *str2 = *(char**)op2;
     if (!str1 || !str2) {
         if (str1 == str2) {
@@ -63,21 +83,106 @@ static void CORTO_NAME_BINARYOP(string,cond_eq)(void* op1, void* op2, void* resu
         *(bool*)result = !strcmp(str1, str2);
     }
 }
-static void CORTO_NAME_BINARYOP(string,cond_neq)(void* op1, void* op2, void* result) {
+
+static
+void CORTO_NAME_BINARYOP(string, cond_neq)(
+    void* op1,
+    void* op2,
+    void* result)
+{
     CORTO_NAME_BINARYOP(string,cond_eq)(op1, op2, result);
     *(bool*)result = !*(bool*)result;
 }
-static void CORTO_NAME_BINARYOP(string,add)(void* op1, void* op2, void* result) {
-    corto_uint32 len = strlen(*(corto_string*)op1) + strlen(*(corto_string*)op2);
+
+static
+void CORTO_NAME_BINARYOP(string, cond_and)(
+    void* op1,
+    void* op2,
+    void* result)
+{
+    if (!*(char**)op1 || !*(char**)op2) {
+        *(bool*)result = false;
+    } else {
+        *(bool*)result = true;
+    }
+}
+
+static
+void CORTO_NAME_BINARYOP(string, cond_or)(
+    void* op1,
+    void* op2,
+    void* result)
+{
+    if (*(char**)op1 || *(char**)op2) {
+        *(bool*)result = true;
+    } else {
+        *(bool*)result = false;
+    }
+}
+
+static
+void CORTO_NAME_UNARYOP(string, cond_not)(
+    void* op,
+    void* result)
+{
+    if (op && *(char**)op) {
+        *(bool*)result = false;
+    } else {
+        *(bool*)result = true;
+    }
+}
+
+static
+void CORTO_NAME_BINARYOP(string, add)(
+    void* op1,
+    void* op2,
+    void* result)
+{
+    char *str1 = *(char**)op1;
+    char *str2 = *(char**)op2;
+    uint32_t len = 0;
+
+    if (str1) len += strlen(str1);
+    if (str2) len += strlen(str2);
+
     if (*(corto_string*)result) {
         corto_dealloc(*(corto_string*)result);
     }
-    *(corto_string*)result = corto_alloc(len + 1);
-    sprintf(*(corto_string*)result, "%s%s", *(corto_string*)op1, *(corto_string*)op2);
+
+    if (str1 || str2) {
+        *(char**)result = corto_alloc(len + 1);
+        if (str1 && str2) {
+            sprintf(*(char**)result, "%s%s", str1, str2);
+        } else if (str1) {
+            strcpy(*(char**)result, str1);
+        } else {
+            strcpy(*(char**)result, str2);
+        }
+    } else {
+        *(char**)result = NULL;
+    }
 }
-static void CORTO_NAME_BINARYOP(string,assign)(void* op1, void* op2, void* result) {
-    corto_set_str((corto_string*)result, *(corto_string*)op2);
-    corto_set_str((corto_string*)op1, *(corto_string*)op2);
+
+static
+void CORTO_NAME_BINARYOP(string, assign)(
+    void* op1,
+    void* op2,
+    void* result)
+{
+    if (result) {
+        if (op2) {
+            corto_set_str((corto_string*)result, *(corto_string*)op2);
+        } else {
+            corto_set_str((corto_string*)result, NULL);
+        }
+    }
+    if (op1) {
+        if (op2) {
+            corto_set_str((corto_string*)op1, *(corto_string*)op2);
+        } else {
+            corto_set_str((corto_string*)op1, NULL);
+        }
+    }
 }
 
 
@@ -158,6 +263,9 @@ CORTO_NUMERIC_BINARY_OP(bool, !=, cond_neq)
 CORTO_NUMERIC_BINARY_OP(bool, ||, cond_or)
 CORTO_NUMERIC_BINARY_OP(bool, &&, cond_and)
 CORTO_NUMERIC_BINARY_OP(bool, =, assign)
+CORTO_NUMERIC_BINARY_OP(bool, &, and)
+CORTO_NUMERIC_BINARY_OP(bool, |, or)
+CORTO_NUMERIC_BINARY_OP(bool, ^, xor)
 
 /* Integer operator implementations */
 CORTO_INTEGER_OPS(octet)
@@ -176,13 +284,17 @@ CORTO_FLOAT_OPS(float32)
 CORTO_FLOAT_OPS(float64)
 
 #define CORTO_UNARY_OP_INIT(typeKind, typeWidth, operatorKind, type, name)\
-        corto_unaryOps[corto__primitive_convertId(typeKind, typeWidth)][operatorKind] = CORTO_NAME_UNARYOP(type, name);
+        corto_unaryOps[corto__primitive_convert_id(typeKind, typeWidth)][operatorKind] = CORTO_NAME_UNARYOP(type, name);
 
 #define CORTO_BINARY_OP_INIT(typeKind, typeWidth, operatorKind, type, name)\
-    corto_binaryOps[corto__primitive_convertId(typeKind, typeWidth)][operatorKind] = CORTO_NAME_BINARYOP(type, name);
+    corto_binaryOps[corto__primitive_convert_id(typeKind, typeWidth)][operatorKind] = CORTO_NAME_BINARYOP(type, name);
 
 #define CORTO_STRING_OP_INIT(operatorKind, name)\
-    corto_binaryOps[corto__primitive_convertId(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_BINARYOP(string, name);
+    corto_binaryOps[corto__primitive_convert_id(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_BINARYOP(string, name);
+
+#define CORTO_STRING_UNARY_OP_INIT(operatorKind, name)\
+    corto_unaryOps[corto__primitive_convert_id(CORTO_TEXT, CORTO_WIDTH_WORD)][operatorKind] = CORTO_NAME_UNARYOP(string, name);
+
 
 #define CORTO_INTEGER_UNARY_OPS_INIT(typeKind, typeWidth, type)\
 CORTO_UNARY_OP_INIT(typeKind, typeWidth, CORTO_INC, type, inc)\
@@ -257,6 +369,9 @@ CORTO_FLOAT_BINARY_OPS_INIT(typeKind, typeWidth, type)
 #define CORTO_STRING_OPS_INIT()\
 CORTO_STRING_OP_INIT(CORTO_COND_EQ, cond_eq)\
 CORTO_STRING_OP_INIT(CORTO_COND_NEQ, cond_neq)\
+CORTO_STRING_OP_INIT(CORTO_COND_AND, cond_and)\
+CORTO_STRING_OP_INIT(CORTO_COND_OR, cond_or)\
+CORTO_STRING_UNARY_OP_INIT(CORTO_COND_NOT, cond_not)\
 CORTO_STRING_OP_INIT(CORTO_ASSIGN, assign)\
 CORTO_STRING_OP_INIT(CORTO_ADD, add)
 
@@ -267,6 +382,11 @@ void corto_ptr_operatorInit(void) {
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_OR, bool, cond_or);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_COND_AND, bool, cond_and);
     CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_ASSIGN, bool, assign);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_AND, bool, and);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_OR, bool, or);
+    CORTO_BINARY_OP_INIT(CORTO_BOOLEAN, CORTO_WIDTH_8, CORTO_XOR, bool, xor);
+
+    CORTO_BINARY_OP_INIT(CORTO_CHARACTER, CORTO_WIDTH_8, CORTO_ASSIGN, char, assign);
 
     CORTO_INTEGER_OPS_INIT(CORTO_BINARY, CORTO_WIDTH_8, octet);
     CORTO_INTEGER_OPS_INIT(CORTO_BINARY, CORTO_WIDTH_WORD, word);
@@ -290,9 +410,24 @@ void corto_ptr_operatorInit(void) {
     CORTO_STRING_OPS_INIT();
 }
 
-corto_int16 corto_ptr_unaryOp(corto_type type, corto_operatorKind operator, void* operand, void* result) {
+int16_t corto_ptr_unaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void* operand,
+    void* result)
+{
+    void *nullptr = NULL;
+    if (!operand) {
+        operand = &nullptr;
+    }
+
+    if (!type && !*(char**)operand) {
+        /* operand is a 'null' */
+        type = (corto_type)corto_string_o;
+    }
+
     if (type->kind == CORTO_PRIMITIVE) {
-        corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convertId][operator];
+        corto__unaryOperator impl = corto_unaryOps[corto_primitive(type)->convert_id][operator];
         if (impl) {
             impl(operand, result);
         } else {
@@ -309,9 +444,32 @@ error:
     return -1;
 }
 
-corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, void *operand1, void *operand2, void *result) {
+static
+int16_t corto_intern_binaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void *operand1,
+    void *operand2,
+    void *result,
+    bool always_copy)
+{
+    /* Convenience: allow passing NULL to binaryOp for null values */
+    void *nullptr = NULL;
+    if (!operand1) {
+        operand1 = &nullptr;
+    }
+    if (!operand2) {
+        operand2 = &nullptr;
+    }
+
+    if (!type && !*(char**)operand1 && !*(char**)operand2) {
+        /* both operands are 'null' */
+        type = (corto_type)corto_string_o;
+    }
+
     if (type->kind == CORTO_PRIMITIVE) {
-        corto__binaryOperator impl = corto_binaryOps[corto_primitive(type)->convertId][operator];
+        corto__binaryOperator impl =
+            corto_binaryOps[corto_primitive(type)->convert_id][operator];
         if (impl) {
             impl(operand1, operand2, result);
         } else {
@@ -320,17 +478,54 @@ corto_int16 corto_ptr_binaryOp(corto_type type, corto_operatorKind operator, voi
               corto_fullpath(NULL, type));
             goto error;
         }
+
     } else if (operator == CORTO_ASSIGN) {
-        corto_ptr_copy(operand1, type, operand2);
-        if (result && result != operand1) {
-            corto_ptr_copy(result, type, operand1);
+        if (!always_copy && type->reference) {
+            corto_set_ref(operand1, *(corto_object*)operand2);
+            if (result && result != operand1) {
+                *(corto_object*)result = *(corto_object*)operand1;
+            }
+        } else {
+            corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
+            corto_copy_ser_t data;
+            data.value = corto_value_mem(operand1, type);
+            corto_value src = corto_value_mem(operand2, type);
+            corto_walk_value(&s, &src, &data);
+
+            if (result && result != operand1) {
+                data.value = corto_value_mem(result, type);
+                corto_value src = corto_value_mem(operand2, type);
+                corto_walk_value(&s, &src, &data);
+            }
         }
     } else {
-        corto_throw("invalid operand for non-scalar type");
+        corto_throw("invalid operator for non-primitive type");
         goto error;
     }
 
     return 0;
 error:
     return -1;
+}
+
+int16_t corto_ptr_binaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void *operand1,
+    void *operand2,
+    void *result)
+{
+    return corto_intern_binaryOp(
+        type, operator, operand1, operand2, result, false);
+}
+
+int16_t corto_mem_binaryOp(
+    corto_type type,
+    corto_operatorKind operator,
+    void *operand1,
+    void *operand2,
+    void *result)
+{
+    return corto_intern_binaryOp(
+        type, operator, operand1, operand2, result, true);
 }

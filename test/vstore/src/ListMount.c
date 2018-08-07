@@ -8,11 +8,19 @@
 int16_t test_ListMount_construct(
     test_ListMount this)
 {
-    corto_mount(this)->policy.ownership = this->kind;
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+    
+    corto_mount(this)->ownership = this->kind;
 
     /* Create top level objects */
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "x",
         NULL,
         ".",
@@ -20,8 +28,8 @@ int16_t test_ListMount_construct(
         0,
         0
     );
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "yz",
         NULL,
         ".",
@@ -29,8 +37,8 @@ int16_t test_ListMount_construct(
         0,
         0
     );
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "xyz",
         NULL,
         ".",
@@ -40,8 +48,8 @@ int16_t test_ListMount_construct(
     );
 
     /* Create nested objects */
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "a",
         NULL,
         "x",
@@ -50,8 +58,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "b",
         NULL,
         "x",
@@ -60,8 +68,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "c",
         NULL,
         "x",
@@ -70,8 +78,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "a",
         NULL,
         "xyz",
@@ -80,8 +88,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "abc",
         NULL,
         "xyz",
@@ -90,8 +98,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "bc",
         NULL,
         "xyz",
@@ -100,8 +108,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "foo",
         NULL,
         "xyz/abc",
@@ -110,8 +118,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "bar",
         NULL,
         "xyz/abc",
@@ -120,8 +128,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "hello",
         NULL,
         "xyz/abc/foo",
@@ -130,8 +138,8 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "world",
         NULL,
         "xyz/abc/foo",
@@ -140,7 +148,7 @@ int16_t test_ListMount_construct(
         0
     );
 
-    corto_mount_setContentType(this, "text/json");
+    corto_mount_set_format(this, "text/json");
 
     return corto_mount_construct(this);
 }
@@ -149,12 +157,12 @@ int16_t test_ListMount_construct(
 /* Custom release function */
 void test_ListMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultList__clear(data->list);
+    corto_recordList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_ListMount_on_query(
+corto_recordIter test_ListMount_on_query(
     test_ListMount this,
     corto_query *query)
 {
@@ -162,11 +170,11 @@ corto_resultIter test_ListMount_on_query(
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
-    corto_resultIter__foreach(iter, e) {
+    corto_recordIter__foreach(iter, e) {
         if (corto_idmatch(query->from, e.parent)) {
             if (corto_idmatch(query->select, e.id)) {
-                corto_result__assign(
-                    corto_resultList__append_alloc(data),
+                corto_record__assign(
+                    corto_recordList__append_alloc(data),
                     e.id,
                     e.id,
                     e.parent,
@@ -188,4 +196,3 @@ corto_resultIter test_ListMount_on_query(
     return result;
 
 }
-

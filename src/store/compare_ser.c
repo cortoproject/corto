@@ -40,8 +40,8 @@ int16_t corto_ser_any(
     corto_any *value = (void*)((corto_word)corto_value_ptrof(&data->value) +
         ((corto_word)this - (corto_word)data->base));
 
-    corto_value v = corto_value_value(this->value, this->type);
-    privateData.value = corto_value_value(value->value, value->type);
+    corto_value v = corto_value_ptr(this->value, this->type);
+    privateData.value = corto_value_ptr(value->value, value->type);
 
     /* Set base of privateData. Because we're reusing the serializer, the
      * construct callback won't be called again */
@@ -188,7 +188,7 @@ corto_equalityKind corto_collection_compareArrayWithList(
     uint32_t i=0;
     corto_iter iter;
     void *e1, *e2;
-    corto_type elementType = t->elementType;
+    corto_type element_type = t->element_type;
 
     if (!list) {
         return CORTO_GT;
@@ -196,13 +196,13 @@ corto_equalityKind corto_collection_compareArrayWithList(
 
     iter = corto_ll_iter(list);
     while(corto_iter_hasNext(&iter)) {
-        if (corto_collection_requiresAlloc(elementType)) {
+        if (corto_collection_requires_alloc(element_type)) {
             e1 = corto_iter_next(&iter);
         } else {
             e1 = corto_iter_nextPtr(&iter);
         }
         e2 = CORTO_OFFSET(array, elementSize * i);
-        result = corto_ptr_compare(e2, elementType, e1);
+        result = corto_ptr_compare(e2, element_type, e1);
         if (result != CORTO_EQ) {
             break;
         }
@@ -221,7 +221,7 @@ corto_equalityKind corto_collection_compareListWithList(
     corto_equalityKind result = CORTO_EQ;
     corto_iter iter1, iter2;
     void *e1, *e2;
-    corto_type elementType = t->elementType;
+    corto_type element_type = t->element_type;
 
     if (list1 && !list2) {
         return CORTO_GT;
@@ -232,14 +232,14 @@ corto_equalityKind corto_collection_compareListWithList(
     iter1 = corto_ll_iter(list1);
     iter2 = corto_ll_iter(list2);
     while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
-        if (corto_collection_requiresAlloc(elementType)) {
+        if (corto_collection_requires_alloc(element_type)) {
             e1 = corto_iter_next(&iter1);
             e2 = corto_iter_next(&iter2);
         } else {
             e1 = corto_iter_nextPtr(&iter1);
             e2 = corto_iter_nextPtr(&iter2);
         }
-        result = corto_ptr_compare(e1, elementType, e2);
+        result = corto_ptr_compare(e1, element_type, e2);
         if (result != CORTO_EQ) {
             break;
         }
@@ -350,19 +350,19 @@ int16_t corto_ser_collection(
         uint32_t elementSize=0, mem=0;
         bool v1IsList = false, v2IsList = false;
 
-        elementSize = corto_type_sizeof(corto_collection(t1)->elementType);
+        elementSize = corto_type_sizeof(corto_collection(t1)->element_type);
 
         switch(corto_collection(t1)->kind) {
             case CORTO_ARRAY:
                 array1 = v1;
                 elementSize = corto_type_sizeof(
-                        corto_collection(t1)->elementType);
+                        corto_collection(t1)->element_type);
                 mem = corto_collection(t1)->max * elementSize;
                 break;
             case CORTO_SEQUENCE:
                 array1 = ((corto_objectseq*)v1)->buffer;
                 elementSize = corto_type_sizeof(
-                        corto_collection(t1)->elementType);
+                        corto_collection(t1)->element_type);
                 mem = ((corto_objectseq*)v1)->length * elementSize;
                 break;
             case CORTO_LIST:
@@ -438,7 +438,7 @@ int16_t corto_ser_construct(
     /* If types are different, validate whether comparison should take place */
     if (t1 != t2) {
         /* Certain types of collections can be compared with each other as long
-         * as their elementTypes are equal */
+         * as their element_types are equal */
         if ((t1->kind == CORTO_COLLECTION) && (t1->kind == t2->kind)) {
             switch(corto_collection(t1)->kind) {
             case CORTO_ARRAY:
@@ -448,8 +448,8 @@ int16_t corto_ser_construct(
                 case CORTO_ARRAY:
                 case CORTO_SEQUENCE:
                 case CORTO_LIST:
-                    if (corto_collection(t1)->elementType ==
-                        corto_collection(t2)->elementType)
+                    if (corto_collection(t1)->element_type ==
+                        corto_collection(t2)->element_type)
                     {
                         compare = TRUE;
                     }
@@ -461,10 +461,10 @@ int16_t corto_ser_construct(
                 break;
             case CORTO_MAP:
                 if (corto_collection(t2)->kind == CORTO_MAP) {
-                    if (corto_collection(t1)->elementType ==
-                        corto_collection(t2)->elementType)
+                    if (corto_collection(t1)->element_type ==
+                        corto_collection(t2)->element_type)
                     {
-                        if (corto_map(t1)->keyType == corto_map(t2)->keyType) {
+                        if (corto_map(t1)->key_type == corto_map(t2)->key_type) {
                             compare = TRUE;
                         }
                     }
@@ -496,7 +496,7 @@ int16_t corto_ser_construct(
 }
 
 corto_walk_opt corto_compare_ser(
-    corto_modifier access,
+    corto_modifierMask access,
     corto_operatorKind accessKind,
     corto_walk_traceKind trace)
 {

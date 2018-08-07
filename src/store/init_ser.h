@@ -25,7 +25,7 @@
 #include <corto/store/walk.h>
 
 corto_walk_opt corto_ser_init(
-    corto_modifier access,
+    corto_modifierMask access,
     corto_operatorKind accessKind,
     corto_walk_traceKind trace);
 

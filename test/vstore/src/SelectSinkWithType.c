@@ -19,7 +19,7 @@ void test_SelectSinkWithType_tc_selectMixedScope(
     test_SelectSinkWithType this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -79,7 +79,7 @@ void test_SelectSinkWithType_tc_selectMixedScopeNested1(
     test_SelectSinkWithType this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -139,7 +139,7 @@ void test_SelectSinkWithType_tc_selectMixedScopeNested2(
     test_SelectSinkWithType this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     /* Create actual objects */
     corto_object mount = corto_resolve(root_o, "mount");
@@ -200,7 +200,7 @@ void test_SelectSinkWithType_tc_selectMount(
     test_SelectSinkWithType this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     corto_int16 ret = corto_select("mount").from("/").iter( &iter );
 
@@ -225,7 +225,7 @@ void test_SelectSinkWithType_tc_selectMountFromParent(
     corto_release(mount);
 
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
 
     test_assert(ret == 0);
@@ -245,7 +245,7 @@ void test_SelectSinkWithType_tc_selectMountFromVirtualParent(
     test_SelectSinkWithType this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
     corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
 
     test_assert(ret == 0);
@@ -280,7 +280,7 @@ void test_SelectSinkWithType_tc_selectSingleNoMatch(
     test_SelectSinkWithType this)
 {
     corto_iter iter;
-    corto_result *result;
+    corto_record *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
     corto_float32__create_auto(mount, test, 0);

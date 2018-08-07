@@ -10,11 +10,6 @@
 extern "C" {
 #endif
 
-/* -- Native types -- */
-#ifndef CORTO_LANG_H
-#endif
-
-
 /* -- Type definitions -- */
 
 /* enum corto/lang/typeKind */
@@ -47,14 +42,6 @@ typedef uint32_t corto_state;
     #define CORTO_DELETED (0x2)
     #define CORTO_DECLARED (0x4)
 
-/* struct corto/lang/typeOptions */
-typedef struct corto_typeOptions {
-    corto_type parentType;
-    corto_state parentState;
-    corto_type defaultType;
-    corto_type defaultProcedureType;
-} corto_typeOptions;
-
 /* uint corto/lang/uint16 */
 typedef uint16_t corto_uint16;
 
@@ -84,15 +71,15 @@ typedef struct corto_parameter {
     corto_string name;
     corto_type type;
     corto_inout inout;
-    bool passByReference;
+    bool is_reference;
 } corto_parameter;
 
 typedef struct corto_parameterseq {uint32_t length; corto_parameter *buffer;} corto_parameterseq;
 
 /* procedure corto/lang/function */
 typedef struct corto_function_s {
-    corto_type returnType;
-    bool returnsReference;
+    corto_type return_type;
+    bool is_reference;
     corto_parameterseq parameters;
     bool overridable;
     bool overloaded;
@@ -129,7 +116,10 @@ struct corto_type_s {
     corto_typeKind kind;
     bool reference;
     corto_attr attr;
-    corto_typeOptions options;
+    corto_type parent_type;
+    corto_state parent_state;
+    corto_type scope_type;
+    corto_type scope_procedure_type;
     uint16_t flags;
     uint32_t size;
     uint16_t alignment;
@@ -140,8 +130,8 @@ struct corto_type_s {
     corto_name_action nameof;
 };
 
-/* bitmask corto/lang/modifier */
-typedef uint32_t corto_modifier;
+/* bitmask corto/lang/modifierMask */
+typedef uint32_t corto_modifierMask;
     #define CORTO_GLOBAL (0x0)
     #define CORTO_LOCAL (0x1)
     #define CORTO_PRIVATE (0x2)
@@ -152,6 +142,7 @@ typedef uint32_t corto_modifier;
     #define CORTO_OPTIONAL (0x40)
     #define CORTO_OBSERVABLE (0x80)
     #define CORTO_KEY (0x104)
+    #define CORTO_SINGLETON (0x280)
 
 /* class corto/lang/unit */
 typedef struct corto_unit_s *corto_unit;
@@ -179,15 +170,12 @@ typedef struct corto_tag_s {
     int8_t __dummy;
 } *corto_tag;
 
-#ifndef corto_taglist_DEFINED
-#define corto_taglist_DEFINED
 typedef corto_ll corto_taglist;
-#endif
 
 /* class corto/lang/member */
 typedef struct corto_member_s {
     corto_type type;
-    corto_modifier modifiers;
+    corto_modifierMask modifiers;
     corto_string _default;
     corto_unit unit;
     corto_taglist tags;
@@ -206,10 +194,7 @@ typedef struct corto_alias_s {
 /* any */
 typedef struct corto_any {corto_type type; void *value; uint8_t owner;} corto_any;
 
-#ifndef corto_stringlist_DEFINED
-#define corto_stringlist_DEFINED
 typedef corto_ll corto_stringlist;
-#endif
 
 /* class corto/lang/package */
 typedef struct corto_package_s {
@@ -243,14 +228,14 @@ typedef enum corto_collectionKind {
 typedef struct corto_collection_s {
     struct corto_type_s super;
     corto_collectionKind kind;
-    corto_type elementType;
+    corto_type element_type;
     uint32_t max;
 } *corto_collection;
 
 /* class corto/lang/array */
 typedef struct corto_array_s {
     struct corto_collection_s super;
-    corto_type elementType;
+    corto_type element_type;
 } *corto_array;
 
 /* enum corto/lang/primitiveKind */
@@ -283,7 +268,7 @@ typedef struct corto_primitive_s {
     struct corto_type_s super;
     corto_primitiveKind kind;
     corto_width width;
-    uint8_t convertId;
+    uint8_t convert_id;
 } *corto_primitive;
 
 /* class corto/lang/binary */
@@ -343,7 +328,7 @@ typedef struct corto_interface_s *corto_interface;
 struct corto_interface_s {
     struct corto_type_s super;
     corto_compositeKind kind;
-    uint32_t nextMemberId;
+    uint32_t next_member_id;
     corto_objectseq members;
     corto_objectseq methods;
     corto_interface base;
@@ -354,7 +339,7 @@ typedef struct corto_stringseq {uint32_t length; corto_string *buffer;} corto_st
 /* class corto/lang/struct */
 typedef struct corto_struct_s {
     struct corto_interface_s super;
-    corto_modifier baseAccess;
+    corto_modifierMask base_modifiers;
     corto_stringseq keys;
     corto_objectseq keycache;
 } *corto_struct;
@@ -400,8 +385,8 @@ typedef struct corto_default_s {
 /* class corto/lang/delegate */
 typedef struct corto_delegate_s {
     struct corto_struct_s super;
-    corto_type returnType;
-    bool returnsReference;
+    corto_type return_type;
+    bool is_reference;
     corto_parameterseq parameters;
 } *corto_delegate;
 
@@ -442,7 +427,7 @@ typedef int16_t corto_int16;
 /* class corto/lang/iterator */
 typedef struct corto_iterator_s {
     struct corto_type_s super;
-    corto_type elementType;
+    corto_type element_type;
 } *corto_iterator;
 
 /* class corto/lang/leaf */
@@ -458,8 +443,8 @@ typedef struct corto_list_s {
 /* class corto/lang/map */
 typedef struct corto_map_s {
     struct corto_collection_s super;
-    corto_type keyType;
-    corto_type elementType;
+    corto_type key_type;
+    corto_type element_type;
     uint32_t max;
 } *corto_map;
 
@@ -475,10 +460,7 @@ typedef struct corto_method_s {
     uint32_t index;
 } *corto_method;
 
-#ifndef corto_objectlist_DEFINED
-#define corto_objectlist_DEFINED
 typedef corto_ll corto_objectlist;
-#endif
 
 /* binary corto/lang/octet */
 typedef uint8_t corto_octet;
@@ -496,9 +478,16 @@ typedef struct corto_override_s {
 /* class corto/lang/procedure */
 typedef struct corto_procedure_s {
     struct corto_class_s super;
-    bool hasThis;
-    corto_type thisType;
+    bool has_this;
+    corto_type this_type;
 } *corto_procedure;
+
+/* enum corto/lang/ref_kind */
+typedef enum corto_ref_kind {
+    CORTO_BY_TYPE = 0,
+    CORTO_BY_VALUE = 1,
+    CORTO_BY_REFERENCE = 2
+} corto_ref_kind;
 
 /* class corto/lang/sequence */
 typedef struct corto_sequence_s {
@@ -527,7 +516,7 @@ typedef uint64_t corto_uint64;
 /* class corto/lang/text */
 typedef struct corto_text_s {
     struct corto_primitive_s super;
-    corto_width charWidth;
+    corto_width char_width;
     uint64_t length;
 } *corto_text;
 
@@ -555,7 +544,7 @@ typedef void corto_unknown;
 /* class corto/lang/verbatim */
 typedef struct corto_verbatim_s {
     struct corto_primitive_s super;
-    corto_string contentType;
+    corto_string format;
 } *corto_verbatim;
 
 /* void */

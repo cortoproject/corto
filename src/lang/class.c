@@ -175,7 +175,7 @@ bool corto_class_instanceof(
     return result;
 }
 
-corto_method corto_class_resolveInterfaceMethod(
+corto_method corto_class_resolve_interface_method(
     corto_class this,
     corto_interface interface,
     uint32_t method)
@@ -198,7 +198,7 @@ corto_method corto_class_resolveInterfaceMethod(
 
     if (!v) {
         corto_error(
-            "class::resolveInterfaceMethod: class '%s' does not implement interface '%s'",
+            "class::resolve_interface_method: class '%s' does not implement interface '%s'",
             corto_fullpath(NULL, this),
             corto_fullpath(NULL, interface));
         goto error;

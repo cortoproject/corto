@@ -11,7 +11,7 @@ typedef struct __dummySeq {
 int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_uint32 elements) {
     corto_uint32 elementSize;
 
-    elementSize = corto_type_sizeof(this->elementType);
+    elementSize = corto_type_sizeof(this->element_type);
 
     ((__dummySeq*)collection)->buffer = corto_alloc(elementSize * elements);
 
@@ -21,8 +21,8 @@ int corto_sequence_alloc(corto_collection this, corto_void* collection, corto_ui
 int16_t corto_sequence_construct(
     corto_sequence this)
 {
-    corto_type elementType = corto_collection(this)->elementType;
-    if (!elementType) {
+    corto_type element_type = corto_collection(this)->element_type;
+    if (!element_type) {
         corto_error("no elementtype provided for sequence");
         goto error;
     }
@@ -32,8 +32,8 @@ int16_t corto_sequence_construct(
     corto_type(this)->alignment = CORTO_ALIGNMENT(__dummySeq);
     corto_type(this)->flags |= CORTO_TYPE_HAS_RESOURCES;
 
-    if (elementType->flags & CORTO_TYPE_HAS_REFERENCES ||
-        elementType->reference)
+    if (element_type->flags & CORTO_TYPE_HAS_REFERENCES ||
+        element_type->reference)
     {
         corto_type(this)->flags |= CORTO_TYPE_HAS_REFERENCES;
     }

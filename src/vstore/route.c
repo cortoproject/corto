@@ -3,7 +3,7 @@
 #include <corto/corto.h>
 
 
-static corto_routerimpl corto_route_findRouterImpl(corto_route this) {
+static corto_routerimpl corto_route_find_routerImpl(corto_route this) {
     corto_interface base = corto_interface(corto_parentof(this));
     do {
         if (corto_instanceof(corto_routerimpl_o, base)) {
@@ -19,7 +19,7 @@ int16_t corto_route_construct(
     corto_id pattern;
     char *ptr = pattern;
     corto_int32 count = 0, elementCount = 0;
-    corto_routerimpl router = corto_route_findRouterImpl(this);
+    corto_routerimpl router = corto_route_find_routerImpl(this);
     corto_router routerBase = corto_router(corto_typeof(router));
     const char *elements[CORTO_MAX_SCOPE_DEPTH];
     corto_int32 i;
@@ -31,8 +31,8 @@ int16_t corto_route_construct(
             ptr ++;
         }
 
-        if (routerBase->elementSeparator) {
-            if ((elementCount = corto_pathToArray(ptr, elements, routerBase->elementSeparator)) == -1) {
+        if (routerBase->element_separator) {
+            if ((elementCount = corto_pathToArray(ptr, elements, routerBase->element_separator)) == -1) {
                 corto_throw("invalid pattern '%s'", this->pattern);
                 goto error;
             }
@@ -45,17 +45,17 @@ int16_t corto_route_construct(
         }
     }
 
-    if (routerBase->paramType) {
+    if (routerBase->param_type) {
         params->buffer = corto_realloc(
           params->buffer, sizeof(corto_parameter) * (count + 1)
         );
         corto_parameter *p = &params->buffer[count];
         memset(p, 0, sizeof(corto_parameter));
-        corto_set_ref(&p->type, routerBase->paramType);
-        if (routerBase->paramName) {
-            corto_set_str(&p->name, routerBase->paramName);
-        } else if (corto_check_attr(routerBase->paramType, CORTO_ATTR_NAMED)) {
-            corto_set_str(&p->name, corto_idof(routerBase->paramType));
+        corto_set_ref(&p->type, routerBase->param_type);
+        if (routerBase->param_name) {
+            corto_set_str(&p->name, routerBase->param_name);
+        } else if (corto_check_attr(routerBase->param_type, CORTO_ATTR_NAMED)) {
+            corto_set_str(&p->name, corto_idof(routerBase->param_type));
             p->name[0] = tolower(p->name[0]);
         } else {
             corto_set_str(&p->name, "_param");
@@ -63,17 +63,17 @@ int16_t corto_route_construct(
         count ++;
     }
 
-    if (routerBase->routerDataType) {
+    if (routerBase->router_data_type) {
         params->buffer = corto_realloc(
           params->buffer, sizeof(corto_parameter) * (count + 1)
         );
         corto_parameter *p = &params->buffer[count];
         memset(p, 0, sizeof(corto_parameter));
-        corto_set_ref(&p->type, routerBase->routerDataType);
-        if (routerBase->routerDataName) {
-            corto_set_str(&p->name, routerBase->routerDataName);
-        } else if (corto_check_attr(routerBase->paramType, CORTO_ATTR_NAMED)) {
-            corto_set_str(&p->name, corto_idof(routerBase->routerDataType));
+        corto_set_ref(&p->type, routerBase->router_data_type);
+        if (routerBase->router_data_name) {
+            corto_set_str(&p->name, routerBase->router_data_name);
+        } else if (corto_check_attr(routerBase->param_type, CORTO_ATTR_NAMED)) {
+            corto_set_str(&p->name, corto_idof(routerBase->router_data_type));
             p->name[0] = tolower(p->name[0]);
         } else {
             corto_set_str(&p->name, "_routerData");
@@ -100,7 +100,7 @@ int16_t corto_route_construct(
         }
     }
 
-    corto_set_ref(&corto_function(this)->returnType, routerBase->returnType);
+    corto_set_ref(&corto_function(this)->return_type, routerBase->return_type);
     corto_function(this)->parameters.length = count;
 
     return safe_corto_function_construct(this);
@@ -111,7 +111,7 @@ error:
 int16_t corto_route_init(
     corto_route this)
 {
-    if (!corto_route_findRouterImpl(this)) {
+    if (!corto_route_find_routerImpl(this)) {
         corto_throw("parent of '%s' is not an instance of 'routerimpl'",
             corto_fullpath(NULL, this));
         goto error;

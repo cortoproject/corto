@@ -4,22 +4,22 @@
 
 int16_t test_RefMount_construct(
     test_RefMount this)
-{
+{    
     corto_set_str(&corto_subscriber(this)->query.select, "//");
 
     if (this->from) {
         corto_set_str(&corto_subscriber(this)->query.from, this->from);
     }
 
-    if (corto_mount_setContentType(this, "text/json")) {
+    if (corto_mount_set_format(this, "text/json")) {
         goto error;
     }
 
     /* Let corto filter results for the mount */
-    corto_mount(this)->policy.filterResults = true;
+    corto_mount(this)->filter_records = true;
 
     /* Enable resuming objects by configuring mount as local source */
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
 
     char *json =
         "{\"sibling\":\"/config\","
@@ -34,8 +34,8 @@ int16_t test_RefMount_construct(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "refs",
         NULL,
         ".",
@@ -44,8 +44,8 @@ int16_t test_RefMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "foo",
         NULL,
         ".",
@@ -54,8 +54,8 @@ int16_t test_RefMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "bar",
         NULL,
         "foo",
@@ -64,8 +64,8 @@ int16_t test_RefMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "hello",
         NULL,
         "foo/bar",
@@ -74,8 +74,8 @@ int16_t test_RefMount_construct(
         0
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "world",
         NULL,
         "foo/bar/hello",
@@ -100,7 +100,7 @@ void test_RefMount_on_notify(
 }
 
 
-corto_resultIter test_RefMount_on_query(
+corto_recordIter test_RefMount_on_query(
     test_RefMount this,
     corto_query *query)
 {

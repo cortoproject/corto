@@ -21,7 +21,7 @@ bool corto_delegate_compatible_v(
         result = TRUE;
 
         /* Validate returntype */
-        if((this->returnType != corto_delegate(type)->returnType) || (this->returnsReference != corto_delegate(type)->returnsReference)) {
+        if((this->return_type != corto_delegate(type)->return_type) || (this->is_reference != corto_delegate(type)->is_reference)) {
             result = FALSE;
         }
 
@@ -35,7 +35,7 @@ bool corto_delegate_compatible_v(
             if(this->parameters.buffer[i].type != corto_delegate(type)->parameters.buffer[i].type) {
                 result = FALSE;
             }
-            if(this->parameters.buffer[i].passByReference != corto_delegate(type)->parameters.buffer[i].passByReference) {
+            if(this->parameters.buffer[i].is_reference != corto_delegate(type)->parameters.buffer[i].is_reference) {
                 result = FALSE;
             }
         }
@@ -59,7 +59,7 @@ static corto_member corto_delegate_find(corto_function object) {
 
             /* Get function name, lookup delegate, assign function */
             corto_sig_name(corto_idof(object), functionName);
-            if (corto_check_state(corto_type_o, CORTO_VALID) && (m = corto_interface_resolveMember(type, functionName)) &&
+            if (corto_check_state(corto_type_o, CORTO_VALID) && (m = corto_interface_resolve_member(type, functionName)) &&
                 (m->type->kind == CORTO_COMPOSITE) && (corto_interface(m->type)->kind == CORTO_DELEGATE))
             {
                 return m;
@@ -77,10 +77,10 @@ int16_t corto_delegate_bind(
     corto_member m = corto_delegate_find(object);
     if (m) {
         /* Bind instance of function is a method */
-        if (corto_procedure(corto_typeof(object))->hasThis) {
+        if (corto_procedure(corto_typeof(object))->has_this) {
             corto_set_ref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->instance, parent);
         }
-        
+
         /* Bind procedure */
         corto_set_ref(&((corto_delegatedata *) CORTO_OFFSET(parent, m->offset))->procedure, object);
     }
@@ -116,7 +116,7 @@ int16_t corto_delegate_init(
     corto_int16 result;
 
     corto_interface(this)->base = corto_interface(corto_delegatedata_o);
-    corto_struct(this)->baseAccess = CORTO_GLOBAL;
+    corto_struct(this)->base_modifiers = CORTO_GLOBAL;
 
     result = corto_struct_init(corto_struct(this));
     if(result) {
@@ -130,6 +130,15 @@ error:
     return -1;
 }
 
+int16_t corto_delegate_construct(
+    corto_delegate this)
+{
+    if (!this->return_type) {
+        corto_set_ref(&this->return_type, corto_void_o);
+    }
+
+    return safe_corto_struct_construct(this);
+}
 
 corto_bool corto_delegate_matchParameter(
     corto_type t1,
@@ -157,10 +166,10 @@ bool corto_delegate_instanceof(
 
         /* Validate returntype */
         if (!corto_delegate_matchParameter(
-            this->returnType,
-            this->returnsReference,
-            call->returnType,
-            call->returnsReference)) {
+            this->return_type,
+            this->is_reference,
+            call->return_type,
+            call->is_reference)) {
             result = FALSE;
         }
 
@@ -177,9 +186,9 @@ bool corto_delegate_instanceof(
 
             if (!corto_delegate_matchParameter(
                 p1->type,
-                p1->passByReference,
+                p1->is_reference,
                 p2->type,
-                p2->passByReference)) {
+                p2->is_reference)) {
                 result = FALSE;
             }
         }

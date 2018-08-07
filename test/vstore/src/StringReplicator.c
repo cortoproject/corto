@@ -5,8 +5,15 @@
 int16_t test_StringReplicator_construct(
     test_StringReplicator this)
 {
-
-    corto_mount_setContentType(this, "text/corto");
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+    
+    corto_mount_set_format(this, "text/corto");
 
     return corto_mount_construct(this);
 }
@@ -15,20 +22,20 @@ int16_t test_StringReplicator_construct(
 /* Custom release function */
 void test_StringReplicator_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultList__clear(data->list);
+    corto_recordList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_StringReplicator_on_query(
+corto_recordIter test_StringReplicator_on_query(
     test_StringReplicator this,
     corto_query *query)
 {
     corto_ll data = corto_ll_new();
 
     /* Create top level objects */
-    corto_result__assign(
-        corto_resultList__append_alloc(data),
+    corto_record__assign(
+        corto_recordList__append_alloc(data),
         "a",
         NULL,
         ".",
@@ -36,8 +43,8 @@ corto_resultIter test_StringReplicator_on_query(
         (corto_word)corto_strdup("{10,20}"),
         CORTO_RESULT_LEAF
     );
-    corto_result__assign(
-        corto_resultList__append_alloc(data),
+    corto_record__assign(
+        corto_recordList__append_alloc(data),
         "b",
         NULL,
         ".",
@@ -45,8 +52,8 @@ corto_resultIter test_StringReplicator_on_query(
         (corto_word)corto_strdup("{30,40}"),
         CORTO_RESULT_LEAF
     );
-    corto_result__assign(
-        corto_resultList__append_alloc(data),
+    corto_record__assign(
+        corto_recordList__append_alloc(data),
         "c",
         NULL,
         ".",
@@ -64,4 +71,3 @@ corto_resultIter test_StringReplicator_on_query(
     /* Return persistent iterator to request */
     return result;
 }
-

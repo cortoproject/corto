@@ -2,11 +2,11 @@
 
 #include <include/test.h>
 
-corto_resultIter test_SimpleMount_on_query(
+corto_recordIter test_SimpleMount_on_query(
     test_SimpleMount this,
     corto_query *query)
 {
-    corto_result r = (corto_result) {
+    corto_record r = (corto_record) {
         .id = "foo",
         .parent = ".",
         .type = "int32",

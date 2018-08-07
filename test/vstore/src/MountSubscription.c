@@ -800,38 +800,6 @@ void test_MountSubscription_tc_subscribeTreeAlign(
 
 }
 
-void test_MountSubscription_tc_subscribeTreeDefine(
-    test_MountSubscription this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
-void test_MountSubscription_tc_subscribeTreeDefineNested(
-    test_MountSubscription this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
-void test_MountSubscription_tc_subscribeTreeDelete(
-    test_MountSubscription this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
-void test_MountSubscription_tc_subscribeTreeDeleteNested(
-    test_MountSubscription this)
-{
-
-    /* << Insert implementation >> */
-
-}
-
 void test_MountSubscription_tc_subscribeTreeTwice(
     test_MountSubscription this)
 {
@@ -1237,4 +1205,3 @@ void test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     test_assert(corto_delete(mountRoot) == 0);
 
 }
-

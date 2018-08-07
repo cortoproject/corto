@@ -74,7 +74,7 @@ void corto_invoke_deinit(corto_function f) {
         corto_object owner = corto_sourceof(instance);\
         if (owner \
             && corto_instanceof(corto_mount_o, owner) \
-            && (corto_mount(owner)->policy.ownership != CORTO_LOCAL_SOURCE)) \
+            && (corto_mount(owner)->ownership != CORTO_LOCAL_SOURCE)) \
         {\
             if (!(owner == corto_get_source())) {\
                 corto_mount_invoke(owner, instance, f, (corto_word)argptrs);\
@@ -103,8 +103,8 @@ void corto_invoke_deinit(corto_function f) {
     void *ptr;\
     corto_procedure procedure = corto_function_getProcedureType(f);\
     /* Add this */\
-    if (procedure->hasThis) {\
-        if (procedure->thisType == corto_any_o) {\
+    if (procedure->has_this) {\
+        if (procedure->this_type == corto_any_o) {\
             argptrs[arg] = argcpy(args, corto_any);\
         } else {\
             argptrs[arg] = argcpy(args, void*);\

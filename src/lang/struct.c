@@ -84,7 +84,7 @@ int16_t corto_struct_construct(
     alignment = 0;
 
     /* Don't allow empty structs */
-    if (!corto_interface(this)->nextMemberId && !corto_interface(this)->base) {
+    if (!corto_interface(this)->next_member_id && !corto_interface(this)->base) {
         corto_member m = corto(CORTO_DECLARE|CORTO_FORCE_TYPE, {
             .parent = this,
             .id = "__dummy",
@@ -188,7 +188,7 @@ int16_t corto_struct_construct(
 
         corto_int32 i;
         for (i = 0; i < this->keys.length; i++) {
-            corto_object o = corto_interface_resolveMember(this, this->keys.buffer[i]);
+            corto_object o = corto_interface_resolve_member(this, this->keys.buffer[i]);
             if (!o) {
                 corto_throw("no member with name '%s' found for table '%s'",
                     this->keys.buffer[i],
@@ -229,9 +229,9 @@ error:
 int16_t corto_struct_init(
     corto_struct this)
 {
-    /* If not bootstrapping, set baseAccess to GLOBAL | PUBLIC */
+    /* If not bootstrapping, set base_modifiers to GLOBAL | PUBLIC */
     if (corto_check_state(corto_type_o, CORTO_VALID)) {
-        this->baseAccess = CORTO_GLOBAL;
+        this->base_modifiers = CORTO_GLOBAL;
     }
 
     if (_corto_interface_init((corto_interface)this)) {
@@ -245,7 +245,7 @@ error:
     return -1;
 }
 
-corto_member corto_struct_resolveMember_v(
+corto_member corto_struct_resolve_member_v(
     corto_struct this,
     const char *name)
 {
@@ -255,7 +255,7 @@ corto_member corto_struct_resolveMember_v(
     m = NULL;
     base = corto_interface(this);
     do {
-        m = corto_interface_resolveMember_v(corto_interface(base), name);
+        m = corto_interface_resolve_member_v(corto_interface(base), name);
     } while(!m && (base = corto_interface(base)->base));
     return m;
 }

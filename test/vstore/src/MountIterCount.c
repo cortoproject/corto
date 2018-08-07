@@ -25,7 +25,7 @@ void test_MounterIterCount_release(corto_iter *it) {
     this->releaseCount ++;
 }
 
-corto_resultIter test_MountIterCount_on_query(
+corto_recordIter test_MountIterCount_on_query(
     test_MountIterCount this,
     corto_query *query)
 {
@@ -49,6 +49,18 @@ corto_resultIter test_MountIterCount_on_query(
 int16_t test_MountIterCount_construct(
     test_MountIterCount this)
 {
-    corto_mount(this)->policy.filterResults = false;
+    /* Backwards compatibility patch for mount member */
+    corto_subscriber s = corto_subscriber(this);
+    if (!this->mount && corto_check_attr(this, CORTO_ATTR_NAMED)) {
+        corto_set_ref(&this->mount, this);
+    }
+    if (this->mount) {
+        corto_set_str(&s->query.from, corto_fullpath(NULL, this->mount));
+    } else if (s->query.from) {
+        this->mount = corto(CORTO_LOOKUP, {.id = s->query.from});
+    }
+
+    corto_mount(this)->filter_records = false;
+
     return corto_super_construct(this);
 }

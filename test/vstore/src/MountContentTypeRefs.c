@@ -22,7 +22,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtData(
     corto_iter it;
     int16_t ret = corto_select("refs")
         .from("/data")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -40,7 +40,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -61,7 +61,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested1(
     corto_iter it;
     int16_t ret = corto_select("parent/refs")
         .from("/data")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -79,7 +79,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -100,7 +100,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested2(
     corto_iter it;
     int16_t ret = corto_select("grandparent/parent/refs")
         .from("/data")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -118,7 +118,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "grandparent/parent");
@@ -139,7 +139,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtRoot(
     corto_iter it;
     int16_t ret = corto_select("refs")
         .from("/")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -157,7 +157,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -178,7 +178,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtData(
     corto_iter it;
     int16_t ret = corto_select("../refs")
         .from("/data/foo")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -196,7 +196,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -217,7 +217,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested1(
     corto_iter it;
     int16_t ret = corto_select("refs")
         .from("/data/parent")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -235,7 +235,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -256,7 +256,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested2(
     corto_iter it;
     int16_t ret = corto_select("parent/refs")
         .from("/data/grandparent")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -274,7 +274,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -295,7 +295,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtRoot(
     corto_iter it;
     int16_t ret = corto_select("../../refs")
         .from("/data/parent")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -313,7 +313,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../..");
@@ -334,7 +334,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtData(
     corto_iter it;
     int16_t ret = corto_select("../../refs")
         .from("/data/foo/bar")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -352,7 +352,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../..");
@@ -373,7 +373,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested1(
     corto_iter it;
     int16_t ret = corto_select("../refs")
         .from("/data/parent/foo")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -391,7 +391,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -412,7 +412,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested2(
     corto_iter it;
     int16_t ret = corto_select("refs")
         .from("/data/grandparent/parent")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -430,7 +430,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -451,7 +451,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtRoot(
     corto_iter it;
     int16_t ret = corto_select("../../../refs")
         .from("/data/foo/bar")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -469,7 +469,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../../..");
@@ -490,7 +490,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtData(
     corto_iter it;
     int16_t ret = corto_select("data/refs")
         .from("/")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -508,7 +508,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtData(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data");
@@ -529,7 +529,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested1(
     corto_iter it;
     int16_t ret = corto_select("data/parent/refs")
         .from("/")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -547,7 +547,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested1(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data/parent");
@@ -568,7 +568,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested2(
     corto_iter it;
     int16_t ret = corto_select("data/grandparent/parent/refs")
         .from("/")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -586,7 +586,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested2(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data/grandparent/parent");
@@ -607,7 +607,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
     corto_iter it;
     int16_t ret = corto_select("refs")
         .from("/")
-        .contentType("text/json")
+        .format("text/json")
         .iter(&it);
     test_assert(ret == 0);
 
@@ -631,7 +631,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
          "\"null_ref\":null}";
 
     test_assert(corto_iter_hasNext(&it) != 0);
-    corto_result *r = corto_iter_next(&it);
+    corto_record *r = corto_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -649,7 +649,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtData(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -698,7 +698,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtDataNested1(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -747,7 +747,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtDataNested2(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo/bar")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -796,7 +796,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested1ToMountAtRoot(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -845,7 +845,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtData(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -894,7 +894,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtDataNested1(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -943,7 +943,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtDataNested2(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo/bar")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -992,7 +992,7 @@ void test_MountContentTypeRefs_tc_publishFromDataNested2ToMountAtRoot(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1041,7 +1041,7 @@ void test_MountContentTypeRefs_tc_publishFromDataToMountAtData(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1092,7 +1092,7 @@ void test_MountContentTypeRefs_tc_publishFromDataToMountAtDataNested1(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1141,7 +1141,7 @@ void test_MountContentTypeRefs_tc_publishFromDataToMountAtDataNested2(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo/bar")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1190,7 +1190,7 @@ void test_MountContentTypeRefs_tc_publishFromDataToMountAtRoot(
     test_RefMount m = (test_RefMount)corto_subscribe("data/*")
         .from("/")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1239,7 +1239,7 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtData(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1288,7 +1288,7 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtDataNested1(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1337,7 +1337,7 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtDataNested2(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/data/foo/bar")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1386,7 +1386,7 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtRoot(
     test_RefMount m = (test_RefMount)corto_subscribe("*")
         .from("/")
         .queue()
-        .mount(test_RefMount_o, NULL, NULL);
+        .mount(test_RefMount_o, NULL);
 
     test_assert(m != NULL);
 
@@ -1427,16 +1427,4 @@ void test_MountContentTypeRefs_tc_publishFromRootToMountAtRoot(
     test_assertstr(m->last_parent, "data");
 
     test_assert(corto_delete(m) == 0);
-}
-
-void test_MountContentTypeRefs_tc_resumeWithRefCycle(
-    test_MountContentTypeRefs this)
-{
-    /* Insert implementation */
-}
-
-void test_MountContentTypeRefs_tc_resumeWithRefToSelf(
-    test_MountContentTypeRefs this)
-{
-    /* Insert implementation */
 }

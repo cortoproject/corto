@@ -84,7 +84,7 @@ bool _corto_class_instanceof(
     corto_object object);
 
 CORTO_EXPORT
-corto_method _corto_class_resolveInterfaceMethod(
+corto_method _corto_class_resolve_interface_method(
     corto_class _this,
     corto_interface interface,
     uint32_t method);
@@ -107,8 +107,8 @@ int16_t _corto_collection_init(
     corto_collection _this);
 
 CORTO_EXPORT
-bool _corto_collection_requiresAlloc(
-    corto_type elementType);
+bool _corto_collection_requires_alloc(
+    corto_type element_type);
 
 
 /* int corto/lang/constant */
@@ -140,6 +140,10 @@ CORTO_EXPORT
 bool _corto_delegate_compatible_v(
     corto_delegate _this,
     corto_type type);
+
+CORTO_EXPORT
+int16_t _corto_delegate_construct(
+    corto_delegate _this);
 
 CORTO_EXPORT
 int16_t _corto_delegate_init(
@@ -223,11 +227,6 @@ int16_t _corto_interface_baseof(
     corto_interface type);
 
 CORTO_EXPORT
-int16_t _corto_interface_bindMethod(
-    corto_interface _this,
-    corto_method method);
-
-CORTO_EXPORT
 bool _corto_interface_compatible_v(
     corto_interface _this,
     corto_type type);
@@ -249,27 +248,27 @@ int16_t _corto_interface_init(
     corto_interface _this);
 
 CORTO_EXPORT
-corto_member _corto_interface_resolveMember_v(
+corto_member _corto_interface_resolve_member_v(
     corto_interface _this,
     const char *name);
 
 CORTO_EXPORT
-corto_member _corto_interface_resolveMemberByTag(
+corto_member _corto_interface_resolve_member_by_tag(
     corto_interface _this,
     corto_tag tag);
 
 CORTO_EXPORT
-corto_method _corto_interface_resolveMethod(
+corto_method _corto_interface_resolve_method(
     corto_interface _this,
     const char *name);
 
 CORTO_EXPORT
-corto_method _corto_interface_resolveMethodById(
+corto_method _corto_interface_resolve_method_by_id(
     corto_interface _this,
     uint32_t id);
 
 CORTO_EXPORT
-uint32_t _corto_interface_resolveMethodId(
+uint32_t _corto_interface_resolve_method_id(
     corto_interface _this,
     const char *name);
 
@@ -421,7 +420,7 @@ int16_t _corto_struct_init(
     corto_struct _this);
 
 CORTO_EXPORT
-corto_member _corto_struct_resolveMember_v(
+corto_member _corto_struct_resolve_member_v(
     corto_struct _this,
     const char *name);
 
@@ -480,7 +479,7 @@ int16_t _corto_type_init(
     corto_type _this);
 
 CORTO_EXPORT
-corto_function _corto_type_resolveProcedure(
+corto_function _corto_type_resolve_procedure(
     corto_type _this,
     const char *name);
 

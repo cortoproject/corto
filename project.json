@@ -3,8 +3,8 @@
     "type": "package",
     "value": {
         "author": "Sander Mertens",
-        "description": "Corto runtime library",
-        "version": "2.0.0",
+        "description": "Corto runtime",
+        "version": "2.1.0",
         "license": "MIT",
         "repository": "https://github.com/cortoproject/corto",
         "managed": false,
@@ -19,7 +19,17 @@
         "cflags": ["-fvisibility=hidden"],
         "doxygen": [{
             "title": "Corto API Reference",
-            "chapters": [ "store", "vstore" ]
+            "chapters": [
+                "store",
+                "vstore",
+                "reflection",
+                "fmt",
+                "security",
+                "rw",
+                "walk",
+                "value",
+                "ptr"
+            ]
         }]
     }
 }

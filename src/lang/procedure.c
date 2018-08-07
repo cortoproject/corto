@@ -6,11 +6,11 @@ int16_t corto_procedure_construct(
     corto_procedure this)
 {
 
-    if (!this->hasThis) {
+    if (!this->has_this) {
         if (corto_interface(this)->base && 
             corto_instanceof(corto_procedure_o, corto_interface(this)->base)) 
         {
-            this->hasThis = corto_procedure(corto_interface(this)->base)->hasThis;
+            this->has_this = corto_procedure(corto_interface(this)->base)->has_this;
         }
     }
 

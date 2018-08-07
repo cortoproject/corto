@@ -1,0 +1,597 @@
+in test
+
+
+class reftype {
+    x, y: int32
+}
+
+class refmbr {
+    x, y: int32
+    m: reftype
+}
+
+struct valtype {
+    x, y: int32
+}
+
+struct valmbr {
+    x, y: int32
+    m: valtype
+}
+
+struct valbase {
+    x, y: int32
+}
+
+struct valsub: valbase  {
+    z: int32
+}
+
+struct valsub_nested {
+    m: valsub
+    n: valsub
+}
+
+class refbase {
+    x, y: int32
+}
+
+class refsub: refbase  {
+    z: int32
+}
+
+class refsub_nested  {
+    m: refbase
+    n: refbase
+}
+
+struct point {
+    x, y: int32
+}
+
+struct point3d: point {
+    z: int32
+}
+
+struct three_values {
+    a, b, c: int32
+}
+
+struct three_values_sub: three_values {
+    a: int32
+    b: int32
+}
+
+struct line {
+    start, stop: point
+}
+
+enum Color {
+    Red, Yellow, Green, Blue
+}
+
+array int_array: int32, 3
+sequence int_seq: int32
+list int_list: int32
+
+array point_array: point, 3
+sequence point_seq: point
+list point_list: point
+
+struct s_nested_array {
+    m: int_array
+}
+
+struct s_nested_sequence {
+    m: int_seq
+}
+
+struct s_nested_list {
+    m: int_list
+}
+
+struct s_target_primitive {
+    foo: int32
+    m: target[int32]
+}
+
+struct s_target_reference {
+    foo: int32
+    m: target[object]
+}
+
+struct s_target_composite {
+    foo: int32
+    m: target[point]
+}
+
+struct s_target_collection {
+    foo: int32
+    m: target[list[int32]]
+}
+
+struct s_optional_primitive {
+    foo: int32
+    m: int32, optional
+}
+
+struct s_optional_reference {
+    foo: int32
+    m: object, optional
+}
+
+struct s_optional_string {
+    foo: int32
+    m: string, optional
+}
+
+struct s_optional_composite {
+    foo: int32
+    m: point, optional
+}
+
+struct s_optional_collection {
+    foo: int32
+    m: list[int32], optional
+}
+
+test/Suite assign_reftype_obj {
+    tc_byref_frommbr_bytype()
+    tc_byref_frommbr_byval()
+    tc_byref_frommbr_byref()
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+    tc_byref_fromnull()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+    tc_bytype_frommbr_bytype()
+    tc_bytype_frommbr_byval()
+    tc_bytype_frommbr_byref()
+    tc_bytype_fromnull()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+    tc_byval_frommbr_bytype()
+    tc_byval_frommbr_byval()
+    tc_byval_frommbr_byref()
+    tc_byval_fromnull()
+}
+
+test/Suite assign_reftype_ptr {
+    tc_byref_frommbr_bytype()
+    tc_byref_frommbr_byval()
+    tc_byref_frommbr_byref()
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+    tc_byref_fromnull()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+    tc_bytype_frommbr_bytype()
+    tc_bytype_frommbr_byval()
+    tc_bytype_frommbr_byref()
+    tc_bytype_fromnull()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+    tc_byval_frommbr_bytype()
+    tc_byval_frommbr_byval()
+    tc_byval_frommbr_byref()
+    tc_byval_fromnull()
+}
+
+test/Suite assign_valtype_obj {
+    tc_byref_frommbr_bytype()
+    tc_byref_frommbr_byval()
+    tc_byref_frommbr_byref()
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+    tc_bytype_frommbr_bytype()
+    tc_bytype_frommbr_byval()
+    tc_bytype_frommbr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+    tc_byval_frommbr_bytype()
+    tc_byval_frommbr_byval()
+    tc_byval_frommbr_byref()
+}
+
+test/Suite assign_valtype_ptr {
+    tc_byref_frommbr_bytype()
+    tc_byref_frommbr_byval()
+    tc_byref_frommbr_byref()
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+    tc_bytype_frommbr_bytype()
+    tc_bytype_frommbr_byval()
+    tc_bytype_frommbr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+    tc_byval_frommbr_bytype()
+    tc_byval_frommbr_byval()
+    tc_byval_frommbr_byref()
+}
+
+test/Suite assign_number_obj {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_number_ptr {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_value_to_object_obj {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_value_to_object_ptr {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_ref_to_object_obj {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_ref_to_object_ptr {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_val_to_bool_obj {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_ref_to_bool_obj {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/Suite assign_bool_to_bool_obj {
+    tc_byref_fromptr_bytype()
+    tc_byref_fromptr_byval()
+    tc_byref_fromptr_byref()
+    tc_byref_fromobj_bytype()
+    tc_byref_fromobj_byval()
+    tc_byref_fromobj_byref()
+
+    tc_bytype_fromobj_bytype()
+    tc_bytype_fromobj_byval()
+    tc_bytype_fromobj_byref()
+    tc_bytype_fromptr_bytype()
+    tc_bytype_fromptr_byval()
+    tc_bytype_fromptr_byref()
+
+    tc_byval_fromptr_bytype()
+    tc_byval_fromptr_byval()
+    tc_byval_fromptr_byref()
+    tc_byval_fromobj_bytype()
+    tc_byval_fromobj_byval()
+    tc_byval_fromobj_byref()
+}
+
+test/suite rw {
+    tc_primitive_bool()
+    tc_primitive_char()
+    tc_primitive_int()
+    tc_primitive_uint()
+    tc_primitive_float()
+    tc_primitive_string()
+    tc_primitive_constant()
+    tc_reference()
+    tc_composite_value()
+    tc_composite_value_nested()
+    tc_composite_ref()
+    tc_composite_ref_nested()
+    tc_composite_out_of_bounds_by_one()
+    tc_composite_out_of_bounds()
+    tc_inheritance_value()
+    tc_inheritance_value_nested()
+    tc_inheritance_ref()
+    tc_inheritance_ref_nested()
+    tc_collection_array()
+    tc_collection_array_composite()
+    tc_collection_sequence()
+    tc_collection_sequence_composite()
+    tc_collection_sequence_composite_dryrun()
+    tc_collection_list()
+    tc_collection_list_composite()
+    tc_nested_collection_array()
+    tc_nested_collection_sequence()
+    tc_nested_collection_list()
+    tc_nested_collection_list_empty()
+}
+
+test/suite rw_field_expr {
+    tc_composite_full()
+    tc_composite_full_reverse()
+    tc_composite_partial()
+    tc_composite_mixed()
+    tc_nested_expr_full()
+    tc_nested_expr_full_reverse()
+    tc_nested_expr_partial()
+    tc_nested_expr_mixed()
+    tc_nested_push_full()
+    tc_nested_push_full_reverse()
+    tc_nested_push_partial()
+    tc_nested_push_mixed()
+    tc_inheritance_push_full()
+    tc_inheritance_push_full_reverse()
+    tc_inheritance_push_partial()
+    tc_inheritance_push_mixed()
+    tc_inheritance_push_mixed_three_values()
+    tc_inheritance_expr_full()
+    tc_inheritance_expr_full_reverse()
+    tc_inheritance_expr_partial()
+    tc_inheritance_expr_mixed()
+}
+
+test/suite rw_target {
+    tc_primitive()
+    tc_reference()
+    tc_composite()
+    tc_collection()
+
+    tc_target_after_push()
+    tc_actual_after_push()
+    tc_objective_after_push()
+
+    tc_target_nested()
+    tc_actual_nested()
+    tc_objective_nested()
+
+    tc_actual_no_field_expr()
+    tc_set_actual_and_objective()
+    tc_set_actual_no_field_expr_and_objective()
+
+    tc_target_app_from_app()
+    tc_target_app_from_local()
+    tc_target_app_from_remote()
+    tc_target_local_from_app()
+    tc_target_local_from_local()
+    tc_target_local_from_remote()
+    tc_target_remote_from_app()
+    tc_target_remote_from_local()
+    tc_target_remote_from_remote()
+
+    tc_actual_app_from_app()
+    tc_actual_app_from_local()
+    tc_actual_app_from_remote()
+    tc_actual_local_from_app()
+    tc_actual_local_from_local()
+    tc_actual_local_from_remote()
+    tc_actual_remote_from_app()
+    tc_actual_remote_from_local()
+    tc_actual_remote_from_remote()
+
+    tc_objective_app_from_app()
+    tc_objective_app_from_local()
+    tc_objective_app_from_remote()
+    tc_objective_local_from_app()
+    tc_objective_local_from_local()
+    tc_objective_local_from_remote()
+    tc_objective_remote_from_app()
+    tc_objective_remote_from_local()
+    tc_objective_remote_from_remote()
+}
+
+test.suite rw_optional {
+    tc_primitive()
+    tc_primitive_notset()
+    tc_reference()
+    tc_reference_null()
+    tc_reference_notset()
+    tc_string()
+    tc_string_null()
+    tc_string_notset()
+    tc_composite()
+    tc_composite_notset()
+    tc_collection()
+    tc_collection_notset()
+}

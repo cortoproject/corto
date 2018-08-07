@@ -429,7 +429,7 @@ void test_ReplicatorEvent_tc_rateLimitOneObject(
 
     corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
-    corto_mountPolicy policy = {.sampleRate = 5};
+    test_mount_policy policy = {.sampleRate = 5};
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
     test_EventReplicator__create_auto(NULL, mount, &q, &policy);
     test_assert(mount != NULL);
@@ -471,7 +471,7 @@ void test_ReplicatorEvent_tc_rateLimitThreeObjects(
 
     corto_void__create_auto(root_o, parent);
     test_assert(parent != NULL);
-    corto_mountPolicy policy = {.sampleRate = 5};
+    test_mount_policy policy = {.sampleRate = 5};
     corto_query q = {.select = "/", .from = corto_fullpath(NULL, parent)};
     test_EventReplicator__create_auto(NULL, mount, &q, &policy);
     test_assert(mount != NULL);
@@ -519,21 +519,9 @@ void test_ReplicatorEvent_tc_rateLimitAlign(
         .select = corto_strdup("/"),
         .from = corto_strdup("data")
     };
-    mnt->policy = (corto_mountPolicy){
-        .mask = CORTO_MOUNT_HISTORY_BATCH_NOTIFY,
-        .sampleRate = 20.0,
-    };
+
+    mnt->callbacks = CORTO_MOUNT_HISTORY_BATCH_NOTIFY;
+    mnt->sample_rate = 20.0;
+
     test_assert(corto_define(mnt) == 0);
-}
-
-void test_ReplicatorEvent_tc_sequenceToSequenceResize(
-    test_ReplicatorEvent this)
-{
-    /* Insert implementation */
-}
-
-void test_ReplicatorEvent_tc_eventDefineWithUpdate(
-    test_ReplicatorEvent this)
-{
-    /* Insert implementation */
 }

@@ -46,9 +46,9 @@ struct corto_exitHandler {
 };
 
 #define VERSION_MAJOR "2"
-#define VERSION_MINOR "0"
+#define VERSION_MINOR "1"
 #define VERSION_PATCH "0"
-#define VERSION_SUFFIX "alpha"
+#define VERSION_SUFFIX "beta"
 
 #ifdef VERSION_SUFFIX
 const char* BAKE_VERSION = VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "-" VERSION_SUFFIX;
@@ -103,6 +103,11 @@ static corto_ll corto_exitHandlers = NULL;
 /* String identifying current corto build */
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
 
+/* Builtin variables to automatically created objects */
+corto_object data_o = NULL;
+corto_object config_o = NULL;
+corto_object home_o = NULL;
+
 /* Helper macro's for building list of to be initialized objects */
 #define SSO_OBJECT(obj) CORTO_OFFSET(&obj##__o, sizeof(corto_SSO))
 #define BUILTIN_VOID(parent, obj) {SSO_OBJECT(parent##obj), 0}
@@ -154,15 +159,16 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_VALUE(lang_, collectionKind),\
     BUILTIN_VALUE(lang_, equalityKind),\
     BUILTIN_VALUE(lang_, inout),\
+    BUILTIN_VALUE(lang_, ref_kind),\
     BUILTIN_VALUE(vstore_, operatorKind),\
     BUILTIN_VALUE(vstore_, ownership),\
-    BUILTIN_VALUE(vstore_, mountMask),\
+    BUILTIN_VALUE(vstore_, mountCallbackMask),\
     BUILTIN_VALUE(vstore_, frameKind),\
     BUILTIN_VALUE(,secure_accessKind),\
     BUILTIN_VALUE(,secure_actionKind),\
-    BUILTIN_VALUE(lang_, modifier),\
+    BUILTIN_VALUE(lang_, modifierMask),\
     BUILTIN_VALUE(vstore_, eventMask),\
-    BUILTIN_VALUE(vstore_, resultMask),\
+    BUILTIN_VALUE(vstore_, recordMask),\
     BUILTIN_VALUE(lang_, state),\
     BUILTIN_VALUE(lang_, attr),\
     BUILTIN_VALUE(lang_, int32seq),\
@@ -176,28 +182,25 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_VALUE(lang_, objectlist),\
     BUILTIN_VALUE(lang_, taglist),\
     BUILTIN_VALUE(lang_, stringlist),\
-    BUILTIN_VALUE(vstore_, resultlist),\
-    BUILTIN_VALUE(vstore_, mountSubscriptionList),\
+    BUILTIN_VALUE(vstore_, recordlist),\
+    BUILTIN_VALUE(vstore_, mount_subscriptionList),\
     BUILTIN_VALUE(lang_, parameter),\
-    BUILTIN_VALUE(lang_, typeOptions),\
     BUILTIN_VALUE(vstore_, time),\
     BUILTIN_VALUE(vstore_, frame),\
     BUILTIN_VALUE(vstore_, sample),\
     BUILTIN_VALUE(vstore_, sampleIter),\
     BUILTIN_VALUE(vstore_, subscriber_eventIter),\
-    BUILTIN_VALUE(vstore_, result),\
-    BUILTIN_VALUE(vstore_, queuePolicy),\
-    BUILTIN_VALUE(vstore_, mountPolicy),\
+    BUILTIN_VALUE(vstore_, record),\
     BUILTIN_VALUE(lang_, delegatedata),\
     BUILTIN_VOID(vstore_, dispatcher),\
     BUILTIN_VALUE(lang_, pre_action),\
     BUILTIN_VALUE(lang_, name_action),\
     BUILTIN_VALUE(lang_, post_action),\
     BUILTIN_VALUE(vstore_, handleAction),\
-    BUILTIN_VALUE(vstore_, resultIter),\
+    BUILTIN_VALUE(vstore_, recordIter),\
     BUILTIN_VALUE(vstore_, objectIter),\
     BUILTIN_VALUE(vstore_, query),\
-    BUILTIN_VALUE(vstore_, mountSubscription),\
+    BUILTIN_VALUE(vstore_, mount_subscription),\
     BUILTIN_CLASS(lang_, function),\
     BUILTIN_CLASS(lang_, method),\
     BUILTIN_CLASS(lang_, overridable),\
@@ -266,8 +269,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* constant */\
     BUILTIN_OBJ(lang_constant_init_),\
     /* function */\
-    BUILTIN_OBJ(lang_function_returnType),\
-    BUILTIN_OBJ(lang_function_returnsReference),\
+    BUILTIN_OBJ(lang_function_return_type),\
+    BUILTIN_OBJ(lang_function_is_reference),\
     BUILTIN_OBJ(lang_function_parameters),\
     BUILTIN_OBJ(lang_function_overridable),\
     BUILTIN_OBJ(lang_function_overloaded),\
@@ -387,21 +390,25 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_inout_IN),\
     BUILTIN_OBJ(lang_inout_OUT),\
     BUILTIN_OBJ(lang_inout_INOUT),\
+    /* ref_kind */\
+    BUILTIN_OBJ(lang_ref_kind_BY_TYPE),\
+    BUILTIN_OBJ(lang_ref_kind_BY_VALUE),\
+    BUILTIN_OBJ(lang_ref_kind_BY_REFERENCE),\
     /* ownership */\
     BUILTIN_OBJ(vstore_ownership_REMOTE_SOURCE),\
     BUILTIN_OBJ(vstore_ownership_LOCAL_SOURCE),\
     BUILTIN_OBJ(vstore_ownership_CACHE_OWNER),\
     /* readWrite */\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_QUERY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_HISTORY_QUERY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_NOTIFY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_HISTORY_BATCH_NOTIFY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_BATCH_NOTIFY),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_SUBSCRIBE),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_MOUNT),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_RESUME),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_INVOKE),\
-    BUILTIN_OBJ(vstore_mountMask_MOUNT_ID),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_QUERY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_HISTORY_QUERY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_HISTORY_BATCH_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_BATCH_NOTIFY),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_SUBSCRIBE),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_MOUNT),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_RESUME),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_INVOKE),\
+    BUILTIN_OBJ(vstore_mountCallbackMask_MOUNT_ID),\
     /* frameKind */\
     BUILTIN_OBJ(vstore_frameKind_FRAME_NOW),\
     BUILTIN_OBJ(vstore_frameKind_FRAME_TIME),\
@@ -476,30 +483,29 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_eventMask_ON_VALUE),\
     BUILTIN_OBJ(vstore_eventMask_ON_METAVALUE),\
     BUILTIN_OBJ(vstore_eventMask_ON_ANY),\
-    /* modifier */\
-    BUILTIN_OBJ(lang_modifier_GLOBAL),\
-    BUILTIN_OBJ(lang_modifier_LOCAL),\
-    BUILTIN_OBJ(lang_modifier_PRIVATE),\
-    BUILTIN_OBJ(lang_modifier_READONLY),\
-    BUILTIN_OBJ(lang_modifier_CONST),\
-    BUILTIN_OBJ(lang_modifier_NOT_NULL),\
-    BUILTIN_OBJ(lang_modifier_HIDDEN),\
-    BUILTIN_OBJ(lang_modifier_OPTIONAL),\
-    BUILTIN_OBJ(lang_modifier_OBSERVABLE),\
-    BUILTIN_OBJ(lang_modifier_KEY),\
-    /* resultMask */\
-    BUILTIN_OBJ(vstore_resultMask_RESULT_LEAF),\
-    BUILTIN_OBJ(vstore_resultMask_RESULT_HIDDEN),\
-    /* typeOptions */\
-    BUILTIN_OBJ(lang_typeOptions_parentType),\
-    BUILTIN_OBJ(lang_typeOptions_parentState),\
-    BUILTIN_OBJ(lang_typeOptions_defaultType),\
-    BUILTIN_OBJ(lang_typeOptions_defaultProcedureType),\
+    /* modifierMask */\
+    BUILTIN_OBJ(lang_modifierMask_GLOBAL),\
+    BUILTIN_OBJ(lang_modifierMask_LOCAL),\
+    BUILTIN_OBJ(lang_modifierMask_PRIVATE),\
+    BUILTIN_OBJ(lang_modifierMask_READONLY),\
+    BUILTIN_OBJ(lang_modifierMask_CONST),\
+    BUILTIN_OBJ(lang_modifierMask_NOT_NULL),\
+    BUILTIN_OBJ(lang_modifierMask_HIDDEN),\
+    BUILTIN_OBJ(lang_modifierMask_OPTIONAL),\
+    BUILTIN_OBJ(lang_modifierMask_OBSERVABLE),\
+    BUILTIN_OBJ(lang_modifierMask_KEY),\
+    BUILTIN_OBJ(lang_modifierMask_SINGLETON),\
+    /* recordMask */\
+    BUILTIN_OBJ(vstore_recordMask_RESULT_LEAF),\
+    BUILTIN_OBJ(vstore_recordMask_RESULT_HIDDEN),\
     /* type */\
     BUILTIN_OBJ(lang_type_kind),\
     BUILTIN_OBJ(lang_type_reference),\
     BUILTIN_OBJ(lang_type_attr),\
-    BUILTIN_OBJ(lang_type_options),\
+    BUILTIN_OBJ(lang_type_parent_type),\
+    BUILTIN_OBJ(lang_type_parent_state),\
+    BUILTIN_OBJ(lang_type_scope_type),\
+    BUILTIN_OBJ(lang_type_scope_procedure_type),\
     BUILTIN_OBJ(lang_type_flags),\
     BUILTIN_OBJ(lang_type_size),\
     BUILTIN_OBJ(lang_type_alignment),\
@@ -511,7 +517,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_type_sizeof_),\
     BUILTIN_OBJ(lang_type_alignmentof_),\
     BUILTIN_OBJ(lang_type_compatible_),\
-    BUILTIN_OBJ(lang_type_resolveProcedure_),\
+    BUILTIN_OBJ(lang_type_resolve_procedure_),\
     BUILTIN_OBJ(lang_type_castable_),\
     BUILTIN_OBJ(lang_type_init_),\
     BUILTIN_OBJ(lang_type_deinit_),\
@@ -520,7 +526,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* primitive */\
     BUILTIN_OBJ(lang_primitive_kind),\
     BUILTIN_OBJ(lang_primitive_width),\
-    BUILTIN_OBJ(lang_primitive_convertId),\
+    BUILTIN_OBJ(lang_primitive_convert_id),\
     BUILTIN_OBJ(lang_primitive_init_),\
     BUILTIN_OBJ(lang_primitive_construct_),\
     BUILTIN_OBJ(lang_primitive_compatible_),\
@@ -529,7 +535,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_primitive_isNumber_),\
     /* interface */\
     BUILTIN_OBJ(lang_interface_kind),\
-    BUILTIN_OBJ(lang_interface_nextMemberId),\
+    BUILTIN_OBJ(lang_interface_next_member_id),\
     BUILTIN_OBJ(lang_interface_members),\
     BUILTIN_OBJ(lang_interface_methods),\
     BUILTIN_OBJ(lang_interface_base),\
@@ -537,24 +543,23 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_interface_construct_),\
     BUILTIN_OBJ(lang_interface_destruct_),\
     BUILTIN_OBJ(lang_interface_deinit_),\
-    BUILTIN_OBJ(lang_interface_resolveMember_),\
-    BUILTIN_OBJ(lang_interface_resolveMemberByTag_),\
+    BUILTIN_OBJ(lang_interface_resolve_member_),\
+    BUILTIN_OBJ(lang_interface_resolve_member_by_tag_),\
     BUILTIN_OBJ(lang_interface_compatible_),\
-    BUILTIN_OBJ(lang_interface_resolveMethod_),\
-    BUILTIN_OBJ(lang_interface_resolveMethodId_),\
-    BUILTIN_OBJ(lang_interface_resolveMethodById_),\
-    BUILTIN_OBJ(lang_interface_bindMethod_),\
+    BUILTIN_OBJ(lang_interface_resolve_method_),\
+    BUILTIN_OBJ(lang_interface_resolve_method_id_),\
+    BUILTIN_OBJ(lang_interface_resolve_method_by_id_),\
     BUILTIN_OBJ(lang_interface_baseof_),\
     /* collection */\
     BUILTIN_OBJ(lang_collection_kind),\
-    BUILTIN_OBJ(lang_collection_elementType),\
+    BUILTIN_OBJ(lang_collection_element_type),\
     BUILTIN_OBJ(lang_collection_max),\
     BUILTIN_OBJ(lang_collection_castable_),\
     BUILTIN_OBJ(lang_collection_compatible_),\
-    BUILTIN_OBJ(lang_collection_requiresAlloc),\
+    BUILTIN_OBJ(lang_collection_requires_alloc),\
     BUILTIN_OBJ(lang_collection_init_),\
     /* iterator */\
-    BUILTIN_OBJ(lang_iterator_elementType),\
+    BUILTIN_OBJ(lang_iterator_element_type),\
     BUILTIN_OBJ(lang_iterator_init_),\
     BUILTIN_OBJ(lang_iterator_castable_),\
     BUILTIN_OBJ(lang_iterator_compatible_),\
@@ -577,11 +582,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_float_max),\
     BUILTIN_OBJ(lang_float_init_),\
     /* text */\
-    BUILTIN_OBJ(lang_text_charWidth),\
+    BUILTIN_OBJ(lang_text_char_width),\
     BUILTIN_OBJ(lang_text_length),\
     BUILTIN_OBJ(lang_text_init_),\
     /* verbatim */\
-    BUILTIN_OBJ(lang_verbatim_contentType),\
+    BUILTIN_OBJ(lang_verbatim_format),\
     BUILTIN_OBJ(lang_verbatim_init_),\
     /* enum */\
     BUILTIN_OBJ(lang_enum_constants),\
@@ -594,22 +599,22 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_bitmask_init_),\
     /* struct */\
     BUILTIN_OBJ(lang_struct_base),\
-    BUILTIN_OBJ(lang_struct_baseAccess),\
+    BUILTIN_OBJ(lang_struct_base_modifiers),\
     BUILTIN_OBJ(lang_struct_keys),\
     BUILTIN_OBJ(lang_struct_keycache),\
     BUILTIN_OBJ(lang_struct_init_),\
     BUILTIN_OBJ(lang_struct_construct_),\
     BUILTIN_OBJ(lang_struct_compatible_),\
     BUILTIN_OBJ(lang_struct_castable_),\
-    BUILTIN_OBJ(lang_struct_resolveMember_),\
+    BUILTIN_OBJ(lang_struct_resolve_member_),\
     /* union */\
     BUILTIN_OBJ(lang_union_discriminator),\
     BUILTIN_OBJ(lang_union_init_),\
     BUILTIN_OBJ(lang_union_construct_),\
     BUILTIN_OBJ(lang_union_findCase_),\
     /* procedure */\
-    BUILTIN_OBJ(lang_procedure_hasThis),\
-    BUILTIN_OBJ(lang_procedure_thisType),\
+    BUILTIN_OBJ(lang_procedure_has_this),\
+    BUILTIN_OBJ(lang_procedure_this_type),\
     BUILTIN_OBJ(lang_procedure_init_),\
     BUILTIN_OBJ(lang_procedure_construct_),\
     /* interfaceVector */\
@@ -617,7 +622,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_interfaceVector_vector),\
     /* class */\
     BUILTIN_OBJ(lang_class_base),\
-    BUILTIN_OBJ(lang_class_baseAccess),\
+    BUILTIN_OBJ(lang_class_base_modifiers),\
     BUILTIN_OBJ(lang_class_implements),\
     BUILTIN_OBJ(lang_class_interfaceVector),\
     BUILTIN_OBJ(lang_class_construct),\
@@ -628,7 +633,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_class_delete),\
     BUILTIN_OBJ(lang_class_init_),\
     BUILTIN_OBJ(lang_class_instanceof_),\
-    BUILTIN_OBJ(lang_class_resolveInterfaceMethod_),\
+    BUILTIN_OBJ(lang_class_resolve_interface_method_),\
     /* leaf */\
     BUILTIN_OBJ(lang_container_construct_),\
     BUILTIN_OBJ(lang_container_type),\
@@ -637,21 +642,12 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_tableinstance_type),\
     /* table */\
     BUILTIN_OBJ(lang_table_construct_),\
-    /* queuePolicy */\
-    BUILTIN_OBJ(vstore_queuePolicy_max),\
-    /* mountPolicy */\
-    BUILTIN_OBJ(vstore_mountPolicy_ownership),\
-    BUILTIN_OBJ(vstore_mountPolicy_mask),\
-    BUILTIN_OBJ(vstore_mountPolicy_sampleRate),\
-    BUILTIN_OBJ(vstore_mountPolicy_queue),\
-    BUILTIN_OBJ(vstore_mountPolicy_expiryTime),\
-    BUILTIN_OBJ(vstore_mountPolicy_filterResults),\
-    /* mountSubscription */\
-    BUILTIN_OBJ(vstore_mountSubscription_query),\
-    BUILTIN_OBJ(vstore_mountSubscription_mountCount),\
-    BUILTIN_OBJ(vstore_mountSubscription_subscriberCount),\
-    BUILTIN_OBJ(vstore_mountSubscription_mountCtx),\
-    BUILTIN_OBJ(vstore_mountSubscription_subscriberCtx),\
+    /* mount_subscription */\
+    BUILTIN_OBJ(vstore_mount_subscription_query),\
+    BUILTIN_OBJ(vstore_mount_subscription_mountCount),\
+    BUILTIN_OBJ(vstore_mount_subscription_subscriberCount),\
+    BUILTIN_OBJ(vstore_mount_subscription_mountCtx),\
+    BUILTIN_OBJ(vstore_mount_subscription_subscriberCtx),\
     /* query */\
     BUILTIN_OBJ(vstore_query_select),\
     BUILTIN_OBJ(vstore_query_from),\
@@ -663,8 +659,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_query_limit),\
     BUILTIN_OBJ(vstore_query_soffset),\
     BUILTIN_OBJ(vstore_query_slimit),\
-    BUILTIN_OBJ(vstore_query_timeBegin),\
-    BUILTIN_OBJ(vstore_query_timeEnd),\
+    BUILTIN_OBJ(vstore_query_frame_begin),\
+    BUILTIN_OBJ(vstore_query_frame_end),\
     BUILTIN_OBJ(vstore_query_content),\
     BUILTIN_OBJ(vstore_query_yield_unknown),\
     BUILTIN_OBJ(vstore_query_cardinality_),\
@@ -672,7 +668,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     /* subscriber */\
     BUILTIN_OBJ(vstore_subscriber_query),\
     BUILTIN_OBJ(vstore_subscriber_queue),\
-    BUILTIN_OBJ(vstore_subscriber_contentType),\
+    BUILTIN_OBJ(vstore_subscriber_format),\
     BUILTIN_OBJ(vstore_subscriber_instance),\
     BUILTIN_OBJ(vstore_subscriber_dispatcher),\
     BUILTIN_OBJ(vstore_subscriber_enabled),\
@@ -692,25 +688,27 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_router_init_),\
     BUILTIN_OBJ(vstore_router_construct_),\
     BUILTIN_OBJ(vstore_router_match),\
-    BUILTIN_OBJ(vstore_router_returnType),\
-    BUILTIN_OBJ(vstore_router_paramType),\
-    BUILTIN_OBJ(vstore_router_paramName),\
-    BUILTIN_OBJ(vstore_router_routerDataType),\
-    BUILTIN_OBJ(vstore_router_routerDataName),\
-    BUILTIN_OBJ(vstore_router_elementSeparator),\
+    BUILTIN_OBJ(vstore_router_return_type),\
+    BUILTIN_OBJ(vstore_router_param_type),\
+    BUILTIN_OBJ(vstore_router_param_name),\
+    BUILTIN_OBJ(vstore_router_router_data_type),\
+    BUILTIN_OBJ(vstore_router_router_data_name),\
+    BUILTIN_OBJ(vstore_router_element_separator),\
     /* routerimpl */\
     BUILTIN_OBJ(vstore_routerimpl_construct_),\
     BUILTIN_OBJ(vstore_routerimpl_destruct_),\
     BUILTIN_OBJ(vstore_routerimpl_maxArgs),\
     BUILTIN_OBJ(vstore_routerimpl_matched),\
-    BUILTIN_OBJ(vstore_routerimpl_matchRoute_),\
-    BUILTIN_OBJ(vstore_routerimpl_findRoute_),\
+    BUILTIN_OBJ(vstore_routerimpl_match_route_),\
+    BUILTIN_OBJ(vstore_routerimpl_find_route_),\
     /* mount */\
-    BUILTIN_OBJ(vstore_mount_query),\
-    BUILTIN_OBJ(vstore_mount_contentType),\
-    BUILTIN_OBJ(vstore_mount_policy),\
-    BUILTIN_OBJ(vstore_mount_mount),\
     BUILTIN_OBJ(vstore_mount_attr),\
+    BUILTIN_OBJ(vstore_mount_ownership),\
+    BUILTIN_OBJ(vstore_mount_callbacks),\
+    BUILTIN_OBJ(vstore_mount_sample_rate),\
+    BUILTIN_OBJ(vstore_mount_queue_max),\
+    BUILTIN_OBJ(vstore_mount_expiry_time),\
+    BUILTIN_OBJ(vstore_mount_filter_records),\
     BUILTIN_OBJ(vstore_mount_subscriptions),\
     BUILTIN_OBJ(vstore_mount_events),\
     BUILTIN_OBJ(vstore_mount_historicalEvents),\
@@ -723,8 +721,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_mount_explicitResume),\
     BUILTIN_OBJ(vstore_mount_thread),\
     BUILTIN_OBJ(vstore_mount_quit),\
-    BUILTIN_OBJ(vstore_mount_contentTypeOut),\
-    BUILTIN_OBJ(vstore_mount_contentTypeOutHandle),\
+    BUILTIN_OBJ(vstore_mount_formatOut),\
+    BUILTIN_OBJ(vstore_mount_formatOutHandle),\
     BUILTIN_OBJ(vstore_mount_init_),\
     BUILTIN_OBJ(vstore_mount_construct_),\
     BUILTIN_OBJ(vstore_mount_destruct_),\
@@ -735,9 +733,9 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_mount_resume_),\
     BUILTIN_OBJ(vstore_mount_subscribe_),\
     BUILTIN_OBJ(vstore_mount_unsubscribe_),\
-    BUILTIN_OBJ(vstore_mount_setContentType_),\
-    BUILTIN_OBJ(vstore_mount_setContentTypeIn_),\
-    BUILTIN_OBJ(vstore_mount_setContentTypeOut_),\
+    BUILTIN_OBJ(vstore_mount_set_format_),\
+    BUILTIN_OBJ(vstore_mount_set_formatIn_),\
+    BUILTIN_OBJ(vstore_mount_set_formatOut_),\
     BUILTIN_OBJ(vstore_mount_return_),\
     BUILTIN_OBJ(vstore_mount_publish_),\
     BUILTIN_OBJ(vstore_mount_post_),\
@@ -766,10 +764,11 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_delegatedata_instance),\
     BUILTIN_OBJ(lang_delegatedata_procedure),\
     /* delegate */\
-    BUILTIN_OBJ(lang_delegate_returnType),\
-    BUILTIN_OBJ(lang_delegate_returnsReference),\
+    BUILTIN_OBJ(lang_delegate_return_type),\
+    BUILTIN_OBJ(lang_delegate_is_reference),\
     BUILTIN_OBJ(lang_delegate_parameters),\
     BUILTIN_OBJ(lang_delegate_init_),\
+    BUILTIN_OBJ(lang_delegate_construct_),\
     BUILTIN_OBJ(lang_delegate_compatible_),\
     BUILTIN_OBJ(lang_delegate_castable_),\
     BUILTIN_OBJ(lang_delegate_instanceof_),\
@@ -790,7 +789,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_unit_init_),\
     BUILTIN_OBJ(lang_unit_construct_),\
     /* array */\
-    BUILTIN_OBJ(lang_array_elementType),\
+    BUILTIN_OBJ(lang_array_element_type),\
     BUILTIN_OBJ(lang_array_init_),\
     BUILTIN_OBJ(lang_array_construct_),\
     BUILTIN_OBJ(lang_array_destruct_),\
@@ -801,8 +800,8 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_list_init_),\
     BUILTIN_OBJ(lang_list_construct_),\
     /* map */\
-    BUILTIN_OBJ(lang_map_keyType),\
-    BUILTIN_OBJ(lang_map_elementType),\
+    BUILTIN_OBJ(lang_map_key_type),\
+    BUILTIN_OBJ(lang_map_element_type),\
     BUILTIN_OBJ(lang_map_max),\
     BUILTIN_OBJ(lang_map_init_),\
     BUILTIN_OBJ(lang_map_construct_),\
@@ -831,23 +830,23 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(lang_parameter_name),\
     BUILTIN_OBJ(lang_parameter_type),\
     BUILTIN_OBJ(lang_parameter_inout),\
-    BUILTIN_OBJ(lang_parameter_passByReference),\
+    BUILTIN_OBJ(lang_parameter_is_reference),\
     /* sample */\
     BUILTIN_OBJ(vstore_sample_timestamp),\
     BUILTIN_OBJ(vstore_sample_value),\
-    /* result */\
-    BUILTIN_OBJ(vstore_result_id),\
-    BUILTIN_OBJ(vstore_result_name),\
-    BUILTIN_OBJ(vstore_result_parent),\
-    BUILTIN_OBJ(vstore_result_type),\
-    BUILTIN_OBJ(vstore_result_value),\
-    BUILTIN_OBJ(vstore_result_flags),\
-    BUILTIN_OBJ(vstore_result_object),\
-    BUILTIN_OBJ(vstore_result_history),\
-    BUILTIN_OBJ(vstore_result_owner),\
-    BUILTIN_OBJ(vstore_result_getText_),\
-    BUILTIN_OBJ(vstore_result_fromcontent_),\
-    BUILTIN_OBJ(vstore_result_contentof_),\
+    /* record */\
+    BUILTIN_OBJ(vstore_record_id),\
+    BUILTIN_OBJ(vstore_record_name),\
+    BUILTIN_OBJ(vstore_record_parent),\
+    BUILTIN_OBJ(vstore_record_type),\
+    BUILTIN_OBJ(vstore_record_value),\
+    BUILTIN_OBJ(vstore_record_flags),\
+    BUILTIN_OBJ(vstore_record_object),\
+    BUILTIN_OBJ(vstore_record_history),\
+    BUILTIN_OBJ(vstore_record_owner),\
+    BUILTIN_OBJ(vstore_record_get_text_),\
+    BUILTIN_OBJ(vstore_record_fromcontent_),\
+    BUILTIN_OBJ(vstore_record_contentof_),\
     /* package */\
     BUILTIN_OBJ(lang_package_description),\
     BUILTIN_OBJ(lang_package_version),\
@@ -871,6 +870,7 @@ static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
     BUILTIN_OBJ(vstore_frame_getTime_),\
     /* native/type */\
     BUILTIN_OBJ(native_type_name),\
+    BUILTIN_OBJ(native_type_is_ptr),\
     BUILTIN_OBJ(native_type_init_),\
     /* secure/key */\
     BUILTIN_OBJ(secure_key_enabled),\
@@ -980,25 +980,29 @@ void corto_environment_init(void)
 {
 /* Only set environment variables if library is installed as corto package */
 
-    /* BAKE_HOME is where corto binaries are located */
-    if (!corto_getenv("BAKE_HOME") || !strlen(corto_getenv("BAKE_HOME"))) {
-        corto_setenv("BAKE_HOME", "/usr/local");
-    }
-
     /* If there is no home directory, default to /usr/local. This should be
      * avoided in development environments. */
     if (!corto_getenv("HOME") || !strlen(corto_getenv("HOME"))) {
         corto_setenv("HOME", "/usr/local");
     }
 
-    /* BAKE_TARGET is where a project will be built */
-    if (!corto_getenv("BAKE_TARGET") || !strlen(corto_getenv("BAKE_TARGET"))) {
-        corto_setenv("BAKE_TARGET", "~/.corto");
-    }
-
     /* BAKE_VERSION points to the current major-minor version */
     if (!corto_getenv("BAKE_VERSION")) {
         corto_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
+    }
+
+    if (!corto_getenv("BAKE_HOME")) {
+        corto_setenv("BAKE_HOME", ".");
+    }
+
+    if (!corto_getenv("BAKE_TARGET")) {
+        corto_setenv("BAKE_TARGET", ".");
+    }
+
+    if (!corto_getenv("HOSTNAME")) {
+        corto_id hostname;
+        gethostname(hostname, sizeof(hostname));
+        corto_setenv("HOSTNAME", hostname);
     }
 
     corto_string enableBacktrace = corto_getenv("CORTO_LOG_BACKTRACE");
@@ -1023,18 +1027,23 @@ int corto_load_config(void)
     char *cfg = corto_getenv("CORTO_CONFIG");
     if (cfg) {
         if (corto_isdir(cfg)) {
+            corto_time start, stop;
             corto_trace("loading configuration");
             corto_ll cfgfiles = corto_opendir(cfg);
             corto_iter it = corto_ll_iter(cfgfiles);
             while (corto_iter_hasNext(&it)) {
                 char *file = corto_iter_next(&it);
                 char *full_path = corto_asprintf("%s/%s", cfg, file);
+                corto_time_get(&start);
                 if (corto_use(full_path, 0, NULL)) {
                     corto_raise();
                     result = -1;
                     /* Don't break, report all errors */
                 } else {
-                    corto_ok("successfuly loaded '%s'", file);
+                    corto_time_get(&stop);
+                    stop = corto_time_sub(stop, start);
+                    corto_ok("loaded '%s' in %d.%.3d seconds", file,
+                        stop.sec, stop.nanosec / 1000000);
                 }
                 free(full_path);
             }
@@ -1082,8 +1091,19 @@ int corto_start(
     corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
     corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
 
+    /* If BAKE_HOME is not set to a public package repository, default to
+     * standalone mode */
+    char *BAKE_HOME = corto_getenv("BAKE_HOME");
+    bool standalone = !BAKE_HOME || !BAKE_HOME[0];
+
     /* Initialize operating system environment */
     corto_environment_init();
+
+#ifndef NDEBUG
+    corto_ok("using corto #[yellow]debug#[normal] runtime, use a release build for better performance");
+#else
+    corto_ok("using corto #[green]release#[normal] runtime, use a debug build to enable runtime sanity checks");
+#endif
 
     /* Push init component for logging */
     corto_log_push("init");
@@ -1095,7 +1115,12 @@ int corto_start(
         corto_getenv("BAKE_TARGET"),
         corto_getenv("BAKE_HOME"),
         corto_getenv("BAKE_VERSION"),
-        corto_get_build());
+        corto_get_build(),
+        standalone);
+
+    if (standalone) {
+        corto_trace("standalone mode enabled");
+    }
 
     /* Initialize security */
     corto_debug("init security");
@@ -1241,7 +1266,8 @@ int corto_start(
     int corto_file_loader(corto_string file, int argc, char* argv[], void *data);
     corto_load_register("", corto_file_loader, NULL);
 
-    /* Always randomize seed */
+    /* Randomize seed by default (application can easily override by calling
+     * srand again) */
     srand (time(NULL));
 
     CORTO_APP_STATUS = 0; /* Running */
@@ -1249,13 +1275,13 @@ int corto_start(
     /* Create builtin root scopes */
     corto_debug("init root scopes");
 
-    corto_object config_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
+    config_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "config", .type = corto_void_o});
 
-    corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
+    data_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "data", .type = corto_void_o});
 
-    corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
+    home_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "home", .type = corto_void_o});
 
 /* Only create package mount for non-redistributable version of corto, where
@@ -1301,8 +1327,6 @@ void corto_atexit(
  * functions after corto_stop has been called causes undefined behavior. */
 int corto_stop(void)
 {
-    CORTO_APP_STATUS = 2; /* Shutting down */
-
     corto_log_push("fini");
 
     corto_trace("shutting down...");
@@ -1330,6 +1354,10 @@ int corto_stop(void)
 
     corto_int32 i;
     corto_object o;
+
+    /* From here things get funky, because we're going to deinitialize builtin
+     * structures. Signal that corto is shutting down */
+    CORTO_APP_STATUS = 2;
 
     /* Destruct objects */
     corto_debug("cleanup builtin objects");
@@ -1380,23 +1408,23 @@ int corto_stop(void)
 
     /* Call exithandlers. Do after corto_platform_deinit as this will unload any
      * loaded libraries, which may have routines to cleanup TLS data. */
-     struct corto_exitHandler* h;
+    struct corto_exitHandler* h;
 
-     if (corto_exitHandlers) {
-         while((h = corto_ll_takeFirst(corto_exitHandlers))) {
-             h->handler(h->userData);
-             corto_dealloc(h);
-         }
-         corto_ll_free(corto_exitHandlers);
-         corto_exitHandlers = NULL;
-     }
+    if (corto_exitHandlers) {
+        while((h = corto_ll_takeFirst(corto_exitHandlers))) {
+            h->handler(h->userData);
+            corto_dealloc(h);
+        }
+        corto_ll_free(corto_exitHandlers);
+        corto_exitHandlers = NULL;
+    }
 
     /* Corto is now shut down */
     CORTO_APP_STATUS = 3;
 
     /* Cleanup any TLS data in the mainthread not created through corto. Don't
      * enable this by default as it will exit the process with exit status 0,
-     * which prevents the application from specifying a custom code. */
+     * which prevents the application from specifying a custom exit code. */
     if (CORTO_COLLECT_TLS) {
         pthread_exit(0);
     }
@@ -1469,7 +1497,7 @@ corto_object _corto_assert_type(
 
 /* Assert object is valid. Only enabled in debug builds */
 #ifndef NDEBUG
-void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
+corto_object _corto_assert_object(char const *file, unsigned int line, corto_object o) {
     if (o) {
         corto__object *_o = corto_hdr(o);
         if (_o->magic != CORTO_MAGIC) {
@@ -1487,5 +1515,7 @@ void _corto_assert_object(char const *file, unsigned int line, corto_object o) {
             }
         }
     }
+
+    return o;
 }
 #endif

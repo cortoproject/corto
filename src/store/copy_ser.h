@@ -36,7 +36,7 @@ extern "C" {
         void *base;
     }corto_copy_ser_t;
 
-    corto_walk_opt corto_copy_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
+    corto_walk_opt corto_copy_ser(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

@@ -28,9 +28,9 @@
 extern "C" {
 #endif
 
-corto_walk_opt corto_ser_keep(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
-corto_walk_opt corto_ser_free(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
-corto_walk_opt corto_ser_freeResources(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace);
+corto_walk_opt corto_ser_keep(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace);
+corto_walk_opt corto_ser_free(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace);
+corto_walk_opt corto_ser_freeResources(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace);
 
 #ifdef __cplusplus
 }

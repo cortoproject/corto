@@ -19,93 +19,333 @@
  * THE SOFTWARE.
  */
 
-#include "object.h"
+#include <corto/corto.h>
 
-static corto_int16 ___ (*_corto_expr_compb)(
-    ext_corto_expr *out,
-    ext_corto_expr_opt *opt,
-    char *expr,
-    char **types);
+/* Rate types based on expressibility */
+uint8_t corto_expr_type_score(
+    corto_primitive t)
+{
+    uint8_t result = 0;
 
-static corto_int16 ___ (*_corto_expr_runb)(
-    ext_corto_expr *expr,
-    corto_value *out,
-    void **args);
+    switch(t->kind) {
+    case CORTO_ENUM:
+    case CORTO_BITMASK:
+        result = 1;
+        break;
+    case CORTO_BOOLEAN:
+    case CORTO_BINARY:
+    case CORTO_INTEGER:
+    case CORTO_UINTEGER:
+        result = 2;
+        break;
+    case CORTO_CHARACTER:
+        result = 3;
+        break;
+    case CORTO_FLOAT:
+        result = 4;
+        break;
+    case CORTO_TEXT:
+        result = 5;
+        break;
+    }
 
-static corto_int16 ___ (*_corto_expr_free)(
-    ext_corto_expr *expr);
+    return result;
+}
 
-static corto_int16 ext_corto_expr_load() {
+bool corto_operator_is_assignment(
+    corto_operatorKind _operator)
+{
+    corto_bool result;
+    switch(_operator) {
+    case CORTO_ASSIGN:
+    case CORTO_ASSIGN_ADD:
+    case CORTO_ASSIGN_SUB:
+    case CORTO_ASSIGN_DIV:
+    case CORTO_ASSIGN_MUL:
+    case CORTO_ASSIGN_MOD:
+    case CORTO_ASSIGN_OR:
+    case CORTO_ASSIGN_AND:
+        result = TRUE;
+        break;
+    default:
+        result = FALSE;
+        break;
+    }
+    return result;
+}
 
-    if (!_corto_expr_free) {
-        corto_dl dl = NULL;
+bool corto_operator_is_conditional(
+     corto_operatorKind _operator)
+{
+    corto_bool result;
+    switch(_operator) {
+    case CORTO_COND_EQ:
+    case CORTO_COND_NEQ:
+    case CORTO_COND_LT:
+    case CORTO_COND_LTEQ:
+    case CORTO_COND_GT:
+    case CORTO_COND_GTEQ:
+    case CORTO_COND_AND:
+    case CORTO_COND_OR:
+    case CORTO_COND_NOT:
+        result = TRUE;
+        break;
+    default:
+        result = FALSE;
+        break;
+    }
+    return result;
+}
 
-        _corto_expr_compb = (corto_int16 ___ (*)(ext_corto_expr*,ext_corto_expr_opt*,char*,char**))
-            corto_load_proc("corto/expr", &dl, "corto_expr_compb");
-        if (!_corto_expr_compb) {
-            corto_throw("'corto_expr_compb' not found in corto/expr");
+int16_t corto_expr_typeof(
+    corto_type src,
+    corto_type dst,
+    bool src_is_ref,
+    bool dst_is_ref,
+    corto_type *type_out)
+{
+    corto_type result = src;
+
+    if (!src && !dst) {
+        /* Valid scenario: null && null */
+        *type_out = NULL;
+        return 0;
+    }
+
+    if (!src) {
+        /* If this is a null-expression, type is derived from the dst */
+        if (dst) {
+            bool primitive_target = dst->kind == CORTO_PRIMITIVE;
+            if (dst->reference || dst_is_ref) {
+                /* If dst is a reference, interpret as type of dst */
+                result = dst;
+
+                /* The purpose of the dst_is_ref parameter is to support
+                 * references of which the type is not a reference. An
+                 * example:
+                 *  var int32& ref = my_int
+                 */
+            } else if (primitive_target) {
+                corto_primitiveKind kind = corto_primitive(dst)->kind;
+                if (kind == CORTO_TEXT) {
+                    /* If dst is a string, interpret null as string */
+                    result = corto_type(corto_string_o);
+                } else if (kind == CORTO_BOOLEAN) {
+                    /* If dst is a bool, interpret null as an string */
+                    result = corto_type(corto_string_o);
+                } else {
+                    /* Can't assign null to other kinds of primitives */
+                    corto_throw("cannot assign null to value of type '%s'",
+                        corto_fullpath(NULL, dst));
+                    goto error;
+                }
+            } else if (dst->kind == CORTO_COLLECTION &&
+                (corto_collection(dst)->kind == CORTO_LIST ||
+                corto_collection(dst)->kind == CORTO_MAP))
+            {
+                result = dst;
+            } else {
+                /* Can't assign null to other values */
+                corto_throw("cannot assign null to value of type '%s'",
+                    corto_fullpath(NULL, dst));
+                goto error;
+            }
+        } else {
+            /* Src and dst don't have a type. Don't know what to do */
+            corto_throw("cannot derive type, source and target are 'null'");
             goto error;
         }
 
-        _corto_expr_runb = (corto_int16 ___ (*)(ext_corto_expr*,corto_value*,void**))
-            corto_load_proc("corto/expr", &dl, "corto_expr_runb");
-        if (!_corto_expr_runb) {
-            corto_throw("'corto_expr_runb' not found in corto/expr");
-            goto error;
-        }
-
-        _corto_expr_free = (corto_int16 ___ (*)(ext_corto_expr*))
-            corto_load_proc("corto/expr", &dl, "corto_expr_free");
-        if (!_corto_expr_free) {
-            corto_throw("'corto_expr_free' not found in corto/expr");
+    } else if ((dst && (dst->kind == CORTO_VOID) && dst->reference)) {
+        if (src_is_ref) {
+            result = corto_object_o;
+        } else {
+            corto_throw(
+                "cannot assign non-reference value of type '%s' to '%s'",
+                    corto_fullpath(NULL, src),
+                    corto_fullpath(NULL, dst));
             goto error;
         }
     }
+
+    *type_out = result;
 
     return 0;
 error:
     return -1;
 }
 
-ext_corto_expr* ext_corto_expr_alloc(void) {
-    return corto_calloc(sizeof(ext_corto_expr));
-}
-
-corto_int16 ext_corto_expr_compb(
-    ext_corto_expr *out,
-    ext_corto_expr_opt *opt,
-    char *expr,
-    char **types)
+int16_t corto_expr_binary_typeof(
+    corto_type left_type,
+    corto_bool left_is_ref,
+    corto_type right_type,
+    corto_bool right_is_ref,
+    corto_operatorKind _operator,
+    corto_type *operand_type,
+    corto_type *expr_type)
 {
-    if (ext_corto_expr_load()) {
-        goto error;
+    corto_type castType = NULL;
+    corto_bool equal = FALSE;
+
+    corto_assert(
+        operand_type != NULL, "NULL provided for out-parameter operandType");
+    corto_assert(
+        expr_type != NULL, "NULL provided for out-parameter expr_type");
+
+    if (corto_operator_is_conditional(_operator)) {
+        *expr_type = corto_type(corto_bool_o);
+    } else {
+        *expr_type = NULL;
     }
 
-    return _corto_expr_compb(out, opt, expr, types);
+    corto_try (corto_expr_typeof(
+        left_type, NULL, left_is_ref, FALSE, &left_type), NULL);
+
+    corto_catch();
+
+    corto_try (corto_expr_typeof(
+        right_type, left_type, right_is_ref, left_is_ref, &right_type), NULL);
+
+    if (!left_type) {
+        left_type = right_type;
+    }
+
+    /* NULL input, NULL output */
+    if (!right_type) {
+        *operand_type = NULL;
+        return 0;
+    }
+
+    /* If types are not scoped, verify whether they're equal */
+    if (!corto_check_attr(left_type, CORTO_ATTR_NAMED) &&
+        !corto_check_attr(right_type, CORTO_ATTR_NAMED))
+    {
+        if (corto_compare(left_type, right_type) == CORTO_EQ) {
+            equal = TRUE;
+        }
+    } else {
+        equal = left_type == right_type;
+    }
+
+    if (_operator == CORTO_DIV) {
+        castType = corto_type(corto_float64_o);
+
+    } else if (!equal) {
+        /* Can only cast between primitive types */
+        if ((left_type->kind == CORTO_PRIMITIVE ) &&
+            (right_type->kind == CORTO_PRIMITIVE))
+        {
+            corto_primitive
+                ltype = corto_primitive(left_type),
+                rtype = corto_primitive(right_type);
+
+            int8_t lscore = corto_expr_type_score(ltype);
+            int8_t rscore = corto_expr_type_score(rtype);
+
+            /* If expression is an assignment, always take type of lvalue.
+             * Otherwise determine based on expressibility score which type to
+             * cast to. */
+            if (corto_operator_is_assignment(_operator)) {
+                if (ltype->width != rtype->width) {
+                    castType = left_type;
+                }
+            } else {
+                if (lscore == rscore) {
+                    if (ltype->width == rtype->width) {
+                        /* If width and kind are equal, no conversion is
+                         * required. */
+                        *operand_type = left_type;
+                    } else if (ltype->width >= rtype->width) {
+                        castType = left_type;
+                    } else {
+                        castType = right_type;
+                    }
+                } else if (lscore >= rscore) {
+                    castType = left_type;
+                } else {
+                    castType = right_type;
+                }
+            }
+        } else if (left_type->reference && right_type->reference) {
+            castType = NULL;
+            /* Check if types are compatible */
+
+        } else if (right_is_ref && !left_type->reference) {
+            if (corto_type_castable(left_type, corto_object_o)) {
+                castType = left_type;
+            } else {
+                goto cast_error;
+            }
+        } else {
+            goto cast_error;
+        }
+    } else if (right_is_ref && !left_type->reference) {
+        if (corto_type_castable(left_type, corto_object_o)) {
+            castType = left_type;
+        } else {
+            goto cast_error;
+        }
+    }
+
+    if (!castType) {
+        castType = left_type;
+    }
+    if (castType) {
+        *operand_type = castType;
+    }
+    if (!*expr_type) {
+        *expr_type = *operand_type;
+    }
+
+    return 0;
+cast_error:
+    corto_throw("cannot cast from '%s%s' to '%s%s'",
+      corto_fullpath(NULL, right_type), right_is_ref ? "&" : "",
+        corto_fullpath(NULL, left_type), left_is_ref ? "&" : "");
 error:
     return -1;
 }
 
-corto_int16 ext_corto_expr_runb(
-    ext_corto_expr *expr,
-    corto_value *out,
-    void **args)
+int16_t corto_expr_is_ref(
+    corto_value_kind kind,
+    corto_ref_kind ref_kind,
+    corto_type type,
+    bool *result)
 {
-    if (ext_corto_expr_load()) {
-        goto error;
+    if (ref_kind == CORTO_BY_REFERENCE) {
+        if (kind == CORTO_OBJECT) {
+            *result = true;
+        } else if (type && type->reference) {
+            *result = true;
+        } else if (!type && kind == CORTO_LITERAL) {
+            *result = true; /* null literal */
+        } else {
+            corto_throw(
+            "cannot take reference of non-reference expression of type '%s'",
+                corto_fullpath(NULL, type));
+            goto error;
+        }
+    } else if (ref_kind == CORTO_BY_TYPE) {
+        if (type && type->reference) {
+            *result = true;
+        } else if (type && type->kind == CORTO_VOID) {
+            *result = true; /* void values can't be used by value */
+        } else {
+            *result = false;
+        }
+    } else if (ref_kind == CORTO_BY_VALUE) {
+        if (type && type->kind == CORTO_VOID) {
+            if (!type->reference || kind != CORTO_OBJECT) {
+                corto_throw("cannot take value of void value");
+                goto error;
+            } /* else {
+                Even though the value of a void reftype is a reference, 'false'
+                indicates to the expression evaluation algorithm that we should
+                obtain *o, not &o, in case 'o' is an object itself.
+            } */
+        }
+        *result = false;
     }
-
-    return _corto_expr_runb(expr, out, args);
-error:
-    return -1;
-}
-
-corto_int16 ext_corto_expr_free(ext_corto_expr *expr) {
-    if (ext_corto_expr_load()) {
-        goto error;
-    }
-
-    _corto_expr_free(expr);
 
     return 0;
 error:

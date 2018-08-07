@@ -25,9 +25,3 @@ void test_MountMounts_tc_mountOnDefine(
     test_assert(corto_ll_count(mnt->mounts) == 1);
     test_assert(corto_ll_count(mnt->unmounts) == 0);
 }
-
-void test_MountMounts_tc_mountOnSubscribe(
-    test_MountMounts this)
-{
-    /* Insert implementation */
-}

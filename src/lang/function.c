@@ -24,18 +24,18 @@ int16_t corto_function_construct(
     /* If no returntype is set, make it void */
     corto_procedure procedure = corto_function_getProcedureType(this);
 
-    if (!this->returnType) {
-        this->returnType = corto_void_o; /* No claim needed- builtin object */
-    } else if (this->returnType->reference) {
-        this->returnsReference = TRUE;
+    if (!this->return_type) {
+        this->return_type = corto_void_o; /* No claim needed- builtin object */
+    } else if (this->return_type->reference) {
+        this->is_reference = TRUE;
     }
 
     /* Count the size based on the parameters and store parameters in slots */
     if (!this->size) {
         /* Add size of this-pointer */
-        if (procedure->hasThis) {
-            if (procedure->thisType) {
-                this->size += corto_type_sizeof(procedure->thisType);
+        if (procedure->has_this) {
+            if (procedure->this_type) {
+                this->size += corto_type_sizeof(procedure->this_type);
             } else {
                 this->size += sizeof(corto_object);
             }
@@ -51,20 +51,20 @@ int16_t corto_function_construct(
 
         for(i=0; i<this->parameters.length; i++) {
             corto_parameter *p = &this->parameters.buffer[i];
-            if (p->passByReference || p->inout)
+            if (p->is_reference || p->inout)
             {
                 this->size += sizeof(corto_word);
             } else {
-                corto_type paramType = p->type;
-                switch(paramType->kind) {
+                corto_type param_type = p->type;
+                switch(param_type->kind) {
                 case CORTO_ANY:
                     this->size += sizeof(corto_any);
                     break;
                 case CORTO_PRIMITIVE:
-                    this->size += corto_type_sizeof(paramType);
+                    this->size += corto_type_sizeof(param_type);
                     break;
                 case CORTO_COLLECTION:
-                    if (corto_collection(paramType)->kind == CORTO_SEQUENCE) {
+                    if (corto_collection(param_type)->kind == CORTO_SEQUENCE) {
                         this->size += sizeof(corto_objectseq);
                         break;
                     }
@@ -81,7 +81,7 @@ int16_t corto_function_construct(
     }
 
     /* Validate delegate */
-    if (corto_check_attr(this, CORTO_ATTR_NAMED) && procedure->hasThis) {
+    if (corto_check_attr(this, CORTO_ATTR_NAMED) && procedure->has_this) {
         if (corto_delegate_validate(this)) {
             goto error;
         }
@@ -197,7 +197,7 @@ int16_t corto_function_init(
     /* Bind with interface if possible */
     if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
         corto_procedure p = corto_function_getProcedureType(this);
-        if (p->hasThis) {
+        if (p->has_this) {
             if (corto_delegate_bind(this)) {
                 goto error;
             }
@@ -254,7 +254,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
             result.buffer = corto_calloc(sizeof(corto_parameter) * count);
             /* Parse arguments */
             for(i = 0; i < count; i++) {
-                if (corto_sig_paramType(name, i, id, &flags)) {
+                if (corto_sig_param_type(name, i, id, &flags)) {
                     corto_throw(
                         "error occurred while parsing type of parameter '%d' for signature '%s'",
                         i,
@@ -263,7 +263,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 }
 
                 /* Set reference */
-                result.buffer[i].passByReference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
+                result.buffer[i].is_reference = (flags & CORTO_PARAMETER_REFERENCE) != 0;
                 if ((flags & (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT)) ==
                              (CORTO_PARAMETER_IN|CORTO_PARAMETER_OUT))
                 {
@@ -282,7 +282,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 }
 
                 /* Validate whether reference is not redundantly applied */
-                if (result.buffer[i].passByReference && result.buffer[i].type->reference) {
+                if (result.buffer[i].is_reference && result.buffer[i].type->reference) {
                     corto_throw(
                         "redundant '&' qualifier for parameter %d, type '%s' is already a reference",
                         i,
@@ -291,7 +291,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 }
 
                 /* Parse name */
-                if (corto_sig_paramName(name, i, id)) {
+                if (corto_sig_param_name(name, i, id)) {
                     corto_throw(
                         "error occurred while parsing name of argument '%s' for signature '%s'",
                         name);

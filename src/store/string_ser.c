@@ -46,7 +46,7 @@ static corto_int16 corto_ser_any(corto_walk_opt* s, corto_value* v, void* userDa
     corto_int16 result = 0;
     corto_id id;
     corto_value anyValue;
-    anyValue = corto_value_value(this->value, this->type);
+    anyValue = corto_value_ptr(this->value, this->type);
 
     if (!corto_buffer_append(&data->buffer, "{%s,", corto_fullpath(id, this->type))) {
         goto finished;
@@ -160,7 +160,7 @@ static corto_int16 corto_ser_reference(corto_walk_opt* s, corto_value* v, void* 
     /* Obtain fully scoped name */
     corto_ser_appendColor(data, REFERENCE);
     if (object) {
-        if (corto_check_attr(object, CORTO_ATTR_NAMED)) {
+        if (corto_check_attr(object, CORTO_ATTR_NAMED) && corto_childof(root_o, object)) {
             if (corto_parentof(object) == corto_lang_o) {
                 strcpy(id, corto_idof(object));
                 str = id;
@@ -230,13 +230,11 @@ finished:
 
 /* For composite and collection objects */
 static corto_int16 corto_ser_scope(corto_walk_opt* s, corto_value* v, void* userData) {
-    corto_int16 result;
-    corto_string_ser_t *data, privateData;
-    corto_type t;
-
-    data = userData;
-    t = corto_value_typeof(v);
-    result = 0;
+    corto_int16 result = 0;
+    corto_string_ser_t *data = userData, privateData;
+    corto_type t = corto_value_typeof(v);
+    bool is_composite = t->kind == CORTO_COMPOSITE;
+    bool is_collection = t->kind == CORTO_COLLECTION;
 
     /* Nested data has private itemCount, which prevents superfluous ',' to be added to the result. */
     privateData.ptr = data->ptr;
@@ -248,11 +246,11 @@ static corto_int16 corto_ser_scope(corto_walk_opt* s, corto_value* v, void* user
 
     /* Serialize composite members */
     if (!corto_ser_appendColor(&privateData, CORTO_BOLD)) goto finished;
-    if (!corto_buffer_append(&privateData.buffer, "{")) {
+    if (!corto_buffer_append(&privateData.buffer, is_composite ? "{" : "[")) {
         goto finished;
     }
     if (!corto_ser_appendColor(&privateData, CORTO_NORMAL)) goto finished;
-    if (t->kind == CORTO_COMPOSITE) {
+    if (is_composite) {
         if (corto_interface(t)->kind == CORTO_UNION) {
             void *ptr = corto_value_ptrof(v);
             char *d;
@@ -269,14 +267,14 @@ static corto_int16 corto_ser_scope(corto_walk_opt* s, corto_value* v, void* user
             privateData.itemCount = 1;
         }
         result = corto_walk_members(s, v, &privateData);
-    } else if (t->kind == CORTO_COLLECTION){
+    } else if (is_collection){
         result = corto_walk_elements(s, v, &privateData);
     } else {
         corto_assert(0, "corto_ser_scope: invalid typekind for function.");
     }
     if (!result) {
         if (!corto_ser_appendColor(&privateData, CORTO_BOLD)) goto finished;
-        if (!corto_buffer_append(&privateData.buffer, "}")) {
+        if (!corto_buffer_append(&privateData.buffer, is_composite ? "}" : "]")) {
             goto finished;
         }
         if (!corto_ser_appendColor(&privateData, CORTO_NORMAL)) goto finished;
@@ -307,7 +305,7 @@ static corto_int16 corto_ser_item(corto_walk_opt* s, corto_value* v, void* userD
     /* Append ',' if this is not the first item */
     if (data->itemCount) {
         if (!data->compactNotation) {
-            if (!corto_buffer_append(&data->buffer, " ")) {
+            if (!corto_buffer_append(&data->buffer, ", ")) {
                 goto finished;
             }
         } else {
@@ -320,9 +318,9 @@ static corto_int16 corto_ser_item(corto_walk_opt* s, corto_value* v, void* userD
     if (v->kind == CORTO_MEMBER) {
         if (!data->compactNotation) {
             if (!corto_ser_appendColor(data, MEMBER)) goto finished;
-            if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.t))) goto finished;
+            if (!corto_buffer_append(&data->buffer, "%s", corto_idof(v->is.member.member))) goto finished;
             if (!corto_ser_appendColor(data, CORTO_BOLD)) goto finished;
-            if (!corto_buffer_append(&data->buffer, "=")) goto finished;
+            if (!corto_buffer_append(&data->buffer, ":")) goto finished;
             if (!corto_ser_appendColor(data, CORTO_NORMAL)) goto finished;
         }
     }
@@ -380,7 +378,12 @@ static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* use
 
             if (corto_typeof(o)->kind != CORTO_PRIMITIVE) {
                 if (str) {
-                    result = corto_alloc(strlen(str) + strlen(typeId) + 1);
+                    uint32_t len = strlen(str);
+                    result = corto_alloc(len + strlen(typeId) + 1);
+                    if (str[0] == '{') {
+                        str[0] = '[';
+                        str[len - 1] = ']';
+                    }
                     sprintf(result, "%s%s", typeId, str);
                 } else {
                     result = corto_strdup(typeId);
@@ -388,7 +391,7 @@ static corto_int16 corto_ser_object(corto_walk_opt* s, corto_value* v, void* use
             } else {
                 if (str) {
                     result = corto_alloc(strlen(str) + strlen(typeId) + 2 + 1);
-                    sprintf(result, "%s{%s}", typeId, str);
+                    sprintf(result, "%s[%s]", typeId, str);
                 } else {
                     corto_critical("failed to serialize value to string");
                 }
@@ -438,7 +441,7 @@ corto_int16 corto_ser_destruct(corto_walk_opt* s, void* userData) {
     return 0;
 }
 
-corto_walk_opt corto_string_ser(corto_modifier access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
+corto_walk_opt corto_string_ser(corto_modifierMask access, corto_operatorKind accessKind, corto_walk_traceKind trace) {
     corto_walk_opt s;
 
     corto_walk_init(&s);

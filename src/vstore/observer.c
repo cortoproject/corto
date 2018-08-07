@@ -344,7 +344,7 @@ void corto_updateSubscriptionById(
 
     corto_select(id).subscribe(&it);
     while (corto_iter_hasNext(&it)) {
-        corto_result *r = corto_iter_next(&it);
+        corto_record *r = corto_iter_next(&it);
 
         /* Reuse id buffer. Because this function is recursive, using a
          * large buffer allocated on stack is 'dangerous'. */
@@ -847,7 +847,7 @@ int16_t corto_observer_construct(
             /* Parameter event */
             p = &corto_function(this)->parameters.buffer[0];
             p->name = corto_strdup("e");
-            p->passByReference = FALSE;
+            p->is_reference = FALSE;
             corto_set_ref(&p->type, corto_observer_event_o);
         }
     }
@@ -894,7 +894,7 @@ void corto_observer_destruct(
 int16_t corto_observer_init(
     corto_observer this)
 {
-    corto_set_ref(&corto_function(this)->returnType, corto_void_o);
+    corto_set_ref(&corto_function(this)->return_type, corto_void_o);
 
     /* Set parameters of observer: (this, observable) */
     if (corto_check_attr(this, CORTO_ATTR_NAMED) &&
@@ -1222,12 +1222,6 @@ int16_t corto_observer_unobserve(
             instance,
             this
         );
-        goto ignore;
-    }
-
-    /* Observers don't necessarily take a refcount on their observables, and if
-     * the observable has already been destructed, it has already been silenced. */
-    if (corto_check_state(observable, CORTO_DELETED)) {
         goto ignore;
     }
 

@@ -9,11 +9,11 @@ int16_t test_VirtualSinkMount_construct(
 
     corto_set_str(&corto_subscriber(this)->query.select, "//");
     corto_set_str(&corto_subscriber(this)->query.from, this->from);
-    corto_mount(this)->policy.ownership = CORTO_LOCAL_SOURCE;
+    corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;
 
     // First tier
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "x",
         NULL,
         ".",
@@ -22,8 +22,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "y",
         NULL,
         ".",
@@ -32,8 +32,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "z",
         NULL,
         ".",
@@ -43,8 +43,8 @@ int16_t test_VirtualSinkMount_construct(
     );
 
     // Second tier
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "a",
         NULL,
         "x",
@@ -53,8 +53,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "b",
         NULL,
         "x",
@@ -63,8 +63,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "c",
         NULL,
         "x",
@@ -74,8 +74,8 @@ int16_t test_VirtualSinkMount_construct(
     );
 
     // Third tier
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "k",
         NULL,
         "x/a",
@@ -84,8 +84,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "l",
         NULL,
         "x/a",
@@ -94,8 +94,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "m",
         NULL,
         "x/a",
@@ -105,8 +105,8 @@ int16_t test_VirtualSinkMount_construct(
     );
 
     // Fourth tier
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "n",
         NULL,
         "x/a/k",
@@ -115,8 +115,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "o",
         NULL,
         "x/a/k",
@@ -125,8 +125,8 @@ int16_t test_VirtualSinkMount_construct(
         FALSE
     );
 
-    corto_result__assign(
-        corto_resultList__append_alloc(this->items),
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
         "p",
         NULL,
         "x/a/k",
@@ -142,12 +142,12 @@ int16_t test_VirtualSinkMount_construct(
 /* Custom release function */
 static void test_VirtualSinkMount_iterRelease(corto_iter *iter) {
     corto_ll_iter_s *data = iter->ctx;
-    corto_resultList__clear(data->list);
+    corto_recordList__clear(data->list);
     corto_ll_free(data->list);
     corto_ll_iterRelease(iter);
 }
 
-corto_resultIter test_VirtualSinkMount_on_query(
+corto_recordIter test_VirtualSinkMount_on_query(
     test_VirtualSinkMount this,
     corto_query *query)
 {
@@ -155,11 +155,11 @@ corto_resultIter test_VirtualSinkMount_on_query(
     corto_ll data = corto_ll_new();
 
     /* Filter items by parent */
-    corto_resultIter__foreach(iter, e) {
+    corto_recordIter__foreach(iter, e) {
         if (!fnmatch(query->from, e.parent, 0)) {
             if (!fnmatch(query->select, e.id, 0)) {
-                corto_result__assign(
-                    corto_resultList__append_alloc(data),
+                corto_record__assign(
+                    corto_recordList__append_alloc(data),
                     e.id,
                     e.id,
                     e.parent,
@@ -182,4 +182,3 @@ corto_resultIter test_VirtualSinkMount_on_query(
     /* Return persistent iterator to request */
     return result;
 }
-

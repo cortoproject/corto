@@ -14,3 +14,15 @@ void test_EventReplicator_on_notify(
     }
 }
 
+
+int16_t test_EventReplicator_construct(
+    test_EventReplicator this)
+{
+    corto_mount(this)->sample_rate = this->policy.sampleRate;
+
+    if (this->policy.mask) {
+        corto_mount(this)->callbacks = this->policy.mask;
+    }
+
+    return corto_super_construct(this);
+}

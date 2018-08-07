@@ -68,7 +68,7 @@ CORTO_META_OBJECT(struct, interfaceVector);
 CORTO_META_OBJECT(struct, delegatedata);
 CORTO_META_OBJECT(struct, parameter);
 CORTO_META_OBJECT(struct, result);
-CORTO_META_OBJECT(struct, typeOptions);
+CORTO_META_OBJECT(struct, type_options);
 CORTO_META_OBJECT(interface, dispatcher);
 
 CORTO_META_OBJECT(binary, octet);
@@ -102,8 +102,9 @@ CORTO_META_OBJECT(enum, procedureKind);
 CORTO_META_OBJECT(enum, equalityKind);
 CORTO_META_OBJECT(enum, operatorKind);
 CORTO_META_OBJECT(enum, inout);
+CORTO_META_OBJECT(enum, ref_kind);
 CORTO_META_OBJECT(bitmask, eventMask);
-CORTO_META_OBJECT(bitmask, modifier);
+CORTO_META_OBJECT(bitmask, modifierMask);
 CORTO_META_OBJECT(bitmask, state);
 CORTO_META_OBJECT(bitmask, attr);
 
@@ -115,7 +116,7 @@ CORTO_META_OBJECT(sequence, interfaceseq);
 CORTO_META_OBJECT(sequence, stringseq);
 CORTO_META_OBJECT(sequence, int32seq);
 CORTO_META_OBJECT(sequence, wordseq);
-CORTO_META_OBJECT(list, resultList);
+CORTO_META_OBJECT(list, recordList);
 CORTO_META_OBJECT(list, objectlist);
 CORTO_META_OBJECT(list, taglist);
 CORTO_META_OBJECT(list, stringlist);
@@ -141,7 +142,7 @@ CORTO_META_OBJECT(method, type_castable);
 CORTO_META_OBJECT(method, collection_castable);
 CORTO_META_OBJECT(method, type_compatible);
 CORTO_META_OBJECT(method, struct_compatible);
-CORTO_META_OBJECT(method, interface_resolveMember);
+CORTO_META_OBJECT(method, interface_resolve_member);
 
 
 #ifdef __cplusplus

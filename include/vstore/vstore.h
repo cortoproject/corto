@@ -28,7 +28,7 @@
 
 /** @file
  * @section query Virtual Store
- * @brief API for accessing and populating the virtual store.
+ * @brief Access and populate the virtual store.
  *
  * The virtual store is, as the name suggests, not an actual store, but provides
  * uniform access to data from any number of 3rd party stores. Data in the
@@ -114,11 +114,11 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*from)(
         const char *scope);
 
-    /** Request results in a specific contentType.
-     * @param contentType A MIME identifier identifying a contentType.
+    /** Request results in a specific format.
+     * @param format A MIME identifier identifying a format.
      */
-    struct corto_select__fluent (*contentType)(
-        const char *contentType);
+    struct corto_select__fluent (*format)(
+        const char *format);
 
     /** Enable pagination by specifying an object offset.
      * @param offset Specifies from which nth object results should be returned.
@@ -219,7 +219,7 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*yield_unknown)();
 
     /** Return an iterator to the requested results.
-     * Results are returned as corto_result instances. A corto_result contains
+     * Results are returned as corto_record instances. A corto_record contains
      * metadata and when a content type is specified, a serialized value of an
      * object. When using this function, no objects are created.
      *
@@ -227,7 +227,7 @@ typedef struct corto_select__fluent {
      * @return 0 if success, -1 if failed.
      */
     int16_t (*iter)(
-        corto_resultIter *iter_out);
+        corto_recordIter *iter_out);
 
     /** Resume objects into the object store.
      * This function will resume objects in the object store.
@@ -258,7 +258,7 @@ typedef struct corto_select__fluent {
     struct corto_select__fluent (*vstore)(
         bool enable); /* Unstable API */
 
-    int16_t (*subscribe)(corto_resultIter *ret); /* Unstable API */
+    int16_t (*subscribe)(corto_recordIter *ret); /* Unstable API */
     int16_t (*unsubscribe)(void); /* Unstable API */
     char* (*id)(void); /* Unstable API */
 } corto_select__fluent;
@@ -340,11 +340,11 @@ typedef struct corto_subscribe__fluent {
     struct corto_subscribe__fluent (*instance)(
         corto_object instance);
 
-    /** Request results in a specific contentType.
+    /** Request results in a specific format.
      * @param contentType An identifier identifying a serializer format.
      */
-    struct corto_subscribe__fluent (*contentType)(
-        const char *contentType);
+    struct corto_subscribe__fluent (*format)(
+        const char *format);
 
     /** Filter objects by type.
      * The subscriber will only trigger on objects of the specified type.
@@ -370,13 +370,11 @@ typedef struct corto_subscribe__fluent {
     /** Create a mount of the specified type.
      *
      * @param type A mount type.
-     * @param policy A mount policy.
      * @param value A corto string to set additional members of the mount.
      * @return A new mount object
      */
     corto_mount ___ (*mount)(
         corto_class type,
-        corto_mountPolicy* policy,
         const char *value);
 
     /** Create named subscriber.
@@ -404,7 +402,7 @@ typedef struct corto_subscribe__fluent {
  * data events (`DEFINE`, `UPDATE`, `DELETE`).
  *
  * The difference between subscribers and observers is that while observers
- * provide a reference to an object, a subscriber returns a `corto_result`, which
+ * provide a reference to an object, a subscriber returns a `corto_record`, which
  * contains metadata about the object, and when requested, a serialized value.
  *
  * This means that a subscriber does not require objects to be stored in the
@@ -464,7 +462,7 @@ int16_t corto_unsubscribe(
  * @param event The event to be emitted
  * @param id A string representing the id of the object in the form of 'foo/bar'.
  * @param type A string representing the id of the type as returned by corto_fullpath.
- * @param contentType A string representing the content type (format) of the specified value.
+ * @param format A string representing the content type (format) of the specified value.
  * @param value A string (or binary value) representing the serialized value of the object.
  * @return 0 if success, nonzero if failed.
  * @see corto_update_begin corto_update_end corto_update_try corto_update_cancel corto_publish
@@ -476,7 +474,7 @@ int16_t corto_publish(
     const char *from,
     const char *id,
     const char *type,
-    const char *contentType,
+    const char *format,
     void *content);
 
 #ifdef __cplusplus

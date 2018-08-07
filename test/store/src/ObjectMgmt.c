@@ -2638,3 +2638,203 @@ void test_ObjectMgmt_tc_redeclareNestedUnknownOtherThread(
     corto_thread thr = corto_thread_new(thr_recreate_unknown, this);
     corto_thread_join(thr, NULL);
 }
+
+void test_ObjectMgmt_tc_declareNestedFuncNoArgs(
+    test_ObjectMgmt this)
+{
+    corto_object func = corto_declare(root_o, "data/func()", corto_function_o);
+    test_assert(func != NULL);
+    test_assert(corto_typeof(func) == (corto_type)corto_function_o);
+    test_assert(corto_countof(func) == 1);
+    test_assert(!corto_check_state(func, CORTO_VALID));
+    test_assert(corto_parentof(func) == data_o);
+    test_assert(corto_define(func) == 0);
+
+    corto_function f = corto_function(func);
+    test_assertint(f->parameters.length, 0);
+    test_assert(f->parameters.buffer == NULL);
+
+    test_assert(corto_delete(func) == 0);
+}
+
+void test_ObjectMgmt_tc_declareNestedFuncOneArg(
+    test_ObjectMgmt this)
+{
+    corto_object func = corto_declare(root_o, "data/func(int32 arg)", corto_function_o);
+    test_assert(func != NULL);
+
+    test_assert(corto_check_attr(func, CORTO_ATTR_NAMED));
+    test_assertstr(corto_idof(func), "func(int32 arg)");
+    test_assert(corto_typeof(func) == (corto_type)corto_function_o);
+    test_assert(corto_countof(func) == 1);
+    test_assert(!corto_check_state(func, CORTO_VALID));
+    test_assert(corto_parentof(func) == data_o);
+    test_assert(corto_define(func) == 0);
+
+    corto_function f = corto_function(func);
+    test_assertint(f->parameters.length, 1);
+    test_assert(f->parameters.buffer != NULL);
+    test_assertstr(f->parameters.buffer[0].name, "arg");
+    test_assert(f->parameters.buffer[0].type == (corto_type)corto_int32_o);
+    test_assert(f->parameters.buffer[0].is_reference == false);
+    test_assert(f->parameters.buffer[0].inout == CORTO_IN);
+
+    test_assert(corto_delete(func) == 0);
+}
+
+void test_ObjectMgmt_tc_declareNestedFuncOneOutArg(
+    test_ObjectMgmt this)
+{
+    corto_object func = corto_declare(root_o, "data/func(out:int32 arg)", corto_function_o);
+    test_assert(func != NULL);
+
+    test_assert(corto_check_attr(func, CORTO_ATTR_NAMED));
+    test_assertstr(corto_idof(func), "func(out:int32 arg)");
+    test_assert(corto_typeof(func) == (corto_type)corto_function_o);
+    test_assert(corto_countof(func) == 1);
+    test_assert(!corto_check_state(func, CORTO_VALID));
+    test_assert(corto_parentof(func) == data_o);
+    test_assert(corto_define(func) == 0);
+
+    corto_function f = corto_function(func);
+    test_assertint(f->parameters.length, 1);
+    test_assert(f->parameters.buffer != NULL);
+    test_assertstr(f->parameters.buffer[0].name, "arg");
+    test_assert(f->parameters.buffer[0].type == (corto_type)corto_int32_o);
+    test_assert(f->parameters.buffer[0].is_reference == false);
+    test_assert(f->parameters.buffer[0].inout == CORTO_OUT);
+
+    test_assert(corto_delete(func) == 0);
+}
+
+void test_ObjectMgmt_tc_declareNestedFuncTwoArgs(
+    test_ObjectMgmt this)
+{
+    corto_object func = corto_declare(root_o, "data/func(int32 arg1,string arg2)", corto_function_o);
+    test_assert(func != NULL);
+
+    test_assert(corto_check_attr(func, CORTO_ATTR_NAMED));
+    test_assertstr(corto_idof(func), "func(int32 arg1,string arg2)");
+    test_assert(corto_typeof(func) == (corto_type)corto_function_o);
+    test_assert(corto_countof(func) == 1);
+    test_assert(!corto_check_state(func, CORTO_VALID));
+    test_assert(corto_parentof(func) == data_o);
+    test_assert(corto_define(func) == 0);
+
+    corto_function f = corto_function(func);
+    test_assertint(f->parameters.length, 2);
+    test_assert(f->parameters.buffer != NULL);
+
+    test_assertstr(f->parameters.buffer[0].name, "arg1");
+    test_assert(f->parameters.buffer[0].type == (corto_type)corto_int32_o);
+    test_assert(f->parameters.buffer[0].is_reference == false);
+    test_assert(f->parameters.buffer[0].inout == CORTO_IN);
+
+    test_assertstr(f->parameters.buffer[1].name, "arg2");
+    test_assert(f->parameters.buffer[1].type == (corto_type)corto_string_o);
+    test_assert(f->parameters.buffer[1].is_reference == false);
+    test_assert(f->parameters.buffer[1].inout == CORTO_IN);
+
+
+    test_assert(corto_delete(func) == 0);
+}
+
+void test_ObjectMgmt_tc_createNestedDot(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_create(root_o, "data.foo", corto_void_o);
+    test_assert(o != NULL);
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == data_o);
+    test_assert(corto_typeof(o) == corto_void_o);
+    test_assert(corto_check_state(o, CORTO_DECLARED));
+    test_assert(corto_check_state(o, CORTO_VALID));
+    test_assert(corto_check_attr(o, CORTO_ATTR_NAMED));
+    test_assert(!corto_check_attr(o, CORTO_ATTR_WRITABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
+
+    corto_object p = corto_resolve(data_o, "foo");
+    test_assert(o == p);
+    corto_release(p);
+
+    corto_delete(o);
+
+    corto_object q = corto_resolve(data_o, "foo");
+    test_assert(q == NULL);
+}
+
+void test_ObjectMgmt_tc_createNestedDots(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_create(root_o, "data.foo.bar", corto_void_o);
+    test_assert(o != NULL);
+    test_assertstr(corto_idof(o), "bar");
+    test_assert(corto_parentof(corto_parentof(o)) == data_o);
+    test_assert(corto_typeof(o) == corto_void_o);
+    test_assert(corto_check_state(o, CORTO_DECLARED));
+    test_assert(corto_check_state(o, CORTO_VALID));
+    test_assert(corto_check_attr(o, CORTO_ATTR_NAMED));
+    test_assert(!corto_check_attr(o, CORTO_ATTR_WRITABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
+
+    corto_object p = corto_resolve(data_o, "foo/bar");
+    test_assert(o == p);
+    corto_release(p);
+
+    corto_delete(o);
+
+    corto_object q = corto_resolve(data_o, "foo/bar");
+    test_assert(q == NULL);
+}
+
+void test_ObjectMgmt_tc_declareNestedDot(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declare(root_o, "data.foo", corto_void_o);
+    test_assert(o != NULL);
+    test_assertstr(corto_idof(o), "foo");
+    test_assert(corto_parentof(o) == data_o);
+    test_assert(corto_typeof(o) == corto_void_o);
+    test_assert(corto_check_state(o, CORTO_DECLARED));
+    test_assert(!corto_check_state(o, CORTO_VALID));
+    test_assert(corto_check_attr(o, CORTO_ATTR_NAMED));
+    test_assert(!corto_check_attr(o, CORTO_ATTR_WRITABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
+
+    corto_object p = corto_resolve(data_o, "foo");
+    test_assert(o == p);
+    corto_release(p);
+
+    corto_delete(o);
+
+    corto_object q = corto_resolve(data_o, "foo");
+    test_assert(q == NULL);
+}
+
+void test_ObjectMgmt_tc_declareNestedDots(
+    test_ObjectMgmt this)
+{
+    corto_object o = corto_declare(root_o, "data.foo.bar", corto_void_o);
+    test_assert(o != NULL);
+    test_assertstr(corto_idof(o), "bar");
+    test_assert(corto_parentof(corto_parentof(o)) == data_o);
+    test_assert(corto_typeof(o) == corto_void_o);
+    test_assert(corto_check_state(o, CORTO_DECLARED));
+    test_assert(!corto_check_state(o, CORTO_VALID));
+    test_assert(corto_check_attr(o, CORTO_ATTR_NAMED));
+    test_assert(!corto_check_attr(o, CORTO_ATTR_WRITABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_OBSERVABLE));
+    test_assert(corto_check_attr(o, CORTO_ATTR_PERSISTENT));
+
+    corto_object p = corto_resolve(data_o, "foo/bar");
+    test_assert(o == p);
+    corto_release(p);
+
+    corto_delete(o);
+
+    corto_object q = corto_resolve(data_o, "foo/bar");
+    test_assert(q == NULL);
+}

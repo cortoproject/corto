@@ -22,18 +22,13 @@
 #include <corto/corto.h>
 #include "object.h"
 
-int16_t corto_any_walk(
-    corto_walk_opt* this,
-    corto_value* info,
-    void* userData);
-
 int16_t corto_walk_ptr(
     corto_walk_opt* this,
     void *ptr,
     corto_type type,
     void* userData)
 {
-    corto_value v = corto_value_value(ptr, type);
+    corto_value v = corto_value_ptr(ptr, type);
     return corto_walk_value(this, &v, userData);
 }
 
@@ -68,7 +63,7 @@ int16_t corto_walk_value(
     bool isObservable = false;
 
     if (info->kind == CORTO_MEMBER) {
-        corto_member m = info->is.member.t;
+        corto_member m = info->is.member.member;
         if (m->modifiers & CORTO_OBSERVABLE) {
             isObservable = true;
         }
@@ -96,7 +91,7 @@ int16_t corto_walk_value(
     if (t->reference && ((t->kind == CORTO_VOID) ||
                          ((info->kind != CORTO_OBJECT) &&
                           (info->kind != CORTO_BASE) &&
-                          (info->kind != CORTO_MEM) &&
+                          (info->ref_kind != CORTO_BY_VALUE) &&
                           !isObservable)))
     {
         cb = this->reference;
@@ -119,7 +114,7 @@ void corto_walk_init(
     corto_walk_opt* this)
 {
     memset(this, 0, sizeof(corto_walk_opt));
-    this->program[CORTO_ANY] = corto_any_walk;
+    this->program[CORTO_ANY] = corto_walk_any;
     this->program[CORTO_COMPOSITE] = corto_walk_members;
     this->program[CORTO_COLLECTION] = corto_walk_elements;
     this->metaprogram[CORTO_BASE] = corto_walk_value;
@@ -149,8 +144,8 @@ int16_t corto_walk(
 
     info.kind = CORTO_OBJECT;
     info.parent = NULL;
-    info.is.object.o = o;
-    info.is.object.t = corto_typeof(o);
+    info.is.object.ref = o;
+    info.is.object.type = corto_typeof(o);
 
     if (this->construct) {
         if (this->construct(this, &info, userData)) {
@@ -187,8 +182,8 @@ error:
 
 bool corto_serializeMatchAccess(
     corto_operatorKind accessKind,
-    corto_modifier sa,
-    corto_modifier a)
+    corto_modifierMask sa,
+    corto_modifierMask a)
 {
     bool result;
 
@@ -213,7 +208,7 @@ bool corto_serializeMatchAccess(
 }
 
 /* Serialize any-value */
-int16_t corto_any_walk(
+int16_t corto_walk_any(
     corto_walk_opt* this,
     corto_value* info,
     void* userData)
@@ -226,7 +221,7 @@ int16_t corto_any_walk(
 
     if (any->type) {
         v.parent = info;
-        v = corto_value_value(any->value, corto_type(any->type));
+        v = corto_value_ptr(any->value, corto_type(any->type));
         result = corto_walk_value(this, &v, userData);
     }
 
@@ -244,7 +239,7 @@ static int16_t corto_walk_member(
     void *userData)
 {
     corto_value member;
-    corto_modifier modifiers = m->modifiers;
+    corto_modifierMask modifiers = m->modifiers;
     corto_type t = corto_typeof(m);
     bool isAlias = false;
     if (t != (corto_type)corto_member_o) {
@@ -277,23 +272,24 @@ static int16_t corto_walk_member(
             bool isOptional = modifiers & CORTO_OPTIONAL;
 
             member.kind = CORTO_MEMBER;
+            member.ref_kind = CORTO_BY_TYPE;
             member.parent = info;
-            member.is.member.o = o;
-            member.is.member.t = m;
+            member.is.member.ref = o;
+            member.is.member.member = m;
 
             if (isOptional &&
                 (this->optionalAction != CORTO_WALK_OPTIONAL_PASSTHROUGH))
             {
-                member.is.member.v = *(void**)CORTO_OFFSET(v, m->offset);
+                member.is.member.ptr = *(void**)CORTO_OFFSET(v, m->offset);
             } else {
-                member.is.member.v = CORTO_OFFSET(v, m->offset);
+                member.is.member.ptr = CORTO_OFFSET(v, m->offset);
             }
 
             /* Don't serialize if member is optional and not set */
             if (!isOptional ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_ALWAYS) ||
                 (this->optionalAction == CORTO_WALK_OPTIONAL_PASSTHROUGH) ||
-                member.is.member.v)
+                member.is.member.ptr)
             {
                 if (cb(this, &member, userData)) {
                     goto error;
@@ -328,7 +324,7 @@ int16_t corto_walk_members(
     if (!this->members.length) {
         if (corto_class_instanceof(corto_struct_o, t) &&
             corto_serializeMatchAccess(
-                this->accessKind, this->access, ((corto_struct)t)->baseAccess))
+                this->accessKind, this->access, ((corto_struct)t)->base_modifiers))
         {
             corto_value base;
 
@@ -337,9 +333,9 @@ int16_t corto_walk_members(
             if (cb && ((corto_interface)t)->base) {
                 base.kind = CORTO_BASE;
                 base.parent = info;
-                base.is.base.v = v;
-                base.is.base.t = (corto_type)((corto_interface)t)->base;
-                base.is.base.o = o;
+                base.is.base.ptr = v;
+                base.is.base.type = (corto_type)((corto_interface)t)->base;
+                base.is.base.ref = o;
 
                 if (cb(this, &base, userData)) {
                     goto error;
@@ -409,7 +405,7 @@ int corto_serializeElement(void* e, void* userData) {
     info = data->info;
 
     /* Set element value */
-    info->is.element.v = e;
+    info->is.element.ptr = e;
 
     /* Forward element to serializer callback */
     if (data->cb(this, info, data->userData)) {
@@ -417,7 +413,7 @@ int corto_serializeElement(void* e, void* userData) {
     }
 
     /* Increase index */
-    info->is.element.t.index++;
+    info->is.element.index++;
 
     return 1;
 error:
@@ -439,14 +435,14 @@ int corto_arrayWalk(
 {
     void* v;
     int result;
-    corto_type elementType;
+    corto_type element_type;
     uint32_t elementSize, i;
 
     result = 1;
 
     if (array) {
-        elementType = this->elementType;
-        elementSize = corto_type_sizeof(elementType);
+        element_type = this->element_type;
+        elementSize = corto_type_sizeof(element_type);
         v = array;
 
         result = 1;
@@ -475,10 +471,11 @@ int16_t corto_walk_elements(
 
     /* Value object for element */
     elementInfo.kind = CORTO_ELEMENT;
-    elementInfo.is.element.o = corto_value_objectof(info);
+    elementInfo.ref_kind = CORTO_BY_TYPE;
+    elementInfo.is.element.ref = corto_value_objectof(info);
     elementInfo.parent = info;
-    elementInfo.is.element.t.type = t->elementType;
-    elementInfo.is.element.t.index = 0;
+    elementInfo.is.element.type = t->element_type;
+    elementInfo.is.element.index = 0;
 
     walkData.this = this;
     walkData.userData = userData;
@@ -508,7 +505,7 @@ int16_t corto_walk_elements(
     case CORTO_LIST: {
         corto_ll list = *(corto_ll*)v;
         if (list) {
-            if (corto_collection_requiresAlloc(t->elementType)) {
+            if (corto_collection_requires_alloc(t->element_type)) {
                 result = corto_ll_walk(list, corto_serializeElement, &walkData);
             } else {
                 result =
@@ -520,7 +517,7 @@ int16_t corto_walk_elements(
     case CORTO_MAP: {
         corto_rb tree = *(corto_rb*)v;
         if (tree) {
-            if (corto_collection_requiresAlloc(t->elementType)) {
+            if (corto_collection_requires_alloc(t->element_type)) {
                 result = corto_rb_walk(tree, corto_serializeElement, &walkData);
             } else {
                 result =

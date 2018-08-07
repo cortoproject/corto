@@ -31,13 +31,13 @@ void test_AttrCheck_tc_packageMainAttr(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild attrtest --error", &ret);
+    sig = corto_proc_cmd("bake rebuild attrtest --verbosity error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
     test_assert(corto_use("attrtest", 0, NULL) == 0);
 
-    sig = corto_proc_cmd("bake clean attrtest --error", &ret);
+    sig = corto_proc_cmd("bake clean attrtest --verbosity error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 

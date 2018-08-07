@@ -173,13 +173,13 @@ corto_object _corto_assert_type(
     /* Is pointer a valid object */
 #ifndef NDEBUG
 CORTO_EXPORT
-void _corto_assert_object(
+corto_object _corto_assert_object(
     char const *file,
     unsigned int line,
     corto_object o);
 #define corto_assert_object(o) _corto_assert_object(__FILE__, __LINE__, o)
 #else
-#define corto_assert_object(o)
+#define corto_assert_object(o) o
 #endif
 
 /* Is object of specified type */

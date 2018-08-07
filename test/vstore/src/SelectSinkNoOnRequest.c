@@ -19,7 +19,7 @@ void test_SelectSinkNoOnRequest_setup(
 void test_SelectSinkNoOnRequest_tc_selectScope(
     test_SelectSinkNoOnRequest this)
 {
-    corto_result *result;
+    corto_record *result;
     corto_iter iter;
     corto_int16 ret = corto_select("*").from("/mount").iter( &iter );
 
@@ -48,7 +48,7 @@ void test_SelectSinkNoOnRequest_tc_selectScope(
 void test_SelectSinkNoOnRequest_tc_selectSingle(
     test_SelectSinkNoOnRequest this)
 {
-    corto_result *result;
+    corto_record *result;
     corto_iter iter;
     corto_int16 ret = corto_select("x").from("/mount").iter( &iter );
 

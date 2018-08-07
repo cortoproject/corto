@@ -42,7 +42,7 @@ typedef struct corto_string_ser_t {
 
 CORTO_EXPORT
 corto_walk_opt corto_string_ser(
-    corto_modifier access,
+    corto_modifierMask access,
     corto_operatorKind accessKind,
     corto_walk_traceKind trace);
 

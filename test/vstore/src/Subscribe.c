@@ -81,7 +81,7 @@ void subscribeResultTest(corto_subscriber_event *e)
 {
     test_Subscribe this = e->instance;
     this->triggered = TRUE;
-    corto_ptr_copy(&this->result, corto_result_o, &e->data);
+    corto_ptr_copy(&this->result, corto_record_o, &e->data);
 }
 
 void test_Subscribe_tc_subscribeFromEmpty(
