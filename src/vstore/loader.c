@@ -214,7 +214,7 @@ int16_t corto_loader_on_resume(
     const char *id,
     corto_object *object)
 {
-    corto_log_push_dbg("vstore-loader:resume");
+    corto_log_push_dbg(strarg("vstore-loader:resume:%s,%s", parent, id));
 
     /* The loader may be asked to resume objects that are not packages, but live
      * inside a package. Therefore it will attempt to load all objects in the
@@ -233,8 +233,8 @@ int16_t corto_loader_on_resume(
         char *next_ptr;
         do {
             next_ptr = corto_path_tok(&obj_id, &package_id, full_id);
-            if (package_id[0] != '/' || package_id[1]) {
-                 pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
+            if ((package_id[0] != '/' || package_id[1])) {
+                pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
             } else {
                 pkg = NULL;
             }
@@ -249,6 +249,7 @@ int16_t corto_loader_on_resume(
 
     /* Step 2: load package if found */
     bool proceed = false;
+    bool package_object_found = false;
     if (package_id) {
         corto_debug("package '%s' located while looking for object '%s/%s'",
             package_id, package_id, obj_id);
@@ -261,6 +262,7 @@ int16_t corto_loader_on_resume(
         });
 
         if (package_object) {
+            package_object_found = true;
             corto_release(package_object);
             /* Package is already loaded, but object doesn't exist */
         } else {
@@ -342,7 +344,11 @@ int16_t corto_loader_on_resume(
             }
         }
     }  else {
-        corto_debug("no package found while searching for '%s'", full_id);
+        if (!package_object_found) {
+            corto_debug("no package found while searching for '%s/%s'", parent, id);
+        } else {
+            corto_debug("object '%s/%s' not found in package '%s'", parent, id, package_id);
+        }
     }
 
     corto_log_pop_dbg();
