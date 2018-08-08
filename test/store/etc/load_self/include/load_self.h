@@ -1,12 +1,12 @@
-/* locateSelf.h
+/* load_self.h
  * This is the main package file. Include this file in other projects.
  * Only modify inside the header-end and body-end sections.
  */
 
-#ifndef LOCATESELF_H
-#define LOCATESELF_H
+#ifndef LOAD_SELF_H
+#define LOAD_SELF_H
 
-#include <locateSelf/_project.h>
+#include <load_self/_project.h>
 #include <corto/c/c.h>
 
 /* $header() */

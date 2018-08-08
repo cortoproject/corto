@@ -10,15 +10,15 @@ void test_Loader_tc_createSelfPackage(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild createSelfPackage --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild create_self_package --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("corto createSelfPackage", &ret);
+    sig = corto_proc_cmd("corto create_self_package", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean createSelfPackage --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean create_self_package --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -32,15 +32,15 @@ void test_Loader_tc_loadChildNoDep(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("corto tier1/tier2_B", &ret);
+    sig = corto_proc_cmd("corto tier1/tier2_b", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -54,11 +54,11 @@ void test_Loader_tc_loadDepOnChild(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake rebuild tier2_A --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_a --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -74,11 +74,11 @@ void test_Loader_tc_loadDepOnChild(
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_A --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_a --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -92,13 +92,13 @@ void test_Loader_tc_loadDepOnParent(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    /* tier1/tier2_A depends on tier1/tier2_B */
-    sig = corto_proc_cmd("bake rebuild tier2_B --verbosity error", &ret);
+    /* tier1/tier2_a depends on tier1/tier2_b */
+    sig = corto_proc_cmd("bake rebuild tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    /* tier1 depends on tier1/tier2_A */
-    sig = corto_proc_cmd("bake rebuild tier2_A --verbosity error", &ret);
+    /* tier1 depends on tier1/tier2_a */
+    sig = corto_proc_cmd("bake rebuild tier2_a --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -106,11 +106,11 @@ void test_Loader_tc_loadDepOnParent(
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake rebuild tier2_C --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_c --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("corto tier1/tier2_C", &ret);
+    sig = corto_proc_cmd("corto tier1/tier2_c", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -118,15 +118,15 @@ void test_Loader_tc_loadDepOnParent(
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_A --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_a --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_C --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_c --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -140,11 +140,11 @@ void test_Loader_tc_loadDepOnSibling(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake rebuild tier2_A --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild tier2_a --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -156,11 +156,11 @@ void test_Loader_tc_loadDepOnSibling(
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_A --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_a --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean tier2_B --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean tier2_b --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -187,20 +187,20 @@ void test_Loader_tc_loadSelf(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild loadSelf --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild load_self --verbosity error", &ret);
     test_assertint(sig, 0);
     test_assertint(ret, 0);
 
     corto_log_verbosity old = corto_log_verbositySet(CORTO_CRITICAL);
 
-    sig = corto_proc_cmd("corto loadSelf", &ret);
+    sig = corto_proc_cmd("corto load_self", &ret);
     test_assertint(sig, 0);
     test_assertint(ret, 1);
     test_assert(corto_catch());
 
     corto_log_verbositySet(old);
 
-    sig = corto_proc_cmd("bake clean loadSelf --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean load_self --verbosity error", &ret);
     test_assertint(sig, 0);
     test_assertint(ret, 0);
 }
@@ -213,15 +213,15 @@ void test_Loader_tc_locateSelf(
 
     test_assert(corto_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild locateSelf --verbosity error", &ret);
+    sig = corto_proc_cmd("bake rebuild locate_self --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("corto locateSelf", &ret);
+    sig = corto_proc_cmd("corto locate_self", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = corto_proc_cmd("bake clean locateSelf --verbosity error", &ret);
+    sig = corto_proc_cmd("bake clean locate_self --verbosity error", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 }

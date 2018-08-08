@@ -39,5 +39,20 @@ int16_t corto_package_init(
     corto_package this)
 {
     this->_public = true;
+
+    char *ptr = corto_idof(this), ch;
+    if (ptr) {
+        for (; (ch = *ptr); ptr ++) {
+            if (isupper(ch)) {
+                corto_throw(
+                  "invalid identifier '%s': package identifiers must be all lowercase",
+                  corto_idof(this));
+                goto error;
+            }
+        }
+    }
+
     return 0;
+error:
+    return -1;
 }

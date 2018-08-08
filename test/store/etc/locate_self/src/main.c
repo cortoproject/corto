@@ -1,14 +1,13 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <createSelfPackage/createSelfPackage.h>
-
+#include <locate_self/locate_self.h>
 
 /* Enter code outside of main here. */
 
 int cortomain(int argc, char *argv[]) {
 
-    corto_object o = corto_create(root_o, "createSelfPackage", corto_package_o);
-    if (!o) {
+    const char *str = corto_locate("locate_self", NULL, CORTO_LOCATE_LIB);
+    if (!str) {
         goto error;
     }
 
@@ -16,4 +15,3 @@ int cortomain(int argc, char *argv[]) {
 error:
     return -1;
 }
-

@@ -1,12 +1,12 @@
-/* createSelfPackage.h
+/* locate_self.h
  * This is the main package file. Include this file in other projects.
  * Only modify inside the header-end and body-end sections.
  */
 
-#ifndef CREATESELFPACKAGE_H
-#define CREATESELFPACKAGE_H
+#ifndef LOCATE_SELF_H
+#define LOCATE_SELF_H
 
-#include <createSelfPackage/_project.h>
+#include <locate_self/_project.h>
 #include <corto/c/c.h>
 
 /* $header() */

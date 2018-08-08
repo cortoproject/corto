@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <tier1/tier2_C/tier2_C.h>
+#include <tier1/tier2_c/tier2_c.h>
 
 
 /* Enter code outside of main here. */
@@ -11,4 +11,3 @@ int cortomain(int argc, char *argv[]) {
 
     return 0;
 }
-

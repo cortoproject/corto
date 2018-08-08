@@ -1,5 +1,5 @@
 {
-    "id":"tier1/tier2_C",
+    "id":"tier1/tier2_c",
     "type":"package",
     "value":{
         "dependencies":["tier1"]
