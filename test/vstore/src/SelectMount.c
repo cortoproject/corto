@@ -1652,6 +1652,13 @@ void test_SelectMount_tc_selectRecursiveFromMountPointParent(
     test_assertstr(r->parent, "foo");
     test_assertstr(r->type, "void");
 
+    test_assert(corto_iter_hasNext(&it) != 0);
+    r = corto_iter_next(&it);
+    test_assert(r != NULL);
+    test_assertstr(r->id, "helloworld");
+    test_assertstr(r->parent, ".");
+    test_assertstr(r->type, "unknown");
+
     test_assert(corto_iter_hasNext(&it) == 0);
     test_assertint(m->on_query_count, 2);
 

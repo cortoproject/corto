@@ -648,6 +648,8 @@ observer
     tc_resumeWithAutoFilter()
     tc_declareAndResume()
     tc_lookupAndResumeUnknown()
+    tc_defineUnknown()
+    tc_defineHidden()
 
 method
     setup()

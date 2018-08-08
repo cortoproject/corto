@@ -1042,7 +1042,7 @@ int16_t corto_mount_resume(
                 } while (true);
             }
 
-            if (r) {
+            if (r && !(r->flags & CORTO_RESULT_HIDDEN) && strcmp(r->type, "unknown")) {
                 corto_object out = o;
                 int16_t resume_failed = corto_mount_resumeResult(
                     this, parent, id, r, &out);

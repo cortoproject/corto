@@ -13,7 +13,7 @@ int16_t test_HiddenParentMount_construct(
         "foo",
         NULL,
         ".",
-        "void",
+        "int32",
         0,
         CORTO_RESULT_HIDDEN
     );
@@ -24,6 +24,16 @@ int16_t test_HiddenParentMount_construct(
         NULL,
         "foo",
         "void",
+        0,
+        CORTO_RESULT_LEAF
+    );
+
+    corto_record__assign(
+        corto_recordList__append_alloc(this->items),
+        "helloworld",
+        NULL,
+        ".",
+        "unknown",
         0,
         CORTO_RESULT_LEAF
     );

@@ -2017,3 +2017,77 @@ void test_ResumeSink_tc_lookupAndResumeUnknown(
     test_assert(corto_delete(o) == 0);
     test_assert(corto_delete(m) == 0);
 }
+
+void test_ResumeSink_tc_defineHidden(
+    test_ResumeSink this)
+{
+    /* Create mount with a hidden object 'foo' */
+    corto_mount m = corto_subscribe("//")
+      .from("/data")
+      .mount(test_HiddenParentMount_o, "{ownership: LOCAL_SOURCE}");
+    test_assert(m != NULL);
+
+    corto_object o = corto(CORTO_DECLARE|CORTO_RECURSIVE_DECLARE|CORTO_RESUME, {
+        .parent = data_o, .id = "foo", .type = corto_int32_o});
+
+    test_assert(o != NULL);
+    test_assertstr(corto_idof(o), "foo");
+    test_assertref(corto_typeof(o), corto_int32_o);
+
+    /* Even though mount provides object, object should not be resumed because
+     * the object is HIDDEN */
+    test_assert(!corto_check_state(o, CORTO_VALID));
+    test_assert(!corto_isresumed(o));
+
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(m) == 0);
+}
+
+static int defineUnknownCount = 0;
+
+void defineUnknownCallback(corto_subscriber_event *e) {
+    if (e->event == CORTO_DEFINE) {
+        defineUnknownCount ++;
+    }
+}
+
+void test_ResumeSink_tc_defineUnknown(
+    test_ResumeSink this)
+{
+    /* Create mount with a unknown object 'helloworld' */
+    corto_mount m = corto_subscribe("//")
+      .from("/data")
+      .mount(test_HiddenParentMount_o, "{ownership: LOCAL_SOURCE}");
+    test_assert(m != NULL);
+
+    /* Create subscriber that monitors DEFINE events */
+    corto_subscriber s = corto_subscribe("helloworld")
+      .from("data")
+      .callback(defineUnknownCallback);
+
+    test_assertint(defineUnknownCount, 0);
+
+    corto_object o = corto(CORTO_DECLARE|CORTO_RECURSIVE_DECLARE|CORTO_RESUME, {
+        .parent = data_o, .id = "helloworld", .type = corto_int32_o});
+
+    test_assert(o != NULL);
+    test_assertstr(corto_idof(o), "helloworld");
+    test_assertref(corto_typeof(o), corto_int32_o);
+
+    /* Even though mount provides object, object should not be resumed because
+     * the object is unknown */
+    test_assert(!corto_check_state(o, CORTO_VALID));
+    test_assert(!corto_isresumed(o));
+    test_assertint(defineUnknownCount, 0);
+
+    /* Create object the normal way */
+    corto_object p = corto_create(data_o, "helloworld", corto_int32_o);
+    test_assert(o == p);
+    test_assert(corto_check_state(p, CORTO_VALID));
+    test_assertint(defineUnknownCount, 1);
+
+    test_assert(corto_release(p) == 1);
+    test_assert(corto_delete(o) == 0);
+    test_assert(corto_delete(m) == 0);
+    test_assert(corto_delete(s) == 0);
+}
