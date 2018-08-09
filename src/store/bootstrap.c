@@ -496,8 +496,9 @@ corto_object home_o = NULL;
     BUILTIN_OBJ(lang_modifierMask_KEY),\
     BUILTIN_OBJ(lang_modifierMask_SINGLETON),\
     /* recordMask */\
-    BUILTIN_OBJ(vstore_recordMask_RESULT_LEAF),\
-    BUILTIN_OBJ(vstore_recordMask_RESULT_HIDDEN),\
+    BUILTIN_OBJ(vstore_recordMask_RECORD_LEAF),\
+    BUILTIN_OBJ(vstore_recordMask_RECORD_HIDDEN),\
+    BUILTIN_OBJ(vstore_recordMask_RECORD_UNKNOWN),\
     /* type */\
     BUILTIN_OBJ(lang_type_kind),\
     BUILTIN_OBJ(lang_type_reference),\

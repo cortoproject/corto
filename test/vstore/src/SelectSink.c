@@ -709,7 +709,7 @@ void test_SelectSink_tc_selectScopeWithType(
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "*", "/", &r1);
     test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "*", "/root", &r2);
@@ -739,7 +739,7 @@ void test_SelectSink_tc_selectScopeWithTypeFromTreeMount(
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "//", "/", &r1);
     test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "//", "/root", &r2);
@@ -854,7 +854,7 @@ void test_SelectSink_tc_selectSingleWithType(
         .id = "a",
         .parent = ".",
         .type = "int32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     /* use root as mount point */
     test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "*", "/", &r1);
@@ -908,13 +908,13 @@ void test_SelectSink_tc_selectTreeWithType(
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     corto_record r3 = {
         .id = "nested",
         .parent = ".",
         .type = "float32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "/", "/", &r1);
     test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "/", "/root", &r2);
@@ -954,13 +954,13 @@ void test_SelectSink_tc_selectTreeWithTypeFromTreeMount(
         .id = "obj",
         .parent = ".",
         .type = "float32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     corto_record r3 = {
         .id = "nested",
         .parent = ".",
         .type = "float32",
-        .flags = CORTO_RESULT_LEAF
+        .flags = CORTO_RECORD_LEAF
     };
     test_ObjectMount m1 = test_ObjectMount__create(NULL, NULL, "//", "/", &r1);
     test_ObjectMount m2 = test_ObjectMount__create(NULL, NULL, "//", "/root", &r2);

@@ -1042,7 +1042,7 @@ int16_t corto_mount_resume(
                 } while (true);
             }
 
-            if (r && !(r->flags & CORTO_RESULT_HIDDEN) && strcmp(r->type, "unknown")) {
+            if (r && !(r->flags & (CORTO_RECORD_HIDDEN | CORTO_RECORD_UNKNOWN))) {
                 corto_object out = o;
                 int16_t resume_failed = corto_mount_resumeResult(
                     this, parent, id, r, &out);
@@ -1118,7 +1118,7 @@ void corto_mount_return(
         return;
     }
 
-    if (!r->value && this->formatOutHandle && !(r->flags & CORTO_RESULT_HIDDEN)) {
+    if (!r->value && this->formatOutHandle && !(r->flags & CORTO_RECORD_HIDDEN)) {
         corto_error("mount: returned result that doesn't set value but mount has format");
         return;
     }

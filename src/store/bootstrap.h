@@ -868,8 +868,9 @@ CORTO_BITMASK_O(lang, modifierMask);
     CORTO_CONSTANT_O(lang_modifierMask, SINGLETON);
 
 CORTO_BITMASK_O(vstore, recordMask);
-    CORTO_CONSTANT_O(vstore_recordMask, RESULT_LEAF);
-    CORTO_CONSTANT_O(vstore_recordMask, RESULT_HIDDEN);
+    CORTO_CONSTANT_O(vstore_recordMask, RECORD_LEAF);
+    CORTO_CONSTANT_O(vstore_recordMask, RECORD_HIDDEN);
+    CORTO_CONSTANT_O(vstore_recordMask, RECORD_UNKNOWN);
 
 /* Collections */
 CORTO_SEQUENCE_O(lang, interfaceseq, lang_interface, 0);

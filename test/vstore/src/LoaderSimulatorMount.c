@@ -20,7 +20,7 @@ int16_t test_LoaderSimulatorMount_construct(
         ".",
         "package",
         0,
-        CORTO_RESULT_HIDDEN
+        CORTO_RECORD_HIDDEN
     );
 
     corto_record__assign(

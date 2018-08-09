@@ -41,7 +41,7 @@ corto_recordIter test_JsonReplicator_on_query(
         ".",
         this->type,
         (corto_word)corto_strdup("{\"x\":10,\"y\":20}"),
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
     corto_record__assign(
         corto_recordList__append_alloc(data),
@@ -50,7 +50,7 @@ corto_recordIter test_JsonReplicator_on_query(
         ".",
         this->type,
         (corto_word)corto_strdup("{\"x\":30,\"y\":40}"),
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
     corto_record__assign(
         corto_recordList__append_alloc(data),
@@ -59,7 +59,7 @@ corto_recordIter test_JsonReplicator_on_query(
         ".",
         this->type,
         (corto_word)corto_strdup("{\"x\":50,\"y\":60}"),
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     /* Create persistent iterator */

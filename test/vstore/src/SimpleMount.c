@@ -10,7 +10,7 @@ corto_recordIter test_SimpleMount_on_query(
         .id = "foo",
         .parent = ".",
         .type = "int32",
-        .flags = CORTO_RESULT_LEAF,
+        .flags = CORTO_RECORD_LEAF,
         .value = (corto_word)"10"
     };
 

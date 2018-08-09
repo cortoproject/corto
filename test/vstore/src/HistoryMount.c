@@ -25,7 +25,7 @@ int16_t test_HistoryMount_construct(
     corto_stringList__append(samples, "{10,11}");
     corto_stringList__append(samples, "{20,22}");
 
-    r = (corto_record){"a", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
+    r = (corto_record){"a", NULL, ".", "/test/Point", 0, CORTO_RECORD_LEAF};
     test_HistoryMount_data__assign(
         test_HistoryMount_dataList__append_alloc(this->history),
         &r,
@@ -35,7 +35,7 @@ int16_t test_HistoryMount_construct(
     corto_stringList__append(samples, "{30,33}");
     corto_stringList__append(samples, "{40,44}");
     corto_stringList__append(samples, "{50,55}");
-    r = (corto_record){"b", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
+    r = (corto_record){"b", NULL, ".", "/test/Point", 0, CORTO_RECORD_LEAF};
     test_HistoryMount_data__assign(
         test_HistoryMount_dataList__append_alloc(this->history),
         &r,
@@ -46,7 +46,7 @@ int16_t test_HistoryMount_construct(
     corto_stringList__append(samples, "{70,77}");
     corto_stringList__append(samples, "{80,88}");
     corto_stringList__append(samples, "{90,99}");
-    r = (corto_record){"c", NULL, ".", "/test/Point", 0, CORTO_RESULT_LEAF};
+    r = (corto_record){"c", NULL, ".", "/test/Point", 0, CORTO_RECORD_LEAF};
     test_HistoryMount_data__assign(
         test_HistoryMount_dataList__append_alloc(this->history),
         &r,

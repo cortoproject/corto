@@ -15,7 +15,7 @@ int16_t test_HiddenParentMount_construct(
         ".",
         "int32",
         0,
-        CORTO_RESULT_HIDDEN
+        CORTO_RECORD_HIDDEN
     );
 
     corto_record__assign(
@@ -25,7 +25,7 @@ int16_t test_HiddenParentMount_construct(
         "foo",
         "void",
         0,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_record__assign(
@@ -35,7 +35,7 @@ int16_t test_HiddenParentMount_construct(
         ".",
         "unknown",
         0,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF | CORTO_RECORD_UNKNOWN
     );
 
     return corto_super_construct(this);

@@ -134,7 +134,7 @@ void corto_loader_addDir(
                  * object from the mount for the user, but let corto_select know
                  * that more objects may be available. */
                 if (!strcmp(package, "corto")) {
-                    result->flags = CORTO_RESULT_HIDDEN;
+                    result->flags = CORTO_RECORD_HIDDEN;
                 } else {
                     result->flags = 0;
                 }

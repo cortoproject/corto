@@ -242,8 +242,9 @@ typedef enum corto_operatorKind {
 
 /* bitmask corto/vstore/recordMask */
 typedef uint32_t corto_recordMask;
-    #define CORTO_RESULT_LEAF (0x1)
-    #define CORTO_RESULT_HIDDEN (0x2)
+    #define CORTO_RECORD_LEAF (0x1)
+    #define CORTO_RECORD_HIDDEN (0x2)
+    #define CORTO_RECORD_UNKNOWN (0x4)
 
 /* struct corto/vstore/sample */
 typedef struct corto_sample {

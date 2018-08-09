@@ -33,7 +33,7 @@ int16_t test_SinkMount_construct(
         ".",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_record__assign(
@@ -43,7 +43,7 @@ int16_t test_SinkMount_construct(
         ".",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     // Second tier
@@ -64,7 +64,7 @@ int16_t test_SinkMount_construct(
         "x",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_record__assign(
@@ -74,7 +74,7 @@ int16_t test_SinkMount_construct(
         "x",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     // Third tier
@@ -95,7 +95,7 @@ int16_t test_SinkMount_construct(
         "x/a",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_record__assign(
@@ -105,7 +105,7 @@ int16_t test_SinkMount_construct(
         "x/a",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     // Fourth tier
@@ -116,7 +116,7 @@ int16_t test_SinkMount_construct(
         "x/a/k",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_record__assign(
@@ -126,7 +126,7 @@ int16_t test_SinkMount_construct(
         "x/a/k",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_record__assign(
@@ -136,7 +136,7 @@ int16_t test_SinkMount_construct(
         "x/a/k",
         type,
         (corto_word)this->value,
-        CORTO_RESULT_LEAF
+        CORTO_RECORD_LEAF
     );
 
     corto_mount(this)->ownership = CORTO_LOCAL_SOURCE;

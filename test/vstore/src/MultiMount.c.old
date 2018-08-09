@@ -22,7 +22,7 @@ void test_MultiMount_setup(
 
     /* Populate red mount */
     test_SparseMount_add_object(red, "E", "B", "int32", 0);
-    test_SparseMount_add_object(red, "G", "B/E", "int32", CORTO_RESULT_LEAF);
+    test_SparseMount_add_object(red, "G", "B/E", "int32", CORTO_RECORD_LEAF);
     test_SparseMount_add_object(red, "I", "B/E/G", "int32", 0); /* should never be returned because parent is leaf */
     test_SparseMount_add_object(red, "I", "B/E/H", "int32", 0);
     test_SparseMount_add_object(red, "G", "B/F", "int32", 0);
@@ -44,7 +44,7 @@ void test_MultiMount_setup(
 
     test_SparseMount_add_object(blue, "E", "C", "int32", 0);
     test_SparseMount_add_object(blue, "I", "C/E/G", "int32", 0);
-    test_SparseMount_add_object(blue, "H", "C/E", "int32", CORTO_RESULT_HIDDEN);
+    test_SparseMount_add_object(blue, "H", "C/E", "int32", CORTO_RECORD_HIDDEN);
     test_SparseMount_add_object(blue, "I", "C/E/H", "int32", 0);
     test_SparseMount_add_object(blue, "H", "C/F", "int32", 0);
 

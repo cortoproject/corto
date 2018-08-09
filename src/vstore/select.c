@@ -315,12 +315,12 @@ void corto_setItemData(
     item->flags = 0;
 
     if (!corto_scope_size(o)) {
-        item->flags = CORTO_RESULT_LEAF;
+        item->flags = CORTO_RECORD_LEAF;
     }
 
     if (corto_typeof(o) == corto_unknown_o) {
         if (!data->req.q.yield_unknown) {
-            item->flags |= CORTO_RESULT_HIDDEN;
+            item->flags |= CORTO_RECORD_HIDDEN;
         }
     }
 }
@@ -337,7 +337,7 @@ bool corto_selectMatch(
     /* If item is hidden, it will not be shown to the application but is just
      * used to indicate that a mount has objects at a deeper nesting level. It
      * is therefore not required to apply filters */
-    if (item->flags & CORTO_RESULT_HIDDEN) {
+    if (item->flags & CORTO_RECORD_HIDDEN) {
         return true;
     }
 
@@ -611,7 +611,7 @@ bool corto_selectIterMount(
 
     corto_debug(
         "mount yields (id:'%s', parent:'%s' type:'%s' leaf:'%s')",
-        result->id, local_parent, result->type, result->flags & CORTO_RESULT_LEAF ? "true" : "false");
+        result->id, local_parent, result->type, result->flags & CORTO_RECORD_LEAF ? "true" : "false");
 
     /* Filter data early if mount indicates it doesn't do any filtering, and
      * this is not a tree query */
@@ -1003,7 +1003,7 @@ int16_t corto_selectTree(
             data->sp, frame->cur->scope, frame->cur->expr, data->location);
 
     do {
-        corto_recordMask flags = CORTO_RESULT_LEAF, hasData = FALSE;
+        corto_recordMask flags = CORTO_RECORD_LEAF, hasData = FALSE;
 
         /* Unwind stack for depleted iterators */
         while (!(hasData = corto_selectIterNext(data, frame, &o, lastKey)) &&
@@ -1049,7 +1049,7 @@ int16_t corto_selectTree(
             }
 
             /* Prepare next frame if object has scope */
-            if (!(flags & CORTO_RESULT_LEAF) && (data->mask == CORTO_ON_TREE)) {
+            if (!(flags & CORTO_RECORD_LEAF) && (data->mask == CORTO_ON_TREE)) {
                 corto_select_frame *prevFrame = frame;
                 frame = &data->stack[++ data->sp];
                 frame->locationLength = strlen(data->location);
@@ -1080,7 +1080,7 @@ int16_t corto_selectTree(
             }
 
             /* If result is hidden, skip */
-            if (flags & CORTO_RESULT_HIDDEN) {
+            if (flags & CORTO_RECORD_HIDDEN) {
                 match = false;
                 if (data->mask == CORTO_ON_SELF) {
                     data->next = NULL;
@@ -1534,7 +1534,7 @@ corto_recordIter corto_selectPrepareIterator (
     data->item.name = data->name;
     data->item.type = data->type;
     data->item.id = data->id;
-    data->item.flags = CORTO_RESULT_LEAF;
+    data->item.flags = CORTO_RECORD_LEAF;
 
     if (data->req.format) {
         if (!(data->dstSer = corto_fmt_lookup(data->req.format))) {
