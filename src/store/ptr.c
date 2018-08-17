@@ -330,9 +330,15 @@ uint64_t _corto_ptr_count(void *ptr, corto_type type) {
         return seq->length;
         break;
     }
-    case CORTO_LIST:
-        return corto_ll_count(*(corto_ll*)ptr);
+    case CORTO_LIST: {
+        corto_ll *list = (corto_ll*)ptr;
+        if (*list) {
+            return corto_ll_count(*list);
+        } else {
+            return 0;
+        }
         break;
+    }
     default:
         //return corto_rb_count(*(corto_rb*)ptr);
         break;

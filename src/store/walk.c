@@ -282,7 +282,11 @@ static int16_t corto_walk_member(
             {
                 member.is.member.ptr = *(void**)CORTO_OFFSET(v, m->offset);
             } else {
-                member.is.member.ptr = CORTO_OFFSET(v, m->offset);
+                if (v) {
+                    member.is.member.ptr = CORTO_OFFSET(v, m->offset);
+                } else {
+                    member.is.member.ptr = NULL;
+                }
             }
 
             /* Don't serialize if member is optional and not set */
@@ -468,6 +472,11 @@ int16_t corto_walk_elements(
 
     t = corto_collection(corto_value_typeof(info));
     v = corto_value_ptrof(info);
+
+    if (!v) {
+        /* Probably serializing unset optional value */
+        return 0;
+    }
 
     /* Value object for element */
     elementInfo.kind = CORTO_ELEMENT;
