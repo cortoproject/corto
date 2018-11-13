@@ -1121,6 +1121,8 @@ int corto_start(
         corto_getenv("BAKE_TARGET"),
         corto_getenv("BAKE_HOME"),
         corto_getenv("BAKE_VERSION"),
+        NULL,
+        NULL,
         corto_get_build(),
         standalone);
 
