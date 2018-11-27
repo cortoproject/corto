@@ -32,7 +32,7 @@ hello world program:
 
 ```c
 corto_object home = corto_create(root_o, "MyHome", corto_void_o);
-float32_t *temp = corto_create(home, "RoomTemperature", corto_float32_o);
+float *temp = corto_create(home, "RoomTemperature", corto_float32_o);
 *temp = 71.5;
 
 char *str_value = corto_serialize_value(temp, "text/corto");
