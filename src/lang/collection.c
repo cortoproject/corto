@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 bool corto_collection_castable_v(
     corto_collection this,
@@ -64,7 +64,7 @@ bool corto_collection_requires_alloc(
     } else {
         switch(element_type->kind) {
         case CORTO_VOID:
-            corto_assert(0, "non reference void type cannot be an elementtype");
+            ut_assert(0, "non reference void type cannot be an elementtype");
             break;
         case CORTO_ANY:
             /* Any values don't fit in an address */

@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 #include "interface.h"
 
@@ -8,14 +8,14 @@ int16_t corto_member_construct(
     corto_member this)
 {
     if (!this->type) {
-        corto_throw("member '%s' has no type", corto_fullpath(NULL, this));
+        ut_throw("member '%s' has no type", corto_fullpath(NULL, this));
         goto error;
     }
 
     if (corto_instanceof(corto_native_type_o, this->type) &&
         !(this->modifiers & CORTO_LOCAL))
     {
-        corto_throw("member '%s' of native type '%s' is not local",
+        ut_throw("member '%s' of native type '%s' is not local",
             corto_fullpath(NULL, this),
             corto_fullpath(NULL, this->type));
         goto error;
@@ -60,7 +60,7 @@ int16_t corto_member_init(
                 this->state = CORTO_DECLARED | CORTO_VALID;
             }
         } else {
-            corto_throw(
+            ut_throw(
               "invalid declaration of member '%s' in non-composite scope '%s'",
               corto_idof(this), corto_fullpath(NULL, parent));
             goto error;
@@ -69,7 +69,7 @@ int16_t corto_member_init(
 
     /* Builtin members are not initialized like regular objects */
     if (!corto_isbuiltin(this) && !this->tags) {
-        this->tags = corto_ll_new();
+        this->tags = ut_ll_new();
     }
 
     return 0;

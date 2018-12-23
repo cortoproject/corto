@@ -123,7 +123,7 @@ void test_Ownership_tc_deleteNotOwned(
 
     corto_int16 result = corto_delete(o);
     test_assert(result != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     result = corto_delete(r);
     test_assert(result == 0);
@@ -551,7 +551,7 @@ void test_Ownership_tc_updateNotOwned(
 
     corto_int16 result = corto_update(o);
     test_assert(result != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_set_source(r);
 

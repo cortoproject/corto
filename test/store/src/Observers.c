@@ -78,7 +78,7 @@ void test_Observers_tc_notifyReadDenied(
     test_assert(corto_secured() == true);
 
     /* Login & authenticate Ford Prefect */
-    const char *token = corto_login("Ford Prefect", "42");
+    const char *token = ut_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
     const char *prev = corto_set_session(token);
@@ -117,7 +117,7 @@ void test_Observers_tc_notifyUpdateDenied(
     test_assert(corto_secured() == true);
 
     /* Login & authenticate Ford Prefect */
-    const char *token = corto_login("Ford Prefect", "42");
+    const char *token = ut_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
     const char *prev = corto_set_session(token);
@@ -209,7 +209,7 @@ void test_Observers_tc_observeNonScopedObjectWithScopeMaskErr(
     corto_observer observer = corto_observe(CORTO_UPDATE | CORTO_ON_SCOPE, o)
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     test_assert(corto_delete(o) == 0);
 
@@ -226,7 +226,7 @@ void test_Observers_tc_observerMissingObservable(
     corto_observer observer = corto_observe(CORTO_UPDATE, NULL)
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     test_assert(corto_delete(o) == 0);
 
@@ -282,7 +282,7 @@ void test_Observers_tc_observeTypeFilterNotAType(
       .type("/corto")
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_Observers_tc_observeTypeFilterUnresolved(
@@ -293,7 +293,7 @@ void test_Observers_tc_observeTypeFilterUnresolved(
       .type("/doesnotexist")
       .callback(NULL);
     test_assert(observer == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 

@@ -9,7 +9,7 @@
     test_assert(type == (corto_type)type);\
     corto_member member = corto_rw_get_member(&init);\
     test_assert(member == NULL);\
-    test_assert(corto_catch() != 0);\
+    test_assert(ut_catch() != 0);\
     void *ptr = corto_rw_get_ptr(&init);\
     test_assert(ptr != NULL);\
     test_assert(ptr == &array_ptr[index]);\
@@ -18,21 +18,21 @@
 }
 
 #define test_list_elem(list_ptr, index, type, type_code, value, count_before, count_after) {\
-    test_assertint(corto_ll_count(list_ptr), count_before);\
+    test_assertint(ut_ll_count(list_ptr), count_before);\
     test_assertint(corto_rw_get_index(&init), index);\
     corto_type type = corto_rw_get_type(&init);\
     test_assert(type != NULL);\
     test_assert(type == (corto_type)type);\
     corto_member member = corto_rw_get_member(&init);\
     test_assert(member == NULL);\
-    test_assert(corto_catch() != 0);\
+    test_assert(ut_catch() != 0);\
     type_code *ptr = corto_rw_get_ptr(&init);\
     test_assert(ptr != NULL);\
     test_assertint(*ptr, 0);\
     test_assert(corto_rw_set_##type_code(&init, value) == 0);\
     test_assert##type_code(test_##type_code##_list__get(list_ptr, index), value);\
     test_assert##type_code(*ptr, value);\
-    test_assertint(corto_ll_count(list_ptr), count_after);\
+    test_assertint(ut_ll_count(list_ptr), count_after);\
 }
 
 void test_rw_tc_collection_array(
@@ -87,7 +87,7 @@ void test_rw_tc_collection_list(
 
     test_assert(corto_rw_push(&init, true) == 0);
     test_assert(*obj != NULL);
-    test_assertint(corto_ll_count(*obj), 0);
+    test_assertint(ut_ll_count(*obj), 0);
 
     test_list_elem(*obj, 0, corto_int32_o, int, 10, 0, 1);
     test_assert(corto_rw_has_next(&init) == false);
@@ -1046,7 +1046,7 @@ void test_rw_tc_nested_collection_list(
     test_assert(obj->m == NULL);
     test_assert(corto_rw_push(&init, true) == 0);
     test_assert(obj->m != NULL);
-    test_assertint(corto_ll_count(obj->m), 0);
+    test_assertint(ut_ll_count(obj->m), 0);
 
     test_list_elem(obj->m, 0, corto_int32_o, int, 10, 0, 1);
     test_assert(corto_rw_has_next(&init) == false);
@@ -1149,10 +1149,10 @@ void test_rw_tc_nested_collection_list_empty(
     test_assert(obj->m == NULL);
     test_assert(corto_rw_push(&init, true) == 0);
     test_assert(obj->m != NULL);
-    test_assertint(corto_ll_count(obj->m), 0);
+    test_assertint(ut_ll_count(obj->m), 0);
     test_assert(corto_rw_has_next(&init) == false);
     test_assert(corto_rw_pop(&init) == 0);
-    test_assertint(corto_ll_count(obj->m), 0);
+    test_assertint(ut_ll_count(obj->m), 0);
     /* s_nested_list */
 
     test_assert(corto_rw_pop(&init) == 0);
@@ -1195,7 +1195,7 @@ void test_rw_tc_composite_out_of_bounds_by_one(
 
     /* Invalid index */
     test_assert(corto_rw_index(&rw, 2) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
@@ -1236,7 +1236,7 @@ void test_rw_tc_composite_out_of_bounds(
 
     /* Invalid index */
     test_assert(corto_rw_index(&rw, 3) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
@@ -1330,20 +1330,20 @@ void test_rw_tc_collection_list_composite(
     test_assert(corto_rw_get_ptr(&init) == obj);
 
     test_assert(corto_rw_push(&init, true) == 0);
-    test_assertint(corto_ll_count(*obj), 0);
+    test_assertint(ut_ll_count(*obj), 0);
     type = corto_rw_get_type(&init);
     test_assert(type != NULL);
     test_assert(type == (corto_type)test_point_o);
 
     test_assert(corto_rw_push(&init, false) == 0);
-    test_assertint(corto_ll_count(*obj), 1);
+    test_assertint(ut_ll_count(*obj), 1);
     type = corto_rw_get_type(&init);
     test_assert(type != NULL);
     test_assert(type == (corto_type)corto_int32_o);
     member = corto_rw_get_member(&init);
     test_assert(member == test_point_x_o);
     test_assert(corto_rw_set_int(&init, 10) == 0);
-    point = corto_ll_get(*obj, 0);
+    point = ut_ll_get(*obj, 0);
     test_assert(point != NULL);
     test_assertint(point->x, 10);
 
@@ -1359,24 +1359,24 @@ void test_rw_tc_collection_list_composite(
 
     /* Dummy push to check that pushing again doesn't create another element */
     test_assert(corto_rw_push(&init, false) == 0);
-    test_assertint(corto_ll_count(*obj), 1);
+    test_assertint(ut_ll_count(*obj), 1);
     test_assert(corto_rw_pop(&init) == 0);
 
     test_assert(corto_rw_next(&init) == 0);
     type = corto_rw_get_type(&init);
     test_assert(type != NULL);
     test_assert(type == (corto_type)test_point_o);
-    test_assertint(corto_ll_count(*obj), 2);
+    test_assertint(ut_ll_count(*obj), 2);
 
     test_assert(corto_rw_push(&init, false) == 0);
-    test_assertint(corto_ll_count(*obj), 2);
+    test_assertint(ut_ll_count(*obj), 2);
     type = corto_rw_get_type(&init);
     test_assert(type != NULL);
     test_assert(type == (corto_type)corto_int32_o);
     member = corto_rw_get_member(&init);
     test_assert(member == test_point_x_o);
     test_assert(corto_rw_set_int(&init, 30) == 0);
-    point = corto_ll_get(*obj, 1);
+    point = ut_ll_get(*obj, 1);
     test_assert(point != NULL);
     test_assertint(point->x, 30);
 

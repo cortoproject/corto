@@ -27,7 +27,7 @@
 #ifndef CORTO_SECURITY_H
 #define CORTO_SECURITY_H
 
-#include <corto/corto.h>
+#include <corto>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,10 +43,10 @@ extern "C" {
  * @param username The username of the user logging in.
  * @param password The password of the user logging in.
  * @return The session token if login is valid. NULL if the login failed.
- * @see corto_logout
+ * @see ut_logout
  */
 CORTO_EXPORT
-const char *corto_login(
+const char *ut_login(
     const char *username,
     const char *password);
 
@@ -55,10 +55,10 @@ const char *corto_login(
  * a user.
  *
  * @param token An existing session token.
- * @see corto_login
+ * @see ut_login
  */
 CORTO_EXPORT
-void corto_logout(
+void ut_logout(
     const char *token);
 
 /** Set active session.
@@ -71,7 +71,7 @@ void corto_logout(
  *
  * @param token An existing session token.
  * @return The previous session token.
- * @see corto_login
+ * @see ut_login
  */
 CORTO_EXPORT
 const char *corto_set_session(
@@ -117,10 +117,10 @@ bool corto_authorize_id(
  * @param group The group of the user.
  * @param home The home scope of the user.
  * @return 0 when success, non-zero when failed.
- * @see corto_userdel corto_login corto_logout
+ * @see ut_userdel ut_login ut_logout
  */
 CORTO_EXPORT
-int16_t corto_useradd(
+int16_t ut_useradd(
     const char *userId,
     const char *password,
     const char *group,
@@ -130,10 +130,10 @@ int16_t corto_useradd(
  *
  * @param userId The user identifier.
  * @return 0 when success, non-zero when failed.
- * @see corto_useradd corto_login corto_logout
+ * @see ut_useradd ut_login ut_logout
  */
 CORTO_EXPORT
-int16_t corto_userdel(
+int16_t ut_userdel(
     const char *userId);
 
 /** Test if process is secured.

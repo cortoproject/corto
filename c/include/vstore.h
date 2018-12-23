@@ -7,7 +7,7 @@
 #ifndef CORTO_VSTORE__API_H
 #define CORTO_VSTORE__API_H
 
-#include <corto/corto.h>
+#include <corto>
 #include <corto/_project.h>
 #ifdef __cplusplus
 extern "C" {
@@ -535,19 +535,19 @@ CORTO_EXPORT corto_record* corto_recordlist__get(corto_recordlist list, corto_ui
 CORTO_EXPORT void corto_recordlist__clear(corto_recordlist list);
 #define corto_objectIter__foreach(iter, elem) \
     corto_object elem;\
-    while(corto_iter_hasNext(&iter) ? elem = (corto_object)corto_iter_next(&iter), TRUE : FALSE)
+    while(ut_iter_hasNext(&iter) ? elem = (corto_object)ut_iter_next(&iter), TRUE : FALSE)
 
 #define corto_recordIter__foreach(iter, elem) \
     corto_record elem;\
-    while(corto_iter_hasNext(&iter) ? elem = *(corto_record*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+    while(ut_iter_hasNext(&iter) ? elem = *(corto_record*)(corto_word)ut_iter_next(&iter), TRUE : FALSE)
 
 #define corto_sampleIter__foreach(iter, elem) \
     corto_sample elem;\
-    while(corto_iter_hasNext(&iter) ? elem = *(corto_sample*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+    while(ut_iter_hasNext(&iter) ? elem = *(corto_sample*)(corto_word)ut_iter_next(&iter), TRUE : FALSE)
 
 #define corto_subscriber_eventIter__foreach(iter, elem) \
     corto_subscriber_event elem;\
-    while(corto_iter_hasNext(&iter) ? elem = *(corto_subscriber_event*)(corto_word)corto_iter_next(&iter), TRUE : FALSE)
+    while(ut_iter_hasNext(&iter) ? elem = *(corto_subscriber_event*)(corto_word)ut_iter_next(&iter), TRUE : FALSE)
 
 
 #ifdef __cplusplus

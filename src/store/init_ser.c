@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 
 static
 corto_int16 corto_ser_initAny(
@@ -70,7 +70,7 @@ corto_int16 corto_ser_initCollection(
             break;
         case CORTO_LIST:
             if (!m || m->modifiers & CORTO_NOT_NULL) {
-                *(corto_ll*)o = corto_ll_new();
+                *(ut_ll*)o = ut_ll_new();
             }
             break;
         case CORTO_MAP:
@@ -78,9 +78,9 @@ corto_int16 corto_ser_initCollection(
                 corto_type key_type = corto_map(t)->key_type;
                 if (key_type) {
                     if (corto_collection_requires_alloc(key_type)) {
-                        *(corto_rb*)o = corto_rb_new(corto_compare_key, key_type);
+                        *(ut_rb*)o = ut_rb_new(corto_compare_key, key_type);
                     } else {
-                        *(corto_rb*)o = corto_rb_new(corto_compare_key_ptr, key_type);
+                        *(ut_rb*)o = ut_rb_new(corto_compare_key_ptr, key_type);
                     }
                 } else {
                     /* Custom compare function, app is responsible for init */
@@ -149,7 +149,7 @@ corto_int16 corto_ser_initMember(
         corto_fmt fmt;
 
         if (!(fmt = corto_fmt_lookup("text/corto"))) {
-            corto_throw("text/corto format not found");
+            ut_throw("text/corto format not found");
             goto error;
         }
 

@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 
 int corto_routerimpl_countArgs(corto_object o, void *userData) {

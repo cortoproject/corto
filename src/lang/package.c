@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 #include "src/store/object.h"
 
@@ -18,16 +18,16 @@ void corto_package_define(
             if (corto_loader(owner)->autoLoad) {
                 corto_id id;
                 corto_fullpath(id, this);
-                if (corto_locate(id, NULL, CORTO_LOCATE_LIB)) {
-                    if (corto_load_intern(
+                if (ut_locate(id, NULL, UT_LOCATE_LIB)) {
+                    if (ut_load_intern(
                         id,
                         0, /* No arguments */
                         NULL,
                         true, /* Ignore error thrown by recursive load */
                         false) /* Only load package once */
                     ) {
-                        corto_throw("unable to auto-load package '%s'", id);
-                        corto_raise();
+                        ut_throw("unable to auto-load package '%s'", id);
+                        ut_raise();
                     }
                 }
             }
@@ -44,7 +44,7 @@ int16_t corto_package_init(
     if (ptr) {
         for (; (ch = *ptr); ptr ++) {
             if (isupper(ch)) {
-                corto_throw(
+                ut_throw(
                   "invalid identifier '%s': package identifiers must be all lowercase",
                   corto_idof(this));
                 goto error;

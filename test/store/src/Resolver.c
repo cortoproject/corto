@@ -30,10 +30,10 @@ int tc_resolveAllWalk(corto_object o, void *ctx) {
         r = corto_resolve(NULL, id);
 
         /* Set errormessage to ease debugging */
-        if (!r) corto_error("failed to resolve %s", id);
+        if (!r) ut_error("failed to resolve %s", id);
         test_assert(r != NULL);
         if (r != o) {
-            corto_throw("got %s, expected %s",
+            ut_throw("got %s, expected %s",
               corto_fullpath(NULL, r),
               corto_fullpath(NULL, o));
         }
@@ -197,11 +197,11 @@ void test_Resolver_tc_resolveAnonymousAnonymousType(
     test_assert(corto_collection(t)->kind == CORTO_LIST);
     test_assert(corto_collection(t)->element_type == corto_type(corto_int32_o));
 
-    corto_ll l = *(corto_ll*)o;
-    test_assert(corto_ll_count(l) == 3);
-    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 0), 1);
-    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 1), 2);
-    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 2), 3);
+    ut_ll l = *(ut_ll*)o;
+    test_assert(ut_ll_count(l) == 3);
+    test_assertint((corto_int32)(corto_word)ut_ll_get(l, 0), 1);
+    test_assertint((corto_int32)(corto_word)ut_ll_get(l, 1), 2);
+    test_assertint((corto_int32)(corto_word)ut_ll_get(l, 2), 3);
 
     corto_release(o);
 }

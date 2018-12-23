@@ -8,7 +8,7 @@
 #ifndef CORTO__INTERFACE_H_
 #define CORTO__INTERFACE_H_
 
-#include <corto/corto.h>
+#include <corto>
 
 #ifdef __cplusplus
 extern "C" {

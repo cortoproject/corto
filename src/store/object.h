@@ -24,9 +24,9 @@
 
 /* -- INTERNAL STORE APIs & DATATYPES -- */
 
-#include <corto/corto.h>
-#include <corto/store/store.h>
-#include <corto/entityadmin.h>
+#include <corto>
+#include <corto.dir/store/store.h>
+#include <corto.dir/store/entityadmin.h>
 #include "string_deser.h"
 #include "init_ser.h"
 #include "compare_ser.h"
@@ -51,15 +51,15 @@ extern "C" {
 
 extern corto_entityAdmin corto_subscriber_admin;
 extern corto_entityAdmin corto_mount_admin;
-extern corto_mutex_s corto_adminLock;
+extern ut_mutex_s corto_adminLock;
 
 
 /* -- THREAD LOCAL STORAGE KEYS -- */
 
-extern corto_tls CORTO_KEY_ATTR;
-extern corto_tls CORTO_KEY_DECLARED_ADMIN;
-extern corto_tls CORTO_KEY_OWNER;
-extern corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
+extern ut_tls CORTO_KEY_ATTR;
+extern ut_tls CORTO_KEY_DECLARED_ADMIN;
+extern ut_tls CORTO_KEY_OWNER;
+extern ut_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
 
 /* -- OBJECT HEADER TYPES -- */
@@ -107,11 +107,11 @@ typedef struct corto__object {
 typedef struct corto__scope {
     corto_object parent;
     char *id;
-    corto_rb scope;
+    ut_rb scope;
 
     /* See corto__object for why this union exists*/
     union {
-        struct corto_rwmutex_s scopeLock;
+        struct ut_rwmutex_s scopeLock;
         int64_t dummy;
     } align;
 } corto__scope;
@@ -120,7 +120,7 @@ typedef struct corto__scope {
 typedef struct corto__writable {
     /* See corto__object for why this union exists */
     union {
-        struct corto_rwmutex_s lock;
+        struct ut_rwmutex_s lock;
         int64_t dummy;
     } align;
 } corto__writable;
@@ -136,12 +136,12 @@ typedef struct corto__observer {
 typedef struct corto__observable corto__observable;
 struct corto__observable {
     /* Protected by lock */
-    corto_ll onSelf;
-    corto_ll onChild;
+    ut_ll onSelf;
+    ut_ll onChild;
 
     /* See corto__object */
     union {
-        struct corto_rwmutex_s selfLock;
+        struct ut_rwmutex_s selfLock;
         int64_t dummy;
     } align;
 
@@ -227,7 +227,7 @@ void corto_mark_resumed(
 
 /* -- SCOPE ACTIONS -- */
 
-corto_rb corto_scopeof(
+ut_rb corto_scopeof(
     corto_object o);
 
 corto__scope *corto_scope_lock(
@@ -289,7 +289,7 @@ corto_object *corto_lookup_functionFromSequence(
     int32_t* d,
     int32_t *diff);
 
-int corto_load_intern(
+int ut_load_intern(
     corto_string str,
     int argc,
     char* argv[],

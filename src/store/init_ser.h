@@ -22,7 +22,7 @@
 #ifndef CORTO_INIT_SER_H_
 #define CORTO_INIT_SER_H_
 
-#include <corto/store/walk.h>
+#include <corto.dir/store/walk.h>
 
 corto_walk_opt corto_ser_init(
     corto_modifierMask access,

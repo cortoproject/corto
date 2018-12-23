@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 
 static
 bool corto_type_is_collection(
@@ -63,7 +63,7 @@ corto_rw _corto_rw_init(
     };
 
     if (!type) {
-        corto_critical("corto_rw_init called with NULL for type");
+        ut_critical("corto_rw_init called with NULL for type");
     }
 
     return result;
@@ -97,7 +97,7 @@ int16_t corto_scope_cache_member(
 {
     /* Simply append members for the current type-scope. Nested type-scopes will
      * be collected once the writer moves to another scope. */
-    corto_ll_append(members, value->is.member.member);
+    ut_ll_append(members, value->is.member.member);
     return 0;
 }
 
@@ -119,21 +119,21 @@ int16_t corto_scope_cache_build(
     opt.metaprogram[CORTO_MEMBER] = corto_scope_cache_member;
 
     /* Collect members in temporary linked list so we have O(1) appends */
-    corto_ll members = corto_ll_new();
+    ut_ll members = ut_ll_new();
 
     /* Walk over metadata */
-    corto_try(corto_metawalk(&opt, type, members), NULL);
+    ut_try(corto_metawalk(&opt, type, members), NULL);
 
-    this->current->max_index = corto_ll_count(members);
+    this->current->max_index = ut_ll_count(members);
     this->current->cache = corto_calloc(
         sizeof(corto_member) * this->current->max_index);
 
     /* Store members in contiguous array so we have O(1) read access */
     uint32_t count = 0;
-    corto_iter it = corto_ll_iter(members);
+    ut_iter it = ut_ll_iter(members);
     corto_member member = this->current->field.member;
-    while (corto_iter_hasNext(&it)) {
-        this->current->cache[count].member = corto_iter_next(&it);
+    while (ut_iter_hasNext(&it)) {
+        this->current->cache[count].member = ut_iter_next(&it);
 
         /* If a member was already set, update index to the current member */
         if (member) {
@@ -145,10 +145,10 @@ int16_t corto_scope_cache_build(
         count ++;
     }
 
-    corto_ll_free(members);
+    ut_ll_free(members);
     return 0;
 error:
-    corto_ll_free(members);
+    ut_ll_free(members);
     return -1;
 }
 
@@ -157,7 +157,7 @@ int16_t corto_rw_index(
     uint32_t index)
 {
     if (!this->current) {
-        corto_throw("cannot set index, no scope pushed");
+        ut_throw("cannot set index, no scope pushed");
         goto error;
     }
 
@@ -171,7 +171,7 @@ int16_t corto_rw_index(
         /* Try to append a new element if index is one ahead of count */
         if ((index != count) || !corto_type_is_growable(type)) {
             /* If unable to append a new element, fail */
-            corto_throw("index %d out of bounds (%d) for type '%s'",
+            ut_throw("index %d out of bounds (%d) for type '%s'",
                 index, count, corto_fullpath(NULL, type));
             goto error;
         }
@@ -183,7 +183,7 @@ int16_t corto_rw_index(
     } else {
         if (type->kind == CORTO_COMPOSITE) {
             if (count == index) {
-                corto_throw("index %d exceeds max for composite type '%s' (%d)",
+                ut_throw("index %d exceeds max for composite type '%s' (%d)",
                     index, corto_fullpath(NULL, type), count);
                 goto error;
             }
@@ -207,7 +207,7 @@ int16_t corto_rw_index(
              * with it. So if the pointer isn't set yet, this must be a
              * collection element. */
             if (this->current->scope_ptr) {
-                corto_try( corto_field_lookup_index(
+                ut_try( corto_field_lookup_index(
                     index,
                     corto_collection(type),
                     this->current->scope_ptr,
@@ -252,7 +252,7 @@ int32_t corto_rw_count(
         if (is_composite && !this->current->cache) {
             /* If cache hasn't been built yet and this is a composite type,
              * build cache so we know how many members are in the scope. */
-            corto_try(
+            ut_try(
                 corto_scope_cache_build(this, this->current->scope_type), NULL);
         }
 
@@ -288,7 +288,7 @@ void* corto_rw_seq_append(
     dummy_seq *seq = ptr;
 
     if (type->max && seq->length >= type->max) {
-        corto_throw(
+        ut_throw(
             "cannot append to value of sequence type '%s', bounds reached (%d)",
             corto_fullpath(NULL, type),
             type->max);
@@ -322,10 +322,10 @@ void* corto_rw_list_append(
     corto_collection type,
     uint32_t *index)
 {
-    corto_ll list = *(corto_ll*)ptr;
+    ut_ll list = *(ut_ll*)ptr;
 
-    if (type->max && corto_ll_count(list) >= type->max) {
-        corto_throw(
+    if (type->max && ut_ll_count(list) >= type->max) {
+        ut_throw(
             "cannot append to value of list type '%s', bounds reached (%d)",
             corto_fullpath(NULL, type),
             type->max);
@@ -337,12 +337,12 @@ void* corto_rw_list_append(
     void *elem = NULL;
     if (corto_collection_requires_alloc(elem_type)) {
         elem = corto_ptr_new(elem_type);
-        corto_ll_append(list, elem);
+        ut_ll_append(list, elem);
     } else {
-        elem = corto_ll_append(list, 0);
+        elem = ut_ll_append(list, 0);
     }
 
-    *index = corto_ll_count(list) - 1;
+    *index = ut_ll_count(list) - 1;
 
     return elem;
 error:
@@ -353,14 +353,14 @@ int16_t corto_rw_append(
     corto_rw *this)
 {
     if (!this->current) {
-        corto_throw("no scope to append to");
+        ut_throw("no scope to append to");
         goto error;
     }
 
     corto_type type = this->current->scope_type;
 
     if (type->kind != CORTO_COLLECTION) {
-        corto_throw("cannot append to non-collection value of type '%s'",
+        ut_throw("cannot append to non-collection value of type '%s'",
             corto_fullpath(NULL, type));
         goto error;
     }
@@ -368,7 +368,7 @@ int16_t corto_rw_append(
     corto_collection ctype = corto_collection(type);
 
     if (ctype->kind == CORTO_ARRAY) {
-        corto_throw("cannot append to array value of type '%s'",
+        ut_throw("cannot append to array value of type '%s'",
             corto_fullpath(NULL, ctype));
         goto error;
     }
@@ -409,7 +409,7 @@ int16_t corto_rw_next(
             corto_type scope_type = this->current->scope_type;
 
             /* To find the next field, we need a member cache */
-            corto_try( corto_scope_cache_build(this, scope_type), NULL);
+            ut_try( corto_scope_cache_build(this, scope_type), NULL);
 
             for (i = 0; i < this->current->max_index; i ++) {
                 if (corto_parentof(
@@ -422,9 +422,9 @@ int16_t corto_rw_next(
             i = corto_rw_get_index(this) + 1;
         }
 
-        corto_try(corto_rw_index(this, i), NULL);
+        ut_try(corto_rw_index(this, i), NULL);
     } else {
-        corto_throw("invalid use of 'next': no scope pushed");
+        ut_throw("invalid use of 'next': no scope pushed");
         goto error;
     }
 
@@ -460,7 +460,7 @@ int16_t corto_rw_field(
     const char *field_expr)
 {
     if (!this->current) {
-        corto_throw("cannot set field, no scope pushed");
+        ut_throw("cannot set field, no scope pushed");
         goto error;
     }
 
@@ -475,7 +475,7 @@ int16_t corto_rw_field(
         .modifiers = this->current->scope_modifiers
     };
 
-    corto_try(corto_field_lookup(
+    ut_try(corto_field_lookup(
         field_expr,
         type,
         ptr,
@@ -542,13 +542,13 @@ int16_t corto_rw_push(
     /* Target types are the only complex reference types that may be pushed */
     if (!is_target) {
         if (!is_complex) {
-            corto_throw(
+            ut_throw(
               "cannot open scope for non-complex type '%s'",
               corto_fullpath(NULL, cur_type));
             goto error;
         } else if (is_complex && cur_type->reference) {
             if (this->current) {
-                corto_throw(
+                ut_throw(
                   "cannot open scope for reference type '%s'",
                   corto_fullpath(NULL, cur_type));
                 goto error;
@@ -559,7 +559,7 @@ int16_t corto_rw_push(
     is_collection = corto_type_is_collection(cur_type);
 
     if (as_collection && !is_collection) {
-        corto_throw(
+        ut_throw(
             "cannot open scope of non-collection type '%s' as collection",
             corto_fullpath(NULL, cur_type));
         goto error;
@@ -623,8 +623,8 @@ int16_t corto_rw_push(
 
         /* If pushing a list scope, ensure a linked-list object is allocated */
         if (cur_ptr && col_type->kind == CORTO_LIST) {
-            if (!*(corto_ll*)cur_ptr) {
-                *(corto_ll*)cur_ptr = corto_ll_new();
+            if (!*(ut_ll*)cur_ptr) {
+                *(ut_ll*)cur_ptr = ut_ll_new();
             }
         }
     }
@@ -648,7 +648,7 @@ int16_t corto_rw_pop(
         }
         this->current = parent;
     } else {
-        corto_throw("cannot pop root scope");
+        ut_throw("cannot pop root scope");
         goto error;
     }
 
@@ -667,13 +667,13 @@ corto_type corto_rw_get_type(
     } else if (this->current->scope_type->kind == CORTO_COMPOSITE) {
         uint32_t index = this->current->field.index;
         if (!this->current->cache) {
-            corto_try( corto_rw_index(this, index), NULL);
+            ut_try( corto_rw_index(this, index), NULL);
         }
 
         if (this->current->max_index >= index) {
             return this->current->cache[index].member->type;
         } else {
-            corto_throw("no value at index %d in scope of type '%s'",
+            ut_throw("no value at index %d in scope of type '%s'",
                 index, corto_fullpath(NULL, this->current->scope_type));
         }
     }
@@ -708,18 +708,18 @@ corto_member corto_rw_get_member(
     } else if (this->current->scope_type->kind == CORTO_COMPOSITE) {
         uint32_t index = this->current->field.index;
         if (!this->current->cache) {
-            corto_try(
+            ut_try(
                 corto_rw_index(this, index), NULL);
         }
 
         if (this->current->max_index >= index) {
             return this->current->cache[index].member;
         } else {
-            corto_throw("no value at index %d in scope of type '%s'",
+            ut_throw("no value at index %d in scope of type '%s'",
                 index, corto_fullpath(NULL, this->current->scope_type));
         }
     } else {
-        corto_throw("cannot obtain member, scope is of non-composite type '%s'",
+        ut_throw("cannot obtain member, scope is of non-composite type '%s'",
             corto_fullpath(NULL, this->current->scope_type));
     }
 
@@ -758,7 +758,7 @@ void* corto_rw_get_ptr(
     } else {
         if (this->current->scope_ptr) {
             if (!this->current->field.ptr) {
-                corto_try(
+                ut_try(
                     corto_rw_index(this, this->current->field.index), NULL);
             }
 
@@ -791,16 +791,16 @@ uintptr_t corto_rw_set_value(
 
         if (field_kind) {
             if (this->current->field.member) {
-                corto_throw("cannot set %s field '%s' of type '%s'",
+                ut_throw("cannot set %s field '%s' of type '%s'",
                     field_kind,
                     corto_idof(this->current->field.member),
                     corto_fullpath(NULL, type));
             } else if (this->current->field.is_super) {
-                corto_throw("cannot set %s field 'super' of type '%s'",
+                ut_throw("cannot set %s field 'super' of type '%s'",
                     field_kind,
                     corto_fullpath(NULL, type));
             } else {
-                corto_throw("cannot set %s field of type '%s'",
+                ut_throw("cannot set %s field of type '%s'",
                     field_kind,
                     corto_fullpath(NULL, type));
             }
@@ -811,7 +811,7 @@ uintptr_t corto_rw_set_value(
     }
 
     if (!ptr) {
-        corto_throw("no value to assign");
+        ut_throw("no value to assign");
         goto error;
     }
 
@@ -827,15 +827,15 @@ uintptr_t corto_rw_set_value(
             char *str = NULL;
             corto_value_to_string(value, &str);
             if (this->current->field.member) {
-                corto_throw(
+                ut_throw(
                     "failed to set value of member '%s' to '%s'",
                     corto_fullpath(NULL, this->current->field.member),
                     str);
             } else if (this->current->field.is_super) {
-                corto_throw(
+                ut_throw(
                     "failed to set value of super member to '%s'", str);
             } else {
-              corto_throw(
+              ut_throw(
                   "failed to set value at index %d to '%s'",
                   this->current->field.index,
                   str);
@@ -857,19 +857,19 @@ uintptr_t corto_rw_unset(
     void *ptr = corto_rw_get_ptr(this);
 
     if (!ptr) {
-        corto_throw("no value to unset");
+        ut_throw("no value to unset");
         goto error;
     }
 
     void *deref = *(void**)ptr;
 
     if (!this->current || !this->current->field.member) {
-        corto_throw("cannot unset: unable to determine whether field is optional");
+        ut_throw("cannot unset: unable to determine whether field is optional");
         goto error;
     }
 
     if (!(this->current->field.member->modifiers & CORTO_OPTIONAL)) {
-        corto_throw("cannot unset: member '%s' is not optional",
+        ut_throw("cannot unset: member '%s' is not optional",
             corto_fullpath(NULL, this->current->field.member));
         goto error;
     }

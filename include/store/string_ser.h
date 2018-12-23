@@ -29,7 +29,7 @@ extern "C" {
 /* String serializer data */
 typedef struct corto_string_ser_t {
     /* Public */
-    corto_buffer buffer;
+    ut_strbuf buffer;
     corto_bool prefixType;
     corto_bool enableColors;
 
@@ -37,7 +37,7 @@ typedef struct corto_string_ser_t {
     char* ptr;
     unsigned int itemCount;
     corto_bool compactNotation;
-    corto_ll anonymousObjects;
+    ut_ll anonymousObjects;
 } corto_string_ser_t;
 
 CORTO_EXPORT

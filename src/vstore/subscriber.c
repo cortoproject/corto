@@ -1,15 +1,14 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
-#include <corto/entityadmin.h>
+#include <corto.dir/store/entityadmin.h>
 #include "src/store/object.h"
-#include "../platform/src/idmatch.h"
 
-extern corto_tls CORTO_KEY_SUBSCRIBER_ADMIN;
-extern corto_tls CORTO_KEY_FLUENT;
+extern ut_tls CORTO_KEY_SUBSCRIBER_ADMIN;
+extern ut_tls CORTO_KEY_FLUENT;
 
-extern corto_rwmutex_s corto_subscriberLock;
+extern ut_rwmutex_s corto_subscriberLock;
 
 /* Fluent request */
 typedef struct corto_subscribeRequest {
@@ -28,7 +27,7 @@ typedef struct corto_subscribeRequest {
     void (*callback)(corto_subscriber_event*);
 } corto_subscribeRequest;
 
-corto_entityAdmin corto_subscriber_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
+corto_entityAdmin corto_subscriber_admin = {0, 0, UT_RWMUTEX_INIT, 0, 0, UT_MUTEX_INIT, UT_COND_INIT};
 
 static
 int corto_subscriber_findEvent(
@@ -49,11 +48,11 @@ void corto_subscriber_addToAlignQueue(
     corto_subscriber this,
     corto_subscriber_event *e)
 {
-    void *ptr = corto_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
+    void *ptr = ut_ll_findPtr(this->alignQueue, corto_subscriber_findEvent, e);
     if (ptr) {
         *(void**)ptr = e;
     } else {
-        corto_ll_append(this->alignQueue, e);
+        ut_ll_append(this->alignQueue, e);
     }
 }
 
@@ -123,7 +122,7 @@ corto_fmt_data* corto_fmtcache_serialize(
 
     if (!this->type_cached) {
         this->type_cached = corto_resolve(NULL, this->type);
-        corto_try(!this->type_cached,
+        ut_try(!this->type_cached,
             "failed to resolve type '%s'", this->type);
     }
 
@@ -164,11 +163,11 @@ corto_fmt_data* corto_fmtcache_serialize(
                 /* Create intermediate object */
                 this->o = corto_mem_new(this->type_cached);
 
-                corto_try(!this->o, NULL);
+                ut_try(!this->o, NULL);
 
                 /* Serialize from source format to intermediate object */
                 this->v = corto_value_mem(this->o, this->type_cached);
-                corto_try (
+                ut_try (
                     corto_fmt_to_value(
                         this->src_handle, &src_opt, &this->v, this->src_ptr),
                     NULL);
@@ -199,7 +198,7 @@ corto_fmt_data* corto_fmtcache_serialize(
             /* Do an _atomic_ incrememt, as asynchronous subscribers may already
              * have been notified and may simultaneously decrease
              * shared_count when the serialized value has been delivered. */
-            corto_ainc((int32_t*)this->cache[index].shared_count);
+            ut_ainc((int32_t*)this->cache[index].shared_count);
         }
     }
 
@@ -304,7 +303,7 @@ int16_t corto_subscriber_invoke(
             /* When an existing_event was provided but needs to be synchronously
              * delivered, this is an event from the alignment queue, and can be
              * deleted after it has used. */
-            corto_try (corto_delete(event), NULL);
+            ut_try (corto_delete(event), NULL);
         }
     } else {
         /* Asynchronously deliver event to subscriber. If no event was provided,
@@ -328,7 +327,7 @@ int16_t corto_subscriber_invoke(
             } else {
                 event->data.value = r->value;
             }
-            corto_try (corto_define(event), NULL);
+            ut_try (corto_define(event), NULL);
         }
 
         if (s->isAligning) {
@@ -351,7 +350,7 @@ int16_t corto_subscriber_flushAlignQueue(
     corto_subscriber s)
 {
     corto_subscriber_event *e;
-    while ((e = corto_ll_takeFirst(s->alignQueue))) {
+    while ((e = ut_ll_takeFirst(s->alignQueue))) {
         if (corto_subscriber_invoke(NULL, 0, NULL, s, e, NULL)) {
             corto_release(e);
             goto error;
@@ -384,7 +383,7 @@ int16_t corto_notify_subscribersById(
     }
 
     /* Don't notify when shutting down */
-    if (CORTO_APP_STATUS != 0) {
+    if (UT_APP_STATUS != 0) {
         return 0;
     }
 
@@ -397,7 +396,7 @@ int16_t corto_notify_subscribersById(
     /* Lookup publisher format */
     corto_fmt fmt_handle = fmt ? corto_fmt_lookup(fmt) : NULL;
     if (fmt && !fmt_handle) {
-        corto_throw("failed to load format '%s'", fmt);
+        ut_throw("failed to load format '%s'", fmt);
         goto error;
     }
 
@@ -417,7 +416,7 @@ int16_t corto_notify_subscribersById(
     corto_id path_buffer;
     const char *path = object_id;
     if (from) {
-        corto_path_combine(path_buffer, from, object_id);
+        ut_path_combine(path_buffer, from, object_id);
         path = path_buffer;
     }
 
@@ -446,7 +445,7 @@ int16_t corto_notify_subscribersById(
 
     /* Obtain global administration with subscribers */
     corto_entityAdmin *admin = corto_entityAdmin_claim(&corto_subscriber_admin);
-    corto_try(!admin, NULL);
+    ut_try(!admin, NULL);
 
     do {
         uint32_t sp, s;
@@ -463,7 +462,7 @@ int16_t corto_notify_subscribersById(
             corto_fmtcache_purge(&cache);
 
             /* Verify if path matches with subscribers in current branch */
-            const char *expr = corto_matchParent(subPerParent->parent, path);
+            const char *expr = ut_matchParent(subPerParent->parent, path);
             if (!expr) {
                 continue;
             }
@@ -491,9 +490,9 @@ int16_t corto_notify_subscribersById(
                 /* Id match program kind 3 is '*'. Because we already gathered
                  * some information about the identifier, it is faster to
                  * evaluate this simple expression here. */
-                corto_idmatch_program match = (corto_idmatch_program)s->idmatch;
+                ut_expr_program match = (ut_expr_program)s->idmatch;
                 if (match->kind != 3) {
-                    if (!corto_idmatch_run(match, expr)) {
+                    if (!ut_expr_run(match, expr)) {
                         continue;
                     }
                 } else if ((sep > expr) || expr[0] == '.') {
@@ -510,7 +509,7 @@ int16_t corto_notify_subscribersById(
                     if (!fromptr[1]) {
                         fromptr ++;
                     }
-                    corto_path_offset(
+                    ut_path_offset(
                         relativeParent, fromptr, parent, sepLength, true);
                     relativeParentSet = TRUE;
                 }
@@ -537,12 +536,12 @@ int16_t corto_notify_subscribersById(
                 };
 
                 bool isAligning = s->isAligning;
-                if (isAligning) { corto_try(
-                    corto_mutex_lock((corto_mutex)s->alignMutex), NULL
+                if (isAligning) { ut_try(
+                    ut_mutex_lock((ut_mutex)s->alignMutex), NULL
                 );}
                 corto_subscriber_invoke(instance, mask, &r, s, NULL, &cache);
-                if (isAligning) { corto_try(
-                    corto_mutex_unlock((corto_mutex)s->alignMutex), NULL
+                if (isAligning) { ut_try(
+                    ut_mutex_unlock((ut_mutex)s->alignMutex), NULL
                 );}
             }
         }
@@ -589,9 +588,9 @@ void corto_subscriberInitializeWithRequest(
 
     if (r->scope && *r->scope) {
         if (*r->scope != '/') {
-            s->query.from = corto_asprintf("/%s", r->scope);
+            s->query.from = ut_asprintf("/%s", r->scope);
         } else {
-            s->query.from = corto_strdup(r->scope);
+            s->query.from = ut_strdup(r->scope);
         }
     } else {
         s->query.from = NULL;
@@ -632,7 +631,7 @@ static
 corto_subscribe__fluent corto_subscribeContentType(
     const char *format)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->format = format;
     }
@@ -643,7 +642,7 @@ static
 corto_subscribe__fluent corto_subscribeType(
     const char *type)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->type = type;
     }
@@ -654,7 +653,7 @@ static
 corto_subscribe__fluent corto_subscribeInstance(
     corto_object instance)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->instance = instance;
     }
@@ -664,7 +663,7 @@ corto_subscribe__fluent corto_subscribeInstance(
 static
 corto_subscribe__fluent corto_subscribeDisabled(void)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->enabled = FALSE;
     }
@@ -675,7 +674,7 @@ static
 corto_subscribe__fluent corto_subscribeDispatcher(
     corto_dispatcher dispatcher)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->dispatcher = dispatcher;
     }
@@ -687,7 +686,7 @@ static
 corto_subscribe__fluent corto_subscribeFrom(
     const char *scope)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->scope = scope;
     }
@@ -698,7 +697,7 @@ corto_subscribe__fluent corto_subscribeFrom(
 static
 corto_subscribe__fluent corto_subscribeYieldUnknown(void)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->yield_unknown = true;
     }
@@ -709,7 +708,7 @@ corto_subscribe__fluent corto_subscribeYieldUnknown(void)
 static
 corto_subscribe__fluent corto_subscribeQueue(void)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->queue = true;
     }
@@ -722,7 +721,7 @@ corto_subscribe__fluent corto_subscribeNamed(
     corto_object parent,
     const char *id)
 {
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->parent = parent;
         request->id = id;
@@ -737,10 +736,10 @@ corto_subscriber corto_subscribeCallback(
 {
     corto_subscriber result = NULL;
 
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (request) {
         request->callback = callback;
-        corto_tls_set(CORTO_KEY_FLUENT, NULL);
+        ut_tls_set(CORTO_KEY_FLUENT, NULL);
         result = corto_subscribeSubscribe(request);
         corto_dealloc(request);
     }
@@ -753,7 +752,7 @@ corto_mount corto_subscribeMount(
     corto_class type,
     const char *value)
 {
-    corto_subscribeRequest *r = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *r = ut_tls_get(CORTO_KEY_FLUENT);
     corto_fmt fmt = NULL;
     if (value) {
         fmt = corto_fmt_lookup("text/corto");
@@ -768,7 +767,7 @@ corto_mount corto_subscribeMount(
 
     ((corto_observer)m)->enabled = true;
 
-    corto_tls_set(CORTO_KEY_FLUENT, NULL);
+    ut_tls_set(CORTO_KEY_FLUENT, NULL);
     free(r);
 
     /* define & set value if provided */
@@ -799,16 +798,16 @@ corto_subscribe__fluent corto_subscribe(
 {
     va_list arglist;
 
-    corto_subscribeRequest *request = corto_tls_get(CORTO_KEY_FLUENT);
+    corto_subscribeRequest *request = ut_tls_get(CORTO_KEY_FLUENT);
     if (!request) {
         request = corto_calloc(sizeof(corto_subscribeRequest));
-        corto_tls_set(CORTO_KEY_FLUENT, request);
+        ut_tls_set(CORTO_KEY_FLUENT, request);
     } else {
         memset(request, 0, sizeof(corto_subscribeRequest));
     }
 
     va_start(arglist, expr);
-    request->expr = corto_vasprintf(expr, arglist);
+    request->expr = ut_vasprintf(expr, arglist);
     va_end (arglist);
 
     request->enabled = TRUE;
@@ -855,26 +854,26 @@ void corto_subscriber_define(
     corto_subscriber this)
 {
     if (corto_unlock(this)) {
-        corto_throw(NULL);
-        corto_raise();
+        ut_throw(NULL);
+        ut_raise();
     }
 
     if (corto_observer(this)->enabled) {
         if (corto_subscriber_subscribe(this, corto_observer(this)->instance)) {
-            corto_raise();
+            ut_raise();
         }
     }
 
     if (corto_lock(this)) {
-        corto_throw(NULL);
-        corto_raise();
+        ut_throw(NULL);
+        ut_raise();
     }
 }
 
 int16_t corto_subscriber_construct(
     corto_subscriber this)
 {
-    corto_log_push("subscribe");
+    ut_log_push("subscribe");
 
     if (!this->query.select || !this->query.select[0]) {
         corto_set_str(&this->query.select, "*");
@@ -887,7 +886,7 @@ int16_t corto_subscriber_construct(
         }
     }
 
-    this->idmatch = (corto_word)corto_idmatch_compile(this->query.select, TRUE, TRUE);
+    this->idmatch = (corto_word)ut_expr_compile(this->query.select, TRUE, TRUE);
     if (!this->idmatch) {
         goto error;
     }
@@ -896,7 +895,7 @@ int16_t corto_subscriber_construct(
         corto_type type = corto_resolve(NULL, this->query.type);
         if (type) {
             if (!corto_instanceof(corto_type_o, type)) {
-                corto_throw("'%s' is not a type", this->query.type);
+                ut_throw("'%s' is not a type", this->query.type);
                 goto error;
             }
             corto_set_ref(&corto_observer(this)->type, type);
@@ -910,10 +909,10 @@ int16_t corto_subscriber_construct(
     }
 
     int16_t result = safe_corto_observer_construct(this);
-    corto_log_pop();
+    ut_log_pop();
     return result;
 error:
-    corto_log_pop();
+    ut_log_pop();
     return -1;
 }
 
@@ -923,7 +922,7 @@ void corto_subscriber_deinit(
 
     /* Delete idmatch resources only when subscriber itself is deallocated
      * as notifications might still take place when subscriber is deleted. */
-    corto_idmatch_free((corto_idmatch_program)this->idmatch);
+    ut_expr_free((ut_expr_program)this->idmatch);
 }
 
 void corto_subscriber_destruct(
@@ -931,8 +930,8 @@ void corto_subscriber_destruct(
 {
     /* Unsubscribe all entities of this subscriber */
     corto_subscriber_unsubscribeIntern(this, NULL, TRUE);
-    corto_mutex_free((corto_mutex)this->alignMutex);
-    free((corto_mutex)this->alignMutex);
+    ut_mutex_free((ut_mutex)this->alignMutex);
+    free((ut_mutex)this->alignMutex);
 
     corto_function_destruct((corto_function)this);
 }
@@ -946,16 +945,16 @@ int16_t corto_subscriber_init(
 
     /* Parameter event */
     p = &corto_function(this)->parameters.buffer[0];
-    p->name = corto_strdup("e");
+    p->name = ut_strdup("e");
     p->is_reference = FALSE;
     corto_set_ref(&p->type, corto_subscriber_event_o);
 
-    this->alignMutex = (uintptr_t)corto_alloc(sizeof(corto_mutex_s));
-    if (corto_mutex_new((corto_mutex)this->alignMutex)) {
+    this->alignMutex = (uintptr_t)corto_alloc(sizeof(ut_mutex_s));
+    if (ut_mutex_new((ut_mutex)this->alignMutex)) {
         goto error;
     }
 
-    this->alignQueue = corto_ll_new();
+    this->alignQueue = ut_ll_new();
 
     return safe_corto_function_init(this);
 error:
@@ -966,22 +965,22 @@ int16_t corto_subscriber_subscribe(
     corto_subscriber this,
     corto_object instance)
 {
-    corto_iter it;
+    ut_iter it;
 
     if (corto_check_attr(this, CORTO_ATTR_NAMED)) {
-        corto_debug("ID '%s'", corto_fullpath(NULL, this));
+        ut_debug("ID '%s'", corto_fullpath(NULL, this));
     }
 
-    corto_debug("SELECT '%s'", this->query.select);
+    ut_debug("SELECT '%s'", this->query.select);
     if (this->query.from) {
-        corto_debug("FROM '%s'", this->query.from);
+        ut_debug("FROM '%s'", this->query.from);
     }
     if (this->query.type) {
-        corto_debug("TYPE '%s'", this->query.type);
+        ut_debug("TYPE '%s'", this->query.type);
     }
 
     if (this->queue) {
-        corto_debug("QUEUE");
+        ut_debug("QUEUE");
     }
 
     /* Add subscriber to global subscriber admin */
@@ -1015,21 +1014,21 @@ int16_t corto_subscriber_subscribe(
 
     /* Align subscriber */
     if (!this->queue) {
-        corto_mutex_lock((corto_mutex)this->alignMutex);
+        ut_mutex_lock((ut_mutex)this->alignMutex);
         this->isAligning = true;
 
         /* Enable observer within aligner lock, so no messages are delivered before
          * alignment has started */
         corto_observer(this)->enabled = TRUE;
 
-        if (corto_ll_count(this->alignQueue)) {
-            corto_warning("messages in align queue before aligned messages");
+        if (ut_ll_count(this->alignQueue)) {
+            ut_warning("messages in align queue before aligned messages");
         }
 
         /* Populate alignment queue. Any message delivered to the subscriber will
          * end up in the queue */
-        while (corto_iter_hasNext(&it)) {
-            corto_record *r = corto_iter_next(&it);
+        while (ut_iter_hasNext(&it)) {
+            corto_record *r = ut_iter_next(&it);
             corto_subscriber_invoke(instance, CORTO_DEFINE, r, this, NULL, NULL);
 
             /* Nifty trick to take ownership of the serialized value- that way there
@@ -1042,12 +1041,12 @@ int16_t corto_subscriber_subscribe(
 
         /* Flush messages in alignQueue to subscriber */
         if (corto_subscriber_flushAlignQueue(this)) {
-            corto_mutex_unlock((corto_mutex)this->alignMutex);
+            ut_mutex_unlock((ut_mutex)this->alignMutex);
             goto error;
         }
-        corto_mutex_unlock((corto_mutex)this->alignMutex);
+        ut_mutex_unlock((ut_mutex)this->alignMutex);
     } else {
-        corto_iter_release(&it);
+        ut_iter_release(&it);
     }
 
     return 0;
@@ -1059,7 +1058,7 @@ int16_t corto_subscriber_unsubscribe(
     corto_subscriber this,
     corto_object instance)
 {
-    corto_debug("subscriber '%s': unsubscribe for %s, %s",
+    ut_debug("subscriber '%s': unsubscribe for %s, %s",
       corto_fullpath(NULL, this),
       this->query.from,
       this->query.select);

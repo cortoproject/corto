@@ -95,7 +95,7 @@ void test_Copy_tc_arrayToExistingList(
     test_IntList__append(*v2, 5);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertint(test_IntList__get(*v2, 0), 10);
     test_assertint(test_IntList__get(*v2, 1), 20);
     test_assertint(test_IntList__get(*v2, 2), 30);
@@ -114,7 +114,7 @@ void test_Copy_tc_arrayToExistingListString(
     test_StringList__create_auto(NULL, v2, 5, w);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertstr(test_StringList__get(*v2, 0), "HELLO");
     test_assertstr(test_StringList__get(*v2, 1), "WORLD");
     test_assertstr(test_StringList__get(*v2, 2), "FOO");
@@ -166,7 +166,7 @@ void test_Copy_tc_arrayToListString(
     test_StringList__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertstr(test_StringList__get(*v2, 0), "HELLO");
     test_assertstr(test_StringList__get(*v2, 1), "WORLD");
     test_assertstr(test_StringList__get(*v2, 2), "FOO");
@@ -286,7 +286,7 @@ void test_Copy_tc_listToArray(
     test_IntArray__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -300,7 +300,7 @@ void test_Copy_tc_listToArrayAlloc(
     test_AllocArray__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -314,7 +314,7 @@ void test_Copy_tc_listToArrayString(
     test_StringArray__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
     corto_delete(v1);
     corto_delete(v2);
 }
@@ -329,7 +329,7 @@ void test_Copy_tc_listToExistingList(
     test_IntList__create_auto(NULL, v2, 5, w);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertint(test_IntList__get(*v2, 0), 10);
     test_assertint(test_IntList__get(*v2, 1), 20);
     test_assertint(test_IntList__get(*v2, 2), 30);
@@ -348,7 +348,7 @@ void test_Copy_tc_listToExistingListString(
     test_StringList__create_auto(NULL, v2, 5, w);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertstr(test_StringList__get(*v2, 0), "HELLO");
     test_assertstr(test_StringList__get(*v2, 1), "WORLD");
     test_assertstr(test_StringList__get(*v2, 2), "FOO");
@@ -406,7 +406,7 @@ void test_Copy_tc_listToList(
     test_IntList__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_ll_count(*v2) == 4);
+    test_assert(ut_ll_count(*v2) == 4);
     test_assert(test_IntList__get(*v2, 0) == 10);
     test_assert(test_IntList__get(*v2, 1) == 20);
     test_assert(test_IntList__get(*v2, 2) == 30);
@@ -424,7 +424,7 @@ void test_Copy_tc_listToListAlloc(
     test_AllocList__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_ll_count(*v2) == 4);
+    test_assert(ut_ll_count(*v2) == 4);
     test_assert(test_AllocList__get(*v2, 0) == 10);
     test_assert(test_AllocList__get(*v2, 1) == 20);
     test_assert(test_AllocList__get(*v2, 2) == 30);
@@ -441,14 +441,14 @@ void test_Copy_tc_listToListResize(
     test_IntList__create_auto(NULL, v1, 3, v);
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_IntList__create_auto(NULL, v2, 4, v);
-    test_assert(corto_ll_count(*v2) == 4);
+    test_assert(ut_ll_count(*v2) == 4);
     test_assert(test_IntList__get(*v2, 0) == 15);
     test_assert(test_IntList__get(*v2, 1) == 25);
     test_assert(test_IntList__get(*v2, 2) == 35);
     test_assert(test_IntList__get(*v2, 3) == 45);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_ll_count(*v2) == 3);
+    test_assert(ut_ll_count(*v2) == 3);
     test_assert(test_IntList__get(*v2, 0) == 10);
     test_assert(test_IntList__get(*v2, 1) == 20);
     test_assert(test_IntList__get(*v2, 2) == 30);
@@ -464,14 +464,14 @@ void test_Copy_tc_listToListResizeAlloc(
     test_AllocList__create_auto(NULL, v1, 3, v);
     v[0] = 15; v[1] = 25; v[2] = 35; v[3] = 45;
     test_AllocList__create_auto(NULL, v2, 4, v);
-    test_assert(corto_ll_count(*v2) == 4);
+    test_assert(ut_ll_count(*v2) == 4);
     test_assert(test_AllocList__get(*v2, 0) == 15);
     test_assert(test_AllocList__get(*v2, 1) == 25);
     test_assert(test_AllocList__get(*v2, 2) == 35);
     test_assert(test_AllocList__get(*v2, 3) == 45);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assert(corto_ll_count(*v2) == 3);
+    test_assert(ut_ll_count(*v2) == 3);
     test_assert(test_AllocList__get(*v2, 0) == 10);
     test_assert(test_AllocList__get(*v2, 1) == 20);
     test_assert(test_AllocList__get(*v2, 2) == 30);
@@ -488,7 +488,7 @@ void test_Copy_tc_listToListString(
     test_StringList__create_auto(NULL, v2, 0, NULL);
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertstr(test_StringList__get(*v2, 0), "HELLO");
     test_assertstr(test_StringList__get(*v2, 1), "WORLD");
     test_assertstr(test_StringList__get(*v2, 2), "FOO");
@@ -569,7 +569,7 @@ void test_Copy_tc_listWithInt(
     test_IntList__append(v1, 40);
 
     corto_ptr_copy(&v2, test_IntList_o, &v1);
-    test_assertint(corto_ll_count(v2), 4);
+    test_assertint(ut_ll_count(v2), 4);
     test_assertint(test_IntList__get(v2, 0), 10);
     test_assertint(test_IntList__get(v2, 1), 20);
     test_assertint(test_IntList__get(v2, 2), 30);
@@ -595,7 +595,7 @@ void test_Copy_tc_listWithReference(
     test_ReferenceList__append(v1, NULL);
 
     corto_ptr_copy(&v2, test_ReferenceList_o, &v1);
-    test_assertint(corto_ll_count(v2), 4);
+    test_assertint(ut_ll_count(v2), 4);
     test_assert(test_ReferenceList__get(v2, 0) == corto_o);
     test_assert(test_ReferenceList__get(v2, 1) == corto_lang_o);
     test_assert(test_ReferenceList__get(v2, 2) == corto_class_o);
@@ -621,7 +621,7 @@ void test_Copy_tc_listWithString(
     test_StringList__append(v1, NULL);
 
     corto_ptr_copy(&v2, test_StringList_o, &v1);
-    test_assertint(corto_ll_count(v2), 4);
+    test_assertint(ut_ll_count(v2), 4);
     test_assertstr(test_StringList__get(v2, 0), "Hello");
     test_assertstr(test_StringList__get(v2, 1), "World");
     test_assertstr(test_StringList__get(v2, 2), "Foo");
@@ -651,7 +651,7 @@ void test_Copy_tc_listWithStruct(
     p = (test_Point){70, 80};
     test_CompositeList__append(v1, &p);
     corto_ptr_copy(&v2, test_CompositeList_o, &v1);
-    test_assertint(corto_ll_count(v2), 4);
+    test_assertint(ut_ll_count(v2), 4);
     p = *test_CompositeList__get(v2, 0);
     test_assertint(p.x, 10);
     test_assertint(p.y, 20);
@@ -690,7 +690,7 @@ void test_Copy_tc_listWithList(
     test_CollectionList__append(v1, l);
     corto_ptr_deinit(&l, corto_int32List_o);
     corto_ptr_copy(&v2, test_CollectionList_o, &v1);
-    test_assertint(corto_ll_count(v2), 3);
+    test_assertint(ut_ll_count(v2), 3);
     c = test_CollectionList__get(v2, 0);
     for (i = 0; i < 10; i++) {
         test_assertint(corto_int32List__get(c, i), i);
@@ -1172,7 +1172,7 @@ void test_Copy_tc_structWithObservableList(
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
     test_assert(*v2.m != *v1.m);
-    test_assertint(corto_ll_count(*v2.m), 3);
+    test_assertint(ut_ll_count(*v2.m), 3);
     test_assertint(test_IntList__get(*v2.m, 0), 10);
     test_assertint(test_IntList__get(*v2.m, 1), 20);
     test_assertint(test_IntList__get(*v2.m, 2), 30);
@@ -1338,7 +1338,7 @@ void test_Copy_tc_structWithOptionalList(
     corto_ptr_copy(&v2, test_struct_optionalList_o, &v1);
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
-    test_assertint(corto_ll_count(*v2.m), 4);
+    test_assertint(ut_ll_count(*v2.m), 4);
     test_assertint(test_IntList__get(*v2.m, 0), 1);
     test_assertint(test_IntList__get(*v2.m, 1), 2);
     test_assertint(test_IntList__get(*v2.m, 2), 3);
@@ -1512,9 +1512,9 @@ void test_Copy_tc_structWithTargetList(
 
     test_assert(v2.m != NULL);
     test_assert(v2.m != v1.m);
-    test_assertint(corto_ll_count(v2.m->actual), 4);
-    test_assertint(corto_ll_count(v2.m->target), 0);
-    test_assertint(corto_ll_count(v2.m->objective), 0);
+    test_assertint(ut_ll_count(v2.m->actual), 4);
+    test_assertint(ut_ll_count(v2.m->target), 0);
+    test_assertint(ut_ll_count(v2.m->objective), 0);
     test_assertint(test_IntList__get(v2.m->actual, 0), 10);
     test_assertint(test_IntList__get(v2.m->actual, 1), 20);
     test_assertint(test_IntList__get(v2.m->actual, 2), 30);
@@ -1666,7 +1666,7 @@ void test_Copy_tc_unionWithList(
     test_Copy this)
 {
     test_unionTypes v1 = {0}, v2 = {0};
-    test_IntList list = corto_ll_new();
+    test_IntList list = ut_ll_new();
     test_IntList__append(list, 10);
     test_IntList__append(list, 20);
     test_IntList__append(list, 30);
@@ -1913,13 +1913,13 @@ void test_Copy_tc_listToNullList(
     test_IntList__create_auto(NULL, v2, 0, NULL);
 
     /* Free list of v2 */
-    corto_ll_free(*v2);
+    ut_ll_free(*v2);
     *v2 = NULL;
 
     ret = corto_copy(&v2, v1);
     test_assert(ret == 0);
     test_assert(*v2 != NULL);
-    test_assertint(corto_ll_count(*v2), 4);
+    test_assertint(ut_ll_count(*v2), 4);
     test_assertint(test_IntList__get(*v2, 0), 10);
     test_assertint(test_IntList__get(*v2, 1), 20);
     test_assertint(test_IntList__get(*v2, 2), 30);
@@ -1937,7 +1937,7 @@ void test_Copy_tc_nullListToList(
     test_IntList__create_auto(NULL, v2, 4, v);
 
     /* Free list of v2 */
-    corto_ll_free(*v1);
+    ut_ll_free(*v1);
     *v1 = NULL;
 
     ret = corto_copy(&v2, v1);
@@ -1955,9 +1955,9 @@ void test_Copy_tc_nullListToNullList(
     test_IntList__create_auto(NULL, v2, 0, NULL);
 
     /* Free list of v1 and v2 */
-    corto_ll_free(*v1);
+    ut_ll_free(*v1);
     *v1 = NULL;
-    corto_ll_free(*v2);
+    ut_ll_free(*v2);
     *v2 = NULL;
 
     ret = corto_copy(&v2, v1);

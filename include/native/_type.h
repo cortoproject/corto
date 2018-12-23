@@ -5,7 +5,7 @@
 #ifndef CORTO_NATIVE_TYPE_H
 #define CORTO_NATIVE_TYPE_H
 
-#include <corto/lang/_type.h>
+#include "../lang/_type.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,4 +24,3 @@ typedef struct corto_native_type_s {
 }
 #endif
 #endif
-

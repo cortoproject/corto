@@ -8,8 +8,8 @@
 #ifndef CORTO_VSTORE_META_H_
 #define CORTO_VSTORE_META_H_
 
-#include "corto/lang/_type.h"
-#include "corto/vstore/_type.h"
+#include "../lang/_type.h"
+#include "_type.h"
 
 #ifdef __cplusplus
 extern "C" {

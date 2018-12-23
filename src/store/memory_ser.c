@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h"
 
 corto_int16 corto_ser_keepReference(corto_walk_opt* s, corto_value* v, void* userData) {
@@ -42,7 +42,7 @@ corto_int16 corto_ser_keepCollection(corto_walk_opt* s, corto_value* v, void* us
     corto_type t = corto_value_typeof(v);
 
     if (corto_collection(t)->kind == CORTO_LIST) {
-        *(corto_ll*)ptr = corto_ll_new();
+        *(ut_ll*)ptr = ut_ll_new();
     }
 
     return 0;
@@ -104,27 +104,27 @@ corto_int16 corto_ser_freeCollection(corto_walk_opt* s, corto_value* v, void* us
         break;
     }
     case CORTO_LIST:
-        if (*(corto_ll*)o) {
+        if (*(ut_ll*)o) {
             /* Free memory allocated for listnodes */
             if (corto_collection_requires_alloc(corto_collection(t)->element_type)) {
-                corto_ll_walk(*(corto_ll*)o, corto_ser_clear,NULL);
+                ut_ll_walk(*(ut_ll*)o, corto_ser_clear,NULL);
             }
-            corto_ll_free(*(corto_ll*)o);
+            ut_ll_free(*(ut_ll*)o);
         }
         break;
     case CORTO_MAP:
-        if (*(corto_rb*)o) {
+        if (*(ut_rb*)o) {
             /* Free memory allocated for mapnodes */
             if (corto_collection_requires_alloc(corto_collection(t)->element_type)) {
-                corto_rb_walk(*(corto_rb*)o, corto_ser_clear,NULL);
+                ut_rb_walk(*(ut_rb*)o, corto_ser_clear,NULL);
             }
-            corto_rb_free(*(corto_rb*)o);
+            ut_rb_free(*(ut_rb*)o);
         }
         break;
 
     /* Free collection object */
     default:
-        corto_error("invalid collection object!");
+        ut_error("invalid collection object!");
         goto error;
         break;
     }

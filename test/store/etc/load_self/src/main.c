@@ -7,6 +7,6 @@
 
 int cortomain(int argc, char *argv[]) {
 
-    int ret = corto_use("load_self", 0, NULL);;
+    int ret = ut_use("load_self", 0, NULL);;
     return ret;
 }

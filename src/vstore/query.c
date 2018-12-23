@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 uint32_t corto_query_cardinality(
     corto_query* this)
 {
@@ -16,9 +16,9 @@ bool corto_query_match(
     corto_query* this,
     corto_record *record)
 {
-    corto_assert(record->id != NULL, "no id specified in result");
-    corto_assert(record->parent != NULL, "no parent specified in result");
-    corto_assert(record->type != NULL, "no type specified in result");
+    ut_assert(record->id != NULL, "no id specified in result");
+    ut_assert(record->parent != NULL, "no parent specified in result");
+    ut_assert(record->type != NULL, "no type specified in result");
 
     const char *result_type = record->type;
     const char *query_type = record->type;
@@ -33,7 +33,7 @@ bool corto_query_match(
         return false;
     }
 
-    if (this->select && !corto_idmatch(this->select, record->id)) {
+    if (this->select && !ut_expr(this->select, record->id)) {
         return false;
     }
 

@@ -7,29 +7,10 @@
         "version": "2.1.0",
         "license": "MIT",
         "repository": "https://github.com/cortoproject/corto",
-        "managed": false,
-        "use_generated_api": false,
+        "use": ["bake.util"]
+    },
+    "lang.c": {
         "lib": ["rt", "dl", "m", "ffi", "pthread"],
-        "sources": [
-            "src", "../platform/src"
-        ],
-        "includes": [
-            "include", "../platform/include/corto"
-        ],
-        "cflags": ["-fvisibility=hidden"],
-        "doxygen": [{
-            "title": "Corto API Reference",
-            "chapters": [
-                "store",
-                "vstore",
-                "reflection",
-                "fmt",
-                "security",
-                "rw",
-                "walk",
-                "value",
-                "ptr"
-            ]
-        }]
+        "cflags": ["-fvisibility=hidden"]
     }
 }

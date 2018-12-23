@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 
 corto_modifierMask corto_field_combine_modifiers(
     corto_modifierMask parent_modifiers,
@@ -83,7 +83,7 @@ int16_t corto_get_element_ptr(
     void *ptr = *(void**)ptr_inout;
 
     if (!ptr) {
-        corto_throw("cannot take index from NULL");
+        ut_throw("cannot take index from NULL");
         goto error;
     }
 
@@ -95,7 +95,7 @@ int16_t corto_get_element_ptr(
         uint32_t element_size = corto_type_sizeof(type->element_type);
         if (!max) max = type->max;
         if (index >= max) {
-            corto_throw("index %d is out of bounds (%d) for array of type '%s'",
+            ut_throw("index %d is out of bounds (%d) for array of type '%s'",
                 index,
                 max,
                 corto_fullpath(NULL, type));
@@ -105,19 +105,19 @@ int16_t corto_get_element_ptr(
         break;
     }
     case CORTO_LIST: {
-        corto_ll list = *(corto_ll*)ptr;
-        if (index >= corto_ll_count(list)) {
-            corto_throw("index %d is out of bounds (%d) for list of type '%s'",
+        ut_ll list = *(ut_ll*)ptr;
+        if (index >= ut_ll_count(list)) {
+            ut_throw("index %d is out of bounds (%d) for list of type '%s'",
               index,
-              corto_ll_count(list),
+              ut_ll_count(list),
               corto_fullpath(NULL, type));
             goto error;
         }
 
         if (corto_collection_requires_alloc(type->element_type)) {
-            result = corto_ll_get(list, index);
+            result = ut_ll_get(list, index);
         } else {
-            result = corto_ll_getPtr(list, index);
+            result = ut_ll_getPtr(list, index);
         }
         break;
     }
@@ -143,13 +143,13 @@ const char* corto_is_elem_spec_digit(
     for (; (ch = *ptr) && isdigit(ch); ptr ++) {
         count ++;
         if (count > MAX_CHARS_IN_INDEX) {
-            corto_throw("too many characters in element index");
+            ut_throw("too many characters in element index");
             goto error;
         }
     }
 
     if (!ch || ch != ']') {
-        corto_throw("missing ']' for element index");
+        ut_throw("missing ']' for element index");
         goto error;
     }
 
@@ -173,11 +173,11 @@ const char* corto_field_lookup_element(
             uint32_t index = atoi(field);
 
             if (!(field = corto_is_elem_spec_digit(field))) {
-                corto_throw("expected integer in element index");
+                ut_throw("expected integer in element index");
                 goto error;
             }
 
-            corto_try( corto_get_element_ptr(
+            ut_try( corto_get_element_ptr(
                 collection_type, index, &field_out->ptr), NULL);
 
             field_out->type = collection_type->element_type;
@@ -185,7 +185,7 @@ const char* corto_field_lookup_element(
             field_out->member = NULL;
         }
     } else {
-        corto_throw("cannot get element from non-collection type '%s'",
+        ut_throw("cannot get element from non-collection type '%s'",
             corto_fullpath(NULL, type));
         goto error;
     }
@@ -208,13 +208,13 @@ const char* corto_field_lookup_member(
     char ch;
 
     if (type->kind != CORTO_COMPOSITE) {
-        corto_throw("cannot obtain member from non-composite type '%s'",
+        ut_throw("cannot obtain member from non-composite type '%s'",
             corto_fullpath(NULL, type));
         goto error;
     }
 
     if (!isalpha(*field) && *field != '_') {
-        corto_throw(
+        ut_throw(
             "invalid character '%c' at start of member identifier", *field);
         goto error;
     }
@@ -225,7 +225,7 @@ const char* corto_field_lookup_member(
         }
 
         if (buffer_ptr - buffer >= sizeof(buffer)) {
-            corto_throw("member identifier is too long");
+            ut_throw("member identifier is too long");
             goto error;
         }
 
@@ -242,7 +242,7 @@ const char* corto_field_lookup_member(
         /* Super can be used to refer to members of a base-interface */
         corto_interface base = corto_interface(type)->base;
         if (!base) {
-            corto_throw(
+            ut_throw(
               "super unpexpected: interface '%s' does not have a base",
                 corto_fullpath(NULL, type));
             goto error;
@@ -262,7 +262,7 @@ const char* corto_field_lookup_member(
         /* If not super, lookup member in the type */
         corto_member m = corto_interface_resolve_member(type, buffer);
         if (!m) {
-            corto_throw(
+            ut_throw(
                 "unresolved member '%s' in type '%s'",
                 buffer,
                 corto_fullpath(NULL, type));
@@ -357,7 +357,7 @@ int16_t _corto_field_lookup_index(
 {
     void *ptr_param = ptr;
 
-    corto_try (corto_get_element_ptr(type, index, &ptr_param), NULL);
+    ut_try (corto_get_element_ptr(type, index, &ptr_param), NULL);
 
     field_out->type = type->element_type;
     field_out->ptr = ptr_param;

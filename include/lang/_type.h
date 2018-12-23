@@ -5,7 +5,6 @@
 #ifndef CORTO_LANG_TYPE_H
 #define CORTO_LANG_TYPE_H
 
-#include <corto/platform.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -170,7 +169,7 @@ typedef struct corto_tag_s {
     int8_t __dummy;
 } *corto_tag;
 
-typedef corto_ll corto_taglist;
+typedef ut_ll corto_taglist;
 
 /* class corto/lang/member */
 typedef struct corto_member_s {
@@ -194,7 +193,7 @@ typedef struct corto_alias_s {
 /* any */
 typedef struct corto_any {corto_type type; void *value; uint8_t owner;} corto_any;
 
-typedef corto_ll corto_stringlist;
+typedef ut_ll corto_stringlist;
 
 /* class corto/lang/package */
 typedef struct corto_package_s {
@@ -460,7 +459,7 @@ typedef struct corto_method_s {
     uint32_t index;
 } *corto_method;
 
-typedef corto_ll corto_objectlist;
+typedef ut_ll corto_objectlist;
 
 /* binary corto/lang/octet */
 typedef uint8_t corto_octet;
@@ -557,4 +556,3 @@ typedef struct corto_wordseq {uint32_t length; uintptr_t *buffer;} corto_wordseq
 }
 #endif
 #endif
-

@@ -14,7 +14,7 @@ int tc_lookupAllWalk(corto_object o, void *ctx) {
 
         /* Set errormessage to ease debugging */
         if (!r) {
-            corto_error("failed to lookup %s (%s, %p, root = %p)", id);
+            ut_error("failed to lookup %s (%s, %p, root = %p)", id);
         }
         test_assert(r != NULL);
         test_assert(r == o);
@@ -59,7 +59,7 @@ void test_Lookup_tc_lookupEmptyString(
 
     corto_object o = corto_lookup(NULL, "");
     test_assert (o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_Lookup_tc_lookupFunctionArgs(
@@ -185,7 +185,7 @@ void test_Lookup_tc_lookupNull(
 
     corto_object o = corto_lookup(NULL, NULL);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_Lookup_tc_lookupParent(
@@ -459,11 +459,11 @@ void test_Lookup_tc_lookupAnonymousAnonymousType(
     test_assert(corto_collection(t)->kind == CORTO_LIST);
     test_assert(corto_collection(t)->element_type == corto_type(corto_int32_o));
 
-    corto_ll l = *(corto_ll*)o;
-    test_assert(corto_ll_count(l) == 3);
-    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 0), 1);
-    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 1), 2);
-    test_assertint((corto_int32)(corto_word)corto_ll_get(l, 2), 3);
+    ut_ll l = *(ut_ll*)o;
+    test_assert(ut_ll_count(l) == 3);
+    test_assertint((corto_int32)(corto_word)ut_ll_get(l, 0), 1);
+    test_assertint((corto_int32)(corto_word)ut_ll_get(l, 1), 2);
+    test_assertint((corto_int32)(corto_word)ut_ll_get(l, 2), 3);
 
     corto_release(o);
 }

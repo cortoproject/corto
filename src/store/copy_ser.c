@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "copy_ser.h"
 
 static
@@ -147,21 +147,21 @@ int16_t corto_collection_copyListToArray(
     corto_collection t,
     void *array,
     uint32_t elementSize,
-    corto_ll list,
+    ut_ll list,
     corto_bool reverse)
 {
     corto_equalityKind result = 0;
     uint32_t i=0;
-    corto_iter iter;
+    ut_iter iter;
     void *e1, *e2;
     corto_type element_type = t->element_type;
 
-    iter = corto_ll_iter(list);
-    while(corto_iter_hasNext(&iter)) {
+    iter = ut_ll_iter(list);
+    while(ut_iter_hasNext(&iter)) {
         if (corto_collection_requires_alloc(t->element_type)) {
-            e2 = corto_iter_next(&iter);
+            e2 = ut_iter_next(&iter);
         } else {
-            e2 = corto_iter_nextPtr(&iter);
+            e2 = ut_iter_nextPtr(&iter);
         }
         e1 = CORTO_OFFSET(array, elementSize * i);
         if (reverse) {
@@ -186,24 +186,24 @@ int16_t corto_collection_copyListToArray(
 static
 int16_t corto_collection_copyListToList(
     corto_collection t,
-    corto_ll dst,
-    corto_ll src)
+    ut_ll dst,
+    ut_ll src)
 {
     corto_equalityKind result = 0;
-    corto_iter dstIter, srcIter;
+    ut_iter dstIter, srcIter;
     void *dstElem, *srcElem;
     corto_type element_type = t->element_type;
     bool requires_alloc = corto_collection_requires_alloc(t->element_type);
 
-    dstIter = corto_ll_iter(dst);
-    srcIter = corto_ll_iter(src);
-    while(corto_iter_hasNext(&dstIter) && corto_iter_hasNext(&srcIter)) {
+    dstIter = ut_ll_iter(dst);
+    srcIter = ut_ll_iter(src);
+    while(ut_iter_hasNext(&dstIter) && ut_iter_hasNext(&srcIter)) {
         if (requires_alloc) {
-            dstElem = corto_iter_next(&dstIter);
-            srcElem = corto_iter_next(&srcIter);
+            dstElem = ut_iter_next(&dstIter);
+            srcElem = ut_iter_next(&srcIter);
         } else {
-            dstElem = corto_iter_nextPtr(&dstIter);
-            srcElem = corto_iter_nextPtr(&srcIter);
+            dstElem = ut_iter_nextPtr(&dstIter);
+            srcElem = ut_iter_nextPtr(&srcIter);
         }
 
         if (element_type->reference) {
@@ -220,10 +220,10 @@ int16_t corto_collection_copyListToList(
 static
 void corto_collection_resizeList(
     corto_collection t,
-    corto_ll list,
+    ut_ll list,
     uint32_t size)
 {
-    uint32_t ownSize = corto_ll_count(list);
+    uint32_t ownSize = ut_ll_count(list);
     corto_type element_type = t->element_type;
     bool requires_alloc = corto_collection_requires_alloc(t->element_type);
 
@@ -232,7 +232,7 @@ void corto_collection_resizeList(
         uint32_t i;
         void *ptr;
         for(i=size; i<ownSize; i++) {
-            ptr = corto_ll_takeFirst(list);
+            ptr = ut_ll_takeFirst(list);
             corto_collection_deinitElement(t, ptr);
         }
     /* If there are less elements in the destination, add new elements */
@@ -244,7 +244,7 @@ void corto_collection_resizeList(
                 elem = corto_ptr_new(element_type);
             }
 
-            void *ptr = corto_ll_insert(list, elem);
+            void *ptr = ut_ll_insert(list, elem);
 
             if (!requires_alloc) {
                 corto_ptr_init(ptr, element_type);
@@ -328,7 +328,7 @@ int16_t corto_ser_collection(
 
     {
         void *array1 = NULL, *array2 = NULL;
-        corto_ll srcList = NULL, dstList = NULL;
+        ut_ll srcList = NULL, dstList = NULL;
         uint32_t elementSize = 0;
 
         elementSize = corto_type_sizeof(corto_collection(t1)->element_type);
@@ -347,8 +347,8 @@ int16_t corto_ser_collection(
                 v1IsArray = TRUE;
                 break;
             case CORTO_LIST:
-                srcList = *(corto_ll*)src;
-                size1 = corto_ll_count(srcList);
+                srcList = *(ut_ll*)src;
+                size1 = ut_ll_count(srcList);
                 srcIsList = true;
                 break;
             case CORTO_MAP:
@@ -365,7 +365,7 @@ int16_t corto_ser_collection(
                 v2IsArray = TRUE;
                 break;
             case CORTO_LIST:
-                dstList = *(corto_ll*)dst;
+                dstList = *(ut_ll*)dst;
                 dstIsList = true;
                 break;
             case CORTO_MAP:
@@ -373,7 +373,7 @@ int16_t corto_ser_collection(
         }
 
         if (dstIsList && !dstList && (size1 || srcList)) {
-            *(corto_ll*)dst = dstList = corto_ll_new();
+            *(ut_ll*)dst = dstList = ut_ll_new();
         }
 
         if (v1IsArray) {
@@ -401,8 +401,8 @@ int16_t corto_ser_collection(
             }
         }
         if (dstList && srcIsList && !srcList) {
-            corto_ll_free(dstList); /* List should be empty by now */
-            *(corto_ll*)dst = NULL;
+            ut_ll_free(dstList); /* List should be empty by now */
+            *(ut_ll*)dst = NULL;
         }
     }
 
@@ -426,7 +426,7 @@ int16_t corto_ser_construct(
 
     ret = !corto_type_castable(t2, t1);
     if (ret) {
-        corto_throw("cannot copy value of type '%s' to '%s'",
+        ut_throw("cannot copy value of type '%s' to '%s'",
             corto_fullpath(NULL, t1), corto_fullpath(NULL, t2));
     }
 

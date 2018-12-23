@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 typedef struct __dummySeq {
     corto_uint32 length;
@@ -23,7 +23,7 @@ int16_t corto_sequence_construct(
 {
     corto_type element_type = corto_collection(this)->element_type;
     if (!element_type) {
-        corto_error("no elementtype provided for sequence");
+        ut_error("no elementtype provided for sequence");
         goto error;
     }
 

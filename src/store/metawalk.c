@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h" /* To mimic an object on stack */
 
 /* If application does not specify PRIMITIVE, replace with generic primitive
@@ -51,7 +51,7 @@ int16_t _corto_metawalk(
     /* Since we potentially overwrite some callbacks, make private copy */
     corto_walk_opt private = *s;
 
-    corto_assert(type != NULL, "corto_metawalk called with NULL type");
+    ut_assert(type != NULL, "corto_metawalk called with NULL type");
 
     /* Instantiate dummy-object */
     o = corto_alloc(sizeof(corto__object) + type->size);

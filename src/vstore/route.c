@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 
 static corto_routerimpl corto_route_find_routerImpl(corto_route this) {
@@ -32,15 +32,15 @@ int16_t corto_route_construct(
         }
 
         if (routerBase->element_separator) {
-            if ((elementCount = corto_pathToArray(ptr, elements, routerBase->element_separator)) == -1) {
-                corto_throw("invalid pattern '%s'", this->pattern);
+            if ((elementCount = ut_pathToArray(ptr, elements, routerBase->element_separator)) == -1) {
+                ut_throw("invalid pattern '%s'", this->pattern);
                 goto error;
             }
 
             this->elements.buffer = corto_alloc(elementCount * sizeof(corto_string));
             this->elements.length = elementCount;
             for (i = 0; i < elementCount; i ++) {
-                this->elements.buffer[i] = corto_strdup(elements[i]);
+                this->elements.buffer[i] = ut_strdup(elements[i]);
             }
         }
     }
@@ -112,7 +112,7 @@ int16_t corto_route_init(
     corto_route this)
 {
     if (!corto_route_find_routerImpl(this)) {
-        corto_throw("parent of '%s' is not an instance of 'routerimpl'",
+        ut_throw("parent of '%s' is not an instance of 'routerimpl'",
             corto_fullpath(NULL, this));
         goto error;
     }

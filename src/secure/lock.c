@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 int16_t corto_secure_registerLock(corto_secure_lock lock);
 int16_t corto_secure_unregisterLock(corto_secure_lock lock);
@@ -32,5 +32,5 @@ error:
 void corto_secure_lock_destruct(
     corto_secure_lock this)
 {
-    corto_assert(corto_secure_unregisterLock(this) == 0);
+    ut_assert(corto_secure_unregisterLock(this) == 0);
 }

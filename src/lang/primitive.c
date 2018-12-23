@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 
 corto_uint8 corto__primitive_convert_id(corto_primitiveKind kind, corto_width width) {

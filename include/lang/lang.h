@@ -6,8 +6,6 @@
 #ifndef CORTO_LANG_H
 #define CORTO_LANG_H
 
-#include <corto/_project.h>
-
 /* $header() */
 
 /* Type flags. These flags are derived from metadata, and provide a method of
@@ -30,9 +28,9 @@
 #define CORTO_TYPE_IS_CONTAINER (8192)
 /* $end */
 
-#include <corto/lang/_load.h>
-#include <corto/lang/_interface.h>
-#include <corto/lang/_binding.h>
+#include "_load.h"
+#include "_interface.h"
+#include "_binding.h"
 
 /* $body() */
 /* Enter code that requires types here */

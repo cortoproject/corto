@@ -5,11 +5,11 @@ void test_BinarySerializer_tc_serializeReferenceType(
     test_BinarySerializer this)
 {
     /* Use corto_select to serialize corto package to binary format */
-    corto_iter it;
+    ut_iter it;
     test_assert(corto_select("corto").format("binary/corto").iter(&it) == 0);
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assert(r->value != 0);
 
@@ -18,7 +18,7 @@ void test_BinarySerializer_tc_serializeReferenceType(
 
     /* Test if values are equal */
     test_assert(corto_value_compare(&src_value, &dst_value) == 0);
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 }
 
 void test_BinarySerializer_tc_copyReferenceType(
@@ -50,11 +50,11 @@ void test_BinarySerializer_tc_serializeReferenceTypeWithInit(
     test_BinarySerializer this)
 {
     /* Use corto_select to serialize corto package to binary format */
-    corto_iter it;
+    ut_iter it;
     test_assert(corto_select("corto/lang/class").format("binary/corto").iter(&it) == 0);
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assert(r->value != 0);
 
@@ -63,7 +63,7 @@ void test_BinarySerializer_tc_serializeReferenceTypeWithInit(
 
     /* Test if values are equal */
     test_assert(corto_value_compare(&src_value, &dst_value) == 0);
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 }
 
 void test_BinarySerializer_tc_copyListWithReferenceType(

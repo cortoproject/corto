@@ -22,7 +22,7 @@
 #ifndef CORTO_COPY_SER_H_
 #define CORTO_COPY_SER_H_
 
-#include <corto/store/walk.h>
+#include <corto.dir/store/walk.h>
 
 #ifdef __cplusplus
 extern "C" {

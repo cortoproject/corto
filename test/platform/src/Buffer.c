@@ -5,12 +5,12 @@
 void test_Buffer_tc_append(
     test_Buffer this)
 {
-    corto_buffer b = CORTO_BUFFER_INIT;
+    ut_strbuf b = UT_STRBUF_INIT;
 
-    corto_bool proceed = corto_buffer_append(&b, "Foo");
+    corto_bool proceed = ut_strbuf_append(&b, "Foo");
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, "Foo");
 
@@ -19,12 +19,12 @@ void test_Buffer_tc_append(
 void test_Buffer_tc_appendEmpty(
     test_Buffer this)
 {
-    corto_buffer b = CORTO_BUFFER_INIT;
+    ut_strbuf b = UT_STRBUF_INIT;
 
-    corto_bool proceed = corto_buffer_append(&b, "");
+    corto_bool proceed = ut_strbuf_append(&b, "");
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, "");
 
@@ -33,14 +33,14 @@ void test_Buffer_tc_appendEmpty(
 void test_Buffer_tc_appendEmptyToExisting(
     test_Buffer this)
 {
-    corto_buffer b = CORTO_BUFFER_INIT;
+    ut_strbuf b = UT_STRBUF_INIT;
 
-    corto_bool proceed = corto_buffer_append(&b, "Foo");
+    corto_bool proceed = ut_strbuf_append(&b, "Foo");
     test_assert(proceed == TRUE);
-    proceed = corto_buffer_append(&b, "");
+    proceed = ut_strbuf_append(&b, "");
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, "Foo");
 
@@ -62,11 +62,11 @@ void test_Buffer_tc_appendLarge(
     }
     largeString[799] = '\0';
 
-    corto_buffer b = CORTO_BUFFER_INIT;
-    corto_bool proceed = corto_buffer_append(&b, largeString);
+    ut_strbuf b = UT_STRBUF_INIT;
+    corto_bool proceed = ut_strbuf_append(&b, largeString);
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, largeString);
 
@@ -89,11 +89,11 @@ void test_Buffer_tc_appendLargeMulti(
     }
     largeString[1399] = '\0';
 
-    corto_buffer b = CORTO_BUFFER_INIT;
-    corto_bool proceed = corto_buffer_append(&b, largeString);
+    ut_strbuf b = UT_STRBUF_INIT;
+    corto_bool proceed = ut_strbuf_append(&b, largeString);
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, largeString);
 
@@ -115,13 +115,13 @@ void test_Buffer_tc_appendLargeOverflow(
     }
     largeString[799] = '\0';
 
-    corto_buffer b = CORTO_BUFFER_INIT;
-    corto_bool proceed = corto_buffer_append(&b, "HelloWorld!");
+    ut_strbuf b = UT_STRBUF_INIT;
+    corto_bool proceed = ut_strbuf_append(&b, "HelloWorld!");
     test_assert(proceed == TRUE);
-    proceed = corto_buffer_append(&b, largeString);
+    proceed = ut_strbuf_append(&b, largeString);
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     char result[811];
     sprintf(result, "HelloWorld!%s", largeString);
@@ -132,12 +132,12 @@ void test_Buffer_tc_appendLargeOverflow(
 void test_Buffer_tc_appendNull(
     test_Buffer this)
 {
-    corto_buffer b = CORTO_BUFFER_INIT;
+    ut_strbuf b = UT_STRBUF_INIT;
 
-    corto_bool proceed = corto_buffer_append(&b, NULL);
+    corto_bool proceed = ut_strbuf_append(&b, NULL);
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str == NULL);
 
 }
@@ -145,13 +145,13 @@ void test_Buffer_tc_appendNull(
 void test_Buffer_tc_appendNullToExisting(
     test_Buffer this)
 {
-    corto_buffer b = CORTO_BUFFER_INIT;
+    ut_strbuf b = UT_STRBUF_INIT;
 
-    corto_bool proceed = corto_buffer_append(&b, "Foo");
-    proceed = corto_buffer_append(&b, NULL);
+    corto_bool proceed = ut_strbuf_append(&b, "Foo");
+    proceed = ut_strbuf_append(&b, NULL);
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, "Foo");
 
@@ -173,13 +173,13 @@ void test_Buffer_tc_appendOverflow(
     }
     largeString[504] = '\0';
 
-    corto_buffer b = CORTO_BUFFER_INIT;
-    corto_bool proceed = corto_buffer_append(&b, "HelloWorld!");
+    ut_strbuf b = UT_STRBUF_INIT;
+    corto_bool proceed = ut_strbuf_append(&b, "HelloWorld!");
     test_assert(proceed == TRUE);
-    proceed = corto_buffer_append(&b, largeString);
+    proceed = ut_strbuf_append(&b, largeString);
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     char result[516];
     sprintf(result, "HelloWorld!%s", largeString);
@@ -190,13 +190,13 @@ void test_Buffer_tc_appendOverflow(
 void test_Buffer_tc_appendToExisting(
     test_Buffer this)
 {
-    corto_buffer b = CORTO_BUFFER_INIT;
+    ut_strbuf b = UT_STRBUF_INIT;
 
-    corto_bool proceed = corto_buffer_append(&b, "Foo");
-    proceed = corto_buffer_append(&b, "Bar");
+    corto_bool proceed = ut_strbuf_append(&b, "Foo");
+    proceed = ut_strbuf_append(&b, "Bar");
     test_assert(proceed == TRUE);
 
-    corto_string str = corto_buffer_str(&b);
+    corto_string str = ut_strbuf_get(&b);
     test_assert(str != NULL);
     test_assertstr(str, "FooBar");
 

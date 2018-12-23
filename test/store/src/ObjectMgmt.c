@@ -86,7 +86,7 @@ void test_ObjectMgmt_tc_createChildInitFail(
 
     corto_object o = corto_create(root_o, "o", test_Bar_o);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_createChildInt(
@@ -163,7 +163,7 @@ void test_ObjectMgmt_tc_createChildInvalidType(
 
     corto_object o = corto_create(NULL, NULL, t);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_createChildNested(
@@ -228,7 +228,7 @@ void test_ObjectMgmt_tc_createChildNullType(
 
     corto_object o = corto_create(root_o, "o", NULL);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_createChildParentStateErr(
@@ -242,11 +242,11 @@ void test_ObjectMgmt_tc_createChildParentStateErr(
 
     corto_object p = corto_create(o, "p", test_DefinedParent_o);
     test_assert(p == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_object q = test_DefinedParent__create(o, "q", 0);
     test_assert(q == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_delete(o);
 
@@ -263,11 +263,11 @@ void test_ObjectMgmt_tc_createChildParentTypeErr(
 
     corto_object p = corto_create(o, "p", test_VoidParent_o);
     test_assert(p == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_object q = test_VoidParent__create(o, "q", 0);
     test_assert(q == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     test_assert(corto_delete(o) == 0);
 }
@@ -386,7 +386,7 @@ void test_ObjectMgmt_tc_createInitFail(
 
     corto_object o = corto_create(NULL, NULL, test_Bar_o);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_createInt(
@@ -443,7 +443,7 @@ void test_ObjectMgmt_tc_createInvalidType(
 
     corto_object o = corto_create(NULL, NULL, t);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
 }
 
@@ -544,7 +544,7 @@ void test_ObjectMgmt_tc_createNullType(
 
     corto_object o = corto_create(NULL, NULL, NULL);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_createVoid(
@@ -659,7 +659,7 @@ void test_ObjectMgmt_tc_declareChildInitFail(
 
     corto_object o = corto_declare(root_o, "o", test_Bar_o);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_declareChildInt(
@@ -740,7 +740,7 @@ void test_ObjectMgmt_tc_declareChildInvalidType(
 
     corto_object o = corto_declare(root_o, "foo", t);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_declareChildNullType(
@@ -749,7 +749,7 @@ void test_ObjectMgmt_tc_declareChildNullType(
 
     corto_object o = corto_declare(root_o, "o", NULL);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_declareChildParentStateErr(
@@ -763,11 +763,11 @@ void test_ObjectMgmt_tc_declareChildParentStateErr(
 
     corto_object p = corto_declare(o, "p", test_DefinedParent_o);
     test_assert(p == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_object q = corto_declare(o, "q", test_DefinedParent_o);
     test_assert(q == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_delete(o);
 }
@@ -783,11 +783,11 @@ void test_ObjectMgmt_tc_declareChildParentTypeErr(
 
     corto_object p = corto_declare(o, "p", test_VoidParent_o);
     test_assert(p == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_object q = corto_declare(o, "q", test_VoidParent_o);
     test_assert(q == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_delete(o);
 
@@ -932,7 +932,7 @@ void test_ObjectMgmt_tc_declareInitFail(
 
     corto_object o = corto_declare(NULL, NULL, test_Bar_o);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_declareInt(
@@ -987,7 +987,7 @@ void test_ObjectMgmt_tc_declareInvalidType(
 
     corto_object o = corto_declare(NULL, NULL, t);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 corto_void onDeclareNested(corto_observer_event *e)
@@ -1073,7 +1073,7 @@ void test_ObjectMgmt_tc_declareNestedFirstFail(
 
     corto_object c = corto_declare(root_o, "myRoot/a/b/c", corto_int32_o);
     test_assert(c == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     test_assert(corto_lookup(root_o, "myRoot/a/b") == NULL);
     test_assert(corto_lookup(root_o, "myRoot/a") == NULL);
@@ -1102,7 +1102,7 @@ void test_ObjectMgmt_tc_declareNestedLastFail(
 
     corto_object c = corto_declare(root_o, "a/b/c", test_NestedInitFail_o);
     test_assert(c == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     test_assert(corto_lookup(root_o, "a/b") == NULL);
     test_assert(corto_lookup(root_o, "a") == NULL);
@@ -1138,7 +1138,7 @@ void test_ObjectMgmt_tc_declareNestedSecondFail(
 
     corto_object c = corto_declare(root_o, "a/b/c", corto_int32_o);
     test_assert(c == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     test_assert(corto_lookup(root_o, "a/b") == NULL);
 
@@ -1159,7 +1159,7 @@ void test_ObjectMgmt_tc_declareNullType(
 
     corto_object o = corto_declare(NULL, NULL, NULL);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_declareOrphan(
@@ -1935,15 +1935,15 @@ void test_ObjectMgmt_tc_redeclareWithDifferentType(
 
     corto_object a = corto_declare(root_o, "a", corto_float64_o);
     test_assert(a == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_object b = corto_declare(root_o, "b", corto_float64_o);
     test_assert(b == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
     corto_object c = corto_declare(root_o, "c", corto_float64_o);
     test_assert(c == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_teardown(
@@ -2218,7 +2218,7 @@ void test_ObjectMgmt_tc_lifecycleInitFail(
 {
     test_LifecycleTest o = corto_declare(root_o, "data/fail", test_LifecycleTest_o);
     test_assert(o == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_ObjectMgmt_tc_lifecycleValidateFail(
@@ -2477,7 +2477,7 @@ void test_ObjectMgmt_tc_defineUnknown(
     test_assertstr(corto_fullpath(NULL, o), "/foo");
 
     test_assert(corto_define(o) != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
     test_assert(!corto_check_state(o, CORTO_VALID));
 }
 
@@ -2635,8 +2635,8 @@ void test_ObjectMgmt_tc_redeclareNestedUnknownOtherThread(
     test_assert(!corto_check_state(nested, CORTO_VALID));
 
     /* Start thread that attempts to redeclare 'nested' with different object */
-    corto_thread thr = corto_thread_new(thr_recreate_unknown, this);
-    corto_thread_join(thr, NULL);
+    ut_thread thr = ut_thread_new(thr_recreate_unknown, this);
+    ut_thread_join(thr, NULL);
 }
 
 void test_ObjectMgmt_tc_declareNestedFuncNoArgs(

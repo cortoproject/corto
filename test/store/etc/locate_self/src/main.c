@@ -6,7 +6,7 @@
 
 int cortomain(int argc, char *argv[]) {
 
-    const char *str = corto_locate("locate_self", NULL, CORTO_LOCATE_LIB);
+    const char *str = ut_locate("locate_self", NULL, UT_LOCATE_LIB);
     if (!str) {
         goto error;
     }

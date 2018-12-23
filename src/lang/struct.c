@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 #include "src/store/object.h"
 #include "interface.h"
 #include "class.h"
@@ -17,7 +17,7 @@ bool corto_struct_compatible_v(
 {
     corto_bool result;
 
-    corto_assert(corto_class_instanceof(corto_struct_o, this), "struct::compatible called on non-struct object.");
+    ut_assert(corto_class_instanceof(corto_struct_o, this), "struct::compatible called on non-struct object.");
     result = FALSE;
 
     /* Call overloaded type::compatible function first to check for generic compatibility. */
@@ -61,7 +61,7 @@ void corto_struct_add_keys(
                 corto_realloc(this->keys.buffer,
                     sizeof(char*) * (this->keys.length + 1));
             this->keys.buffer[this->keys.length] =
-                corto_strdup(corto_idof(m));
+                ut_strdup(corto_idof(m));
             this->keys.length ++;
             this->keycache.buffer =
                 corto_realloc(this->keycache.buffer,
@@ -93,7 +93,7 @@ int16_t corto_struct_construct(
         });
 
         if (!m) {
-            corto_critical("failed to declare dummy member");
+            ut_critical("failed to declare dummy member");
         }
 
         corto_set_ref(&m->type, corto_int8_o);
@@ -110,7 +110,7 @@ int16_t corto_struct_construct(
     if (corto_interface(this)->members.length) {
         alignment = corto__interface_calculateAlignment(corto_interface(this));
         if (!alignment) {
-            corto_throw("can't compute alignment of %s",
+            ut_throw("can't compute alignment of %s",
                 corto_fullpath(NULL, this));
             goto error;
         }
@@ -124,7 +124,7 @@ int16_t corto_struct_construct(
         /* Test if there are no circular references in the base */
         do {
             if (base == this) {
-                corto_throw("interface '%s' inherits from itself",
+                ut_throw("interface '%s' inherits from itself",
                     corto_fullpath(NULL, this));
                 goto error;
             }
@@ -133,14 +133,14 @@ int16_t corto_struct_construct(
         base = (corto_struct)corto_interface(this)->base;
 
         if (!corto_check_state(base, CORTO_VALID)) {
-            corto_throw("base '%s' must be defined before defining '%s'",
+            ut_throw("base '%s' must be defined before defining '%s'",
                 corto_fullpath(NULL, base),
                 corto_fullpath(NULL, this));
             goto error;
         }
 
         if (!corto_instanceof(corto_type(corto_struct_o), base)) {
-            corto_throw("struct '%s' inherits from non-struct type '%s'",
+            ut_throw("struct '%s' inherits from non-struct type '%s'",
                 corto_fullpath(NULL, this), corto_fullpath(NULL, base));
             goto error;
         }
@@ -173,7 +173,7 @@ int16_t corto_struct_construct(
     if (corto_interface(this)->members.length) {
         size = corto__interface_calculateSize(corto_interface(this), size);
         if (!size) {
-            corto_throw("can't compute size of %s",
+            ut_throw("can't compute size of %s",
                 corto_fullpath(NULL, this));
             goto error;
         }
@@ -190,14 +190,14 @@ int16_t corto_struct_construct(
         for (i = 0; i < this->keys.length; i++) {
             corto_object o = corto_interface_resolve_member(this, this->keys.buffer[i]);
             if (!o) {
-                corto_throw("no member with name '%s' found for table '%s'",
+                ut_throw("no member with name '%s' found for table '%s'",
                     this->keys.buffer[i],
                     corto_fullpath(NULL, this));
                 goto error;
             }
 
             if (!corto_instanceof(corto_member_o, o)) {
-                corto_throw("object '%s' in table '%s' is not a member",
+                ut_throw("object '%s' in table '%s' is not a member",
                     corto_fullpath(NULL, o),
                     corto_fullpath(NULL, this));
                 goto error;

@@ -1,4 +1,4 @@
-#include <corto/corto.h>
+#include <corto>
 #include "typecache.h"
 
 /* Large enough so that most types don't need allocs when creating cache */
@@ -70,7 +70,7 @@ const char *corto_typecache_kind_str(
     EXPAND_SUB_KIND(LIST);
     EXPAND_SUB_KIND(MAP);
     default:
-        corto_error("unknown kind (%d)", kind);
+        ut_error("unknown kind (%d)", kind);
     }
     return "???";
 }
@@ -79,23 +79,23 @@ static
 char *corto_typecache_meta_str(
     corto_typecache_meta_kind meta_kind)
 {
-    corto_buffer buffer = CORTO_BUFFER_INIT;
-    corto_buffer_appendstr(&buffer, ""); /* buffer at least has empty string */
+    ut_strbuf buffer = UT_STRBUF_INIT;
+    ut_strbuf_appendstr(&buffer, ""); /* buffer at least has empty string */
 
     if (meta_kind & CORTO_TC_META_MUST_SERIALIZE) {
-        corto_buffer_appendstr(&buffer, " MUST_SERIALIZE");
+        ut_strbuf_appendstr(&buffer, " MUST_SERIALIZE");
     }
     if (meta_kind & CORTO_TC_META_NEEDS_INIT) {
-        corto_buffer_appendstr(&buffer, " NEEDS_INIT");
+        ut_strbuf_appendstr(&buffer, " NEEDS_INIT");
     }
     if (meta_kind & CORTO_TC_META_HAS_INIT) {
-        corto_buffer_appendstr(&buffer, " HAS_INIT");
+        ut_strbuf_appendstr(&buffer, " HAS_INIT");
     }
     if (meta_kind & CORTO_TC_META_HAS_DEINIT) {
-        corto_buffer_appendstr(&buffer, " HAS_DEINIT");
+        ut_strbuf_appendstr(&buffer, " HAS_DEINIT");
     }
 
-    return corto_buffer_str(&buffer);
+    return ut_strbuf_get(&buffer);
 }
 
 static
@@ -105,7 +105,7 @@ void corto_typecache_print_field(
     const char *kind = corto_typecache_kind_str(field->kind);
     char *res_kind = corto_typecache_meta_str(field->meta_flags);
 
-    corto_info("%s%s '%s' [offset = %d]",
+    ut_info("%s%s '%s' [offset = %d]",
         kind, res_kind, field->name, field->offset);
 
     free(res_kind);
@@ -119,11 +119,11 @@ void corto_typecache_print(
         return;
     }
 
-    corto_info("typecache for type '%s' [field_count = %d]",
+    ut_info("typecache for type '%s' [field_count = %d]",
         corto_fullpath(NULL, type),
         cache->field_count);
 
-    corto_log_push("fields");
+    ut_log_push("fields");
 
     int i;
     for (i = 0; i < cache->field_count; i ++) {
@@ -131,7 +131,7 @@ void corto_typecache_print(
         corto_typecache_print_field(field);
     }
 
-    corto_log_pop();
+    ut_log_pop();
 }
 
 static
@@ -248,7 +248,7 @@ int16_t corto_typecache_collection(
         field->data.sub_type = element_type;
         break;
     default:
-        corto_assert(0, "invalid primitive kind (%d)", type->kind);
+        ut_assert(0, "invalid primitive kind (%d)", type->kind);
         break;
     }
 
@@ -296,7 +296,7 @@ int16_t corto_typecache_primitive(
         field->kind = CORTO_TC_BITMASK;
         break;
     default:
-        corto_assert(0, "invalid primitive kind (%d)", type->kind);
+        ut_assert(0, "invalid primitive kind (%d)", type->kind);
         break;
     }
 
@@ -332,7 +332,7 @@ int16_t corto_typecache_type(
     } else if (type->kind == CORTO_ANY) {
         field->kind = CORTO_TC_ANY;
     } else {
-        corto_assert(0, "unknown typekind");
+        ut_assert(0, "unknown typekind");
     }
 
     return 0;

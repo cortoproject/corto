@@ -59,16 +59,16 @@ CORTO_SEQUENCE(dummy_seq,void*,);
 
 #define FREE_LIST(size_of, action) {\
     sub_type = field->data.sub_type;\
-    corto_ll list = *(corto_ll*)ptr;\
+    ut_ll list = *(ut_ll*)ptr;\
     if (list) {\
-        corto_ll_node n = list->first;\
+        ut_ll_node n = list->first;\
         while (n) {\
             elem = n->data;\
             n = n->next;\
             (void)elem;\
             action;\
         }\
-        corto_ll_free(list);\
+        ut_ll_free(list);\
     }\
 }
 
@@ -130,7 +130,7 @@ void corto_free(
         /* List operations */
         case CORTO_TC_LIST:
         case CORTO_TC_LIST + CORTO_TC_SUB_SIMPLE_PTR:
-            corto_ll_free(*(corto_ll*)ptr);
+            ut_ll_free(*(ut_ll*)ptr);
             break;
         case CORTO_TC_LIST + CORTO_TC_SUB_ALLOC:
         case CORTO_TC_LIST + CORTO_TC_SUB_STRING:

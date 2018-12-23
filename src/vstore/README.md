@@ -118,11 +118,11 @@ the virtual store into the object store.
 
 This example shows how to do a single shot query and iterate over its results:
 ```c
-corto_iter it;
+ut_iter it;
 corto_select("*").from("/foo").iter(&it);
 
-while (corto_iter_hasNext(&it)) {
-    corto_record *r = corto_iter_next(&it);
+while (ut_iter_hasNext(&it)) {
+    corto_record *r = ut_iter_next(&it);
     printf("id = %s, parent = %s, type = %s",
         r->id,
         r->parent,
@@ -270,7 +270,7 @@ mounts use the subscriber query to subscribe for data in the virtual store.
 
 Now, add this line to the main function in `MyMount/src/MyMount.c`:
 ```c
-corto_use("config.json", 0, NULL);
+ut_use("config.json", 0, NULL);
 ```
 And change the implementation of `on_notify` to this (using our fictional writeData function):
 ```c

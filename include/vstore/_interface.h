@@ -5,9 +5,6 @@
 #ifndef CORTO_VSTORE_INTERFACE_H
 #define CORTO_VSTORE_INTERFACE_H
 
-#include <corto/_project.h>
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -430,4 +427,3 @@ int16_t _corto_subscriber_event_init(
 #endif
 
 #endif
-

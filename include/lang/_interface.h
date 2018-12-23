@@ -5,9 +5,6 @@
 #ifndef CORTO_LANG_INTERFACE_H
 #define CORTO_LANG_INTERFACE_H
 
-#include <corto/_project.h>
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -533,4 +530,3 @@ int16_t _corto_verbatim_init(
 #endif
 
 #endif
-

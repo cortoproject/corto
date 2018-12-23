@@ -30,7 +30,7 @@ void test_assign_reftype_obj_tc_byref_frommbr_byref(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -68,7 +68,7 @@ void test_assign_reftype_obj_tc_byref_frommbr_bytype(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -106,7 +106,7 @@ void test_assign_reftype_obj_tc_byref_frommbr_byval(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -139,7 +139,7 @@ void test_assign_reftype_obj_tc_byref_fromobj_byref(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -172,7 +172,7 @@ void test_assign_reftype_obj_tc_byref_fromobj_bytype(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -205,7 +205,7 @@ void test_assign_reftype_obj_tc_byref_fromobj_byval(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -238,7 +238,7 @@ void test_assign_reftype_obj_tc_byref_fromptr_byref(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -271,7 +271,7 @@ void test_assign_reftype_obj_tc_byref_fromptr_bytype(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -304,7 +304,7 @@ void test_assign_reftype_obj_tc_byref_fromptr_byval(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -347,7 +347,7 @@ void test_assign_reftype_obj_tc_bytype_frommbr_byref(
     /* Because the left is now BY_VALUE and the right BY_REFERENCE, this
      * operation will fail. */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -477,7 +477,7 @@ void test_assign_reftype_obj_tc_bytype_fromobj_byref(
     /* Because the left is now BY_VALUE and the right BY_REFERENCE, this
      * operation will fail. */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -597,7 +597,7 @@ void test_assign_reftype_obj_tc_bytype_fromptr_byref(
      /* Because the left is now BY_VALUE and the right BY_REFERENCE, this
       * operation will fail. */
     test_assert(ret != 0);
-    test_assert(corto_catch() == 1);
+    test_assert(ut_catch() == 1);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -717,7 +717,7 @@ void test_assign_reftype_obj_tc_byval_frommbr_byref(
 
     /* Cannot assign reference to object value */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -837,7 +837,7 @@ void test_assign_reftype_obj_tc_byval_fromobj_byref(
 
     /* Cannot assign reference to object value */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -947,7 +947,7 @@ void test_assign_reftype_obj_tc_byval_fromptr_byref(
 
     /* Cannot assign reference to object value */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -1048,7 +1048,7 @@ void test_assign_reftype_obj_tc_byref_fromnull(
 
     /* Cannot assign null to object */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -1072,7 +1072,7 @@ void test_assign_reftype_obj_tc_bytype_fromnull(
 
     /* Cannot assign null to object */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -1096,7 +1096,7 @@ void test_assign_reftype_obj_tc_byval_fromnull(
 
     /* Cannot assign null to object */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);

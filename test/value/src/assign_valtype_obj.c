@@ -31,7 +31,7 @@ void test_assign_valtype_obj_tc_byref_frommbr_byref(
 
     /* Cannot obtain reference from non-reference member value */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -69,7 +69,7 @@ void test_assign_valtype_obj_tc_byref_frommbr_bytype(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -107,7 +107,7 @@ void test_assign_valtype_obj_tc_byref_frommbr_byval(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -140,7 +140,7 @@ void test_assign_valtype_obj_tc_byref_fromobj_byref(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -173,7 +173,7 @@ void test_assign_valtype_obj_tc_byref_fromobj_bytype(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -206,7 +206,7 @@ void test_assign_valtype_obj_tc_byref_fromobj_byval(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -239,7 +239,7 @@ void test_assign_valtype_obj_tc_byref_fromptr_byref(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -272,7 +272,7 @@ void test_assign_valtype_obj_tc_byref_fromptr_bytype(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -305,7 +305,7 @@ void test_assign_valtype_obj_tc_byref_fromptr_byval(
 
     /* Cannot assign object by reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -343,7 +343,7 @@ void test_assign_valtype_obj_tc_bytype_frommbr_byref(
 
     /* Cannot obtain reference from non-reference member */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -458,7 +458,7 @@ void test_assign_valtype_obj_tc_bytype_fromobj_byref(
 
     /* Cannot assign reference to non-reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -563,7 +563,7 @@ void test_assign_valtype_obj_tc_bytype_fromptr_byref(
 
     /* Cannot assign reference to non-reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -673,7 +673,7 @@ void test_assign_valtype_obj_tc_byval_frommbr_byref(
 
     /* Cannot obtain reference from non-reference member */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -788,7 +788,7 @@ void test_assign_valtype_obj_tc_byval_fromobj_byref(
 
     /* Cannot assign reference to non-reference value */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);
@@ -893,7 +893,7 @@ void test_assign_valtype_obj_tc_byval_fromptr_byref(
 
     /* Cannot take reference from non-reference value */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assertint(foo->x, 0);
     test_assertint(foo->y, 0);

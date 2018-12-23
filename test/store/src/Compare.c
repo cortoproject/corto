@@ -690,7 +690,7 @@ void test_Compare_tc_listWithNullList(
     test_IntList__create_auto(NULL, o1, 4, v);
     test_IntList__create_auto(NULL, o2, 0, NULL);
 
-    corto_ll_free(*o2);
+    ut_ll_free(*o2);
     *o2 = NULL;
 
     eq = corto_compare(o1, o2);
@@ -708,7 +708,7 @@ void test_Compare_tc_nullListWithList(
     test_IntList__create_auto(NULL, o1, 0, NULL);
     test_IntList__create_auto(NULL, o2, 4, v);
 
-    corto_ll_free(*o1);
+    ut_ll_free(*o1);
     *o1 = NULL;
 
     eq = corto_compare(o1, o2);
@@ -725,9 +725,9 @@ void test_Compare_tc_nullListWithNullList(
     test_IntList__create_auto(NULL, o1, 0, NULL);
     test_IntList__create_auto(NULL, o2, 0, NULL);
 
-    corto_ll_free(*o1);
+    ut_ll_free(*o1);
     *o1 = NULL;
-    corto_ll_free(*o2);
+    ut_ll_free(*o2);
     *o2 = NULL;
 
     eq = corto_compare(o1, o2);

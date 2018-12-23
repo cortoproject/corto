@@ -1,7 +1,7 @@
 #ifndef CORTO__SEQUENCE_H_
 #define CORTO__SEQUENCE_H_
 
-#include <corto/corto.h>
+#include <corto>
 
 #ifdef __cplusplus
 extern "C" {

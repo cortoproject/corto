@@ -22,8 +22,6 @@
 #ifndef CORTO_VSTORE_H
 #define CORTO_VSTORE_H
 
-#include <corto/_project.h>
-
 /* $header() */
 
 /** @file
@@ -93,9 +91,9 @@
 
 /* $end */
 
-#include <corto/vstore/_load.h>
-#include <corto/vstore/_interface.h>
-#include <corto/vstore/_binding.h>
+#include "_load.h"
+#include "_interface.h"
+#include "_binding.h"
 
 /* $body() */
 
@@ -292,7 +290,7 @@ typedef struct corto_select__fluent {
  * A mount may choose to implement such optimizations, but this is not enforced.
  *
  * The function employs minimal locking on the object store while an application
- * is iterating over a resultset. Outside of the corto_iter_next and corto_iter_hasNext
+ * is iterating over a resultset. Outside of the ut_iter_next and ut_iter_hasNext
  * calls no locks will be held, which enables applications to run corto_select
  * queries concurrently and without disturbing other tasks in an application.
  *

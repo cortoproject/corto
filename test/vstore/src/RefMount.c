@@ -40,7 +40,7 @@ int16_t test_RefMount_construct(
         NULL,
         ".",
         "test/Refs",
-        (uintptr_t)corto_strdup(json),
+        (uintptr_t)ut_strdup(json),
         0
     );
 
@@ -104,5 +104,5 @@ corto_recordIter test_RefMount_on_query(
     test_RefMount this,
     corto_query *query)
 {
-    return corto_ll_iterAlloc(this->items);
+    return ut_ll_iterAlloc(this->items);
 }

@@ -19,19 +19,19 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "init_ser.h"
 #include "object.h"
 
 CORTO_SEQUENCE(dummySeq, char,);
 
 char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
-    corto_assert_object(type);
+    ut_assert_object(type);
     corto_string_ser_t serData;
     corto_walk_opt s;
     corto_value v = corto_value_mem(p, type);
 
-    serData.buffer = CORTO_BUFFER_INIT;
+    serData.buffer = UT_STRBUF_INIT;
     serData.buffer.max = maxLength;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
@@ -39,7 +39,7 @@ char* _corto_ptr_str(void *p, corto_type type, corto_uint32 maxLength) {
 
     s = corto_string_ser(CORTO_LOCAL, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
     corto_walk_value(&s, &v, &serData);
-    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_string result = ut_strbuf_get(&serData.buffer);
     corto_walk_deinit(&s, &serData);
     return result;
 }
@@ -48,7 +48,7 @@ corto_int16 _corto_ptr_init(
     void *p,
     corto_type type)
 {
-    corto_assert_object(type);
+    ut_assert_object(type);
     corto_value v = corto_value_mem(p, type);
 
     memset(p, 0, corto_type_sizeof(type));
@@ -75,7 +75,7 @@ corto_int16 _corto_ptr_deinit(
     void *p,
     corto_type type)
 {
-    corto_assert_object(type);
+    ut_assert_object(type);
 
     /* Don't deinit for reference types- see ptr_init for reason */
     if (!type->reference) {
@@ -101,7 +101,7 @@ corto_int16 _corto_ptr_copy(
     corto_type type,
     void *src)
 {
-    corto_assert_object(type);
+    ut_assert_object(type);
 
     corto_walk_opt s = corto_copy_ser(CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_ON_FAIL);
     corto_copy_ser_t data;
@@ -116,7 +116,7 @@ corto_equalityKind _corto_ptr_compare(
     corto_type type,
     const void *p2)
 {
-    corto_assert_object(type);
+    ut_assert_object(type);
     corto_compare_ser_t data;
     corto_walk_opt s;
 
@@ -219,9 +219,9 @@ int16_t _corto_ptr_resize(
     corto_type type,
     uint32_t size)
 {
-    corto_assert(type->kind == CORTO_COLLECTION, "corto_ptr_resize is only valid for collection types");
+    ut_assert(type->kind == CORTO_COLLECTION, "corto_ptr_resize is only valid for collection types");
     corto_collection collectionType = corto_collection(type);
-    corto_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)",
+    ut_assert(!collectionType->max || collectionType->max < size, "ptr_size: size %d exceeds bounds of collectiontype (%d)",
         size,
         collectionType->max);
     corto_type element_type = collectionType->element_type;
@@ -264,39 +264,39 @@ int16_t _corto_ptr_resize(
         break;
     }
     case CORTO_LIST: {
-        corto_ll l = *(corto_ll*)ptr;
+        ut_ll l = *(ut_ll*)ptr;
         if (!l) {
-            *(corto_ll*)ptr = l = corto_ll_new();
+            *(ut_ll*)ptr = l = ut_ll_new();
         }
-        if (corto_ll_count(l) > size) {
-            corto_iter it = corto_ll_iter(l);
+        if (ut_ll_count(l) > size) {
+            ut_iter it = ut_ll_iter(l);
 
             /* Move iterator to first redundant element */
-            corto_ll_iterMove(&it, size);
+            ut_ll_iterMove(&it, size);
 
             /* Deinitialize redundant samples */
-            while (corto_iter_hasNext(&it)) {
+            while (ut_iter_hasNext(&it)) {
                 void *elem;
                 if (corto_collection_requires_alloc(element_type)) {
-                    elem = corto_iter_next(&it);
+                    elem = ut_iter_next(&it);
                     corto_ptr_free(elem, element_type);
                 } else {
-                    elem = corto_ll_iterNextPtr(&it);
+                    elem = ut_ll_iterNextPtr(&it);
                     corto_ptr_deinit(elem, element_type);
                 }
-                corto_ll_iterRemove(&it);
+                ut_ll_iterRemove(&it);
             }
         }
 
         int i;
-        for (i = corto_ll_count(l); i < size; i++) {
+        for (i = ut_ll_count(l); i < size; i++) {
             void *elem;
             if (corto_collection_requires_alloc(element_type)) {
                 elem = corto_ptr_new(element_type);
             } else {
                 elem = NULL;
             }
-            corto_ll_append(l, elem);
+            ut_ll_append(l, elem);
         }
 
         break;
@@ -331,16 +331,16 @@ uint64_t _corto_ptr_count(void *ptr, corto_type type) {
         break;
     }
     case CORTO_LIST: {
-        corto_ll *list = (corto_ll*)ptr;
+        ut_ll *list = (ut_ll*)ptr;
         if (*list) {
-            return corto_ll_count(*list);
+            return ut_ll_count(*list);
         } else {
             return 0;
         }
         break;
     }
     default:
-        //return corto_rb_count(*(corto_rb*)ptr);
+        //return ut_rb_count(*(ut_rb*)ptr);
         break;
     }
 

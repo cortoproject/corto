@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 #include "src/store/object.h"
 /* Not all types that inherit from from function are necessarily procedures. Find
  * the first procedure type in the inheritance hierarchy. */
@@ -9,7 +9,7 @@ corto_procedure corto_function_getProcedureType(corto_function this) {
 
     while (!corto_instanceof(corto_procedure_o, t)) {
         t = t->base;
-        corto_assert(t != NULL, "no procedure type in inheritance hierarchy of function");
+        ut_assert(t != NULL, "no procedure type in inheritance hierarchy of function");
     }
 
     return (corto_procedure)t;
@@ -43,7 +43,7 @@ int16_t corto_function_construct(
 
         corto_uint32 i;
         if (this->parameters.length && !this->parameters.buffer) {
-            corto_throw(
+            ut_throw(
                 "function has %d parameters but parameter buffer is NULL",
                 this->parameters.length);
             goto error;
@@ -140,7 +140,7 @@ static int corto_functionLookupWalk(corto_object o, void* userData) {
         /* Check if function matches */
         if (!d) {
             if (strcmp(id, corto_idof(o))) {
-                corto_throw(
+                ut_throw(
                   "function '%s' conflicts with existing declaration '%s'",
                   id, corto_idof(o));
                 data->error = TRUE;
@@ -255,7 +255,7 @@ corto_parameterseq corto_function_stringToParameterSeq(
             /* Parse arguments */
             for(i = 0; i < count; i++) {
                 if (corto_sig_param_type(name, i, id, &flags)) {
-                    corto_throw(
+                    ut_throw(
                         "error occurred while parsing type of parameter '%d' for signature '%s'",
                         i,
                         name);
@@ -277,13 +277,13 @@ corto_parameterseq corto_function_stringToParameterSeq(
                 /* Assign type */
                 result.buffer[i].type = RESOLVE(scope, id);
                 if (!result.buffer[i].type) {
-                    corto_throw("unresolved type '%s'", id);
+                    ut_throw("unresolved type '%s'", id);
                     goto error;
                 }
 
                 /* Validate whether reference is not redundantly applied */
                 if (result.buffer[i].is_reference && result.buffer[i].type->reference) {
-                    corto_throw(
+                    ut_throw(
                         "redundant '&' qualifier for parameter %d, type '%s' is already a reference",
                         i,
                         corto_fullpath(NULL, result.buffer[i].type));
@@ -292,13 +292,13 @@ corto_parameterseq corto_function_stringToParameterSeq(
 
                 /* Parse name */
                 if (corto_sig_param_name(name, i, id)) {
-                    corto_throw(
+                    ut_throw(
                         "error occurred while parsing name of argument '%s' for signature '%s'",
                         name);
                     goto error;
                 }
 
-                result.buffer[i].name = corto_strdup(id);
+                result.buffer[i].name = ut_strdup(id);
             }
 
         }

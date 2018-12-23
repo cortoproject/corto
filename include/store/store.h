@@ -113,21 +113,20 @@
 #ifndef CORTO_STORE_H
 #define CORTO_STORE_H
 
-#include <corto/_project.h>
+#include "invoke.h"
+#include "ptr.h"
+#include "time.h"
+#include "field.h"
+#include "value.h"
+#include "rw.h"
+#include "expr.h"
+#include "entityadmin.h"
+#include "walk.h"
+#include "reflection.h"
+#include "security.h"
 
-#include <corto/store/invoke.h>
-#include <corto/store/ptr.h>
-#include <corto/store/time.h>
-#include <corto/store/field.h>
-#include <corto/store/value.h>
-#include <corto/store/rw.h>
-#include <corto/store/expr.h>
-#include <corto/store/walk.h>
-#include <corto/store/reflection.h>
-#include <corto/store/security.h>
-
-#include <corto/store/string_ser.h>
-#include <corto/store/fmt.h>
+#include "string_ser.h"
+#include "fmt.h"
 
 #ifdef __cplusplus
 extern "C" {

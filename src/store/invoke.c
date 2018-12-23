@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */
@@ -52,7 +52,7 @@ static corto_invokeHandler handlers[CORTO_MAX_BINDINGS] =
 int corto_invoke_register(corto_invoke_init_f init, corto_invoke_deinit_f deinit) {
     int nextId;
 
-    nextId = corto_ainc(&languageId)-1;
+    nextId = ut_ainc(&languageId)-1;
     handlers[nextId].init = init;
     handlers[nextId].deinit = deinit;
 
@@ -123,7 +123,7 @@ void corto_invoke_deinit(corto_function f) {
                 argptrs[arg] = argcpy(args, corto_any);\
                 break;\
             case CORTO_ITERATOR:\
-                argptrs[arg] = argcpy(args, corto_iter);\
+                argptrs[arg] = argcpy(args, ut_iter);\
                 break;\
             case CORTO_PRIMITIVE:\
                 if (corto_primitive(p->type)->kind != CORTO_FLOAT) {\

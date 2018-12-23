@@ -174,9 +174,9 @@ void test_Loader_tc_loadNonExistent(
     test_Loader this)
 {
 
-    corto_int16 ret = corto_use("nonexistent.cx", 0, NULL);
+    corto_int16 ret = ut_use("nonexistent.cx", 0, NULL);
     test_assert(ret != 0);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_Loader_tc_loadSelf(
@@ -191,14 +191,14 @@ void test_Loader_tc_loadSelf(
     test_assertint(sig, 0);
     test_assertint(ret, 0);
 
-    corto_log_verbosity old = corto_log_verbositySet(CORTO_CRITICAL);
+    ut_log_verbosity old = ut_log_verbositySet(CORTO_CRITICAL);
 
     sig = corto_proc_cmd("corto load_self", &ret);
     test_assertint(sig, 0);
     test_assertint(ret, 1);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 
-    corto_log_verbositySet(old);
+    ut_log_verbositySet(old);
 
     sig = corto_proc_cmd("bake clean load_self --verbosity error", &ret);
     test_assertint(sig, 0);
@@ -229,7 +229,7 @@ void test_Loader_tc_locateSelf(
 void test_Loader_tc_autoloadPackageNoLib(
     test_Loader this)
 {
-    corto_log_setExceptionAction(CORTO_LOG_ON_EXCEPTION_ABORT);
+    ut_log_setExceptionAction(CORTO_LOG_ON_EXCEPTION_ABORT);
     corto_object o = corto_create(root_o, "/driver", corto_package_o);
     test_assert(o != NULL);
     test_assert(corto_delete(o) == 0);

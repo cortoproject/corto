@@ -5,7 +5,7 @@
 #ifndef CORTO_VSTORE_TYPE_H
 #define CORTO_VSTORE_TYPE_H
 
-#include <corto/lang/_type.h>
+#include "../lang/_type.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -135,7 +135,7 @@ typedef struct corto_mount_subscription {
 
 #ifndef corto_mount_subscriptionList_DEFINED
 #define corto_mount_subscriptionList_DEFINED
-typedef corto_ll corto_mount_subscriptionList;
+typedef ut_ll corto_mount_subscriptionList;
 #endif
 
 /* struct corto/vstore/time */
@@ -187,7 +187,7 @@ typedef struct corto_loader_s {
 
 #ifndef corto_objectIter_DEFINED
 #define corto_objectIter_DEFINED
-typedef corto_iter corto_objectIter;
+typedef ut_iter corto_objectIter;
 #endif
 
 /* struct corto/vstore/observer_event */
@@ -254,7 +254,7 @@ typedef struct corto_sample {
 
 #ifndef corto_sampleIter_DEFINED
 #define corto_sampleIter_DEFINED
-typedef corto_iter corto_sampleIter;
+typedef ut_iter corto_sampleIter;
 #endif
 
 /* struct corto/vstore/record */
@@ -272,10 +272,10 @@ typedef struct corto_record {
 
 #ifndef corto_recordIter_DEFINED
 #define corto_recordIter_DEFINED
-typedef corto_iter corto_recordIter;
+typedef ut_iter corto_recordIter;
 #endif
 
-typedef corto_ll corto_recordlist;
+typedef ut_ll corto_recordlist;
 
 /* procedure corto/vstore/remote */
 typedef struct corto_remote_s {
@@ -320,7 +320,7 @@ typedef struct corto_subscriber_event {
 
 #ifndef corto_subscriber_eventIter_DEFINED
 #define corto_subscriber_eventIter_DEFINED
-typedef corto_iter corto_subscriber_eventIter;
+typedef ut_iter corto_subscriber_eventIter;
 #endif
 
 

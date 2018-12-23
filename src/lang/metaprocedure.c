@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 
 corto_int16 corto_type_bindMetaprocedure(
@@ -18,7 +18,7 @@ int16_t corto_metaprocedure_construct(
             goto error;
         }
     } else {
-        corto_throw("invalid declaration of '%s' in non-type scope '%s'",
+        ut_throw("invalid declaration of '%s' in non-type scope '%s'",
             corto_fullpath(NULL, this), corto_fullpath(NULL, parent));
         goto error;
     }

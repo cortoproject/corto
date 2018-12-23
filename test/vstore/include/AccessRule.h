@@ -6,8 +6,8 @@
 #ifndef TEST_ACCESSRULE_H
 #define TEST_ACCESSRULE_H
 
-#include <corto/corto.h>
-#include <corto/corto.h>
+#include <corto>
+#include <corto>
 #include <include/_project.h>
 
 #include <include/_type.h>

@@ -146,19 +146,19 @@ int16_t test_SinkMount_construct(
 }
 
 /* Custom release function */
-static void test_SinkMount_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->ctx;
+static void test_SinkMount_iterRelease(ut_iter *iter) {
+    ut_ll_iter_s *data = iter->ctx;
     corto_recordList__clear(data->list);
-    corto_ll_free(data->list);
-    corto_ll_iterRelease(iter);
+    ut_ll_free(data->list);
+    ut_ll_iterRelease(iter);
 }
 
 corto_recordIter test_SinkMount_on_query(
     test_SinkMount this,
     corto_query *query)
 {
-    corto_iter iter = corto_ll_iter(this->items);
-    corto_ll data = corto_ll_new();
+    ut_iter iter = ut_ll_iter(this->items);
+    ut_ll data = ut_ll_new();
 
     /* Filter items by parent */
     corto_recordIter__foreach(iter, e) {
@@ -178,7 +178,7 @@ corto_recordIter test_SinkMount_on_query(
     }
 
     /* Create persistent iterator */
-    corto_iter result = corto_ll_iterAlloc(data);
+    ut_iter result = ut_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
@@ -193,7 +193,7 @@ int16_t test_SinkMount_on_resume(
     const char *id,
     corto_object *object)
 {
-    corto_iter iter = corto_ll_iter(this->items);
+    ut_iter iter = ut_ll_iter(this->items);
     corto_object result = NULL;
     corto_object o = *object;
 
@@ -203,13 +203,13 @@ int16_t test_SinkMount_on_resume(
             if (!strcmp(id, e.id)) {
                 corto_type t = corto_resolve(NULL, e.type);
                 if (!t) {
-                    corto_throw("cannot resume object, unknown type '%s'",
+                    ut_throw("cannot resume object, unknown type '%s'",
                       e.type);
                     goto error;
                 }
 
                 if (o && (t != corto_typeof(o))) {
-                    corto_throw("type '%s' does not match type of object '%s'",
+                    ut_throw("type '%s' does not match type of object '%s'",
                       e.type, corto_fullpath(NULL, corto_typeof(o)));
                 }
 
@@ -218,12 +218,12 @@ int16_t test_SinkMount_on_resume(
                     e.parent
                 );
                 if (!p) {
-                    corto_throw("cannot find parent '%s'", e.parent);
+                    ut_throw("cannot find parent '%s'", e.parent);
                     goto error;
                 }
 
                 if (o && (p != corto_parentof(o))) {
-                    corto_throw("parent '%s' does not match parent of object '%s'",
+                    ut_throw("parent '%s' does not match parent of object '%s'",
                       e.type, corto_fullpath(NULL, corto_parentof(o)));
                     goto error;
                 }
@@ -233,7 +233,7 @@ int16_t test_SinkMount_on_resume(
                 } else {
                     result = corto_declare(p, e.id, t);
                     if (!result) {
-                        corto_throw("cannot create object '%s': %s",
+                        ut_throw("cannot create object '%s': %s",
                             e.id, corto_lasterr());
                         goto error;
                     }

@@ -18,7 +18,7 @@ void test_SelectSinkWithType_setup(
 void test_SelectSinkWithType_tc_selectMixedScope(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
 
     /* Create actual objects */
@@ -39,46 +39,46 @@ void test_SelectSinkWithType_tc_selectMixedScope(
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "j");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "x");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "y");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "z");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
 
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 
 }
 
 void test_SelectSinkWithType_tc_selectMixedScopeNested1(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
 
     /* Create actual objects */
@@ -99,46 +99,46 @@ void test_SelectSinkWithType_tc_selectMixedScopeNested1(
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "a");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "b");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "c");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "j");
     test_assertstr(result->parent, "x");
     test_assertstr(result->type, "float32");
 
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 
 }
 
 void test_SelectSinkWithType_tc_selectMixedScopeNested2(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
 
     /* Create actual objects */
@@ -160,61 +160,61 @@ void test_SelectSinkWithType_tc_selectMixedScopeNested2(
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "k");
     test_assertstr(result->parent, "x/a");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "l");
     test_assertstr(result->parent, "x/a");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "m");
     test_assertstr(result->parent, "x/a");
     test_assertstr(result->type, "int32");
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "j");
     test_assertstr(result->parent, "x/a");
     test_assertstr(result->type, "float32");
 
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 
 }
 
 void test_SelectSinkWithType_tc_selectMount(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
 
     corto_int16 ret = corto_select("mount").from("/").iter( &iter );
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "mount");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "int32");
 
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 }
 
 void test_SelectSinkWithType_tc_selectMountFromParent(
@@ -224,46 +224,46 @@ void test_SelectSinkWithType_tc_selectMountFromParent(
     corto_int32__create_auto(mount, x, 0);
     corto_release(mount);
 
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
     corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "mount");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "int32");
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 
 }
 
 void test_SelectSinkWithType_tc_selectMountFromVirtualParent(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
     corto_int16 ret = corto_select("..").from("/mount/x").iter( &iter );
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "mount");
     test_assertstr(result->parent, "../..");
     test_assertstr(result->type, "int32");
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 }
 
 void test_SelectSinkWithType_tc_selectSingleMatch(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
 
     corto_object mount = corto_resolve(root_o, "mount");
     corto_int32__create_auto(mount, test, 0);
@@ -272,14 +272,14 @@ void test_SelectSinkWithType_tc_selectSingleMatch(
     corto_int16 ret = corto_select("test").from("/mount").iter( &iter );
 
     test_assert(ret == 0);
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 
 }
 
 void test_SelectSinkWithType_tc_selectSingleNoMatch(
     test_SelectSinkWithType this)
 {
-    corto_iter iter;
+    ut_iter iter;
     corto_record *result;
 
     corto_object mount = corto_resolve(root_o, "mount");
@@ -290,14 +290,14 @@ void test_SelectSinkWithType_tc_selectSingleNoMatch(
 
     test_assert(ret == 0);
 
-    test_assert(corto_iter_hasNext(&iter));
-    result = corto_iter_next(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    result = ut_iter_next(&iter);
     test_assert(result != NULL);
     test_assert(result->id != NULL);
     test_assertstr(result->id, "test");
     test_assertstr(result->parent, ".");
     test_assertstr(result->type, "float32");
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
 }
 
 void test_SelectSinkWithType_teardown(
