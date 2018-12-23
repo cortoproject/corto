@@ -14,26 +14,27 @@
  * dependencies will automatically show up in this file. Include prebake.h
  * in your main project file. Do not edit! */
 
-#ifndef CORTO/C_PREBAKED_H
-#define CORTO/C_PREBAKED_H
+#ifndef CORTO_C_PREBAKED_H
+#define CORTO_C_PREBAKED_H
 
 /* Headers of public dependencies */
 #include <corto>
+#include <bake.util>
 
 /* Headers of private dependencies */
-#ifdef CORTO/C_IMPL
+#ifdef CORTO_C_IMPL
 /* No dependencies */
 #endif
 
 /* Convenience macro for exporting symbols */
-#if CORTO/C_IMPL && defined _MSC_VER
-#define CORTO/C_EXPORT __declspec(dllexport)
-#elif CORTO/C_IMPL
-#define CORTO/C_EXPORT __attribute__((__visibility__("default")))
+#if CORTO_C_IMPL && defined _MSC_VER
+#define CORTO_C_EXPORT __declspec(dllexport)
+#elif CORTO_C_IMPL
+#define CORTO_C_EXPORT __attribute__((__visibility__("default")))
 #elif defined _MSC_VER
-#define CORTO/C_EXPORT __declspec(dllimport)
+#define CORTO_C_EXPORT __declspec(dllimport)
 #else
-#define CORTO/C_EXPORT
+#define CORTO_C_EXPORT
 #endif
 
 #endif

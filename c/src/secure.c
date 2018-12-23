@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/c/c.h>
+#include <corto.c>
 
 corto_secure_accessKind* _corto_secure_accessKind__create(corto_object _parent, const char *_id, corto_secure_accessKind value) {
     corto_secure_accessKind* _this;
@@ -169,4 +169,3 @@ corto_secure_lock _corto_secure_lock__assign(corto_secure_lock _this, corto_quer
     ((corto_secure_lock)_this)->priority = priority;
     return _this;
 }
-

@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/c/c.h>
+#include <corto.c>
 
 corto_dispatcher _corto_dispatcher__create(corto_object _parent, const char *_id) {
     corto_dispatcher _this;
@@ -1740,4 +1740,3 @@ void corto_recordlist__clear(corto_recordlist list) {
     }
     ut_ll_clear(list);
 }
-

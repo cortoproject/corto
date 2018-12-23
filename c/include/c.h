@@ -1,4 +1,5 @@
-#include <corto/c/lang.h>
-#include <corto/c/vstore.h>
-#include <corto/c/secure.h>
-#include <corto/c/native.h>
+#include "prebaked.h"
+#include "lang.h"
+#include "vstore.h"
+#include "secure.h"
+#include "native.h"

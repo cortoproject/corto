@@ -12,5 +12,10 @@
     "lang.c": {
         "lib": ["rt", "dl", "m", "ffi", "pthread"],
         "cflags": ["-fvisibility=hidden"]
+    },
+    "dependee": {
+        "value": {
+            "use": ["bake.util"]
+        }
     }
 }

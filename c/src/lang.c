@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/c/c.h>
+#include <corto.c>
 
 corto_alias _corto_alias__create(corto_object _parent, const char *_id, corto_member member) {
     corto_alias _this;
@@ -4403,4 +4403,3 @@ void corto_wordseq__resize(corto_wordseq *seq, corto_uint32 length) {
 void corto_wordseq__clear(corto_wordseq *seq) {
     corto_wordseq__resize(seq, 0);
 }
-
