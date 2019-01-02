@@ -265,7 +265,7 @@ corto_fmt_lookup(
     if (!result) {
         ut_dl dl = NULL;
         corto_id packageId;
-        sprintf(packageId, "driver/fmt/%s", packagePtr);
+        sprintf(packageId, "driver.fmt.%s", packagePtr);
 
         result = corto_alloc(sizeof(struct corto_fmt_s));
         result->name = ut_strdup(packagePtr);

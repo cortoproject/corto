@@ -46,7 +46,7 @@ extern "C" {
  * @see ut_logout
  */
 CORTO_EXPORT
-const char *ut_login(
+const char *corto_login(
     const char *username,
     const char *password);
 
@@ -55,7 +55,7 @@ const char *ut_login(
  * a user.
  *
  * @param token An existing session token.
- * @see ut_login
+ * @see corto_login
  */
 CORTO_EXPORT
 void ut_logout(
@@ -71,7 +71,7 @@ void ut_logout(
  *
  * @param token An existing session token.
  * @return The previous session token.
- * @see ut_login
+ * @see corto_login
  */
 CORTO_EXPORT
 const char *corto_set_session(
@@ -117,7 +117,7 @@ bool corto_authorize_id(
  * @param group The group of the user.
  * @param home The home scope of the user.
  * @return 0 when success, non-zero when failed.
- * @see ut_userdel ut_login ut_logout
+ * @see ut_userdel corto_login ut_logout
  */
 CORTO_EXPORT
 int16_t ut_useradd(
@@ -130,7 +130,7 @@ int16_t ut_useradd(
  *
  * @param userId The user identifier.
  * @return 0 when success, non-zero when failed.
- * @see ut_useradd ut_login ut_logout
+ * @see ut_useradd corto_login ut_logout
  */
 CORTO_EXPORT
 int16_t ut_userdel(

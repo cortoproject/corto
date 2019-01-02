@@ -29,15 +29,15 @@ void test_AttrCheck_tc_packageMainAttr(
     corto_int8 ret;
     corto_int8 sig;
 
-    test_assert(corto_chdir(TEST_ETC) == 0);
+    test_assert(ut_chdir(TEST_ETC) == 0);
 
-    sig = corto_proc_cmd("bake rebuild attrtest --verbosity error", &ret);
+    sig = ut_proc_cmd("bake rebuild attrtest --verbosity error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 
     test_assert(ut_use("attrtest", 0, NULL) == 0);
 
-    sig = corto_proc_cmd("bake clean attrtest --verbosity error", &ret);
+    sig = ut_proc_cmd("bake clean attrtest --verbosity error", &ret);
     test_assert(ret == 0);
     test_assert(sig == 0);
 

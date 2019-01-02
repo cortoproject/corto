@@ -34,7 +34,7 @@ bool corto_enable_security(
     }
 }
 
-const char* ut_login(
+const char* corto_login(
     const char *username,
     const char *password)
 {

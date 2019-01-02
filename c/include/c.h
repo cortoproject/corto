@@ -1,4 +1,4 @@
-#include "prebaked.h"
+#include "bake_config.h"
 #include "lang.h"
 #include "vstore.h"
 #include "secure.h"

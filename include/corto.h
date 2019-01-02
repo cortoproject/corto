@@ -30,7 +30,7 @@
 /* $header() */
 
 /* Generic functionality (os abstraction, lockless admin) */
-#include "prebaked.h"
+#include "bake_config.h"
 
 /* Types must be included first because builtin packages cross reference */
 #include "vstore/_type.h"

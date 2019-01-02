@@ -10,7 +10,7 @@
 #include <include/_project.h>
 #include <corto/test/c/c.h>
 #include <corto/c/c.h>
-#include <corto/test/test.h>
+#include <corto.test>
 
 /* $header() */
 /* Definitions that are required by package headers (native types) go here. */

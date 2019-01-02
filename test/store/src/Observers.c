@@ -78,7 +78,7 @@ void test_Observers_tc_notifyReadDenied(
     test_assert(corto_secured() == true);
 
     /* Login & authenticate Ford Prefect */
-    const char *token = ut_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
     const char *prev = corto_set_session(token);
@@ -117,7 +117,7 @@ void test_Observers_tc_notifyUpdateDenied(
     test_assert(corto_secured() == true);
 
     /* Login & authenticate Ford Prefect */
-    const char *token = ut_login("Ford Prefect", "42");
+    const char *token = corto_login("Ford Prefect", "42");
     test_assert(token != NULL);
     test_assertstr(token, "token_user01");
     const char *prev = corto_set_session(token);
