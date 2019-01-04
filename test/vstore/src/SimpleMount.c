@@ -16,5 +16,5 @@ corto_recordIter test_SimpleMount_on_query(
 
     corto_mount_return(this, &r);
 
-    return CORTO_ITER_EMPTY;
+    return UT_ITER_EMPTY;
 }

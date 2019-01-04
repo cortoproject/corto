@@ -362,7 +362,7 @@ corto_object _ut_assert_object(
 CORTO_EXPORT char* ut_setThreadString(char* string);
 
 CORTO_EXPORT char* corto_itoa(int num, char* buff);
-CORTO_EXPORT char* corto_ulltoa(uint64_t value, char *ptr, int base);
+CORTO_EXPORT char* ut_ulltoa(uint64_t value, char *ptr, int base);
 
 #ifdef __cplusplus
 }

@@ -29,7 +29,7 @@ corto_recordIter test_MountIterCount_on_query(
     test_MountIterCount this,
     corto_query *query)
 {
-    ut_iter it = CORTO_ITER_EMPTY;
+    ut_iter it = UT_ITER_EMPTY;
 
     if (!strcmp(query->select, "*")) {
         it.ctx = this;

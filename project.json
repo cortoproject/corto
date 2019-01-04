@@ -10,12 +10,14 @@
         "use": ["bake.util"]
     },
     "lang.c": {
-        "lib": ["rt", "dl", "m", "ffi", "pthread"],
-        "cflags": ["-fvisibility=hidden"]
+        "lib": ["rt", "dl", "m", "ffi", "pthread"]
     },
     "dependee": {
         "value": {
             "use": ["bake.util"]
+        },
+        "lang.$${language}": {
+            "cxxflags": ["-Wno-write-strings"]
         }
     }
 }

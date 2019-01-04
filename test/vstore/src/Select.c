@@ -60,7 +60,7 @@ bool test_Select_hasObject(
         }
 
         /* This prevents the API from complaining about unhandled errors */
-        corto_lasterr();
+        ut_lasterr();
     }
 
     return FALSE;

@@ -1120,7 +1120,7 @@ int corto_start(
     ut_load_init(
         ut_getenv("BAKE_TARGET"),
         ut_getenv("BAKE_HOME"),
-        ut_getenv("BAKE_VERSION"));
+        ut_getenv("BAKE_CONFIG"));
 
     if (standalone) {
         ut_trace("standalone mode enabled");

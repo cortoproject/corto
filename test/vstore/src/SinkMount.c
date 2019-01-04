@@ -234,7 +234,7 @@ int16_t test_SinkMount_on_resume(
                     result = corto_declare(p, e.id, t);
                     if (!result) {
                         ut_throw("cannot create object '%s': %s",
-                            e.id, corto_lasterr());
+                            e.id, ut_lasterr());
                         goto error;
                     }
 

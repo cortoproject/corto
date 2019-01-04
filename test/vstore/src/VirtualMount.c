@@ -52,7 +52,7 @@ corto_recordIter test_VirtualMount_on_query(
     if (!strcmp(query->from, ".")) {
         return ut_ll_iterAlloc(this->data);
     } else {
-        return CORTO_ITER_EMPTY;
+        return UT_ITER_EMPTY;
     }
 }
 
