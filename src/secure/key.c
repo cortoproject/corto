@@ -48,7 +48,7 @@ const char* corto_login(
     }
 }
 
-void ut_logout(
+void corto_logout(
     const char *key)
 {
     if (corto_secure_keyInstance) {

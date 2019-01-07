@@ -433,7 +433,6 @@ void corto_adopt_replaceUnknown(
     corto__scope *e_scope = corto_hdr_scope(_existing);
 
     /* Set scope of existing (unknown) object to scope of new object */
-    free(c_scope->id);
     c_scope->id = e_scope->id; /* Use existing id as it's the key in the tree */
     c_scope->scope = e_scope->scope;
 

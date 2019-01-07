@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <tier1/tier2_a/tier2_a.h>
+#include <tier1.tier2_a>
 
 
 /* Enter code outside of main here. */

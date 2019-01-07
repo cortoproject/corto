@@ -6,12 +6,20 @@
 #ifndef LOAD_SELF_H
 #define LOAD_SELF_H
 
-#include <load_self/_project.h>
-#include <corto/c/c.h>
+#include "bake_config.h"
+
+#define LOAD_SELF_ETC ut_locate("load_self", NULL, UT_LOCATE_ETC)
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
+
+#include "_type.h"
+#include "_interface.h"
+#include "_load.h"
+#include "_binding.h"
+
+#include <load_self.c>
 
 /* $body() */
 /* Enter code that requires types here */

@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <locate_self/locate_self.h>
+#include <locate_self>
 
 /* Enter code outside of main here. */
 

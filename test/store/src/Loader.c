@@ -36,7 +36,7 @@ void test_Loader_tc_loadChildNoDep(
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = ut_proc_cmd("corto tier1/tier2_b", &ret);
+    sig = ut_proc_cmd("corto tier1.tier2_b", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 
@@ -110,7 +110,7 @@ void test_Loader_tc_loadDepOnParent(
     test_assert(sig == 0);
     test_assert(ret == 0);
 
-    sig = ut_proc_cmd("corto tier1/tier2_c", &ret);
+    sig = ut_proc_cmd("corto tier1.tier2_c", &ret);
     test_assert(sig == 0);
     test_assert(ret == 0);
 

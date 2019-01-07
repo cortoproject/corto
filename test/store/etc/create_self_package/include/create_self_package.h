@@ -6,12 +6,20 @@
 #ifndef CREATE_SELF_PACKAGE_H
 #define CREATE_SELF_PACKAGE_H
 
-#include <create_self_package/_project.h>
-#include <corto/c/c.h>
+#include "bake_config.h"
+
+#define CREATE_SELF_PACKAGE_ETC ut_locate("create_self_package", NULL, UT_LOCATE_ETC)
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
+
+#include "_type.h"
+#include "_interface.h"
+#include "_load.h"
+#include "_binding.h"
+
+#include <create_self_package.c>
 
 /* $body() */
 /* Enter code that requires types here */

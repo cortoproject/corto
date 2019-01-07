@@ -1,5 +1,5 @@
 {
     "id":"create_self_package",
     "type":"package",
-    "value": {}
+    "corto": { }
 }

@@ -1,5 +1,5 @@
 {
     "id":"load_self",
     "type":"package",
-    "value": {}
+    "corto": { }
 }

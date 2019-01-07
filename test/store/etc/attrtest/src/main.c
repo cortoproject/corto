@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <attrtest/attrtest.h>
+#include <attrtest>
 
 
 /* Enter code outside of main here. */
@@ -11,4 +11,3 @@ int cortomain(int argc, char *argv[]) {
 
     return 0;
 }
-

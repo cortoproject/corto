@@ -8,7 +8,7 @@
 
 #include "bake_config.h"
 
-#define TEST_ETC ut_locate("test", NULL, UT_LOCATE_ETC)
+#define TEST_ETC "etc"
 
 /* $header() */
 /* You can put your own definitions here! */

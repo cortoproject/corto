@@ -43,7 +43,7 @@ extern "C" {
  * @param username The username of the user logging in.
  * @param password The password of the user logging in.
  * @return The session token if login is valid. NULL if the login failed.
- * @see ut_logout
+ * @see corto_logout
  */
 CORTO_EXPORT
 const char *corto_login(
@@ -58,7 +58,7 @@ const char *corto_login(
  * @see corto_login
  */
 CORTO_EXPORT
-void ut_logout(
+void corto_logout(
     const char *token);
 
 /** Set active session.
@@ -117,7 +117,7 @@ bool corto_authorize_id(
  * @param group The group of the user.
  * @param home The home scope of the user.
  * @return 0 when success, non-zero when failed.
- * @see ut_userdel corto_login ut_logout
+ * @see ut_userdel corto_login corto_logout
  */
 CORTO_EXPORT
 int16_t ut_useradd(
@@ -130,7 +130,7 @@ int16_t ut_useradd(
  *
  * @param userId The user identifier.
  * @return 0 when success, non-zero when failed.
- * @see ut_useradd corto_login ut_logout
+ * @see ut_useradd corto_login corto_logout
  */
 CORTO_EXPORT
 int16_t ut_userdel(

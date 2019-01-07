@@ -60,6 +60,7 @@ bool corto_loader_checkIfAdded(
     ut_iter it = ut_ll_iter(list);
     while (ut_iter_hasNext(&it)) {
         corto_record *r = ut_iter_next(&it);
+
         if (!stricmp(r->id, name)) {
             return TRUE;
         }
@@ -73,12 +74,22 @@ void corto_loader_addDir(
     const char* path,
     corto_query *q)
 {
-    char *package_path = (char*)path;
+    ut_ll dirs = ut_opendir(path);
 
-    if (q->from[0] != '.') {
-        package_path = ut_asprintf("%s/%s", path, q->from);
+    corto_id from;
+    strcpy(from, q->from);
+    char *ptr, ch;
+    for (ptr = from; (ch = *ptr); ptr ++) {
+        if (ch == '/') {
+            *ptr = '.';
+        }
     }
-    ut_ll dirs = ut_opendir(package_path);
+
+    if (!strcmp(from, ".")) {
+        from[0] = '\0';
+    }
+
+    uint32_t from_len = strlen(from);
 
     /* Walk files, add files to result */
     if (dirs) {
@@ -87,32 +98,54 @@ void corto_loader_addDir(
         while (ut_iter_hasNext(&iter)) {
             corto_string f = ut_iter_next(&iter);
 
-            if (!corto_loader_checkIfAdded(list, f) &&
-                ut_expr(q->select, f))
+            if (!corto_loader_checkIfAdded(list, f))
             {
-                struct stat attr;
+                corto_id fpath, ftest;
 
-                corto_id fpath;
-                sprintf(fpath, "%s/%s", package_path, f);
-                if (!ut_file_test(fpath)) {
+                if (from_len && strncmp(f, from, from_len)) {
                     continue;
                 }
 
-                /* Stat file to determine whether it's a directory */
-                if (stat(fpath, &attr) < 0) {
-                    ut_throw("failed to stat '%s' (%s)\n",
-                        fpath,
-                        strerror(errno));
-                }
-
-                if (!S_ISDIR(attr.st_mode)) {
-                    /* Ignore files */
+                if (!f[from_len]) {
                     continue;
                 }
 
-                corto_id package;
-                sprintf(package, "%s/%s", q->from, f);
-                ut_path_clean(package, package);
+                char *elem = NULL;
+                strcpy(ftest, f);
+                if ((elem = strchr(&ftest[from_len + 1], '.'))) {
+                    strcpy(ftest, f);
+                    elem[0] = '\0';
+
+                    char *id;
+                    if (from_len) {
+                        id = &ftest[from_len + 1];
+                    } else {
+                        id = ftest;
+                    }
+
+                    if (!ut_expr(q->select, id)) {
+                        continue;
+                    }
+
+                    if (!corto_loader_checkIfAdded(list, id)) {
+                        corto_record *precord = corto_calloc(sizeof(corto_record));
+                        precord->id = ut_strdup(id);
+                        precord->type = ut_strdup("package");
+                        precord->value = (uintptr_t)strdup("{}");
+                        corto_set_str(&precord->parent, q->from);
+                        ut_ll_append(list, precord);
+                    }
+                    continue;
+                } else {
+                    if (!ut_expr(q->select, &ftest[from_len + 1])) {
+                        continue;
+                    }
+                }
+
+                sprintf(fpath, "%s/%s", path, f);
+                if (!ut_isdir(fpath)) {
+                    continue;
+                }
 
                 corto_record *result = corto_calloc(sizeof(corto_record));
 
@@ -121,10 +154,6 @@ void corto_loader_addDir(
                 if (ut_file_test(packageFile)) {
                     char *json = ut_file_load(packageFile);
                     corto_record_fromcontent(result, "text/json", json);
-                } else {
-                    result->id = ut_strdup(f);
-                    result->type = ut_strdup("package");
-                    result->value = (uintptr_t)strdup("{}");
                 }
 
                 corto_set_str(&result->parent, q->from);
@@ -133,7 +162,7 @@ void corto_loader_addDir(
                  * mount does have objects under the corto scope, hide the corto
                  * object from the mount for the user, but let corto_select know
                  * that more objects may be available. */
-                if (!strcmp(package, "corto")) {
+                if (!strcmp(f, "corto")) {
                     result->flags = CORTO_RECORD_HIDDEN;
                 } else {
                     result->flags = 0;
@@ -148,10 +177,6 @@ void corto_loader_addDir(
     } else {
         /* Catch error logged by ut_opendir */
         ut_catch();
-    }
-
-    if (package_path != path) {
-        free(package_path);
     }
 }
 
@@ -224,6 +249,13 @@ int16_t corto_loader_on_resume(
     char *obj_id = NULL, *package_id = NULL;
     corto_object o = *object;
 
+    char *ptr, ch;
+    for (ptr = full_id; (ch = *ptr); ptr ++) {
+        if (ch == '/') {
+            *ptr = '.';
+        }
+    }
+
     /* Step 1: try to find package */
     const char *pkg = ut_locate(full_id, NULL, UT_LOCATE_PROJECT);
     if (pkg) {
@@ -242,7 +274,7 @@ int16_t corto_loader_on_resume(
         if (!pkg) {
             package_id = NULL;
             if (obj_id) {
-                obj_id[-1] = '/';
+                obj_id[-1] = '.';
             }
         }
     }
@@ -309,7 +341,7 @@ int16_t corto_loader_on_resume(
         } else {
             /* Restore full id */
             if (obj_id) {
-                obj_id[-1] = '/';
+                obj_id[-1] = '.';
             }
 
             /* Check if object was loaded by package */

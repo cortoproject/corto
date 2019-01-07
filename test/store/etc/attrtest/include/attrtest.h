@@ -6,12 +6,20 @@
 #ifndef ATTRTEST_H
 #define ATTRTEST_H
 
-#include <attrtest/_project.h>
-#include <corto/c/c.h>
+#include "bake_config.h"
+
+#define ATTRTEST_ETC ut_locate("attrtest", NULL, UT_LOCATE_ETC)
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
+
+#include "_type.h"
+#include "_interface.h"
+#include "_load.h"
+#include "_binding.h"
+
+#include <attrtest.c>
 
 /* $body() */
 /* Enter code that requires types here */
