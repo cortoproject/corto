@@ -1265,7 +1265,7 @@ int corto_start(
     ut_debug("init builtin file extensions");
 
     int ut_load_libraryAction(corto_string file, int argc, char* argv[], void *data);
-    ut_load_register("so", ut_load_libraryAction, NULL);
+    ut_load_register(UT_OS_LIB_EXT, ut_load_libraryAction, NULL);
 
     int ut_file_loader(corto_string file, int argc, char* argv[], void *data);
     ut_load_register("", ut_file_loader, NULL);

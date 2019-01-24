@@ -797,7 +797,7 @@ int16_t corto_scope_walk(
     corto_scope_walk_cb action,
     void *userData);
 
-/* Set a reference value.
+/** Set a reference value.
  * This function will increase the refcount of the specified object, assign the
  * object to the value, and decrease the refcount of the old object, in that order.
  * Both value (not ptr!) and object can be null.
@@ -810,7 +810,7 @@ void corto_set_ref(
     void* ptr,
     corto_object object);
 
-/* Set a string value.
+/** Set a string value.
  * This function will duplicate the the specified string, assign the
  * string to the value, and deallocate the old string, in that order.
  * Both value (not ptr!) and object can be null.
