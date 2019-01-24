@@ -5,9 +5,6 @@
 #ifndef CORTO_SECURE_INTERFACE_H
 #define CORTO_SECURE_INTERFACE_H
 
-#include <corto/_project.h>
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,4 +53,3 @@ void _corto_secure_lock_destruct(
 #endif
 
 #endif
-

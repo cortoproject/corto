@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h"
 
 int16_t corto_walk_ptr(
@@ -74,7 +74,7 @@ int16_t corto_walk_value(
     cb = NULL;
 
     if (!this->initialized) {
-        corto_assert(0, "serializer is not initialized!");
+        ut_assert(0, "serializer is not initialized!");
     }
 
     if (!this->constructed) {
@@ -139,7 +139,7 @@ int16_t corto_walk(
     int16_t result;
 
     if (this->initialized != TRUE) {
-        corto_assert(0, "serializer is not initialized!");
+        ut_assert(0, "serializer is not initialized!");
     }
 
     info.kind = CORTO_OBJECT;
@@ -198,7 +198,7 @@ bool corto_serializeMatchAccess(
         result = !(sa & a);
         break;
     default:
-        corto_error("unsupported operator %s for serializer accessKind.",
+        ut_error("unsupported operator %s for serializer accessKind.",
             corto_idof(corto_enum_constant_from_value(corto_operatorKind_o, accessKind)));
         result = FALSE;
         break;
@@ -372,7 +372,7 @@ int16_t corto_walk_members(
             }
         } else {
             /* Member not found? That means the discriminator is invalid. */
-            corto_throw("discriminator %d invalid for union '%s'\n",
+            ut_throw("discriminator %d invalid for union '%s'\n",
                 discriminator,
                 corto_fullpath(NULL, t));
             goto error;
@@ -434,7 +434,7 @@ int corto_arrayWalk(
     corto_collection this,
     void* array,
     uint32_t length,
-    corto_elementWalk_cb action,
+    ut_elementWalk_cb action,
     void* userData)
 {
     void* v;
@@ -512,25 +512,25 @@ int16_t corto_walk_elements(
             &walkData);
         break;
     case CORTO_LIST: {
-        corto_ll list = *(corto_ll*)v;
+        ut_ll list = *(ut_ll*)v;
         if (list) {
             if (corto_collection_requires_alloc(t->element_type)) {
-                result = corto_ll_walk(list, corto_serializeElement, &walkData);
+                result = ut_ll_walk(list, corto_serializeElement, &walkData);
             } else {
                 result =
-                    corto_ll_walkPtr(list, corto_serializeElement, &walkData);
+                    ut_ll_walkPtr(list, corto_serializeElement, &walkData);
             }
         }
         break;
     }
     case CORTO_MAP: {
-        corto_rb tree = *(corto_rb*)v;
+        ut_rb tree = *(ut_rb*)v;
         if (tree) {
             if (corto_collection_requires_alloc(t->element_type)) {
-                result = corto_rb_walk(tree, corto_serializeElement, &walkData);
+                result = ut_rb_walk(tree, corto_serializeElement, &walkData);
             } else {
                 result =
-                    corto_rb_walkPtr(tree, corto_serializeElement, &walkData);
+                    ut_rb_walkPtr(tree, corto_serializeElement, &walkData);
             }
         }
         break;

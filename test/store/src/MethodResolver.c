@@ -68,7 +68,7 @@ void test_MethodResolver_tc_inheritOverloadNoArgs(
 
     corto_method m = corto_interface_resolve_method(test_MethodTesterInherit_o, "overload");
     test_assert(m == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_MethodResolver_tc_inheritSimple(
@@ -107,7 +107,7 @@ void test_MethodResolver_tc_inheritVirtualOverloadNoArgs(
 
     corto_method m = corto_interface_resolve_method(test_MethodTesterInherit_o, "virtualOverload");
     test_assert(m == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_MethodResolver_tc_nonexisting(
@@ -142,7 +142,7 @@ void test_MethodResolver_tc_oneargErrType(
 
     corto_method m = corto_interface_resolve_method(test_MethodTester_o, "onearg(footype)");
     test_assert(m == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_MethodResolver_tc_oneargNoArgs(
@@ -161,7 +161,7 @@ void test_MethodResolver_tc_overloadAmbiguous(
 
     corto_method m = corto_interface_resolve_method(test_MethodTester_o, "overload");
     test_assert(m == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_MethodResolver_tc_overloadClass(
@@ -318,7 +318,7 @@ void test_MethodResolver_tc_virtualOverloadNoArgs(
 
     corto_method m = corto_interface_resolve_method(test_MethodTester_o, "virtualOverload");
     test_assert(m == NULL);
-    test_assert(corto_catch());
+    test_assert(ut_catch());
 }
 
 void test_MethodResolver_tc_virtualSimple(

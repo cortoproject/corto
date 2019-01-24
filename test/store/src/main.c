@@ -5,7 +5,7 @@ int cortomain(int argc, char *argv[]) {
     int result = 0;
     test_Runner runner = test_Runner__create(root_o, (argc > 1) ? argv[1] : "store", "store", argv[0], (argc > 1) ? argv[1] : NULL);
     if (!runner) return -1;
-    if (corto_ll_count(runner->failures)) {
+    if (ut_ll_count(runner->failures)) {
         result = -1;
     }
 

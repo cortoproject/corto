@@ -30,7 +30,7 @@ int16_t test_Foo_init(
 {
     /* Ensure that init is called on real object- which must be guaranteed since
      * 'Foo' is a reference type */
-    corto_assert_object(this);
+    ut_assert_object(this);
 
     this->x = 1;
     this->y = 2;
@@ -43,5 +43,5 @@ int16_t test_Foo_init(
 void test_Foo_deinit(
     test_Foo this)
 {
-    corto_assert_object(this);
+    ut_assert_object(this);
 }

@@ -24,7 +24,7 @@ void test_assign_ref_to_object_obj_tc_byref_fromobj_byref(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -53,7 +53,7 @@ void test_assign_ref_to_object_obj_tc_byref_fromobj_bytype(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -82,7 +82,7 @@ void test_assign_ref_to_object_obj_tc_byref_fromobj_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -111,7 +111,7 @@ void test_assign_ref_to_object_obj_tc_byref_fromptr_byref(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -140,7 +140,7 @@ void test_assign_ref_to_object_obj_tc_byref_fromptr_bytype(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -169,7 +169,7 @@ void test_assign_ref_to_object_obj_tc_byref_fromptr_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -260,7 +260,7 @@ void test_assign_ref_to_object_obj_tc_bytype_fromobj_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -351,7 +351,7 @@ void test_assign_ref_to_object_obj_tc_bytype_fromptr_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -442,7 +442,7 @@ void test_assign_ref_to_object_obj_tc_byval_fromobj_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);
@@ -533,7 +533,7 @@ void test_assign_ref_to_object_obj_tc_byval_fromptr_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(corto_delete(foo) == 0);
     test_assert(corto_delete(bar) == 0);

@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 #include "interface.h"
 #include "src/store/object.h"
 
@@ -22,7 +22,7 @@ corto_int16 corto_type_bindMetaprocedure(
         } else {
             if (*f != corto_function(procedure)) {
                 /* Overriding metaprocedures is not allowed. */
-                corto_throw(
+                ut_throw(
                 "definition of metaprocedure '%s' conflicts with existing '%s'",
                   corto_fullpath(NULL, *f),
                   corto_fullpath(NULL, procedure));

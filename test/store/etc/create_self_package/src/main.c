@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <create_self_package/create_self_package.h>
+#include <create_self_package>
 
 
 /* Enter code outside of main here. */

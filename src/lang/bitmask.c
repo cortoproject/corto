@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 #include "bitmask.h"
 

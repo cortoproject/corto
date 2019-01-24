@@ -22,7 +22,7 @@
 #ifndef CORTO_CDECLHANDLER_H_
 #define CORTO_CDECLHANDLER_H_
 
-#include <corto/corto.h>
+#include <corto>
 
 #ifdef __cplusplus
 extern "C" {

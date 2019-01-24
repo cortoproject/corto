@@ -6,8 +6,8 @@
 #ifndef TEST_NESTEDCONSTRUCTINTIER2FAIL_H
 #define TEST_NESTEDCONSTRUCTINTIER2FAIL_H
 
-#include <corto/corto.h>
-#include <corto/corto.h>
+#include <corto>
+#include <corto>
 #include <include/_project.h>
 
 #include <include/_type.h>

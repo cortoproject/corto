@@ -110,7 +110,7 @@ void test_assign_reftype_ptr_tc_byref_frommbr_byval(
 
     /* Cannot assign value to reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != val);
     test_assertint(corto_countof(foo), 2);
@@ -238,7 +238,7 @@ void test_assign_reftype_ptr_tc_byref_fromobj_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);
@@ -340,7 +340,7 @@ void test_assign_reftype_ptr_tc_byref_fromptr_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);
@@ -460,7 +460,7 @@ void test_assign_reftype_ptr_tc_bytype_frommbr_byval(
 
     /* Cannot assign value to reference */
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != val);
     test_assertint(corto_countof(foo), 2);
@@ -588,7 +588,7 @@ void test_assign_reftype_ptr_tc_bytype_fromobj_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);
@@ -690,7 +690,7 @@ void test_assign_reftype_ptr_tc_bytype_fromptr_byval(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);
@@ -731,7 +731,7 @@ void test_assign_reftype_ptr_tc_byval_frommbr_byref(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);
@@ -848,7 +848,7 @@ void test_assign_reftype_ptr_tc_byval_fromnull(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() == 1);
+    test_assert(ut_catch() == 1);
 
     test_assert(var == foo);
     test_assertint(corto_countof(foo), 2);
@@ -881,7 +881,7 @@ void test_assign_reftype_ptr_tc_byval_fromobj_byref(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);
@@ -991,7 +991,7 @@ void test_assign_reftype_ptr_tc_byval_fromptr_byref(
     int16_t ret = corto_value_binaryOp(CORTO_ASSIGN, &left, &right, &result);
 
     test_assert(ret != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 
     test_assert(var != bar);
     test_assertint(corto_countof(foo), 2);

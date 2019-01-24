@@ -1903,7 +1903,7 @@ void test_ResumeSink_tc_lookupContentTypeFail(
 
     corto_object a = corto_lookup(NULL, "data/a");
     test_assert(a == NULL);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 }
 
 void test_ResumeSink_tc_defineContentTypeFail(
@@ -1917,7 +1917,7 @@ void test_ResumeSink_tc_defineContentTypeFail(
     test_assert(a != NULL);
 
     test_assert(corto_define(a) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_delete(a) == 0);
 }
 
@@ -1930,7 +1930,7 @@ void test_ResumeSink_tc_resolveContentTypeFail(
 
     corto_object a = corto_resolve(root_o, "data/a");
     test_assert(a == NULL);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 }
 
 void test_ResumeSink_tc_createContentTypeFail(
@@ -1942,7 +1942,7 @@ void test_ResumeSink_tc_createContentTypeFail(
 
     corto_object a = corto_create(root_o, "data/a", test_InvalidPoint_o);
     test_assert(a == NULL);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 }
 
 void test_ResumeSink_tc_resumeWithAutoFilter(

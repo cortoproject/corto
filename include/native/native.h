@@ -6,15 +6,13 @@
 #ifndef CORTO_NATIVE_H
 #define CORTO_NATIVE_H
 
-#include <corto/_project.h>
-
 /* $header() */
 /* Enter additional code here. */
 /* $end */
 
-#include <corto/native/_load.h>
-#include <corto/native/_interface.h>
-#include <corto/native/_binding.h>
+#include "_load.h"
+#include "_interface.h"
+#include "_binding.h"
 
 /* $body() */
 /* Enter code that requires types here */

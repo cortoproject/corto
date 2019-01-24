@@ -27,7 +27,7 @@
 #ifndef CORTO_SECURITY_H
 #define CORTO_SECURITY_H
 
-#include <corto/corto.h>
+#include <corto>
 
 #ifdef __cplusplus
 extern "C" {
@@ -117,10 +117,10 @@ bool corto_authorize_id(
  * @param group The group of the user.
  * @param home The home scope of the user.
  * @return 0 when success, non-zero when failed.
- * @see corto_userdel corto_login corto_logout
+ * @see ut_userdel corto_login corto_logout
  */
 CORTO_EXPORT
-int16_t corto_useradd(
+int16_t ut_useradd(
     const char *userId,
     const char *password,
     const char *group,
@@ -130,10 +130,10 @@ int16_t corto_useradd(
  *
  * @param userId The user identifier.
  * @return 0 when success, non-zero when failed.
- * @see corto_useradd corto_login corto_logout
+ * @see ut_useradd corto_login corto_logout
  */
 CORTO_EXPORT
-int16_t corto_userdel(
+int16_t ut_userdel(
     const char *userId);
 
 /** Test if process is secured.

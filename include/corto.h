@@ -30,20 +30,164 @@
 /* $header() */
 
 /* Generic functionality (os abstraction, lockless admin) */
-#include <corto/platform.h>
+#include "bake_config.h"
 
 /* Types must be included first because builtin packages cross reference */
-#include <corto/vstore/_type.h>
-#include <corto/lang/_type.h>
-#include <corto/secure/_type.h>
-#include <corto/native/_type.h>
+#include "vstore/_type.h"
+#include "lang/_type.h"
+#include "secure/_type.h"
+#include "native/_type.h"
+
+/* Standard C library */
+#include <alloca.h>
+#include <assert.h>
+#include <ctype.h>
+#include <errno.h>
+#include <limits.h>
+#include <math.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+/* OS-specific headers */
+#if defined(WIN32) || defined(WIN64)
+#include <windows.h>
+#else
+#include <fnmatch.h>
+#include <inttypes.h>
+#include <execinfo.h>
+#include <dlfcn.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/ptrace.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <signal.h>
+#include <pthread.h>
+#include <ftw.h>
+#include <fcntl.h>
+
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+#endif
+
+#ifndef NDEBUG
+#define CORTO_MAGIC (0x6B6F7274)
+#define CORTO_MAGIC_DESTRUCT (0x74726F6B)
+#endif
+
+/*
+ * Configuration parameters
+ *   Increasing these numbers will increase memory usage of Corto in various
+ *   scenario's.
+ */
+
+/* The maximum nesting level of objects in the hierarchy. There are in total
+ * 62 orders of magnitude in the universe, so 64 should be adequate to organize
+ * most information sets.
+ */
+#define CORTO_MAX_SCOPE_DEPTH (64)
+
+/* The maximum inheritance depth. Think 16 is too small? The Java world record
+ * is set at 12 levels of inheritance:
+ * http://www.javaspecialists.eu/records/index.jsp
+ *
+ * Please don't use 16 levels of inheritance.
+ */
+#define CORTO_MAX_INHERITANCE_DEPTH (16)
+
+/* The maximum number of languages you can construct to a single Corto process. */
+#define CORTO_MAX_BINDINGS (16)
+
+/* The maximum number of threads that can make use of the Corto
+ * API simultaneously. */
+#define CORTO_MAX_THREADS (64)
+
+/* The maximum number of nested notifications. */
+#define CORTO_MAX_NOTIFY_DEPTH (16)
+
+/* The max length of a scoped identifier (incl \0). When combining this with the
+ * MAX_SCOPE_DEPTH, and taking into consideration the scope separator (/) you
+ * can have a tree that is 64 levels deep, where each object has a 7-character
+ * name, and one object with 6, to compensate for \0. Or, you can have an object
+ * in the root with a 510 character name with no children. */
+#define CORTO_MAX_PATH_LENGTH (512)
+
+/* The maximum number of objects that a thread can wait for simultaneously */
+#define CORTO_MAX_WAIT_FOR_OBJECTS (32)
+
+/* Corto can't load files with extensions longer than 16 characters */
+#define CORTO_MAX_FILE_EXTENSION (16)
+
+/* Maximum number of OLS extensions that is supported by the core */
+#define CORTO_MAX_OLS_KEY (256)
+
+/* Maximum number of TLS keys that is supported by the core */
+#define CORTO_MAX_THREAD_KEY (256)
+
+/* The maximum number of arguments that can be passed to the Corto arg parser */
+#define CORTO_ARG_MAX (256)
+
+/* The maximum number of TLS strings that can exist simultaneously */
+#define CORTO_MAX_TLS_STRINGS (5)
+
+/* Maximum retained buffer length for TLS string. This ensures that when a very
+ * large string is stored in TLS, it will be cleaned up eventually. Keeping it
+ * around would be wasteful since chances are low that a string of similar
+ * length will take advantage of the memory. */
+#define CORTO_MAX_TLS_STRINGS_MAX (1024)
+
+/* Maximum number of arguments for command */
+#define CORTO_MAX_CMD_ARGS (256)
+
+/* Maximum number of operations in an id expression */
+#define CORTO_MATCHER_MAX_OP (32)
+
+/* Maximum number of content types in a process */
+#define CORTO_MAX_CONTENTTYPE (32)
+
+/* Maximum number of simultaneous benchmarks */
+#define CORTO_MAX_BENCHMARK (64)
+
+/* Maximum number of categories in logmsg, like: "comp1: comp2: comp3: msg" */
+#define CORTO_MAX_LOG_CATEGORIES (24)
+
+/* Maximum number of code frames in logmsg */
+#define CORTO_MAX_LOG_CODEFRAMES (16)
+
+typedef char corto_id[CORTO_MAX_PATH_LENGTH];
+
+/* Builtin procedure kinds */
+#define CORTO_PROCEDURE_STUB (0)
+#define CORTO_PROCEDURE_CDECL (1)
+
+/* C language binding type definition macro's */
+#define CORTO_ANY(__type) typedef struct __type {corto_type type; void *value; uint8_t owner;} __type
+#define CORTO_SEQUENCE(type, subtype, postexpr) typedef struct type {uint32_t length; subtype _()(*buffer) postexpr;} type
+#define CORTO_SEQUENCE_EMPTY(type) (type){0}
+
+/* Macro's used to prevent type checking macro's from expanding */
+#define ___
+
+/* Macro used to annotate parameters in bootstrap.h */
+#define _(txt)
+
+/* Corto string representing null */
+#define CORTO_NULL_STRING ("null")
 
 /* Include main headers from builtin packages */
-#include <corto/lang/lang.h>
-#include <corto/vstore/vstore.h>
-#include <corto/native/native.h>
-#include <corto/secure/secure.h>
-#include <corto/store/store.h>
+#include "lang/lang.h"
+#include "vstore/vstore.h"
+#include "native/native.h"
+#include "secure/secure.h"
+#include "store/store.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +204,6 @@ CORTO_EXPORT extern const char* BAKE_VERSION_SUFFIX;
 CORTO_EXPORT extern bool CORTO_TRACE_MEM;
 CORTO_EXPORT extern bool CORTO_COLLECT_CYCLES;
 CORTO_EXPORT extern bool CORTO_COLLECT_TLS;
-
 
 /* -- FRAMEWORK FUNCTIONS -- */
 
@@ -166,28 +309,60 @@ char* corto_random_id(
 
 /* Used in type checking macro */
 CORTO_EXPORT
-corto_object _corto_assert_type(
+corto_object _ut_assert_type(
     corto_type type,
     corto_object o);
 
     /* Is pointer a valid object */
 #ifndef NDEBUG
 CORTO_EXPORT
-corto_object _corto_assert_object(
+corto_object _ut_assert_object(
     char const *file,
     unsigned int line,
     corto_object o);
-#define corto_assert_object(o) _corto_assert_object(__FILE__, __LINE__, o)
+#define ut_assert_object(o) _ut_assert_object(__FILE__, __LINE__, o)
 #else
-#define corto_assert_object(o) o
+#define ut_assert_object(o) o
 #endif
 
 /* Is object of specified type */
 #ifndef NDEBUG
-#define corto_assert_type(type, o) _corto_assert_type((type), (o))
+#define ut_assert_type(type, o) _ut_assert_type((type), (o))
 #else
-#define corto_assert_type(type, o) (o)
+#define ut_assert_type(type, o) (o)
 #endif
+
+/* Mark variable(parameter) as unused */
+#define CORTO_UNUSED(p) (void)(p)
+
+/* Calculate offset */
+#define CORTO_OFFSET(o, offset) (void*)(((uintptr_t)(o)) + ((uintptr_t)(offset)))
+
+/* Determine alignment of struct */
+#define CORTO_ALIGNMENT(t) ((uintptr_t)(&((struct {corto_char dummy;t alignMember;}*)(void *)0)->alignMember))
+
+/* Determine offset based on size of type and alignment */
+#define CORTO_ALIGN(size, alignment) (((((size) - 1) / (alignment)) + 1) * (alignment))
+
+/* Hash for primitive typekinds. Enables quick lookup of transformations and operators for primitive types. */
+#define CORTO_PWIDTH(width) (((width) == CORTO_WIDTH_8) ? 0 : ((width) == CORTO_WIDTH_16) ? 1 : ((width) == CORTO_WIDTH_32) ? 2 : ((width) == CORTO_WIDTH_64) ? 3 : -1)
+#define CORTO_TYPEHASH_VARWIDTH(kind, width) ((kind) * (CORTO_FLOAT+1)) + ((int[4]){0, CORTO_FLOAT, CORTO_FLOAT * 2, CORTO_FLOAT * 3}[CORTO_PWIDTH(width)])
+#define CORTO_TYPEHASH(kind, width) ((kind) <= CORTO_FLOAT ? CORTO_TYPEHASH_VARWIDTH((kind), (width)) : CORTO_TYPEHASH_VARWIDTH(CORTO_FLOAT, CORTO_WIDTH_64) + ((kind) - CORTO_FLOAT))
+#define CORTO_TYPEHASH_MAX (50)
+
+#define CORTO_ISNAN(x) ((x) != (x))
+
+/* Macros for memory allocation functions */
+#define corto_calloc(n) calloc(n, 1)
+#define corto_alloc(n) malloc(n)
+#define corto_dealloc free
+#define corto_realloc realloc
+
+/* Set intern TLS string */
+CORTO_EXPORT char* ut_setThreadString(char* string);
+
+CORTO_EXPORT char* corto_itoa(int num, char* buff);
+CORTO_EXPORT char* ut_ulltoa(uint64_t value, char *ptr, int base);
 
 #ifdef __cplusplus
 }

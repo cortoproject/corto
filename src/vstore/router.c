@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 static corto_routerimpl corto_router_find_routerImpl(corto_route this) {
     corto_interface base = corto_interface(this);
     do {
@@ -19,7 +19,7 @@ int16_t corto_router_construct(
         corto_set_ref(&corto_interface(this)->base, corto_interface(corto_routerimpl_o));
     } else {
         if (!corto_type_instanceof(corto_routerimpl_o, corto_interface(this)->base)) {
-            corto_throw("router must inherit from 'routerimpl'");
+            ut_throw("router must inherit from 'routerimpl'");
             goto error;
         }
 
@@ -61,8 +61,8 @@ int16_t corto_router_match(
     /* Parse request once */
     if (routerBase->element_separator) {
         strcpy(requestBuffer, request[0] == '/' ? request + 1 : request);
-        if ((elementCount = corto_pathToArray(requestBuffer, requestElements, "/")) == -1) {
-            corto_throw("invalid request '%s'", request);
+        if ((elementCount = ut_pathToArray(requestBuffer, requestElements, "/")) == -1) {
+            ut_throw("invalid request '%s'", request);
             goto error;
         }
 
@@ -73,7 +73,7 @@ int16_t corto_router_match(
 
     corto_stringseq pattern = {elementCount, (char**)requestElements};
     if (!(match = corto_routerimpl_find_route(router, instance, pattern, param, &routerData))) {
-        corto_throw("router: resource '%s' unknown", request);
+        ut_throw("router: resource '%s' unknown", request);
         goto error;
     }
 
@@ -83,7 +83,7 @@ int16_t corto_router_match(
          return_type->reference) &&
         !result.value)
     {
-        corto_throw("no result provided for route '%s' (expected value of type '%s')",
+        ut_throw("no result provided for route '%s' (expected value of type '%s')",
             corto_fullpath(NULL, match),
             return_type ? corto_fullpath(NULL, return_type) : "void");
         goto error;

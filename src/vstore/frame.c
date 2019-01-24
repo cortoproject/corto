@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 corto_time corto_frame_getTime(
     corto_frame* this)

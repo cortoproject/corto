@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h"
 #include "memory_ser.h"
 #include "init_ser.h"
@@ -67,9 +67,9 @@ struct corto_fmt_s {
         void* content);
 };
 
-extern corto_mutex_s corto_adminLock;
+extern ut_mutex_s corto_adminLock;
 
-static corto_ll formats = NULL;
+static ut_ll formats = NULL;
 
 static
 void* corto_fmt_ptr_fromValue(
@@ -127,14 +127,14 @@ void* corto_fmt_str_fromValue(
     corto_walk_opt s = corto_string_ser(
         CORTO_LOCAL|CORTO_READONLY|CORTO_PRIVATE, CORTO_NOT, CORTO_WALK_TRACE_NEVER);
 
-    serData.buffer = CORTO_BUFFER_INIT;
+    serData.buffer = UT_STRBUF_INIT;
     serData.buffer.max = 0;
     serData.compactNotation = TRUE;
     serData.prefixType = FALSE;
     serData.enableColors = FALSE;
 
     corto_walk_value(&s, v, &serData);
-    corto_string result = corto_buffer_str(&serData.buffer);
+    corto_string result = ut_strbuf_get(&serData.buffer);
     corto_walk_deinit(&s, &serData);
 
     return result;
@@ -153,7 +153,7 @@ int16_t corto_fmt_str_toValue(
     };
 
     if (!corto_string_deser((char*)str, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
+        ut_assert(!serData.out, "deserializer failed but out is set");
     }
 
     if (serData.out) {
@@ -181,7 +181,7 @@ int16_t corto_fmt_str_toObject(
     };
 
     if (!corto_string_deser((char*)data, &serData)) {
-        corto_assert(!serData.out, "deserializer failed but out is set");
+        ut_assert(!serData.out, "deserializer failed but out is set");
     }
 
     if (serData.out) {
@@ -199,38 +199,38 @@ corto_fmt corto_findContentType(
 {
     corto_fmt result = NULL;
     if (formats) {
-        corto_iter it = corto_ll_iter(formats);
-        while (corto_iter_hasNext(&it)) {
-            corto_fmt ct = corto_iter_next(&it);
+        ut_iter it = ut_ll_iter(formats);
+        while (ut_iter_hasNext(&it)) {
+            corto_fmt ct = ut_iter_next(&it);
             if (!strcmp(ct->name, format) && (ct->isBinary == isBinary)) {
                 result = ct;
                 break;
             }
         }
     } else {
-        formats = corto_ll_new();
+        formats = ut_ll_new();
     }
 
     if (!result && !strcmp(format, "corto") && !isBinary) {
         result = corto_calloc(sizeof(struct corto_fmt_s));
-        result->name = corto_strdup("corto");
+        result->name = ut_strdup("corto");
         result->isBinary = isBinary;
         result->toValue = corto_fmt_str_toValue;
         result->fromValue = corto_fmt_str_fromValue;
         result->release = (void ___ (*)(void*))corto_dealloc;
-        result->copy = (void* ___ (*)(const void*)) corto_strdup;
+        result->copy = (void* ___ (*)(const void*)) ut_strdup;
         result->toObject = corto_fmt_str_toObject;
-        corto_ll_append(formats, result);
+        ut_ll_append(formats, result);
 
     } else if (!result && !strcmp(format, "corto") && isBinary) {
         result = corto_calloc(sizeof(struct corto_fmt_s));
-        result->name = corto_strdup("corto");
+        result->name = ut_strdup("corto");
         result->isBinary = isBinary;
         result->toValue = corto_fmt_ptr_toValue;
         result->fromValue = corto_fmt_ptr_fromValue;
         result->release = corto_fmt_ptr_release;
         result->copy = corto_fmt_ptr_copy;
-        corto_ll_append(formats, result);
+        ut_ll_append(formats, result);
     }
 
     return result;
@@ -246,7 +246,7 @@ corto_fmt_lookup(
     /* Built-in Corto string serializer */
     char *packagePtr = strchr(format, '/');
     if (!packagePtr) {
-        corto_throw("invalid content type %s (expected '/')", format);
+        ut_throw("invalid content type %s (expected '/')", format);
         goto error;
     }
 
@@ -257,23 +257,23 @@ corto_fmt_lookup(
     packagePtr ++;
 
     /* Find content type in admin */
-    corto_mutex_lock(&corto_adminLock);
+    ut_mutex_lock(&corto_adminLock);
     result = corto_findContentType(isBinary, packagePtr);
-    corto_mutex_unlock(&corto_adminLock);
+    ut_mutex_unlock(&corto_adminLock);
 
     /* Load format outside of lock */
     if (!result) {
-        corto_dl dl = NULL;
+        ut_dl dl = NULL;
         corto_id packageId;
-        sprintf(packageId, "driver/fmt/%s", packagePtr);
+        sprintf(packageId, "driver.fmt.%s", packagePtr);
 
         result = corto_alloc(sizeof(struct corto_fmt_s));
-        result->name = corto_strdup(packagePtr);
+        result->name = ut_strdup(packagePtr);
         result->isBinary = isBinary;
 
         /* Load package associated with content type */
-        if (corto_use(packageId, 0, NULL)) {
-            corto_throw("unresolved package '%s' for format '%s'",
+        if (ut_use(packageId, 0, NULL)) {
+            ut_throw("unresolved package '%s' for format '%s'",
                 packageId, format);
             goto error;
         }
@@ -282,18 +282,18 @@ corto_fmt_lookup(
         corto_id id;
         sprintf(id, "%s_fromValue", packagePtr);
         result->fromValue =
-            (void* ___ (*)(corto_fmt_opt*, corto_value*))corto_load_proc(packageId, &dl, id);
+            (void* ___ (*)(corto_fmt_opt*, corto_value*))ut_load_proc(packageId, &dl, id);
         if (!result->fromValue) {
-            corto_throw("symbol '%s' missing for format '%s'", id, format);
+            ut_throw("symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
         sprintf(id, "%s_toValue", packagePtr);
         result->toValue =
             (int16_t ___ (*)(corto_fmt_opt*, corto_value*, const void*))
-                corto_load_proc(packageId, &dl, id);
+                ut_load_proc(packageId, &dl, id);
         if (!result->toValue) {
-            corto_throw("symbol '%s' missing for format '%s'", id, format);
+            ut_throw("symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
@@ -301,9 +301,9 @@ corto_fmt_lookup(
         sprintf(id, "%s_fromResult", packagePtr);
         result->fromResult =
           (void* ___ (*)(corto_fmt_opt*, corto_record*))
-            corto_load_proc(packageId, &dl, id);
+            ut_load_proc(packageId, &dl, id);
         if (!result->fromResult) {
-            corto_throw(
+            ut_throw(
                 "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
@@ -311,9 +311,9 @@ corto_fmt_lookup(
         sprintf(id, "%s_toResult", packagePtr);
         result->toResult =
           (int16_t ___ (*)(corto_fmt_opt*, corto_record*, const void*))
-            corto_load_proc(packageId, &dl, id);
+            ut_load_proc(packageId, &dl, id);
         if (!result->toResult) {
-            corto_throw(
+            ut_throw(
                 "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
@@ -322,9 +322,9 @@ corto_fmt_lookup(
         sprintf(id, "%s_fromObject", packagePtr);
         result->fromObject =
           (void* ___ (*)(corto_fmt_opt*, corto_object))
-            corto_load_proc(packageId, &dl, id);
+            ut_load_proc(packageId, &dl, id);
         if (!result->fromObject) {
-            corto_throw(
+            ut_throw(
                 "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
@@ -332,43 +332,43 @@ corto_fmt_lookup(
         sprintf(id, "%s_toObject", packagePtr);
         result->toObject =
           (int16_t ___ (*)(corto_fmt_opt*, corto_object*, const void*))
-            corto_load_proc(packageId, &dl, id);
+            ut_load_proc(packageId, &dl, id);
         if (!result->toObject) {
-            corto_throw(
+            ut_throw(
                 "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
         sprintf(id, "%s_copy", packagePtr);
         result->copy =
-            (void* ___ (*)(const void*))corto_load_proc(packageId, &dl, id);
+            (void* ___ (*)(const void*))ut_load_proc(packageId, &dl, id);
         if (!result->copy) {
-            corto_throw(
+            ut_throw(
                 "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
         sprintf(id, "%s_release", packagePtr);
         result->release =
-            (void ___ (*)(void*))corto_load_proc(packageId, &dl, id);
+            (void ___ (*)(void*))ut_load_proc(packageId, &dl, id);
         if (!result->release) {
-            corto_throw(
+            ut_throw(
                 "symbol '%s' missing for format '%s'", id, format);
             goto error;
         }
 
         /* Add to admin, verify that it hasn't been already added by another
          * thread */
-         corto_mutex_lock(&corto_adminLock);
+         ut_mutex_lock(&corto_adminLock);
          corto_fmt alreadyAdded = corto_findContentType(isBinary, packagePtr);
          if (!alreadyAdded) {
-            corto_ll_append(formats, result);
+            ut_ll_append(formats, result);
          } else {
             corto_dealloc(result->name);
             corto_dealloc(result);
             result = alreadyAdded;
          }
-         corto_mutex_unlock(&corto_adminLock);
+         ut_mutex_unlock(&corto_adminLock);
     }
 
     return result;
@@ -379,13 +379,13 @@ error:
 void corto_fmt_deinit(void)
 {
     if (formats) {
-        corto_iter it = corto_ll_iter(formats);
-        while (corto_iter_hasNext(&it)) {
-            corto_fmt fmt = corto_iter_next(&it);
+        ut_iter it = ut_ll_iter(formats);
+        while (ut_iter_hasNext(&it)) {
+            corto_fmt fmt = ut_iter_next(&it);
             if (fmt->name) free(fmt->name);
             free(fmt);
         }
-        corto_ll_free(formats);
+        ut_ll_free(formats);
     }
 }
 

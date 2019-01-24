@@ -155,24 +155,24 @@ int16_t test_ListMount_construct(
 
 
 /* Custom release function */
-void test_ListMount_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->ctx;
+void test_ListMount_iterRelease(ut_iter *iter) {
+    ut_ll_iter_s *data = iter->ctx;
     corto_recordList__clear(data->list);
-    corto_ll_free(data->list);
-    corto_ll_iterRelease(iter);
+    ut_ll_free(data->list);
+    ut_ll_iterRelease(iter);
 }
 
 corto_recordIter test_ListMount_on_query(
     test_ListMount this,
     corto_query *query)
 {
-    corto_iter iter = corto_ll_iter(this->items);
-    corto_ll data = corto_ll_new();
+    ut_iter iter = ut_ll_iter(this->items);
+    ut_ll data = ut_ll_new();
 
     /* Filter items by parent */
     corto_recordIter__foreach(iter, e) {
-        if (corto_idmatch(query->from, e.parent)) {
-            if (corto_idmatch(query->select, e.id)) {
+        if (ut_expr(query->from, e.parent)) {
+            if (ut_expr(query->select, e.id)) {
                 corto_record__assign(
                     corto_recordList__append_alloc(data),
                     e.id,
@@ -187,7 +187,7 @@ corto_recordIter test_ListMount_on_query(
     }
 
     /* Create persistent iterator */
-    corto_iter result = corto_ll_iterAlloc(data);
+    ut_iter result = ut_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_ListMount_iterRelease;

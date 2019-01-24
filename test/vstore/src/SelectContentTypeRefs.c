@@ -32,12 +32,12 @@ void test_SelectContentTypeRefs_tc_selectIdWithRefsFromNested1(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("refs").from("data").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -59,7 +59,7 @@ void test_SelectContentTypeRefs_tc_selectIdWithRefsFromNested1(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -80,12 +80,12 @@ void test_SelectContentTypeRefs_tc_selectIdWithRefsFromNested2(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("refs").from("data/foo").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
@@ -107,7 +107,7 @@ void test_SelectContentTypeRefs_tc_selectIdWithRefsFromNested2(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -128,12 +128,12 @@ void test_SelectContentTypeRefs_tc_selectIdWithRefsFromRoot(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("refs").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "");
@@ -155,7 +155,7 @@ void test_SelectContentTypeRefs_tc_selectIdWithRefsFromRoot(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -176,12 +176,12 @@ void test_SelectContentTypeRefs_tc_selectScopeNestedWithRefsFromNested1(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("grandparent/parent/refs").from("data").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "grandparent/parent");
@@ -203,7 +203,7 @@ void test_SelectContentTypeRefs_tc_selectScopeNestedWithRefsFromNested1(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -224,12 +224,12 @@ void test_SelectContentTypeRefs_tc_selectScopeNestedWithRefsFromNested2(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("grandparent/parent/refs").from("data/foo").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "grandparent/parent");
@@ -251,7 +251,7 @@ void test_SelectContentTypeRefs_tc_selectScopeNestedWithRefsFromNested2(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -272,12 +272,12 @@ void test_SelectContentTypeRefs_tc_selectScopeNestedWithRefsFromRoot(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("grandparent/parent/").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "/grandparent/parent");
@@ -299,7 +299,7 @@ void test_SelectContentTypeRefs_tc_selectScopeNestedWithRefsFromRoot(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -320,12 +320,12 @@ void test_SelectContentTypeRefs_tc_selectScopeWithRefsFromNested1(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("parent/refs").from("data").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -347,7 +347,7 @@ void test_SelectContentTypeRefs_tc_selectScopeWithRefsFromNested1(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -368,12 +368,12 @@ void test_SelectContentTypeRefs_tc_selectScopeWithRefsFromNested2(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("parent/refs").from("data/foo").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -395,7 +395,7 @@ void test_SelectContentTypeRefs_tc_selectScopeWithRefsFromNested2(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -416,12 +416,12 @@ void test_SelectContentTypeRefs_tc_selectScopeWithRefsFromRoot(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("parent/").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "/parent");
@@ -443,7 +443,7 @@ void test_SelectContentTypeRefs_tc_selectScopeWithRefsFromRoot(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -466,12 +466,12 @@ void test_SelectContentTypeRefs_tc_selectThisWithRefsFromNested1(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select(".").from("data/refs").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -493,7 +493,7 @@ void test_SelectContentTypeRefs_tc_selectThisWithRefsFromNested1(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -516,12 +516,12 @@ void test_SelectContentTypeRefs_tc_selectThisWithRefsFromNested2(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select(".").from("data/parent/refs").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -543,7 +543,7 @@ void test_SelectContentTypeRefs_tc_selectThisWithRefsFromNested2(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -566,12 +566,12 @@ void test_SelectContentTypeRefs_tc_selectThisWithRefsFromRoot(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select(".").from("refs").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
@@ -593,7 +593,7 @@ void test_SelectContentTypeRefs_tc_selectThisWithRefsFromRoot(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -614,12 +614,12 @@ void test_SelectContentTypeRefs_tc_selectTreeNestedWithRefsFromNested1(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("//refs").from("data").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent/grandparent");
@@ -641,7 +641,7 @@ void test_SelectContentTypeRefs_tc_selectTreeNestedWithRefsFromNested1(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -662,12 +662,12 @@ void test_SelectContentTypeRefs_tc_selectTreeNestedWithRefsFromNested2(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("//refs").from("data/foo").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "grandparent/parent");
@@ -689,7 +689,7 @@ void test_SelectContentTypeRefs_tc_selectTreeNestedWithRefsFromNested2(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -710,12 +710,12 @@ void test_SelectContentTypeRefs_tc_selectTreeNestedWithRefsFromRoot(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("//refs_obj").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs_obj");
     test_assertstr(r->parent, "/parent/grandparent");
@@ -737,7 +737,7 @@ void test_SelectContentTypeRefs_tc_selectTreeNestedWithRefsFromRoot(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -758,12 +758,12 @@ void test_SelectContentTypeRefs_tc_selectTreeWithRefsFromNested1(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("//refs").from("data").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -785,7 +785,7 @@ void test_SelectContentTypeRefs_tc_selectTreeWithRefsFromNested1(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -806,12 +806,12 @@ void test_SelectContentTypeRefs_tc_selectTreeWithRefsFromNested2(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("//refs").from("data/foo").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
@@ -833,7 +833,7 @@ void test_SelectContentTypeRefs_tc_selectTreeWithRefsFromNested2(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }
 
@@ -854,12 +854,12 @@ void test_SelectContentTypeRefs_tc_selectTreeWithRefsFromRoot(
     corto_set_ref(&refs->root, root_o);
     corto_set_ref(&refs->null_ref, NULL);
 
-    corto_iter it;
+    ut_iter it;
     corto_record *r;
     corto_select("//refs_obj").format("text/json").iter(&it);
 
-    test_assert(corto_iter_hasNext(&it));
-    r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it));
+    r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs_obj");
     test_assertstr(r->parent, "/parent");
@@ -881,6 +881,6 @@ void test_SelectContentTypeRefs_tc_selectTreeWithRefsFromRoot(
 
     test_assertstr((char*)r->value, json);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
     test_assert(corto_delete(refs) == 0);
 }

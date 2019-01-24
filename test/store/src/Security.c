@@ -238,13 +238,13 @@ void test_Security_tc_authorizeDeniedSelect(
     test_TestLock l = test_TestLock__create(NULL, NULL, "/a/b", ".", 0, NULL);
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_DENIED};
     test_AccessRuleList__insert(l->rules, &r);
-    corto_iter iter;
+    ut_iter iter;
     corto_int16 ret = corto_select(".").from("/a/b").iter(&iter);
     test_assert(ret == 0);
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
     ret = corto_select("b").from("/a").iter(&iter);
     test_assert(ret == 0);
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
     ret = corto_select("*")
         .from("/A").iter(&iter);
     test_assert(ret == 0);
@@ -254,7 +254,7 @@ void test_Security_tc_authorizeDeniedSelect(
 
     ret = corto_select("..").from("/a/b/c").iter(&iter);
     test_assert(ret == 0);
-    test_assert(!corto_iter_hasNext(&iter));
+    test_assert(!ut_iter_hasNext(&iter));
     prev = corto_set_session(prev);
     test_assert(prev == token);
 }
@@ -346,15 +346,15 @@ void test_Security_tc_authorizeSelect(
     test_TestLock l = test_TestLock__create(NULL, NULL, "/a/b", ".", 0, NULL);
     test_AccessRule r = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
     test_AccessRuleList__insert(l->rules, &r);
-    corto_iter iter;
+    ut_iter iter;
     corto_int16 ret = corto_select(".").from("/a/b").iter(&iter);
     test_assert(ret == 0);
-    test_assert(corto_iter_hasNext(&iter));
-    corto_iter_release(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    ut_iter_release(&iter);
     ret = corto_select("b").from("/a").iter(&iter);
     test_assert(ret == 0);
-    test_assert(corto_iter_hasNext(&iter));
-    corto_iter_release(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    ut_iter_release(&iter);
     ret = corto_select("*")
         .from("/A").iter(&iter);
     test_assert(ret == 0);
@@ -369,8 +369,8 @@ void test_Security_tc_authorizeSelect(
     test_assertint(count, 1);
     ret = corto_select("..").from("/a/b/c").iter(&iter);
     test_assert(ret == 0);
-    test_assert(corto_iter_hasNext(&iter));
-    corto_iter_release(&iter);
+    test_assert(ut_iter_hasNext(&iter));
+    ut_iter_release(&iter);
     prev = corto_set_session(prev);
     test_assert(prev == token);
 }
@@ -941,17 +941,17 @@ void test_Security_tc_lockDenyTreeGrantSelectScope(
     test_AccessRule rule2 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
     test_AccessRuleList__insert(lock2->rules, &rule2);
 
-    corto_iter it;
+    ut_iter it;
     test_assert(corto_select("*").from("/a/b").iter(&it) == 0);
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "c");
     test_assertstr(r->type, "void");
     test_assertstr(r->parent, ".");
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     prev = corto_set_session(prev);
     test_assert(prev == token);
@@ -973,9 +973,9 @@ void test_Security_tc_lockDenyTreeGrantScopeSelectThis(
     test_AccessRule rule2 = {"token_user01", CORTO_SECURE_ACTION_READ, CORTO_SECURE_ACCESS_GRANTED};
     test_AccessRuleList__insert(lock2->rules, &rule2);
 
-    corto_iter it;
+    ut_iter it;
     test_assert(corto_select(".").from("/a/b").iter(&it) == 0);
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     prev = corto_set_session(prev);
     test_assert(prev == token);

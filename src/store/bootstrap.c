@@ -20,7 +20,7 @@
  */
 
 /* Public headers */
-#include <corto/corto.h>
+#include <corto>
 
 /* Private headers */
 #include "bootstrap.h"
@@ -63,21 +63,21 @@ const char* BAKE_VERSION_MINOR = VERSION_MINOR;
 const char* BAKE_VERSION_PATCH = VERSION_PATCH;
 
 /* Single lock to protect infrequent actions on global corto data */
-corto_mutex_s corto_adminLock;
-corto_rwmutex_s corto_subscriberLock;
+ut_mutex_s corto_adminLock;
+ut_rwmutex_s corto_subscriberLock;
 
 /* Application name */
 char *corto_appName = NULL;
 
 /* TLS keys */
-corto_tls CORTO_KEY_OBSERVER_ADMIN;
-corto_tls CORTO_KEY_DECLARED_ADMIN;
-corto_tls CORTO_KEY_LISTEN_ADMIN;
-corto_tls CORTO_KEY_OWNER;
-corto_tls CORTO_KEY_ATTR;
-corto_tls CORTO_KEY_FLUENT;
-corto_tls CORTO_KEY_MOUNT_RESULT;
-corto_tls CORTO_KEY_CONSTRUCTOR_TYPE;
+ut_tls CORTO_KEY_OBSERVER_ADMIN;
+ut_tls CORTO_KEY_DECLARED_ADMIN;
+ut_tls CORTO_KEY_LISTEN_ADMIN;
+ut_tls CORTO_KEY_OWNER;
+ut_tls CORTO_KEY_ATTR;
+ut_tls CORTO_KEY_FLUENT;
+ut_tls CORTO_KEY_MOUNT_RESULT;
+ut_tls CORTO_KEY_CONSTRUCTOR_TYPE;
 
 /* Delegate object variables */
 corto_member corto_type_init_o = NULL;
@@ -98,7 +98,7 @@ bool CORTO_COLLECT_TLS = 0;
 static corto_loader corto_loaderInstance;
 
 /* Actions to be run at shutdown */
-static corto_ll corto_exitHandlers = NULL;
+static ut_ll corto_exitHandlers = NULL;
 
 /* String identifying current corto build */
 static corto_string CORTO_BUILD = __DATE__ " " __TIME__;
@@ -920,7 +920,7 @@ void corto_define_builtin(
     corto_object o)
 {
     if (corto_define(o)) {
-        corto_throw("failed to define builtin-object '%s'", corto_idof(o));
+        ut_throw("failed to define builtin-object '%s'", corto_idof(o));
     }
 }
 
@@ -933,7 +933,7 @@ void corto_define_builtin_type(
     corto_define_builtin(o);
 
     if (corto_type(o)->size != size) {
-        corto_error(
+        ut_error(
           "size validation failed for type '%s' - metatype = %d, c-type = %d.",
           corto_fullpath(NULL, o), corto_type(o)->size, size);
     }
@@ -983,37 +983,37 @@ void corto_environment_init(void)
 
     /* If there is no home directory, default to /usr/local. This should be
      * avoided in development environments. */
-    if (!corto_getenv("HOME") || !strlen(corto_getenv("HOME"))) {
-        corto_setenv("HOME", "/usr/local");
+    if (!ut_getenv("HOME") || !strlen(ut_getenv("HOME"))) {
+        ut_setenv("HOME", "/usr/local");
     }
 
     /* BAKE_VERSION points to the current major-minor version */
-    if (!corto_getenv("BAKE_VERSION")) {
-        corto_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
+    if (!ut_getenv("BAKE_VERSION")) {
+        ut_setenv("BAKE_VERSION", VERSION_MAJOR "." VERSION_MINOR);
     }
 
-    if (!corto_getenv("BAKE_HOME")) {
-        corto_setenv("BAKE_HOME", ".");
+    if (!ut_getenv("BAKE_HOME")) {
+        ut_setenv("BAKE_HOME", ".");
     }
 
-    if (!corto_getenv("BAKE_TARGET")) {
-        corto_setenv("BAKE_TARGET", ".");
+    if (!ut_getenv("BAKE_TARGET")) {
+        ut_setenv("BAKE_TARGET", ".");
     }
 
-    if (!corto_getenv("HOSTNAME")) {
+    if (!ut_getenv("HOSTNAME")) {
         corto_id hostname;
         gethostname(hostname, sizeof(hostname));
-        corto_setenv("HOSTNAME", hostname);
+        ut_setenv("HOSTNAME", hostname);
     }
 
-    corto_string enableBacktrace = corto_getenv("CORTO_LOG_BACKTRACE");
+    corto_string enableBacktrace = ut_getenv("UT_LOG_BACKTRACE ");
     if (enableBacktrace) {
-        CORTO_LOG_BACKTRACE = !strcmp(enableBacktrace, "true");
+        UT_LOG_BACKTRACE  = !strcmp(enableBacktrace, "true");
     }
 
-    corto_string errfmt = corto_getenv("CORTO_LOG_FORMAT");
+    corto_string errfmt = ut_getenv("CORTO_LOG_FORMAT");
     if (errfmt && errfmt[0]) {
-        corto_log_fmt(errfmt);
+        ut_log_fmt(errfmt);
     }
 }
 
@@ -1023,49 +1023,49 @@ void corto_environment_init(void)
 int corto_load_config(void)
 {
     int result = 0;
-    corto_debug("load configuration");
-    corto_log_push("config");
-    char *cfg = corto_getenv("CORTO_CONFIG");
+    ut_debug("load configuration");
+    ut_log_push("config");
+    char *cfg = ut_getenv("CORTO_CONFIG");
     if (cfg) {
         corto_time start, stop;
-        if (corto_isdir(cfg)) {
-            corto_trace("loading configuration");
-            corto_ll cfgfiles = corto_opendir(cfg);
-            corto_iter it = corto_ll_iter(cfgfiles);
-            while (corto_iter_hasNext(&it)) {
-                char *file = corto_iter_next(&it);
-                char *full_path = corto_asprintf("%s/%s", cfg, file);
+        if (ut_isdir (cfg)) {
+            ut_trace("loading configuration");
+            ut_ll cfgfiles = ut_opendir(cfg);
+            ut_iter it = ut_ll_iter(cfgfiles);
+            while (ut_iter_hasNext(&it)) {
+                char *file = ut_iter_next(&it);
+                char *full_path = ut_asprintf("%s/%s", cfg, file);
                 corto_time_get(&start);
-                if (corto_use(full_path, 0, NULL)) {
-                    corto_raise();
+                if (ut_use(full_path, 0, NULL)) {
+                    ut_raise();
                     result = -1;
                     /* Don't break, report all errors */
                 } else {
                     corto_time_get(&stop);
                     stop = corto_time_sub(stop, start);
-                    corto_ok("loaded '%s' in %d.%.3d seconds", file,
+                    ut_ok("loaded '%s' in %d.%.3d seconds", file,
                         stop.sec, stop.nanosec / 1000000);
                 }
                 free(full_path);
             }
-            corto_closedir(cfgfiles);
-        } else if (corto_file_test(cfg)) {
+            ut_closedir(cfgfiles);
+        } else if (ut_file_test(cfg)) {
             corto_time_get(&start);
-            if (corto_use(cfg, 0, NULL)) {
+            if (ut_use(cfg, 0, NULL)) {
                 result = -1;
             }
             corto_time_get(&stop);
             stop = corto_time_sub(stop, start);
-            corto_ok("loaded '%s' in %d.%.3d seconds", cfg,
+            ut_ok("loaded '%s' in %d.%.3d seconds", cfg,
                 stop.sec, stop.nanosec / 1000000);
         } else {
-            corto_trace(
+            ut_trace(
                 "$CORTO_CONFIG ('%s') does not point to an accessible "
                 "path or file",
                 cfg);
         }
     }
-    corto_log_pop();
+    ut_log_pop();
 
     return result;
 }
@@ -1075,7 +1075,7 @@ int corto_load_config(void)
 int corto_start(
     char *appName)
 {
-    CORTO_APP_STATUS = 1; /* Initializing */
+    UT_APP_STATUS = 1; /* Initializing */
 
     corto_appName = appName;
     if ((appName[0] == '.') && (appName[1] == '/')) {
@@ -1083,69 +1083,65 @@ int corto_start(
     }
 
     /* Initialize platform abstraction layer */
-    corto_platform_init(appName);
+    ut_init(appName);
 
     /* Initialize TLS keys */
-    corto_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
-    corto_tls_new(&CORTO_KEY_DECLARED_ADMIN, corto_declaredByMeFree);
-    corto_tls_new(&CORTO_KEY_LISTEN_ADMIN, NULL);
-    corto_tls_new(&CORTO_KEY_OWNER, NULL);
-    corto_tls_new(&CORTO_KEY_ATTR, corto_genericTlsFree);
-    corto_tls_new(&CORTO_KEY_FLUENT, NULL);
-    corto_tls_new(&CORTO_KEY_MOUNT_RESULT, NULL);
-    corto_tls_new(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
-    corto_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
-    corto_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
+    ut_tls_new(&CORTO_KEY_OBSERVER_ADMIN, corto_observerAdminFree);
+    ut_tls_new(&CORTO_KEY_DECLARED_ADMIN, corto_declaredByMeFree);
+    ut_tls_new(&CORTO_KEY_LISTEN_ADMIN, NULL);
+    ut_tls_new(&CORTO_KEY_OWNER, NULL);
+    ut_tls_new(&CORTO_KEY_ATTR, corto_genericTlsFree);
+    ut_tls_new(&CORTO_KEY_FLUENT, NULL);
+    ut_tls_new(&CORTO_KEY_MOUNT_RESULT, NULL);
+    ut_tls_new(&CORTO_KEY_CONSTRUCTOR_TYPE, NULL);
+    ut_tls_new(&corto_subscriber_admin.key, corto_entityAdmin_free);
+    ut_tls_new(&corto_mount_admin.key, corto_entityAdmin_free);
 
     /* If BAKE_HOME is not set to a public package repository, default to
      * standalone mode */
-    char *BAKE_HOME = corto_getenv("BAKE_HOME");
+    char *BAKE_HOME = ut_getenv("BAKE_HOME");
     bool standalone = !BAKE_HOME || !BAKE_HOME[0];
 
     /* Initialize operating system environment */
     corto_environment_init();
 
 #ifndef NDEBUG
-    corto_ok("using corto #[yellow]debug#[normal] runtime, use a release build for better performance");
+    ut_ok("using corto #[yellow]debug#[normal] runtime, use a release build for better performance");
 #else
-    corto_ok("using corto #[green]release#[normal] runtime, use a debug build to enable runtime sanity checks");
+    ut_ok("using corto #[green]release#[normal] runtime, use a debug build to enable runtime sanity checks");
 #endif
 
     /* Push init component for logging */
-    corto_log_push("init");
+    ut_log_push("init");
 
-    corto_trace("initializing...");
+    ut_trace("initializing...");
 
     /* Initialize loader */
-    corto_load_init(
-        corto_getenv("BAKE_TARGET"),
-        corto_getenv("BAKE_HOME"),
-        corto_getenv("BAKE_VERSION"),
-        NULL,
-        NULL,
-        corto_get_build(),
-        standalone);
+    ut_load_init(
+        ut_getenv("BAKE_TARGET"),
+        ut_getenv("BAKE_HOME"),
+        ut_getenv("BAKE_CONFIG"));
 
     if (standalone) {
-        corto_trace("standalone mode enabled");
+        ut_trace("standalone mode enabled");
     }
 
     /* Initialize security */
-    corto_debug("init security");
+    ut_debug("init security");
     corto_secure_init();
 
     /* Register CDECL as first binding */
-    corto_debug("init C binding");
+    ut_debug("init C binding");
     if (corto_invoke_register(corto_cdeclInit, corto_cdeclDeinit) != CORTO_PROCEDURE_CDECL) {
         /* Sanity check */
-        corto_critical("CDECL binding did not register with id 1");
+        ut_critical("CDECL binding did not register with id 1");
     }
 
-    corto_debug("init global administration");
+    ut_debug("init global administration");
 
     /* Init admin-lock */
-    corto_mutex_new(&corto_adminLock);
-    corto_rwmutex_new(&corto_subscriberLock);
+    ut_mutex_new(&corto_adminLock);
+    ut_rwmutex_new(&corto_subscriberLock);
 
     /* Bootstrap sizes of types used in parameters, these are used to determine
      * argument-stack sizes for functions during function::construct. */
@@ -1186,7 +1182,7 @@ int corto_start(
     corto_native_o->version = (char*)VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH;
 
     /* Initialize builtin scopes */
-    corto_debug("init builtin packages");
+    ut_debug("init builtin packages");
     corto_init_builtin_object(root_o);
     corto_init_builtin_object(corto_o);
     corto_init_builtin_object(corto_lang_o);
@@ -1208,7 +1204,7 @@ int corto_start(
      * all types. This only affects types that support inheritance, so all
      * types that inherit from interface. */
 
-    corto_debug("init delegates");
+    ut_debug("init delegates");
     corto_int32 i = 0;
     corto_object o;
     for (i = 0; (o = types[i].o); i++) {
@@ -1236,7 +1232,7 @@ int corto_start(
     }
 
     /* Init objects */
-    corto_debug("init builtin objects");
+    ut_debug("init builtin objects");
     for (i = 0; (o = types[i].o); i++) corto_init_builtin_object(o);
     for (i = 0; (o = objects[i].o); i++) corto_init_builtin_object(o);
 
@@ -1262,26 +1258,26 @@ int corto_start(
     corto_ptr_operatorInit();
 
     /* Register exit-handler */
-    void corto_loaderOnExit(void* ctx);
-    corto_atexit(corto_loaderOnExit, NULL);
+    void ut_loaderOnExit(void* ctx);
+    corto_atexit(ut_loaderOnExit, NULL);
 
     /* Register library-binding */
-    corto_debug("init builtin file extensions");
+    ut_debug("init builtin file extensions");
 
-    int corto_load_libraryAction(corto_string file, int argc, char* argv[], void *data);
-    corto_load_register("so", corto_load_libraryAction, NULL);
+    int ut_load_libraryAction(corto_string file, int argc, char* argv[], void *data);
+    ut_load_register(UT_OS_LIB_EXT, ut_load_libraryAction, NULL);
 
-    int corto_file_loader(corto_string file, int argc, char* argv[], void *data);
-    corto_load_register("", corto_file_loader, NULL);
+    int ut_file_loader(corto_string file, int argc, char* argv[], void *data);
+    ut_load_register("", ut_file_loader, NULL);
 
     /* Randomize seed by default (application can easily override by calling
      * srand again) */
     srand (time(NULL));
 
-    CORTO_APP_STATUS = 0; /* Running */
+    UT_APP_STATUS = 0; /* Running */
 
     /* Create builtin root scopes */
-    corto_debug("init root scopes");
+    ut_debug("init root scopes");
 
     config_o = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = root_o, .id = "config", .type = corto_void_o});
@@ -1294,7 +1290,7 @@ int corto_start(
 
 /* Only create package mount for non-redistributable version of corto, where
  * packages are installed in a common location */
-    corto_debug("init package loader");
+    ut_debug("init package loader");
 
     corto_loaderInstance = corto(CORTO_DECLARE|CORTO_DEFINE|CORTO_FORCE_TYPE,
         {.parent = config_o, .id = "loader", .type = corto_loader_o});
@@ -1302,12 +1298,12 @@ int corto_start(
     if (corto_loaderInstance) {
         corto_loaderInstance->autoLoad = TRUE;
     } else {
-        corto_raise();
-        corto_trace("autoloading of packages disabled");
+        ut_raise();
+        ut_trace("autoloading of packages disabled");
     }
 
     /* Pop init log component */
-    corto_log_pop();
+    ut_log_pop();
 
     return 0;
 }
@@ -1323,52 +1319,52 @@ void corto_atexit(
     h->handler = handler;
     h->userData = userData;
 
-    corto_mutex_lock(&corto_adminLock);
+    ut_mutex_lock(&corto_adminLock);
     if (!corto_exitHandlers) {
-        corto_exitHandlers = corto_ll_new();
+        corto_exitHandlers = ut_ll_new();
     }
-    corto_ll_insert(corto_exitHandlers, h);
-    corto_mutex_unlock(&corto_adminLock);
+    ut_ll_insert(corto_exitHandlers, h);
+    ut_mutex_unlock(&corto_adminLock);
 }
 
 /* Shutdown corto. After this corto will occupy no more resources. Calling corto
  * functions after corto_stop has been called causes undefined behavior. */
 int corto_stop(void)
 {
-    corto_log_push("fini");
+    ut_log_push("fini");
 
-    corto_trace("shutting down...");
+    ut_trace("shutting down...");
 
     /* If an application modified the source of the mainthread but has not reset
      * this value, it may interfere with cleaning up resources so abort */
     if (corto_get_source()) {
-        corto_error("owner has not been reset to NULL before shutting down");
+        ut_error("owner has not been reset to NULL before shutting down");
         abort();
     }
 
     if (corto_loaderInstance) {
-        corto_debug("cleanup package loader");
+        ut_debug("cleanup package loader");
         //corto_release(corto_loaderInstance);
     }
 
     /* Drop the rootscope. This will not actually result
      * in removing the rootscope itself, but it will result in the
      * removal of all non-builtin objects. */
-    corto_debug("cleanup objects");
+    ut_debug("cleanup objects");
 
-    if (CORTO_TRACE_MEM) corto_log_push("SHUTDOWN_COLLECT");
+    if (CORTO_TRACE_MEM) ut_log_push("SHUTDOWN_COLLECT");
     corto_collect(root_o, CORTO_COLLECT_CYCLES);
-    if (CORTO_TRACE_MEM) corto_log_pop();
+    if (CORTO_TRACE_MEM) ut_log_pop();
 
     corto_int32 i;
     corto_object o;
 
     /* From here things get funky, because we're going to deinitialize builtin
      * structures. Signal that corto is shutting down */
-    CORTO_APP_STATUS = 2;
+    UT_APP_STATUS = 2;
 
     /* Destruct objects */
-    corto_debug("cleanup builtin objects");
+    ut_debug("cleanup builtin objects");
 
     uint32_t types_count = 0;
     for (i = 0; (o = types[i].o); i++) {
@@ -1406,29 +1402,29 @@ int corto_stop(void)
     corto_entityAdmin_free_contents(&corto_mount_admin, true);
 
     /* Deinit adminLock */
-    corto_debug("cleanup global administration");
-    corto_mutex_free(&corto_adminLock);
-    corto_rwmutex_free(&corto_subscriberLock);
+    ut_debug("cleanup global administration");
+    ut_mutex_free(&corto_adminLock);
+    ut_rwmutex_free(&corto_subscriberLock);
 
-    corto_log_pop();
+    ut_log_pop();
     corto_fmt_deinit();
-    corto_platform_deinit();
+    ut_deinit();
 
-    /* Call exithandlers. Do after corto_platform_deinit as this will unload any
+    /* Call exithandlers. Do after ut_deinit as this will unload any
      * loaded libraries, which may have routines to cleanup TLS data. */
     struct corto_exitHandler* h;
 
     if (corto_exitHandlers) {
-        while((h = corto_ll_takeFirst(corto_exitHandlers))) {
+        while((h = ut_ll_takeFirst(corto_exitHandlers))) {
             h->handler(h->userData);
             corto_dealloc(h);
         }
-        corto_ll_free(corto_exitHandlers);
+        ut_ll_free(corto_exitHandlers);
         corto_exitHandlers = NULL;
     }
 
     /* Corto is now shut down */
-    CORTO_APP_STATUS = 3;
+    UT_APP_STATUS = 3;
 
     /* Cleanup any TLS data in the mainthread not created through corto. Don't
      * enable this by default as it will exit the process with exit status 0,
@@ -1483,20 +1479,20 @@ corto_bool corto_enable_load(corto_bool enable)
 }
 
 /* Assert object is of specified type. Used in generated type macro's. */
-corto_object _corto_assert_type(
+corto_object _ut_assert_type(
     corto_type type,
     corto_object o)
 {
-    corto_assert_object(type);
-    corto_assert_object(o);
+    ut_assert_object(type);
+    ut_assert_object(o);
 
     if (o && (corto_typeof(o) != type)) {
         if (!_corto_instanceof(type, o)) {
-            corto_error("object '%s' is not an instance of '%s'\n   type = %s",
+            ut_error("object '%s' is not an instance of '%s'\n   type = %s",
                 corto_fullpath(NULL, o),
                 corto_fullpath(NULL, type),
                 corto_fullpath(NULL, corto_typeof(o)));
-            corto_backtrace(stdout);
+            ut_backtrace(stdout);
             abort();
         }
     }
@@ -1505,18 +1501,18 @@ corto_object _corto_assert_type(
 
 /* Assert object is valid. Only enabled in debug builds */
 #ifndef NDEBUG
-corto_object _corto_assert_object(char const *file, unsigned int line, corto_object o) {
+corto_object _ut_assert_object(char const *file, unsigned int line, corto_object o) {
     if (o) {
         corto__object *_o = corto_hdr(o);
         if (_o->magic != CORTO_MAGIC) {
             if (_o->magic == CORTO_MAGIC_DESTRUCT) {
-                corto_critical_fl(
+                ut_critical_fl(
                     file,
                     line,
                     "address <%p> points to an object that is already deleted",
                     o);
             } else {
-                corto_critical_fl(
+                ut_critical_fl(
                     file,
                     line,
                     "address <%p> does not point to an object", o);

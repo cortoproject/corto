@@ -22,5 +22,5 @@ int16_t test_IdMount_construct(
 corto_string test_IdMount_on_id(
     test_IdMount this)
 {
-    return corto_strdup("some_unique_id");
+    return ut_strdup("some_unique_id");
 }

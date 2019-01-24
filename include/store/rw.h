@@ -68,7 +68,7 @@
 #ifndef CORTO_RW_H
 #define CORTO_RW_H
 
-#include <corto/corto.h>
+#include <corto>
 
 #ifdef __cplusplus
 extern "C" {
@@ -393,7 +393,7 @@ uintptr_t corto_rw_unset(
     corto_rw *_this);
 
 #define corto_rw_init(ptr, type) _corto_rw_init(ptr, corto_type(type))
-#define corto_rw_object(object) _corto_rw_object(corto_assert_object(object))
+#define corto_rw_object(object) _corto_rw_object(ut_assert_object(object))
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
  * This file contains generated code. Do not modify!
  */
 
-#include <corto/c/c.h>
+#include <corto.c>
 
 corto_native_type _corto_native_type__create(corto_object _parent, const char *_id, const char * name, bool is_ptr) {
     corto_native_type _this;
@@ -48,4 +48,3 @@ corto_native_type _corto_native_type__assign(corto_native_type _this, const char
     ((corto_native_type)_this)->is_ptr = is_ptr;
     return _this;
 }
-

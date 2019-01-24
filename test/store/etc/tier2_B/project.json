@@ -1,5 +1,6 @@
 {
-    "id":"tier1/tier2_b",
+    "id":"tier1.tier2_b",
     "type":"package",
-    "value": {}
+    "value": {},
+    "corto": { }
 }

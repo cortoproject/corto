@@ -446,7 +446,7 @@ void test_ReplicatorEvent_tc_rateLimitOneObject(
 
     corto_time_get(&stop);
     // Wait 2/frequency to ensure mount has processed all data
-    corto_sleep(0, 400000000);
+    ut_sleep(0, 400000000);
     corto_float64 t = corto_time_toDouble(corto_time_sub(stop, start));
     test_assert(mount->updateCount <= ceil(t * 5.0 + 1.0));
     test_assert(mount->updateCount >= floor(t * 5.0 - 1.0));
@@ -496,7 +496,7 @@ void test_ReplicatorEvent_tc_rateLimitThreeObjects(
 
     corto_time_get(&stop);
     // Wait 2/frequency to ensure mount has processed all data
-    corto_sleep(0, 400000000);
+    ut_sleep(0, 400000000);
     corto_float64 t = corto_time_toDouble(corto_time_sub(stop, start));
     test_assert(mount->updateCount <= 3.0 * ceil(t * 5.0 + 1.0));
     test_assert(mount->updateCount >= 3.0 * floor(t * 5.0 - 1.0));
@@ -516,8 +516,8 @@ void test_ReplicatorEvent_tc_rateLimitAlign(
     corto_mount mnt = corto_declare(root_o, "config/influx", corto_mount_o);
     test_assert(mnt != NULL);
     mnt->super.query = (corto_query){
-        .select = corto_strdup("/"),
-        .from = corto_strdup("data")
+        .select = ut_strdup("/"),
+        .from = ut_strdup("data")
     };
 
     mnt->callbacks = CORTO_MOUNT_HISTORY_BATCH_NOTIFY;

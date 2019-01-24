@@ -1,7 +1,8 @@
 {
-    "id":"tier1/tier2_a",
+    "id":"tier1.tier2_a",
     "type":"package",
     "value":{
-        "dependencies":["tier1/tier2_a"]
-    }
+        "use":["tier1.tier2_b"]
+    },
+    "corto": { }
 }

@@ -6,10 +6,10 @@
 #define CORTO_SECURE_BINDING_H
 
 /* -- Type casting -- */
-#define corto_secure_accessKind(o) ((corto_secure_accessKind*)corto_assert_type((corto_type)corto_secure_accessKind_o, o))
-#define corto_secure_actionKind(o) ((corto_secure_actionKind*)corto_assert_type((corto_type)corto_secure_actionKind_o, o))
-#define corto_secure_key(o) ((corto_secure_key)corto_assert_type((corto_type)corto_secure_key_o, o))
-#define corto_secure_lock(o) ((corto_secure_lock)corto_assert_type((corto_type)corto_secure_lock_o, o))
+#define corto_secure_accessKind(o) ((corto_secure_accessKind*)ut_assert_type((corto_type)corto_secure_accessKind_o, o))
+#define corto_secure_actionKind(o) ((corto_secure_actionKind*)ut_assert_type((corto_type)corto_secure_actionKind_o, o))
+#define corto_secure_key(o) ((corto_secure_key)ut_assert_type((corto_type)corto_secure_key_o, o))
+#define corto_secure_lock(o) ((corto_secure_lock)ut_assert_type((corto_type)corto_secure_lock_o, o))
 
 /* -- Non-expanding typedefs -- */
 typedef corto_secure_accessKind _type_corto_secure_accessKind;

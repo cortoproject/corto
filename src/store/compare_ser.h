@@ -22,7 +22,7 @@
 #ifndef CORTO_COMPARE_SER_H_
 #define CORTO_COMPARE_SER_H_
 
-#include <corto/store/walk.h>
+#include <corto.dir/store/walk.h>
 
 #ifdef __cplusplus
 extern "C" {

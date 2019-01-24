@@ -3,14 +3,14 @@
 #include <include/test.h>
 
 static
-bool test_MounterIterCount_hasNext(corto_iter *it) {
+bool test_MounterIterCount_hasNext(ut_iter *it) {
     test_MountIterCount this = it->ctx;
     this->hasNextCount ++;
     return this->hasNextCount <= 10;
 }
 
 static
-void* test_MounterIterCount_next(corto_iter *it) {
+void* test_MounterIterCount_next(ut_iter *it) {
     test_MountIterCount this = it->ctx;
     this->nextCount ++;
     this->result.id = this->id;
@@ -20,7 +20,7 @@ void* test_MounterIterCount_next(corto_iter *it) {
 }
 
 static
-void test_MounterIterCount_release(corto_iter *it) {
+void test_MounterIterCount_release(ut_iter *it) {
     test_MountIterCount this = it->ctx;
     this->releaseCount ++;
 }
@@ -29,7 +29,7 @@ corto_recordIter test_MountIterCount_on_query(
     test_MountIterCount this,
     corto_query *query)
 {
-    corto_iter it = CORTO_ITER_EMPTY;
+    ut_iter it = UT_ITER_EMPTY;
 
     if (!strcmp(query->select, "*")) {
         it.ctx = this;

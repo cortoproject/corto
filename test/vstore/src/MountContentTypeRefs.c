@@ -19,7 +19,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtData(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("refs")
         .from("/data")
         .format("text/json")
@@ -39,15 +39,15 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtData(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -58,7 +58,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested1(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("parent/refs")
         .from("/data")
         .format("text/json")
@@ -78,15 +78,15 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested1(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -97,7 +97,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested2(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/grandparent/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("grandparent/parent/refs")
         .from("/data")
         .format("text/json")
@@ -117,15 +117,15 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtDataNested2(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "grandparent/parent");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -136,7 +136,7 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtRoot(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("refs")
         .from("/")
         .format("text/json")
@@ -156,15 +156,15 @@ void test_MountContentTypeRefs_tc_selectDataFromMountAtRoot(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -175,7 +175,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtData(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("../refs")
         .from("/data/foo")
         .format("text/json")
@@ -195,15 +195,15 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtData(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -214,7 +214,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested1(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("refs")
         .from("/data/parent")
         .format("text/json")
@@ -234,15 +234,15 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested1(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -253,7 +253,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested2(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/grandparent/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("parent/refs")
         .from("/data/grandparent")
         .format("text/json")
@@ -273,15 +273,15 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtDataNested2(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "parent");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -292,7 +292,7 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtRoot(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("../../refs")
         .from("/data/parent")
         .format("text/json")
@@ -312,15 +312,15 @@ void test_MountContentTypeRefs_tc_selectDataNested1FromMountAtRoot(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../..");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -331,7 +331,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtData(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("../../refs")
         .from("/data/foo/bar")
         .format("text/json")
@@ -351,15 +351,15 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtData(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../..");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -370,7 +370,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested1(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("../refs")
         .from("/data/parent/foo")
         .format("text/json")
@@ -390,15 +390,15 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested1(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "..");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -409,7 +409,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested2(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/grandparent/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("refs")
         .from("/data/grandparent/parent")
         .format("text/json")
@@ -429,15 +429,15 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtDataNested2(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -448,7 +448,7 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtRoot(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("../../../refs")
         .from("/data/foo/bar")
         .format("text/json")
@@ -468,15 +468,15 @@ void test_MountContentTypeRefs_tc_selectDataNested2FromMountAtRoot(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "../../..");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -487,7 +487,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtData(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("data/refs")
         .from("/")
         .format("text/json")
@@ -507,15 +507,15 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtData(
          "\"root\":\".\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -526,7 +526,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested1(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("data/parent/refs")
         .from("/")
         .format("text/json")
@@ -546,15 +546,15 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested1(
          "\"root\":\".\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data/parent");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -565,7 +565,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested2(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/data/grandparent/parent");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("data/grandparent/parent/refs")
         .from("/")
         .format("text/json")
@@ -585,15 +585,15 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtDataNested2(
          "\"root\":\".\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, "data/grandparent/parent");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }
@@ -604,7 +604,7 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
     test_RefMount m = test_RefMount__create(NULL, NULL, "/");
     test_assert(m != NULL);
 
-    corto_iter it;
+    ut_iter it;
     int16_t ret = corto_select("refs")
         .from("/")
         .format("text/json")
@@ -630,15 +630,15 @@ void test_MountContentTypeRefs_tc_selectRootFromMountAtRoot(
          "\"root\":\"/\","
          "\"null_ref\":null}";
 
-    test_assert(corto_iter_hasNext(&it) != 0);
-    corto_record *r = corto_iter_next(&it);
+    test_assert(ut_iter_hasNext(&it) != 0);
+    corto_record *r = ut_iter_next(&it);
     test_assert(r != NULL);
     test_assertstr(r->id, "refs");
     test_assertstr(r->parent, ".");
     test_assertstr(r->type, "test/Refs");
     test_assertstr((char*)r->value, expect);
 
-    test_assert(corto_iter_hasNext(&it) == 0);
+    test_assert(ut_iter_hasNext(&it) == 0);
 
     test_assert(corto_delete(m) == 0);
 }

@@ -21,7 +21,7 @@ void test_Alias_tc_aliasNonHidden(
         corto_set_ref(&alias->member, m);
         test_assert(corto_define(alias) == 0);
     test_assert(corto_define(sub) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 }
 
 void test_Alias_tc_aliasPrivate(
@@ -44,7 +44,7 @@ void test_Alias_tc_aliasPrivate(
         corto_set_ref(&alias->member, m);
         test_assert(corto_define(alias) == 0);
     test_assert(corto_define(sub) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 }
 
 void test_Alias_tc_aliasPrivateBase(
@@ -68,7 +68,7 @@ void test_Alias_tc_aliasPrivateBase(
         corto_set_ref(&alias->member, m);
         test_assert(corto_define(alias) == 0);
     test_assert(corto_define(sub) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
 }
 
 void test_Alias_tc_aliasHiddenBase(

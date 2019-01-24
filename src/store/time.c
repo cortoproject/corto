@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 
 static 
 corto_time from_timespec(

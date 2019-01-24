@@ -7,6 +7,6 @@ double test_Vehicle_move_v(
     double x,
     double y)
 {
-    corto_assert(0, "this method should not be called");
+    ut_assert(0, "this method should not be called");
     return 0;
 }

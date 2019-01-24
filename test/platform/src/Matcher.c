@@ -4,7 +4,7 @@
 void test_Matcher_tc_filterA(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("*", "ax");
+    corto_bool result = ut_expr("*", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -12,7 +12,7 @@ void test_Matcher_tc_filterA(
 void test_Matcher_tc_filterAnd(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a*&*x", "ax");
+    corto_bool result = ut_expr("a*&*x", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -20,7 +20,7 @@ void test_Matcher_tc_filterAnd(
 void test_Matcher_tc_filterAndFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a*&*y", "ax");
+    corto_bool result = ut_expr("a*&*y", "ax");
     test_assertint(result, FALSE);
 
 }
@@ -28,7 +28,7 @@ void test_Matcher_tc_filterAndFail(
 void test_Matcher_tc_filterAQ(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("*?", "ax");
+    corto_bool result = ut_expr("*?", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -36,7 +36,7 @@ void test_Matcher_tc_filterAQ(
 void test_Matcher_tc_filterFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("b*", "ax");
+    corto_bool result = ut_expr("b*", "ax");
     test_assertint(result, FALSE);
 
 }
@@ -44,7 +44,7 @@ void test_Matcher_tc_filterFail(
 void test_Matcher_tc_filterIdA(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a*", "ax");
+    corto_bool result = ut_expr("a*", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -52,7 +52,7 @@ void test_Matcher_tc_filterIdA(
 void test_Matcher_tc_filterIdAFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a*", "bx");
+    corto_bool result = ut_expr("a*", "bx");
     test_assertint(result, FALSE);
 
 }
@@ -60,7 +60,7 @@ void test_Matcher_tc_filterIdAFail(
 void test_Matcher_tc_filterIdQ(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a?", "ax");
+    corto_bool result = ut_expr("a?", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -68,7 +68,7 @@ void test_Matcher_tc_filterIdQ(
 void test_Matcher_tc_filterIdQFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a?", "bx");
+    corto_bool result = ut_expr("a?", "bx");
     test_assertint(result, FALSE);
 
 }
@@ -76,7 +76,7 @@ void test_Matcher_tc_filterIdQFail(
 void test_Matcher_tc_filterNot(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b*", "ax");
+    corto_bool result = ut_expr("^b*", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -84,7 +84,7 @@ void test_Matcher_tc_filterNot(
 void test_Matcher_tc_filterNotAnd(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a*&*y", "ax");
+    corto_bool result = ut_expr("^a*&*y", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -92,7 +92,7 @@ void test_Matcher_tc_filterNotAnd(
 void test_Matcher_tc_filterNotAndFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a*&*x", "ax");
+    corto_bool result = ut_expr("^a*&*x", "ax");
     test_assertint(result, FALSE);
 
 }
@@ -100,7 +100,7 @@ void test_Matcher_tc_filterNotAndFail(
 void test_Matcher_tc_filterNotFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b*", "bx");
+    corto_bool result = ut_expr("^b*", "bx");
     test_assertint(result, FALSE);
 
 }
@@ -108,10 +108,10 @@ void test_Matcher_tc_filterNotFail(
 void test_Matcher_tc_filterNotFilter(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("*x^b*", "ax");
+    corto_bool result = ut_expr("*x^b*", "ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("*x^b*", "cx");
+    result = ut_expr("*x^b*", "cx");
     test_assertint(result, TRUE);
 
 }
@@ -119,10 +119,10 @@ void test_Matcher_tc_filterNotFilter(
 void test_Matcher_tc_filterNotFilterFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("*x^a*", "ax");
+    corto_bool result = ut_expr("*x^a*", "ax");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("*x^a*", "by");
+    result = ut_expr("*x^a*", "by");
     test_assertint(result, FALSE);
 
 }
@@ -130,7 +130,7 @@ void test_Matcher_tc_filterNotFilterFail(
 void test_Matcher_tc_filterNotOr(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b*|c*", "ax");
+    corto_bool result = ut_expr("^b*|c*", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -138,13 +138,13 @@ void test_Matcher_tc_filterNotOr(
 void test_Matcher_tc_filterNotOrFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a*|b*", "ax");
+    corto_bool result = ut_expr("^a*|b*", "ax");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("^a*|b*", "by");
+    result = ut_expr("^a*|b*", "by");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("^a*|b*", "bx");
+    result = ut_expr("^a*|b*", "bx");
     test_assertint(result, FALSE);
 
 }
@@ -152,19 +152,19 @@ void test_Matcher_tc_filterNotOrFail(
 void test_Matcher_tc_filterOr(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a*|b*", "ax");
+    corto_bool result = ut_expr("a*|b*", "ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a*|b*", "ay");
+    result = ut_expr("a*|b*", "ay");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a*|b*", "bx");
+    result = ut_expr("a*|b*", "bx");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a*|*x", "ax");
+    result = ut_expr("a*|*x", "ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a*|*x", "abcx");
+    result = ut_expr("a*|*x", "abcx");
     test_assertint(result, TRUE);
 
 }
@@ -172,10 +172,10 @@ void test_Matcher_tc_filterOr(
 void test_Matcher_tc_filterOrFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a*|b*", "cx");
+    corto_bool result = ut_expr("a*|b*", "cx");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("a*|*y", "cx");
+    result = ut_expr("a*|*y", "cx");
     test_assertint(result, FALSE);
 
 }
@@ -183,10 +183,10 @@ void test_Matcher_tc_filterOrFail(
 void test_Matcher_tc_filterQA(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("?*", "ax");
+    corto_bool result = ut_expr("?*", "ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("?*", "abc");
+    result = ut_expr("?*", "abc");
     test_assertint(result, TRUE);
 
 }
@@ -194,7 +194,7 @@ void test_Matcher_tc_filterQA(
 void test_Matcher_tc_filterQFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("?", "ax");
+    corto_bool result = ut_expr("?", "ax");
     test_assertint(result, FALSE);
 
 }
@@ -202,7 +202,7 @@ void test_Matcher_tc_filterQFail(
 void test_Matcher_tc_filterQQ(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("??", "ax");
+    corto_bool result = ut_expr("??", "ax");
     test_assertint(result, TRUE);
 
 }
@@ -210,7 +210,7 @@ void test_Matcher_tc_filterQQ(
 void test_Matcher_tc_filterQQFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("??", "a");
+    corto_bool result = ut_expr("??", "a");
     test_assertint(result, FALSE);
 
 }
@@ -218,7 +218,7 @@ void test_Matcher_tc_filterQQFail(
 void test_Matcher_tc_id(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a", "a");
+    corto_bool result = ut_expr("a", "a");
     test_assertint(result, TRUE);
 
 }
@@ -226,7 +226,7 @@ void test_Matcher_tc_id(
 void test_Matcher_tc_idAnd(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a&a", "a");
+    corto_bool result = ut_expr("a&a", "a");
     test_assertint(result, TRUE);
 
 }
@@ -234,7 +234,7 @@ void test_Matcher_tc_idAnd(
 void test_Matcher_tc_idAndFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a&b", "a");
+    corto_bool result = ut_expr("a&b", "a");
     test_assertint(result, FALSE);
 
 }
@@ -242,7 +242,7 @@ void test_Matcher_tc_idAndFail(
 void test_Matcher_tc_idFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("b", "a");
+    corto_bool result = ut_expr("b", "a");
     test_assertint(result, FALSE);
 
 }
@@ -250,7 +250,7 @@ void test_Matcher_tc_idFail(
 void test_Matcher_tc_idNot(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b", "a");
+    corto_bool result = ut_expr("^b", "a");
     test_assertint(result, TRUE);
 
 }
@@ -258,7 +258,7 @@ void test_Matcher_tc_idNot(
 void test_Matcher_tc_idNotAnd(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a&b", "a");
+    corto_bool result = ut_expr("^a&b", "a");
     test_assertint(result, TRUE);
 
 }
@@ -266,7 +266,7 @@ void test_Matcher_tc_idNotAnd(
 void test_Matcher_tc_idNotAndFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a&a", "a");
+    corto_bool result = ut_expr("^a&a", "a");
     test_assertint(result, FALSE);
 
 }
@@ -274,7 +274,7 @@ void test_Matcher_tc_idNotAndFail(
 void test_Matcher_tc_idNotFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b", "b");
+    corto_bool result = ut_expr("^b", "b");
     test_assertint(result, FALSE);
 
 }
@@ -282,7 +282,7 @@ void test_Matcher_tc_idNotFail(
 void test_Matcher_tc_idNotOr(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b|c", "a");
+    corto_bool result = ut_expr("^b|c", "a");
     test_assertint(result, TRUE);
 
 }
@@ -290,7 +290,7 @@ void test_Matcher_tc_idNotOr(
 void test_Matcher_tc_idNotOrFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a|b", "a");
+    corto_bool result = ut_expr("^a|b", "a");
     test_assertint(result, FALSE);
 
 }
@@ -298,10 +298,10 @@ void test_Matcher_tc_idNotOrFail(
 void test_Matcher_tc_idOr(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a|b", "a");
+    corto_bool result = ut_expr("a|b", "a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a|b", "b");
+    result = ut_expr("a|b", "b");
     test_assertint(result, TRUE);
 
 }
@@ -309,7 +309,7 @@ void test_Matcher_tc_idOr(
 void test_Matcher_tc_idOrFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a|b", "c");
+    corto_bool result = ut_expr("a|b", "c");
     test_assertint(result, FALSE);
 
 }
@@ -317,22 +317,22 @@ void test_Matcher_tc_idOrFail(
 void test_Matcher_tc_idOrMulti(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a|b|c|d|e|f", "a");
+    corto_bool result = ut_expr("a|b|c|d|e|f", "a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a|b|c|d|e|f", "b");
+    result = ut_expr("a|b|c|d|e|f", "b");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a|b|c|d|e|f", "c");
+    result = ut_expr("a|b|c|d|e|f", "c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a|b|c|d|e|f", "d");
+    result = ut_expr("a|b|c|d|e|f", "d");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a|b|c|d|e|f", "e");
+    result = ut_expr("a|b|c|d|e|f", "e");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a|b|c|d|e|f", "f");
+    result = ut_expr("a|b|c|d|e|f", "f");
     test_assertint(result, TRUE);
 
 }
@@ -340,7 +340,7 @@ void test_Matcher_tc_idOrMulti(
 void test_Matcher_tc_idOrMultiFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a|b|c|d|e|f", "g");
+    corto_bool result = ut_expr("a|b|c|d|e|f", "g");
     test_assertint(result, FALSE);
 
 }
@@ -348,13 +348,13 @@ void test_Matcher_tc_idOrMultiFail(
 void test_Matcher_tc_scopeFilter(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a*", "/ax");
+    corto_bool result = ut_expr("/a*", "/ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a*", "/ay");
+    result = ut_expr("/a*", "/ay");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a*", "/abc");
+    result = ut_expr("/a*", "/abc");
     test_assertint(result, TRUE);
 
 }
@@ -362,7 +362,7 @@ void test_Matcher_tc_scopeFilter(
 void test_Matcher_tc_scopeFilterFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a*", "/bx");
+    corto_bool result = ut_expr("/a*", "/bx");
     test_assertint(result, FALSE);
 
 }
@@ -370,38 +370,38 @@ void test_Matcher_tc_scopeFilterFail(
 void test_Matcher_tc_scopeFilterMulti(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/*x/b", "/ax/b");
+    corto_bool result = ut_expr("/*x/b", "/ax/b");
     test_assertint(result, TRUE);
-    result = corto_idmatch("/*x/b", "/bx/b");
+    result = ut_expr("/*x/b", "/bx/b");
     test_assertint(result, TRUE);
-    result = corto_idmatch("/*x/c", "bx/c");
+    result = ut_expr("/*x/c", "bx/c");
     test_assertint(result, TRUE);
 }
 
 void test_Matcher_tc_scopeFilterMultiFail1(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/*y/b", "/ax/b");
+    corto_bool result = ut_expr("/*y/b", "/ax/b");
     test_assertint(result, FALSE);
-    result = corto_idmatch("/*y/b", "/ayx/b");
+    result = ut_expr("/*y/b", "/ayx/b");
     test_assertint(result, FALSE);
-    result = corto_idmatch("/*y/b", "/a/y/b");
+    result = ut_expr("/*y/b", "/a/y/b");
     test_assertint(result, FALSE);
 }
 
 void test_Matcher_tc_scopeFilterMultiFail2(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/*x/c", "/ax/b");
+    corto_bool result = ut_expr("/*x/c", "/ax/b");
     test_assertint(result, FALSE);
-    result = corto_idmatch("/*x/c", "/axy/c");
+    result = ut_expr("/*x/c", "/axy/c");
     test_assertint(result, FALSE);
 }
 
 void test_Matcher_tc_scopeFilterMultiSingleFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a", "/a/b");
+    corto_bool result = ut_expr("/a", "/a/b");
     test_assertint(result, FALSE);
 
 }
@@ -409,7 +409,7 @@ void test_Matcher_tc_scopeFilterMultiSingleFail(
 void test_Matcher_tc_scopeFilterSingleMultiFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b", "/a");
+    corto_bool result = ut_expr("/a/b", "/a");
     test_assertint(result, FALSE);
 
 }
@@ -417,7 +417,7 @@ void test_Matcher_tc_scopeFilterSingleMultiFail(
 void test_Matcher_tc_scopeId(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a", "/a");
+    corto_bool result = ut_expr("/a", "/a");
     test_assertint(result, TRUE);
 
 }
@@ -425,7 +425,7 @@ void test_Matcher_tc_scopeId(
 void test_Matcher_tc_scopeIdFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/b", "/a");
+    corto_bool result = ut_expr("/b", "/a");
     test_assertint(result, FALSE);
 
 }
@@ -433,7 +433,7 @@ void test_Matcher_tc_scopeIdFail(
 void test_Matcher_tc_scopeIdMulti(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b", "/a/b");
+    corto_bool result = ut_expr("/a/b", "/a/b");
     test_assertint(result, TRUE);
 
 }
@@ -441,7 +441,7 @@ void test_Matcher_tc_scopeIdMulti(
 void test_Matcher_tc_scopeIdMultiFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/c", "/a/b");
+    corto_bool result = ut_expr("/a/c", "/a/b");
     test_assertint(result, FALSE);
 
 }
@@ -449,7 +449,7 @@ void test_Matcher_tc_scopeIdMultiFail(
 void test_Matcher_tc_scopeIdMultiSingleFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a", "/a/b");
+    corto_bool result = ut_expr("/a", "/a/b");
     test_assertint(result, FALSE);
 
 }
@@ -457,7 +457,7 @@ void test_Matcher_tc_scopeIdMultiSingleFail(
 void test_Matcher_tc_scopeIdSingleMultiFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b", "/a");
+    corto_bool result = ut_expr("/a/b", "/a");
     test_assertint(result, FALSE);
 
 }
@@ -465,13 +465,13 @@ void test_Matcher_tc_scopeIdSingleMultiFail(
 void test_Matcher_tc_scopeImplicit(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/", "/a");
+    corto_bool result = ut_expr("/", "/a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/", "a");
+    result = ut_expr("/", "a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/", "/b");
+    result = ut_expr("/", "/b");
     test_assertint(result, TRUE);
 
 }
@@ -479,13 +479,13 @@ void test_Matcher_tc_scopeImplicit(
 void test_Matcher_tc_scopeImplicitFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/", "/a/b");
+    corto_bool result = ut_expr("/", "/a/b");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("/", "a/b");
+    result = ut_expr("/", "a/b");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("/", ".");
+    result = ut_expr("/", ".");
     test_assertint(result, FALSE);
 
 }
@@ -493,10 +493,10 @@ void test_Matcher_tc_scopeImplicitFail(
 void test_Matcher_tc_scopeOr(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a|b", "/a");
+    corto_bool result = ut_expr("/a|b", "/a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a|b", "/b");
+    result = ut_expr("/a|b", "/b");
     test_assertint(result, TRUE);
 
 }
@@ -504,7 +504,7 @@ void test_Matcher_tc_scopeOr(
 void test_Matcher_tc_scopeOrFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a|b", "/c");
+    corto_bool result = ut_expr("/a|b", "/c");
     test_assertint(result, FALSE);
 
 }
@@ -512,10 +512,10 @@ void test_Matcher_tc_scopeOrFail(
 void test_Matcher_tc_scopeOrMulti(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b|c", "/a/b");
+    corto_bool result = ut_expr("/a/b|c", "/a/b");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a/b|c", "/a/c");
+    result = ut_expr("/a/b|c", "/a/c");
     test_assertint(result, TRUE);
 
 }
@@ -523,10 +523,10 @@ void test_Matcher_tc_scopeOrMulti(
 void test_Matcher_tc_scopeOrMultiFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b|c", "/a/d");
+    corto_bool result = ut_expr("/a/b|c", "/a/d");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("/a/b|c", "/b/b");
+    result = ut_expr("/a/b|c", "/b/b");
     test_assertint(result, FALSE);
 
 }
@@ -534,13 +534,13 @@ void test_Matcher_tc_scopeOrMultiFail(
 void test_Matcher_tc_separatorFilter(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("b*,*x", "ax");
+    corto_bool result = ut_expr("b*,*x", "ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("b*,*x", "bx");
+    result = ut_expr("b*,*x", "bx");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("b*,*x", "by");
+    result = ut_expr("b*,*x", "by");
     test_assertint(result, TRUE);
 
 }
@@ -548,7 +548,7 @@ void test_Matcher_tc_separatorFilter(
 void test_Matcher_tc_separatorFilterFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("b*,*y", "ax");
+    corto_bool result = ut_expr("b*,*y", "ax");
     test_assertint(result, FALSE);
 
 }
@@ -556,10 +556,10 @@ void test_Matcher_tc_separatorFilterFail(
 void test_Matcher_tc_separatorId(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a,b", "a");
+    corto_bool result = ut_expr("a,b", "a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a,b", "b");
+    result = ut_expr("a,b", "b");
     test_assertint(result, TRUE);
 
 }
@@ -567,7 +567,7 @@ void test_Matcher_tc_separatorId(
 void test_Matcher_tc_separatorIdFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("a,b", "c");
+    corto_bool result = ut_expr("a,b", "c");
     test_assertint(result, FALSE);
 
 }
@@ -575,10 +575,10 @@ void test_Matcher_tc_separatorIdFail(
 void test_Matcher_tc_separatorNotFilter(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^b*,*y", "ax");
+    corto_bool result = ut_expr("^b*,*y", "ax");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("^b*,*y", "by");
+    result = ut_expr("^b*,*y", "by");
     test_assertint(result, TRUE);
 
 }
@@ -586,7 +586,7 @@ void test_Matcher_tc_separatorNotFilter(
 void test_Matcher_tc_separatorNotFilterFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("^a*,*y", "ax");
+    corto_bool result = ut_expr("^a*,*y", "ax");
     test_assertint(result, FALSE);
 
 }
@@ -594,10 +594,10 @@ void test_Matcher_tc_separatorNotFilterFail(
 void test_Matcher_tc_treeFilter(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//a*", "/ab");
+    corto_bool result = ut_expr("//a*", "/ab");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//a*", "/a/ab");
+    result = ut_expr("//a*", "/a/ab");
     test_assertint(result, TRUE);
 
 }
@@ -605,10 +605,10 @@ void test_Matcher_tc_treeFilter(
 void test_Matcher_tc_treeFilterFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//a*", "/bb");
+    corto_bool result = ut_expr("//a*", "/bb");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("//a*", "/a/bb");
+    result = ut_expr("//a*", "/a/bb");
     test_assertint(result, FALSE);
 
 }
@@ -616,7 +616,7 @@ void test_Matcher_tc_treeFilterFail(
 void test_Matcher_tc_treeId(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//a", "/a");
+    corto_bool result = ut_expr("//a", "/a");
     test_assertint(result, TRUE);
 
 }
@@ -624,7 +624,7 @@ void test_Matcher_tc_treeId(
 void test_Matcher_tc_treeIdFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//b", "/a");
+    corto_bool result = ut_expr("//b", "/a");
     test_assertint(result, FALSE);
 
 }
@@ -632,13 +632,13 @@ void test_Matcher_tc_treeIdFail(
 void test_Matcher_tc_treeImplicit(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//", "/a");
+    corto_bool result = ut_expr("//", "/a");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//", "/b");
+    result = ut_expr("//", "/b");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//", "/a/b");
+    result = ut_expr("//", "/a/b");
     test_assertint(result, TRUE);
 
 }
@@ -646,7 +646,7 @@ void test_Matcher_tc_treeImplicit(
 void test_Matcher_tc_treeImplicitFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//", ".");
+    corto_bool result = ut_expr("//", ".");
     test_assertint(result, FALSE);
 
 }
@@ -654,13 +654,13 @@ void test_Matcher_tc_treeImplicitFail(
 void test_Matcher_tc_treeNested(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//b", "/a/b");
+    corto_bool result = ut_expr("//b", "/a/b");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//c", "/a/b/c");
+    result = ut_expr("//c", "/a/b/c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//c", "/a/b/c/c");
+    result = ut_expr("//c", "/a/b/c/c");
     test_assertint(result, TRUE);
 
 }
@@ -668,7 +668,7 @@ void test_Matcher_tc_treeNested(
 void test_Matcher_tc_treeNestedFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//a", "/a/b");
+    corto_bool result = ut_expr("//a", "/a/b");
     test_assertint(result, FALSE);
 
 }
@@ -676,13 +676,13 @@ void test_Matcher_tc_treeNestedFail(
 void test_Matcher_tc_treeNestedScope(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//b/c", "/a/b/c");
+    corto_bool result = ut_expr("//b/c", "/a/b/c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//b/c", "/a/x/b/c");
+    result = ut_expr("//b/c", "/a/x/b/c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("//b/c", "/b/c");
+    result = ut_expr("//b/c", "/b/c");
     test_assertint(result, TRUE);
 
 }
@@ -690,10 +690,10 @@ void test_Matcher_tc_treeNestedScope(
 void test_Matcher_tc_treeNestedScopeFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//b/c", "/a/b");
+    corto_bool result = ut_expr("//b/c", "/a/b");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("//b/c", "/a/b/c/c");
+    result = ut_expr("//b/c", "/a/b/c/c");
     test_assertint(result, FALSE);
 
 }
@@ -701,10 +701,10 @@ void test_Matcher_tc_treeNestedScopeFail(
 void test_Matcher_tc_treeOffset(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a//c", "/a/b/c");
+    corto_bool result = ut_expr("/a//c", "/a/b/c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a//c", "/a/b/c/c");
+    result = ut_expr("a//c", "/a/b/c/c");
     test_assertint(result, TRUE);
 
 }
@@ -712,13 +712,13 @@ void test_Matcher_tc_treeOffset(
 void test_Matcher_tc_treeOffsetAny(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a//", "/a/b/c");
+    corto_bool result = ut_expr("/a//", "/a/b/c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a//", "/a/b/c/c");
+    result = ut_expr("a//", "/a/b/c/c");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a//", "/a/b/c/d");
+    result = ut_expr("a//", "/a/b/c/d");
     test_assertint(result, TRUE);
 
 }
@@ -726,13 +726,13 @@ void test_Matcher_tc_treeOffsetAny(
 void test_Matcher_tc_treeOffsetAnyFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a//", "/a");
+    corto_bool result = ut_expr("/a//", "/a");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("a//", "/b/a/");
+    result = ut_expr("a//", "/b/a/");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("a//", "/b/a/c");
+    result = ut_expr("a//", "/b/a/c");
     test_assertint(result, FALSE);
 
 }
@@ -740,10 +740,10 @@ void test_Matcher_tc_treeOffsetAnyFail(
 void test_Matcher_tc_treeOffsetFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a//c", "/a");
+    corto_bool result = ut_expr("/a//c", "/a");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("/a//c", "/a/c/b");
+    result = ut_expr("/a//c", "/a/c/b");
     test_assertint(result, FALSE);
 
 }
@@ -751,10 +751,10 @@ void test_Matcher_tc_treeOffsetFail(
 void test_Matcher_tc_treeOffsetNested(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b//d", "/a/b/c/d");
+    corto_bool result = ut_expr("/a/b//d", "/a/b/c/d");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("a/b//d", "/a/b/d");
+    result = ut_expr("a/b//d", "/a/b/d");
     test_assertint(result, TRUE);
 
 }
@@ -762,13 +762,13 @@ void test_Matcher_tc_treeOffsetNested(
 void test_Matcher_tc_treeOffsetNestedFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a/b//d", "/b/c/d");
+    corto_bool result = ut_expr("/a/b//d", "/b/c/d");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("a/b//d", "/a/b//c");
+    result = ut_expr("a/b//d", "/a/b//c");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("a/b//d", "/a/b//c/d/e");
+    result = ut_expr("a/b//d", "/a/b//c/d/e");
     test_assertint(result, FALSE);
 
 }
@@ -776,16 +776,16 @@ void test_Matcher_tc_treeOffsetNestedFail(
 void test_Matcher_tc_treeOffsetOr(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a|b//d", "/a/c/d");
+    corto_bool result = ut_expr("/a|b//d", "/a/c/d");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a|b//d", "/a/d");
+    result = ut_expr("/a|b//d", "/a/d");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a|b//d", "/b/c/d");
+    result = ut_expr("/a|b//d", "/b/c/d");
     test_assertint(result, TRUE);
 
-    result = corto_idmatch("/a|b//d", "/b/d");
+    result = ut_expr("/a|b//d", "/b/d");
     test_assertint(result, TRUE);
 
 }
@@ -793,13 +793,13 @@ void test_Matcher_tc_treeOffsetOr(
 void test_Matcher_tc_treeOffsetOrFail(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/a|b//d", "/c/c/d");
+    corto_bool result = ut_expr("/a|b//d", "/c/c/d");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("/a|b//d", "/c/d");
+    result = ut_expr("/a|b//d", "/c/d");
     test_assertint(result, FALSE);
 
-    result = corto_idmatch("/a|b//d", "/b/d/b");
+    result = ut_expr("/a|b//d", "/b/d/b");
     test_assertint(result, FALSE);
 
 }
@@ -807,41 +807,41 @@ void test_Matcher_tc_treeOffsetOrFail(
 void test_Matcher_tc_emptyString(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("*", "");
+    corto_bool result = ut_expr("*", "");
     test_assertint(result, TRUE);
 }
 
 void test_Matcher_tc_null(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("*", NULL);
+    corto_bool result = ut_expr("*", NULL);
     test_assertint(result, TRUE);
 }
 
 void test_Matcher_tc_scopeEmptyString(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/", "");
+    corto_bool result = ut_expr("/", "");
     test_assertint(result, TRUE);
 }
 
 void test_Matcher_tc_scopeNull(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("/", NULL);
+    corto_bool result = ut_expr("/", NULL);
     test_assertint(result, TRUE);
 }
 
 void test_Matcher_tc_treeEmptyString(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//", "");
+    corto_bool result = ut_expr("//", "");
     test_assertint(result, TRUE);
 }
 
 void test_Matcher_tc_treeNull(
     test_Matcher this)
 {
-    corto_bool result = corto_idmatch("//", NULL);
+    corto_bool result = ut_expr("//", NULL);
     test_assertint(result, TRUE);
 }

@@ -23,34 +23,34 @@ void test_MountSubscription_tc_subscribeForMountWithTypeFilter(
     corto_subscriber s1 = corto_subscribe("*").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     /* Subscribe for scope in obj1: ok */
     corto_subscriber s2 = corto_subscribe("obj1/*").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     /* Subscribe for scope in obj2: should not trigger new subscription */
     corto_subscriber s3 = corto_subscribe("obj2/*").from("/mountRoot")
       .callback(NULL);
     test_assert(s3 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
 
     test_assert(corto_delete(s3) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
@@ -84,56 +84,56 @@ void test_MountSubscription_tc_subscribeNestedForMountWithTypeFilter(
     corto_subscriber s1 = corto_subscribe("*").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     /* Subscribe for scope in obj1: ok */
     corto_subscriber s2 = corto_subscribe("*").from("/mountRoot/obj1")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     /* Subscribe for scope in obj2: should not trigger new subscription */
     corto_subscriber s3 = corto_subscribe("*").from("/mountRoot/obj1/obj2")
       .callback(NULL);
     test_assert(s3 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     /* Subscribe for scope in obj3: should not trigger new subscription */
     corto_subscriber s4 = corto_subscribe("*").from("/mountRoot/obj1/obj2/obj3")
       .callback(NULL);
     test_assert(s4 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     /* Subscribe for scope in obj4: should not trigger new subscription */
     corto_subscriber s5 = corto_subscribe("*").from("/mountRoot/obj1/obj2/obj3/obj4")
       .callback(NULL);
     test_assert(s5 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
 
     test_assert(corto_delete(s3) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
 
     test_assert(corto_delete(s4) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
 
     test_assert(corto_delete(s5) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);
@@ -172,29 +172,29 @@ void test_MountSubscription_tc_subscribeSameIdDifferentCase(
     corto_subscriber s1 = corto_subscribe("foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_subscriber s2 = corto_subscribe("Foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "foo");
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "foo");
@@ -217,18 +217,18 @@ void test_MountSubscription_tc_subscribeScope(
     corto_subscriber s = corto_subscribe("*").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
-    r = corto_ll_get(m->unsubscribes, 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -251,18 +251,18 @@ void test_MountSubscription_tc_subscribeScopeAlign(
       test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
-    r = corto_ll_get(m->unsubscribes, 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -284,29 +284,29 @@ void test_MountSubscription_tc_subscribeScopeTwice(
     corto_subscriber s1 = corto_subscribe("*").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_subscriber s2 = corto_subscribe("*").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -329,29 +329,29 @@ void test_MountSubscription_tc_subscribeScopeTwiceSameSubscriber(
       .disabled()
       .callback(NULL);
     test_assert(s != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 0);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 0);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_object instance1 = corto_create(NULL, NULL, corto_void_o);
     corto_subscriber_subscribe(s, instance1);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_object instance2 = corto_create(NULL, NULL, corto_void_o);
     corto_subscriber_subscribe(s, instance2);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -373,18 +373,18 @@ void test_MountSubscription_tc_subscribeSingle(
     corto_subscriber s = corto_subscribe("foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "foo");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
-    r = corto_ll_get(m->unsubscribes, 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -407,18 +407,18 @@ void test_MountSubscription_tc_subscribeSingleAlign(
       test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "foo");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
-    r = corto_ll_get(m->unsubscribes, 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -439,29 +439,29 @@ void test_MountSubscription_tc_subscribeSingleTwice(
     corto_subscriber s1 = corto_subscribe("foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_subscriber s2 = corto_subscribe("foo").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "foo");
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -483,29 +483,29 @@ void test_MountSubscription_tc_subscribeSingleTwiceSameSubscriber(
       .disabled()
       .callback(NULL);
     test_assert(s != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 0);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 0);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_object instance1 = corto_create(NULL, NULL, corto_void_o);
     corto_object instance2 = corto_create(NULL, NULL, corto_void_o);
     corto_subscriber_subscribe(s, instance1);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_subscriber_subscribe(s, instance2);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "foo");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
@@ -527,127 +527,127 @@ void test_MountSubscription_tc_subscribeTree(
     corto_subscriber s = corto_subscribe("//").from("/mountRoot")
       .callback(NULL);
     test_assert(s != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 1);
+    r = ut_ll_get(m->subscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 2);
+    r = ut_ll_get(m->subscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 3);
+    r = ut_ll_get(m->subscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 4);
+    r = ut_ll_get(m->subscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 5);
+    r = ut_ll_get(m->subscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 6);
+    r = ut_ll_get(m->subscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 7);
+    r = ut_ll_get(m->subscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 8);
+    r = ut_ll_get(m->subscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 9);
+    r = ut_ll_get(m->subscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 10);
+    r = ut_ll_get(m->subscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 11);
+    r = ut_ll_get(m->subscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 12);
+    r = ut_ll_get(m->subscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 13);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 13);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
-    r = corto_ll_get(m->unsubscribes, 1);
+    r = ut_ll_get(m->unsubscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
 
-    r = corto_ll_get(m->unsubscribes, 2);
+    r = ut_ll_get(m->unsubscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
 
-    r = corto_ll_get(m->unsubscribes, 3);
+    r = ut_ll_get(m->unsubscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
 
-    r = corto_ll_get(m->unsubscribes, 4);
+    r = ut_ll_get(m->unsubscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
 
-    r = corto_ll_get(m->unsubscribes, 5);
+    r = ut_ll_get(m->unsubscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
 
-    r = corto_ll_get(m->unsubscribes, 6);
+    r = ut_ll_get(m->unsubscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
 
-    r = corto_ll_get(m->unsubscribes, 7);
+    r = ut_ll_get(m->unsubscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
 
-    r = corto_ll_get(m->unsubscribes, 8);
+    r = ut_ll_get(m->unsubscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
 
-    r = corto_ll_get(m->unsubscribes, 9);
+    r = ut_ll_get(m->unsubscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
 
-    r = corto_ll_get(m->unsubscribes, 10);
+    r = ut_ll_get(m->unsubscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
 
-    r = corto_ll_get(m->unsubscribes, 11);
+    r = ut_ll_get(m->unsubscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
 
-    r = corto_ll_get(m->unsubscribes, 12);
+    r = ut_ll_get(m->unsubscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
 
@@ -671,127 +671,127 @@ void test_MountSubscription_tc_subscribeTreeAlign(
       test_AutoResumeSinkMount__create(NULL, NULL, mountRoot, NULL, NULL);
     test_assert(m != NULL);
 
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 1);
+    r = ut_ll_get(m->subscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 2);
+    r = ut_ll_get(m->subscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 3);
+    r = ut_ll_get(m->subscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 4);
+    r = ut_ll_get(m->subscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 5);
+    r = ut_ll_get(m->subscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 6);
+    r = ut_ll_get(m->subscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 7);
+    r = ut_ll_get(m->subscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 8);
+    r = ut_ll_get(m->subscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 9);
+    r = ut_ll_get(m->subscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 10);
+    r = ut_ll_get(m->subscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 11);
+    r = ut_ll_get(m->subscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 12);
+    r = ut_ll_get(m->subscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 13);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 13);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
-    r = corto_ll_get(m->unsubscribes, 1);
+    r = ut_ll_get(m->unsubscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
 
-    r = corto_ll_get(m->unsubscribes, 2);
+    r = ut_ll_get(m->unsubscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
 
-    r = corto_ll_get(m->unsubscribes, 3);
+    r = ut_ll_get(m->unsubscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
 
-    r = corto_ll_get(m->unsubscribes, 4);
+    r = ut_ll_get(m->unsubscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
 
-    r = corto_ll_get(m->unsubscribes, 5);
+    r = ut_ll_get(m->unsubscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
 
-    r = corto_ll_get(m->unsubscribes, 6);
+    r = ut_ll_get(m->unsubscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
 
-    r = corto_ll_get(m->unsubscribes, 7);
+    r = ut_ll_get(m->unsubscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
 
-    r = corto_ll_get(m->unsubscribes, 8);
+    r = ut_ll_get(m->unsubscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
 
-    r = corto_ll_get(m->unsubscribes, 9);
+    r = ut_ll_get(m->unsubscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
 
-    r = corto_ll_get(m->unsubscribes, 10);
+    r = ut_ll_get(m->unsubscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
 
-    r = corto_ll_get(m->unsubscribes, 11);
+    r = ut_ll_get(m->unsubscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
 
-    r = corto_ll_get(m->unsubscribes, 12);
+    r = ut_ll_get(m->unsubscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
 
@@ -813,137 +813,137 @@ void test_MountSubscription_tc_subscribeTreeTwice(
     corto_subscriber s1 = corto_subscribe("//").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_subscriber s2 = corto_subscribe("//").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 1);
+    r = ut_ll_get(m->subscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 2);
+    r = ut_ll_get(m->subscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 3);
+    r = ut_ll_get(m->subscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 4);
+    r = ut_ll_get(m->subscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 5);
+    r = ut_ll_get(m->subscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 6);
+    r = ut_ll_get(m->subscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 7);
+    r = ut_ll_get(m->subscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 8);
+    r = ut_ll_get(m->subscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 9);
+    r = ut_ll_get(m->subscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 10);
+    r = ut_ll_get(m->subscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 11);
+    r = ut_ll_get(m->subscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 12);
+    r = ut_ll_get(m->subscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 13);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 13);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
-    r = corto_ll_get(m->unsubscribes, 1);
+    r = ut_ll_get(m->unsubscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
 
-    r = corto_ll_get(m->unsubscribes, 2);
+    r = ut_ll_get(m->unsubscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
 
-    r = corto_ll_get(m->unsubscribes, 3);
+    r = ut_ll_get(m->unsubscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
 
-    r = corto_ll_get(m->unsubscribes, 4);
+    r = ut_ll_get(m->unsubscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
 
-    r = corto_ll_get(m->unsubscribes, 5);
+    r = ut_ll_get(m->unsubscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
 
-    r = corto_ll_get(m->unsubscribes, 6);
+    r = ut_ll_get(m->unsubscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
 
-    r = corto_ll_get(m->unsubscribes, 7);
+    r = ut_ll_get(m->unsubscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
 
-    r = corto_ll_get(m->unsubscribes, 8);
+    r = ut_ll_get(m->unsubscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
 
-    r = corto_ll_get(m->unsubscribes, 9);
+    r = ut_ll_get(m->unsubscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
 
-    r = corto_ll_get(m->unsubscribes, 10);
+    r = ut_ll_get(m->unsubscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
 
-    r = corto_ll_get(m->unsubscribes, 11);
+    r = ut_ll_get(m->unsubscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
 
-    r = corto_ll_get(m->unsubscribes, 12);
+    r = ut_ll_get(m->unsubscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
 
@@ -966,137 +966,137 @@ void test_MountSubscription_tc_subscribeTreeTwiceSameSubscriber(
       .disabled()
       .callback(NULL);
     test_assert(s != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 0);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 0);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     corto_object instance1 = corto_create(NULL, NULL, corto_void_o);
     corto_object instance2 = corto_create(NULL, NULL, corto_void_o);
     test_assert(corto_subscriber_subscribe(s, instance1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
     test_assert(corto_subscriber_subscribe(s, instance2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 1);
+    r = ut_ll_get(m->subscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 2);
+    r = ut_ll_get(m->subscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 3);
+    r = ut_ll_get(m->subscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 4);
+    r = ut_ll_get(m->subscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 5);
+    r = ut_ll_get(m->subscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 6);
+    r = ut_ll_get(m->subscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 7);
+    r = ut_ll_get(m->subscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 8);
+    r = ut_ll_get(m->subscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 9);
+    r = ut_ll_get(m->subscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 10);
+    r = ut_ll_get(m->subscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 11);
+    r = ut_ll_get(m->subscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
     test_assertstr(r->select, "*");
 
-    r = corto_ll_get(m->subscribes, 12);
+    r = ut_ll_get(m->subscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 13);
-    test_assertint(corto_ll_count(m->unsubscribes), 13);
+    test_assertint(ut_ll_count(m->subscribes), 13);
+    test_assertint(ut_ll_count(m->unsubscribes), 13);
 
-    r = corto_ll_get(m->unsubscribes, 0);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
 
-    r = corto_ll_get(m->unsubscribes, 1);
+    r = ut_ll_get(m->unsubscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, "x");
 
-    r = corto_ll_get(m->unsubscribes, 2);
+    r = ut_ll_get(m->unsubscribes, 2);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a");
 
-    r = corto_ll_get(m->unsubscribes, 3);
+    r = ut_ll_get(m->unsubscribes, 3);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k");
 
-    r = corto_ll_get(m->unsubscribes, 4);
+    r = ut_ll_get(m->unsubscribes, 4);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/n");
 
-    r = corto_ll_get(m->unsubscribes, 5);
+    r = ut_ll_get(m->unsubscribes, 5);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/o");
 
-    r = corto_ll_get(m->unsubscribes, 6);
+    r = ut_ll_get(m->unsubscribes, 6);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/k/p");
 
-    r = corto_ll_get(m->unsubscribes, 7);
+    r = ut_ll_get(m->unsubscribes, 7);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/l");
 
-    r = corto_ll_get(m->unsubscribes, 8);
+    r = ut_ll_get(m->unsubscribes, 8);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/a/m");
 
-    r = corto_ll_get(m->unsubscribes, 9);
+    r = ut_ll_get(m->unsubscribes, 9);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/b");
 
-    r = corto_ll_get(m->unsubscribes, 10);
+    r = ut_ll_get(m->unsubscribes, 10);
     test_assert(r != NULL);
     test_assertstr(r->from, "x/c");
 
-    r = corto_ll_get(m->unsubscribes, 11);
+    r = ut_ll_get(m->unsubscribes, 11);
     test_assert(r != NULL);
     test_assertstr(r->from, "y");
 
-    r = corto_ll_get(m->unsubscribes, 12);
+    r = ut_ll_get(m->unsubscribes, 12);
     test_assert(r != NULL);
     test_assertstr(r->from, "z");
 
@@ -1118,10 +1118,10 @@ void test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     corto_subscriber s1 = corto_subscribe("A").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "A");
@@ -1129,26 +1129,26 @@ void test_MountSubscription_tc_subscribeTwoSingleOtherCtx(
     corto_subscriber s2 = corto_subscribe("B").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    r = corto_ll_get(m->subscribes, 1);
+    r = ut_ll_get(m->subscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "B");
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
-    r = corto_ll_get(m->unsubscribes, 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "A");
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 2);
-    r = corto_ll_get(m->unsubscribes, 1);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 2);
+    r = ut_ll_get(m->unsubscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "B");
@@ -1170,10 +1170,10 @@ void test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     corto_subscriber s1 = corto_subscribe("*A").from("/mountRoot")
       .callback(NULL);
     test_assert(s1 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 1);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 1);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    corto_query *r = corto_ll_get(m->subscribes, 0);
+    corto_query *r = ut_ll_get(m->subscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*A");
@@ -1181,25 +1181,25 @@ void test_MountSubscription_tc_subscribeTwoSingleSameCtx(
     corto_subscriber s2 = corto_subscribe("*B").from("/mountRoot")
       .callback(NULL);
     test_assert(s2 != NULL);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 0);
 
-    r = corto_ll_get(m->subscribes, 1);
+    r = ut_ll_get(m->subscribes, 1);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*B");
 
     test_assert(corto_delete(s1) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
-    r = corto_ll_get(m->unsubscribes, 0);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
+    r = ut_ll_get(m->unsubscribes, 0);
     test_assert(r != NULL);
     test_assertstr(r->from, ".");
     test_assertstr(r->select, "*");
 
     test_assert(corto_delete(s2) == 0);
-    test_assertint(corto_ll_count(m->subscribes), 2);
-    test_assertint(corto_ll_count(m->unsubscribes), 1);
+    test_assertint(ut_ll_count(m->subscribes), 2);
+    test_assertint(ut_ll_count(m->unsubscribes), 1);
 
     test_assert(corto_delete(m) == 0);
     test_assert(corto_delete(mountRoot) == 0);

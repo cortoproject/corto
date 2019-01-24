@@ -32,5 +32,5 @@ corto_resultIter test_SparseMount_on_query(
     test_SparseMount this,
     corto_query *query)
 {
-    return corto_ll_iterAlloc(this->items);
+    return ut_ll_iterAlloc(this->items);
 }

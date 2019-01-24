@@ -20,18 +20,18 @@ int16_t test_StringReplicator_construct(
 
 
 /* Custom release function */
-void test_StringReplicator_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->ctx;
+void test_StringReplicator_iterRelease(ut_iter *iter) {
+    ut_ll_iter_s *data = iter->ctx;
     corto_recordList__clear(data->list);
-    corto_ll_free(data->list);
-    corto_ll_iterRelease(iter);
+    ut_ll_free(data->list);
+    ut_ll_iterRelease(iter);
 }
 
 corto_recordIter test_StringReplicator_on_query(
     test_StringReplicator this,
     corto_query *query)
 {
-    corto_ll data = corto_ll_new();
+    ut_ll data = ut_ll_new();
 
     /* Create top level objects */
     corto_record__assign(
@@ -40,7 +40,7 @@ corto_recordIter test_StringReplicator_on_query(
         NULL,
         ".",
         "/test/Point",
-        (corto_word)corto_strdup("{10,20}"),
+        (corto_word)ut_strdup("{10,20}"),
         CORTO_RECORD_LEAF
     );
     corto_record__assign(
@@ -49,7 +49,7 @@ corto_recordIter test_StringReplicator_on_query(
         NULL,
         ".",
         "/test/Point",
-        (corto_word)corto_strdup("{30,40}"),
+        (corto_word)ut_strdup("{30,40}"),
         CORTO_RECORD_LEAF
     );
     corto_record__assign(
@@ -58,12 +58,12 @@ corto_recordIter test_StringReplicator_on_query(
         NULL,
         ".",
         "/test/Point",
-        (corto_word)corto_strdup("{50,60}"),
+        (corto_word)ut_strdup("{50,60}"),
         CORTO_RECORD_LEAF
     );
 
     /* Create persistent iterator */
-    corto_iter result = corto_ll_iterAlloc(data);
+    ut_iter result = ut_ll_iterAlloc(data);
 
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_StringReplicator_iterRelease;

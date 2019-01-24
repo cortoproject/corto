@@ -6,8 +6,8 @@ void test_StringSerializer_tc_serAnonymous(
     test_StringSerializer this)
 {
     corto_object anonymous = corto_int32__create(NULL, NULL, 10);
-    corto_objectList objList = corto_ll_new();
-    corto_ll_append(objList, anonymous);
+    corto_objectList objList = ut_ll_new();
+    ut_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
@@ -17,7 +17,7 @@ void test_StringSerializer_tc_serAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 
 }
 
@@ -25,8 +25,8 @@ void test_StringSerializer_tc_serAnonymousComplex(
     test_StringSerializer this)
 {
     test_Point *anonymous = corto_create(NULL, NULL, test_Point_o);
-    corto_objectList objList = corto_ll_new();
-    corto_ll_append(objList, anonymous);
+    corto_objectList objList = ut_ll_new();
+    ut_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
@@ -39,7 +39,7 @@ void test_StringSerializer_tc_serAnonymousComplex(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 
 }
 
@@ -47,8 +47,8 @@ void test_StringSerializer_tc_serAnonymousComplexString(
     test_StringSerializer this)
 {
     test_CompositeWithString *anonymous = corto_create(NULL, NULL, test_CompositeWithString_o);
-    corto_objectList objList = corto_ll_new();
-    corto_ll_append(objList, anonymous);
+    corto_objectList objList = ut_ll_new();
+    ut_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
@@ -63,7 +63,7 @@ void test_StringSerializer_tc_serAnonymousComplexString(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 
 }
 
@@ -71,8 +71,8 @@ void test_StringSerializer_tc_serAnonymousComplexStringEsc(
     test_StringSerializer this)
 {
     test_CompositeWithString *anonymous = corto_create(NULL, NULL, test_CompositeWithString_o);
-    corto_objectList objList = corto_ll_new();
-    corto_ll_append(objList, anonymous);
+    corto_objectList objList = ut_ll_new();
+    ut_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
@@ -87,7 +87,7 @@ void test_StringSerializer_tc_serAnonymousComplexStringEsc(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 
 }
 
@@ -373,19 +373,19 @@ void test_StringSerializer_tc_serList(
     test_StringSerializer this)
 {
     corto_list t = corto_list__create(NULL, NULL, corto_int32_o, 0);
-    corto_ll v = corto_ll_new();
+    ut_ll v = ut_ll_new();
     corto_string result;
 
-    corto_ll_append(v, (void*)10);
-    corto_ll_append(v, (void*)20);
-    corto_ll_append(v, (void*)30);
+    ut_ll_append(v, (void*)10);
+    ut_ll_append(v, (void*)20);
+    ut_ll_append(v, (void*)30);
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "[10,20,30]"));
 
     corto_dealloc(result);
-    corto_ll_free(v);
+    ut_ll_free(v);
     corto_release(t);
 
 }
@@ -394,20 +394,20 @@ void test_StringSerializer_tc_serListComplex(
     test_StringSerializer this)
 {
     corto_list t = corto_list__create(NULL, NULL, test_Point_o, 0);
-    corto_ll v = corto_ll_new();
+    ut_ll v = ut_ll_new();
     test_Point e1 = {10, 20}, e2 = {30, 40}, e3 = {50, 60};
     corto_string result;
 
-    corto_ll_append(v, &e1);
-    corto_ll_append(v, &e2);
-    corto_ll_append(v, &e3);
+    ut_ll_append(v, &e1);
+    ut_ll_append(v, &e2);
+    ut_ll_append(v, &e3);
 
     result = corto_ptr_str(&v, t, 0);
     test_assert(result != NULL);
     test_assert(!strcmp(result, "[{10,20},{30,40},{50,60}]"));
 
     corto_dealloc(result);
-    corto_ll_free(v);
+    ut_ll_free(v);
     corto_release(t);
 
 }
@@ -416,10 +416,10 @@ void test_StringSerializer_tc_serLongAnonymous(
     test_StringSerializer this)
 {
     corto_object anonymous = corto_int32__create(NULL, NULL, 10);
-    corto_objectList objList = corto_ll_new();
+    corto_objectList objList = ut_ll_new();
     corto_uint32 i;
     for (i = 0; i < 300; i++) {
-        corto_ll_append(objList, anonymous);
+        ut_ll_append(objList, anonymous);
     }
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
@@ -430,16 +430,16 @@ void test_StringSerializer_tc_serLongAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 }
 
 void test_StringSerializer_tc_serSameAnonymous(
     test_StringSerializer this)
 {
     corto_object anonymous = corto_int32__create(NULL, NULL, 10);
-    corto_objectList objList = corto_ll_new();
-    corto_ll_append(objList, anonymous);
-    corto_ll_append(objList, anonymous);
+    corto_objectList objList = ut_ll_new();
+    ut_ll_append(objList, anonymous);
+    ut_ll_append(objList, anonymous);
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
@@ -449,7 +449,7 @@ void test_StringSerializer_tc_serSameAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 
 }
 
@@ -1290,9 +1290,9 @@ void test_StringSerializer_tc_serTwoAnonymous(
 {
     corto_object anonymous1 = corto_int32__create(NULL, NULL, 10);
     corto_object anonymous2 = corto_int32__create(NULL, NULL, 20);
-    corto_objectList objList = corto_ll_new();
-    corto_ll_append(objList, anonymous1);
-    corto_ll_append(objList, anonymous2);
+    corto_objectList objList = ut_ll_new();
+    ut_ll_append(objList, anonymous1);
+    ut_ll_append(objList, anonymous2);
     test_AnonymousTest o = test_AnonymousTest__create(NULL, NULL, objList);
     test_assert(o != NULL);
 
@@ -1302,7 +1302,7 @@ void test_StringSerializer_tc_serTwoAnonymous(
 
     corto_delete(o);
     corto_dealloc(str);
-    corto_ll_free(objList);
+    ut_ll_free(objList);
 
 }
 

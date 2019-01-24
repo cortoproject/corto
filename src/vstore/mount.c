@@ -1,10 +1,10 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 #include "src/store/object.h"
 
-extern corto_tls CORTO_KEY_MOUNT_RESULT;
-corto_entityAdmin corto_mount_admin = {0, 0, CORTO_RWMUTEX_INIT, 0, 0, CORTO_MUTEX_INIT, CORTO_COND_INIT};
+extern ut_tls CORTO_KEY_MOUNT_RESULT;
+corto_entityAdmin corto_mount_admin = {0, 0, UT_RWMUTEX_INIT, 0, 0, UT_MUTEX_INIT, UT_COND_INIT};
 
 void corto_mount_subscribeOrMount(
     corto_mount this,
@@ -56,10 +56,10 @@ void* corto_mount_thread(
         }
 
         if (sleep.sec >= 0) {
-            corto_sleep(sleep.sec, sleep.nanosec);
+            ut_sleep(sleep.sec, sleep.nanosec);
         } else {
             sleep = corto_time_sub(current, next);
-            corto_warning(
+            ut_warning(
                 "processing events took [%d.%.9d] longer than sampleRate interval",
                 sleep.sec, sleep.nanosec);
             corto_time_get(&next);
@@ -120,7 +120,7 @@ int corto_mount_alignSubscriptionsAction(
   void *userData)
 {
     corto_mount this = userData;
-    corto_iter it;
+    ut_iter it;
     corto_subscriber s = e;
 
     CORTO_UNUSED(instance);
@@ -132,8 +132,8 @@ int corto_mount_alignSubscriptionsAction(
       .subscribe(&it);
 
     /* Visit all objects to find all subscriptions */
-    while (corto_iter_hasNext(&it)) {
-        corto_iter_next(&it);
+    while (ut_iter_hasNext(&it)) {
+        ut_iter_next(&it);
     }
 
     return 1;
@@ -192,7 +192,7 @@ int16_t corto_mount_construct(
     /* Parse policies */
     if (this->sample_rate) {
         dispatcher = this;
-        this->thread = (corto_word)corto_thread_new(
+        this->thread = (corto_word)ut_thread_new(
             corto_mount_thread,
             this);
     }
@@ -242,7 +242,7 @@ int16_t corto_mount_construct(
     if (!corto_mount_hasMethod(this, "on_id")) {
         this->callbacks &= ~CORTO_MOUNT_ID;
     } else if (this->ownership != CORTO_LOCAL_SOURCE) {
-        corto_warning(
+        ut_warning(
           "mount configures 'on_id' but mount is not a local source");
     }
 
@@ -292,8 +292,8 @@ int16_t corto_mount_construct(
         corto_entityAdmin_remove(&corto_mount_admin, s->query.from, this, this, FALSE);
     } else {
         /* Make it easy to see whether this mount observes a tree, scope or self */
-        int scope = corto_idmatch_get_scope(
-            (corto_idmatch_program)corto_subscriber(this)->idmatch);
+        int scope = ut_expr_get_scope(
+            (ut_expr_program)corto_subscriber(this)->idmatch);
 
         corto_observer(this)->mask = scope == 2 ? CORTO_ON_TREE
                                    : scope == 1 ? CORTO_ON_SCOPE
@@ -315,7 +315,7 @@ void corto_mount_destruct(
 
     /* Unsubscribe from active subscriptions */
     if (this->subscriptions) {
-        while ((s = corto_ll_takeFirst(this->subscriptions))) {
+        while ((s = ut_ll_takeFirst(this->subscriptions))) {
             corto_mount_on_unsubscribe(
                 this,
                 &s->query,
@@ -326,17 +326,17 @@ void corto_mount_destruct(
     }
 
     if (this->thread) {
-        corto_thread_join((corto_thread)this->thread, NULL);
+        ut_thread_join((ut_thread)this->thread, NULL);
     }
 
-    if (corto_ll_count(this->events)) {
-        corto_trace("there were %d events left in the mount event queue",
-            corto_ll_count(this->events));
+    if (ut_ll_count(this->events)) {
+        ut_trace("there were %d events left in the mount event queue",
+            ut_ll_count(this->events));
     }
 
-    if (corto_ll_count(this->historicalEvents)) {
-        corto_trace("there were %d historical events left in the mount event queue",
-            corto_ll_count(this->historicalEvents));
+    if (ut_ll_count(this->historicalEvents)) {
+        ut_trace("there were %d historical events left in the mount event queue",
+            ut_ll_count(this->historicalEvents));
     }
 
     safe_corto_subscriber_destruct(this);
@@ -344,10 +344,10 @@ void corto_mount_destruct(
     if (corto_entityAdmin_remove(
         &corto_mount_admin, this->super.query.from, this, this, FALSE) == -1)
     {
-        corto_throw(
+        ut_throw(
           "mount '%s' was not registered, did you forget to call mount construct?",
           corto_fullpath(NULL, this));
-        corto_raise();
+        ut_raise();
     }
 }
 
@@ -459,62 +459,62 @@ void corto_mount_onPoll(
     corto_mount this)
 {
     corto_event *e;
-    corto_ll events = NULL, historicalEvents = NULL;
+    ut_ll events = NULL, historicalEvents = NULL;
 
     /* Collect events */
     if (corto_lock(this)) {
-        corto_throw(NULL);
-        corto_raise();
+        ut_throw(NULL);
+        ut_raise();
     }
 
     corto_time_get(&this->lastPoll);
     this->lastQueueSize = 0;
-    if (corto_ll_count(this->events)) {
-        events = corto_ll_new();
-        while ((e = corto_ll_takeFirst(this->events))) {
-            corto_ll_append(events, e);
+    if (ut_ll_count(this->events)) {
+        events = ut_ll_new();
+        while ((e = ut_ll_takeFirst(this->events))) {
+            ut_ll_append(events, e);
         }
     }
 
-    if (corto_ll_count(this->historicalEvents)) {
-        historicalEvents = corto_ll_new();
-        while ((e = corto_ll_takeFirst(this->historicalEvents))) {
-            corto_ll_append(historicalEvents, e);
+    if (ut_ll_count(this->historicalEvents)) {
+        historicalEvents = ut_ll_new();
+        while ((e = ut_ll_takeFirst(this->historicalEvents))) {
+            ut_ll_append(historicalEvents, e);
         }
 
     }
 
     if (corto_unlock(this)) {
-        corto_throw(NULL);
-        corto_raise();
+        ut_throw(NULL);
+        ut_raise();
     }
 
     /* If batching is enabled, call on_batch_notify */
     if (events && this->callbacks & CORTO_MOUNT_BATCH_NOTIFY) {
-        corto_iter it = corto_ll_iter(events);
-        corto_mount_on_batch_notify(this, corto_ll_count(events), it);
+        ut_iter it = ut_ll_iter(events);
+        corto_mount_on_batch_notify(this, ut_ll_count(events), it);
     }
 
     /* If batching of historical data is enabled, call on_history_batch_notify */
     if (historicalEvents && this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
-        corto_iter it = corto_ll_iter(historicalEvents);
-        corto_mount_on_history_batch_notify(this, corto_ll_count(historicalEvents), it);
-        it = corto_ll_iter(historicalEvents);
-        while (corto_iter_hasNext(&it)) {
-            corto_event *e = corto_iter_next(&it);
+        ut_iter it = ut_ll_iter(historicalEvents);
+        corto_mount_on_history_batch_notify(this, ut_ll_count(historicalEvents), it);
+        it = ut_ll_iter(historicalEvents);
+        while (ut_iter_hasNext(&it)) {
+            corto_event *e = ut_iter_next(&it);
             corto_release(e);
         }
 
-        corto_ll_free(historicalEvents);
+        ut_ll_free(historicalEvents);
     }
 
     /* Default event handler */
     if (events) {
-        while ((e = corto_ll_takeFirst(events))) {
+        while ((e = ut_ll_takeFirst(events))) {
             corto_mount_notify((corto_subscriber_event*)e);
-            corto_assert(corto_release(e) == 0, "event is leaking");
+            ut_assert(corto_release(e) == 0, "event is leaking");
         }
-        corto_ll_free(events);
+        ut_ll_free(events);
     }
 }
 
@@ -554,8 +554,8 @@ void corto_mount_post(
 
             /* Append new event to queue */
             if (corto_lock(this)) {
-                corto_throw(NULL);
-                corto_raise();
+                ut_throw(NULL);
+                ut_raise();
             }
 
             /* Retrieve last poll time within lock */
@@ -563,11 +563,11 @@ void corto_mount_post(
             lastQueueSize = this->lastQueueSize;
             if (this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
                 if (!this->historicalEvents) {
-                    this->historicalEvents = corto_ll_new();
+                    this->historicalEvents = ut_ll_new();
                 }
-                corto_ll_append(this->historicalEvents, e);
+                ut_ll_append(this->historicalEvents, e);
                 appended ++;
-                size = corto_ll_count(this->historicalEvents);
+                size = ut_ll_count(this->historicalEvents);
             }
 
             if (this->callbacks & (CORTO_MOUNT_NOTIFY | CORTO_MOUNT_BATCH_NOTIFY)) {
@@ -575,20 +575,20 @@ void corto_mount_post(
                  * if so, replace event with latest update. */
                 void *ptr = NULL;
                 if (!this->events) {
-                    this->events = corto_ll_new();
+                    this->events = ut_ll_new();
                 } else {
-                    ptr = corto_ll_findPtr(this->events, corto_mount_findEvent, e);
+                    ptr = ut_ll_findPtr(this->events, corto_mount_findEvent, e);
                 }
                 if (ptr) {
                     corto_release(*(void**)ptr);
                     *(void**)ptr = e;
                 } else {
-                    corto_ll_append(this->events, e);
+                    ut_ll_append(this->events, e);
                     appended ++;
                 }
 
                 if (!size) {
-                    size = corto_ll_count(this->events);
+                    size = ut_ll_count(this->events);
                 }
             }
 
@@ -597,13 +597,13 @@ void corto_mount_post(
             }
 
             if (corto_unlock(this)) {
-                corto_throw(NULL);
-                corto_raise();
+                ut_throw(NULL);
+                ut_raise();
             }
 
         } else {
             corto_event_handle(e);
-            corto_assert(corto_release(e) == 0, "event is leaking");
+            ut_assert(corto_release(e) == 0, "event is leaking");
         }
     }
 
@@ -695,7 +695,7 @@ void corto_mount_post(
                  * the OS scheduler is lagging. In that case block, as it might
                  * be this thread that is holding up the poll thread. */
                 do {
-                    corto_sleep(0, 1000000);
+                    ut_sleep(0, 1000000);
                 } while ((lastPoll.nanosec == this->lastPoll.nanosec) ||
                          (lastPoll.nanosec == this->lastPoll.nanosec));
                 this->lastSleep.sec = 0;
@@ -712,7 +712,7 @@ void corto_mount_post(
          * until it is larger than a millisecond, then sleep. */
         this->dueSleep = corto_time_add(this->dueSleep, this->lastSleep);
         if (this->dueSleep.sec || this->dueSleep.nanosec > 10000000) {
-            corto_sleep(this->dueSleep.sec, this->dueSleep.nanosec);
+            ut_sleep(this->dueSleep.sec, this->dueSleep.nanosec);
             this->dueSleep = (corto_time){0, 0};
         }
     }
@@ -720,12 +720,12 @@ void corto_mount_post(
     /* If size is equal to max, block until queue is emptied */
     if (size == this->queue_max) {
         do {
-            corto_sleep(0, 1000000); /* fast loop to minimize blocking time */
+            ut_sleep(0, 1000000); /* fast loop to minimize blocking time */
             corto_lock(this);
             if (this->callbacks & CORTO_MOUNT_HISTORY_BATCH_NOTIFY) {
-                size = corto_ll_count(this->historicalEvents);
+                size = ut_ll_count(this->historicalEvents);
             } else {
-                size = corto_ll_count(this->events);
+                size = ut_ll_count(this->events);
             }
 
             corto_unlock(this);
@@ -740,7 +740,7 @@ corto_recordIter corto_mount_on_query_v(
     corto_recordIter result;
 
     CORTO_UNUSED(this);
-    memset(&result, 0, sizeof(corto_iter));
+    memset(&result, 0, sizeof(ut_iter));
 
     if (corto_instanceof(corto_routerimpl_o, corto_typeof(this))) {
         corto_id routerRequest;
@@ -752,9 +752,9 @@ corto_recordIter corto_mount_on_query_v(
             sprintf(routerRequest, "/%s", query->from);
         }
 
-        corto_path_clean(routerRequest, routerRequest);
+        ut_path_clean(routerRequest, routerRequest);
         if (corto_router_match(this, routerRequest, routerParam, routerResult, NULL)) {
-            corto_raise();
+            ut_raise();
         }
     }
 
@@ -826,7 +826,7 @@ void corto_mount_publish(
     uintptr_t value)
 {
     corto_id path;
-    corto_path_combine(path, corto_subscriber(this)->query.from, from);
+    ut_path_combine(path, corto_subscriber(this)->query.from, from);
 
     corto_publish(
         event,
@@ -838,30 +838,30 @@ void corto_mount_publish(
     );
 }
 
-void corto_mount_queryRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->ctx;
+void corto_mount_queryRelease(ut_iter *iter) {
+    ut_ll_iter_s *data = iter->ctx;
     corto_ptr_deinit(&data->list, corto_recordlist_o);
-    corto_ll_iterRelease(iter);
+    ut_ll_iterRelease(iter);
 }
 
 corto_recordIter corto_mount_query(
     corto_mount this,
     corto_query *query)
 {
-    corto_iter result;
-    corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
-    corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
+    ut_iter result;
+    ut_ll r, prevResult = ut_tls_get(CORTO_KEY_MOUNT_RESULT);
+    ut_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
 
     result = corto_mount_on_query(this, query);
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
-    if (!result.hasNext && (r = corto_tls_get(CORTO_KEY_MOUNT_RESULT))) {
-        result = corto_ll_iterAlloc(r);
+    if (!result.hasNext && (r = ut_tls_get(CORTO_KEY_MOUNT_RESULT))) {
+        result = ut_ll_iterAlloc(r);
         result.release = corto_mount_queryRelease;
     }
 
-    corto_tls_set(CORTO_KEY_MOUNT_RESULT, prevResult);
+    ut_tls_set(CORTO_KEY_MOUNT_RESULT, prevResult);
     return result;
 }
 
@@ -869,20 +869,20 @@ corto_recordIter corto_mount_historyQuery(
     corto_mount this,
     corto_query *query)
 {
-    corto_iter result;
-    corto_ll r, prevResult = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
-    corto_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
+    ut_iter result;
+    ut_ll r, prevResult = ut_tls_get(CORTO_KEY_MOUNT_RESULT);
+    ut_tls_set(CORTO_KEY_MOUNT_RESULT, NULL);
 
     result = corto_mount_on_history_query(this, query);
 
     /* If mount isn't returning anything with the iterator, check if there's
      * anything in the result list. */
-    if (!result.hasNext && (r = corto_tls_get(CORTO_KEY_MOUNT_RESULT))) {
-        result = corto_ll_iterAlloc(r);
+    if (!result.hasNext && (r = ut_tls_get(CORTO_KEY_MOUNT_RESULT))) {
+        result = ut_ll_iterAlloc(r);
         result.release = corto_mount_queryRelease;
     }
 
-    corto_tls_set(CORTO_KEY_MOUNT_RESULT, prevResult);
+    ut_tls_set(CORTO_KEY_MOUNT_RESULT, prevResult);
     return result;
 }
 
@@ -901,10 +901,10 @@ int16_t corto_mount_resumeResult(
     corto_object o = *o_out;
 
     if (r->parent[0] == '/') {
-        corto_throw(
+        ut_throw(
           "mount returned full path '%s', expected relative path",
           r->parent);
-        corto_raise();
+        ut_raise();
         goto error;
     }
 
@@ -915,20 +915,20 @@ int16_t corto_mount_resumeResult(
             corto_subscriber(this)->query.from,
             r->parent,
             r->id);
-        corto_path_clean(fullpath, fullpath);
+        ut_path_clean(fullpath, fullpath);
 
         type_o = corto_resolve(NULL, r->type);
         if (type_o) {
             o = corto_declare(root_o, fullpath, type_o);
             if (!o) {
-                corto_throw("failed to create object '%s/%s'",
+                ut_throw("failed to create object '%s/%s'",
                    parent, id);
                 goto error;
             }
             new_object = true;
             corto_release(type_o);
         } else {
-            corto_throw("mount returned unknown type '%s'",
+            ut_throw("mount returned unknown type '%s'",
                 r->type);
             goto error;
         }
@@ -946,7 +946,7 @@ int16_t corto_mount_resumeResult(
                  &v,
                  (void*)r->value))
             {
-                corto_throw("failed to deserialize into resumed object '%s/%s'",
+                ut_throw("failed to deserialize into resumed object '%s/%s'",
                     parent, id);
                 goto error;
             }
@@ -955,7 +955,7 @@ int16_t corto_mount_resumeResult(
         if (new_object) {
             /* Use define that won't resume */
             if (!corto(CORTO_DEFINE, {.object = o})) {
-                corto_throw(
+                ut_throw(
                     "failed to define '%s' while resuming",
                     corto_fullpath(NULL, o));
                 goto error;
@@ -986,7 +986,7 @@ int16_t corto_mount_resume(
         return 0;
     }
 
-    corto_log_push(strarg("mount-resume:%s, %s", parent, id));
+    ut_log_push(strarg("mount-resume:%s, %s", parent, id));
 
     /* Ensure that if object is created, owner & attributes are set correctly */
     corto_attr prevAttr = corto_set_attr(CORTO_ATTR_PERSISTENT | corto_get_attr());
@@ -1017,8 +1017,8 @@ int16_t corto_mount_resume(
         /* Query the mount */
         corto_recordIter it = corto_mount_query(this, &q);
 
-        if (corto_iter_hasNext(&it)) {
-            corto_record *r = corto_iter_next(&it);
+        if (ut_iter_hasNext(&it)) {
+            corto_record *r = ut_iter_next(&it);
 
             /* If mount requests that corto should filter its results, it may
              * return more than one result */
@@ -1027,8 +1027,8 @@ int16_t corto_mount_resume(
                     /* If this mount required corto to filter its own results,
                      * test if returned object is requested object */
                     if (!corto_query_match(&q, r)) {
-                        if (corto_iter_hasNext(&it)) {
-                            r = corto_iter_next(&it);
+                        if (ut_iter_hasNext(&it)) {
+                            r = ut_iter_next(&it);
                             continue;
                         } else {
                             /* Object was not found */
@@ -1048,17 +1048,17 @@ int16_t corto_mount_resume(
                     this, parent, id, r, &out);
                 result = out;
 
-                if (corto_iter_hasNext(&it)) {
+                if (ut_iter_hasNext(&it)) {
                     if (!this->filter_records) {
                         /* If mount is doing its own filtering but is returning
                          * more than one result, something is wrong */
-                        corto_error(
+                        ut_error(
                          "query select='%s',from='%s' yielded multiple objects",
                           id,
                           parent);
 
                         /* Clean up resources */
-                        corto_iter_release(&it);
+                        ut_iter_release(&it);
                         goto error;
                     }
                 }
@@ -1072,13 +1072,13 @@ int16_t corto_mount_resume(
     }
 
     if (result) {
-        corto_debug("resumed '%s/%s'",
+        ut_debug("resumed '%s/%s'",
             parent, id);
     }
 
     corto_set_attr(prevAttr);
     corto_set_source(prevOwner);
-    corto_log_pop();
+    ut_log_pop();
 
     if (o_out) {
         *o_out = result;
@@ -1088,7 +1088,7 @@ int16_t corto_mount_resume(
 error:
     corto_set_attr(prevAttr);
     corto_set_source(prevOwner);
-    corto_log_pop();
+    ut_log_pop();
     return -1;
 }
 
@@ -1096,41 +1096,41 @@ void corto_mount_return(
     corto_mount this,
     corto_record *r)
 {
-    corto_ll result = corto_tls_get(CORTO_KEY_MOUNT_RESULT);
+    ut_ll result = ut_tls_get(CORTO_KEY_MOUNT_RESULT);
 
     if (!result) {
-        result = corto_ll_new();
-        corto_tls_set(CORTO_KEY_MOUNT_RESULT, result);
+        result = ut_ll_new();
+        ut_tls_set(CORTO_KEY_MOUNT_RESULT, result);
     }
 
     if (!r->id) {
-        corto_error("mount: returned result that doesn't set the id");
+        ut_error("mount: returned result that doesn't set the id");
         return;
     }
 
     if (!r->parent) {
-        corto_error("mount: returned result that doesn't set the parent");
+        ut_error("mount: returned result that doesn't set the parent");
         return;
     }
 
     if (!r->type) {
-        corto_error("mount: returned result that doesn't set the type");
+        ut_error("mount: returned result that doesn't set the type");
         return;
     }
 
     if (!r->value && this->formatOutHandle && !(r->flags & CORTO_RECORD_HIDDEN)) {
-        corto_error("mount: returned result that doesn't set value but mount has format");
+        ut_error("mount: returned result that doesn't set value but mount has format");
         return;
     }
 
     corto_record *elem = corto_calloc(sizeof(corto_record));
-    elem->id = corto_strdup(r->id);
-    elem->name = r->name ? corto_strdup(r->name) : NULL;
-    elem->parent = corto_strdup(r->parent);
-    elem->type = corto_strdup(r->type);
+    elem->id = ut_strdup(r->id);
+    elem->name = r->name ? ut_strdup(r->name) : NULL;
+    elem->parent = ut_strdup(r->parent);
+    elem->type = ut_strdup(r->type);
     elem->value = (corto_word)r->value;
     elem->flags = r->flags;
-    corto_ll_append(result, elem);
+    ut_ll_append(result, elem);
 }
 
 int16_t corto_mount_set_format(
@@ -1190,9 +1190,9 @@ static corto_mount_subscription* corto_mount_findSubscription(
 {
     *found = FALSE;
     corto_mount_subscription *result = NULL;
-    corto_iter it = corto_ll_iter(this->subscriptions);
-    while (corto_iter_hasNext(&it)) {
-        corto_mount_subscription *s = corto_iter_next(&it);
+    ut_iter it = ut_ll_iter(this->subscriptions);
+    while (ut_iter_hasNext(&it)) {
+        corto_mount_subscription *s = ut_iter_next(&it);
         if (!stricmp(s->query.from, q->from)) {
              result = s;
              if (!stricmp(s->query.select, q->select)) {
@@ -1288,8 +1288,8 @@ void corto_mount_subscribeOrMount(
             placeHolder->mountCount = 1;
         }
 
-        if (!this->subscriptions) this->subscriptions = corto_ll_new();
-        corto_ll_append(this->subscriptions, placeHolder);
+        if (!this->subscriptions) this->subscriptions = ut_ll_new();
+        ut_ll_append(this->subscriptions, placeHolder);
     }
 
     if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
@@ -1341,8 +1341,8 @@ void corto_mount_subscribeOrMount(
             corto_ptr_copy(&subscription->query, corto_query_o, query);
             if (subscribe) subscription->subscriberCount = 1;
             if (mount) subscription->mountCount = 1;
-            if (!this->subscriptions) this->subscriptions = corto_ll_new();
-            corto_ll_append(this->subscriptions, subscription);
+            if (!this->subscriptions) this->subscriptions = ut_ll_new();
+            ut_ll_append(this->subscriptions, subscription);
 
         } else if (subscription->subscriberCtx) {
             /* Increase refcount of new or existing subscription (can be new if
@@ -1377,7 +1377,7 @@ void corto_mount_subscribeOrMount(
      * placeholder from the list */
     } else if (placeHolder) {
         if (corto_check_state(this, CORTO_VALID))  corto_lock(this);
-        corto_ll_remove(this->subscriptions, placeHolder);
+        ut_ll_remove(this->subscriptions, placeHolder);
         corto_ptr_free(placeHolder, corto_mount_subscription_o);
         if (corto_check_state(this, CORTO_VALID)) corto_unlock(this);
     }
@@ -1417,7 +1417,7 @@ void corto_mount_unsubscribeOrUnmount(
         if (subscribe) --subscription->subscriberCount;
         if (mount) --subscription->mountCount;
         if (!subscription->subscriberCount && !subscription->mountCount) {
-            corto_ll_remove(this->subscriptions, subscription);
+            ut_ll_remove(this->subscriptions, subscription);
         }
     }
 
@@ -1492,7 +1492,7 @@ corto_recordIter corto_mount_on_history_query_v(
 {
     CORTO_UNUSED(this);
     CORTO_UNUSED(query);
-    return CORTO_ITER_EMPTY;
+    return UT_ITER_EMPTY;
 }
 
 void corto_mount_on_history_batch_notify_v(

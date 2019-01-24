@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 #include "src/store/object.h"
 #include "interface.h"
 #include "class.h"
@@ -13,7 +13,7 @@ int16_t corto_union_construct(
 
     /* Don't allow empty unions */
     if (!corto_interface(this)->next_member_id) {
-        corto_throw("invalid empty union");
+        ut_throw("invalid empty union");
         goto error;
     }
 
@@ -26,7 +26,7 @@ int16_t corto_union_construct(
     if (corto_interface(this)->members.length) {
         alignment = corto__interface_calculateAlignment(corto_interface(this));
         if (!alignment) {
-            corto_throw("can't compute alignment of %s",
+            ut_throw("can't compute alignment of %s",
                 corto_fullpath(NULL, this));
             goto error;
         }

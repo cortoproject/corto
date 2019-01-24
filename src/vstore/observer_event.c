@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 void corto_observer_event_deinit(
     corto_observer_event* this)
@@ -15,7 +15,7 @@ void corto_observer_event_handle(
 {
     corto_observer_event *this = (corto_observer_event*)e;
     corto_bool lockRequired =
-      (this->thread != corto_thread_self()) &&
+      (this->thread != ut_thread_self()) &&
       !(this->event & CORTO_DELETE);
 
     /* Don't readlock event for DELETE events */
@@ -33,7 +33,7 @@ void corto_observer_event_handle(
         }
     } else {
         /* Error */
-        corto_raise();
+        ut_raise();
     }
 }
 

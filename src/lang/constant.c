@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 #include "enum.h"
 #include "bitmask.h"
@@ -27,7 +27,7 @@ int16_t corto_constant_init(
     }
     else
     {
-        corto_throw("constant/init: parent of constant '%s' is not an enum.",
+        ut_throw("constant/init: parent of constant '%s' is not an enum.",
             corto_fullpath(NULL, this));
         goto error;
     }

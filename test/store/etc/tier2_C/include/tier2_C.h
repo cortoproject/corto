@@ -6,12 +6,20 @@
 #ifndef TIER1_TIER2_C_H
 #define TIER1_TIER2_C_H
 
-#include <tier1/tier2_c/_project.h>
-#include <corto/c/c.h>
+#include "bake_config.h"
+
+#define TIER1_TIER2_C_ETC ut_locate("tier1.tier2_c", NULL, UT_LOCATE_ETC)
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
+
+#include "_type.h"
+#include "_interface.h"
+#include "_load.h"
+#include "_binding.h"
+
+#include <tier1.tier2_c.c>
 
 /* $body() */
 /* Enter code that requires types here */

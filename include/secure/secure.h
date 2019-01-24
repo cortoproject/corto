@@ -6,15 +6,13 @@
 #ifndef CORTO_SECURE_H
 #define CORTO_SECURE_H
 
-#include <corto/_project.h>
-
 /* $header() */
 /* Enter additional code here. */
 /* $end */
 
-#include <corto/secure/_load.h>
-#include <corto/secure/_interface.h>
-#include <corto/secure/_binding.h>
+#include "_load.h"
+#include "_interface.h"
+#include "_binding.h"
 
 /* $body() */
 /* Enter code that requires types here */

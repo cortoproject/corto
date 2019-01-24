@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "src/store/object.h"
 #include "src/lang/primitive.h"
 
@@ -71,7 +71,7 @@ typedef bool char_t;
 /* Conversions to string */
 #define CORTO_CONVERT_TO_STR(typeFrom, fmt) \
     CORTO_DECL_TRANSFORM(typeFrom,string) {\
-        char* str = corto_asprintf(fmt, *(typeFrom##_t*)from);\
+        char* str = ut_asprintf(fmt, *(typeFrom##_t*)from);\
         CORTO_UNUSED(fromType);\
         CORTO_UNUSED(toType);\
         *(corto_string*)to = str;\
@@ -119,7 +119,7 @@ CORTO_DECL_TRANSFORM(string, string) {
     CORTO_UNUSED(toType);
     CORTO_UNUSED(fromType);
     if (*(corto_string*)from) {
-        *(corto_string*)to = corto_strdup(*(corto_string*)from);
+        *(corto_string*)to = ut_strdup(*(corto_string*)from);
     } else {
         *(corto_string*)to = NULL;
     }
@@ -132,9 +132,9 @@ CORTO_DECL_TRANSFORM(boolean, string) {
     CORTO_UNUSED(fromType);
 
     if (*(bool*)from) {
-        *(corto_string*)to = corto_strdup("true");
+        *(corto_string*)to = ut_strdup("true");
     } else {
-        *(corto_string*)to = corto_strdup("false");
+        *(corto_string*)to = ut_strdup("false");
     }
     return 0;
 }
@@ -175,12 +175,12 @@ CORTO_DECL_TRANSFORM(enum, string) {
     CORTO_UNUSED(toType);
     constant = corto_enum_constant_from_value((corto_enum)fromType, *(corto_int32*)from);
     if (!constant) {
-        corto_throw("value %d is not valid for enumeration '%s'",
+        ut_throw("value %d is not valid for enumeration '%s'",
             *(corto_uint32*)from,
             corto_fullpath(NULL, fromType));
         return -1;
     }
-    *(corto_string*)to = corto_strdup(corto_idof(constant));
+    *(corto_string*)to = ut_strdup(corto_idof(constant));
     return 0;
 }
 
@@ -191,7 +191,7 @@ CORTO_DECL_TRANSFORM(string, enum) {
 
     o = corto_enum_constant_from_id((corto_enum)toType, *(corto_string*)from);
     if (!o) {
-        corto_throw(
+        ut_throw(
             "constant identifier '%s' is not valid for enumeration '%s'",
             *(corto_string*)from,
             corto_fullpath(NULL, toType));
@@ -269,7 +269,7 @@ CORTO_DECL_TRANSFORM(bitmask, string) {
     }
 
     if (!result) {
-        result = corto_strdup("0");
+        result = ut_strdup("0");
     }
 
     *(corto_string*)to = result;
@@ -302,7 +302,7 @@ CORTO_DECL_TRANSFORM(string, bitmask) {
                 *bptr = '\0';
                 constant = FIND(toType, buffer);
                 if (!constant) {
-                    corto_throw(
+                    ut_throw(
                         "constant identifier '%s' is not valid for bitmask '%s'.",
                         buffer, corto_fullpath(NULL, toType));
                     v = 0;
@@ -549,18 +549,18 @@ int16_t _corto_ptr_cast(
     corto_conversion c;
 
     if (fromType && !from) {
-        corto_throw("cannot cast NULL pointer of type '%s'",
+        ut_throw("cannot cast NULL pointer of type '%s'",
             corto_fullpath(NULL, fromType));
         goto error;
     }
 
     if (!fromType) {
-        corto_throw("cannot cast to NULL type");
+        ut_throw("cannot cast to NULL type");
         goto error;
     }
 
     if (!to) {
-        corto_throw("destination pointer is NULL");
+        ut_throw("destination pointer is NULL");
         goto error;
     }
 
@@ -569,7 +569,7 @@ int16_t _corto_ptr_cast(
             if (corto_type_castable(toType, fromType)) {
                 *(corto_object*)to = *(corto_object*)from;
             } else {
-                corto_throw("reference types '%s' and '%s' are not castable",
+                ut_throw("reference types '%s' and '%s' are not castable",
                   corto_fullpath(NULL, fromType),
                   corto_fullpath(NULL, toType));
                 goto error;
@@ -586,14 +586,14 @@ int16_t _corto_ptr_cast(
                 corto_set_str((corto_string*)to,
                   corto_fullpath(id, *(corto_object*)from));
             } else {
-                corto_throw(
+                ut_throw(
                   "cannot cast reference type '%s' to primitive type '%s'",
                   corto_fullpath(NULL, fromType),
                   corto_fullpath(NULL, toType));
                 goto error;
             }
         } else {
-            corto_throw(
+            ut_throw(
               "cannot cast reference type '%s' to type '%s'",
               corto_fullpath(NULL, fromType),
               corto_fullpath(NULL, toType));
@@ -608,7 +608,7 @@ int16_t _corto_ptr_cast(
                 goto error;
             }
         } else {
-            corto_throw("no conversion possible from primitive type '%s' to '%s'.",
+            ut_throw("no conversion possible from primitive type '%s' to '%s'.",
                 corto_fullpath(NULL, fromType), corto_fullpath(NULL, toType));
             goto error;
         }

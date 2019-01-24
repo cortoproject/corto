@@ -148,19 +148,19 @@ int16_t test_AutoResumeSinkMount_construct(
 }
 
 /* Custom release function */
-static void test_SinkMount_iterRelease(corto_iter *iter) {
-    corto_ll_iter_s *data = iter->ctx;
+static void test_SinkMount_iterRelease(ut_iter *iter) {
+    ut_ll_iter_s *data = iter->ctx;
     corto_recordList__clear(data->list);
-    corto_ll_free(data->list);
-    corto_ll_iterRelease(iter);
+    ut_ll_free(data->list);
+    ut_ll_iterRelease(iter);
 }
 
 corto_recordIter test_AutoResumeSinkMount_on_query(
     test_AutoResumeSinkMount this,
     corto_query *query)
 {
-    corto_iter iter = corto_ll_iter(this->items);
-    corto_ll data = corto_ll_new();
+    ut_iter iter = ut_ll_iter(this->items);
+    ut_ll data = ut_ll_new();
 
     /* Filter items by parent */
     corto_recordIter__foreach(iter, e) {
@@ -182,7 +182,7 @@ corto_recordIter test_AutoResumeSinkMount_on_query(
     }
 
     /* Create persistent iterator */
-    corto_iter result = corto_ll_iterAlloc(data);
+    ut_iter result = ut_ll_iterAlloc(data);
     /* Overwrite release so that list is cleaned up after select is done */
     result.release = test_SinkMount_iterRelease;
     /* Return persistent iterator to request */

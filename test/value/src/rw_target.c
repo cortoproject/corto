@@ -77,14 +77,14 @@ void test_rw_target_tc_collection(
     corto_rw_deinit(&rw);
 
     test_assert(o->m->actual != NULL);
-    test_assertint(corto_ll_count(o->m->actual), 3);
-    test_assertint((uintptr_t)corto_ll_get(o->m->actual, 0), 10);
-    test_assertint((uintptr_t)corto_ll_get(o->m->actual, 1), 20);
-    test_assertint((uintptr_t)corto_ll_get(o->m->actual, 2), 30);
+    test_assertint(ut_ll_count(o->m->actual), 3);
+    test_assertint((uintptr_t)ut_ll_get(o->m->actual, 0), 10);
+    test_assertint((uintptr_t)ut_ll_get(o->m->actual, 1), 20);
+    test_assertint((uintptr_t)ut_ll_get(o->m->actual, 2), 30);
     test_assert(o->m->target != NULL);
-    test_assertint(corto_ll_count(o->m->target), 0);
+    test_assertint(ut_ll_count(o->m->target), 0);
     test_assert(o->m->objective != NULL);
-    test_assertint(corto_ll_count(o->m->objective), 0);
+    test_assertint(ut_ll_count(o->m->objective), 0);
 
     test_assert(corto_delete(o) == 0);
 }
@@ -205,7 +205,7 @@ void test_rw_target_tc_objective_app_from_remote(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -318,7 +318,7 @@ void test_rw_target_tc_objective_local_from_remote(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -356,7 +356,7 @@ void test_rw_target_tc_objective_remote_from_app(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -400,7 +400,7 @@ void test_rw_target_tc_objective_remote_from_local(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.objective") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -535,7 +535,7 @@ void test_rw_target_tc_actual_app_from_remote(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -648,7 +648,7 @@ void test_rw_target_tc_actual_local_from_remote(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -686,7 +686,7 @@ void test_rw_target_tc_actual_remote_from_app(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -730,7 +730,7 @@ void test_rw_target_tc_actual_remote_from_local(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.actual") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -797,7 +797,7 @@ void test_rw_target_tc_target_app_from_app(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -830,7 +830,7 @@ void test_rw_target_tc_target_app_from_local(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -903,7 +903,7 @@ void test_rw_target_tc_target_local_from_app(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -938,7 +938,7 @@ void test_rw_target_tc_target_local_from_local(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 
@@ -1097,7 +1097,7 @@ void test_rw_target_tc_target_remote_from_remote(
     test_assert(corto_rw_push(&rw, false) == 0);
     test_assert(corto_rw_field(&rw, "m.target") == 0);
     test_assert(corto_rw_set_int(&rw, 10) != 0);
-    test_assert(corto_catch() != 0);
+    test_assert(ut_catch() != 0);
     test_assert(corto_rw_pop(&rw) == 0);
     corto_rw_deinit(&rw);
 

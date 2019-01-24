@@ -6,7 +6,7 @@
 #ifndef TEST_VALUE_H
 #define TEST_VALUE_H
 
-#include <corto/corto.h>
+#include <corto>
 #include <_project.h>
 #include <_type.h>
 #include <_api.h>

@@ -25,5 +25,5 @@ corto_recordIter test_MountInitialSlash_on_query(
         corto_mount_return(this, &r);
     }
 
-    return CORTO_ITER_EMPTY;
+    return UT_ITER_EMPTY;
 }

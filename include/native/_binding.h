@@ -6,7 +6,7 @@
 #define CORTO_NATIVE_BINDING_H
 
 /* -- Type casting -- */
-#define corto_native_type(o) ((corto_native_type)corto_assert_type((corto_type)corto_native_type_o, o))
+#define corto_native_type(o) ((corto_native_type)ut_assert_type((corto_type)corto_native_type_o, o))
 
 /* -- Non-expanding typedefs -- */
 typedef corto_native_type _type_corto_native_type;

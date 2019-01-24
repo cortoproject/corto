@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 int16_t corto_map_construct(
     corto_map this)
@@ -12,7 +12,7 @@ int16_t corto_map_construct(
     
     corto_type element_type = this->element_type;
     if (!element_type) {
-        corto_error("no elementtype provided for list");
+        ut_error("no elementtype provided for list");
         goto error;
     }
 

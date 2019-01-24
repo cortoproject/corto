@@ -1,8 +1,7 @@
 
-#include <corto/c/c.h>
+#include <corto.c>
 
 int cortomain(int argc, char *argv[]) {
 
     return 0;
 }
-

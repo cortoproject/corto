@@ -3,7 +3,7 @@
  * This file contains interface methods for /corto/vstore.
  */
 
-#include <corto/corto.h>
+#include <corto>
 void _corto_dispatcher_post(
     corto_dispatcher _this,
     corto_event *e)
@@ -19,11 +19,11 @@ void _corto_dispatcher_post(
     if (!_methodId) {
         _methodId = corto_interface_resolve_method_id(corto_dispatcher_o, "post(event e)");
     }
-    corto_assert(_methodId, "method 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), corto_lasterr() ? ": " : "", corto_lasterr() ? corto_lasterr() : "");
+    ut_assert(_methodId, "method 'post(event e)' not found in '%s'%s%s", corto_fullpath(NULL, _abstract), ut_lasterr() ? ": " : "", ut_lasterr() ? ut_lasterr() : "");
 
     /* Lookup method-object. */
     _method = corto_class_resolve_interface_method((corto_class)_abstract, corto_dispatcher_o, _methodId);
-    corto_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(_this), _methodId);
+    ut_assert(_method != NULL, "unresolved method '%s::post(event e)@%d'", corto_idof(_this), _methodId);
 
     if (corto_function(_method)->kind == CORTO_PROCEDURE_CDECL) {
         ((void ___ (*)(corto_object, corto_event *))((corto_function)_method)->fptr)(_this, e);

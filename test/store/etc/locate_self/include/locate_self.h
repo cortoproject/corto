@@ -6,12 +6,20 @@
 #ifndef LOCATE_SELF_H
 #define LOCATE_SELF_H
 
-#include <locate_self/_project.h>
-#include <corto/c/c.h>
+#include "bake_config.h"
+
+#define LOCATE_SELF_ETC ut_locate("locate_self", NULL, UT_LOCATE_ETC)
 
 /* $header() */
 /* Enter additional code here. */
 /* $end */
+
+#include "_type.h"
+#include "_interface.h"
+#include "_load.h"
+#include "_binding.h"
+
+#include <locate_self.c>
 
 /* $body() */
 /* Enter code that requires types here */

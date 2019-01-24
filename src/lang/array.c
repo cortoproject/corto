@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 int16_t corto_array_construct(
     corto_array this)
@@ -21,7 +21,7 @@ int16_t corto_array_construct(
 
         }
     } else {
-        corto_throw("no element_type provided for array");
+        ut_throw("no element_type provided for array");
         goto error;
     }
 
@@ -31,7 +31,7 @@ int16_t corto_array_construct(
            corto_type(corto_type_o), corto_collection(this)->element_type) &&
            corto_type(corto_collection(this)->element_type)->reference))
        {
-            corto_throw(
+            ut_throw(
                 "element_type '%s' is not defined",
                 corto_fullpath(NULL, corto_collection(this)->element_type));
             goto error;
@@ -47,12 +47,12 @@ int16_t corto_array_construct(
             corto_type(this)->size = element_typeSize * corto_collection(this)->max;
             corto_type(this)->alignment = corto_type_alignmentof(element_type);
         } else {
-            corto_throw("array has size 0",
+            ut_throw("array has size 0",
                 corto_fullpath(NULL, this));
             goto error;
         }
     } else {
-        corto_throw("element_type '%s' has size 0",
+        ut_throw("element_type '%s' has size 0",
             corto_fullpath(NULL, element_type), corto_fullpath(NULL, this));
         goto error;
     }

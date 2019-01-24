@@ -1,4 +1,5 @@
 {
     "id": "attrtest",
-    "type": "package"
+    "type": "package",
+    "corto": { }
 }

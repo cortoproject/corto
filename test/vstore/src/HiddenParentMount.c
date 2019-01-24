@@ -46,5 +46,5 @@ corto_recordIter test_HiddenParentMount_on_query(
     corto_query *query)
 {
     this->on_query_count ++;
-    return corto_ll_iterAlloc(this->items);
+    return ut_ll_iterAlloc(this->items);
 }

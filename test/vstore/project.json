@@ -3,7 +3,10 @@
     "type": "package",
     "value": {
         "public": false,
-        "lib": ["m"],
-        "use": ["corto/test"]
-    }
+        "use": ["corto.test"]
+    },
+    "lang.c": {
+        "lib": ["m"]
+    },
+    "corto": { }
 }

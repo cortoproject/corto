@@ -6,7 +6,7 @@
 #ifndef TEST_PROJECT_H
 #define TEST_PROJECT_H
 
-#include <corto/corto.h>
+#include <corto>
 #include "_type.h"
 #include "_api.h"
 #include "_load.h"

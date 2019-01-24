@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "src/lang/primitive.h"
 #include "object.h"
 
@@ -431,7 +431,7 @@ int16_t corto_ptr_unaryOp(
         if (impl) {
             impl(operand, result);
         } else {
-            corto_throw(
+            ut_throw(
               "unary operator '%s' is not implemented for type '%s'",
               corto_idof(corto_enum_constant_from_value(corto_operatorKind_o, operator)),
               corto_fullpath(NULL, type));
@@ -473,7 +473,7 @@ int16_t corto_intern_binaryOp(
         if (impl) {
             impl(operand1, operand2, result);
         } else {
-            corto_throw("binary operator '%s' is not implemented for type '%s'",
+            ut_throw("binary operator '%s' is not implemented for type '%s'",
               corto_idof(corto_enum_constant_from_value(corto_operatorKind_o, operator)),
               corto_fullpath(NULL, type));
             goto error;
@@ -499,7 +499,7 @@ int16_t corto_intern_binaryOp(
             }
         }
     } else {
-        corto_throw("invalid operator for non-primitive type");
+        ut_throw("invalid operator for non-primitive type");
         goto error;
     }
 

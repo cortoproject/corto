@@ -28,7 +28,7 @@
 #ifndef CORTO_BOOTSTRAP_H_
 #define CORTO_BOOTSTRAP_H_
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h"
 
 /* Keep include local because of clashing macro's with other libraries (yacc) */
@@ -141,10 +141,10 @@ CORTO_STATIC_SCOPED_OBJECT(constant);
 #define CORTO_ATTR_SSOO {{1, 0, 1, 0, 1, 0, 0}}
 #define CORTO_ATTR_SSO {{1, 0, 0, 0, 1, 0, 0}}
 #define CORTO_ATTR_SO {{0, 0, 0, 0, 1, 0, 0}}
-#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INIT}},{NULL,NULL,{CORTO_RWMUTEX_INIT},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&lang_package__o.v}}
-#define CORTO_PACKAGE_V(parent, name, description, version, author, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INIT}},{NULL,NULL,{CORTO_RWMUTEX_INIT},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&lang_package__o.v}}, {description, version, author, "cortoproject", uri, "https://github.com/cortoproject/corto", "MIT"}
-#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INIT}},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
-#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){CORTO_RWMUTEX_INIT}},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
+#define CORTO_ROOT_V() {{NULL, NULL, _(scope)NULL, _(scopeLock){UT_RWMUTEX_INIT}},{NULL,NULL,{UT_RWMUTEX_INIT},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&lang_package__o.v}}
+#define CORTO_PACKAGE_V(parent, name, description, version, author, uri) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){UT_RWMUTEX_INIT}},{NULL,NULL,{UT_RWMUTEX_INIT},NULL,NULL},{CORTO_ATTR_SSOO CORTO_ADD_MAGIC, 2, (corto_type)&lang_package__o.v}}, {description, version, author, "cortoproject", uri, "https://github.com/cortoproject/corto", "MIT"}
+#define CORTO_SSO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSOO)), name, _(scope)NULL, _(scopeLock){UT_RWMUTEX_INIT}},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
+#define CORTO_SSO_PO_V(parent, name, type) {{CORTO_OFFSET(&parent##__o, sizeof(corto_SSO)), name, _(scope)NULL, _(scopeLock){UT_RWMUTEX_INIT}},{CORTO_ATTR_SSO CORTO_ADD_MAGIC, 2, (corto_type)&type##__o.v}}
 
 /* SSO identifier */
 #define CORTO_ID(name) name##__o

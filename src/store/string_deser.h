@@ -39,12 +39,12 @@ typedef struct corto_string_deser_t {
     corto_objectseq members; /* Custom list of members to deserialize */
 
     /* Private */
-    corto_ll_iter_s iterData;
-    corto_iter currentIter;
+    ut_ll_iter_s iterData;
+    ut_iter currentIter;
     corto_uint32 current;
-    corto_ll index;
+    ut_ll index;
     corto_void* ptr;
-    corto_ll anonymousObjects;
+    ut_ll anonymousObjects;
     corto_bool isObject;
     void* (*allocValue)(void *ptr, struct corto_string_deser_t *ctx);
     void *allocUdata;

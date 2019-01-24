@@ -6,4 +6,4 @@
  * when the file is regenerated.
  */
 
-#include <corto/corto.h>
+#include <corto>

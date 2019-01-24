@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 
 #include "object.h"
 #include "compare_ser.h"
@@ -65,7 +65,7 @@ corto_type corto_value_typeof(
             result = NULL;
             break;
         default:
-            corto_critical(
+            ut_critical(
               "corto_value_typeof: invalid corto_literal_kind(%d)",
               val->is.literal.kind);
             result = NULL;
@@ -85,7 +85,7 @@ corto_type corto_value_typeof(
         result = val->is.map_element.type;
         break;
     default:
-        corto_critical(
+        ut_critical(
           "corto_value_typeof: invalid corto_value_kind(%d).", val->kind);
         result = NULL;
         break;
@@ -128,7 +128,7 @@ void* corto_value_ptrof(
         result = val->is.map_element.ptr;
         break;
     default:
-        corto_critical(
+        ut_critical(
           "corto_value_ptrof: invalid corto_value_kind(%d).", val->kind);
         result = NULL;
         break;
@@ -163,10 +163,10 @@ int16_t corto_value_ptrset(
         val->is.map_element.ptr = ptr;
         break;
     case CORTO_LITERAL:
-        corto_throw("cannot set pointer for literal");
+        ut_throw("cannot set pointer for literal");
         goto error;
     default:
-        corto_critical(
+        ut_critical(
           "corto_value_ptrset: invalid corto_value_kind(%d).", val->kind);
         break;
     }
@@ -206,7 +206,7 @@ corto_object corto_value_objectof(
         result = val->is.map_element.ref;
         break;
     default:
-        corto_critical(
+        ut_critical(
           "corto_value_objectof: invalid corto_value_kind(%d).", val->kind);
         result = NULL;
         break;
@@ -226,7 +226,7 @@ int16_t corto_value_field(
 
     corto_field field = {0};
 
-    corto_try(corto_field_lookup(field_expr, t, ptr, &field), NULL);
+    ut_try(corto_field_lookup(field_expr, t, ptr, &field), NULL);
 
     if (field.index != -1) {
         *out = corto_value_element(o, field.type, field.index, field.ptr);
@@ -419,7 +419,7 @@ corto_value corto_value_literal(
         break;
     case CORTO_LITERAL_STRING:
         if (*(corto_string*)value) {
-            val.is.literal.as._string = corto_strdup(*(corto_string*)value);
+            val.is.literal.as._string = ut_strdup(*(corto_string*)value);
         } else {
             val.is.literal.as._string = NULL;
         }
@@ -673,7 +673,7 @@ int16_t corto_value_unit(
     } else if (value->kind == CORTO_LITERAL) {
         value->is.literal.unit = unit;
     } else {
-        corto_throw("cannot set unit of non-literal value");
+        ut_throw("cannot set unit of non-literal value");
         goto error;
     }
 
@@ -707,7 +707,7 @@ char* corto_value_unitof(
         }
         break;
     default:
-        corto_critical(
+        ut_critical(
             "corto_value_unitof: invalid corto_value_kind (%d)", value->kind);
         result = NULL;
         break;
@@ -746,7 +746,7 @@ int16_t _corto_value_cast(
     bool dst_is_bool = dst_type->kind == CORTO_PRIMITIVE &&
         corto_primitive(dst_type)->kind == CORTO_BOOLEAN;
     bool src_is_ref = false;
-    corto_try(corto_value_is_ref(in, &src_is_ref), NULL);
+    ut_try(corto_value_is_ref(in, &src_is_ref), NULL);
 
     if ((!src || src_is_ref) && dst_is_bool) {
         if (src) {
@@ -767,7 +767,7 @@ int16_t _corto_value_cast(
                 *out = corto_value_pointer(src, dst_type);
             }
         } else {
-            corto_throw("cannot cast from '%s%s' to '%s'",
+            ut_throw("cannot cast from '%s%s' to '%s'",
                 corto_fullpath(NULL, src_type), src_is_ref ? "&" : "",
                 corto_fullpath(NULL, dst_type));
             goto error;
@@ -833,7 +833,7 @@ int16_t corto_value_binaryOp(
     if (is_assignment) {
         if (left->kind == CORTO_OBJECT) {
             if (left->ref_kind == CORTO_BY_REFERENCE) {
-                corto_throw("cannot assign objects as reference");
+                ut_throw("cannot assign objects as reference");
                 goto error;
             } else {
                 /* If operation is an assignment and left operand is an object,
@@ -845,7 +845,7 @@ int16_t corto_value_binaryOp(
         if (left_type->reference &&
             left_ref_kind == CORTO_BY_VALUE && right_isnull)
         {
-            corto_throw("cannot assign null to value of reference");
+            ut_throw("cannot assign null to value of reference");
             goto error;
         }
 
@@ -877,10 +877,10 @@ int16_t corto_value_binaryOp(
     }
 
     /* Is left operand a reference */
-    corto_try (corto_value_is_ref(left, &left_isref), NULL);
+    ut_try (corto_value_is_ref(left, &left_isref), NULL);
 
     /* Is right operand a reference? */
-    corto_try (corto_value_is_ref(right, &right_isref), NULL);
+    ut_try (corto_value_is_ref(right, &right_isref), NULL);
 
     /* Determine type of binary expression and types to cast operands to */
     if (!result ||
@@ -889,7 +889,7 @@ int16_t corto_value_binaryOp(
         !corto_value_ptrof(result)))
     {
         /* If result is not provided, use types of operands */
-        corto_try (corto_expr_binary_typeof(
+        ut_try (corto_expr_binary_typeof(
             left_type,
             left_isref,
             right_type,
@@ -900,7 +900,7 @@ int16_t corto_value_binaryOp(
     } else {
         /* If result is required, cast operands to result type */
         result_type = corto_value_typeof(result);
-        corto_try (corto_expr_binary_typeof(
+        ut_try (corto_expr_binary_typeof(
             result_type,
             left_isref,
             result_type,
@@ -920,7 +920,7 @@ int16_t corto_value_binaryOp(
             goto error;
         }
         left_casted = &left_val;
-        corto_try(corto_value_is_ref(left_casted, &left_isref), NULL);
+        ut_try(corto_value_is_ref(left_casted, &left_isref), NULL);
         left_type = oper_type;
     }
 
@@ -936,19 +936,19 @@ int16_t corto_value_binaryOp(
             goto error;
         }
         right_casted = &right_val;
-        corto_try(corto_value_is_ref(right_casted, &right_isref), NULL);
+        ut_try(corto_value_is_ref(right_casted, &right_isref), NULL);
         right_type = oper_type;
     }
 
     /* Test if operands are either by_reference or by_value */
     if (left_isref != right_isref) {
         if (left_isref && right_type) {
-            corto_throw(
+            ut_throw(
                 "left operand is by reference but right operand is by value");
             goto error;
         } else
         if (right_isref && left_type && !left_is_refcontainer) {
-            corto_throw(
+            ut_throw(
                 "right operand is by reference but left operand is by value");
             goto error;
         }
@@ -1009,11 +1009,11 @@ int16_t corto_value_binaryOp(
     /* Perform operation */
     if (left_isref) {
         /* If this is a reference operation, use ptr with a reference type */
-        corto_try (corto_ptr_binaryOp(
+        ut_try (corto_ptr_binaryOp(
             corto_object_o, _operator, left_arg, right_arg, result_ptr), NULL);
     } else {
         /* If this is a value operation, use mem with original type */
-        corto_try (corto_mem_binaryOp(
+        ut_try (corto_mem_binaryOp(
             oper_type, _operator, left_arg, right_arg, result_ptr), NULL);
     }
 

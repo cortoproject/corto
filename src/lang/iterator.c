@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 bool corto_iterator_castable_v(
     corto_iterator this,
@@ -32,8 +32,8 @@ int16_t corto_iterator_init(
     corto_iterator this)
 {
     corto_type(this)->kind = CORTO_ITERATOR;
-    corto_type(this)->size = sizeof(corto_iter);
-    corto_type(this)->alignment = CORTO_ALIGNMENT(corto_iter);
+    corto_type(this)->size = sizeof(ut_iter);
+    corto_type(this)->alignment = CORTO_ALIGNMENT(ut_iter);
     return corto_type_init(corto_type(this));
 }
 

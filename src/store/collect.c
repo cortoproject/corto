@@ -1,5 +1,5 @@
 
-#include <corto/corto.h>
+#include <corto>
 #include "object.h"
 
 #define CORTO_MAX_CYCLE_BUFFER (256)
@@ -13,8 +13,8 @@ typedef struct corto_collect_t {
     bool collect_cycles;
     corto_object stack[CORTO_MAX_CYCLE_BUFFER];
     uint16_t stack_ptr;
-    corto_ll to_collect;
-    corto_ll types_to_collect;
+    ut_ll to_collect;
+    ut_ll types_to_collect;
 } corto_collect_t;
 
 static
@@ -69,7 +69,7 @@ bool corto_collect_eval(
          * objects -> types -> metatypes */
         if (corto_instanceof(corto_type_o, o)) {
             if (!data->types_to_collect) {
-                data->types_to_collect = corto_ll_new();
+                data->types_to_collect = ut_ll_new();
             }
 
             /* Meta types inherit from corto/lang/type */
@@ -77,19 +77,19 @@ bool corto_collect_eval(
                 safe_corto_interface_baseof(o, corto_type_o))
             {
                 /* Always clean up metatypes after normal types */
-                corto_ll_append(data->types_to_collect, o);
+                ut_ll_append(data->types_to_collect, o);
             } else {
-                corto_ll_insert(data->types_to_collect, o);
+                ut_ll_insert(data->types_to_collect, o);
             }
         } else {
             /* Normal objects */
             if (!data->to_collect) {
-                data->to_collect = corto_ll_new();
+                data->to_collect = ut_ll_new();
             }
-            corto_ll_append(data->to_collect, o);
+            ut_ll_append(data->to_collect, o);
         }
         if (CORTO_TRACE_MEM) {
-            corto_info(strarg("CYCLE DETECTED: %s", corto_fullpath(NULL, o)));
+            ut_info(strarg("CYCLE DETECTED: %s", corto_fullpath(NULL, o)));
         }
         return 1;
     }
@@ -104,11 +104,11 @@ int16_t corto_collect_eval_ref(
 {
     corto_object *ptr = corto_value_ptrof(info);
     if (*ptr) {
-        corto_ll *refs = userData;
+        ut_ll *refs = userData;
         if (!*refs) {
-            *refs = corto_ll_new();
+            *refs = ut_ll_new();
         }
-        corto_ll_append(*refs, ptr);
+        ut_ll_append(*refs, ptr);
     }
     return 0;
 }
@@ -122,7 +122,7 @@ void corto_collect_eval_refs(
     corto_type type = corto_typeof(o);
     if (type->flags & CORTO_TYPE_HAS_RESOURCES) {
         /* First collect references, then traverse them, to limit stack depth */
-        corto_ll refs = NULL;
+        ut_ll refs = NULL;
         corto_walk_opt opt;
         corto_walk_init(&opt);
         opt.access = 0;
@@ -132,12 +132,12 @@ void corto_collect_eval_refs(
         corto_walk(&opt, o, &refs);
 
         if (refs) {
-            corto_iter it = corto_ll_iter(refs);
-            while (corto_iter_hasNext(&it)) {
-                void *ptr = corto_iter_next(&it);
+            ut_iter it = ut_ll_iter(refs);
+            while (ut_iter_hasNext(&it)) {
+                void *ptr = ut_iter_next(&it);
                 corto_collect_traverse(*(void**)ptr, userData);
             }
-            corto_ll_free(refs);
+            ut_ll_free(refs);
         }
     }
 }
@@ -168,7 +168,7 @@ int corto_collect_traverse(
     uint32_t count = 0;
 
     if (CORTO_TRACE_MEM) {
-        corto_log_push(strarg("TRAVERSE %s", corto_fullpath(NULL, o)));
+        ut_log_push(strarg("TRAVERSE %s", corto_fullpath(NULL, o)));
     }
 
     /* First, invoke delete/destruct hook, notify and tear down scope admin */
@@ -214,9 +214,9 @@ int corto_collect_traverse(
             }
 
             /* Evaluate refs in object value */
-            corto_log_push("WALK_REFS");
+            ut_log_push("WALK_REFS");
             corto_collect_eval_refs(o, data);
-            corto_log_pop();
+            ut_log_pop();
 
             /* Note that even though cycles might have been detected, they
              * are not yet broken down in order to guarantee that data from
@@ -240,7 +240,7 @@ int corto_collect_traverse(
     }
 
     if (CORTO_TRACE_MEM) {
-        corto_log_pop();
+        ut_log_pop();
     }
 
     return 1;
@@ -248,24 +248,24 @@ int corto_collect_traverse(
 
 static
 void corto_collect_objects(
-    corto_ll objects)
+    ut_ll objects)
 {
-    corto_iter it = corto_ll_iter(objects);
-    while (corto_iter_hasNext(&it)) {
-        corto_object o = corto_iter_next(&it);
+    ut_iter it = ut_ll_iter(objects);
+    while (ut_iter_hasNext(&it)) {
+        corto_object o = ut_iter_next(&it);
         if (CORTO_TRACE_MEM) {
-            corto_log_push(strarg("COLLECT %s", corto_fullpath(NULL, o)));
-            corto_info("DEINIT");
+            ut_log_push(strarg("COLLECT %s", corto_fullpath(NULL, o)));
+            ut_info("DEINIT");
         }
         corto_claim(o);
         corto_deinit(o);
         corto_release(o);
         if (CORTO_TRACE_MEM) {
-            corto_log_pop();
+            ut_log_pop();
         }
     }
 
-    corto_ll_free(objects);
+    ut_ll_free(objects);
 }
 
 int16_t corto_collect(

@@ -8,9 +8,9 @@ corto_secure_accessKind test_TestLock_authorize(
     corto_secure_actionKind action)
 {
     if (token) {
-        corto_iter it = corto_ll_iter(this->rules);
-        while (corto_iter_hasNext(&it)) {
-            test_AccessRule *r = corto_iter_next(&it);
+        ut_iter it = ut_ll_iter(this->rules);
+        while (ut_iter_hasNext(&it)) {
+            test_AccessRule *r = ut_iter_next(&it);
             if (!strcmp(r->user, token) && (r->action == action)) {
                 return r->access;
             }

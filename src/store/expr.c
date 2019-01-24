@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 
 /* Rate types based on expressibility */
 uint8_t corto_expr_type_score(
@@ -135,7 +135,7 @@ int16_t corto_expr_typeof(
                     result = corto_type(corto_string_o);
                 } else {
                     /* Can't assign null to other kinds of primitives */
-                    corto_throw("cannot assign null to value of type '%s'",
+                    ut_throw("cannot assign null to value of type '%s'",
                         corto_fullpath(NULL, dst));
                     goto error;
                 }
@@ -146,13 +146,13 @@ int16_t corto_expr_typeof(
                 result = dst;
             } else {
                 /* Can't assign null to other values */
-                corto_throw("cannot assign null to value of type '%s'",
+                ut_throw("cannot assign null to value of type '%s'",
                     corto_fullpath(NULL, dst));
                 goto error;
             }
         } else {
             /* Src and dst don't have a type. Don't know what to do */
-            corto_throw("cannot derive type, source and target are 'null'");
+            ut_throw("cannot derive type, source and target are 'null'");
             goto error;
         }
 
@@ -160,7 +160,7 @@ int16_t corto_expr_typeof(
         if (src_is_ref) {
             result = corto_object_o;
         } else {
-            corto_throw(
+            ut_throw(
                 "cannot assign non-reference value of type '%s' to '%s'",
                     corto_fullpath(NULL, src),
                     corto_fullpath(NULL, dst));
@@ -187,9 +187,9 @@ int16_t corto_expr_binary_typeof(
     corto_type castType = NULL;
     corto_bool equal = FALSE;
 
-    corto_assert(
+    ut_assert(
         operand_type != NULL, "NULL provided for out-parameter operandType");
-    corto_assert(
+    ut_assert(
         expr_type != NULL, "NULL provided for out-parameter expr_type");
 
     if (corto_operator_is_conditional(_operator)) {
@@ -198,12 +198,12 @@ int16_t corto_expr_binary_typeof(
         *expr_type = NULL;
     }
 
-    corto_try (corto_expr_typeof(
+    ut_try (corto_expr_typeof(
         left_type, NULL, left_is_ref, FALSE, &left_type), NULL);
 
-    corto_catch();
+    ut_catch();
 
-    corto_try (corto_expr_typeof(
+    ut_try (corto_expr_typeof(
         right_type, left_type, right_is_ref, left_is_ref, &right_type), NULL);
 
     if (!left_type) {
@@ -299,7 +299,7 @@ int16_t corto_expr_binary_typeof(
 
     return 0;
 cast_error:
-    corto_throw("cannot cast from '%s%s' to '%s%s'",
+    ut_throw("cannot cast from '%s%s' to '%s%s'",
       corto_fullpath(NULL, right_type), right_is_ref ? "&" : "",
         corto_fullpath(NULL, left_type), left_is_ref ? "&" : "");
 error:
@@ -320,7 +320,7 @@ int16_t corto_expr_is_ref(
         } else if (!type && kind == CORTO_LITERAL) {
             *result = true; /* null literal */
         } else {
-            corto_throw(
+            ut_throw(
             "cannot take reference of non-reference expression of type '%s'",
                 corto_fullpath(NULL, type));
             goto error;
@@ -336,7 +336,7 @@ int16_t corto_expr_is_ref(
     } else if (ref_kind == CORTO_BY_VALUE) {
         if (type && type->kind == CORTO_VOID) {
             if (!type->reference || kind != CORTO_OBJECT) {
-                corto_throw("cannot take value of void value");
+                ut_throw("cannot take value of void value");
                 goto error;
             } /* else {
                 Even though the value of a void reftype is a reference, 'false'

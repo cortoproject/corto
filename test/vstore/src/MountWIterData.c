@@ -4,14 +4,14 @@
 
 static
 void *iterNext(
-    corto_iter *iter)
+    ut_iter *iter)
 {
     return NULL;
 }
 
 static
 bool iterHasNext(
-    corto_iter *iter)
+    ut_iter *iter)
 {
     return 0;
 }

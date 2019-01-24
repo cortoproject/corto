@@ -19,7 +19,7 @@
  * THE SOFTWARE.
  */
 
-#include <corto/corto.h>
+#include <corto>
 #include "compare_ser.h"
 #include "object.h"
 
@@ -182,11 +182,11 @@ corto_equalityKind corto_collection_compareArrayWithList(
     corto_collection t,
     void *array,
     uint32_t elementSize,
-    corto_ll list)
+    ut_ll list)
 {
     corto_equalityKind result = CORTO_EQ;
     uint32_t i=0;
-    corto_iter iter;
+    ut_iter iter;
     void *e1, *e2;
     corto_type element_type = t->element_type;
 
@@ -194,12 +194,12 @@ corto_equalityKind corto_collection_compareArrayWithList(
         return CORTO_GT;
     }
 
-    iter = corto_ll_iter(list);
-    while(corto_iter_hasNext(&iter)) {
+    iter = ut_ll_iter(list);
+    while(ut_iter_hasNext(&iter)) {
         if (corto_collection_requires_alloc(element_type)) {
-            e1 = corto_iter_next(&iter);
+            e1 = ut_iter_next(&iter);
         } else {
-            e1 = corto_iter_nextPtr(&iter);
+            e1 = ut_iter_nextPtr(&iter);
         }
         e2 = CORTO_OFFSET(array, elementSize * i);
         result = corto_ptr_compare(e2, element_type, e1);
@@ -215,11 +215,11 @@ corto_equalityKind corto_collection_compareArrayWithList(
 static
 corto_equalityKind corto_collection_compareListWithList(
     corto_collection t,
-    corto_ll list1,
-    corto_ll list2)
+    ut_ll list1,
+    ut_ll list2)
 {
     corto_equalityKind result = CORTO_EQ;
-    corto_iter iter1, iter2;
+    ut_iter iter1, iter2;
     void *e1, *e2;
     corto_type element_type = t->element_type;
 
@@ -229,15 +229,15 @@ corto_equalityKind corto_collection_compareListWithList(
         return CORTO_LT;
     }
 
-    iter1 = corto_ll_iter(list1);
-    iter2 = corto_ll_iter(list2);
-    while(corto_iter_hasNext(&iter1) && corto_iter_hasNext(&iter2)) {
+    iter1 = ut_ll_iter(list1);
+    iter2 = ut_ll_iter(list2);
+    while(ut_iter_hasNext(&iter1) && ut_iter_hasNext(&iter2)) {
         if (corto_collection_requires_alloc(element_type)) {
-            e1 = corto_iter_next(&iter1);
-            e2 = corto_iter_next(&iter2);
+            e1 = ut_iter_next(&iter1);
+            e2 = ut_iter_next(&iter2);
         } else {
-            e1 = corto_iter_nextPtr(&iter1);
-            e2 = corto_iter_nextPtr(&iter2);
+            e1 = ut_iter_nextPtr(&iter1);
+            e2 = ut_iter_nextPtr(&iter2);
         }
         result = corto_ptr_compare(e1, element_type, e2);
         if (result != CORTO_EQ) {
@@ -293,10 +293,10 @@ uint32_t corto_ser_getCollectionSize(
         result = ((corto_objectseq*)this.value)->length;
         break;
     case CORTO_LIST:
-        result = corto_ll_count(*(corto_ll*)this.value);
+        result = ut_ll_count(*(ut_ll*)this.value);
         break;
     case CORTO_MAP:
-        result = corto_rb_count(*(corto_rb*)this.value);
+        result = ut_rb_count(*(ut_rb*)this.value);
         break;
     }
     return result;
@@ -346,7 +346,7 @@ int16_t corto_ser_collection(
         (size2 = corto_ser_getCollectionSize(a2)))
     {
         void *array1=NULL, *array2=NULL;
-        corto_ll list1=NULL, list2=NULL;
+        ut_ll list1=NULL, list2=NULL;
         uint32_t elementSize=0, mem=0;
         bool v1IsList = false, v2IsList = false;
 
@@ -366,7 +366,7 @@ int16_t corto_ser_collection(
                 mem = ((corto_objectseq*)v1)->length * elementSize;
                 break;
             case CORTO_LIST:
-                list1 = *(corto_ll*)v1;
+                list1 = *(ut_ll*)v1;
                 v1IsList = true;
                 break;
             case CORTO_MAP:
@@ -381,7 +381,7 @@ int16_t corto_ser_collection(
                 array2 = ((corto_objectseq*)v2)->buffer;
                 break;
             case CORTO_LIST:
-                list2 = *(corto_ll*)v2;
+                list2 = *(ut_ll*)v2;
                 v2IsList = true;
                 break;
             case CORTO_MAP:

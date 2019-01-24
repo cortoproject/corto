@@ -1,6 +1,6 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 #include "interface.h"
 
@@ -33,7 +33,7 @@ static corto_bool corto_class_checkInterfaceCompatibility(
                 corto_set_ref(&vtable->buffer[i], m_class);
             }
         } else {
-            corto_throw(
+            ut_throw(
                 "class '%s' is missing implementation for function '%s'",
                 corto_fullpath(NULL, this),
                 corto_fullpath(NULL, m_interface));
@@ -197,7 +197,7 @@ corto_method corto_class_resolve_interface_method(
     } while (!v && (base = base->base));
 
     if (!v) {
-        corto_error(
+        ut_error(
             "class::resolve_interface_method: class '%s' does not implement interface '%s'",
             corto_fullpath(NULL, this),
             corto_fullpath(NULL, interface));

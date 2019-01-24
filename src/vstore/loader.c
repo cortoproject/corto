@@ -1,13 +1,13 @@
 /* This is a managed file. Do not delete this comment. */
 
-#include <corto/corto.h>
+#include <corto>
 
 static corto_int32 constructOnce;
 
 int16_t corto_loader_construct(
     corto_loader this)
 {
-    if (corto_ainc(&constructOnce) == 1) {
+    if (ut_ainc(&constructOnce) == 1) {
         corto_query *q = &corto_subscriber(this)->query;
         corto_set_str(&q->select, "//*");
         corto_set_str(&q->from, "/");
@@ -20,7 +20,7 @@ int16_t corto_loader_construct(
 
         return safe_corto_mount_construct(this);
     } else {
-        corto_throw("cannot create multiple instances of vstore/loader");
+        ut_throw("cannot create multiple instances of vstore/loader");
         return -1;
     }
 }
@@ -28,38 +28,39 @@ int16_t corto_loader_construct(
 void corto_loader_destruct(
     corto_loader this)
 {
-    corto_assert(
-        corto_adec(&constructOnce) >= 0, "loader destructed too many times");
+    ut_assert(
+        ut_adec(&constructOnce) >= 0, "loader destructed too many times");
     safe_corto_mount_destruct(this);
 }
 
 static
 void corto_loader_iterRelease(
-    corto_iter *iter)
+    ut_iter *iter)
 {
-    corto_ll_iter_s *data = iter->ctx;
+    ut_ll_iter_s *data = iter->ctx;
 
     /* Delete data from request */
-    corto_iter it = corto_ll_iter(data->list);
-    while (corto_iter_hasNext(&it)) {
-        corto_record *r = corto_iter_next(&it);
+    ut_iter it = ut_ll_iter(data->list);
+    while (ut_iter_hasNext(&it)) {
+        corto_record *r = ut_iter_next(&it);
         corto_ptr_deinit(r, corto_record_o);
         corto_dealloc(r);
     }
-    corto_ll_free(data->list);
+    ut_ll_free(data->list);
 
     /* Call iter release function that was overridden by this function */
-    corto_ll_iterRelease(iter);
+    ut_ll_iterRelease(iter);
 }
 
 static
 bool corto_loader_checkIfAdded(
-    corto_ll list,
+    ut_ll list,
     corto_string name)
 {
-    corto_iter it = corto_ll_iter(list);
-    while (corto_iter_hasNext(&it)) {
-        corto_record *r = corto_iter_next(&it);
+    ut_iter it = ut_ll_iter(list);
+    while (ut_iter_hasNext(&it)) {
+        corto_record *r = ut_iter_next(&it);
+
         if (!stricmp(r->id, name)) {
             return TRUE;
         }
@@ -69,62 +70,90 @@ bool corto_loader_checkIfAdded(
 
 static
 void corto_loader_addDir(
-    corto_ll list,
+    ut_ll list,
     const char* path,
     corto_query *q)
 {
-    char *package_path = (char*)path;
+    ut_ll dirs = ut_opendir(path);
 
-    if (q->from[0] != '.') {
-        package_path = corto_asprintf("%s/%s", path, q->from);
+    corto_id from;
+    strcpy(from, q->from);
+    char *ptr, ch;
+    for (ptr = from; (ch = *ptr); ptr ++) {
+        if (ch == '/') {
+            *ptr = '.';
+        }
     }
-    corto_ll dirs = corto_opendir(package_path);
+
+    if (!strcmp(from, ".")) {
+        from[0] = '\0';
+    }
+
+    uint32_t from_len = strlen(from);
 
     /* Walk files, add files to result */
     if (dirs) {
-        corto_iter iter = corto_ll_iter(dirs);
+        ut_iter iter = ut_ll_iter(dirs);
 
-        while (corto_iter_hasNext(&iter)) {
-            corto_string f = corto_iter_next(&iter);
+        while (ut_iter_hasNext(&iter)) {
+            corto_string f = ut_iter_next(&iter);
 
-            if (!corto_loader_checkIfAdded(list, f) &&
-                corto_idmatch(q->select, f))
+            if (!corto_loader_checkIfAdded(list, f))
             {
-                struct stat attr;
+                corto_id fpath, ftest;
 
-                corto_id fpath;
-                sprintf(fpath, "%s/%s", package_path, f);
-                if (!corto_file_test(fpath)) {
+                if (from_len && strncmp(f, from, from_len)) {
                     continue;
                 }
 
-                /* Stat file to determine whether it's a directory */
-                if (stat(fpath, &attr) < 0) {
-                    corto_throw("failed to stat '%s' (%s)\n",
-                        fpath,
-                        strerror(errno));
-                }
-
-                if (!S_ISDIR(attr.st_mode)) {
-                    /* Ignore files */
+                if (!f[from_len]) {
                     continue;
                 }
 
-                corto_id package;
-                sprintf(package, "%s/%s", q->from, f);
-                corto_path_clean(package, package);
+                char *elem = NULL;
+                strcpy(ftest, f);
+                if ((elem = strchr(&ftest[from_len + 1], '.'))) {
+                    strcpy(ftest, f);
+                    elem[0] = '\0';
+
+                    char *id;
+                    if (from_len) {
+                        id = &ftest[from_len + 1];
+                    } else {
+                        id = ftest;
+                    }
+
+                    if (!ut_expr(q->select, id)) {
+                        continue;
+                    }
+
+                    if (!corto_loader_checkIfAdded(list, id)) {
+                        corto_record *precord = corto_calloc(sizeof(corto_record));
+                        precord->id = ut_strdup(id);
+                        precord->type = ut_strdup("package");
+                        precord->value = (uintptr_t)strdup("{}");
+                        corto_set_str(&precord->parent, q->from);
+                        ut_ll_append(list, precord);
+                    }
+                    continue;
+                } else {
+                    if (!ut_expr(q->select, &ftest[from_len + 1])) {
+                        continue;
+                    }
+                }
+
+                sprintf(fpath, "%s/%s", path, f);
+                if (!ut_isdir(fpath)) {
+                    continue;
+                }
 
                 corto_record *result = corto_calloc(sizeof(corto_record));
 
                 corto_id packageFile;
                 sprintf(packageFile, "%s/project.json", fpath);
-                if (corto_file_test(packageFile)) {
-                    char *json = corto_file_load(packageFile);
+                if (ut_file_test(packageFile)) {
+                    char *json = ut_file_load(packageFile);
                     corto_record_fromcontent(result, "text/json", json);
-                } else {
-                    result->id = corto_strdup(f);
-                    result->type = corto_strdup("package");
-                    result->value = (uintptr_t)strdup("{}");
                 }
 
                 corto_set_str(&result->parent, q->from);
@@ -133,25 +162,21 @@ void corto_loader_addDir(
                  * mount does have objects under the corto scope, hide the corto
                  * object from the mount for the user, but let corto_select know
                  * that more objects may be available. */
-                if (!strcmp(package, "corto")) {
+                if (!strcmp(f, "corto")) {
                     result->flags = CORTO_RECORD_HIDDEN;
                 } else {
                     result->flags = 0;
                 }
 
-                corto_ll_append(list, result);
+                ut_ll_append(list, result);
             }
         }
 
         /* Free up resources of opendir */
-        corto_closedir(dirs);
+        ut_closedir(dirs);
     } else {
-        /* Catch error logged by corto_opendir */
-        corto_catch();
-    }
-
-    if (package_path != path) {
-        free(package_path);
+        /* Catch error logged by ut_opendir */
+        ut_catch();
     }
 }
 
@@ -159,12 +184,12 @@ corto_recordIter corto_loader_on_query_v(
     corto_loader this,
     corto_query *query)
 {
-    corto_ll data = corto_ll_new(); /* Will contain result of request */
-    corto_iter result;
-    const char *targetPath = corto_load_targetMetaPath();
-    const char *homePath = corto_load_homeMetaPath();
+    ut_ll data = ut_ll_new(); /* Will contain result of request */
+    ut_iter result;
+    const char *targetPath = ut_load_targetMetaPath();
+    const char *homePath = ut_load_homeMetaPath();
 
-    corto_log_push_dbg("vstore-loader");
+    ut_log_push_dbg("vstore-loader");
 
     CORTO_UNUSED(this);
 
@@ -176,10 +201,10 @@ corto_recordIter corto_loader_on_query_v(
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */
-    result = corto_ll_iterAlloc(data);
+    result = ut_ll_iterAlloc(data);
     result.release = corto_loader_iterRelease;
 
-    corto_log_pop_dbg();
+    ut_log_pop_dbg();
 
     return result;
 }
@@ -191,9 +216,9 @@ corto_object corto_loader_create_package(
     const char *id,
     const char *path)
 {
-    char *project_file = corto_asprintf("%s/project.json", path);
-    if (corto_file_test(project_file) == 1) {
-        char *json = corto_file_load(project_file);
+    char *project_file = ut_asprintf("%s/project.json", path);
+    if (ut_file_test(project_file) == 1) {
+        char *json = ut_file_load(project_file);
         if (corto_deserialize(&o, "text/json", json)) {
             free(json);
             goto error;
@@ -214,27 +239,34 @@ int16_t corto_loader_on_resume(
     const char *id,
     corto_object *object)
 {
-    corto_log_push_dbg(strarg("vstore-loader:resume:%s,%s", parent, id));
+    ut_log_push_dbg(strarg("vstore-loader:resume:%s,%s", parent, id));
 
     /* The loader may be asked to resume objects that are not packages, but live
      * inside a package. Therefore it will attempt to load all objects in the
      * 'parent/id' expression until the object has been found. */
     corto_id full_id;
-    corto_path_combine(full_id, parent, id);
+    ut_path_combine(full_id, parent, id);
     char *obj_id = NULL, *package_id = NULL;
     corto_object o = *object;
 
+    char *ptr, ch;
+    for (ptr = full_id; (ch = *ptr); ptr ++) {
+        if (ch == '/') {
+            *ptr = '.';
+        }
+    }
+
     /* Step 1: try to find package */
-    const char *pkg = corto_locate(full_id, NULL, CORTO_LOCATE_PACKAGE);
+    const char *pkg = ut_locate(full_id, NULL, UT_LOCATE_PROJECT);
     if (pkg) {
         package_id = full_id;
     } else {
         /* If package was not found, try to find package in parents */
         char *next_ptr;
         do {
-            next_ptr = corto_path_tok(&obj_id, &package_id, full_id);
+            next_ptr = ut_path_tok(&obj_id, &package_id, full_id);
             if ((package_id[0] != '/' || package_id[1])) {
-                pkg = corto_locate(package_id, NULL, CORTO_LOCATE_PACKAGE);
+                pkg = ut_locate(package_id, NULL, UT_LOCATE_PROJECT);
             } else {
                 pkg = NULL;
             }
@@ -242,7 +274,7 @@ int16_t corto_loader_on_resume(
         if (!pkg) {
             package_id = NULL;
             if (obj_id) {
-                obj_id[-1] = '/';
+                obj_id[-1] = '.';
             }
         }
     }
@@ -251,7 +283,7 @@ int16_t corto_loader_on_resume(
     bool proceed = false;
     bool package_object_found = false;
     if (package_id) {
-        corto_debug("package '%s' located while looking for object '%s/%s'",
+        ut_debug("package '%s' located while looking for object '%s/%s'",
             package_id, package_id, obj_id);
 
         /* Test if package is already loaded. If it is, but the object could not
@@ -267,13 +299,13 @@ int16_t corto_loader_on_resume(
             /* Package is already loaded, but object doesn't exist */
         } else {
             /* Only load package if it is a library */
-            if (corto_locate(package_id, NULL, CORTO_LOCATE_LIB)) {
+            if (ut_locate(package_id, NULL, UT_LOCATE_LIB)) {
                 /* Package wasn't found in store, try load it now */
-                if (corto_use(package_id, 0, NULL)) {
+                if (ut_use(package_id, 0, NULL)) {
                     goto error;
                 }
             } else {
-                corto_trace("package '%s' is not a library, cannot load",
+                ut_trace("package '%s' is not a library, cannot load",
                     package_id);
             }
             proceed = true;
@@ -289,7 +321,7 @@ int16_t corto_loader_on_resume(
                 /* If requesting object inside package, it wasn't created */
                 if (obj_id) {
                     /* Object was not loaded by this package */
-                    corto_debug("object '%s' not found in package '%s'",
+                    ut_debug("object '%s' not found in package '%s'",
                         obj_id, package_id);
                     *object = NULL;
                 } else {
@@ -309,7 +341,7 @@ int16_t corto_loader_on_resume(
         } else {
             /* Restore full id */
             if (obj_id) {
-                obj_id[-1] = '/';
+                obj_id[-1] = '.';
             }
 
             /* Check if object was loaded by package */
@@ -321,7 +353,7 @@ int16_t corto_loader_on_resume(
             /* If object was loaded by package, return it */
             if (o) {
                 *object = o;
-                corto_debug("object '%s' found", full_id);
+                ut_debug("object '%s' found", full_id);
             } else {
                 /* If package has been loaded and requesting the package object
                  * but it wasn't created by the package loader, create it (see
@@ -335,25 +367,25 @@ int16_t corto_loader_on_resume(
                         goto error;
                     }
                     *object = o;
-                    corto_debug("object created for package '%s'", full_id);
+                    ut_debug("object created for package '%s'", full_id);
                 } else {
                     obj_id[-1] = '\0';
-                    corto_debug("object '%s' not found in package '%s'",
+                    ut_debug("object '%s' not found in package '%s'",
                         obj_id, package_id);
                 }
             }
         }
     }  else {
         if (!package_object_found) {
-            corto_debug("no package found while searching for '%s/%s'", parent, id);
+            ut_debug("no package found while searching for '%s/%s'", parent, id);
         } else {
-            corto_debug("object '%s/%s' not found in package '%s'", parent, id, package_id);
+            ut_debug("object '%s/%s' not found in package '%s'", parent, id, package_id);
         }
     }
 
-    corto_log_pop_dbg();
+    ut_log_pop_dbg();
     return 0;
 error:
-    corto_log_pop_dbg();
+    ut_log_pop_dbg();
     return -1;
 }

@@ -68,9 +68,9 @@ void test_rw_optional_tc_collection(
 
     test_assert(o->m != NULL);
     test_assert(*o->m != NULL);
-    test_assertint(corto_ll_count(*o->m), 2);
-    test_assertint((uintptr_t)corto_ll_get(*o->m, 0), 10);
-    test_assertint((uintptr_t)corto_ll_get(*o->m, 1), 20);
+    test_assertint(ut_ll_count(*o->m), 2);
+    test_assertint((uintptr_t)ut_ll_get(*o->m, 0), 10);
+    test_assertint((uintptr_t)ut_ll_get(*o->m, 1), 20);
 
     test_assert(corto_delete(o) == 0);
 }

@@ -5,7 +5,7 @@
 int16_t test_HistoryMount_construct(
     test_HistoryMount this)
 {
-    corto_ll samples;
+    ut_ll samples;
     corto_record r;
 
     /* Backwards compatibility patch for mount member */
@@ -21,7 +21,7 @@ int16_t test_HistoryMount_construct(
 
     corto_mount_set_format(this, "text/corto");
 
-    samples = corto_ll_new();
+    samples = ut_ll_new();
     corto_stringList__append(samples, "{10,11}");
     corto_stringList__append(samples, "{20,22}");
 
@@ -31,7 +31,7 @@ int16_t test_HistoryMount_construct(
         &r,
         samples
     );
-    corto_ll_clear(samples);
+    ut_ll_clear(samples);
     corto_stringList__append(samples, "{30,33}");
     corto_stringList__append(samples, "{40,44}");
     corto_stringList__append(samples, "{50,55}");
@@ -41,7 +41,7 @@ int16_t test_HistoryMount_construct(
         &r,
         samples
     );
-    corto_ll_clear(samples);
+    ut_ll_clear(samples);
     corto_stringList__append(samples, "{60,66}");
     corto_stringList__append(samples, "{70,77}");
     corto_stringList__append(samples, "{80,88}");
@@ -60,32 +60,32 @@ typedef struct iterData {
     test_HistoryMount this;
     corto_frame from, to;
     uint64_t soffset, slimit;
-    corto_ll history;
-    corto_iter iter;
+    ut_ll history;
+    ut_iter iter;
 } iterData;
 static
 bool hasNext(
-    corto_iter *it)
+    ut_iter *it)
 {
     iterData *ctx = it->ctx;
-    return corto_iter_hasNext(&ctx->iter);
+    return ut_iter_hasNext(&ctx->iter);
 }
 
 static
 void* next(
-    corto_iter *it)
+    ut_iter *it)
 {
     int start = 0, stop = 0, i;
     iterData *ctx = it->ctx;
-    test_HistoryMount_data *data = corto_iter_next(&ctx->iter);
+    test_HistoryMount_data *data = ut_iter_next(&ctx->iter);
     corto_record *result = &data->result;
     /* Clear previous history */
     corto_sample *s;
-    while ((s = corto_ll_takeFirst(ctx->history))) {
+    while ((s = ut_ll_takeFirst(ctx->history))) {
         corto_dealloc(s);
     }
 
-    int sampleCount = corto_ll_count(data->history);
+    int sampleCount = ut_ll_count(data->history);
 
     /* Populate history list, only supporting indexes, the oldest sample being
      * index 0 */
@@ -105,25 +105,25 @@ void* next(
         corto_sample *s = corto_alloc(sizeof(corto_sample));
         s->timestamp.sec = i;
         s->timestamp.nanosec = 0;
-        s->value = (corto_word)corto_ll_get(data->history, i);
-        corto_ll_append(ctx->history, s);
+        s->value = (corto_word)ut_ll_get(data->history, i);
+        ut_ll_append(ctx->history, s);
     }
 
-    result->history = corto_ll_iterAlloc(ctx->history);
+    result->history = ut_ll_iterAlloc(ctx->history);
     return result;
 }
 
 static
 void release(
-    corto_iter *it)
+    ut_iter *it)
 {
     iterData *ctx = it->ctx;
     corto_sample *s;
-    while ((s = corto_ll_takeFirst(ctx->history))) {
+    while ((s = ut_ll_takeFirst(ctx->history))) {
         corto_dealloc(s);
     }
 
-    corto_ll_free(ctx->history);
+    ut_ll_free(ctx->history);
     corto_dealloc(ctx);
 }
 
@@ -139,8 +139,8 @@ corto_recordIter test_HistoryMount_on_history_query(
     data->to = query->frame_end;
     data->soffset = query->soffset;
     data->slimit = query->slimit;
-    data->iter = corto_ll_iterAlloc(this->history);
-    data->history = corto_ll_new();
+    data->iter = ut_ll_iterAlloc(this->history);
+    data->history = ut_ll_new();
 
     it.next = next;
     it.hasNext = hasNext;
