@@ -186,18 +186,12 @@ corto_recordIter corto_loader_on_query_v(
 {
     ut_ll data = ut_ll_new(); /* Will contain result of request */
     ut_iter result;
-    const char *targetPath = ut_load_targetMetaPath();
-    const char *homePath = ut_load_homeMetaPath();
 
     ut_log_push_dbg("vstore-loader");
 
     CORTO_UNUSED(this);
 
-    corto_loader_addDir(data, targetPath, query);
-
-    if (strcmp(targetPath, homePath)) {
-        corto_loader_addDir(data, homePath, query);
-    }
+    corto_loader_addDir(data, UT_META_PATH, query);
 
     /* Allocate persistent iterator. Set a custom release function so that the
      * returned list is cleaned up after select is done iterating. */

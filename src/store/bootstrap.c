@@ -1117,10 +1117,7 @@ int corto_start(
     ut_trace("initializing...");
 
     /* Initialize loader */
-    ut_load_init(
-        ut_getenv("BAKE_TARGET"),
-        ut_getenv("BAKE_HOME"),
-        ut_getenv("BAKE_CONFIG"));
+    ut_load_init(NULL, NULL, NULL, NULL);
 
     if (standalone) {
         ut_trace("standalone mode enabled");
