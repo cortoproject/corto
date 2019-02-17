@@ -39,7 +39,6 @@
 #include "native/_type.h"
 
 /* Standard C library */
-#include <alloca.h>
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -56,7 +55,9 @@
 /* OS-specific headers */
 #if defined(WIN32) || defined(WIN64)
 #include <windows.h>
+#define alloca _alloca
 #else
+#include <alloca.h>
 #include <fnmatch.h>
 #include <inttypes.h>
 #include <execinfo.h>
