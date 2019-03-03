@@ -22,8 +22,6 @@
 #ifndef CORTO_EXPR_H
 #define CORTO_EXPR_H
 
-#include <corto>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

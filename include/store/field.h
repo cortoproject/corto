@@ -31,8 +31,6 @@
 #ifndef CORTO_FIELD_H
 #define CORTO_FIELD_H
 
-#include <corto>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

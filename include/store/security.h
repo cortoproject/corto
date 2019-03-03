@@ -27,8 +27,6 @@
 #ifndef CORTO_SECURITY_H
 #define CORTO_SECURITY_H
 
-#include <corto>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

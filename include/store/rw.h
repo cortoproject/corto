@@ -68,8 +68,6 @@
 #ifndef CORTO_RW_H
 #define CORTO_RW_H
 
-#include <corto>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

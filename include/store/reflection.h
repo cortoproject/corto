@@ -27,8 +27,6 @@
 #ifndef CORTO_REFLECTION_H
 #define CORTO_REFLECTION_H
 
-#include <corto>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
